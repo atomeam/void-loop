@@ -1,12 +1,12 @@
 /**
  * full-handoff skill — package a running system or automation into a complete client handoff.
- * Lists ownership, status, docs, monitors, automations, lift summary, reuse map, client offer and the next step
- * so the client does less and Verse owns the heavy lifting. The handoff reads as one finished package.
- * Rules-based, offline. Nothing is sent.
+ * Everything the client needs in one package: what's handled for them, how it maps to their current processes, and the proposal.
+ * Also lists ownership, status, docs, monitors, automations and the next step. Rules-based, offline. Nothing is sent.
  * "full handoff for the invoice automation", "client handoff pack on onboarding", "package the handoff for support router".
  */
 import { summaryFor } from './lift-summary.js';
 import { suggestReuse } from './reuse-pack.js';
+import { offerFor } from './client-offer.js';
 
 export function isFullHandoff(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
@@ -45,17 +45,8 @@ export function handoffFor(subject) {
       next: lift.next
     },
     reuse: reuse,
-    offer: {
-      today: 'Manual follow-ups, status chasing, repeated setup and monitoring.',
-      takesOver: [
-        'Capture and clarify the idea into a system plan',
-        'Design, build, connect, test and monitor the systems',
-        'Run the automations behind the confirm line',
-        'Hand off status, docs and running jobs'
-      ],
-      reduced: 'No more building the tools, watching the runs, or writing the status. One yes on the outcome.'
-    },
-    next: 'Client can summon status digest or delivery board anytime; Verse keeps owning the heavy lifting'
+    offer: offerFor(name),
+    next: 'The client can ask for a status digest or the delivery board at any time.'
   };
 }
 
@@ -74,7 +65,7 @@ async function run(text, api) {
   const offerTakes = h.offer.takesOver.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Full handoff: ' + esc(name) + '</h2>'
-      + '<p class="sub">Verse owns the heavy lifting. This packages the complete handoff so the client does less. One finished package.</p>'
+      + '<p class="sub">Everything the client needs in one package: what\'s handled for them, how it maps to their current processes, and the proposal.</p>'
       + '<h3>What Verse owns</h3><ul>' + owns + '</ul>'
       + '<h3>Current status</h3><p>' + esc(h.status) + '</p>'
       + '<h3>Docs included</h3><ul>' + docs + '</ul>'
@@ -85,7 +76,7 @@ async function run(text, api) {
       + '<p>Client work that drops</p><ul>' + liftLess + '</ul>'
       + '<p>Next: ' + esc(h.lift.next) + '</p>'
       + '<h3>Reuse tools map</h3>'
-      + '<p>Existing processes against what Verse already owns (from void.existing-tools.md).</p>'
+      + '<p>Existing processes mapped to tools that already handle them.</p>'
       + '<ul>' + reuseList + '</ul>'
       + '<h3>Client offer proposal</h3>'
       + '<p>What the client does today: ' + esc(h.offer.today) + '</p>'
@@ -121,8 +112,24 @@ export default {
   run,
   suite() {
     const ok = this.examples.every(isFullHandoff) && !this.nearMisses.some(isFullHandoff);
-    const h = handoffFor('invoice automation');
-    const hasSections = h.lift && h.reuse && h.offer && h.docs.includes('Lift summary');
-    return { ok: ok && hasSections, got: ok && hasSections ? 'match and package works' : 'match or package broke' };
+    const ask = 'full handoff for invoice automation';
+    const h = handoffFor(ask);
+    const lift = summaryFor(ask);
+    const reuse = suggestReuse(h.subject);
+    const offer = offerFor(ask);
+    const hasLift = Array.isArray(h.lift?.owns) && h.lift.owns.length > 0
+      && JSON.stringify(h.lift) === JSON.stringify({ owns: lift.owns, clientDoesLess: lift.clientDoesLess, next: lift.next });
+    const hasReuse = Array.isArray(h.reuse) && h.reuse.length > 0 && JSON.stringify(h.reuse) === JSON.stringify(reuse);
+    const hasOffer = h.offer && h.offer.today === offer.today
+      && JSON.stringify(h.offer.takesOver) === JSON.stringify(offer.takesOver)
+      && h.offer.reduced === offer.reduced;
+    let html = '';
+    this.run(ask, { showPage: (fn) => { const el = { innerHTML: '' }; fn(el); html = el.innerHTML; }, esc: (s) => String(s ?? '') });
+    const hasRender = html.includes('Client lift summary') && html.includes(lift.owns[0]) && html.includes(lift.clientDoesLess[0])
+      && html.includes('Reuse tools map') && html.includes(reuse[0].tool) && html.includes(reuse[0].why)
+      && html.includes('Client offer proposal') && html.includes(offer.today) && html.includes(offer.takesOver[0]) && html.includes(offer.reduced)
+      && !/heavy lifting/i.test(html);
+    const pass = ok && hasLift && hasReuse && hasOffer && hasRender;
+    return { ok: pass, got: pass ? 'match and package sections render with real data' : 'match or package sections broke' };
   }
 };

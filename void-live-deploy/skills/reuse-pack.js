@@ -1,7 +1,6 @@
 /**
- * reuse-pack skill — map a business process or idea to existing tools Verse can own or connect
- * instead of inventing new ones. Checks void.existing-tools.md first so the client does less inventing
- * and Verse takes over the heavy lifting of integration and monitoring.
+ * reuse-pack skill — map a business process or idea to existing tools that already cover parts of it
+ * instead of inventing new ones. Checks void.existing-tools.md first so the client can reuse what is already there.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "reuse pack for client onboarding", "map to existing tools: invoice reminders", "what can we reuse for support tickets"
  */
@@ -57,14 +56,14 @@ async function run(text, api) {
   const list = hits.map(h => `<li><strong>${esc(h.tool)}</strong> — ${esc(h.why)}</li>`).join('');
   const pack = [
     `<h2>Reuse pack: ${esc(process)}</h2>`,
-    `<p><strong>Use what already exists before building.</strong> Mapped against domains/void.existing-tools.md.</p>`,
+    `<p><strong>Use what already exists before building.</strong> Existing processes mapped to tools that already handle them.</p>`,
     `<h3>Existing tools that cover parts</h3><ul>${list}</ul>`,
-    `<h3>What Verse owns</h3><ul>`,
+    `<h3>What's handled</h3><ul>`,
     `<li>Connecting and monitoring the chosen tools</li>`,
     `<li>The confirm line and ledger for any action</li>`,
-    `<li>Status and handoff so the client sees only the outcome</li>`,
+    `<li>Status and handoff so the client sees the outcome</li>`,
     `</ul>`,
-    `<p class="sub">We own the heavy lifting of reuse and integration. Client keeps the outcome.</p>`,
+    `<p class="sub">A map of current processes to tools that already handle them. The client keeps the outcome.</p>`,
     `<div class="src">Source: domains/void.existing-tools.md</div>`
   ].join('');
   el.innerHTML = pack;
