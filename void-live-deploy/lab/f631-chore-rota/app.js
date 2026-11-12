@@ -1,3 +1,30 @@
+
+function cssVar(name, fallback) {
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
+function theme() {
+  const key = cssVar('--d-key', '158 178 255');
+  return {
+    bg: cssVar('--bg', '#050505'),
+    ink: cssVar('--d-ink', '#f2f4fb'),
+    muted: cssVar('--d-ink-2', '#c3c8d8'),
+    line: cssVar('--line', 'rgba(255, 255, 255, 0.12)'),
+    head: `rgb(${key} / 0.16)`,
+    stripe: `rgb(${key} / 0.08)`,
+    key
+  };
+}
+function personTint(i) {
+  const keys = [
+    cssVar('--d-key', '158 178 255'),
+    cssVar('--d-teal', '92 232 205'),
+    cssVar('--d-warm', '255 170 214')
+  ];
+  const shade = 0.7 + (Math.floor(i / keys.length) % 3) * 0.12;
+  return `rgb(${keys[i % keys.length]} / ${Math.min(shade, 0.98)})`;
+}
+
 const STORAGE_KEY = 'verse-f631-chore-rota';
 
 let people = [];
@@ -63,7 +90,7 @@ function renderRota() {
     container.innerHTML = '<div class="empty">Add at least one person and one chore to see the rota.</div>';
     return;
   }
-  const colors = ['#2d6a4f','#40916c','#52b788','#74c69d','#95d5b2','#b7e4c7','#1b4332','#081c15'];
+  const colors = people.map((_, i) => personTint(i));
   let html = '<table><thead><tr><th>Week</th>';
   chores.forEach(c => { html += `<th>${escapeHtml(c)}</th>`; });
   html += '</tr></thead><tbody>';
@@ -134,37 +161,38 @@ function downloadPNG() {
   const rows = weeks + 1;
   canvas.width = pad * 2 + cols * cellW;
   canvas.height = pad * 2 + titleH + rows * cellH;
-  ctx.fillStyle = '#ffffff';
+  const pal = theme();
+  ctx.fillStyle = pal.bg;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#1a1a1a';
-  ctx.font = 'bold 22px system-ui, sans-serif';
+  ctx.fillStyle = pal.ink;
+  ctx.font = 'bold 22px ui-sans-serif, system-ui, sans-serif';
   ctx.fillText('Chore rota', pad, pad + 22);
-  ctx.font = '14px system-ui, sans-serif';
+  ctx.font = '14px ui-sans-serif, system-ui, sans-serif';
   // header
-  ctx.fillStyle = '#f0f0f0';
+  ctx.fillStyle = pal.head;
   ctx.fillRect(pad, pad + titleH, cols * cellW, cellH);
-  ctx.fillStyle = '#1a1a1a';
-  ctx.font = 'bold 13px system-ui, sans-serif';
+  ctx.fillStyle = pal.ink;
+  ctx.font = 'bold 13px ui-sans-serif, system-ui, sans-serif';
   ctx.fillText('Week', pad + 8, pad + titleH + 24);
   chores.forEach((c, i) => {
     ctx.fillText(c.slice(0, 16), pad + (i + 1) * cellW + 8, pad + titleH + 24);
   });
   // rows
-  ctx.font = '13px system-ui, sans-serif';
+  ctx.font = '13px ui-sans-serif, system-ui, sans-serif';
   for (let w = 0; w < weeks; w++) {
     const y = pad + titleH + (w + 1) * cellH;
-    if (w % 2 === 0) { ctx.fillStyle = '#fafafa'; ctx.fillRect(pad, y, cols * cellW, cellH); }
-    ctx.fillStyle = '#1a1a1a';
-    ctx.font = 'bold 13px system-ui, sans-serif';
+    if (w % 2 === 0) { ctx.fillStyle = pal.stripe; ctx.fillRect(pad, y, cols * cellW, cellH); }
+    ctx.fillStyle = pal.ink;
+    ctx.font = 'bold 13px ui-sans-serif, system-ui, sans-serif';
     ctx.fillText('Week ' + (w + 1), pad + 8, y + 24);
-    ctx.font = '13px system-ui, sans-serif';
+    ctx.font = '13px ui-sans-serif, system-ui, sans-serif';
     for (let c = 0; c < chores.length; c++) {
       const pi = (w + c + offset) % people.length;
       ctx.fillText(people[pi].slice(0, 16), pad + (c + 1) * cellW + 8, y + 24);
     }
   }
   // borders
-  ctx.strokeStyle = '#e0e0e0';
+  ctx.strokeStyle = pal.line;
   ctx.lineWidth = 1;
   for (let r = 0; r <= rows; r++) {
     ctx.beginPath(); ctx.moveTo(pad, pad + titleH + r * cellH); ctx.lineTo(pad + cols * cellW, pad + titleH + r * cellH); ctx.stroke();

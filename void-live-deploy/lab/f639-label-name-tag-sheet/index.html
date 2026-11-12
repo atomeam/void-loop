@@ -1,20 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-  body { font-family: system-ui, sans-serif; margin: 1rem; background: #f8f9fa; color: #111; }
-  h1 { font-size: 1.4rem; }
-  label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 600; }
-  textarea, select, input[type=number], input[type=color], button { font-size: 1rem; padding: 0.4rem; }
+  label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 600; color: var(--soft); }
   textarea { width: 100%; max-width: 40rem; height: 10rem; }
   .row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
-  button { background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
-  button:hover { background: #0052a3; }
-  #preview { border: 1px solid #ccc; margin-top: 1rem; background: white; max-width: 100%; }
-  .note { font-size: 0.9rem; color: #555; margin-top: 0.5rem; }
+  /* the canvas is a paper sheet; it stays white so a print or PNG is a label */
+  #preview { border: 1px solid var(--line); margin-top: 1rem; background: #fff; max-width: 100%; }
   @media print { .controls { display: none; } }
 </style>
 <meta name="verse-handoff" content="in: none; out: none">
@@ -30,12 +25,14 @@
 <link rel="canonical" href="https://a-to-mind.com/lab/f639-label-name-tag-sheet/">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tool-theme.css">
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
 </head>
 <body>
+<main class="vs-page">
 <h1>Label and name tag sheet</h1>
-<p>Paste names (one per line). Choose a size. Download a printable sheet as PNG, or print this page.</p>
+<p class="lead">Paste names (one per line). Choose a size. Download a printable sheet as PNG, or print this page.</p>
 <div class="controls">
   <label for="names">Names</label>
   <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;..."></textarea>
@@ -62,18 +59,13 @@
       <input type="color" id="fg" value="#000000">
     </div>
   </div>
-  <button id="gen" style="margin-top:1rem">Generate sheet</button>
-  <button id="dl" disabled>Download PNG</button>
+  <button class="primary" id="gen" style="margin-top:1rem">Generate sheet</button>
+  <button class="secondary" id="dl" disabled>Download PNG</button>
 </div>
 <canvas id="preview" width="816" height="1056"></canvas>
 <p class="note">Sheet is sized for US Letter (8.5" × 11" at 96 dpi). Print at 100% scale. Works offline. Nothing is sent anywhere.</p>
+</main>
 <script src="app.js"></script>
 <footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
-<style>
-/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
-.vl-bar a { color:#717176 }
-#size { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
-/* end verse design loop */
-</style>
 </body>
 </html>

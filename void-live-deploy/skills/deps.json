@@ -19916,6 +19916,10 @@
    ],
    "importedBy": []
   },
+  "skills/roi-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/room.js": {
    "imports": [
     "skills/home.js",

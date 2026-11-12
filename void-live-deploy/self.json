@@ -348,6 +348,12 @@
    "date": "2026-11-12",
    "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
    "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
   }
  ],
  "open": [
@@ -678,16 +684,12 @@
  },
  "commits": [
   {
-   "at": "2026-11-12T21:26:49Z",
-   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on ea18b3c5 (void-live-deploy/incidents.json)"
-  },
-  {
    "at": "2026-11-12T21:26:23Z",
    "subject": "Outcome exam: code 93.3"
   },
   {
-   "at": "2026-11-12T21:25:33Z",
-   "subject": "kickoff-pack: plain wording, drop 'heavy lifting' and 'Verse will own'"
+   "at": "2026-11-12T21:25:32Z",
+   "subject": "roi-pack: plain wording, drop 'heavy lifting'"
   },
   {
    "at": "2026-11-12T21:17:54Z",
@@ -756,6 +758,10 @@
   {
    "at": "2026-11-12T20:09:36Z",
    "subject": "Failed jobs read: run 43292621858 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-12T20:00:49Z",
+   "subject": "treasury: found money and the weekly review"
   }
  ],
  "builders": {
@@ -937,8 +943,8 @@
   }
  ],
  "visible": {
-  "day": 21,
-  "week": 263
+  "day": 20,
+  "week": 262
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

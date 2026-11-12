@@ -1,0 +1,36 @@
+{
+ "at": "2026-11-12T21:43:29.697Z",
+ "sha": "4db0f7108027d94fca571d456a4ec951e81afa77",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43308867264",
+ "suite": "browser suite on main",
+ "checks": [
+  "business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step"
+ ],
+ "touched": [
+  "tools/client-brief.test.mjs",
+  "tools/client-offer.test.mjs",
+  "tools/docs-pack.test.mjs",
+  "tools/heavy-lift-map.test.mjs",
+  "tools/humble-copy.mjs",
+  "tools/humble-copy.test.mjs",
+  "tools/lift-summary.test.mjs",
+  "tools/ownership-map.test.mjs",
+  "tools/ownership-pack.test.mjs",
+  "tools/proposal-pack.test.mjs",
+  "void-live-deploy/lib/similar-index.js",
+  "void-live-deploy/lib/verse-runs.js",
+  "void-live-deploy/lib/watch-along.js",
+  "void-live-deploy/skills/automation-pack.js",
+  "void-live-deploy/skills/automation-status.js"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-12T21:58:33.836Z",
+ "closedBy": "ebafb9ba92cb0b1c38e4344e5fcda29ee15a4f70",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/43310664159",
+ "minutes": 15
+}
