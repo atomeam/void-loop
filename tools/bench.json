@@ -7189,5 +7189,20 @@
   {"ask": "package this as an offer: client onboarding that runs itself", "want": "skill:client-offer"},
   {"ask": "delivery board for the onboarding flow", "want": "skill:delivery-board"},
   {"ask": "client board on invoice reminders", "want": "skill:delivery-board"},
-  {"ask": "show the delivery board for the support router", "want": "skill:delivery-board"}
+  {"ask": "show the delivery board for the support router", "want": "skill:delivery-board"},
+  {"ask": "docs pack for Acme onboarding", "want": "skill:docs-pack"},
+  {"ask": "client docs for the invoice reminders", "want": "skill:docs-pack"},
+  {"ask": "document the system Verse owns for support", "want": "skill:docs-pack"},
+  {"ask": "feedback on the onboarding slice", "want": "skill:feedback-loop"},
+  {"ask": "client feedback for invoice reminders", "want": "skill:feedback-loop"},
+  {"ask": "capture feedback from the status report", "want": "skill:feedback-loop"},
+  {"ask": "lift summary for client onboarding", "want": "skill:lift-summary"},
+  {"ask": "we own the heavy lifting for invoice reminders", "want": "skill:lift-summary"},
+  {"ask": "package the heavy lifting for the support flow", "want": "skill:lift-summary"},
+  {"ask": "progress report for the onboarding automation", "want": "skill:progress-report"},
+  {"ask": "client progress on invoice reminders", "want": "skill:progress-report"},
+  {"ask": "status progress for the support router", "want": "skill:progress-report"},
+  {"ask": "status digest for the invoice automation", "want": "skill:status-digest"},
+  {"ask": "client digest: onboarding flow", "want": "skill:status-digest"},
+  {"ask": "weekly status for my systems", "want": "skill:status-digest"}
 ]
