@@ -1,5 +1,5 @@
-// Versus measurements and the owner elevator. Pure. A lone tool is never a floor. A floor is an evolving
-// page that does the rival's whole job and wins or ties every measured aspect. Visitors see a sign.
+// Versus measurements and the owner elevator. Pure. A floor is a Verse page that exists and works.
+// Measurements are kept and never decide a floor. A card is never a floor. Visitors see a sign.
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 export const ASPECTS = Object.freeze([
@@ -10,12 +10,21 @@ export const ASPECTS = Object.freeze([
   { id: 'offline', hi: true, unit: '' },
 ]);
 
-/** the three Versus tools. kind tool: measured, never a floor. */
+/** the three Versus pages. Each one exists and works, so each is a floor. The gate still measures them. */
 export const TOOLS = Object.freeze([
-  { id: 'readable', name: 'A readable page', page: '/our-motherfucking-version/', rival: 'motherfuckingwebsite.com', url: 'https://motherfuckingwebsite.com/', kind: 'tool', features: ['plain page', 'weigh markup'] },
-  { id: 'tracks', name: 'Track times', page: '/track-times/', rival: 'tsundere.pw', url: 'https://tsundere.pw/', kind: 'tool', features: ['track list', 'start times'] },
-  { id: 'letters', name: 'Rotate letters', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'tool', features: ['letter shift'] },
+  { id: 'readable', name: 'A readable page', page: '/our-motherfucking-version/', rival: 'motherfuckingwebsite.com', url: 'https://motherfuckingwebsite.com/', kind: 'page', works: true, features: ['plain page', 'weigh markup'] },
+  { id: 'tracks', name: 'Track times', page: '/track-times/', rival: 'tsundere.pw', url: 'https://tsundere.pw/', kind: 'page', works: true, features: ['track list', 'start times'] },
+  { id: 'letters', name: 'Rotate letters', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'page', works: true, features: ['letter shift'] },
 ]);
+
+/** later fights. works stays false until that page ships and works. Paths are Verse's own. */
+export const NEXT = Object.freeze([
+  { id: 'podcasts', name: 'Podcast player', page: '/podcasts/', rival: 'podcastindex.org', url: 'https://podcastindex.org/', kind: 'page', works: false, features: ['podcast', 'audio', 'episode'] },
+  { id: 'scores', name: 'Scoreboard', page: '/scores/', rival: 'livescore.com', url: 'https://www.livescore.com/', kind: 'page', works: false, features: ['score', 'board', 'standings'] },
+  { id: 'units', name: 'Unit converter', page: '/convert/', rival: 'convertlive.com', url: 'https://convertlive.com/', kind: 'page', works: false, features: ['convert', 'unit'] },
+]);
+
+export const SITES = Object.freeze([...TOOLS, ...NEXT]);
 
 /** better, equal, or worse from two numbers. Null when either number is missing. Pure. */
 export function plainVerdict(verse, best, higher = false) {
@@ -38,11 +47,31 @@ export function rowsFromMeasures(verse, rival) {
   return out;
 }
 
-/** a floor only when the page does the whole job and every aspect is better or equal. A tool never is. Pure. */
-export function isFloor(site, rows) {
-  if (!site || site.kind !== 'page' || !site.covers) return false;
-  if (!rows) return false;
-  return ASPECTS.every((a) => rows[a.id] && (rows[a.id].verdict === 'better' || rows[a.id].verdict === 'equal'));
+/** a floor when the page exists and works. A card never is. Rows are ignored. Pure. */
+export function isFloor(site) {
+  return !!(site && site.kind === 'page' && site.page && site.works === true);
+}
+
+/** gap notes from the weakest exam domains, the nightly pick, open wants, and missed asks. Pure. */
+export function gapText({ exam, nightly, wants, misses } = {}) {
+  const parts = [];
+  if (nightly && nightly.pick) parts.push(nightly.pick.id, nightly.pick.why);
+  const domains = (exam && exam.domains) || {};
+  const ranked = Object.entries(domains)
+    .map(([id, d]) => ({ id, score: d && d.score, fails: (d && d.fails) || [] }))
+    .filter((d) => Number.isFinite(d.score))
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 4);
+  for (const d of ranked) {
+    parts.push(d.id);
+    for (const f of d.fails.slice(0, 3)) {
+      parts.push(f && f.ask);
+      if (f && Array.isArray(f.failed)) parts.push(...f.failed);
+    }
+  }
+  const lines = (xs) => (Array.isArray(xs) ? xs : []).slice(0, 12).map((x) => (typeof x === 'string' ? x : x && (x.ask || x.item || x.words))).filter(Boolean);
+  parts.push(...lines(wants), ...lines(misses));
+  return parts.filter(Boolean).join(' ');
 }
 
 /** how many feature words show up in the gap notes. Ties keep list order. Size is ignored. Pure. */
@@ -60,17 +89,25 @@ export function verdictsChanged(prev, next) {
   return sigOf((prev && prev.tools) || {}) !== sigOf((next && next.tools) || {});
 }
 
+/** the owner model again, with gap notes from the exam, the wants and the nightly pick. Rows stay. Pure. */
+export function modelFrom(apiModel, gaps = '') {
+  const tools = {};
+  for (const s of (apiModel && apiModel.sites) || []) if (s && s.rows) tools[s.id] = { ...s.rows, at: s.at || '' };
+  return viewModel({ tools }, gaps);
+}
+
 /** what the owner elevator shows. Pure. */
 export function viewModel(verdicts, gaps = '') {
   const tools = (verdicts && verdicts.tools) || {};
-  const ranked = rankSites(TOOLS, gaps);
-  const fight = ranked[0];
-  const floor = TOOLS.filter((t) => isFloor(t, tools[t.id])).length;
+  const open = rankSites(SITES.filter((t) => !isFloor(t)), gaps);
+  const fight = open[0] || null;
+  const floor = SITES.filter((t) => isFloor(t)).length;
+  const shown = SITES.filter((t) => isFloor(t)).concat(fight ? [fight] : []);
   return {
     floor,
-    total: TOOLS.length,
+    total: SITES.length,
     fight: fight ? fight.rival : '',
-    sites: TOOLS.map((t) => ({ id: t.id, name: t.name, page: t.page, rival: t.rival, at: (tools[t.id] && tools[t.id].at) || '', rows: tools[t.id] || null, floor: isFloor(t, tools[t.id]) })),
+    sites: shown.map((t) => ({ id: t.id, name: t.name, page: t.page, rival: t.rival, at: (tools[t.id] && tools[t.id].at) || '', rows: tools[t.id] || null, floor: isFloor(t) })),
   };
 }
 
@@ -94,14 +131,14 @@ export function ownerHtml(model) {
   const steps = Math.max(1, m.floor || 0);
   const sites = (m.sites || []).map((s) => {
     const head = '<h2>' + esc(s.rival) + '</h2><p><a href="' + esc(s.page) + '">' + esc(s.name) + '</a></p>';
-    if (!s.rows) return '<article class="elv-card">' + head + '<p>not measured yet</p></article>';
+    if (!s.rows) return '<article class="elv-card">' + head + '<p>' + (s.floor ? 'page is up' : 'still open') + '</p></article>';
     const when = s.at ? esc(String(s.at).slice(0, 10)) : '';
     const rows = ASPECTS.map((a) => {
       const r = s.rows[a.id];
       if (!r) return '<tr><td>' + esc(a.id) + '</td><td colspan="3">not measured yet</td></tr>';
       return '<tr data-v="' + esc(r.verdict) + '"><td>' + esc(a.id) + '</td><td>' + esc(num(a, r.verse)) + '</td><td>' + esc(num(a, r.best)) + '</td><td>' + esc(r.verdict) + '</td></tr>';
     }).join('');
-    return '<article class="elv-card">' + head + '<div class="elv-scroll"><table><thead><tr><th>Aspect</th><th>Verse</th><th>' + esc(s.rival) + '</th><th></th></tr></thead><tbody>'
+    return '<article class="elv-card">' + head + (s.floor ? '<p>page is up</p>' : '') + '<div class="elv-scroll"><table><thead><tr><th>Aspect</th><th>Verse</th><th>' + esc(s.rival) + '</th><th></th></tr></thead><tbody>'
       + rows + '</tbody></table></div>' + (when ? '<p class="elv-when">' + when + '</p>' : '') + '</article>';
   }).join('');
   return SIGN_CSS + '<style>.elv-live{display:grid;gap:.9rem}.elv-head{display:grid;justify-items:center}.elv-arrow{width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-bottom:16px solid rgb(var(--d-key));filter:drop-shadow(0 0 8px rgb(var(--d-key) / .75))}.elv-num{margin:.15rem 0 0;font-size:clamp(3.2rem,18vw,4.6rem);line-height:.9;font-variant-numeric:tabular-nums;font-weight:700;color:rgb(var(--d-key));text-shadow:0 0 16px rgb(var(--d-key) / .55)}.elv-of{margin:.15rem 0 0;color:var(--d-ink-3);font-variant-numeric:tabular-nums}.elv-shaft{position:relative;height:6.5rem;border-radius:12px;background:#0c0e14;border:1px solid #2a2a2a;overflow:hidden}.elv-car{position:absolute;left:10px;right:10px;bottom:8px;height:2rem;border-radius:7px;background:rgb(var(--d-key));animation:elv-rise 1.4s steps(var(--steps,1),end) both}.elv-fight{margin:0;font-size:clamp(1.2rem,5vw,1.6rem);overflow-wrap:anywhere}.elv-card{border-top:1px solid #2a2a2a;padding-top:.8rem}.elv-card h2{font-size:1rem;margin:0 0 .3rem;overflow-wrap:anywhere}.elv-scroll{overflow-x:auto;max-width:100%}.elv-card table{width:100%;border-collapse:collapse;font-size:.95rem}.elv-card th,.elv-card td{text-align:left;padding:.4rem .35rem;border-bottom:1px solid #222;white-space:nowrap}.elv-card tr[data-v="better"] td:last-child{color:rgb(var(--d-teal))}.elv-card tr[data-v="worse"] td:last-child{color:rgb(var(--d-warm))}.elv-when{margin:.35rem 0 0;color:var(--d-ink-3);font-size:.9rem}@keyframes elv-rise{from{transform:translateY(0)}to{transform:translateY(calc(var(--floor, 0) * -2.1rem))}}@media (prefers-reduced-motion:reduce){.elv-car{animation:none}}</style>'
