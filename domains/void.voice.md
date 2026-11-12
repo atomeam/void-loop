@@ -10,23 +10,21 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-10. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-12. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement missing audio and episode identification logic for the podcasts exam. (daily, 2026-11-10) `ask-20261110-2359-2`
-- Build the missing jobs for flightconnections.com to meet the current target. (daily, 2026-11-10) `ask-20261110-2359-1`
-- Fix the sports exam data for MLB, Premier League, and Serie A. (after a build, 2026-11-10) `ask-20261110-2005-3`
-- Give the two longest browser checks their own dedicated runner. (after a build, 2026-11-10) `ask-20261110-1813-1`
-- Fix the podcasts exam to correctly identify audio and episodes for 'play the latest episode of ted radio hour' and 'play the latest episode of freakonomics radio'. (daily, 2026-11-10) `ask-20261110-0536-2`
+- Build the missing jobs for flightconnections.com. (daily, 2026-11-12) `ask-20261112-0128-1`
+- Handle the void-loop readme. *(small)* (daily, 2026-11-12) `ask-20261112-0128-3`
+- Implement updates to the definitions exam to include etymology and handle unknown terms. *(small)* (daily, 2026-11-12) `ask-20261112-0128-2`
+- Fix the sports exam data for MLB, Premier League, and Serie A. (after a build, 2026-11-11) `ask-20261111-1526-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261110-2359-2` queued, not decided yet
-- `ask-20261110-2359-1` queued, not decided yet
-- `ask-20261110-2005-3` queued, not decided yet
-- `ask-20261110-1813-1` queued, not decided yet
-- `ask-20261110-0536-2` queued, not decided yet
+- `ask-20261112-0128-1` queued, not decided yet
+- `ask-20261112-0128-3` queued, not decided yet
+- `ask-20261112-0128-2` queued, not decided yet
+- `ask-20261111-1526-2` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -138,6 +136,97 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261106-0859-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
 - `ask-20261106-1936-2` built: lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)
 - `ask-20261106-2037-3` built: lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)
+- `ask-20261109-2108-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2116-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2147-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2208-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2252-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2258-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2332-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2356-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0006-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0011-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0016-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0057-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0106-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0115-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0133-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0140-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0148-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0156-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-0200-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1629-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1633-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1637-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1642-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1654-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1710-3` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1713-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1733-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1742-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1805-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1813-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1919-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-1935-1` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-2005-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-2041-2` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-2127-3` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-2131-3` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-2215-3` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261110-2359-3` built: lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs
+- `ask-20261109-2252-3` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261109-2258-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261109-2332-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261109-2356-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0006-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0011-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0016-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0057-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0106-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0115-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0133-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0140-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0148-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0156-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-0200-1` retired: lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back
+- `ask-20261110-1629-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1633-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1637-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1642-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1710-1` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1713-1` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1733-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1742-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1805-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1813-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1919-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-1935-2` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-2005-3` built: lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)
+- `ask-20261110-0536-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1629-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1633-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1637-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1642-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1654-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1710-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1713-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1733-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1742-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1805-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1813-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1919-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-1935-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-2041-3` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-2127-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-2131-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-2215-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-2359-2` built: lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams
+- `ask-20261110-2005-1` retired: lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)
+- `ask-20261110-2041-1` retired: lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)
+- `ask-20261110-2127-1` retired: lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)
+- `ask-20261110-2131-1` retired: lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)
+- `ask-20261110-2215-1` retired: lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)
+- `ask-20261110-2359-1` retired: lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)
 
 ## Log, oldest first
 
@@ -10393,6 +10482,354 @@ Asks: "Build the missing jobs for flightconnections.com."; "Implement missing au
 > **Next video trick:** A double-exposure transition between two filmed clips.
 
 Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:09:36.217Z -->
+### 2026-11-11 22:09 UTC · after a build
+
+**Asked:** This just shipped: "The page matches its two deploy copies again". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, including recent business-focused additions like client-intake and delivery-board. Operational priority is focused on building missing jobs for flightconnections.com. The definitions exam remains a weak point with a score of 90, specifically regarding etymology and the term zorbleflux.
+>
+> **How I would make it better:** The definitions exam requires updates to handle etymology and unknown terms to improve the current score of 90. The pointing arrow from the lab should be transitioned into a core skill due to high usage.
+>
+> **Next video trick:** A video transition that uses a physical object to 'swipe' the screen into a new scene.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Handle the void-loop readme." (small); "Implement updates to the definitions exam to include etymology and handle unknown terms."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:13:45.682Z -->
+### 2026-11-11 22:13 UTC · after a build
+
+**Asked:** This just shipped: "hook Sightline checkAll into fresh() helper". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, including recent business-focused additions like client-intake and delivery-board. Operational priority remains focused on building missing jobs for flightconnections.com. The definitions exam remains a weak point with a score of 90, specifically regarding etymology and the term zorbleflux.
+>
+> **How I would make it better:** The definitions exam requires updates to handle etymology and unknown terms to improve the current score of 90. The pointing arrow from the lab should be transitioned into a core skill due to high usage.
+>
+> **Next video trick:** Create a video clip demonstrating a seamless transition between a technical code review and a live deployment dashboard.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Handle the void-loop readme." (small); "Implement updates to the definitions exam to include etymology and handle unknown terms."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:17:01.107Z -->
+### 2026-11-11 22:17 UTC · after a build
+
+**Asked:** This just shipped: "hook Sightline checkAll into fresh() helper". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, including recent business-focused additions like client-intake and delivery-board. Operational priority remains focused on building missing jobs for flightconnections.com. The definitions exam remains a weak point with a score of 90, specifically regarding etymology and the term zorbleflux.
+>
+> **How I would make it better:** The definitions exam needs updates to handle etymology and unknown terms to improve the current score of 90. The pointing arrow from the lab should be transitioned into a core skill due to its high usage (476 opens).
+>
+> **Next video trick:** Learn a new video effect to use for upcoming clips.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:20:50.060Z -->
+### 2026-11-11 22:20 UTC · after a build
+
+**Asked:** This just shipped: "A playbook for a ledger wiped whole". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, incorporating new business-focused capabilities like client-intake and delivery-board. Operational priority is centered on building missing jobs for flightconnections.com. The definitions exam is currently a weak point with a score of 90, specifically due to issues with etymology and the term zorbleflux.
+>
+> **How I would make it better:** Transition the 'pointing arrow' from the lab into a core skill to support its high usage of 476 opens. Improve the definitions exam by updating it to handle etymology and unknown terms.
+>
+> **Next video trick:** A new video effect involving a mask-to-layer transition for stage-fx.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:24:21.052Z -->
+### 2026-11-11 22:24 UTC · after a build
+
+**Asked:** This just shipped: "wire Time Machine boot into the page (ADR-001)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 369 entries, incorporating recent business-focused capabilities such as client-intake, delivery-board, and progress-report. Operational focus is currently on building missing jobs for flightconnections.com. The definitions exam remains a weak point with a score of 90, specifically regarding etymology and unknown terms.
+>
+> **How I would make it better:** The definitions exam requires updates to handle etymology and unknown terms. The 'pointing arrow' should be transitioned from the lab to a core, standalone skill to support its 476 opens.
+>
+> **Next video trick:** a transition effect that visually connects two different skill cards on the stage
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:32:38.649Z -->
+### 2026-11-11 22:32 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 369 entries, including recent business-focused capabilities like client-intake, delivery-board, and progress-report. The system is currently operationalizing the flightconnections.com target through the newly shipped travel tower gate. Accuracy in the definitions exam is low, with a score of 90 specifically regarding etymology and unknown terms.
+>
+> **How I would make it better:** The definitions exam must be updated to handle etymology and unknown terms to improve accuracy beyond the current score of 90. The pointing arrow should be moved from the lab to a core skill to support its 476 opens.
+>
+> **Next video trick:** Learn to use a magnetic prop to simulate a digital interface 'sticking' to a physical surface for a stage-fx clip.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:35:56.829Z -->
+### 2026-11-11 22:35 UTC · after a build
+
+**Asked:** This just shipped: "remove time-machine scrubber bar, keep engine + storage + runtime". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 369 entries, recently incorporating business-focused capabilities like client-intake, progress-report, and delivery-board. The system is operationalizing the flightconnections.com target via the travel tower gate, though the definitions exam remains weak with a score of 90 due to issues with etymology and unknown terms. Recent shipping includes the removal of the time-machine scrubber bar to maintain only the engine, storage, and runtime.
+>
+> **How I would make it better:** The definitions exam needs updates to handle etymology and unknown terms to improve the current score of 90. The pointing arrow should be transitioned from the lab to a core skill to support its 476 opens.
+>
+> **Next video trick:** Learn a new way to use stage-fx to animate the transition between different card states.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:43:10.033Z -->
+### 2026-11-11 22:43 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 369 entries, integrating new business capabilities like client-intake and delivery-board. The travel tower gate is now operationalizing the flightconnections.com target by measuring it against live sites. Recent shipping includes the removal of the time-machine scrubber bar to maintain only the engine, storage, and runtime.
+>
+> **How I would make it better:** The definitions exam score is currently 90; it must be updated to handle etymology and unknown terms to improve accuracy. The pointing arrow should be transitioned from the lab to a core skill to support its 476 opens.
+>
+> **Next video trick:** A transition from a lab-based pointing arrow to a core skill to handle its high open rate.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms."; "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:46:38.927Z -->
+### 2026-11-11 22:46 UTC · after a build
+
+**Asked:** This just shipped: "fix delivery-board skill match and register in index". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 369 entries, incorporating new business capabilities like client-intake, progress-report, and delivery-board. The flightconnections.com target is currently being operationalized via the travel tower gate. Recent shipping included fixing the delivery-board skill match and registering it in the index.
+>
+> **How I would make it better:** The definitions exam must be updated to handle etymology and unknown terms to address the current score of 90. The pointing-arrow skill should be transitioned from the lab to a core skill to support its 476 opens.
+>
+> **Next video trick:** A video effect using a zoom-figure to transition between different stage-styles.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms."; "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:49:06.863Z -->
+### 2026-11-11 22:49 UTC · after a build
+
+**Asked:** This just shipped: "add Shadcn UI component registry target for tower sweep". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 369 entries, incorporating new business capabilities like client-intake, progress-report, and delivery-board. The current target is operationalizing flightconnections.com via the travel tower gate. The definitions exam is underperforming with a score of 90 due to etymology and unknown term errors.
+>
+> **How I would make it better:** The pointing-arrow skill should be moved from the lab to a core skill to better serve its 478 opens. The definitions exam requires updates to handle etymology and unknown terms to resolve its lowest score.
+>
+> **Next video trick:** A video effect showing a 3D miniature of a 'void-breaker' card emerging from a single pixel.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms."; "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:53:28.520Z -->
+### 2026-11-11 22:53 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, incorporating new business-focused capabilities like client-intake, progress-report, and delivery-board. The system is currently operationalizing flightconnections.com via the travel tower gate. The definitions exam is underperforming with its lowest score of 90 due to etymology and unknown term errors.
+>
+> **How I would make it better:** The definitions exam must be updated to handle etymology and unknown terms to resolve its low score. The pointing-arrow skill should be moved from the lab to a core skill to support its 478 opens.
+>
+> **Next video trick:** A seamless transition between a high-depth analytical query and a sudden shift in topic without losing context.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms."; "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:58:03.778Z -->
+### 2026-11-11 22:58 UTC · after a build
+
+**Asked:** This just shipped: "Failed jobs read: run 43112274583 (void-live-deploy/incidents/actions/)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, incorporating new business-focused capabilities like client-intake, progress-report, and delivery-board. The system is currently operationalizing flightconnections.com via the travel tower gate. The definitions exam is underperforming with its lowest score of 90 due to etymology and unknown term errors.
+>
+> **How I would make it better:** The definitions exam must be updated to handle etymology and unknown terms to resolve its low score. Move the pointing-arrow skill from the lab to a core skill to support its 478 opens.
+>
+> **Next video trick:** Learn a new video effect for stage-fx to enhance visual storytelling in clips.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms."; "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T22:58:14.663Z -->
+### 2026-11-11 22:58 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 369 entries, including new business capabilities like client-intake and progress-report. Growth in the last 7 days includes 175 changes, with 18 new capabilities and 36 fixes. Current operations are focused on the flightconnections.com gate.
+>
+> **How I would make it better:** The definitions exam requires updates to handle etymology and unknown terms to improve its current score of 90. The pointing-arrow skill should be transitioned from the lab to a core skill to better support its 478 opens.
+>
+> **Weakest operational area:** The definitions exam is the weakest area, scoring a low of 90 due to errors in etymology and unknown terms.
+>
+> **Next targeted capability:** Build the missing jobs for flightconnections.com to complete the current site target.
+>
+> **Next video trick:** A seamless match-cut between two different 3D models in the forge.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T23:07:24.714Z -->
+### 2026-11-11 23:07 UTC · after a build
+
+**Asked:** This just shipped: "scaffold Semantic Memory Vault: local-first entity linking + tests". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 369 entries, incorporating new business capabilities like client-intake, progress-report, and ownership-pack. Growth over the last 7 days includes 175 changes, with 18 new capabilities and 36 fixes. Current operations focus on the flightconnections.com gate, while the Semantic Memory Vault scaffold has just shipped to support local-first entity linking.
+>
+> **How I would make it better:** The definitions exam needs updates to handle etymology and unknown terms to address its current score of 90. The pointing-arrow skill should transition from the lab to a core skill to support its 478 opens.
+>
+> **Next video trick:** Create a video clip demonstrating a local-only calculation on a webpage that serializes its state directly into the URL hash.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T23:14:26.987Z -->
+### 2026-11-11 23:14 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 369 entries, incorporating new business capabilities like client-intake, progress-report, and ownership-pack. Recent growth includes 18 new capabilities and 36 fixes over the last 7 days. The system is currently targeting flightconnections.com via the travel tower gate.
+>
+> **How I would make it better:** The definitions exam needs updates to handle etymology and unknown terms to raise its current score of 90. The pointing-arrow skill should transition from the lab to a core skill to support its 478 opens.
+>
+> **Next video trick:** A seamless transition trick where a video clip uses a match-cut to jump between two different camera angles of the same object.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Handle the void-loop readme." (small); "Implement updates to the definitions exam to include etymology and handle unknown terms."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T23:41:09.462Z -->
+### 2026-11-11 23:41 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 4 -> 1 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 369 entries, including recent business capabilities like client-intake and progress-report. The system is currently targeting flightconnections.com via the travel tower gate. Recent growth includes 18 new capabilities and 36 fixes over the last 7 days.
+>
+> **How I would make it better:** The definitions exam needs updates to include etymology and handle unknown terms to raise its current score of 90. The pointing-arrow skill should transition from the lab to a core skill to support its 478 opens.
+>
+> **Next video trick:** Animate a 3D miniature of a 'glitch' card using the forge-rules to represent a system error.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Handle the void-loop readme." (small); "Implement updates to the definitions exam to include etymology and handle unknown terms."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-11T23:48:25.556Z -->
+### 2026-11-11 23:48 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 18: main green again, client-status family, long prose reaches a family's member, built asks linked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 369 entries, incorporating recent business-focused capabilities like client-intake, progress-report, and ownership-pack. The system is currently targeting flightconnections.com to advance the travel tower gate. Recent deployments include the client-status family integration and dedicated runners for perf3d and glyphs to reduce browser check wait times.
+>
+> **How I would make it better:** The definitions exam must be updated to include etymology and handle unknown terms to raise its current score of 90. The pointing-arrow skill should be moved from the lab to a core skill to better support its 480 opens.
+>
+> **Next video trick:** A video effect demonstrating a seamless transition between a physical object and a 3D forge-generated mesh.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T00:34:16.226Z -->
+### 2026-11-12 00:34 UTC · after a build
+
+**Asked:** This just shipped: "Mark delivery-board skill as shipped (main SHA 0e9f5fade)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 368 entries, with recent shipments including the delivery-board, system-slice, progress-report, client-intake, reuse-pack, ownership-pack, verify-pack, monitor-pack, heavy-lift-map, system-handoff, and system-status skills. The client-status family is now unified via the delivery-board skill. The system is currently prioritizing the completion of flightconnections.com jobs.
+>
+> **How I would make it better:** The definitions exam needs updates to include etymology and unknown term handling to address its current score of 90. The pointing-arrow skill should be moved from the lab to a core skill due to its high usage of 480 opens.
+>
+> **Next video trick:** Learn to use a physical card as a transition element for a video cut.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms."; "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T01:08:26.627Z -->
+### 2026-11-12 01:08 UTC · after a build
+
+**Asked:** This just shipped: "Conductor: the last 24 hours of Verse running itself". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 368 entries, including recent additions like delivery-board, system-slice, and progress-report. The definitions exam is currently weak with a score of 90, failing to handle etymology and unknown terms correctly. The growth inbox contains several high-frequency asks, specifically regarding flightconnections.com and the void-loop readme.
+>
+> **How I would make it better:** The definitions exam must be updated to include etymology and unknown term handling to raise the score above 90. The pointing-arrow skill should be transitioned from the lab to a core skill to support its 480 opens.
+>
+> **Next video trick:** Learn to use a camera-to-code sketch method to generate 3D models for the forge.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T01:28:10.703Z -->
+### 2026-11-12 01:28 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 368 entries, with 18 new capabilities and 66 improvements shipped in the last 7 days. Recent shipments include the client-status-family, featuring delivery-board, system-slice, and progress-report skills. The definitions exam remains a point of failure, scoring 90 on etymology and unknown term requests.
+>
+> **How I would make it better:** The definitions exam must be updated to handle etymology and unknown terms to raise the score above 90. The pointing-arrow skill should be transitioned from the lab to a core skill to support its 480 opens.
+>
+> **Weakest operational area:** The definitions exam is weak, scoring 90 and failing on etymology and unknown terms.
+>
+> **Next targeted capability:** flightconnections.com because it is the next site to be targeted.
+>
+> **Next video trick:** A seamless light-leak transition between stage-style themes.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
 
 *Verse flagged this one for Adam.*
 
