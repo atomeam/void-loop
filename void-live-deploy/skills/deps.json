@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1279,
+ "counted": 1281,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1935,6 +1935,13 @@
    "tests": 4
   },
   {
+   "file": "lib/versus-floor.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/video-gen.js",
    "skills": 1,
    "direct": 1,
@@ -2463,14 +2470,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 108,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 106,
+   "dependants": 107,
    "tests": 36
   },
   {
@@ -5216,6 +5223,13 @@
     "lib/guard.js",
     "lib/actions.js",
     "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/versus-floor.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/versus-floor.js"
    ],
    "importedBy": []
   },
@@ -9530,6 +9544,7 @@
     "functions/api/tower-self.js",
     "functions/api/treasury.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/versus-floor.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -11953,6 +11968,7 @@
     "functions/api/treasury.js",
     "functions/api/unbidden.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/versus-floor.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -15919,6 +15935,13 @@
     "functions/api/mcp.js",
     "functions/api/sponsors.js",
     "functions/api/x402/index.js"
+   ]
+  },
+  "lib/versus-floor.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/versus-floor.js",
+    "skills/tower.js"
    ]
   },
   "lib/versus.js": {
@@ -20949,6 +20972,8 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower-art.js",
+    "lib/versus-floor.js",
+    "versus/open.js",
     "lib/tower.js",
     "lib/obituary.js",
     "lib/gate-badge.js",
