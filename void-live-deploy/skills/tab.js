@@ -41,19 +41,18 @@ function mount(th, stageApi) {
       + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
       + bridge.esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
       + '<div class="tab-foot" style="color:var(--muted);font-size:11px;margin-top:6px"></div>'
+      + '<div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button type="button" class="tab-stage vcopy">add to workspace</button><span style="color:var(--muted);font-size:12px">stage this tab (up to 3 inputs) for a bridge</span></div>'
       + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Verse: fill Reply with … / click Save (up to 3, split by ;)" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
       + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Verse acts only on a site you allowed, and only after your yes in the panel.</div>';
     const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
     const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
-    ta.value = ext.draft || ''; footLine();
-    const draftText = () => String(ta.value || ext.draft || '').trim(); // a redraw can replace the box after the words were kept
+    ta.value = ext.draft; footLine();
     ta.addEventListener('input', () => { ext.draft = ta.value; });
-    put.addEventListener('pointerdown', () => { if (ta.value) ext.draft = ta.value; });
-    put.addEventListener('click', async () => { const draft = draftText(); if (!draft) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = bridge.draftSaid(await bridge.draft(draft)); });
+    put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = bridge.draftSaid(await bridge.draft(ta.value)); });
     body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
       const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
       if (intent === 'proposal') return bridge.proposalFromTab(tab, said, footLine);
-      said.textContent = 'asking Verse for a ' + intent + '…'; // ellipsis-ok: progress text, not a cut
+      said.textContent = 'asking Verse for a ' + intent + '…'; // ellipsis-ok: progress line
       let j = null;
       try {
         const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'draft', intent, title: tab.title, url: tab.url, selection: tab.selection, note: ta.value.trim().slice(0, 300) }) });
@@ -71,6 +70,14 @@ function mount(th, stageApi) {
     }));
     const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
     stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
+    const stageBtn = body.querySelector('.tab-stage');
+    if (stageBtn) stageBtn.addEventListener('click', () => {
+      const tab = ext.tab; if (!tab) return;
+      let host = ''; try { host = new URL(tab.url).host; } catch (_) {}
+      const content = [tab.title ? 'Title: ' + tab.title : '', tab.url ? 'URL: ' + tab.url : '', tab.selection ? 'Selection:\n' + tab.selection : ''].filter(Boolean).join('\n\n').slice(0, 6000);
+      const ok = bridge.addInput && bridge.addInput({ id: 'tab-' + Date.now().toString(36), kind: 'tab', title: tab.title || host || tab.url || 'Tab', sourceUrl: tab.url || '', content });
+      if (ok !== false) { stageBtn.textContent = 'staged'; setTimeout(() => { if (stageBtn.isConnected) stageBtn.textContent = 'add to workspace'; }, 1200); }
+    });
     // the context check's suggestion: a text page presses the card's own summary button; a picture or table page runs the ask it names
     // (the card is a thing on the stage, not an answer page, so the page's data-ask handler does not reach it: the summon event does, void.html)
     { const sg = body.querySelector('.tab-context a'); if (sg) sg.addEventListener('click', (e) => { e.preventDefault();
@@ -84,23 +91,11 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
 }
 
-/** the one ask this card answers. The extension's panel still puts the card up on its own, with no ask. */
-export function tabAsk(text) {
-  return /^(?:please\s+)?(?:show|open)\s+(?:me\s+)?this tab$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
-}
-
-async function run(text, api) {
-  if (!tabAsk(text)) return 'none';
-  if (api && api.summon) api.summon('tab', { center: true });
-  if (api && api.say) api.say('This tab, in this browser.');
-  return 'tab';
-}
-
 export default {
   name: 'tab',
-  examples: ['show this tab'],
-  nearMisses: ['open a new tab', 'draft a reply'],
-  match(lower, text) { return tabAsk(text || lower); },
-  run,
+  examples: [],
+  nearMisses: [],
+  match() { return false; }, // nothing to ask: the extension's panel puts the card up
+  async run() { return 'none'; },
   stageKinds: { tab: { mount } },
 };

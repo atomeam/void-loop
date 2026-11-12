@@ -7,7 +7,8 @@
  * pretending to feel and without the customer-service lines. A song with the same words ("do you love me lyrics") is not
  * this.
  */
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.,\s]+$/, '').replace(/\s+/g, ' ');
+import { cleanFelt } from '../lib/ask-text.js';
+const CLEAN = cleanFelt; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 const YOU = '(?:void|verse|a2m|a-to-mind)';
 const HEAD = '^(?:(?:hey\\s+)?' + YOU + '\\s*,?\\s*)?';
 const TAIL = '(?:\\s*,?\\s*' + YOU + ')?$';

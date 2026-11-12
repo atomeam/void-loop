@@ -4,7 +4,10 @@
  * then the 2023 heatwave killed nearly all of it, so planting builds reef fast and heat tolerance decides whether it
  * lasts. The heat-survival card: what happened, what helps, what is being tried now, and one thing a visitor can do.
  * Every line carries its source and date; nothing beyond what the sources say; no planet-saving promise.
- * "coral restoration florida keys", "reef accretion potential", "can coral survive heatwaves", "flonduran coral".
+ * The heat-test card: how scientists find heat-tough coral before planting (the CBASS rig), what it predicts well and
+ * where it is weaker; both preprints are labelled as preprints.
+ * "coral restoration florida keys", "reef accretion potential", "can coral survive heatwaves", "flonduran coral",
+ * "how do you test coral heat tolerance", "cbass coral".
  */
 import { liveLine } from '../lib/reefwatch.js';
 import { cleanLower } from '../lib/ask-text.js';
@@ -22,14 +25,22 @@ export const HEAT_SOURCES = [
   { date: '2025-07-15', name: 'University of Miami', href: null },
   { date: '2026-05-19', name: 'University of Miami', href: null },
 ];
+export const TEST_SOURCES = [
+  { date: '2023', name: 'Evensen et al., Limnology and Oceanography: Methods', href: 'https://doi.org/10.1002/lom3.10555' },
+  { date: '2024-10-08', name: 'Coral Reefs', href: 'https://doi.org/10.1007/s00338-024-02577-7' },
+  { date: '2025-11-20', name: 'Research Square', href: 'https://doi.org/10.21203/rs.3.rs-7863661/v1', preprint: true },
+  { date: '2026-05-16', name: 'bioRxiv', href: 'https://doi.org/10.64898/2026.05.14.725291', preprint: true },
+];
 
 const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ACCRETION_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's)\s+)?(?:coral\s+restoration(?:\s+(?:in\s+)?(?:the\s+)?(?:florida\s+keys|florida|keys))?|(?:the\s+)?florida\s+keys\s+(?:coral\s+)?(?:reef|reefs|coral)(?:\s+restoration)?|reef[\s-]accretion(?:\s+potential)?|does\s+(?:coral\s+)?(?:planting|restoration)\s+(?:coral\s+)?work|does\s+planting\s+coral\s+work)$/;
 const HEAT_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's|what are)\s+)?(?:can\s+(?:coral|corals|coral\s+reefs|reefs)\s+survive\s+(?:a\s+)?(?:heatwaves?|heat\s+waves?|marine\s+heatwaves?|the\s+next\s+heatwave)|flonduran\s+corals?|heat[\s-]tolerant\s+corals?|coral\s+heat\s+(?:survival|tolerance)|coral\s+bleaching\s+(?:in\s+)?(?:florida|the\s+florida\s+keys)|(?:coral\s+|reef\s+|florida\s+keys\s+)?heat[\s-]dose(?:\s+(?:ruler|forecast|card))?|(?:coral|reef)\s+heat\s+forecast|(?:the\s+)?(?:coral|reef)\s+(?:heat\s+)?dose\s+forecast)$/;
+const TEST_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's)\s+)?(?:how\s+(?:do\s+(?:you|scientists|they)|can\s+(?:you|scientists))\s+(?:test|measure|find)\s+(?:coral|corals)(?:'s)?\s+heat\s+(?:tolerance|resistance)|(?:find|finding|pick|picking)\s+heat[\s-](?:tough|tolerant|resistant)\s+corals?(?:\s+before\s+planting)?|cbass(?:\s+(?:coral|corals|test|rig|assay))?|coral\s+cbass|coral\s+heat[\s-](?:test|tests|testing|assay|ed50)|coral\s+heat\s+tolerance\s+(?:test|tests|testing|assay)|coral\s+ed50|test(?:ing)?\s+coral\s+(?:for\s+)?heat\s+tolerance)$/;
 
-/** Which card an ask wants: 'accretion', 'heat' or null. */
+/** Which card an ask wants: 'accretion', 'heat', 'test' or null. */
 export function coralOf(text) {
   const t = CLEAN(text);
+  if (TEST_RE.test(t)) return 'test';
   if (ACCRETION_RE.test(t)) return 'accretion';
   if (HEAT_RE.test(t)) return 'heat';
   return null;
@@ -74,7 +85,29 @@ export function heatCard() {
   };
 }
 
-function srcRef(s, esc) { return s.href ? '<a href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> (' + esc(s.date) + ')' : esc(s.name) + ' (' + esc(s.date) + ')'; }
+export function testCard() {
+  return {
+    title: 'How scientists find heat-tough coral before planting',
+    sub: 'The CBASS heat test · what it predicts, and its limit',
+    parts: [
+      ['How it works', [
+        ['A portable rig of four or eight small tanks heats coral fragments on an 18-hour schedule and finds the temperature at which each one loses half its photosynthetic health (its ED50).', 0],
+        ['Eight tanks cost under US$4,000, and the build files are open (barshislab/CBASS_Manual on GitHub).', 0],
+      ]],
+      ['What it gets right', [
+        ['Its scores predicted how corals did in an 8-day bleaching run (R = 0.74) and reliably pick out the toughest and weakest corals in a nursery.', 1],
+        ['On the Great Barrier Reef its scores predicted which corals survived the 2024 heatwave.', 2],
+      ]],
+      ['Where it is weaker', [
+        ['Across 2,068 colonies in Malaysia, the scores explained only part of which corals survived a severe heat event.', 3],
+      ]],
+    ],
+    takeaway: 'In severe summers, symbiont type and new parentage matter alongside the test score.',
+    sources: TEST_SOURCES,
+  };
+}
+
+function srcRef(s, esc) { const tag = s.preprint ? ', preprint' : ''; return s.href ? '<a href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> (' + esc(s.date + tag) + ')' : esc(s.name) + ' (' + esc(s.date + tag) + ')'; }
 const SRC_STYLE = 'color:#8a8a92;font-size:12px';
 
 export function accretionHtml(esc) {
@@ -96,7 +129,18 @@ export function heatHtml(esc, live = null, dose = null) {
     + c.parts.map(([head, lines]) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(head) + '</h3>'
       + lines.map(([line, i]) => '<p>' + (i < 0 ? '<b>' + esc(line) + '</b>' : esc(line) + ' <span style="' + SRC_STYLE + '">· ' + srcRef(c.sources[i], esc) + '</span>') + '</p>').join('')).join('')
     + '<p>One thing you can do: <a href="' + esc(c.action.href) + '" target="_blank" rel="noopener">' + esc(c.action.text) + '</a>.</p>'
+    + '<p style="' + SRC_STYLE + '">How restoration picks heat-tough corals first: <a href="#" data-ask="how do you test coral heat tolerance">the coral heat test</a>.</p>'
     + '<p style="' + SRC_STYLE + '">How the reef was built back first: <a href="#" data-ask="coral restoration florida keys">planting coral in the Florida Keys</a>.</p>'
+    + '<div class="src">Dated sources: ' + c.sources.map((s) => srcRef(s, esc)).join(' · ') + '</div>';
+}
+
+export function testHtml(esc) {
+  const c = testCard();
+  return '<h2>' + esc(c.title) + '</h2><div class="sub">' + esc(c.sub) + '</div>'
+    + c.parts.map(([head, lines]) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(head) + '</h3>'
+      + lines.map(([line, i]) => '<p>' + esc(line) + ' <span style="' + SRC_STYLE + '">· ' + srcRef(c.sources[i], esc) + '</span></p>').join('')).join('')
+    + '<p><b>' + esc(c.takeaway) + '</b></p>'
+    + '<p style="' + SRC_STYLE + '">Rig plans: <a href="https://github.com/barshislab/CBASS_Manual" target="_blank" rel="noopener">CBASS manual</a>. What happens to planted coral in a heatwave: <a href="#" data-ask="can coral survive heatwaves">can restored coral live through the next heatwave?</a></p>'
     + '<div class="src">Dated sources: ' + c.sources.map((s) => srcRef(s, esc)).join(' · ') + '</div>';
 }
 
@@ -104,7 +148,7 @@ async function run(text, api) {
   const which = coralOf(text);
   if (!which) return 'none';
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = which === 'heat' ? heatHtml(esc) : accretionHtml(esc); });
+  const el = showPage((p) => { p.innerHTML = which === 'heat' ? heatHtml(esc) : which === 'test' ? testHtml(esc) : accretionHtml(esc); });
   if (which === 'heat') { // the live level from the reef watch's served reading, and the 48-hour dose coming; the card stands without either
     const get = (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     Promise.all([get('/reefwatch.json'), get(MARINE_URL), get(WX_URL)]).then(([snap, marine, wx]) => {
@@ -117,11 +161,12 @@ async function run(text, api) {
 
 export default {
   name: 'coral',
-  examples: ['coral restoration florida keys', 'reef accretion potential', 'does planting coral work', 'can coral survive heatwaves', 'flonduran coral', 'heat tolerant coral', 'coral heat dose'],
+  examples: ['coral restoration florida keys', 'reef accretion potential', 'does planting coral work', 'can coral survive heatwaves', 'flonduran coral', 'heat tolerant coral', 'coral heat dose', 'how do you test coral heat tolerance', 'cbass coral', 'find heat tough coral'],
   nearMisses: ['what is coral', 'coral color', 'coral springs florida', 'define coral', 'great barrier reef', 'coral reef fish'],
   coralOf,
   accretionCard,
   heatCard,
+  testCard,
   match(lower, text) { return !!coralOf(text); },
   run,
 };

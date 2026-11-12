@@ -870,6 +870,431 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-11T17:45:00Z",
+   "run": 16,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.71,
+   "dup_basis": "12 of 17 items considered were rewordings or repeats: 10 of the 15 open ask groups reworded another (the runner ask 7 times, sports, podcasts and flightconnections.com once each), the emojigraph.org ask repeats the run 10/11/13 decision and flightconnections.com repeats its three filed feature jobs",
+   "median_days": 2,
+   "median_basis": "days from queued to built over the 7 items: 1 (sports exam asks, 2026-11-10), 1 (podcasts exam asks, 2026-11-10), 1 (flightconnections.com asks, 2026-11-10), 2 (emojigraph.org asks, 2026-11-09), 2 (connect-pack~reuse-pack, both added 2026-11-09), 2 (main red overlap check, client-pack skills of 2026-11-09), 24 (the runner ask, on the frontier since 2026-10-18); median 2",
+   "asks_open_start": 15,
+   "asks_open_end": 2,
+   "note": "Run 16 of the lists routine, kept small after the 11-10 and 11-11 runs landed nothing. Counts use tools/asks-link.mjs groups; 13 of the 15 drop when this run's three ledger lines fold into void.growth.json and the deploy's asks step writes the links from the new tools/asks-link.json rules. The 2 left are flightconnections.com, decided as duplicates of its filed feature jobs; they stay counted until the tower loop's build lands a ledger line. Frontier line 31 is built but domains/void.frontier.md is in open PR #2701, so the line is marked next run.",
+   "items": [
+    {
+     "what": "Verse's 8 runner ask groups (38 asks) and frontier line 31: perf3d and glyphs on their own runners in verify.yml (slow-browser-checks), out of browser-suite shard 4 and python-tests (tools/slow-checks-runner.test.mjs)",
+     "list": "V01D asks / frontier",
+     "status": "built"
+    },
+    {
+     "what": "Verse's 2 sports exam ask groups (13 asks): a score card on a day with no games shows the latest results, else the next games, else the table (skills/scores.js, tools/scores-skill.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "Verse's 2 podcasts exam ask groups (19 asks): the exam waits up to 5 s for audio to start instead of a fixed 1.2 s (tools/exam.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "Verse's emojigraph.org ask group (15 asks): already a lane page through lib/self-sites.js; an asks-link rule links every rewording",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/self-sites.js"
+    },
+    {
+     "what": "Verse's 2 flightconnections.com ask groups (6 asks): its three feature jobs are already filed for the tower loop",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/domains/conductor.json"
+    },
+    {
+     "what": "connect-pack + reuse-pack merged into skills/reuse-tools.js (order 9900, aliases kept, tools/reuse-tools-family.test.mjs, 0 routing differences over 4,395 asks)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "main's red overlap check: three client-pack pairs (heavy-lift-map~ownership-pack, ownership-map~ownership-pack, proposal~proposal-pack) named in tools/skill-overlap.json with why; their merges are in Up for grabs",
+     "list": "green foundation",
+     "status": "built"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-11T20:55:00Z",
+   "run": 17,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.68,
+   "dup_basis": "15 of 22 items considered were repeats: the 14 ask groups tools/asks-link.mjs still lists were all decided in run 16 and wait on the deploy's ledger fold, and frontier line 37 (client lift summary) was already shipped by #2661",
+   "median_days": 0,
+   "median_basis": "days from queued to built over the 8 items: 0 (main's red studio, rival and self checks, 2026-11-11), 0 (the ownership family, Up for grabs 2026-11-11), 0 (the proposals family, same), 0 (automation-status overlap, red on main since #2701 on 2026-11-11), 0 (the frontier wipe of 2026-11-11), 0 (podcast tracking prefixes, Up for grabs 2026-11-11), 1 (frontier line 37, queued 2026-11-10), 24 (frontier line 31, since 2026-10-18); median 0",
+   "asks_open_start": 14,
+   "asks_open_end": 14,
+   "note": "Run 17 of the lists routine, the same day as run 16. The 14 open ask groups are run 16's decisions (13 built or linked, the 2 flightconnections.com groups duplicates of its filed jobs); they drop to 2 when run 16's ledger lines fold on the next deploy, so none were re-decided. #2701 (merged 18:20 UTC) had replaced the frontier with a placeholder; it is restored here and guarded by tools/frontier-intact.test.mjs.",
+   "items": [
+    {
+     "what": "heavy-lift-map + ownership-map + ownership-pack merged into skills/ownership.js (order 9860, aliases kept, tools/ownership-family.test.mjs, 0 routing differences over 4,382 asks)",
+     "list": "convergence / Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "proposal-pack + proposal merged into skills/proposals.js (order 1025, aliases kept, tools/proposals-family.test.mjs)",
+     "list": "convergence / Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "main's red overlap check (automation-status~system-status, from #2701): automation-status is status-board's third member, the automations skill keeps a bare 'what automations are running' (tools/status-family.test.mjs)",
+     "list": "green foundation / convergence",
+     "status": "built"
+    },
+    {
+     "what": "podcast audio behind a tracking prefix: lib/podcasts.js untracked(), the podcasts page and the stage card retry once with the host's own file (tools/podcast-untracked.test.mjs)",
+     "list": "Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "domains/void.frontier.md restored after #2701 replaced its 601 lines with a placeholder; tools/frontier-intact.test.mjs guards it",
+     "list": "frontier / green foundation",
+     "status": "built"
+    },
+    {
+     "what": "frontier line 31, the two longest browser checks on their own runners, marked built (lists run 16, #2703)",
+     "list": "frontier",
+     "status": "built"
+    },
+    {
+     "what": "frontier line 37, client lift summary, marked shipped",
+     "list": "frontier",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/2661"
+    },
+    {
+     "what": "main's red checks: /studio/ gets its handoff tag and a real-pages spec (typed lines play, Stop stops), /rival/ and /self/ get the inline page-fade rule ahead of the visit beacon, HANDOFF-GAPS regenerated",
+     "list": "green foundation",
+     "status": "built"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T00:10:00Z",
+   "run": 18,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.29,
+   "dup_basis": "2 of 7 items were already done elsewhere: the ledger-wipe guard for the other ledgers (#2708) and main's four red checks from run 17 (ff0f3b7f7)",
+   "median_days": 0,
+   "median_basis": "days from queued to built over the 7 items: 0 (delivery-board's book and registry reds, red since 2026-11-11 22:11 UTC), 0 (the proposal card check, red since 2026-11-11 21:26 UTC), 0 (targets, under-the-hood and revert-target reds, 2026-11-11), 0 (client-status family, delivery-board arrived 2026-11-11), 0 (ledger-wipe guard, Up for grabs 2026-11-11), 0 (main's four reds, Up for grabs 2026-11-11), 1 (the podcasts exam and runner ask groups, asked 2026-11-10); median 0",
+   "asks_open_start": 3,
+   "asks_open_end": 2,
+   "note": "Run 18 of the lists routine, the same day as runs 16 and 17. Main's browser suite had been red since run 17's merge: run 17's proposals family hid proposal from long pasted text (fixed here by lib/ask-text.js longOk), and delivery-board (#2707) reached main with no family or book page. The asks the deploy links on its runner were never committed, so they looked open in every run; void.asks.json now carries them.",
+   "items": [
+    {
+     "what": "delivery-board (#2707) registered: family in tools/families.mjs, map line, regenerated first/guide/parity/deps cards; main's book, rule-registry, families, guide, parity and map-coverage checks green",
+     "list": "green foundation",
+     "status": "built"
+    },
+    {
+     "what": "long prose reaches a family's member: lib/ask-text.js longOk; the proposal card (proposals family) and translate (languages family) take pasted text again; main's proposal card browser check green (tools/long-ok-family.test.mjs)",
+     "list": "green foundation / convergence",
+     "status": "built"
+    },
+    {
+     "what": "batch: shadcn-ui target feature states valid (targets), speculation rules skip /our-motherfucking-version, /rotate-letters, /track-times (under-the-hood), revert-target wiring test accepts the bumped verify concurrency group",
+     "list": "green foundation",
+     "status": "built"
+    },
+    {
+     "what": "client-status-pack + delivery-board merged into skills/client-status.js (order 9890, aliases kept, tools/client-status-family.test.mjs, 0 of 6,416 asks moved); delivery-board's progress read live from /api/status and /incidents.json instead of a fixed line",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "Verse's podcasts exam ask group and six runner rewordings linked in void.asks.json (the asks step's links were only written on the deploy runner)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "a guard so a merge cannot empty the other ledgers",
+     "list": "Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/2708"
+    },
+    {
+     "what": "main's four remaining red checks from run 17 (dark-pages, well-known, seo-audit, no-ellipsis)",
+     "list": "Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/commit/ff0f3b7f7"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T02:40:00Z",
+   "run": 19,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.2,
+   "dup_basis": "1 of 5 items was already done elsewhere: the sports exam ask (run 16 built a score card that answers on a day with no games)",
+   "median_days": 0,
+   "median_basis": "days from queued to built: 0 (status-digest's missing family, red since #2713 at 2026-11-12 01:57 UTC), 0 (its fixed all-green line, same PR), 0 (README group, first asked 2026-11-11 22:09 UTC), 0 (definitions exam group, first asked 2026-11-11 22:09 UTC), 0 (sports exam ask, asked 2026-11-11 15:26 UTC); median 0",
+   "asks_open_start": 4,
+   "asks_open_end": 1,
+   "note": "Run 19 of the lists routine. Main's families and book checks were red after #2713 merged status-digest with no family and with its void-review check failing; that is now evidence on the Up for grabs item about skills reaching main without the generated cards.",
+   "items": [
+    {
+     "what": "status-digest joins the client status family (third member of skills/client-status.js; order file 10020 removed; families, book and guide checks green)",
+     "list": "green foundation / convergence",
+     "status": "built"
+    },
+    {
+     "what": "status-digest reads /api/status and /incidents.json through delivery-board's progressOf instead of a fixed all-green line",
+     "list": "green foundation",
+     "status": "built"
+    },
+    {
+     "what": "definitions exam: an etymology ask is checked against Wiktionary's Etymology section; the unknown-word case is glimbrastic, not Verse's own zorbleflux game (tools/exam-etymology.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "the repository's README.md and docs/README.md (tools/readme.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "sports exam data for MLB, Premier League and Serie A on days with no games",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/domains/handoff.md"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T05:45:00Z",
+   "run": 20,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.2,
+   "dup_basis": "1 of 5 items was already done elsewhere: four of the five secrets leftovers on the board (keeperOf before local skills, scrubOut in answer.js, per-page CSP hashes at deploy, csp-smoke in verify.yml); only the Vault product stays open",
+   "median_days": 5.4,
+   "median_basis": "days from queued to built: 0.25 (the cards item, on the board since lists run 18 at 2026-11-11 23:36 UTC), 1.4 (flightconnections.com asks, first asked 2026-11-10 20:05 UTC), 5.4 (lab~make in the overlap allowance since #2448, 2026-11-06 18:58 UTC), 25 (secrets leftovers, on the board since 2026-10-18), 28 (convergence step 2, planned 2026-10-15); median 5.4",
+   "asks_open_start": 1,
+   "asks_open_end": 0,
+   "note": "Run 20 of the lists routine. Main was green at the start (refresh check clean, the deploy green). The V01D asks list reaches zero once the ledger lines fold on main.",
+   "items": [
+    {
+     "what": "flightconnections.com's two journeys on /flights/routes/ scripted and passing against the live site (tools/tower-journeys.mjs, tools/flights-journeys.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "Verse review runs the generated cards' checks and the map coverage on a pull request that touches the skills, the families or the map; only a card the pull request itself leaves stale fails (tools/cards-delta.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "lab and make are one experiments family at 0127, aliases kept, 0 asks moved (tools/experiments-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 2, first half: asOf and slug are one copy each in lib/ask-text.js (tools/ask-text-step2.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "secrets leftovers: keeperOf, scrubOut, CSP hashes and csp-smoke",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/tools/csp-hashes.mjs"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T08:40:00Z",
+   "run": 21,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.125,
+   "dup_basis": "1 of 8 items was already on main: \"add 30 seconds\" adding to the running timer (timer.js addMs, from helper/timer-durations)",
+   "median_days": 3.5,
+   "median_basis": "days from queued to built: 0.1 (privacy check red since #2717, 2026-11-12 07:10 UTC), 2.7 x3 (timer halves, the add-seconds duplicate and GAPS batch 6, on the board since 2026-11-09 15:17 UTC), 4.2 (films~movie in the overlap allowance since 2026-11-08 02:57 UTC), 28 (tests for untested files, 2026-10-15 06:11 UTC), 28 (convergence step 2, planned 2026-10-15), 28.1 (wishlist re-rank, 2026-10-15 05:39 UTC); median 3.5",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 21 of the lists routine. No open pull requests at the start; main's privacy check was red from the reef data of #2717 and is fixed here. No list newly reached zero this run (V01D asks reached zero in run 20).",
+   "items": [
+    {
+     "what": "films and movie are one cinema family at 1100, aliases kept, 0 of 6,423 asks moved (skills/cinema.js, tools/cinema-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 2, second half: urlOf and the seven ask-tidier variants are one copy each in lib/ask-text.js (tools/ask-text-step2b.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "the daily wishlist re-rank: tools/wishlist-rank.mjs in upkeep.yml, only the # column moves, lib/reinvest.js finds a moved row (tools/wishlist-rank.test.mjs)",
+     "list": "handoff Up for grabs / wishlist",
+     "status": "built"
+    },
+    {
+     "what": "timer halves from closed PR #2414: \"2 and a half minutes\", \"a minute and a half\", \"an hour and a half\" set the whole length (tools/timer-halves.test.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "\"add 30 seconds\" adds to the running timer (the other timer half of #2414)",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/skills/timer.js"
+    },
+    {
+     "what": "GAPS batch 6 from closed PR #2396: typing speed test, text to speech, keyboard, mouse, dead pixel and battery checks (tools/gaps-batch6.test.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/checkers-rules.test.mjs; the untested allowance 70 to 58",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "main's privacy check: the phone pattern in lib/privacy.js skips the digits after a decimal point (the reef data of #2717 tripped it); the seeded generator's constants marked privacy:ok",
+     "list": "main red (found this run)",
+     "status": "built"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T11:40:00Z",
+   "run": 22,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.143,
+   "dup_basis": "1 of 7 items was already on main: wishlist #1 still listed \"cache answers at the edge\", live since 2026-10-29 (lib/answer-edge.js)",
+   "median_days": 14.3,
+   "median_basis": "days from queued to built: 0.1 (site-test #2721, 2026-11-12 08:50 UTC), 0.1 (main verify red on the phone tower check, 2026-11-12 09:55 UTC), 2.8 (GAPS batch 5 live marks, on the board since 2026-11-09 15:17 UTC), 14.3 (wishlist #1 edge-cache step, written 2026-10-29 04:30 UTC), 25.3 (stage-image~util overlap since \"qr code for this stage view\", 2026-10-18 03:43 UTC), 28.2 (tests for untested files, 2026-10-15 06:11 UTC), 28.2 (convergence step 3, planned 2026-10-15); median 14.3",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 22 of the lists routine. No open pull requests at the start; main verify was red on one phone tower check (fixed here) and the site tester had one new issue (#2721, fixed here). No list newly reached zero this run: V01D asks were already 0, and the site tester returns to 0 once #2721 closes (it was 0 in run 21).",
+   "items": [
+    {
+     "what": "\"bridge these inputs\" asked by name with nothing staged opens a Bridge card with how to stage inputs and a two-sample bridge, where the skill returned none (skills/bridge.js, tools/bridge-ask.test.mjs)",
+     "list": "site tester (#2721)",
+     "status": "built"
+    },
+    {
+     "what": "stage-image and util are one quick-tools family at 0455, aliases kept, 0 of 6,445 asks moved (skills/quick-tools.js, tools/quick-tools-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "convergence step 3, first half: lib/http.js json and jsonNoStore replace the one-line json of 25 endpoints (tools/http-helpers.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "GAPS batch 5 live marks: rows 53, 60, 78, 81 typed again at a-to-mind.com/?q= and marked verified live",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/bridge-analyzer.test.mjs (lib/bridge.js); the untested allowance 58 to 56",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "main verify red: the phone tower check waits up to 10 s for its card instead of reading it 1.2 s after the ask (tools/test_void.mjs)",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
+    {
+     "what": "wishlist #1 \"cache answers at the edge\": already live",
+     "list": "wishlist",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/answer-edge.js"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T14:50:00Z",
+   "run": 23,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.125,
+   "dup_basis": "1 of 8 items was already resolved: the board's \"three card checks failing on main\" (seen 2026-10-14) no longer fails; every browser-suite shard of Verse verify on main is green (run 43233110879)",
+   "median_days": 28.4,
+   "median_basis": "days from queued to built: 0.03 (main's red fast tests from full-handoff, 2026-11-12 14:02 UTC), 0.03 (delivery-pack~full-handoff overlap, same merge), 3.0 (factorial half of closed PR #2335, on the board since 2026-11-09 15:17 UTC), 28.3 (convergence step 3, planned 2026-10-15), 28.4 (wishlist #15, written 2026-10-15 05:04 UTC), 28.4 (frontier #29 step 5, asked 2026-10-15 05:09 UTC), 28.4 (tests for untested files, 2026-10-15 06:11 UTC), 28.4 (three card checks item, on the board since 2026-10-15 04:50 UTC); median 28.4",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 23 of the lists routine. One open pull request at the start (#2727, a growth-inbox note; no shared files). Main's fast tests were red from #2725 (full-handoff's own example failed its match, and it had no order file); fixed here by the handoffs family. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
+   "items": [
+    {
+     "what": "delivery-pack, client-handoff, system-handoff and full-handoff are one handoffs family at 1192, aliases kept, 0 of 6,476 asks moved besides full-handoff's own example (skills/handoffs.js, tools/handoffs-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "main's red fast tests: full-handoff's example \"show the complete handoff for weekly reports\" matches again, it leaves a handoff checklist to handoff-checklist, and it has its place in the routing order",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 3, json half finished: the other 23 json forms call lib/http.js through one-line wrappers with their old signatures; jsonOkCached added (tools/http-helpers.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/emoji-looks.test.mjs (lib/emoji-looks.js) and tools/event-countdown.test.mjs (skills/event-countdown.js); the untested allowance 56 to 54",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "video card listen mode (a 200 x 200 official player that stays visible and playing) and an accessibility pass: labelled region, polite live line, aria-pressed on CC and Listen, Enter or Space plays a result (tools/video-listen.test.mjs)",
+     "list": "frontier #29 step 5 / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "\"the value of 7 factorial\" goes to the calculator again: snippet leaves a numbered factorial with no code words to wordMath, which also reads \"the value of N factorial\"; 5 bench rows that want calc (tools/factorial-value.test.mjs)",
+     "list": "handoff Up for grabs (closed PR #2335)",
+     "status": "built"
+    },
+    {
+     "what": "Ethereum and Solana public address lookups on the markets card through PublicNode's keyless RPC, read-only, with explorer links (tools/wallet-lookup.test.mjs)",
+     "list": "wishlist #15",
+     "status": "built"
+    },
+    {
+     "what": "three card checks failing on main (seen 2026-10-14): already resolved",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/actions/runs/43233110879"
+    }
+   ]
   }
  ]
 }

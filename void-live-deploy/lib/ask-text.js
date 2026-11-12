@@ -6,6 +6,34 @@
  */
 export const clean = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 export const cleanLower = (s) => clean(s).toLowerCase();
+// convergence step 2 (lists run 20): two more helpers that were copied file to file.
+/** a reading's date (and time, when it has one) in the visitor's words: "Nov 12, 2026 · 3:00 PM"; no reading, today's date. Was in air, pollen and uv. */
+export function asOf(iso) {
+  if (!iso) return new Date().toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+  const d = new Date(/T/.test(iso) ? iso : iso + 'T00:00:00');
+  if (Number.isNaN(+d)) return String(iso);
+  return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
+    + (/T\d/.test(iso) ? ' · ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '');
+}
+/** a short id from words: lower-case, runs of anything else to one dash, 40 characters at most ("Build the Map!" -> "build-the-map"). Was in api/reflect and lib/will-guard. */
+export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+/** the first http(s) url in the text, without trailing punctuation (null when none). Was in skills/image.js and skills/link.js (lists run 21). Pure. */
+export function urlOf(text) {
+  const m = String(text || '').match(/https?:\/\/[^\s]+/i);
+  return m ? m[0].replace(/[),.!]+$/, '') : null;
+}
+// convergence step 2, second half (lists run 21): the seven variants of the tidier, as four named forms. Each matches its old copies
+// character for character (tools/ask-text-step2b.test.mjs keeps the old copies verbatim and compares them on generated strings).
+/** curly apostrophes to straight ones ("what’s" -> "what's"). Pure. */
+export const apostrophes = (s) => String(s || '').replace(/’/g, "'");
+/** cleanLower with straight apostrophes: was CLEAN in growth, showcase and different. Pure. */
+export const cleanSaid = (s) => apostrophes(cleanLower(s));
+/** drop trailing ? ! . only at the very end, then collapse spaces and trim ("time in paris? " keeps its "?"): was CLEAN in worldtime and calendar. Pure. */
+export const cleanEnd = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
+/** trim and collapse spaces, punctuation kept: was CLEAN in releasenotes. Pure. */
+export const squash = (s) => String(s || '').trim().replace(/\s+/g, ' ');
+/** lower-case, straight apostrophes, every trailing ? ! . , and space dropped, spaces collapsed: was CLEAN in feelings. Pure. */
+export const cleanFelt = (s) => apostrophes(String(s || '').trim().toLowerCase()).replace(/[?!.,\s]+$/, '').replace(/\s+/g, ' ');
 // long pasted prose (a status report, an email): keyword skills (air, weather, time, country...) must not fire on a word buried in it
 // and read the whole paste as a city. Two or more sentences and over 25 words, or over 220 characters, unless it opens with an
 // instruction for a skill that takes long text ("summarize this transcript: ...", "review this ...", "translate ..."). Pure.
@@ -18,6 +46,14 @@ export function isLongProse(s) {
 }
 // skills that are made for long text and still run on it
 export const LONG_OK = new Set(['telemetry-route', 'digest', 'translate', 'memory', 'proposal', 'notepad', 'sticky', 'list', 'automations', 'actions', 'link']);
+/** whether a routing entry may take long prose: by its own name, or, for a family (lib/skill-family.js), by the member that answers.
+ * A family named by none of LONG_OK (proposals, languages) once lost proposal's and translate's pasted requests (lists run 18). Pure. */
+export function longOk(sk, lower, text) {
+  if (!sk) return false;
+  if (LONG_OK.has(sk.name)) return true;
+  if (typeof sk.member !== 'function') return false;
+  try { const m = sk.member(lower, text); return !!m && LONG_OK.has(m.name); } catch (_) { return false; }
+}
 
 // A tool on the stage opens only when the message asks for it (owner, 2026-10-30: "when clock is mentioned in any message it opens
 // the clock only on verse"). The page's own parser matched the tool's word: "we worked around the clock", "my clock is broken",

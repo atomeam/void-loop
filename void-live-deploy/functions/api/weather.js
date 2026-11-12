@@ -13,7 +13,7 @@ import { placeOf, geocodeUrl, forecastUrl, locOf } from '../../lib/weather.js';
 
 export const RL_MAX = 10, TTL = 600;
 const PLACE = /^[\p{L}\p{M}\p{N}\s.,'’-]{1,60}$/u;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 /** the place a request names, or '' when it is not a plain place name. Pure. */
 export function placeIn(url) { const p = placeOf(new URL(url).searchParams.get('q') || ''); return PLACE.test(p) ? p : ''; }
 /** the forecast for a place, asked of Open-Meteo: { ok, loc, w } or { ok: false, kind: 'missing' | 'away' }. */

@@ -215,6 +215,30 @@ export default {
     ]
    }
   ],
+  "experiments": [
+   {
+    "name": "lab",
+    "examples": [
+     "verse lab",
+     "vers lab",
+     "the lab",
+     "open the lab",
+     "show me the lab",
+     "lab experiments"
+    ]
+   },
+   {
+    "name": "make",
+    "examples": [
+     "make a 3d torus",
+     "show me a gold 3d diamond",
+     "make a sphere",
+     "timing game",
+     "uap timeline",
+     "low poly cat"
+    ]
+   }
+  ],
   "time": [
    {
     "name": "timer",
@@ -504,6 +528,28 @@ export default {
     ]
    }
   ],
+  "quick-tools": [
+   {
+    "name": "stage-image",
+    "examples": [
+     "copy the stage as an image",
+     "copy this card as a png",
+     "qr code for this stage view",
+     "screenshot the stage"
+    ]
+   },
+   {
+    "name": "util",
+    "examples": [
+     "generate a password",
+     "16 character password",
+     "strong password",
+     "csv to json",
+     "yaml to json",
+     "json to yaml"
+    ]
+   }
+  ],
   "dates": [
    {
     "name": "calendar",
@@ -564,6 +610,38 @@ export default {
    {
     "name": "system-status",
     "examples": []
+   },
+   {
+    "name": "automation-status",
+    "examples": [
+     "automation status for invoice reminders",
+     "what automations are running for onboarding",
+     "status of the automations Verse owns for support",
+     "update on the automations for weekly reports"
+    ]
+   }
+  ],
+  "proposals": [
+   {
+    "name": "proposal-pack",
+    "examples": [
+     "proposal pack for client onboarding automation",
+     "make a client proposal for invoice reminders",
+     "generate a proposal for the support ticket router",
+     "proposal pack: weekly report automation",
+     "write a proposal for my CRM sync process",
+     "client proposal pack for the onboarding flow"
+    ]
+   },
+   {
+    "name": "proposal",
+    "examples": [
+     "turn this into a proposal",
+     "make a proposal from this",
+     "write a proposal for this request",
+     "draft a proposal",
+     "turn this email into a proposal: we need our order flow fixed by June"
+    ]
    }
   ],
   "shop": [
@@ -585,6 +663,71 @@ export default {
      "hire you",
      "fix my automation",
      "what does void cost"
+    ]
+   }
+  ],
+  "cinema": [
+   {
+    "name": "films",
+    "examples": [
+     "films",
+     "voids fillms",
+     "void's films",
+     "where do I watch the films",
+     "show me your videos",
+     "review films"
+    ]
+   },
+   {
+    "name": "movie",
+    "examples": [
+     "pick a movie to watch with me",
+     "movie night",
+     "movie card for Nosferatu (1922)",
+     "scary movies from the 90s",
+     "where can i stream the blair witch project",
+     "where to watch Nosferatu (1922)"
+    ]
+   }
+  ],
+  "handoffs": [
+   {
+    "name": "delivery-pack",
+    "examples": [
+     "package this idea: automate client onboarding",
+     "handoff pack for my SaaS idea",
+     "delivery package: invoice reminders that run themselves",
+     "make a delivery pack for the support ticket router"
+    ]
+   },
+   {
+    "name": "client-handoff",
+    "examples": [
+     "client handoff for the onboarding automation",
+     "make a client handoff for the invoice flow",
+     "business handoff for weekly status reports",
+     "package a client handoff for the support ticket router",
+     "generate a client handoff for the client portal"
+    ]
+   },
+   {
+    "name": "system-handoff",
+    "examples": [
+     "system handoff for the onboarding automation",
+     "make a system handoff for invoice reminders",
+     "handoff the system: support ticket router",
+     "handoff this system: client onboarding automation",
+     "package the status handoff for my CRM sync",
+     "hand off the automation for weekly reports"
+    ]
+   },
+   {
+    "name": "full-handoff",
+    "examples": [
+     "full handoff for the invoice automation",
+     "client handoff pack on onboarding flow",
+     "package the handoff for the support router",
+     "show the complete handoff for weekly reports"
     ]
    }
   ],
@@ -793,6 +936,85 @@ export default {
      "map this idea: slack alert when a support ticket sits over 24 hours",
      "system blueprint for weekly ops metrics without copy-paste",
      "system plan for: automate client onboarding"
+    ]
+   }
+  ],
+  "ownership": [
+   {
+    "name": "heavy-lift-map",
+    "examples": [
+     "map the heavy lifting for client onboarding",
+     "heavy lift map: invoice reminders that run themselves",
+     "what does Verse own for the support ticket router",
+     "own the heavy lifting for weekly status reports"
+    ]
+   },
+   {
+    "name": "ownership-map",
+    "examples": [
+     "ownership map for client onboarding",
+     "map ownership for invoice reminders",
+     "what does Verse own vs the client for support tickets",
+     "who owns what for weekly reports",
+     "ownership map: CRM sync"
+    ]
+   },
+   {
+    "name": "ownership-pack",
+    "examples": [
+     "ownership pack for Acme",
+     "what does Verse own for the onboarding flow",
+     "ownership map for weekly reports",
+     "ownership for the client portal"
+    ]
+   }
+  ],
+  "client-status": [
+   {
+    "name": "client-status-pack",
+    "examples": [
+     "status pack for onboarding",
+     "client status for the invoice bot",
+     "handoff status pack",
+     "make a client status pack for the support router"
+    ]
+   },
+   {
+    "name": "delivery-board",
+    "examples": [
+     "delivery board for the onboarding flow",
+     "client board on invoice reminders",
+     "show the delivery board for the support router",
+     "make a delivery board for weekly status reports"
+    ]
+   },
+   {
+    "name": "status-digest",
+    "examples": [
+     "status digest for the invoice automation",
+     "client digest: onboarding flow",
+     "weekly status for my systems",
+     "show a status digest of the support router"
+    ]
+   }
+  ],
+  "reuse-tools": [
+   {
+    "name": "reuse-pack",
+    "examples": [
+     "reuse pack for client onboarding",
+     "map to existing tools: invoice reminders",
+     "what can we reuse for support tickets",
+     "use existing tools for the email triage system"
+    ]
+   },
+   {
+    "name": "connect-pack",
+    "examples": [
+     "connect pack for client onboarding",
+     "what existing tools for invoice reminders",
+     "reuse tools for the support ticket router",
+     "prefer existing tools for weekly status reports"
     ]
    }
   ]

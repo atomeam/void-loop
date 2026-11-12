@@ -19,8 +19,9 @@ import { redact } from '../../lib/automation-fix.js';
 import { models, IMAGE_MODELS, VIDEO_MODELS } from '../../lib/models.js';
 import { BENCH, benchOf, judgePrompt, judgeOf, scoreOf, sizeOf, pictureOf, paintAskOf, planOf, boardOf, championOf, neuronsOf, videoAskOf, videoInputOf, videoUrlOf, steadyPrompt, steadyOf } from '../../lib/studio.js';
 import { cleanLine } from '../../lib/image-gen.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store' } });
+const json = (o, status = 200) => jsonNoStore(o, status);
 const why = (e) => redact(String((e && e.message) || e || 'error')).replace(/\s+/g, ' ').slice(0, 300);
 const timed = (p, ms, what) => { let t; return Promise.race([p, new Promise((_, no) => { t = setTimeout(() => no(new Error(what + ' took over ' + Math.round(ms / 1000) + ' s')), ms); })]).finally(() => clearTimeout(t)); };
 const off = (env) => /^(1|true|yes|on)$/i.test(String((env && env.STUDIO_OFF) || '').trim());

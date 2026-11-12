@@ -5580,7 +5580,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-11"
+   "at": "2026-11-12"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6836,7 +6836,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 13,
+   "bytes": 14,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6845,9 +6845,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 12,
-   "weight": 13,
-   "at": "2026-11-11"
+   "text": 13,
+   "weight": 14,
+   "at": "2026-11-12"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -10629,6 +10629,20 @@
    "weight": 5974968,
    "at": "2026-10-30"
   },
+  "scru.org": {
+   "bytes": 130,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 4,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 48,
+   "shell": "none",
+   "weight": 170,
+   "at": "2026-11-12"
+  },
   "searchexpertfind.com": {
    "refused": true,
    "at": "2026-10-29"
@@ -13856,6 +13870,20 @@
   "velvetcommunitymedia.nl": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "vermeire.com": {
+   "bytes": 457163,
+   "controls": 85,
+   "scripts": 21,
+   "styles": 16,
+   "nodes": 550,
+   "routes": 19780,
+   "htmlControls": 58,
+   "counted": "rendered",
+   "text": 6364,
+   "shell": "none",
+   "weight": 10394663,
+   "at": "2026-11-12"
   },
   "verticalcity.com": {
    "bytes": 1342330,

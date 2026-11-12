@@ -385,6 +385,36 @@
       "match": "ndscalc",
       "ledgerAt": "2026-11-09T14:39:31Z",
       "why": "ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09)"
+    },
+    {
+      "match": "(perf3d|glyphs|longest browser checks?).{0,60}runners?|runners?.{0,60}(perf3d|glyphs|longest browser)",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11)"
+    },
+    {
+      "match": "sports exam",
+      "ledgerAt": "2026-11-11T17:36:49Z",
+      "why": "the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11)"
+    },
+    {
+      "match": "podcasts? exam",
+      "ledgerAt": "2026-11-11T17:36:50Z",
+      "why": "the podcasts exam failed audio on a different show each run (TED Radio Hour, Planet Money, Hidden Brain): the exam read the player 1.2 s after play(), and a host that redirects slowly had not started; it now waits up to 5 s for playback, speed stays the fast check (tools/exam.mjs, lists run 16, 2026-11-11)"
+    },
+    {
+      "match": "emojigraph",
+      "ledgerAt": "2026-11-03T23:42:07Z",
+      "why": "emojigraph.org is already a lane page (lib/self-sites.js row, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15 (decided in lists runs 10, 11, 13 and 16)"
+    },
+    {
+      "match": "\\breadme\\b",
+      "ledgerAt": "2026-11-12T02:32:28Z",
+      "why": "built: the repository has a front page again (README.md at the root and docs/README.md, which was empty), every path it names checked by tools/readme.test.mjs (lists run 19, 2026-11-11)"
+    },
+    {
+      "match": "definitions?\\s+exam.{0,80}(etymolog|unknown)|(etymolog|unknown).{0,80}definitions?\\s+exam",
+      "ledgerAt": "2026-11-12T02:32:28Z",
+      "why": "built: the definitions exam checks an etymology ask against Wiktionary's Etymology section, not the definition, and its unknown-word case is a word no dictionary has instead of Verse's own zorbleflux game (tools/exam-etymology.test.mjs, lists run 19, 2026-11-11)"
     }
   ],
   "extra": [

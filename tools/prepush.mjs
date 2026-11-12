@@ -44,6 +44,18 @@ export function ledgerShrinks(path, before, after) {
   return '';
 }
 
+/** why a ledger looks wiped by a whole-file write, judging its text alone ("" when it looks whole). ledgerShrinks needs the
+ *  base; this needs nothing, so a base-free check (tools/guard-source.mjs, run by CI on every PR and every head of main) can use
+ *  it. On 2026-11-11 a "mark shipped" write replaced the frontier's 601 lines with the word PLACEHOLDER; the frontier test caught
+ *  it, but that test runs only from tools/checks.mjs, which no CI job runs, so it reached main (lists run 17 restored it). Pure. */
+export function ledgerWiped(path, text) {
+  if (!LEDGERS.includes(path) || typeof text !== 'string') return '';
+  const s = text.trim();
+  if (s.length < 40) return `${path}: ${s.length} bytes: a ledger was wiped by a whole-file write (a placeholder, not its lines)`;
+  if (/^(?:PLACEHOLDER|SEE_DISK|TODO_REPLACE)/.test(s)) return `${path}: starts with a placeholder: a ledger was wiped by a whole-file write`;
+  return '';
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const git = (...a) => execFileSync('git', a, { cwd: process.cwd(), encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 256e6, timeout: 120e3 });
   if (process.argv.includes('--staged')) {

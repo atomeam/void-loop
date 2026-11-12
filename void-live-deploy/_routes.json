@@ -1,1 +1,1 @@
-{"version": 1, "include": ["/api/*", "/tools.json", "/@*", "/c/*", "/films/rss", "/fanfic/rss", "/is-it/*", "/boards/t/*", "/gen/*", "/team/join/*", "/team/mcp", "/emoji", "/emoji/*", "/ip", "/ip/*"], "exclude": []}
+{"version": 1, "include": ["/api/*", "/tools.json", "/@*", "/c/*", "/films/rss", "/fanfic/rss", "/is-it/*", "/boards/t/*", "/gen/*", "/team/join/*", "/team/mcp", "/emoji", "/emoji/*", "/ip", "/ip/*", "/our-motherfucking-version", "/our-motherfucking-version/*", "/rotate-letters", "/rotate-letters/*", "/track-times", "/track-times/*"], "exclude": []}

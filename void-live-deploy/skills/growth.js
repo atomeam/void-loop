@@ -16,13 +16,14 @@ import { confidenceOf } from '../lib/skill-confidence.js';
 import { sparkSvg } from '../lib/spark.js';
 import { autopsy, incidentCases } from '../lib/autopsy.js'; // test cases from recent red runs on main (the Site Test card) // weathered: untested for WEATHER_DAYS (the Site Test heat map)
 import { timeline, weekSummary, publicWhat, plainly } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
+import { cleanSaid } from '../lib/ask-text.js';
 
 export const LEDGER_URL = '/void.growth.json';
 export const KIND_LABEL = { grow: 'new', build: 'better', fix: 'fixed', retire: 'retired', idea: 'idea', finding: 'finding' };
 export const KIND_COLOR = { grow: '#3fbf6a', build: '#5b8def', fix: '#e0a24a', retire: '#8a8a92', idea: '#b07ce8', finding: '#4ac0c8' };
 export const PAGE_SIZE = 40;
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/[’]/g, "'").replace(/\s+/g, ' ');
+const CLEAN = cleanSaid; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 const ASK_RE = /^(?:(?:show|open|summon|give)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:(?:verse|void)(?:'s)?\s+)?growth(?:\s+(?:ledger|log|panel|history))?$|^(?:how\s+(?:have\s+you|has\s+(?:verse|void))\s+grown|how\s+did\s+(?:you|(?:verse|void))\s+grow|what\s+(?:have\s+you|has\s+(?:verse|void))\s+learned\s+lately|what'?s\s+new\s+(?:in|with)\s+(?:verse|void))$/;
 // "what just shipped?" is about Verse here, not the Just Cause video games (2026-10-19: it came back as a Wikipedia sentence about copies shipped);
 // "what got built" too (2026-10-30: on a-to-mind.com it gave "Not found ... Did you mean Built to Spill?")

@@ -9,7 +9,7 @@ export const PATTERNS = [
   ['ipv4', /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g, '[ip]'],
   ['ipv6', /\b(?:[0-9a-f]{1,4}:){4,7}[0-9a-f]{1,4}\b/gi, '[ip]'],
   ['card', /\b(?:\d[ -]?){13,16}\b/g, '[number]'],
-  ['phone', /(?:\+\d{1,3}[\s.-]?)?\(?\b\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g, '[phone]'],
+  ['phone', /(?<!\d\.)(?:\+\d{1,3}[\s.-]?)?\(?\b\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g, '[phone]'], // not the digits after a decimal point (25.0137503375, a reef's latitude)
   ['token', /\b(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{8,}\b|\bgh[pousr]_[A-Za-z0-9]{20,}\b|\bxox[abprs]-[A-Za-z0-9-]{10,}\b|\bAKIA[A-Z0-9]{16}\b/g, '[redacted]'],
 ];
 

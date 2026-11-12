@@ -227,3 +227,24 @@ Picked planet restoration (least recently advanced, 2026-10-28 14:15). Refreshed
 Picked living figures (least recently advanced, 2026-11-04 14:15; its next question was the closest to a yes-or-no answer). Found that a 1 GB AX630C board ships (Sipeed MaixCAM2, 512 MiB Linux and 512 MiB model pool by default) and that Sipeed rates SenseVoice, Whisper base, MeloTTS and SmolVLM-256M at 1 GB while its stock Qwen2.5-0.5B build is rated 4 GB. Derived that the 0.5B mind's vocabulary table is its largest piece (about 272 MB at 16-bit) and recorded the two ax-llm levers that slim it (embedding on flash, two resident layers), plus SmolLM2-360M as the smaller-vocabulary option. Next is one measured stack-at-once peak on a 1 GB board. Added a growth-board row (figure mind memory card). The only earlier forethinkers branch was already merged (#2557); no open think-tank PRs to fold in.
 
 [think-tank] Summon the figure mind memory card: what fits in 1 GB, piece by piece, each with its dated source.
+
+## 2026-11-11 14:16 ET
+
+- Track: printing working machines, open question 8 (least recently advanced).
+- Folded: nothing pending; `forethinkers/cycle-2026-11-09-0211` (#2557) and `forethinkers/cycle-2026-11-09-0812` (#2570) were merged and already deleted.
+- Result: slip clutch sized from a shipping servo clutch, printed coupling tests and printed fatigue data; new open question 9.
+- Board: clutch sizer card row.
+
+## 2026-11-11 20:14 ET
+
+- Track: life extension, open question 6 (least recently advanced).
+- Folded: nothing pending; #2557, #2570 and #2704 were merged and their branches already deleted.
+- Result: COSMOS replicates the baseline-acceleration × treatment pattern on PCGrimAge in a 958-person RCT; TranslAGE gives cross-study support and public data; new open question 8.
+- Board: clock response card row.
+
+## 2026-11-12 02:10 ET
+
+- Track: planet restoration, open questions 4 and 7 (least recently advanced).
+- Folded: nothing pending; no open forethinkers branches or think-tank PRs.
+- Result: refit the Science 2025 Florida Acropora dose-response curves from open data (matches published ED50/ED95); Florida-only baselines at each 2026 station dose; binomial readout for the Dry Tortugas split; open question 7 answered; new open question 8.
+- Board: reef survival odds card row.

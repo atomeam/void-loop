@@ -73,6 +73,7 @@ jobs:
         with:
           bench: skip
           part: fast
+          glyphs: skip # on its own runner below (slow-browser-checks)
 
       - name: Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)
         if: failure() && steps.fast.outcome == 'failure'
@@ -80,6 +81,54 @@ jobs:
           echo "::error title=python-tests failed::a fast test failed on ${{ github.sha }} (see this run's log); the browser suite ran as its own job, browser-suite, and its result stands on its own. Fix it forward: nothing is reverted by a fast test alone."
           echo "### python-tests failed on ${{ github.sha }}: a fast test is red (see the log); browser-suite reports separately" >> "$GITHUB_STEP_SUMMARY"
           exit 1
+
+  # The two longest browser checks on their own runners (asked by Verse, frontier: "give the two longest browser checks their own runner so a
+  # ship waits less"; lists run 16, 2026-11-11): perf3d ran on browser-suite shard 4 after its suite (1,135 s of the 1,680 s budget) and
+  # glyphs inside python-tests. Each now starts at once beside the suite and the fast tests, reports on its own, and holds no other job up.
+  # The fast checks still skip both unless their files changed (tools/checks.mjs ONLY_WHEN). Kept by tools/slow-checks-runner.test.mjs.
+  slow-browser-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [perf3d, glyphs]
+    concurrency:
+      group: void-verify-slow-${{ matrix.check }}-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - name: An automatic revert or an incident record is not tested again
+        id: skip
+        run: |
+          if git log -1 --format=%B | grep -q '^Verse-auto-revert:'; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+          if ! git diff --name-only HEAD~1 HEAD | grep -qv '^void-live-deploy/incidents'; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-node@v4
+        if: steps.skip.outputs.skip != 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - name: npm ci and Chromium
+        if: steps.skip.outputs.skip != 'true'
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Sync the page copies and the skills index (as the suite does)
+        if: steps.skip.outputs.skip != 'true'
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+          node tools/skills-index.mjs --write
+      - name: 3D frame times (perf3d)
+        if: steps.skip.outputs.skip != 'true' && matrix.check == 'perf3d'
+        run: node tools/perf3d.test.mjs
+      - name: The cross-sense board draft (glyphs)
+        if: steps.skip.outputs.skip != 'true' && matrix.check == 'glyphs'
+        run: node tools/test_glyphs.mjs
 
   # Three shards since 2026-10-16: the whole suite ran to 1,652 s of its 1,680 s budget on one runner, so every new section risked
   # going red on the clock alone. Four since 2026-10-29: the suite had doubled (143 / 127 / 142 sections), shard 2 took 1,390 s,
@@ -94,14 +143,14 @@ jobs:
   # because main was. A branch gets the fast tests; `full: true` asks for the suite on a branch by hand.
   browser-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     if: github.ref == 'refs/heads/main' || inputs.full
     strategy:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
     concurrency:
-      group: void-verify-${{ matrix.shard }}-${{ github.ref }} # one group per shard on this branch: a newer push replaces the waiting shard
+      group: void-verify-v2-${{ matrix.shard }}-${{ github.ref }} # bumped 2026-11-11 to escape stuck zombie run 43093884842; fresh queue
       cancel-in-progress: false
     permissions:
       contents: write # push the revert
@@ -142,12 +191,7 @@ jobs:
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
 
-      # the two slow browser checks the fast checks skip unless their files changed (tools/checks.mjs ONLY_WHEN): every merge to main runs them here.
-      # perf3d runs on shard 4, not 2: shard 2 holds the longest section and its suite took 1,596 s, so perf3d after it ran into the
-      # 30-minute job limit and was cancelled (run 41038688000); shard 4's suite took 1,135 s, and the budget stays.
-      - name: 3D frame times (perf3d)
-        if: steps.skip.outputs.skip != 'true' && matrix.shard == 4
-        run: node tools/perf3d.test.mjs
+      # perf3d, which ran here on shard 4 after its suite, has its own runner since lists run 16 (slow-browser-checks below)
       # /converter/ on a 390 px phone and with the network cut (owner, 2026-10-30: take onlineconverter.com to 12 of 12): its weight class,
       # nothing blocking the first paint, then a PNG and a WAV converted offline. The proof is kept as an artifact of every run on main.
       - name: Converter on a phone and offline

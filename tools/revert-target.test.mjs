@@ -177,7 +177,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   // a group per branch (#2190, 2026-11-04): a group per head queued a suite per commit; now the run that has a runner always finishes
   // (never cancelled) and a newer push of the branch replaces only the waiting run, which does the same checks on a newer head
   assert.match(verify, /group: void-verify-fast-\$\{\{ github\.ref \}\}[^\n]*\n\s+cancel-in-progress: false/, 'the fast tests: one group per branch, a started run never cancelled');
-  assert.match(verify, /group: void-verify-\$\{\{ matrix\.shard \}\}-\$\{\{ github\.ref \}\}[^\n]*\n\s+cancel-in-progress: false/, 'every shard of the suite: one group per shard and branch, a started run never cancelled (shards since 2026-10-16, per branch since #2190)');
+  assert.match(verify, /group: void-verify-(?:v\d+-)?\$\{\{ matrix\.shard \}\}-\$\{\{ github\.ref \}\}[^\n]*\n\s+cancel-in-progress: false/, 'every shard of the suite: one group per shard and branch, a started run never cancelled (shards since 2026-10-16, per branch since #2190)');
   assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3, 4, 5, 6, 7, 8\]/, 'the suite runs as eight shards (five until 2026-11-05, when a shard still passed 1680 s)'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/8/, 'each job gets its shard of eight');
   assert.match(verify, /browser-suite \(\\\(\[1-8\]\\\)\)/, 'the incident job reads every one of the eight shards');
   assert.ok(isSuiteJob('browser-suite') && isSuiteJob('browser-suite (2)') && isSuiteJob('verify-main') && !isSuiteJob('python-tests') && !isSuiteJob('browser-suite-x'), 'a shard job counts as the suite job');

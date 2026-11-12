@@ -2,11 +2,12 @@
 // WHAT A STRANGER COULD MAKE THIS DO: nothing but read. Open GET, no input; one fixed D1 read of five fixed guard ids, answered as yes/no and
 // times (never a record's text), cached at the edge for 60 s so a burst of visitors costs one read a minute.
 import { GUARDS, summarize } from '../../lib/status.js';
+import { jsonOkCached } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const TTL = 60;
 // one fixed query: a ? per fixed guard id (GUARDS), never a value pasted in
 const SQL = "SELECT ref, state, result, started FROM void_actions WHERE kind = 'watch.check' AND owner = 'owner' AND ref IN (" + GUARDS.map(() => '?').join(',') + ') AND started >= ? ORDER BY started DESC LIMIT 1000'; // void-review: ok (placeholders only)
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': status === 200 ? 'public, max-age=60' : 'no-store' } });
+const json = (o, status = 200) => jsonOkCached(o, status, 60);
 
 export async function readStatus(env, now = Date.now()) {
   if (!env || !env.DB) return { ...summarize([], now), note: 'no database bound' };

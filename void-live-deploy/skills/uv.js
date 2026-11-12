@@ -4,6 +4,7 @@
  * "UV index in Miami", "how strong is the sun in LA", "should I wear sunscreen in Phoenix", "what's the UV in Tokyo".
  * Shows current UV (WHO scale), today's max, clear guidance, and a dated Open-Meteo source.
  */
+import { asOf } from '../lib/ask-text.js'; // the reading's date and time, one copy for air, pollen and uv (convergence step 2)
 const UV_BANDS = [
   { max: 2, label: 'Low', tip: 'Everyday outdoor plans are fine for most people. Shade and sunscreen still help if you burn easily.' },
   { max: 5, label: 'Moderate', tip: 'Seek shade around midday. Sunscreen SPF 30+, a hat, and sunglasses if you will be out for a while.' },
@@ -25,13 +26,6 @@ function bandOf(uv) {
   return UV_BANDS.find((b) => n <= b.max) || UV_BANDS[UV_BANDS.length - 1];
 }
 
-function asOf(iso) {
-  if (!iso) return new Date().toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
-  const d = new Date(/T/.test(iso) ? iso : iso + 'T00:00:00');
-  if (Number.isNaN(+d)) return String(iso);
-  return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
-    + (/T\d/.test(iso) ? ' · ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '');
-}
 
 function pickHourly(hourly) {
   if (!hourly || !Array.isArray(hourly.time) || !Array.isArray(hourly.uv_index)) return null;

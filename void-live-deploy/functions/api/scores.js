@@ -17,7 +17,7 @@ import { leagueOf, dateOk, idOk, ymd, shiftDay, readScoreboard, readStandings, r
 
 export const RL_MAX = 30, KEEP = 3 * 86400;
 export const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/', ESPN_V2 = 'https://site.api.espn.com/apis/v2/sports/', OPENLIGA = 'https://api.openligadb.de/getmatchdata/bl1/', JOLPICA = 'https://api.jolpi.ca/ergast/f1/';
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 /** what a request asks: { league, view, day, id } or null when it is not a plain, allowed question. Pure. */
 export function askIn(url, now = Date.now()) {
   const p = new URL(url).searchParams, league = leagueOf(String(p.get('league') || '')), view = String(p.get('view') || 'scores');

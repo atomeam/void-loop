@@ -85,7 +85,7 @@ test('--staged refuses a commit that carries a conflict marker (the unfinished-m
   assert.equal(spawnSync(process.execPath, [tool, '--staged'], { cwd: mkdtempSync(join(tmpdir(), 'notrepo-')), encoding: 'utf8' }).status, 1, 'outside a repository it refuses instead of passing silently');
 });
 
-import { ledgerShrinks, LEDGERS } from './prepush.mjs';
+import { ledgerShrinks, ledgerWiped, LEDGERS } from './prepush.mjs';
 test('the ledger guard: a ledger cut to a placeholder or missing a section is refused; growth, small files and other paths pass', () => {
   const md = '# Frontier\n\n## Open\n' + '- item\n'.repeat(100) + '\n## Done\n' + '- done\n'.repeat(50);
   assert.match(ledgerShrinks('domains/void.frontier.md', md, 'SEE_DISK'), /shrank/);
@@ -98,4 +98,12 @@ test('the ledger guard: a ledger cut to a placeholder or missing a section is re
   assert.equal(ledgerShrinks('domains/handoff.md', 'short', ''), '', 'too small to judge');
   assert.equal(ledgerShrinks('domains/handoff.md', md, null), '', 'a deleted file is not judged here');
   assert.ok(LEDGERS.includes('domains/void.frontier.md') && LEDGERS.includes('void-live-deploy/void.growth.json'));
+});
+test('ledgerWiped needs no base: it catches a ledger left as a placeholder or a stub, the wipe that reached main (2026-11-11)', () => {
+  const md = '# The frontier: what keeps Verse moving\n\n## Open\n' + '- item\n'.repeat(50);
+  assert.match(ledgerWiped('domains/void.frontier.md', 'PLACEHOLDER'), /11 bytes|wiped/);
+  assert.match(ledgerWiped('domains/void.frontier.md', 'PLACEHOLDER: ' + 'x'.repeat(60)), /starts with a placeholder/);
+  assert.match(ledgerWiped('domains/void.frontier.md', 'SEE_DISK'), /wiped/);
+  assert.equal(ledgerWiped('domains/void.frontier.md', md), '', 'a whole ledger is fine');
+  assert.equal(ledgerWiped('tools/other.md', 'PLACEHOLDER'), '', 'not a ledger');
 });

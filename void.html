@@ -466,6 +466,14 @@
     #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; overflow-wrap: anywhere; max-height: 4.6em; overflow-y: auto; }
     #hints div.sel, #hints div:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
     #hints b { font-weight: inherit; color: var(--fg); }
+    #stage-chips { display: none; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; min-height: 0; }
+    #stage-chips.on { display: flex; }
+    .stage-chip, .stage-chip-btn { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 8px; border-radius: 999px; font: 12px/1.2 inherit; color: rgba(236,241,255,.88); background: rgba(18,20,28,.62); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .stage-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; } /* ellipsis-ok: short label on a chip */
+    .stage-chip button { border: 0; background: transparent; color: inherit; padding: 0 2px; font: inherit; opacity: .75; cursor: pointer; }
+    .stage-chip button:hover { opacity: 1; }
+    .stage-chip-btn { cursor: pointer; opacity: .9; }
+    .stage-chip-btn:hover { opacity: 1; border-color: rgba(170,200,255,.28); }
 #whisper {
       max-width: 720px; margin: 6px auto 0;
       color: var(--muted); font-size: 12px; min-height: 16px;
@@ -1197,6 +1205,7 @@
   <a id="void-anchor" href="/store/" aria-label="support Verse: the store" title="support Verse" data-depth="0" data-goal="12" data-state="under"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><defs><clipPath id="void-anchor-clip"><rect x="0" y="21" width="24" height="0"/></clipPath></defs><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/><path class="void-anchor-fill" clip-path="url(#void-anchor-clip)" d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
   <div id="dock" role="search" aria-label="Ask Verse">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
+    <div id="stage-chips" class="stage-chips" aria-label="Workspace inputs" hidden></div>
     <div id="row">
       <input id="input" aria-label="Ask Verse" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Ask anything" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
@@ -1903,7 +1912,7 @@ Object.values(things).forEach((th) => {
       ready: () => skillsReady, // every skill is in, so every saved card has its kind (skills/quiz.js settled: an ask right after a reload)
       closePage: () => closePage(),
       // the extension bridge the tab card draws with (skills/tab.js): the state the panel's messages fill, and the page's own senders
-      ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY },
+      ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY, addInput: addStageInput, stageCount: () => stageInputs.length },
       alterThing: (th, kind, lower) => applyTargetAlters(th, kind, lower), // the shared targeting: a kind's own words, then colour, then position
       emit: (th, value) => emit(th, value), // a skill's own thing hands its output down its arrows (frontier #24) // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
       ask: (t, attach) => { quietAsk = !!(attach && attach.quiet); confirmAttach = attach && typeof attach === 'object' && !attach.quiet ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
@@ -3093,6 +3102,42 @@ say('nothing selected to remove');
     // reading them means no referent was found; one with none read means nothing was looked up (owner, 2026-10-16: tell them apart)
     let lookedIn = [];
     const lookedUp = () => (lookedIn.length ? 'none:' + lookedIn.join(',') : 'unreached');
+    function wantsTimeMachineAsk(lower) {
+      const t = String(lower || '').replace(/[?.!\s]+$/g, '').replace(/\s+/g, ' ').trim();
+      return /\btime\s*-?\s*machines?\b/.test(t);
+    }
+    async function openWorkspaceTimeMachine() {
+      try { if (globalThis.__tmReady) await globalThis.__tmReady; } catch (_) {}
+      const bar = document.getElementById('tm-bar');
+      if (!bar) { say('time machine is loading'); return false; }
+      bar.hidden = false;
+      bar.style.outline = '2px solid rgba(120,190,255,.9)';
+      bar.style.outlineOffset = '2px';
+      try { bar.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) {}
+      const range = bar.querySelector('#tm-range');
+      if (range) try { range.focus({ preventScroll: true }); } catch (_) { try { range.focus(); } catch (__) {} }
+      setTimeout(() => { if (bar.isConnected) { bar.style.outline = ''; bar.style.outlineOffset = ''; } }, 1800);
+      say('workspace time machine');
+      return true;
+    }
+    function showTimeMachineDisambiguation(query) {
+      const q = String(query || 'time machine');
+      showPage((p) => {
+        p.innerHTML = '<h2>Time machine</h2>'
+          + '<p>Do you mean the time-travel concept, or Verse\'s workspace Time Machine that lets you scrub and replay this stage?</p>'
+          + '<p style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px">'
+          + '<button type="button" class="tr-copy" data-tm-choice="concept">Concept card (Wikipedia)</button>'
+          + '<button type="button" class="tr-copy" data-tm-choice="workspace">Workspace Time Machine (replay)</button>'
+          + '</p>'
+          + '<p style="color:#8a8a8a;font-size:13px;margin-top:8px">The concept card explains time travel. The workspace Time Machine records stage changes so you can move through the timeline, branch, and export a replay.</p>';
+        const concept = p.querySelector('[data-tm-choice="concept"]');
+        const workspace = p.querySelector('[data-tm-choice="workspace"]');
+        if (concept) concept.addEventListener('click', () => { showArticle('tell me about time machine'); });
+        if (workspace) workspace.addEventListener('click', () => { openWorkspaceTimeMachine(); });
+      });
+      say('which time machine?');
+      loopLog({ domain: 'void.page', ask: q, score: 'pass', note: 'time machine disambiguation' });
+    }
     async function showArticle(query, fromAnswer = false) {
       const topic = topicFrom(query);
       lookedIn = [];
@@ -3534,7 +3579,7 @@ say('nothing selected to remove');
       if (m) { const n = +m[1]; let p = n > 1; for (let i = 2; p && i * i <= n; i++) if (n % i === 0) p = i; return { value: p === true ? 'Yes' : 'No', note: p === true ? n + ' is prime.' : n + ' is not prime' + (typeof p === 'number' ? ' (' + p + ' × ' + n / p + ')' : '') + '.' }; }
       m = t.match(/^how\s+many\s+(second|minute|hour|day|week)s?\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+(minute|hour|day|week|year)$/);
       if (m && TIME_S[m[2]] > TIME_S[m[1]]) { const v = TIME_S[m[2]] / TIME_S[m[1]]; return { value: v.toLocaleString(), note: 'one ' + m[2] + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' + (m[2] === 'year' ? ' (365.25 days)' : '') + '.' }; }
-      m = t.match(/^(\d{1,3})\s*(?:!|factorial)$|^(?:the\s+)?factorial\s+of\s+(\d{1,3})$/);
+      m = t.match(/^(?:(?:the\s+)?value\s+of\s+)?(\d{1,3})\s*(?:!|factorial)$|^(?:(?:the\s+)?value\s+of\s+)?(?:the\s+)?factorial\s+of\s+(\d{1,3})$/); // "the value of 7 factorial" too
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
       // more units: area, stone, speed, data, mpg <-> L/100 km ("1 acre in square feet", "70 kg in stone", "60 mph in km/h", "half a pound in grams")
       m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-zà-ÿ][a-zà-ÿ0-9/ .²]*?)\s+(?:in|to|into|en)\s+([a-zà-ÿ][a-zà-ÿ0-9/ .²]*?)$/); // 'en': French asks ('5 milles en kilomètres')
@@ -5033,7 +5078,7 @@ say('nothing selected to remove');
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
       let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
-      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.longOk(sk, lower0, text));
       if (skillsLoaded || !skillSlots) return all ? learnedSkills.filter(fits) : (learnedSkills.find(fits) || null); // all: every skill that can answer, for Verse Brain to choose from
       if (all) return [];
       // a known ask (skills/first.json): load the skill that takes it now, and take it as soon as it is in, unless a skill above it
@@ -5864,6 +5909,86 @@ say('nothing selected to remove');
       loopLog({ domain: 'void.store', ask: text, score: 'pass', note: 'product line ' + p.slug });
     }
 
+    // --- Live Workspace Fusion Step 1: explicit multi-input staging (bounded, no ambient capture). ---
+    const STAGE_INPUT_MAX = 3;
+    const stageChipsEl = document.getElementById('stage-chips');
+    let stageInputs = [];
+    function stageChipTitle(it) {
+      const t = String(it.title || '').trim();
+      if (t) return t.slice(0, 42);
+      if (it.kind === 'url') { try { return new URL(it.sourceUrl || it.content || '').hostname.slice(0, 42) || 'URL'; } catch (_) { return 'URL'; } }
+      const c = String(it.content || '').replace(/\s+/g, ' ').trim();
+      return c ? (c.slice(0, 36) + (c.length > 36 ? '…' : '')) : 'Snippet';
+    }
+    function classifyStagedText(raw) {
+      const t = String(raw || '').trim();
+      const lines = t.split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
+      const urls = lines.filter((x) => /^https?:\/\/\S+$/i.test(x));
+      if (urls.length && urls.length === lines.length) return { kind: 'url', content: urls.join('\n'), sourceUrl: urls[0], title: urls.length === 1 ? (new URL(urls[0]).hostname) : (urls.length + ' URLs') };
+      if (/^https?:\/\/\S+$/i.test(t)) { try { return { kind: 'url', content: t, sourceUrl: t, title: new URL(t).hostname }; } catch (_) {} }
+      return { kind: 'snippet', content: t, sourceUrl: '', title: '' };
+    }
+    function renderStageInputChips() {
+      if (!stageChipsEl) return;
+      stageChipsEl.innerHTML = '';
+      for (const it of stageInputs) {
+        const chip = document.createElement('div'); chip.className = 'stage-chip';
+        const label = document.createElement('span'); label.textContent = (it.kind === 'tab' ? 'Tab: ' : it.kind === 'url' ? 'URL: ' : 'Snippet: ') + stageChipTitle(it);
+        const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + stageChipTitle(it));
+        x.addEventListener('click', (e) => { e.preventDefault(); stageInputs = stageInputs.filter((s) => s.id !== it.id); renderStageInputChips(); });
+        chip.append(label, x); stageChipsEl.appendChild(chip);
+      }
+      if (pasteRaw) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'stage-chip-btn'; b.textContent = '+ Stage paste';
+        b.title = 'Add the pasted text/URL as a workspace input (up to 3)';
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          const raw = pasteRaw; pasteRaw = pasteFlat = null; input.value = ''; drawHints();
+          const c = classifyStagedText(raw);
+          addStageInput({ id: 'stg-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), kind: c.kind, title: c.title || '', sourceUrl: c.sourceUrl || '', content: String(c.content || raw).slice(0, 6000) });
+          say(stageInputs.length + ' staged'); input.focus();
+        });
+        stageChipsEl.appendChild(b);
+      }
+      stageChipsEl.classList.toggle('on', stageInputs.length > 0 || !!pasteRaw);
+      stageChipsEl.hidden = !(stageInputs.length > 0 || pasteRaw);
+    }
+    function addStageInput(item) {
+      if (!item) return false;
+      const it = { id: item.id || ('stg-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6)), kind: item.kind || 'snippet', title: String(item.title || '').slice(0, 120), sourceUrl: String(item.sourceUrl || '').slice(0, 500), content: String(item.content || '').slice(0, 6000), addedAt: Date.now() };
+      stageInputs = stageInputs.filter((x) => !(x.kind === it.kind && x.sourceUrl && it.sourceUrl && x.sourceUrl === it.sourceUrl && x.content === it.content)).concat(it).slice(-STAGE_INPUT_MAX);
+      renderStageInputChips();
+      return true;
+    }
+    function clearStageInputs() { stageInputs = []; renderStageInputChips(); }
+    try { window.stageInputsApi = { add: addStageInput, clear: clearStageInputs, list: () => stageInputs.slice(), render: renderStageInputChips }; } catch (_) {}
+    async function showBridge(ask, inputs) {
+      const list = (inputs || stageInputs).slice(0, STAGE_INPUT_MAX).map((it, i) => ({ id: it.id || ('in_' + (i + 1)), kind: it.kind || 'snippet', title: it.title || ('Input ' + (i + 1)), sourceUrl: it.sourceUrl || '', content: String(it.content || '') }));
+      const title = String(ask || 'Bridge these inputs').trim() || 'Bridge these inputs';
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">synthesizing ' + list.length + ' inputs.</div>'; });
+      say('building bridge');
+      let contract = null;
+      try {
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'bridge', ask: title, inputs: list }) });
+        if (r.ok) contract = await r.json().catch(() => null);
+      } catch (_) {}
+      if (!contract || contract.kind !== 'bridge') {
+        try {
+          const mod = await import('/skills/bridge.js');
+          contract = mod.analyzeBridge(list, title);
+          contract.local = true;
+        } catch (_) {
+          contract = { kind: 'bridge', version: 1, inputs: list.map(({id,kind,title,sourceUrl})=>({id,kind,title,sourceUrl})), summary: 'Could not synthesize inputs.', connections: [], deltas: [], nextActions: [], limitations: ['Bridge analyzer unavailable.'] };
+        }
+      } else { contract.local = false; }
+      if (vpageEl !== el) return 'bridge';
+      try { const mod = await import('/skills/bridge.js'); mod.renderBridgeCard(el, contract); }
+      catch (_) { el.innerHTML = '<h2>' + esc(title) + '</h2><pre>' + esc(JSON.stringify(contract, null, 2)) + '</pre>'; }
+      say('');
+      loopLog({ domain: 'void.bridge', ask: title, score: 'pass', note: 'bridge ' + list.length + ' inputs' + (contract.local ? ' local' : '') });
+      return 'bridge';
+    }
+
     // --- Any broken automation, fixed as it is (Atom: "fix as is, the void is constantly evolving"). ---
     // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook, anything: Verse reads what was pasted
     // (error, config, steps), names the likely cause and gives the concrete fix or corrected config (/api/answer mode 'fix',
@@ -5877,7 +6002,7 @@ say('nothing selected to remove');
       const flat = t.replace(/\s*\r?\n\s*/g, ' ⏎ ').trim();
       const st = input.selectionStart ?? input.value.length, en = input.selectionEnd ?? input.value.length;
       input.setRangeText(flat, st, en, 'end');
-      pasteRaw = t; pasteFlat = flat; drawHints();
+      pasteRaw = t; pasteFlat = flat; drawHints(); renderStageInputChips();
     });
     function restorePaste(text) {
       const raw = pasteRaw, flat = pasteFlat; pasteRaw = pasteFlat = null;
@@ -6639,6 +6764,7 @@ say('nothing selected to remove');
       // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
       { const sh = await shareReady(); const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
+      if (stageInputs.length >= 2) { currentAsk = text; lastAsk = text; if (!skillsRunning) takeUndoSnapshot(); await showBridge(text, stageInputs.slice()); return; }
       if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
       if (pendingForget && forgetAnswer(lower0)) return;
@@ -6719,6 +6845,8 @@ say('nothing selected to remove');
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
         if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }
         return; }
+      // "time machine" means either the time-travel concept or Verse's workspace replay Time Machine: disambiguate before article/skill routing
+      if (wantsTimeMachineAsk(lower0)) { showTimeMachineDisambiguation(text); return; }
       // self-first (lib/term-card.js selfPage; owner, 2026-11-06: "verse lab", "i cant find the lab anywhere"): an ask that names Verse
       // ("verse treasury", "the crew on verse") is matched against Verse's own pages before any web lookup. A match answers from that page and
       // says so; no match says Verse has no page by that name, and the web answer follows under that line. No page is invented.
@@ -6869,6 +6997,15 @@ say('nothing selected to remove');
       if (e.key === 'ArrowUp' && hintList.length) { e.preventDefault(); hintSel = hintSel <= 0 ? hintList.length - 1 : hintSel - 1; markHint(); return; }
       if (e.key === 'Tab' && hintList.length) { e.preventDefault(); input.value = hintList[Math.max(0, hintSel)]; drawHints(); return; }
       if (e.key === 'Escape' && hintList.length) { e.stopPropagation(); hintList = []; hintsEl.classList.remove('on'); return; }
+      if (e.key === 'Enter' && e.altKey && !e.isComposing) {
+        e.preventDefault();
+        const raw = (pasteRaw || input.value || '').trim();
+        if (!raw) return;
+        const c = classifyStagedText(raw);
+        addStageInput({ id: 'stg-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), kind: c.kind, title: c.title || '', sourceUrl: c.sourceUrl || '', content: String(c.content || raw).slice(0, 6000) });
+        pasteRaw = pasteFlat = null; input.value = ''; drawHints(); renderStageInputChips();
+        say(stageInputs.length + ' staged'); return;
+      }
       if (e.key === 'Enter') {
         if (hintSel >= 0 && hintList[hintSel]) { e.preventDefault(); takeHint(hintList[hintSel]); return; }
         handle(input.value); input.value = ''; drawHints();
@@ -7458,6 +7595,8 @@ say('nothing selected to remove');
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && !document.querySelector('#hints.on .sel')) sink(); }, true);
     if (go) go.addEventListener('click', sink, true);
   })();
+  // Time Machine (ADR-001): boot the runtime + scrubber UI on load
+  import('/lib/time-machine-boot.js').catch(() => {});
   </script>
   <script>
   // ---- Synapses: a hidden branching network that only ever shows as a slow pulse at a few percent opacity (nebula look only, off with reduced motion) ----

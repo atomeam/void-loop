@@ -26,7 +26,7 @@ import { cleanLine, refusalOf, styleOf, shapeOf, seedOf, PROMPT_MAX, NEGATIVE_MA
 import { cacheReq } from './image.js';
 
 export const SHARE_MINUTE = 5, SHARE_DAY = 10, SHARE_ALL = 100, ROWS_MAX = 300, IMG_KEEP = 350000, KEEP_VOTES = 3, REPORTS_HIDE = 3, ID_RE = /^[a-z2-7]{8}$/;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'the gallery is off for now' }, 503);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 function newId() { const a = new Uint8Array(8); crypto.getRandomValues(a); return [...a].map((x) => 'abcdefghijklmnopqrstuvwxyz234567'[x & 31]).join(''); }

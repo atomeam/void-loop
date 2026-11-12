@@ -22,7 +22,7 @@ import { scrubOut } from '../../lib/keeper.js';
 import { cleanName, cleanText, commentProblem, newCheck, checkOk, THREAD_RE, ID_RE, TITLE_MAX } from '../../lib/comments.js';
 
 export const POST_MINUTE = 2, POST_DAY = 15, POST_ALL = 1000, THREAD_MAX = 300, REPORTS_HIDE = 3, TOPICS_MAX = 500;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'comments are off for now' }, 503);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 function newId() { const a = new Uint8Array(10); crypto.getRandomValues(a); return [...a].map((x) => 'abcdefghijklmnopqrstuvwxyz234567'[x & 31]).join(''); }

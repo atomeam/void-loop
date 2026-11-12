@@ -324,6 +324,12 @@
    "date": "2026-11-10",
    "ask": "system-slice skill: propose the next concrete system slice Verse will design/build/own for a business idea so the…",
    "from": "new idea by growth agent; helper/system-slice"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-11",
+   "ask": "delivery-board skill: client-visible board aggregating ownership, progress, monitors and next handoff for systems…",
+   "from": "new idea by growth agent; helper/delivery-board"
   }
  ],
  "open": [
@@ -445,6 +451,12 @@
   {
    "state": "open",
    "date": "",
+   "ask": "Client lift summary: package \"we own the heavy lifting\" for a business idea",
+   "from": "growth, 2026-11-10"
+  },
+  {
+   "state": "open",
+   "date": "",
    "ask": "archive/script_0.js and the English word list are still the top of the salvage queue",
    "from": "cursor 2026-11-05"
   },
@@ -459,6 +471,12 @@
    "date": "",
    "ask": "the news section chips still scroll sideways on a phone, on purpose",
    "from": "cursor 2026-11-05"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Client offer pack",
+   "from": "growth, 2026-11-10"
   }
  ],
  "games": [
@@ -618,15 +636,15 @@
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-11-04"
+   "last": "2026-11-11"
   },
   {
    "name": "Life extension and disease cures",
-   "last": "2026-11-05"
+   "last": "2026-11-11"
   },
   {
    "name": "Planet restoration",
-   "last": "2026-11-09"
+   "last": "2026-11-12"
   },
   {
    "name": "Verse stage handoff",
@@ -634,7 +652,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-11-11T20:57:41Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -642,111 +660,111 @@
  },
  "commits": [
   {
-   "at": "2026-11-10T16:30:48Z",
-   "subject": "Keep free coding agents inside their limits (#2672)"
+   "at": "2026-11-12T11:59:20Z",
+   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on 54b48046 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-10T16:30:12Z",
-   "subject": "Mark system-slice skill shipped with main SHA c365179e (#2676)"
-  },
-  {
-   "at": "2026-11-10T16:27:31Z",
-   "subject": "Lab: 520 experiments live at /lab/, 25 waiting for a fix (#2671)"
-  },
-  {
-   "at": "2026-11-10T16:25:33Z",
-   "subject": "Write each finished-work row as one plain sentence. (#2679)"
-  },
-  {
-   "at": "2026-11-10T16:24:07Z",
+   "at": "2026-11-12T11:52:21Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-10T16:17:41Z",
-   "subject": "Verse loop: task, Queue job mwa2nm0e (heal: helper-fix-main-red-book): Repair (#2678)"
+   "at": "2026-11-12T11:50:29Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-10T16:14:19Z",
-   "subject": "Mark feedback-loop skill building in growth-inbox"
+   "at": "2026-11-12T11:47:37Z",
+   "subject": "Better at bridge and system slice: 6 more ways of asking answered right — new phrases: “bridge these inputs” now opens bridge; “compare…"
   },
   {
-   "at": "2026-11-10T16:13:46Z",
-   "subject": "Register feedback-loop skill in index"
+   "at": "2026-11-12T11:39:30Z",
+   "subject": "Lists run 22: bridge these inputs answers again, quick-tools family, one json helper for 25 endpoints, GAPS batch 5 verified live (#2723)"
   },
   {
-   "at": "2026-11-10T16:13:31Z",
-   "subject": "Add feedback-loop skill: capture client feedback on a shipped slice and turn it into the next clarified idea or system adjustment"
+   "at": "2026-11-12T10:50:03Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-10T16:10:44Z",
-   "subject": "Publish the free-agent board from job recruit-board. (#2673)"
+   "at": "2026-11-12T10:42:50Z",
+   "subject": "Design loop: 1 page fixed, 4 -> 2 design defects"
   },
   {
-   "at": "2026-11-10T16:07:09Z",
-   "subject": "Outcome exam: definitions 90"
+   "at": "2026-11-12T10:11:34Z",
+   "subject": "Incident: the browser suite failed on 6f5bcb52 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-10T16:05:54Z",
-   "subject": "Show shipped work and owner asks on the team card (#2660)"
+   "at": "2026-11-12T09:55:03Z",
+   "subject": "Better at docs pack, feedback loop, lift summary and 2 more: 15 more ways of asking answered right — new phrases: “docs pack for Acme…"
   },
   {
-   "at": "2026-11-10T16:05:25Z",
-   "subject": "Rewrite the motherfucking history in the original voice, sourced. (#2674)"
+   "at": "2026-11-12T08:52:48Z",
+   "subject": "Site test: fix: \"bridge these inputs\" only \"waking up\" appeared, never"
   },
   {
-   "at": "2026-11-10T15:55:25Z",
-   "subject": "Site test: visitor pass 15/15"
+   "at": "2026-11-12T08:40:50Z",
+   "subject": "Design loop: 2 pages fixed, 6 -> 0 design defects"
   },
   {
-   "at": "2026-11-10T15:44:19Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+   "at": "2026-11-12T08:38:21Z",
+   "subject": "Lists run 21: films and movies one cinema family, convergence step 2 finished, the wishlist re-ranks daily, timer halves, GAPS batch 6…"
   },
   {
-   "at": "2026-11-10T15:42:11Z",
-   "subject": "Remove the scheduled Tower climb. (#2665)"
+   "at": "2026-11-12T08:21:22Z",
+   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on cdc25758 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-10T15:40:45Z",
-   "subject": "Judge held bots with the free model on every factory run. (#2663)"
+   "at": "2026-11-12T08:21:05Z",
+   "subject": "Verse fixes its automation-pack skill: learn to handle \"propose automations for the support router\""
   },
   {
-   "at": "2026-11-10T15:40:28Z",
-   "subject": "Verse loop: nightly (#2670)"
+   "at": "2026-11-12T08:07:54Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"next system s"
   },
   {
-   "at": "2026-11-10T15:37:39Z",
-   "subject": "Judge held bots with the free model on every factory run. (#2666)"
+   "at": "2026-11-12T08:02:29Z",
+   "subject": "Better at automation pack, automation status, client brief and 2 more: 13 more ways of asking answered right — new phrases: “automation…"
   },
   {
-   "at": "2026-11-10T15:37:20Z",
-   "subject": "Tower gate: every floor measured against its live site (2 slices)"
+   "at": "2026-11-12T07:44:05Z",
+   "subject": "Site test: quality upgrade: weakest answer was \"send it away\" (16 chars"
+  },
+  {
+   "at": "2026-11-12T07:43:45Z",
+   "subject": "Failed jobs read: run 43175345721 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-12T07:43:26Z",
+   "subject": "Incident: the browser suite failed on b41476a2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-12T07:42:17Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Verse, unbidden speaks only about what was built or is being built next…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2633."
+    "name": "Lists run 22 (grok-bot, 2026-11-12): \"bridge these inputs\" answers again…",
+    "line": "skills/bridge.js returned 'none' when asked by name with fewer than two staged inputs, so the site tester saw only \"waking up\" (issue #2721); it now opens a Bridge card that says how to stage inputs and bridges two samples on a tap with…"
    },
    {
-    "name": "the loop takes the next simplest site and builds its missing jobs (Cursor…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2634."
+    "name": "Lists run 21 (grok-bot, 2026-11-12): films and movies are one cinema family…",
+    "line": "skills/cinema.js at 1100 (0 of 6,423 asks moved, tools/cinema-family.test.mjs); urlOf and the seven tidier variants in lib/ask-text.js (tools/ask-text-step2b.test.mjs); tools/wishlist-rank.mjs in upkeep.yml (only the # column moves…"
    },
    {
-    "name": "the Tower lists only sites Verse can actually do, each with a history page…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2627."
+    "name": "Lists run 20 (grok-bot, 2026-11-12): flightconnections.com's two journeys…",
+    "line": "the floor's two journeys on /flights/routes/ (pick Lisbon, set 3 h, Madrid listed and New York not; share, pick another airport, reopen the link) pass against the live site, which answers the 25 \"build the missing jobs for…"
    },
    {
-    "name": "before Verse ships its own change, a free model asks whether a person would…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2628."
+    "name": "Lists run 19 (grok-bot, 2026-11-11): status-digest joins the client status…",
+    "line": "main's families and book checks were red after #2713 added status-digest with no family; it is now one routing entry with client-status-pack and delivery-board, and its fixed all-green line is gone. Two of Verse's asks, each asked 19…"
    },
    {
-    "name": "suite-on-main: kept cards were the first .vpage, so sky chips, review and draw…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2578."
+    "name": "Lists run 18 (grok-bot, 2026-11-11): main's browser suite and fast checks…",
+    "line": "delivery-board (#2707) joins client-status-pack as one family (skills/client-status.js at 9890, aliases kept, tools/client-status-family.test.mjs, 0 of 6,416 asks moved) with its book page, map line and regenerated cards, and its progress…"
    },
    {
-    "name": "Lists run 15 (grok-bot, 2026-11-09): every Russian VAT rate on /vat/ finishes…",
-    "line": "/vat/ and lib/vat.js offer 22, 20, 18, 10, the simplified-tax 7 and 5, and 0% (tools/vat.test.mjs); the sum and rate already rode in the link and the page was already offline, so those 16 queued asks are built…"
+    "name": "a base-free guard so a ledger wiped by a whole-file write fails CI (the…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2708."
    }
   ],
   "ladders": [
@@ -806,7 +824,7 @@
   {
    "rank": 1,
    "item": "Stay inside Workers AI's free 10k neurons/day",
-   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. Still to do: cache answers at the edge; on-page skills first",
+   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. The edge cache is live too (lib/answer-edge.js, 2026-10-29: a stable, non-personal repeat…",
    "cost": "$0",
    "value": "high: answers stop failing after the cap (125% on Oct 14)",
    "why": "free and fixes a live outage"
@@ -821,22 +839,6 @@
   },
   {
    "rank": 3,
-   "item": "Crypto data that never runs dry",
-   "free": "keyless CoinGecko behind a 2-min edge cache (live); a free Demo key (10k calls/mo, attribution)",
-   "cost": "Basic $35/mo or $29/mo yearly, commercial license (CoinGecko)",
-   "value": "medium",
-   "why": "free path covers today's use"
-  },
-  {
-   "rank": 4,
-   "item": "Social feeds",
-   "free": "official embeds and open public APIs (Bluesky, Mastodon: live); free OAuth for your own timeline",
-   "cost": "X API for timelines and search (X pricing)",
-   "value": "medium",
-   "why": "free networks first; X paid tier only for posting/search"
-  },
-  {
-   "rank": 5,
    "item": "Video search and play",
    "free": "official embeds (YouTube IFrame player, Rumble, Vimeo, Internet Archive), YouTube RSS per channel; YouTube Data API's free 10k units/day (quota)",
    "cost": "quota raise is free via Google's audit form, no fee",
@@ -844,7 +846,7 @@
    "why": "free; only the audit takes time"
   },
   {
-   "rank": 6,
+   "rank": 4,
    "item": "Workers Paid",
    "free": "items 1 and 2 first",
    "cost": "$5/mo min; 10M requests, 1M KV writes/mo; Workers AI $0.011 per 1k neurons above 10k/day (Workers, Workers AI)",
@@ -852,57 +854,73 @@
    "why": "cheapest paid item with the widest effect; first to buy once 1–2 can't keep up"
   },
   {
-   "rank": 7,
-   "item": "Rides and food ordering inside Verse",
-   "free": "deep links to Waymo, Uber, Lyft, Uber Eats, DoorDash through adapters (live)",
-   "cost": "Waymo: no public API at any price; Uber Ride Request: partner approval",
-   "value": "high if it existed",
-   "why": "blocked by the providers, not by money"
-  },
-  {
-   "rank": 8,
-   "item": "Delivery backend (for Verse's own goods: prints, miniatures)",
-   "free": "local pickup, mail via the print shop",
-   "cost": "DoorDash Drive $9.75/delivery within 5 mi +$0.75/mi (DoorDash)",
-   "value": "medium, once there are goods to deliver",
-   "why": "pay-per-use, no monthly fee, but nothing to deliver yet"
-  },
-  {
-   "rank": 9,
-   "item": "Ethereum and Solana wallet lookup",
-   "free": "free Etherscan key (rate-limited, docs); public Solana RPC",
-   "cost": "paid tiers only at scale",
-   "value": "low–medium",
-   "why": "free path is enough"
-  },
-  {
-   "rank": 10,
-   "item": "Dating backend (matching, chat)",
-   "free": "on-page profile builder and coach (live); passkeys for accounts (built)",
-   "cost": "identity/age verification is per-check (e.g. Stripe Identity, Persona); moderation; legal review",
-   "value": "high but risky",
-   "why": "safety design and review must come first; most expensive in time and trust"
-  },
-  {
-   "rank": 11,
-   "item": "Shopping search",
-   "free": "deep links; Verse's own Gumroad store",
-   "cost": "Amazon PA-API needs an Associates account with sales (docs)",
-   "value": "low now",
-   "why": "wait until Verse sells more"
-  },
-  {
-   "rank": 12,
+   "rank": 5,
    "item": "Real photos of games for the sports, news and finance reports",
    "free": "official highlight embeds (league and club channels through the platform's own embed), openly licensed photos (Wikimedia Commons, Openverse; CC0, CC-BY, CC-BY-SA, author and licence shown under…",
    "cost": "a licensed agency photo feed (AP, Getty or a regional wire): quote-based, not listed here until a provider's price is read from its own page",
    "value": "high: the one thing ESPN and every sports page has that Verse can't show for most games",
    "why": "the tower's sports floors lose \"pictures of the games\" to money only; free routes cover the big matches"
+  },
+  {
+   "rank": 6,
+   "item": "Player and projection data for fantasy (my team, start/sit, trade comparator)",
+   "free": "on-device compare from the free box scores and standings (labelled Verse's own estimate)",
+   "cost": "a sports data plan with players and projections: to be quoted",
+   "value": "high for the sports floor",
+   "why": "the fantasy gaps in domains/features/sports.json need a feed, not code"
+  },
+  {
+   "rank": 7,
+   "item": "Verse's own store (phase 1 live)",
+   "free": "Gumroad stays the checkout (merchant of record, Discover buyers); our page, cart, signed downloads (R2 10 GB free, no egress) and license keys cost $0",
+   "cost": "Stripe Checkout 2.9% + 30¢ (stripe.com/pricing) once Stripe's business profile is done; Stripe Tax extra",
+   "value": "high: each sale keeps ~7% more",
+   "why": "free today; Stripe is a dashboard step, not a purchase; ranked after 1-14 when it moved here from docs/store.md (lists run 14): its free path is already live"
+  },
+  {
+   "rank": 8,
+   "item": "Creator store platform (multi-seller, Connect)",
+   "free": "passkeys and /@handle pages already built; Stripe-hosted Express onboarding",
+   "cost": "$2 per monthly active seller + 0.25% + 25¢ per payout (Connect); we charge 5%",
+   "value": "high: a product others pay for",
+   "why": "waits on 15's Stripe step; ranked after 1-14 when it moved here from docs/store.md (lists run 14): its free path is already live"
+  },
+  {
+   "rank": 9,
+   "item": "Business email for creators",
+   "free": "Cloudflare Email Routing, free (docs); only the domain costs (~$10/yr)",
+   "cost": "none needed",
+   "value": "medium: $15 setup or $3/mo",
+   "why": "free path covers it; also gives Adam atom@a-to-mind.com; ranked after 1-14 when it moved here from docs/store.md (lists run 14): its free path is already live"
+  },
+  {
+   "rank": 10,
+   "item": "Crypto data that never runs dry",
+   "free": "keyless CoinGecko behind a 2-min edge cache (live); a free Demo key (10k calls/mo, attribution)",
+   "cost": "Basic $35/mo or $29/mo yearly, commercial license (CoinGecko)",
+   "value": "medium",
+   "why": "free path covers today's use"
+  },
+  {
+   "rank": 11,
+   "item": "Social feeds",
+   "free": "official embeds and open public APIs (Bluesky, Mastodon: live); free OAuth for your own timeline",
+   "cost": "X API for timelines and search (X pricing)",
+   "value": "medium",
+   "why": "free networks first; X paid tier only for posting/search"
+  },
+  {
+   "rank": 12,
+   "item": "Delivery backend (for Verse's own goods: prints, miniatures)",
+   "free": "local pickup, mail via the print shop",
+   "cost": "DoorDash Drive $9.75/delivery within 5 mi +$0.75/mi (DoorDash)",
+   "value": "medium, once there are goods to deliver",
+   "why": "pay-per-use, no monthly fee, but nothing to deliver yet"
   }
  ],
  "visible": {
-  "day": 35,
-  "week": 332
+  "day": 9,
+  "week": 251
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -949,13 +967,14 @@
   ],
   "visits": {
    "clock-mini": 1,
+   "trailer-mississippi-senate-race-election-results": 1,
    "x9": 1
   },
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 122 (688 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-10T13:29Z",
+  "line": "People this week: 99 (660 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-11T12:45Z",
   "source": "verse"
  },
  "tower": {

@@ -21,7 +21,7 @@ import { models } from '../../lib/models.js';
 import { imageBytes } from './appraise.js';
 import { rateLimited } from './answer.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const bad = (status, error) => json({ ok: false, error }, status);
 export const PER_MINUTE = 15, PHOTOS_PER_MINUTE = 6, MAX_HTML = 1500000;
 const READ_PROMPT = 'Transcribe exactly the text of this recipe, in its original language, line by line, keeping the title, the servings, the ingredients heading and list, and the method heading and steps. Output only the text, nothing else. If there is no text, output NONE.';

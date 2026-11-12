@@ -4,7 +4,7 @@
  * too. Verse should be the only site you need").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), stageKinds }
  * "play lofi beats", "show me the video of the moon landing", "find a rumble video about bitcoin", a pasted link from any of them,
- * then the watch tools: "skip to 2:30", "speed 1.5x", "captions on", "queue <x>", "next", "my queue", "recently watched".
+ * then the watch tools: "skip to 2:30", "speed 1.5x", "captions on", "audio only", "queue <x>", "next", "my queue", "recently watched".
  * Embed only (lib/video.js): each platform's official player, YouTube through youtube-nocookie.com; nothing downloaded or rehosted,
  * so the creator keeps the ads and the views. Search goes through /api/video (edge-cached, no KV, no model). The queue, the
  * recently-watched list and the player settings live in this browser's localStorage only; a play writes nothing to the server.
@@ -12,7 +12,7 @@
 import { PLATFORMS, OPEN_SEARCH, SEARCHABLE, CAN, parseVideoUrl, embedUrl, watchUrl, videoAskOf, clockOf } from '../lib/video.js';
 
 const KEY = 'a2m.void.video.v1';
-const blank = () => ({ current: null, queue: [], recent: [], platform: 'youtube', rate: 1, captions: false, results: [], query: '', note: '', searchUrl: '', tab: 'results' });
+const blank = () => ({ current: null, queue: [], recent: [], platform: 'youtube', rate: 1, captions: false, listen: false, results: [], query: '', note: '', searchUrl: '', tab: 'results' });
 let S = null;
 const load = () => { if (S) return S; try { S = Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || 'null') || {}); } catch (_) { S = blank(); } return S; };
 const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, S, { results: S.results.slice(0, 12) }))); } catch (_) {} };
@@ -64,10 +64,13 @@ function paint(reloadPlayer) {
       else { frame = null; box.innerHTML = '<div class="vd-empty" style="position:absolute;inset:0;display:grid;place-items:center;opacity:.7;text-align:center;padding:12px">' + (v ? 'That video needs its link looked up · try pasting it again' : 'Search above, or paste a link from YouTube, Rumble, Vimeo, Dailymotion, the Archive, PeerTube, Odysee or Twitch') + '</div>'; }
     }
   }
+  // listen mode: a 200 x 200 square (the smallest the official players allow), still visible and playing; the full 16:9 player otherwise
+  box.style.cssText = S.listen ? 'position:relative;width:200px;height:200px;background:#000;border-radius:10px;overflow:hidden' : 'position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden';
+  const ls = el.querySelector('.vd-listen'); ls.setAttribute('aria-pressed', String(!!S.listen)); ls.textContent = S.listen ? '▣ Video' : '♪ Listen'; ls.title = S.listen ? 'Show the full player' : 'Audio only: the player shrinks to a small square and keeps playing';
   el.querySelector('.vd-now').innerHTML = v ? '<b>' + esc(label(v)) + '</b>' + (v.channel ? ' · ' + esc(v.channel) : '') + (v.seconds ? ' · ' + clockOf(v.seconds) : '') + ' · <a href="' + esc(watchUrl(v)) + '" target="_blank" rel="noopener">open on ' + esc(PLATFORMS[v.platform].label) + ' ↗</a>' : '';
   el.querySelectorAll('.vd-plat').forEach((b) => { b.setAttribute('aria-pressed', String(b.dataset.p === S.platform)); b.style.opacity = b.dataset.p === S.platform ? '1' : '.55'; });
   const sp = el.querySelector('.vd-speed'); sp.value = String(S.rate); sp.disabled = !!v && !can.speed; sp.title = v && !can.speed ? PLATFORMS[v.platform].label + "'s player has its own speed menu" : 'Playback speed';
-  const cc = el.querySelector('.vd-cc'); cc.textContent = 'CC ' + (S.captions ? 'on' : 'off'); cc.disabled = !!v && !can.captions;
+  const cc = el.querySelector('.vd-cc'); cc.textContent = 'CC ' + (S.captions ? 'on' : 'off'); cc.setAttribute('aria-pressed', String(!!S.captions)); cc.setAttribute('aria-label', 'Captions ' + (S.captions ? 'on' : 'off')); cc.disabled = !!v && !can.captions;
   el.querySelectorAll('.vd-tab').forEach((b) => { b.setAttribute('aria-pressed', String(b.dataset.t === S.tab)); b.style.opacity = b.dataset.t === S.tab ? '1' : '.55'; });
   el.querySelector('.vd-tab[data-t=queue]').textContent = 'Queue' + (S.queue.length ? ' (' + S.queue.length + ')' : '');
   const list = S.tab === 'queue' ? S.queue : S.tab === 'recent' ? S.recent : S.results;
@@ -103,7 +106,7 @@ async function search(query, platform, api, { autoplay = false, quiet = false } 
 function mount(th, stageApi) {
   load();
   const el = document.createElement('div'); cardEl = el;
-  el.className = 'thing kept-card game-card video-card'; el.dataset.id = th.id;
+  el.className = 'thing kept-card game-card video-card'; el.dataset.id = th.id; el.setAttribute('role', 'region'); el.setAttribute('aria-label', 'Video player');
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(560px, calc(100vw - 20px))';
   const F = 'background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font:inherit;color-scheme:dark;';
   el.innerHTML = '<div class="g-head"><span class="g-title">Video</span><span class="g-sub">official players · nothing downloaded</span></div>'
@@ -112,10 +115,11 @@ function mount(th, stageApi) {
     + '<div class="vd-player" style="position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden"></div>'
     + '<div class="vd-now g-sub" style="display:block;margin:6px 0;font-size:12px"></div>'
     + '<div class="vd-ctl" style="display:flex;flex-wrap:wrap;gap:4px;align-items:center"><button type="button" class="g-btn vd-prev" aria-label="Previous">⏮</button><button type="button" class="g-btn vd-back" aria-label="Back 10 seconds">−10s</button><button type="button" class="g-btn vd-fwd" aria-label="Forward 10 seconds">+10s</button><button type="button" class="g-btn vd-next" aria-label="Next in queue">⏭</button>'
-    + '<select class="vd-speed" aria-label="Playback speed" style="' + F + '">' + [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((r) => '<option value="' + r + '">' + r + '×</option>').join('') + '</select><button type="button" class="g-btn vd-cc">CC off</button>'
+    + '<select class="vd-speed" aria-label="Playback speed" style="' + F + '">' + [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((r) => '<option value="' + r + '">' + r + '×</option>').join('') + '</select><button type="button" class="g-btn vd-cc" aria-pressed="false">CC off</button><button type="button" class="g-btn vd-listen" aria-pressed="false">♪ Listen</button>'
     + '<input class="vd-at" aria-label="Jump to time" placeholder="2:30" style="' + F + 'width:64px"><button type="button" class="g-btn vd-jump">jump</button></div>'
     + '<div style="display:flex;gap:4px;margin-top:8px"><button type="button" class="g-btn vd-tab" data-t="results">Results</button><button type="button" class="g-btn vd-tab" data-t="queue">Queue</button><button type="button" class="g-btn vd-tab" data-t="recent">Recently watched</button></div>'
-    + '<div class="vd-list" style="max-height:260px;overflow:auto;margin-top:4px"></div>';
+    + '<div class="vd-list" role="list" aria-label="Videos" style="max-height:260px;overflow:auto;margin-top:4px"></div>'
+    + '<div class="vd-live" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>';
   el.querySelectorAll('input,select,button,.vd-list,.vd-player').forEach((n) => { n.addEventListener('pointerdown', (e) => e.stopPropagation()); n.addEventListener('keydown', (e) => e.stopPropagation()); });
   el.querySelector('.vd-form').addEventListener('submit', (e) => { e.preventDefault(); const q = el.querySelector('.vd-q').value.trim(); if (!q) return; const v = parseVideoUrl(q); if (v) resolve(v).then((r) => play(r, null)); else search(q, S.platform); });
   el.querySelectorAll('.vd-plat').forEach((b) => b.addEventListener('click', () => { S.platform = b.dataset.p; keep(); if (S.query) search(S.query, S.platform); else paint(); }));
@@ -132,7 +136,10 @@ function mount(th, stageApi) {
   el.querySelector('.vd-fwd').addEventListener('click', () => seek(time + 10));
   el.querySelector('.vd-jump').addEventListener('click', () => { const s = (el.querySelector('.vd-at').value || '').trim(); const a = videoAskOf('skip to ' + s, { hasCard: true }); if (a && a.kind === 'seek') seek(a.at); });
   el.querySelector('.vd-speed').addEventListener('change', (e) => speed(+e.target.value));
-  el.querySelector('.vd-cc').addEventListener('click', () => captions(!S.captions));
+  el.querySelector('.vd-cc').addEventListener('click', () => announce(captions(!S.captions)));
+  el.querySelector('.vd-listen').addEventListener('click', () => announce(listen(!S.listen)));
+  // keyboard: Enter or Space on a result plays it (the rows are role=button), as a click does
+  el.querySelector('.vd-list').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('vd-hit')) { e.preventDefault(); e.target.click(); } });
   stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
   paint(true);
 }
@@ -155,6 +162,12 @@ function captions(on) {
   if (v && can.captions) { S.current = Object.assign({}, v, { start: Math.round(time) }); keep(); paint(true); } else paint();
   return can.captions ? 'captions ' + (on ? 'on' : 'off') + (on ? ' where the video has them' : '') : PLATFORMS[v.platform].label + "'s player has no captions switch Verse can reach";
 }
+/** what a screen reader hears after a button press (the card's polite live line) */
+function announce(msg) { const n = cardEl && cardEl.querySelector('.vd-live'); if (n && msg) n.textContent = msg; return msg; }
+function listen(on) {
+  S.listen = !!on; keep(); paint();
+  return S.listen ? 'audio only · the player is a small square and keeps playing' : 'full player back';
+}
 function step(dir) {
   if (dir > 0) { const n = S.queue.shift(); if (!n) { keep(); paint(); return 'the queue is empty'; } play(n, 0); return 'playing ' + label(n); }
   const prev = S.recent.find((r) => !same(r, S.current)); if (!prev) return 'nothing before this one'; play(prev, 0); return 'back to ' + label(prev);
@@ -174,6 +187,7 @@ export async function runAsk(q, api) {
   if (q.kind === 'seek') { api.say(seek(q.at != null ? q.at : time + q.by)); return 'video'; }
   if (q.kind === 'speed') { api.say(speed(q.rate != null ? q.rate : S.rate + q.step)); return 'video'; }
   if (q.kind === 'captions') { api.say(captions(q.on)); return 'video'; }
+  if (q.kind === 'listen') { api.say(announce(listen(q.on))); return 'video'; }
   if (q.kind === 'next') { api.say(step(1)); return 'video'; }
   if (q.kind === 'prev') { api.say(step(-1)); return 'video'; }
   if (q.kind === 'platform') { S.platform = q.platform; keep(); if (S.query) await search(S.query, q.platform, api); else paint(); api.say('searching ' + PLATFORMS[q.platform].label); return 'video'; }
@@ -184,7 +198,7 @@ export async function runAsk(q, api) {
     if (!S.current) { play(v, null, api); api.say('playing ' + label(v)); return 'video'; }
     S.queue.push(v); S.tab = 'queue'; keep(); paint(); api.say('queued ' + label(v) + ' · ' + S.queue.length + ' up next'); return 'video';
   }
-  if (q.video) { const v = await resolve(q.video); play(v, null, api); api.say('playing ' + label(v) + ' · official ' + PLATFORMS[v.platform].label + ' player'); return 'video'; }
+  if (q.video) { const v = await resolve(q.video); play(v, null, api); announce('playing ' + label(v)); api.say('playing ' + label(v) + ' · official ' + PLATFORMS[v.platform].label + ' player'); return 'video'; }
   const hits = await search(q.query, q.platform, api, { autoplay: q.kind === 'play' });
   api.say(hits.length ? (q.kind === 'play' ? 'playing ' + label(hits[0]) + ' · more below' : hits.length + ' videos from ' + PLATFORMS[hits[0].platform in PLATFORMS ? hits[0].platform : S.platform].label + (hits[0].platform !== S.platform ? ' (' + PLATFORMS[S.platform].label + ' has no public search)' : '') + ' · tap one to play') : S.note || 'no videos turned up');
   return 'video';

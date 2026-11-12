@@ -1,594 +1,5 @@
 [
  {
-  "at": "2026-10-18T14:06:18Z",
-  "passed": 67,
-  "of": 68,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T16:03:13Z",
-  "passed": 59,
-  "of": 69,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"films by kurosawa pls\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T18:18:28Z",
-  "passed": 68,
-  "of": 70,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T18:45:56Z",
-  "passed": 59,
-  "of": 71,
-  "kind": "file",
-  "key": "yo film metadata for ikiru | refused: don't know this yet",
-  "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-19T00:40:40Z",
-  "passed": 70,
-  "of": 71,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-19T02:18:29Z",
-  "passed": 71,
-  "of": 72,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"film meatdata for ikiru\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-19T02:33:17Z",
-  "passed": 63,
-  "of": 73,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"add task call mum friday high priority 30 min\" (skill:task-board)"
- },
- {
-  "at": "2026-10-19T04:58:40Z",
-  "passed": 64,
-  "of": 74,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
- },
- {
-  "at": "2026-10-19T10:59:48Z",
-  "passed": 73,
-  "of": 74,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"arcade games\" (skill:arcade)"
- },
- {
-  "at": "2026-10-20T22:41:16Z",
-  "passed": 67,
-  "of": 75,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play solarquest",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play chess",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "weather in boston",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "set a timer for 5 minutes",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "what is 17 times 23",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "show the days until a date",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "arcade games",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   }
-  ],
-  "note": "new ground passed, kept as a regression case: \"my photos\" (skill:photos)"
- },
- {
-  "at": "2026-10-22T01:56:37Z",
-  "passed": 67,
-  "of": 78,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "what are you?",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play voidquest",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play solarquest",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play chess",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "weather in boston",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play connect four",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "set a timer for 5 minutes",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "what is 17 times 23",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "play reversi",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "show the days until a date",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   },
-   {
-    "ask": "arcade games",
-    "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-   }
-  ],
-  "note": "new ground passed, kept as a regression case: \"contéstame en español\" (skill:languages)"
- },
- {
-  "at": "2026-11-03T21:58:46Z",
-  "passed": 58,
-  "of": 87,
-  "ms": 554,
-  "kind": "file",
-  "key": "which games do you know | nothing appeared",
-  "failed": [
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "which games do you know",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "what do you get if you merge a pizza and a black hole",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "is unwrap risky in rust",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "are you web4",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "toss it off the screen",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "what are the figures doing",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "longevity trial watch",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "find a rumble video about bitcoin",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "what rhymes with orange",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "closer on the figure",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "turn the questions i missed into a five-minute challenge",
-    "why": "nothing appeared"
-   }
-  ],
-  "note": "fix: \"which games do you know\" nothing appeared"
- },
- {
-  "at": "2026-11-04T00:28:38Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2068,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 11891 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T00:56:32Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1569,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 12344 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T01:22:14Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 815,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T01:52:46Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 3283,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 17399 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T02:31:01Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 588,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 17982 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T02:59:35Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2263,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 16400 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T03:27:08Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2587,
-   "failed": [
-    {
-     "ask": "what time is it",
-     "why": [
-      "slow 21865 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T04:00:05Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 3858,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 21156 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T04:37:52Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 782,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 23181 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T05:14:46Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1732,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 14209 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T05:51:13Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1690,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T06:16:39Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2045,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 10614 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T06:45:46Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2692,
-   "failed": [
-    {
-     "ask": "what time is it",
-     "why": [
-      "slow 9769 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T07:22:01Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2033,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T07:49:54Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2128,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 19423 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T08:16:04Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1696,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T08:40:37Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1783,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 17415 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T09:08:08Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1939,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T09:19:31Z",
-  "passed": 81,
-  "of": 87,
-  "ms": 400,
-  "kind": "file",
-  "key": "what rhymes with orange | load # ms > #",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 4 < 5"
-   },
-   {
-    "ask": "what can I buy",
-    "why": "missing text /store|buy|\\$/"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 1 < 5"
-   },
-   {
-    "ask": "what rhymes with orange",
-    "why": "load 1217 ms > 1200"
-   },
-   {
-    "ask": "closer on the figure",
-    "why": "load 1248 ms > 1200"
-   },
-   {
-    "ask": "films by Kurosawa",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1939,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "fix: \"what rhymes with orange\" load 1217 ms > 1200"
- },
- {
   "at": "2026-11-04T09:32:29Z",
   "kind": "visitor",
   "visitor": {
@@ -7930,6 +7341,615 @@
      "ask": "what can you do",
      "why": [
       "slow 9710 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T16:35:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 773,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9953 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T16:46:40Z",
+  "passed": 118,
+  "of": 121,
+  "ms": 391,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "test me on that",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "geenrate a toon style dog",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "automation pack for invoice reminders",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 773,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9953 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"lift summary for client onboarding\" (skill:lift-summary)"
+ },
+ {
+  "at": "2026-11-11T17:01:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1362,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9576 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T17:35:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 782,
+   "failed": [
+    {
+     "ask": "flip a coin",
+     "why": [
+      "slow 10525 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T18:15:46Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 763,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9146 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T19:56:33Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 531,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16799 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T21:05:03Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1064,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T21:35:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 566,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T22:02:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 415,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T22:28:54Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 668,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 10049 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T22:58:25Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1014,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12314 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T23:27:02Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1281,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11684 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T23:55:41Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1156,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14364 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T00:08:04Z",
+  "passed": 118,
+  "of": 123,
+  "ms": 477,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "longevity trial watch",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "arcade games",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo create a toon style bird",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "draw yourself pls",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1156,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14364 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"bridge these inputs\" (skill:bridge)"
+ },
+ {
+  "at": "2026-11-12T01:17:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1280,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8060 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T01:59:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 772,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-12T02:27:41Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1878,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11126 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T02:56:30Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1246,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9896 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T04:10:41Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 464,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8948 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T05:48:10Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 781,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11333 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T07:30:03Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1034,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-12T07:42:58Z",
+  "passed": 116,
+  "of": 124,
+  "ms": 373,
+  "kind": "file",
+  "key": "weak | send it away",
+  "failed": [
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "icebreakers about hiking",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "vers lab",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "heavy lift map: invoice reminders that run themselves",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "make a client proposal for invoice reminders",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "map to existing tools: invoice reminders",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1034,
+   "failed": []
+  },
+  "note": "quality upgrade: weakest answer was \"send it away\" (16 chars)"
+ },
+ {
+  "at": "2026-11-12T07:54:14Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 521,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-12T08:05:47Z",
+  "passed": 118,
+  "of": 122,
+  "ms": 329,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "geenrate a toon style dog",
+    "why": "refused: don't know this yet"
+   },
+   {
+    "ask": "top coins",
+    "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 521,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"next system slice for the client onboarding\" (skill:system-slice)"
+ },
+ {
+  "at": "2026-11-12T08:39:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 508,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-12T08:50:40Z",
+  "passed": 120,
+  "of": 122,
+  "ms": 341,
+  "kind": "file",
+  "key": "bridge these inputs | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "bridge these inputs",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 508,
+   "failed": []
+  },
+  "note": "fix: \"bridge these inputs\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-12T11:36:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 449,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8067 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T12:05:12Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 539,
+   "failed": [
+    {
+     "ask": "what's the weather in Lakeland FL",
+     "why": [
+      "slow 12095 ms"
+     ]
+    },
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9763 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-12T13:13:32Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 739,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11522 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T13:42:50Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1307,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9558 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T15:04:30Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 473,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9127 ms"
      ]
     }
    ]

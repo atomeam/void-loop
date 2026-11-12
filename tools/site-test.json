@@ -387,6 +387,15 @@
     },
     {
       "ask": "client brief for Acme onboarding"
+    },
+    {
+      "ask": "lift summary for client onboarding"
+    },
+    {
+      "ask": "bridge these inputs"
+    },
+    {
+      "ask": "next system slice for the client onboarding"
     }
   ],
   "candidates": [],

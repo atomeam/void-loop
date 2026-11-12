@@ -15,7 +15,7 @@
 import { bump } from '../../lib/guard.js';
 import { LIMITS, parseReaction, targetOk, targetOf, incidentTargetOf, countsOf, REACTION_IDS, dayOf, secondsToMidnight, clientKey } from '../../lib/reactions.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'reactions are off for now' }, 503);
 const slow = (secs, error = 'slow down') => json({ ok: false, error }, 429, { 'retry-after': String(secs) });
 

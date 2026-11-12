@@ -4,6 +4,7 @@
 // ended set aside or failed MAX_TRIES times within WINDOW_DAYS waits: the will queues the next want instead, and says which it skipped. The want stays in
 // Verse's will (it still wants it); it is only not queued again until the window has passed. Pure: the history is read by functions/api/will.js.
 
+import { slug } from './ask-text.js'; // one copy (convergence step 2)
 import { namedHot, MAX_CHANGES, WINDOW_DAYS as CHURN_DAYS } from './churn.js';
 
 // The writer's shape (tools/will.py sends it). A POST without it comes from an old checkout (2026-10-19: a writer from before
@@ -37,7 +38,7 @@ export const TERMINAL = ['set aside', 'failed', 'declined', 'deferred'];
 export const MAX_TRIES = 2;     // a want whose jobs ended this way this many times waits
 export const WINDOW_DAYS = 14;  // ... counting the ones that ended this recently
 /** the queue target a want's job has: 'will:' and the title as a short slug. */
-export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+export { slug }; // api/will imports it from here
 export const targetOf = (title) => 'will:' + slug(title);
 
 /** how many of the rows ({ target, state }) are earlier jobs of this want that ended without shipping (TERMINAL). Pure. */

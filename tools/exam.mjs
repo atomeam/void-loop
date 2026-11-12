@@ -14,6 +14,7 @@ import { resolve, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { spawnSync } from 'node:child_process';
+import { glossWords, etymologyWords } from '../void-live-deploy/lib/exam.js';
 import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, mediaLine, DROP, SCALE, FAST_MS } from '../void-live-deploy/lib/exam.js';
 import { songAskOf, findTrack } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
@@ -96,10 +97,6 @@ async function enclosuresOf(feedUrl) {
   } catch (_) { return []; } finally { clearTimeout(t); }
 }
 
-const STOP = new Set('which their there about would could should these those other first after before under again while where when what with from that this have been were into your more most some than then also just only very'.split(' '));
-function glossWords(html) {
-  return String(html || '').replace(/<[^>]+>/g, ' ').toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 4 && !STOP.has(w)).slice(0, 8);
-}
 async function googleTranslate(q, to) {
   const j = await getJson('https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=en&tl=' + encodeURIComponent(to) + '&q=' + encodeURIComponent(q));
   const parts = j && j[0];
@@ -162,6 +159,12 @@ async function rivalFor(domain, ask, obs) {
   if (domain === 'wordproblems' || (domain === 'calculator' && /percent|apples/i.test(ask.ask))) return wordRival(ask.ask) || (Array.isArray(ask.numbers) ? { any: ask.numbers } : null);
   if (domain === 'timers') return { any: String(ask.expect || '').split('|').filter(Boolean) };
   if (domain === 'maps' && ask.region) return { text: ask.region };
+  if (domain === 'definitions' && ask.word && /\b(?:etymology|word\s+origin|word\s+history|origin\s+of)\b/i.test(ask.ask)) {
+    // an etymology card shows where the word comes from, not what it means (lists run 19): the rival is Wiktionary's own Etymology
+    // section (plain text from TextExtracts), never the definition's gloss
+    const words = etymologyWords(await getJson('https://en.wiktionary.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=' + encodeURIComponent(ask.word)), ask.word);
+    return words.length ? { words, need: 2 } : null;
+  }
   if (domain === 'definitions' && ask.word) {
     const j = await getJson('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(ask.word) + '?redirect=true');
     const block = j && (j.en || j.English);
@@ -303,7 +306,10 @@ async function readCard(page, ask) {
       const a = document.querySelector('audio[data-exam-audio]'); if (!a) return null;
       a.muted = true;
       try { await a.play(); } catch (e) { return { currentTime: a.currentTime || 0 }; }
-      await new Promise((r) => setTimeout(r, 1200));
+      // playing, read up to 5 s after play(): a podcast host's tracking redirects can hold the first bytes past the old fixed 1.2 s, so a
+      // feed that does play failed "audio" one run in three (TED Radio Hour, Planet Money, Hidden Brain in turn, 2026-11-10; lists run 16).
+      // How quickly the card answered stays the "fast" check's.
+      for (let t = 0; t < 5000 && (a.currentTime || 0) <= 0.2; t += 200) await new Promise((r) => setTimeout(r, 200));
       return { currentTime: a.currentTime || 0 };
     }).catch(() => null);
     if (played) obs.audio.currentTime = played.currentTime;

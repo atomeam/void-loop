@@ -23,7 +23,7 @@ export const RL_MAX = 20, PLACE_TTL = 86400, RADIO_TTL = 1800, TIMEOUT_MS = 8000
 export const RADIO_HOSTS = Object.freeze(['de1.api.radio-browser.info', 'all.api.radio-browser.info']);
 const UA = 'VerseBot/1.0 (+https://a-to-mind.com/local/)';
 const NAME = /^[\p{L}\p{M}\p{N}\s.,'’()-]{1,60}$/u, TAG = /^[\p{L}\p{M}\p{N} &'-]{1,40}$/u;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 /** what a request asks: { kind: 'here' } | { kind: 'place', name } | { kind: 'radio', lat, lon, cc, region }
  *  | { kind: 'world', country, tag, q, offset } | null. Pure. */

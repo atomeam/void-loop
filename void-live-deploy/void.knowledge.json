@@ -3,18 +3,117 @@
     "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
     "from": "page",
     "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-09: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; error: GET /api/clip answered 404",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-09) did not work",
-    "at": "2026-11-09T07:06:28.513Z",
+    "learned": "2026-11-11: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-11) did not work (credits)",
+    "at": "2026-11-11T19:49:47.043Z",
+    "seen": 1
+  },
+  {
+    "id": "page:convertlive-com",
+    "from": "page",
+    "consumed": "convertlive.com",
+    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
+    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
+    "at": "2026-11-11T14:27:58Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
+    "from": "page",
+    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
+    "learned": "2026-11-11: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"; error: the change: answered 413 no state",
+    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-11) did not work",
+    "at": "2026-11-11T11:58:02.889Z",
     "seen": 1
   },
   {
     "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
     "from": "page",
     "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
-    "learned": "2026-11-09: worked; 30 tools listed",
-    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-09) worked",
-    "at": "2026-11-09T00:46:18.090Z",
+    "learned": "2026-11-11: worked; 30 tools listed",
+    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-11) worked",
+    "at": "2026-11-11T01:27:33.471Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-rides-osrm-public-demo-router-router-",
+    "from": "page",
+    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
+    "learned": "2026-11-10: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
+    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-10) worked",
+    "at": "2026-11-10T20:48:25.302Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-baggage-the-airline-pages-the-baggage",
+    "from": "page",
+    "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
+    "learned": "2026-11-10: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403 (3 figures unchecked); American: heavy bags: H…",
+    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-10) did not work",
+    "at": "2026-11-10T20:35:49.603Z",
+    "seen": 1
+  },
+  {
+    "id": "page:unitpay-ru",
+    "from": "page",
+    "consumed": "unitpay.ru",
+    "learned": "unitpay.ru could not be read: answered 502",
+    "retain": "unitpay.ru was could not be read",
+    "at": "2026-11-10T10:18:28Z",
+    "seen": 1
+  },
+  {
+    "id": "page:studiowaterarts-com",
+    "from": "page",
+    "consumed": "studiowaterarts.com",
+    "learned": "studiowaterarts.com walled: robots.txt asks robots not to read it",
+    "retain": "studiowaterarts.com was walled",
+    "at": "2026-11-10T10:17:51Z",
+    "seen": 1
+  },
+  {
+    "id": "page:telegram-services",
+    "from": "page",
+    "consumed": "telegram.services",
+    "learned": "telegram.services walled: a nearly empty page (2 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "telegram.services was walled",
+    "at": "2026-11-10T10:17:51Z",
+    "seen": 1
+  },
+  {
+    "id": "page:convertunits-com",
+    "from": "page",
+    "consumed": "convertunits.com",
+    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
+    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
+    "at": "2026-11-09T21:07:08Z",
+    "seen": 1
+  },
+  {
+    "id": "page:ipcalc-co",
+    "from": "page",
+    "consumed": "ipcalc.co",
+    "learned": "ipcalc.co could not be read: did not load (page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://ipcalc.co/)",
+    "retain": "ipcalc.co was could not be read",
+    "at": "2026-11-09T10:13:17Z",
+    "seen": 1
+  },
+  {
+    "id": "page:trafflink-xyz",
+    "from": "page",
+    "consumed": "trafflink.xyz",
+    "learned": "trafflink.xyz could not be read: did not load (page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://trafflink.xyz/)",
+    "retain": "trafflink.xyz was could not be read",
+    "at": "2026-11-09T10:12:59Z",
+    "seen": 1
+  },
+  {
+    "id": "page:man-fyi",
+    "from": "page",
+    "consumed": "man.fyi",
+    "learned": "man.fyi walled: a nearly empty page (92 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "man.fyi was walled",
+    "at": "2026-11-09T10:12:54Z",
     "seen": 1
   },
   {
@@ -27,24 +126,6 @@
     "seen": 1
   },
   {
-    "id": "page:live-check-rides-osrm-public-demo-router-router-",
-    "from": "page",
-    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
-    "learned": "2026-11-08: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
-    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-08) worked",
-    "at": "2026-11-08T18:49:14.893Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-baggage-the-airline-pages-the-baggage",
-    "from": "page",
-    "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
-    "learned": "2026-11-08: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403 (3 figures unchecked); American: heavy bags: H…",
-    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-08) did not work",
-    "at": "2026-11-08T18:28:56.034Z",
-    "seen": 1
-  },
-  {
     "id": "page:ldraw-org",
     "from": "page",
     "consumed": "ldraw.org",
@@ -54,21 +135,12 @@
     "seen": 1
   },
   {
-    "id": "page:convertlive-com",
+    "id": "page:250free-com",
     "from": "page",
-    "consumed": "convertlive.com",
-    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
-    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
-    "at": "2026-11-08T13:29:14Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
-    "from": "page",
-    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
-    "learned": "2026-11-08: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"; error: the paint: answered 405 no state",
-    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-08) did not work",
-    "at": "2026-11-08T11:22:47.018Z",
+    "consumed": "250free.com",
+    "learned": "250free.com walled: a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "250free.com was walled",
+    "at": "2026-11-08T09:25:27Z",
     "seen": 1
   },
   {
@@ -288,15 +360,6 @@
     "seen": 1
   },
   {
-    "id": "page:convertunits-com",
-    "from": "page",
-    "consumed": "convertunits.com",
-    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
-    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
-    "at": "2026-11-05T02:31:06Z",
-    "seen": 1
-  },
-  {
     "id": "page:ofont-ru",
     "from": "page",
     "consumed": "ofont.ru",
@@ -321,6 +384,15 @@
     "learned": "communitycollegejobs.com walled: a nearly empty page (44 characters: a redirect stub, or a page that draws itself with no text)",
     "retain": "communitycollegejobs.com was walled",
     "at": "2026-11-01T22:17:46Z",
+    "seen": 1
+  },
+  {
+    "id": "page:ndscalc-ru",
+    "from": "page",
+    "consumed": "ndscalc.ru",
+    "learned": "ndscalc.ru built, then discarded: failed tests",
+    "retain": "ndscalc.ru was built, then discarded",
+    "at": "2026-11-01T16:55:26Z",
     "seen": 1
   },
   {

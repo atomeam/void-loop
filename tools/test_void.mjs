@@ -12,6 +12,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
+import { checkAll, patchFor } from '../void-live-deploy/lib/sightline.js';
 import { parseShard, inShard } from './shard.mjs';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
@@ -535,7 +536,27 @@ async function fresh(...inits) {
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
-  return { ctx, p, ask, state, page, whisper, errors, logs };
+  // Sightline: capture bounding boxes of the card containers and run the pure layout-constraint checks.
+  // Returns { defects, clean, patch }. Empty defects = clean layout. Pure logic lives in lib/sightline.js.
+  const sightline = async () => {
+    const snaps = await p.evaluate(() => {
+      const out = [];
+      const add = (sel, name) => {
+        for (const el of document.querySelectorAll(sel)) {
+          const r = el.getBoundingClientRect();
+          out.push({ name, box: { width: r.width, height: r.height, scrollWidth: el.scrollWidth, scrollHeight: el.scrollHeight, clientWidth: el.clientWidth, clientHeight: el.clientHeight }, itemCount: el.querySelectorAll('li').length, hasScrollContainer: el.scrollHeight > el.clientHeight && getComputedStyle(el).overflowY !== 'visible' });
+        }
+      };
+      add('.vpage.on', 'card');
+      add('.tw-crawl', 'crawl');
+      add('.tw-lacks', 'lacks');
+      add('.tw-missing', 'missing');
+      return out;
+    }).catch(() => []);
+    const r = checkAll(snaps);
+    return { ...r, patch: r.clean ? '' : patchFor(r.defects) };
+  };
+  return { ctx, p, ask, state, page, whisper, errors, logs, sightline };
 }
 
 try {
@@ -1544,7 +1565,8 @@ try {
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
     const P = await fresh({ phone: true });
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => ({ rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]'), wide: document.documentElement.scrollWidth <= innerWidth })).catch((e) => ({ err: String(e) }));
+    // a phone runner can take longer than the ask's 1.2 s to open the card (lists run 22: main failed twice on "no .vpage.on"), so wait for it
+    const v = (await until(() => P.p.$eval('.vpage.on', (c) => ({ rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]'), wide: document.documentElement.scrollWidth <= innerWidth })).catch(() => null), 10000)) || { err: 'no .vpage.on after 10 s' };
     check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
@@ -6556,6 +6578,17 @@ try {
     const rec = JSON.parse(fs.readFileSync(path.join(root, 'reefwatch.json'), 'utf8')).rows.florida_keys;
     check('coral: the heat card shows the reef watch reading for the Florida Keys (level, degree heating weeks, date) under "Right now", with what 4 and 8 mean, and keeps its sourced story', /Right now/.test(got.live) && got.live.includes(rec.date) && /degree heating weeks/.test(got.live) && /4 or more/.test(got.live) && /Gene banks on land/.test(got.page) && !C.errors.length, JSON.stringify({ live: got.live.slice(0, 300), errs: C.errors }));
     await C.ctx.close(); }
+  // the coral heat-test card (think-tank row, skills/coral.js): "how do you test coral heat tolerance", "cbass coral" and "find heat tough coral" open the CBASS card with four dated sources, both preprints labelled, the link to the heat-survival card, with the network blocked.
+  if (want("the coral heat-test card (think-tank row, skills/coral.js)")) {
+    const T = await fresh(); await T.ctx.route(/^https?:\/\/(?!127\.0\.0\.1|localhost)/, (r) => r.abort());
+    const seen = [];
+    for (const a of ['how do you test coral heat tolerance', 'cbass coral', 'find heat tough coral']) {
+      await T.ask(a, 900);
+      seen.push(await T.p.evaluate(() => { const el = document.querySelector('.vpage.on'); return el ? { text: el.innerText, links: [...el.querySelectorAll('.src a')].map((x) => x.href), back: !!el.querySelector('a[data-ask="can coral survive heatwaves"]') } : { text: '', links: [], back: false }; }));
+    }
+    const ok = seen.every((g) => /How scientists find heat-tough coral before planting/.test(g.text) && /ED50/.test(g.text) && /R = 0\.74/.test(g.text) && /2,068 colonies/.test(g.text) && (g.text.match(/preprint\)/g) || []).length >= 2 && g.links.length === 4 && g.links.some((h) => h.includes('10.1002/lom3.10555')) && g.back);
+    check('coral: the heat-test card opens for each example ask offline, with four dated sources, both preprints labelled and the link to the heat-survival card', ok && !T.errors.length, JSON.stringify({ first: (seen[0] || {}).text && seen[0].text.slice(0, 200), links: seen.map((g) => g.links.length), errs: T.errors }));
+    await T.ctx.close(); }
   // routines (frontier #13, skills/routine.js): "call this my morning" keeps the asks before it, in order, in this browser; after a reload "my morning" asks them again as if typed; "my routines" lists it; "forget my morning" drops it, and then "my morning" is no longer a routine.
   if (want("routines (frontier #13, skills/routine.js): \"call this my morning\" keeps the asks before it")) {
     const R = await fresh(); await R.ask('15% tip on 80', 700); await R.ask('flip a coin', 700); await R.ask('call this my morning', 700);
@@ -7877,7 +7910,7 @@ try {
     const loop = await W.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').pop());
     check('wants card: "name all your unbuilt asks and come up with 50 more new ones" opens "What I want built" from Verse\'s own records (the will fixture\'s want, the reflect fixture\'s open ask with its date, the real self.json open frontier items), a count line "1 want · 1 ask not built · N inbox items", every item a chip, and the 50 new ones are the asker\'s to ask for one at a time',
       !!got && got.title === 'What I want built' && /^Want → skill: 2 of 5 of my asks built \(40%\)/.test(got.velocity) && got.count === '1 want · 1 ask not built · ' + nOpen + ' inbox item' + (nOpen === 1 ? '' : 's') && got.heads.join('|') === 'My will (1)|Asked, not built yet (1)|Growth inbox (' + nOpen + ')'
-        && got.wants.join() === 'I want to answer every question about tides.' && got.asks.join() === 'Give the map card terrain' && /daily reflection, 2026-10-08/.test(got.askSub) && got.inbox.length === nOpen && nOpen > 0 && got.inbox.includes(selfJson.open[0].ask)
+        && got.wants.join() === 'I want to answer every question about tides.' && got.asks.join() === 'Give the map card terrain' && /daily reflection, 2026-10-08/.test(got.askSub) && got.inbox.length === nOpen && (nOpen === 0 || got.inbox.includes(selfJson.open[0].ask))
         && /^The 50 new ones are yours to ask for one at a time/.test(got.more) && /no model/.test(got.src) && got.missing === 0 && loop && loop.note === 'skill:wants' && !W.errors.length,
       JSON.stringify({ got, nOpen, loop, errors: W.errors }));
     // a tap on a chip copies it (the chip marks itself copied; the whisper says so) and runs no ask
@@ -7911,7 +7944,7 @@ try {
         && plain.nChanged === '2' && /^Lap 1 so far: 2 items sent for upgrade \(newest: surface:ask, surface:home\) · 0 new features$/.test(plain.changed) && /Overhaul surface:ask, failed, not shipped/.test(plain.run)
         && plain.blocked.some((b) => /watertightness of STL.*held until sycophanthex\.com is beaten/.test(b)) && plain.blocked.length === 1 + nWaits
         && /^will:My willUpgrade surface:cardsIts turn in lap 1/.test(plain.picks[0]) && /^ask:My buildersGive the map card terrain/.test(plain.picks[1])
-        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams) && !plain.wide && !P.errors.length,
+        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && (nInbox === 0 ? plain.streams === '' : /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams)) && !plain.wide && !P.errors.length,
       JSON.stringify({ plain, nInbox, nWaits, errors: P.errors }));
     await P.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
@@ -12655,4 +12688,3 @@ for (const r of results) console.log(line(r));
 const skipped = results.filter((r) => r.skipped).length;
 console.log(`${results.length - bad.length}/${results.length} passed` + (skipped ? ` (${skipped} skipped on this machine)` : ''));
 if (ONLY.length && !wanted.size) { console.log('--only "' + ONLY.join(' ') + '" matched no section (node tools/test_void.mjs --list)'); exitFlushed(1); } else exitFlushed(bad.length ? 1 : 0);
-

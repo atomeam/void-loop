@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-11T17:59:28.650Z",
+ "sha": "408f653a86a3c726e69a6a3ebebad4fe863dd0e6",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43069363806",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+ ],
+ "touched": [
+  "docs/RULES.md",
+  "tools/real-pages.mjs",
+  "void-live-deploy/our-motherfucking-version/index.html",
+  "void-live-deploy/track-times/index.html",
+  "void-live-deploy/versus/index.html"
+ ],
+ "shards": [
+  2,
+  3
+ ],
+ "passed": [
+  2,
+  3
+ ],
+ "closedAt": "2026-11-11T18:32:50.091Z",
+ "closedBy": "bd3712e383c34a9d7522d9e7efdbab33f703bf26",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/43075765440",
+ "minutes": 33
+}

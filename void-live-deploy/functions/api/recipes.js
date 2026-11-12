@@ -15,7 +15,7 @@ import { fromMeal, ingredientsOf, CATEGORIES, AREAS } from '../../lib/recipes.js
 
 export const RL_MAX = 20, TTL = 3600, HOST = 'https://www.themealdb.com/api/json/v1/1/';
 const WORD = /^[\p{L}\p{M}\p{N}\s'’,&-]{1,60}$/u;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 /** what a request asks: { kind: 'q' | 'i' | 'id', value }, or null when it is not a plain dish, ingredient list or id. Pure. */
 export function askIn(url) {
   const p = new URL(url).searchParams, id = String(p.get('id') || '').trim(), q = String(p.get('q') || '').replace(/\s+/g, ' ').trim(), i = String(p.get('i') || '').replace(/\s+/g, ' ').trim();

@@ -16,10 +16,11 @@ import { realized, balances, bucketWeights, split, queueSpends, review } from '.
 import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
 import { SERVICES, usdcText } from '../../lib/x402.js';
 import { sponsorView } from './sponsors.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
 const RECONCILE_MS = 6 * 3600e3;
-const json = (body, status = 200, cache = 'no-store') => Response.json(body, { status, headers: { 'cache-control': cache } });
+const json = (body, status = 200, cache = 'no-store') => jsonNoStore(body, status, { 'cache-control': cache });
 
 async function ensure(env) {
   await ensureStoreTables(env);

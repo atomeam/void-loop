@@ -1,0 +1,193 @@
+{
+ "at": "2026-11-11T22:52:43Z",
+ "sha": "af2ba321a5ea182d2a227c153013e91a1972ff6e",
+ "runId": 43112274583,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43112274583",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 130831158844,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43112274583/job/130831158844",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)"
+   },
+   "fails": [
+    "FAIL delivery-board  -> match broke"
+   ],
+   "tail": [
+    "pass movie",
+    "pass notebook",
+    "pass palette",
+    "pass palindrome",
+    "pass password",
+    "pass pick-for-me",
+    "pass print-download",
+    "pass proverb",
+    "pass quote",
+    "pass random",
+    "pass reuse-pack",
+    "pass riddle",
+    "pass rps",
+    "pass shop",
+    "pass show-countdown",
+    "pass shuffle",
+    "pass status-board",
+    "pass stopwatch",
+    "pass store",
+    "pass system-slice",
+    "pass system-status",
+    "pass terminal",
+    "pass triangulate",
+    "pass uuid",
+    "pass video-gen",
+    "pass walker",
+    "pass wordladder",
+    "pass yesno",
+    "pass zoom-figure",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (2)",
+   "id": 130831159212,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43112274583/job/130831159212",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 2 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it  -> {\"chap\":"
+   ],
+   "tail": [
+    "pass weather card: pressure and visibility now, the hours start at the hour now, and a graph hour by hour to seven days",
+    "pass the fringe lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"fringe lab\" lists all 12 and a click opens one",
+    "pass draw layers: \"new layer for the house\" and \"for the moon\" name the layers; \"put the moon behind the house\" puts the blue house over the yellow moon where they cross; \"hide the house\" and \"make the moon 40%\" act on the right layer; an unknown layer is named back",
+    "pass draw 3D print: \"make the ring thicker\" thickens the strokes already drawn; \"print it\" downloads the 3D layer as an STL that forge's print check calls watertight",
+    "pass side panel: the site allows extension frames (no X-Frame-Options DENY)",
+    "pass build asks are owner-only (a stranger's goes the ordinary way: nothing queued, no word of an owner)",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass known first asks on a slow device (#2316 #2323 #2342): with the CPU 6x slower and no skill loaded yet, \"flip this card\", \"favorite this\" and \"send it away\" are answered by card-play, bookmarks and dismiss within 4 s of Enter, and no \"waking up\" is left behind",
+    "pass a tab left open shows 'a newer Verse is ready' when the build changes, and reloads only on tap",
+    "pass spectators card 1280: \"open the stage to spectators\" is a plain share card (no collectible frame, rarity, art or stats): \"Your stage is open\", one line naming how many things the read-only snapshot holds and a chip for each (Clock; Note · buy milk and eggs), the link once, shortened in the midd",
+    "pass spectators card: a ?spectate= link in the v1 format made before the new card still opens the read-only spectator view with its things",
+    "pass spectators card 390: the same card at a 390 px phone: plain, the shared things, the link field and every button inside the card with no sideways scroll, a QR code, and Copy link copies the whole link",
+    "pass stage pack h: \"summon everything except urgency\" summons up to 4 calm things (a sticky, breathing...) in a \"without urgency\" card, none about urgency; clear takes them back; \"summon the ancient ones\" summons nothing",
+    "pass stage pack h: a look-alike ask (\"summon the ancient ones\") raises no summons card",
+    "pass stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
+    "pass stage pack h: when the answer path asks us to slow down the echo card says so and spends nothing; \"echo this\" echoes the last question and Keep first removes the echo and leaves the first answer",
+    "pass stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
+    "pass stage pack h: \"choir practice near me\" goes where it went (no near-choir card)",
+    "pass calc-more and tip: \"300 px in cm at 150 dpi\" is 5.08 cm, \"5 cm to pixels at 300 dpi\" is 590.55 px, \"100 usd to eur at 0.92\" uses only the typed rate (92 EUR, and it says so), a kgs-to-lbs rate is not taken for money; \"45 with 8% tax and 20% tip\" totals $57.60 with $3.60 tax, and \"an 84 dollar b",
+    "pass calc-more openers: \"currency converter with my own rate\" turns 10 at a typed 0.5 into 5, and \"dpi converter\" turns 96 px into 1 in at 96 dpi",
+    "pass rank and pros/cons cards: \"rank pizza, tacos, sushi\" moves tacos to the top on a tap; a 5-weight pro against a 2-weight con says \"pros lead by 3\" and the rows are kept with the stage",
+    "pass vote marks: six votes for tacos show one struck group of four strokes and one more stroke, one vote for pizza one stroke, the leader is marked, and a reload keeps the counts",
+    "pass eliminate and pairwise: two taps leave \"Last one standing: blue\" and a third tap on blue changes nothing; three pair choices rank pizza (2 wins), tacos (1), sushi (0)",
+    "pass 2x2 matrix and must/should/could: tap an item, tap a quadrant puts \"redesign\" in quadrant 1 (big bets); tap \"ship\", tap Must puts it in Must; the buckets are Must, Should, Could; both are kept",
+    "pass telemetry route keeps checking: a pasted status update naming PR 1176 opens the reality card, which shows \"still running\", reads GitHub again by itself until the checks settle, then stops asking",
+    "pass Ringer by touch: a jittery tap inside the ring aims without turning the camera; a drag lifted outside the ring aims by direction with a ghost of the shot that fades after the lift; a cancelled touch, a second finger and a lost window focus each give the camera back (no shot), and the dirt outsi",
+    "pass chess and checkers: without WebGL each shows a flat 64-square board and a click still plays a move",
+    "pass 3D list: a grocery list gets one card and no clipboard beside it; rowsOf/newlyDone still find the ticked line (not a removed one) and the paper shows at most 7 lines",
+    "73/74 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (7)",
+   "id": 130831159705,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43112274583/job/130831159705",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 7 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL suite ran to the end  -> page.fill: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "pass look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)",
+    "pass look what I made: a preview that shows nothing says so on its line (\"but nothing showed just now: I flagged it for the builders\") and files the ask as a preview:nothing-shown miss; a step that puts a counter on the stage is left alone",
+    "pass stage extras friction: \"add a friction slider\" puts one card up, the slider at 80 makes a throw keep 92% of its speed a step (kept on the device), and \"set the friction to 0\" moves the slider to 0 and the factor to 1",
+    "pass stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "pass stage pack e mutate: \"mutate this card\" steps the picked counter a generation a second under a gen tag and a hue filter, \"lock generation 7\" freezes it at exactly 7 (a second later it is still 7), and \"stop mutating\" clears the tag and the look",
+    "pass stage pack e sudden death: \"sudden death in 2 seconds\" puts one counting banner up and at zero one thing is gone with the banner, \"sudden death in 60 seconds\" arms one and \"cancel sudden death\" takes it down with nothing lost",
+    "pass stage pack e overload: \"overload me\" floods the stage with 24 mini-cards that are never saved, a card dragged onto another merges into it (23 left, one of size 2), and \"purge the overload\" clears them all",
+    "pass stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "pass export my memory: without a key only the browser graph is offered; with the key the card downloads what V01D keeps (v01d-kept-<date>.json, read with the key) and says how many lines",
+    "pass built-in calculator: \"open a calculator\" puts one up and \"add a calculator\" keeps it one, \"make the calculator blue\" edges it blue, \"calculator 2+5\" works it out on the card (7), it comes back after a reload, and \"remove the calculator\" takes it away",
+    "pass calculator LCD look: the card is a charcoal calculator body, the sum and its result share one olive LCD window (no gap between), both right-aligned like a real calculator, the result in big dark tabular digits, and \"make the calculator orange\" edges it orange",
+    "pass built-in sticky: \"sticky note buy milk\" writes it, \"make a pink sticky\" turns it pink, \"another note\" adds a second, \"note: call mom\" writes the picked one, \"make it blue\" and \"make the sticky green\" recolour it, \"take notes\" keeps two, both come back after a reload, and after the reload (nothi",
+    "pass task board: two tasks make a Today stack with the overdue one first and red, marks and estimates show, someday and waiting get their tabs, \"finish task\" moves one to Done, a plain \"add milk to my list\" stays a list, a reload keeps all of it",
+    "pass time math: a meeting from 9:30 to 11:15 is 1 h 45 min, oct 25 sits in an ISO week of its own year, the age calculator turns a birth day into years, months and days and the next birthday",
+    "pass days since: \"days since I quit coffee\" starts a card at 0 days, \"days since I started running on <12 days ago>\" is a second card that still counts 12 after a reload, Reset puts it back to 0",
+    "pass busy blocks: three blocks make a bar with the free gaps named, typing \"gym 5-6pm\" adds a fourth, \"clear busy blocks\" takes the card off",
+    "pass tilt arena: \"tilt arena\" opens Tilt mode with three leader cards, the weakest copies the leader within a few seconds, the card fits at 1280 and 390 wide with nothing cut off, under 8 ms a frame, \"save the arena\" seals the leader, Mode switches in place to GPU Swarm (graphics card or the process",
+    "pass resonance mind: \"resonance mind\" opens F-034, plucking the lattice changes its numbers and the card's hue (not the page), the mind runs a generation in a Worker, each of the six laws runs from its chip with its F-id, and neither sound nor the microphone starts unasked",
+    "pass resonance mind: \"resonant voice lattice mind\" opens on F-037; with Worker and Web Audio deleted the mind thinks on the page (it still evolves), Sound and the microphone say they are unavailable, every law still runs, and nothing throws",
+    "pass memory: \"remember that <fact>\" POSTs one note with the bearer, \"forget that <fact>\" DELETEs the same note id, and each says what it did",
+    "pass ask a document, map it: no map button before a document is loaded; after pasted markdown it maps the opening, Lease, Rent and Pets under Lease, Deposits under Pets and Signing, each with its line count, and Rent opens to its own two lines; nothing leaves the page",
+    "pass arena day over day: \"how good are you at connect four\" says the change since the last day that differed, from the history the daily run keeps (here: no change since Oct 11)",
+    "pass routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "pass goal card on the Moon: the same card sets \"a waxing phase with half its face lit\"; dragging the orbit slider updates it live; 270° is half lit but waning (not yet, says which), 90° is done",
+    "FAIL suite ran to the end  -> page.fill: Timeout 30000ms exceeded.",
+    "Call log:",
+    "  - waiting for locator('.proposal-field[data-field=\"title\"]')",
+    "",
+    "63/64 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (5)",
+   "id": 130831159810,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43112274583/job/130831159810",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 5 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has s",
+    "FAIL the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph  -> {\"missing\""
+   ],
+   "tail": [
+    "pass poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text",
+    "pass poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half",
+    "pass poster wins: a text-only card has one seal, centred and filling the whole art window (never in a corner over dead space)",
+    "pass poster wins: a very long answer (desktop) is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar's row at its right edge",
+    "pass poster wins: a very long answer (phone) is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar's row at its right edge",
+    "pass poster wins: on a skill card (desktop) the stats chip touches no text, the rarity and collector row included",
+    "pass poster wins: on a skill card (phone) the stats chip touches no text, the rarity and collector row included",
+    "pass void seal: every card's art box carries Verse's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "FAIL the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has s",
+    "pass the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital, and more to ask), ← turns back to the title page",
+    "pass the book: ← from the title page swings the cover shut over the pages (the book stays up), and → or a tap opens it again",
+    "FAIL the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph  -> {\"missing\"",
+    "pass the book: every proven skill in the Making things chapter opens with its own line of lore under the title, no two alike (asked by Verse)",
+    "pass the book: touching \"make a clock\" on the clock page closes the book (the stage is bright again) and puts a clock on the stage",
+    "pass the book: \"the book at chess\" opens on the Chess page, Esc shuts the cover and leaves the book up, and Esc again takes it away (the clock stays on the stage)",
+    "pass the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page",
+    "pass the book on a 390 px phone: one page at a time, the tome fits the screen, the prompt says swipe, and a swipe left turns to page 2",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass 3D dice (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D padlock (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D swatch (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D wheel (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D bubbles (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D pot (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D page (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass Ringer: \"play marbles\" stands the ring in the void (14 marbles, 13 to knock out); Flick rolls it from the card's state until everything stops (the hand lifts away while it rolls and comes back to aim), and the card says how the shot went",
+    "pass collector detail: a cat arrives at the light tier, zooming in on it re-meshes it finer twice (more triangles each step), and zooming out returns the light mesh (same triangle count) with the same seed",
+    "pass connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
+    "127/129 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-11T14:20:13.292Z",
+  "at": "2026-11-12T16:00:25.498Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,16 +34,16 @@
       }
     },
     "podcasts": {
-      "score": 94.3,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of the moth",
+          "ask": "play the latest episode of science vs",
           "failed": [
             "fast"
           ],
-          "score": 83.3
+          "score": 85.7
         },
         {
           "ask": "play the episode before that",
@@ -110,7 +110,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -126,9 +126,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -236,54 +237,12 @@
       }
     },
     "sports": {
-      "score": 87.9,
+      "score": 93.5,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mlb scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "premier league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "serie a scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "la liga scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mls scores",
+          "ask": "lakers score",
           "failed": [
             "board"
           ],
@@ -387,24 +346,16 @@
       "fails": []
     },
     "definitions": {
-      "score": 90,
+      "score": 96.7,
       "of": 6,
       "measured": 6,
       "fails": [
         {
-          "ask": "etymology of salary",
+          "ask": "define glimbrastic",
           "failed": [
-            "rival"
+            "fast"
           ],
           "score": 80
-        },
-        {
-          "ask": "define zorbleflux",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
         }
       ]
     },
@@ -415,14 +366,23 @@
       "fails": []
     },
     "code": {
-      "score": 100,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
-      "fails": []
+      "fails": [
+        {
+          "ask": "now make factorial(0) return 1",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        }
+      ]
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 87.9
+    "domain": "code",
+    "score": 93.3
   }
 }

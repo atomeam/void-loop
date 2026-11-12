@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42867507381",
-  "at": "2026-11-10T17:42:07Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for ownership-pack.  Why these: ownership-pack (no benchmark ask, evidence tier: experiment). New phrases: “ownership pack for Acme” now opens ownership-pack. Did not route: what does Verse own for the onboarding flow; ownership map for weekly reports.",
-  "try": "ownership pack for Acme",
+  "run": "43211992285",
+  "at": "2026-11-12T11:47:17Z",
+  "what": "Verse hardened itself: 6 benchmark ask(s) for bridge, system-slice.  Why these: bridge (no benchmark ask, evidence tier: tested); system-slice (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: tested). New phrases: “bridge these inputs” now opens bridge; “compare these inputs” now opens bridge; “synthesize these sources” now opens bridge; “next system slice for the client onboarding” now opens system-slice; “system slice for invoice reminders” now opens system-slice; “what should Verse build next for the support flow” now opens system-slice. Did not route: automation status for invoice reminders; status of the automations Verse owns for support; what does Verse own for the onboarding flow; ownership map for weekly reports.",
+  "try": "bridge these inputs",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-10T09:31:23Z",
-    "try": "ownership map for client onboarding",
-    "closedAt": "2026-11-10T17:41:57Z"
+    "at": "2026-11-12T09:45:18Z",
+    "try": "docs pack for Acme onboarding",
+    "closedAt": "2026-11-12T11:46:59Z"
   }
 }

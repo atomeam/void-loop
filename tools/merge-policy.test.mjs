@@ -132,6 +132,8 @@ test('the automerge workflow squash-merges without waiting for the suite, and ke
   assert.match(src, /superseded\(prs, loopCoverage\)/, 'file tools/automerge.mjs checks that a newer loop pull request contains the older one before closing it');
   assert.match(src, /void-carry/, 'file tools/automerge.mjs records the missing delta and leaves the pull request open');
   assert.match(src, /!Array\.isArray\(v\.files\)/, 'file tools/automerge.mjs does not treat an unreadable compare as an empty diff');
+  assert.match(src, /mergeGateFailure/, 'file tools/automerge.mjs blocks a failed merge gate');
+  assert.match(src, /merge-async/, 'file tools/automerge.mjs falls back to GitHub async merge after a 403');
 });
 
 test('a merge-policy failure names the rule and the file, branch or label', () => {

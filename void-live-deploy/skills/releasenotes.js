@@ -7,7 +7,8 @@
  * BREAKING CHANGE for breaking) and, when a line has no prefix, from its first word (add, fix, remove, deprecate …).
  * Breaking changes go first; merge commits and version bumps are left out. Live Markdown to copy; nothing is sent.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/\s+/g, ' ');
+import { squash } from '../lib/ask-text.js';
+const CLEAN = squash; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 const ASK_RE = /^(?:please\s+)?(?:(?:help\s+me\s+)?(?:write|draft|make|create|generate|do)\s+(?:me\s+)?(?:the\s+|some\s+|a\s+)?)?(?:release\s+notes?|change\s?log|changelog\s+entry|what'?s\s+new\s+notes)(?:\s+(?:for|from)\s+(?:my\s+|our\s+|the\s+|this\s+|these\s+)?(?:(v?\d+(?:\.\d+){1,3}(?:-[\w.]+)?)|repo(?:sitory)?|project|commits|release|prs?|pull\s+requests))?(?:\s+(?:for|from)\s+(?:my\s+|our\s+|the\s+|these\s+)?(?:repo(?:sitory)?|commits|prs?))?\s*(?::\s*)?$/i;
 
 /** { version, lines } for a release-notes ask (lines pasted after it, split on newlines or ⏎), else null. */

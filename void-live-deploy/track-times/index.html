@@ -11,6 +11,7 @@
 <link rel="canonical" href="https://a-to-mind.com/track-times/">
 <meta property="og:title" content="Track times · Verse">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: items; out: none">
 </head>
 <body>
 <main>
@@ -18,23 +19,19 @@
   <p>Each line is a start time and a title, and a length if you know it. The total is the last start plus the last length. Copy the list, or replace it.</p>
   <form method="get" action="/track-times/">
     <label for="list">Tracks</label>
-    <textarea id="list" name="list" spellcheck="false">0:00 21st Century Schizoid Man 7:24
-7:24 I Talk to the Wind 6:05
-13:29 Epitaph 8:47
-22:16 Moonchild 12:13
-34:29 The Court of the Crimson King 9:25</textarea>
+    <textarea id="list" name="list" spellcheck="false">0:00 First light 2:00
+2:00 Second light 3:30
+5:30 Last light 1:15</textarea>
     <div class="row"><button type="submit">Lay it out</button><button type="button" id="copy">Copy</button></div>
   </form>
-  <p id="total">5 tracks, 43:54 in all</p>
-  <pre class="list" id="out" tabindex="0" aria-label="Track list">0:00	21st Century Schizoid Man	7:24
-7:24	I Talk to the Wind	6:05
-13:29	Epitaph	8:47
-22:16	Moonchild	12:13
-34:29	The Court of the Crimson King	9:25</pre>
+  <p id="total">3 tracks, 6:45 in all</p>
+  <pre class="list" id="out" tabindex="0" aria-label="Track list">0:00	First light	2:00
+2:00	Second light	3:30
+5:30	Last light	1:15</pre>
   <p>Listening elsewhere on Verse: <a href="/podcast/">Out Loud</a>, <a href="/rap/">a rap</a>, <a href="/versus/">Versus</a>.</p>
   <section class="history">
     <h2>The original site</h2>
-    <p>"Tsundere" has a published meaning: a character who is cold and then warm. A <a href="https://web.archive.org/web/20180701000000/https://tsundere.pw/">2018 saved copy</a> of tsundere.pw was an internet-radio and links page. The later <a href="https://tsundere.pw/">live page</a> showed King Crimson's <a href="https://en.wikipedia.org/wiki/In_the_Court_of_the_Crimson_King">In the Court of the Crimson King</a> as start times. The 1969 LP timings used above are the ones on that Wikipedia article (side one 22:16, side two 21:38, 43:54 in all). The site does not say who picked the name or why, so this page does not guess.</p>
+    <p>A 2018 <a href="https://web.archive.org/web/20180701000000/https://tsundere.pw/">saved copy</a> of the site this tool answers was a radio and links page. A later <a href="https://tsundere.pw/">version</a> showed one 1969 album as a list of start times. This page is a list you can edit. The sample above is Verse's, not that album.</p>
   </section>
 </main>
 <script type="module" src="/track-times/app.js"></script>
