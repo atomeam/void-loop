@@ -7,6 +7,7 @@
  * and tomorrow's peak from the 4-day CAMS forecast.
  * Counts cover Europe (CAMS); elsewhere Verse says so plainly.
  */
+import { asOf } from '../lib/ask-text.js'; // the reading's date and time, one copy for air, pollen and uv (convergence step 2)
 const TYPES = [
   { key: 'grass_pollen', name: 'Grass' },
   { key: 'birch_pollen', name: 'Birch' },
@@ -44,13 +45,6 @@ function bandOf(n) {
   return BANDS.find((b) => v <= b.max) || BANDS[BANDS.length - 1];
 }
 
-function asOf(iso) {
-  if (!iso) return new Date().toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
-  const d = new Date(/T/.test(iso) ? iso : iso + 'T00:00:00');
-  if (Number.isNaN(+d)) return String(iso);
-  return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
-    + (/T\d/.test(iso) ? ' · ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '');
-}
 
 function pickHour(hourly) {
   if (!hourly || !Array.isArray(hourly.time)) return null;

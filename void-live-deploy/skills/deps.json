@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1267,
+ "counted": 1268,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -108,6 +108,13 @@
    "tests": 3
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 21,
+   "direct": 21,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
@@ -141,13 +148,6 @@
    "direct": 16,
    "dependants": 20,
    "tests": 0
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 20,
-   "direct": 20,
-   "dependants": 20,
-   "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
@@ -777,7 +777,7 @@
    "skills": 4,
    "direct": 0,
    "dependants": 6,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/tower-topic.js",
@@ -13819,6 +13819,7 @@
     "skills/client-status.js",
     "skills/date-math.js",
     "skills/dates.js",
+    "skills/experiments.js",
     "skills/games.js",
     "skills/idea-to-system.js",
     "skills/languages.js",
@@ -17248,6 +17249,14 @@
    ],
    "importedBy": []
   },
+  "skills/experiments.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/lab.js",
+    "skills/make.js"
+   ],
+   "importedBy": []
+  },
   "skills/extinction.js": {
    "imports": [
     "lib/opposite-era.js"
@@ -18112,7 +18121,9 @@
   },
   "skills/lab.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/experiments.js"
+   ]
   },
   "skills/label.js": {
    "imports": [
@@ -18305,7 +18316,9 @@
   },
   "skills/make.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/experiments.js"
+   ]
   },
   "skills/mancala.js": {
    "imports": [

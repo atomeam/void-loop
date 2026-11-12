@@ -42,7 +42,7 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 | The ask tidier `CLEAN` (trim, drop trailing ?!., collapse spaces, maybe lower-case) | 30 (3 identical forms in 23 files, 7 variants) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral; variants in worldtime, releasenotes, calendar, growth, showcase, different, feelings | `lib/ask-text.js` (**done for 23**; the 7 variants next, with an `apostrophes` option) |
 | Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | lib/owner-client.js (planned) |
 | `el(tag, attrs, kids)` DOM helper | 5 | actions, memory, proposal, automations, watch | the card system |
-| `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` sibling lib/when.js (planned) |
+| `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` (**done, lists run 20**) |
 | `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | lib/http.js (planned) |
 | `modelsOn(env)` | 3 | functions/api/answer, review, figurescript | `lib/models.js` (Claude) |
 | `hex` / `b64u` | 3 + 2 | lib/guard, automations-run, review-api; functions/api/films | `lib/guard.js` (Claude) |
@@ -50,7 +50,7 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 | `save3mf` | 2 | print-download, print-file | one print module |
 | `ensureTables` | 2 | lib/store-db, lib/void-me | lib/db.js (planned) |
 | `short`, `add` (cycle date maths) | 3 + 3 | period, ovulation, pregnancy | lib/cycle.js (planned) |
-| `slug` | 2 | api/reflect, api/will | `lib/ask-text.js` |
+| `slug` | 2 | api/reflect, api/will | `lib/ask-text.js` (**done, lists run 20**; lib/will-guard.js re-exports it) |
 | `seatsFor` | 2 | sorry-rules, aggravation | the board-game rules base |
 | `urlOf` | 2 | image, link | `lib/ask-text.js` |
 | `ready` (D1 table guard) | 2 | lib/film-reviews, api/support | lib/db.js (planned) |
@@ -75,7 +75,7 @@ Rules for every merge: one PR per row; a snapshot test proves the callers behave
 ## Staged merge order
 
 1. **Ask text** (shipped): `lib/ask-text.js`, 23 skills. Smallest, most copied, zero risk.
-2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof.
+2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof. `asOf` and `slug` landed in lists run 20; `urlOf` and the 7 variants are next.
 3. **Small server helpers**: lib/http.js (planned) (`json`), lib/db.js (planned) (`ensureTables`, `ready`). Wait for the store track to land first.
 4. **Owner client + `el()`**: one lib/owner-client.js (planned) and a card helper; five skills.
 5. **Router**: Claude folds `modelsOn`/`pick` into `lib/models.js` and the inline matchers left in `void.html` into skills behind the router.
@@ -89,6 +89,8 @@ Each step that lands moves its row to **Done** below and its line to **Just fini
 
 ## Done
 
+- **Experiments, one family (lists run 20, 2026-11-12)**: `skills/experiments.js` makes one routing entry of lab and make, which tools/skill-overlap.mjs listed as a merge candidate (both took "the lab" and "open the lab": the /lab/ card and make's fringe-lab card for the same place). lab is asked first as before; make sat at 0130 with only anneal-ambition between them, so the family takes 0127-experiments where lab sat. A routing replay of all 6,423 examples, near misses and bench asks moved 0. Aliases kept (both names are parts, the page still logs skill:lab / skill:make); regression test: tools/experiments-family.test.mjs.
+- **Step 2, first half (lists run 20, 2026-11-12)**: `asOf` (air, pollen, uv) and `slug` (functions/api/reflect.js, lib/will-guard.js) are one copy each in `lib/ask-text.js`; will-guard re-exports slug for api/will. tools/ask-text-step2.test.mjs compares both with the old copies, kept verbatim in the test. `urlOf` (image, link) and the 7 CLEAN variants are the second half.
 - **"Play" stays with the games (lists run 11, 2026-11-04)**: `lib/video.js` NOT_VIDEO now leaves "play draughts / baduk / solar quest / texas holdem / scrabble / rps / 3d tic tac toe / hanabi / zorbleflux / the podcast / a local audio file" to the skill that owns them, so video-play no longer turns them into a video search. tools/skill-overlap.mjs lists 10 fewer pairs (checkers, fireworks, go, media-object, monopoly, poker, rack, rps, tictactoe and zorbleflux with video-play), and tools/skill-overlap.json is lowered to match. Regression test in tools/video.test.mjs; real videos ("play despacito", "play the moon landing video") still play.
 - **Date math, one family (lists run 10, 2026-11-04)**: `skills/date-math.js` makes one routing entry (rank 0025) of time-math and date-calc, which tools/skill-overlap.mjs listed as overlapping (both took "what week number is it" and "week number of oct 25"). time-math is asked first as before, so both week asks keep their answer; date-calc (was rank 0125) keeps everything else it took. Aliases kept (both member names route as before), regression test tools/date-math-family.test.mjs, route snapshot over 6054 asks: 0 moved, 0 new misses.
 - **Riddles and generators, one family (lists run 12, 2026-11-05)**: `skills/riddle-gen.js` makes one routing entry (rank 0295) of riddle and textgen, which tools/skill-overlap.mjs listed as a merge candidate (both took "give me a riddle"). riddle is asked first as before, so every riddle ask keeps its answer; textgen (was rank 1877) keeps its name, prompt and idea generators. Aliases kept (both member names route and log as before), regression test tools/riddle-gen-family.test.mjs, and a route snapshot over all 4,059 examples and near misses of every skill showed 0 changed answers. The skill index has 343 entries now.
