@@ -1,41 +1,5 @@
 [
  {
-  "at": "2026-11-04T04:37:52Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 782,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 23181 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T05:14:46Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1732,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 14209 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-04T05:51:13Z",
   "kind": "visitor",
   "visitor": {
@@ -7948,5 +7912,65 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T07:30:03Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1034,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-12T07:42:58Z",
+  "passed": 116,
+  "of": 124,
+  "ms": 373,
+  "kind": "file",
+  "key": "weak | send it away",
+  "failed": [
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "icebreakers about hiking",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "vers lab",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "heavy lift map: invoice reminders that run themselves",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "make a client proposal for invoice reminders",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "map to existing tools: invoice reminders",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1034,
+   "failed": []
+  },
+  "note": "quality upgrade: weakest answer was \"send it away\" (16 chars)"
  }
 ]
