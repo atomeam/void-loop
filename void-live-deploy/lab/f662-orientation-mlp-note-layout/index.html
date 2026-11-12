@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#7ee787; --text:#e6edf3; --muted:#8b949e; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; min-height:100vh; }
+header { padding:12px 16px; border-bottom:1px solid #30363d; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+h1 { font-size:1.1rem; margin:0; font-weight:600; }
+textarea { width:100%; min-height:80px; background:#161b22; color:var(--text); border:1px solid #30363d; border-radius:6px; padding:8px; font:inherit; }
+button, input[type=range] { background:#21262d; color:var(--text); border:1px solid #30363d; border-radius:6px; padding:6px 10px; cursor:pointer; font:inherit; }
+button:hover { border-color:var(--accent); }
+#field { position:relative; width:100%; height:70vh; background:#0d1117; overflow:hidden; border-bottom:1px solid #30363d; }
+.note { position:absolute; background:var(--card); border:1px solid #30363d; border-radius:8px; padding:8px 10px; max-width:180px; font-size:0.85rem; cursor:grab; user-select:none; box-shadow:0 4px 12px rgba(0,0,0,.4); transition:box-shadow .15s; }
+.note.pinned { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.note:active { cursor:grabbing; }
+#status { font-size:0.8rem; color:var(--muted); margin-left:auto; }
+footer { padding:12px 16px; font-size:0.8rem; color:var(--muted); }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation MLP Note Layout · Verse lab</title>
+<meta name="description" content="A hybrid spatial interface for The Verse canvas. User notes become embodied cards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation MLP Note Layout · Verse lab">
+<meta property="og:description" content="A hybrid spatial interface for The Verse canvas. User notes become embodied cards.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f662-orientation-mlp-note-layout/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f662-orientation-mlp-note-layout/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Note Force Layout</h1>
+  <span id="status">ready</span>
+</header>
+<div style="padding:12px 16px; display:grid; gap:8px;">
+  <textarea id="notes" placeholder="Paste notes, one per line&#10;project ideas&#10;meeting notes&#10;research links"></textarea>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <button id="run">Arrange notes</button>
+    <button id="orient">Enable tilt</button>
+    <button id="png">Download PNG</button>
+    <button id="copy">Copy summary</button>
+    <button id="seal">Seal weights</button>
+    <label>Speed <input type="range" id="speed" min="0.2" max="2" step="0.1" value="1"></label>
+  </div>
+</div>
+<div id="field"></div>
+<footer>F662 · Orientation MLP drives force scales · offline · drag to pin · tilt or mouse moves the field · Verse</footer>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1419; --fg:#e7ecf1; --acc:#3dd6c6; --card:#1a2332; --muted:#8b9bb4; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a3544; }
+h1 { margin:0; font-size:1.4rem; }
+.sub { color:var(--muted); font-size:.9rem; }
+main { max-width:720px; margin:0 auto; padding:1rem; }
+section { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+h2 { margin:0 0 .75rem; font-size:1.1rem; }
+label { display:block; margin:.4rem 0 .2rem; font-size:.85rem; color:var(--muted); }
+input, select, button { font:inherit; padding:.5rem; border-radius:8px; border:1px solid #3a4658; background:#121a24; color:var(--fg); }
+input[type=number] { width:100px; }
+button { background:var(--acc); color:#042; border:none; cursor:pointer; font-weight:600; }
+button.secondary { background:#2a3544; color:var(--fg); }
+button.danger { background:#c44; color:#fff; }
+.row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin:.5rem 0; }
+.people-list, .items-list { display:flex; flex-direction:column; gap:.4rem; }
+.person, .item { background:#121a24; padding:.6rem; border-radius:8px; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+.assignees { display:flex; gap:.3rem; flex-wrap:wrap; }
+.assignees label { display:inline-flex; align-items:center; gap:.2rem; margin:0; font-size:.85rem; }
+.totals { font-size:1.05rem; }
+.person-total { display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid #2a3544; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem; }
+.note { font-size:.8rem; color:var(--muted); margin-top:.5rem; }
+@media (max-width:480px) { .row { flex-direction:column; align-items:stretch; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Bill splitter · Verse lab</title>
+<meta name="description" content="Job: Add people and items with prices and who had them, set tax and tip percentages, and see each person's fair share of the total.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Bill splitter · Verse lab">
+<meta property="og:description" content="Job: Add people and items with prices and who had them, set tax and tip percentages, and see each person's fair share of the total.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f652-bill-splitter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f652-bill-splitter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Bill splitter</h1>
+  <div class="sub">Itemized shares · tax & tip · copy or download · saved on this device</div>
+</header>
+<main>
+  <section>
+    <h2>People</h2>
+    <div class="row">
+      <input id="personName" placeholder="Add a person" maxlength="40">
+      <button id="addPerson">Add</button>
+    </div>
+    <div id="people" class="people-list"></div>
+  </section>
+
+  <section>
+    <h2>Items</h2>
+    <div class="row">
+      <input id="itemDesc" placeholder="Description" maxlength="60">
+      <input id="itemPrice" type="number" step="0.01" min="0" placeholder="Price">
+      <button id="addItem">Add item</button>
+    </div>
+    <div id="items" class="items-list"></div>
+  </section>
+
+  <section>
+    <h2>Tax & tip</h2>
+    <div class="row">
+      <label>Tax % <input id="tax" type="number" step="0.1" min="0" value="8"></label>
+      <label>Tip % <input id="tip" type="number" step="0.1" min="0" value="18"></label>
+    </div>
+  </section>
+
+  <section>
+    <h2>Who owes what</h2>
+    <div id="totals" class="totals"></div>
+    <div class="actions">
+      <button id="copy">Copy summary</button>
+      <button id="download" class="secondary">Download .txt</button>
+      <button id="clear" class="danger secondary">Clear all</button>
+    </div>
+    <div class="note">Shares are equal among the people assigned to each item. Tax and tip are added in proportion to each person's item subtotal. Numbers are rounded to cents at the end.</div>
+  </section>
+</main>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

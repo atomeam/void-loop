@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 12,
+ "count": 13,
  "skills": {
   "experiments": [
    "toolkit"
@@ -67,6 +67,11 @@
    "heavy-lift-map",
    "ownership-pack",
    "progress-report"
+  ],
+  "time-saved": [
+   "status-digest",
+   "full-handoff",
+   "delivery-board"
   ]
  }
 }

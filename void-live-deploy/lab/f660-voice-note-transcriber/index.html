@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background: #111; color: #eee; }
+  h1 { font-size: 1.5rem; }
+  button, select { font-size: 1rem; padding: 0.5rem 1rem; margin: 0.25rem; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #444; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #transcript { width: 100%; min-height: 120px; background: #222; color: #eee; border: 1px solid #444; padding: 0.5rem; border-radius: 4px; font-size: 1rem; }
+  canvas { width: 100%; height: 80px; background: #000; border-radius: 4px; margin: 0.5rem 0; display: block; }
+  .status { color: #aaa; font-size: 0.9rem; margin: 0.5rem 0; }
+  .keeps { margin-top: 1rem; }
+  .note { font-size: 0.85rem; color: #888; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Voice note to text · Verse lab</title>
+<meta name="description" content="Job: Speak into the microphone; see a live transcript as you talk, record the audio, then copy the text or download the recording and a text file.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Voice note to text · Verse lab">
+<meta property="og:description" content="Job: Speak into the microphone; see a live transcript as you talk, record the audio, then copy the text or download the recording and a text file.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f660-voice-note-transcriber/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f660-voice-note-transcriber/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Voice note to text</h1>
+<p>Speak a note. Live transcript appears as you talk. Optionally record the audio. Everything stays on this device.</p>
+
+<div class="status" id="status">Ready. Click Start listening (mic permission needed).</div>
+<canvas id="wave" width="600" height="80"></canvas>
+
+<textarea id="transcript" placeholder="Transcript will appear here..."></textarea>
+<div>
+  <button id="listenBtn">Start listening</button>
+  <button id="recordBtn">Start recording</button>
+  <button id="clearBtn">Clear</button>
+</div>
+<div class="keeps">
+  <button id="copyBtn">Copy transcript</button>
+  <button id="dlTxtBtn">Download .txt</button>
+  <button id="dlAudioBtn" disabled>Download audio</button>
+</div>
+<p class="note">Speech recognition uses the browser's local engine (best in Chrome/Edge). Recording is raw audio in the browser's native format. Nothing is sent to any server. Last transcript is saved on this device.</p>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

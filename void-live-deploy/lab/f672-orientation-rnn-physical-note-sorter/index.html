@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<style>
+  :root { --bg: #0f1419; --card: #1a2332; --accent: #5eead4; --text: #e2e8f0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; height: 100vh; overflow: hidden; }
+  #ui { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 10; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+  textarea { flex: 1; min-width: 180px; height: 60px; background: #111; color: var(--text); border: 1px solid #334; border-radius: 6px; padding: 6px; font-size: 14px; }
+  button { background: var(--accent); color: #0f1419; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+  button:hover { filter: brightness(1.1); }
+  #status { font-size: 12px; opacity: 0.8; margin-left: auto; }
+  #board { position: absolute; inset: 90px 0 0 0; }
+  .note { position: absolute; width: 140px; min-height: 70px; background: var(--card); border: 1px solid #334; border-radius: 8px; padding: 8px; font-size: 13px; cursor: grab; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,.4); transition: box-shadow .2s; }
+  .note:active { cursor: grabbing; box-shadow: 0 8px 20px rgba(0,0,0,.6); }
+  .note .text { word-break: break-word; }
+  #export { position: absolute; bottom: 12px; right: 12px; z-index: 10; }
+  #clusters { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.7; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Tilt Note Organizer · Verse lab</title>
+<meta name="description" content="Job: Paste or type your notes; they become physical cards that respond to your device tilt through a tiny on-device RNN that adapts their clustering.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Tilt Note Organizer · Verse lab">
+<meta property="og:description" content="Job: Paste or type your notes; they become physical cards that respond to your device tilt through a tiny on-device RNN that adapts their clustering.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f672-orientation-rnn-physical-note-sorter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f672-orientation-rnn-physical-note-sorter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <textarea id="input" placeholder="Paste notes, one per line…"></textarea>
+  <button id="add">Add notes</button>
+  <button id="clear">Clear</button>
+  <div id="status">Tilt or drag to organize</div>
+</div>
+<div id="board"></div>
+<div id="clusters">Cluster A · Cluster B</div>
+<button id="export">Download grouped .txt</button>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Tilt Note Organizer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

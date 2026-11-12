@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg:#0a0a12; --fg:#e8e8f0; --acc:#6cf; --warn:#f96; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+#ui { position:absolute; top:8px; left:8px; z-index:10; display:flex; flex-wrap:wrap; gap:6px; max-width:calc(100% - 16px); }
+button, input { background:#1a1a28; color:var(--fg); border:1px solid #333; border-radius:6px; padding:6px 10px; font:inherit; }
+button:hover { border-color:var(--acc); }
+#status { position:absolute; bottom:8px; left:8px; right:8px; font-size:12px; opacity:.8; pointer-events:none; }
+canvas { display:block; width:100vw; height:100vh; cursor:crosshair; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Inertial Particle Filter Spatial Mind · Verse lab</title>
+<meta name="description" content="A browser-native Bayesian particle filter that performs local inertial navigation and map building.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Inertial Particle Filter Spatial Mind · Verse lab">
+<meta property="og:description" content="A browser-native Bayesian particle filter that performs local inertial navigation and map building.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f683-inertial-particle-filter-spatial-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f683-inertial-particle-filter-spatial-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="btnMotion">Enable Motion</button>
+  <button id="btnPlace">Place Landmark</button>
+  <button id="btnObserve">Observe</button>
+  <button id="btnSeal">Seal Map</button>
+  <button id="btnReset">Reset</button>
+  <input id="name" placeholder="landmark name" value="beacon">
+</div>
+<div id="status">Particle filter ready. Enable motion or drag on canvas to simulate.</div>
+<canvas id="cv"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Inertial Particle Filter Spatial Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

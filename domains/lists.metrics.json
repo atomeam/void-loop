@@ -1295,6 +1295,104 @@
      "link": "https://github.com/atomeam/void-loop/actions/runs/43233110879"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T17:30:00Z",
+   "run": 24,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0,
+   "dup_basis": "0 of 5 items was already on main",
+   "median_days": 28.5,
+   "median_basis": "days from queued to built: 0.05 (main's red skills-index check from time-saved, #2729, merged 2026-11-12), 25.4 (csv-table~list-tools overlap, both shipped 2026-10-18), 28.5 (convergence step 3 lib/db.js, planned 2026-10-15), 28.5 (tests for untested files, 2026-10-15 06:11 UTC), 28.5 (frontier #26 step 2, written 2026-10-15); median 28.5",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 24 of the lists routine. Two open pull requests at the start (#2732 roi-pack, #2733 kickoff-pack, both helper branches with their own new skill files; not touched). Main's fast checks were red from #2729 (skills/time-saved.js had no order file and no family, so the index and the book were stale); fixed here. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
+   "items": [
+    {
+     "what": "main red: time-saved (#2729) gets its order file (10020-time-saved, at the end as --adopt places it) and a place in the 'Verse itself' family, so skills/index.json, families.json, guide.json and first.json are current again",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
+    {
+     "what": "csv-table and list-tools are one tables family at 0457, aliases kept, 0 of 6,453 asks moved (skills/tables.js, tools/tables-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "convergence step 3, lib/db.js: readyOnce and tablesReady replace the let ready = null table-making promise in 8 endpoints (visit, calshare, react, rsvp, tally, gen-data, fanfic-hits, boards), resetReady kept (tools/db-ready.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/owner-link.test.mjs (lib/owner-link.js) and tools/job-regions.test.mjs (lib/job-regions.js); the untested allowance 55 to 53",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "frontier #26 step 2, first half: each film grades itself (tools/film-grade.mjs: ffmpeg freezedetect still seconds, longest still, taps shown from tools/record.mjs) into its .json and the job summary (tools/film-grade.test.mjs)",
+     "list": "frontier #26 / handoff Up for grabs",
+     "status": "built"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T20:45:00Z",
+   "run": 25,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0,
+   "dup_basis": "0 of 7 items was already on main",
+   "median_days": 25.7,
+   "median_basis": "days from queued to built: 0.4 (main's stale book, map and inventory rows after time-saved #2729 and the family skills), 6.7 (closed PR #2335's propose-fix reasons, opened 2026-11-06), 6.7 (its merge-gate install, same PR), 25.7 (label~stage-organize overlap, stage-organize shipped 2026-10-18), 28.6 (convergence step 3 lib/db.js, planned 2026-10-15), 28.6 (tests for untested files, 2026-10-15), 28.6 (frontier #26 step 2, written 2026-10-15); median 25.7",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 25 of the lists routine. Main's verify was green at the start, but five checks it skips when nothing they cover changes were red on main (found when this branch touched skills); fixed here. Five open pull requests (#2732, #2733, #2736, #2739, #2740), all helper or harden branches with their own skill files; only the generated skills/index.json is shared, which the second merge regenerates. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
+   "items": [
+    {
+     "what": "main red (found this run): docs/MAP.md did not name time-saved (#2729), and skills/guide.json, docs/HANDOFF-GAPS.md and lib/similar-index.js were stale; a map.d line and the three regenerated (the missing inventory lines for 7 families landed on main in the same hour, 98311b6a0; this run keeps them and adds stage-marks)",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 3 finished: lib/db.js for the other 11 endpoints (daily-art, card-art, clip, image, gallery, studio, agent, watchalong, merge, comments, generators), batchReady added for the one-batch ones, resetReady kept (tools/db-ready.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "stage-organize and label are one stage-marks family at 0299, aliases kept, label's self-test kept, 0 of 6,459 asks moved (skills/stage-marks.js, tools/stage-marks-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "frontier #26 step 2, second half: the recorder checks the hook and ending cards on screen, and a film under the bar is re-shot once with the buttons in another order, the better take kept (tools/record.mjs, tools/film-grade.mjs, tools/film-grade.test.mjs)",
+     "list": "frontier #26 / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/card-tidy.test.mjs (lib/card-tidy.js) and tools/paid-access.test.mjs (lib/paid-access.js, fake D1 and fake Gumroad); the untested allowance 53 to 51",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "closed PR #2335 leftover: tools/propose-fix.mjs logs an edge error page by its title and code (httpReason) and names the bracket a bad edit left open (openBracket, loadWhy; 0 false alarms on 2,461 repo files) (tools/propose-fix-reasons.test.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "closed PR #2335 leftover: tools/merge-gate.mjs runs npm ci --ignore-scripts once when a red run only lacked a package, then the checks again (missingPackages, tools/merge-gate-install.test.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    }
+   ]
   }
  ]
 }

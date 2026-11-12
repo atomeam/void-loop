@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; font-size:13px; }
+#ui button { margin:4px 4px 0 0; padding:6px 10px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+#ui button:hover { background:#334; }
+#portals { position:absolute; inset:0; pointer-events:none; }
+.portal { position:absolute; width:90px; height:54px; background:rgba(40,60,100,0.55); border:1px solid #68c; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#cef; pointer-events:auto; cursor:grab; transform:translate(-50%,-50%); }
+#status { font-size:11px; opacity:0.8; margin-top:6px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Constraint Path Morph Mind · Verse lab</title>
+<meta name="description" content="Living generative path agents whose control points are constrained by a local tiny MLP and soft distance constraints.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Constraint Path Morph Mind · Verse lab">
+<meta property="og:description" content="Living generative path agents whose control points are constrained by a local tiny MLP and soft distance constraints.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f690-webxr-hand-constraint-path-morph-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f690-webxr-hand-constraint-path-morph-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ui">
+  <div>F690 Path Morph Mind</div>
+  <button id="oriBtn">Enable Orientation</button>
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="resetBtn">Reset</button>
+  <div id="status">Ready · click path to reward · tilt or drag</div>
+</div>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Constraint Path Morph Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1419; --fg:#e7ecf1; --acc:#3dd6c6; --card:#1a2332; --muted:#8b9bb4; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a3544; }
+h1 { margin:0; font-size:1.4rem; }
+.sub { color:var(--muted); font-size:.9rem; }
+main { max-width:720px; margin:0 auto; padding:1rem; }
+section { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+h2 { margin:0 0 .75rem; font-size:1.1rem; }
+label { display:block; margin:.4rem 0 .2rem; font-size:.85rem; color:var(--muted); }
+input, select, button { font:inherit; padding:.5rem; border-radius:8px; border:1px solid #3a4658; background:#121a24; color:var(--fg); }
+input[type=number] { width:110px; }
+button { background:var(--acc); color:#042; border:none; cursor:pointer; font-weight:600; }
+button.secondary { background:#2a3544; color:var(--fg); }
+.row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; margin:.5rem 0; }
+#canvas { width:100%; height:220px; background:#121a24; border-radius:8px; touch-action:none; cursor:ns-resize; }
+.totals { font-size:1.05rem; }
+.person-total { display:flex; justify-content:space-between; padding:.3rem 0; border-bottom:1px solid #2a3544; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem; }
+.note { font-size:.8rem; color:var(--muted); margin-top:.5rem; }
+.suggest { color:var(--acc); font-weight:600; }
+@media (max-width:480px) { .row { flex-direction:column; align-items:stretch; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Tip calculator with history suggestion and spatial shares · Verse lab</title>
+<meta name="description" content="Job: Enter the bill amount and number of people; a local history of your past tips suggests a percentage (or pick one).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Tip calculator with history suggestion and spatial shares · Verse lab">
+<meta property="og:description" content="Job: Enter the bill amount and number of people; a local history of your past tips suggests a percentage (or pick one).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f654-tip-calculator-suggest-spatial/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f654-tip-calculator-suggest-spatial/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Tip calculator</h1>
+  <div class="sub">History suggests the tip · drag bars to reallocate · copy or download · saved here</div>
+</header>
+<main>
+  <section>
+    <h2>The bill</h2>
+    <div class="row">
+      <label>Bill $ <input id="bill" type="number" step="0.01" min="0" value="50"></label>
+      <label>People <input id="people" type="number" min="1" max="12" value="2"></label>
+      <label>Tip % <input id="tip" type="number" step="0.5" min="0" max="100" value="18"></label>
+      <button id="useSuggest" class="secondary">Use suggestion</button>
+    </div>
+    <div id="suggestNote" class="note"></div>
+    <div class="row">
+      <label>Rounding
+        <select id="round">
+          <option value="cent">Nearest cent</option>
+          <option value="dollar">Nearest dollar</option>
+          <option value="none">Exact</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section>
+    <h2>Shares (drag a bar to give that person more or less of the tip)</h2>
+    <canvas id="canvas" width="680" height="220"></canvas>
+    <div id="totals" class="totals"></div>
+    <div class="actions">
+      <button id="copy">Copy summary</button>
+      <button id="download" class="secondary">Download CSV</button>
+      <button id="saveHistory" class="secondary">Save this tip to history</button>
+    </div>
+    <div class="note">Tip total stays fixed when you drag. History is only on this device and used only for suggestions.</div>
+  </section>
+</main>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

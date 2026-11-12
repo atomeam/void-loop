@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; background: #0f0f12; color: #eee; }
+header { padding: 12px 16px; background: #1a1a22; }
+h1 { margin: 0; font-size: 1.2rem; }
+.controls { padding: 12px 16px; background: #16161e; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+textarea { width: 100%; min-height: 120px; background: #222; color: #eee; border: 1px solid #444; padding: 8px; box-sizing: border-box; }
+button, input[type=range] { background: #2a2a38; color: #eee; border: 1px solid #555; padding: 6px 12px; cursor: pointer; }
+.canvas-wrap { position: relative; height: 60vh; background: #0a0a10; overflow: hidden; border-top: 1px solid #333; }
+.note-card { position: absolute; background: #1e2a3a; border: 1px solid #4a6a8a; border-radius: 8px; padding: 8px 10px; max-width: 180px; font-size: 0.85rem; cursor: grab; user-select: none; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+.note-card:active { cursor: grabbing; z-index: 10; }
+.note-card.selected { border-color: #6cf; }
+footer { padding: 8px 16px; font-size: 0.75rem; color: #888; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial note clusterer · Verse lab</title>
+<meta name="description" content="A practical offline tool that turns a list of personal notes into an interactive spatial map.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial note clusterer · Verse lab">
+<meta property="og:description" content="A practical offline tool that turns a list of personal notes into an interactive spatial map.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f656-spatial-note-clusterer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f656-spatial-note-clusterer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Spatial Note Clusterer</h1>
+</header>
+<div class="controls">
+  <button id="cluster">Cluster notes</button>
+  <label>Similarity pull <input type="range" id="thresh" min="0" max="100" value="40"></label>
+  <button id="dl-json">Download JSON</button>
+  <button id="dl-svg">Download SVG</button>
+  <button id="copy">Copy groups</button>
+  <button id="clear">Clear</button>
+</div>
+<textarea id="notes" placeholder="One note per line. Similar topics will cluster.&#10;Example:&#10;Buy groceries milk eggs&#10;Call mom about birthday&#10;Grocery list bread butter&#10;Project deadline Friday&#10;Mom's gift ideas&#10;Finish report by Friday"></textarea>
+<div class="canvas-wrap" id="canvas"></div>
+<footer>Offline after load. Notes stay on your device. Drag cards to adjust. Verse is now Verse everywhere.</footer>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

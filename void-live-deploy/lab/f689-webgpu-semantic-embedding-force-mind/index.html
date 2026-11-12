@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; inset:0; width:100%; height:100%; }
+.note { position:absolute; background:rgba(20,30,50,0.85); border:1px solid #4af; border-radius:8px; padding:8px; min-width:120px; max-width:220px; color:#fff; font-size:13px; cursor:move; user-select:text; z-index:10; box-shadow:0 4px 12px rgba(0,0,0,.5); }
+.note:focus { outline:2px solid #8cf; }
+#controls { position:fixed; bottom:12px; left:12px; z-index:20; display:flex; gap:8px; flex-wrap:wrap; }
+button, input { background:#122; color:#8cf; border:1px solid #4af; padding:6px 10px; border-radius:4px; }
+#status { position:fixed; top:8px; left:8px; font-size:12px; opacity:.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Semantic Embedding Force Mind · Verse lab</title>
+<meta name="description" content="A living spatial note canvas for The Verse. Absolute-positioned contenteditable DOM note cards are embedded into low-dimensional vectors via pure-JS character">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Semantic Embedding Force Mind · Verse lab">
+<meta property="og:description" content="A living spatial note canvas for The Verse. Absolute-positioned contenteditable DOM note cards are embedded into low-dimensional vectors via pure-JS character">
+<meta property="og:url" content="https://a-to-mind.com/lab/f689-webgpu-semantic-embedding-force-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f689-webgpu-semantic-embedding-force-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="status">F689 Semantic Force Mind | notes:0 | clusters forming…</div>
+<div id="controls">
+  <input id="newnote" placeholder="type note or speak…" size="30">
+  <button id="add">Add</button>
+  <button id="speak">Speak</button>
+  <button id="seal">Seal Genome</button>
+  <button id="export">Export</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Semantic Embedding Force Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/photo-palette/" data-tool="Photo palette">Use it: Photo palette</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

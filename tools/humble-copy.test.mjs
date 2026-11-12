@@ -13,13 +13,13 @@ test('it catches the boasts the house rule names', () => {
   for (const s of ['"I\'ve surpassed 7 sites so far."', "'Verse has conquered calculator.net'", "'Reading the conquered ledger'", "'Verse outclassed it'",
     "'every tool Verse has surpassed'", "'Every defeated target is here'", "'Beaten in every way'", "'9x faster than flashscore.com'",
     "'Verse is the best'", "'I made 3 new things while you were away'", "'Everything I made'", "'an awe-inspiring Verse'", "'I built this: a counter'",
-    "'Verse beats every site'", "'12 sites surpassed'"]) assert.ok(boastsIn(s).length > 0, s);
+    "'Verse beats every site'", "'12 sites surpassed'", "'we own the heavy lifting'", "'Verse owns the heavy lifting'", "'Verse does the work'"]) assert.ok(boastsIn(s).length > 0, s);
 });
 
 test('a game rule, a data key, a path or a comment is not a boast', () => {
   for (const s of ["'Beat the level to unlock the next one'", "if (r.outcome === 'surpassed') k = 'surpassed';", "'<a href=\"/conquered/\">Versus</a>'",
     "// the next site to conquer, from the frontier", "/* the floors Verse has surpassed */", "<!-- conquered sites under it -->",
-    "'You win! Four in a row'", "'the greatest common divisor'", "'1 can crushed tomatoes'", "'https://a-to-mind.com/conquered/'"]) assert.deepEqual(boastsIn(s), [], s);
+    "'You win! Four in a row'", "'the greatest common divisor'", "'1 can crushed tomatoes'", "'https://a-to-mind.com/conquered/'", "// package the heavy lifting"]) assert.deepEqual(boastsIn(s), [], s);
 });
 
 test('the allowlist stays small and every entry says why', () => {

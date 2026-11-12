@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg:#0a0a12; --fg:#e8e8f0; --accent:#7af; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+  #canvas { position:absolute; inset:0; width:100%; height:100%; }
+  .portal { position:absolute; width:160px; min-height:80px; background:rgba(20,24,40,.85); border:1px solid #446; border-radius:8px; padding:8px; cursor:grab; box-shadow:0 4px 12px #0006; backdrop-filter:blur(4px); }
+  .portal textarea { width:100%; height:48px; background:#111; color:var(--fg); border:none; resize:none; font:inherit; }
+  .portal .del { float:right; cursor:pointer; color:#f66; }
+  #ui { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px; border-radius:6px; display:flex; gap:6px; flex-wrap:wrap; }
+  button, input { background:#223; color:var(--fg); border:1px solid #445; padding:4px 8px; border-radius:4px; }
+  #status { position:fixed; bottom:8px; left:8px; font-size:12px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Pointer-Causal WebGPU Noise Portal Mind · Verse lab</title>
+<meta name="description" content="A living spatial canvas for The Verse. A tiny local MLP (pure JS) consumes a short history of pointer deltas and produces parameters for a WebGPU compute shader">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Pointer-Causal WebGPU Noise Portal Mind · Verse lab">
+<meta property="og:description" content="A living spatial canvas for The Verse. A tiny local MLP (pure JS) consumes a short history of pointer deltas and produces parameters for a WebGPU compute shader">
+<meta property="og:url" content="https://a-to-mind.com/lab/f675-pointer-causal-webgpu-noise-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f675-pointer-causal-webgpu-noise-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="add">+ Portal</button>
+  <button id="seal">Seal Genome</button>
+  <button id="export">Export JSON</button>
+  <button id="clear">Clear</button>
+  <span id="speech">Speech: off</span>
+</div>
+<canvas id="canvas"></canvas>
+<div id="status">Move pointer · drag portals · speak to attract · seal to persist</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Pointer-Causal WebGPU Noise Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/dictation/" data-tool="Dictation pad">Use it: Dictation pad</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

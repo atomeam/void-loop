@@ -1,7 +1,7 @@
 /**
  * handoffs skill: the client handoff family (convergence, lists run 23, 2026-11-12). delivery-pack (an idea turned into a delivery
  * package), client-handoff (a shareable handoff card for one system), system-handoff (the package for a system Verse is taking on) and
- * full-handoff (the complete package: ownership, status, docs, monitors, automations, next step) all hand a client one package for a
+ * full-handoff (the complete package: ownership, status, docs, monitors, automations, lift summary, reuse map, client offer, next step) all hand a client one package for a
  * system Verse owns; tools/skill-overlap.mjs listed delivery-pack~full-handoff as a merge candidate (both took "handoff pack for my
  * SaaS idea"). One routing entry where delivery-pack sat (1192), asking the members in their old order: delivery-pack, client-handoff
  * (1193), system-handoff (1194), then full-handoff, which had no order file and sat last. A routing replay of every example, near miss
