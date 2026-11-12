@@ -1,0 +1,17 @@
+{
+ "at": "2026-11-12T07:43:26.576Z",
+ "sha": "b41476a2cd634dfa9c647cde43fbf2ae6a1be95c",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43175345721",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: the card has no finished-site link and fits a phone"
+ ],
+ "touched": [
+  "domains/forethinkers/experiments/acropora-dose-response.mjs",
+  "domains/forethinkers/experiments/flacro23-mortality-2023.csv",
+  "domains/forethinkers/index.md",
+  "domains/forethinkers/run-log.md",
+  "domains/forethinkers/tracks/planet-restoration.md",
+  "domains/void.growth.md"
+ ]
+}
