@@ -1,1 +1,0 @@
-{"at":"2026-11-12T11:40:00Z","by":"grok-bot","kind":"build","what":"One json reply helper (lib/http.js) for 25 endpoints, compared with the old copies (tools/http-helpers.test.mjs)"}

@@ -1,1 +1,0 @@
-{"at":"2026-11-12T05:31:14Z","by":"grok-bot","kind":"fix","what":"Verse review checks the generated cards and the map on a pull request that touches the skills, so a skill no longer reaches main without its family or book page (tools/cards-delta.mjs)"}
