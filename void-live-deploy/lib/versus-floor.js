@@ -89,6 +89,13 @@ export function verdictsChanged(prev, next) {
   return sigOf((prev && prev.tools) || {}) !== sigOf((next && next.tools) || {});
 }
 
+/** the owner model again, with gap notes from the exam, the wants and the nightly pick. Rows stay. Pure. */
+export function modelFrom(apiModel, gaps = '') {
+  const tools = {};
+  for (const s of (apiModel && apiModel.sites) || []) if (s && s.rows) tools[s.id] = { ...s.rows, at: s.at || '' };
+  return viewModel({ tools }, gaps);
+}
+
 /** what the owner elevator shows. Pure. */
 export function viewModel(verdicts, gaps = '') {
   const tools = (verdicts && verdicts.tools) || {};

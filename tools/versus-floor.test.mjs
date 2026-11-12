@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { plainVerdict, rowsFromMeasures, isFloor, rankSites, verdictsChanged, viewModel, visitorHtml, ownerHtml, gapText, TOOLS, NEXT } from '../void-live-deploy/lib/versus-floor.js';
+import { plainVerdict, rowsFromMeasures, isFloor, rankSites, verdictsChanged, viewModel, modelFrom, visitorHtml, ownerHtml, gapText, TOOLS, NEXT } from '../void-live-deploy/lib/versus-floor.js';
 
 const full = { speed: 100, reliability: 3, mobile: 0, a11y: 0, offline: 1 };
 const slow = { speed: 400, reliability: 3, mobile: 12, a11y: 2, offline: 0 };
@@ -66,6 +66,14 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   assert.match(own, /href="\/podcasts\/"/);
   assert.doesNotMatch(own, /href="[^"]*(motherfuckingwebsite|rot13|tsundere|podcastindex|livescore|convertlive)/);
   assert.doesNotMatch(own + pub, /\b(grab|steal|absorb|conquer)\b/i);
+});
+
+test('the owner model keeps the measured rows and follows the gap notes', () => {
+  const api = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
+  const again = modelFrom(api, gapText({ exam: { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] } } } }));
+  assert.equal(again.floor, 3);
+  assert.equal(again.fight, 'livescore.com');
+  assert.equal(again.sites.find((s) => s.id === 'readable').rows.speed.verdict, 'better');
 });
 
 test('the next fight is the open site whose features match the gaps', () => {
