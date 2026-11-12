@@ -57,46 +57,20 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
-      - name: Measure the floors against their live sites
+      - name: Measure the Versus tools against their live sites
         env:
           TOWER_PRIVATE: ${{ runner.temp }}/tower-private
           CHROME_PATH: /usr/bin/google-chrome
-          FLOOR: ${{ inputs.floor }}
-        run: |
-          if [ -n "$FLOOR" ]; then
-            printf '%s\n' "$FLOOR" | tr ',' '\n' > floors.txt # one floor, or several separated by commas
-          else
-            node tools/tower-gate.mjs --which $(git diff --name-only HEAD~1 HEAD 2>/dev/null) > floors.txt
-          fi
-          echo "measuring: $(paste -sd, floors.txt)"
-          while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured (or stopped after 8 minutes)"; }; done < floors.txt # a floor that hangs costs 8 minutes, never the run
-          # the floor's scripted journeys on Verse's own page, in the same browser (tools/tower-journeys.mjs; an unscripted floor is skipped)
-          while IFS= read -r f; do [ -n "$f" ] && { timeout 240 node tools/tower-journeys.mjs --scripted "$f" || echo "::warning::$f journeys not run (or stopped after 4 minutes)"; }; done < floors.txt
+        run: node tools/tower-gate.mjs --versus
       - name: Commit the verdicts and deploy
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # hand runs go in parallel and each starts from its own copy of main: keep only what this run measured (its floors' rows, icons, screenshots),
-          # start again from the newest main, put those back by timestamp, and push; rows other runs landed meanwhile stay (tools/gate-land.mjs)
-          node tools/gate-land.mjs take floors.txt "$RUNNER_TEMP/mine.json"
-          mkdir -p "$RUNNER_TEMP/keep"; for d in tower.shots tower.icons; do [ -d void-live-deploy/$d ] && cp -r void-live-deploy/$d "$RUNNER_TEMP/keep/"; done
-          for i in 1 2 3 4 5; do
-            git fetch -q origin main && git reset -q --hard origin/main
-            node tools/gate-land.mjs put "$RUNNER_TEMP/mine.json"
-            for d in tower.shots tower.icons; do [ -d "$RUNNER_TEMP/keep/$d" ] && cp -r "$RUNNER_TEMP/keep/$d" void-live-deploy/; done
-            node tools/tower-files.mjs split # one file per floor that moved; the aggregate is assembled at deploy
-            git checkout -q -- void-live-deploy/tower.evidence.json || true
-            git add void-live-deploy/tower-evidence
-            # the floor moves with the evidence it was measured on, in the same commit: a target
-            # stays until it is assimilated, then the next closest site takes over here (docs/TOWER-RULES.md), so the card and tower.target.json never disagree after a deploy
-            node tools/tower-target.mjs || echo "::warning::tower-target did not run"; git add void-live-deploy/tower.target.json
-            node tools/rival-pages.mjs || echo "::warning::rival-pages did not run"; git add void-live-deploy/rivals # each rival's page follows the floors (docs/TOWER-RULES.md rule 8)
-            git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
-            if git diff --cached --quiet; then echo "no change"; exit 0; fi
-            git commit -q -m "Tower gate: $(paste -sd, floors.txt) measured against their live sites"
-            git push -q origin HEAD:main && break; sleep $((i * 4))
-          done
+          git add void-live-deploy/versus/verdicts.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower gate: versus measured"
+          for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 4)); done
           gh workflow run deploy.yml --ref main -f after_merge=true
 
   # the sweep: slice i of N of every floor on its own runner, written to a slice file and uploaded; N is the length of the matrix list below
@@ -121,7 +95,20 @@ jobs:
         env:
           TOWER_PRIVATE: ${{ runner.temp }}/tower-private
           CHROME_PATH: /usr/bin/google-chrome
-        run: node tools/tower-gate.mjs --shard ${{ matrix.shard }}/${{ strategy.job-total }}
+        run: |
+          if [ "${{ matrix.shard }}" != "1" ]; then echo "versus is measured once"; exit 0; fi
+          node tools/tower-gate.mjs --versus
+      - name: Commit the verdicts and deploy
+        if: matrix.shard == 1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/versus/verdicts.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower gate: versus measured"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true
       - uses: actions/upload-artifact@v4
         with:
           name: tower-slice-${{ matrix.shard }}
@@ -182,12 +169,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          node tools/tower-files.mjs split
           git checkout -q -- void-live-deploy/tower.evidence.json || true
-          git add void-live-deploy/tower-evidence
-          git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
+          git add void-live-deploy/versus/verdicts.json || true
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -q -m "Tower gate: every floor measured against its live site ($(ls slices/*.json | wc -l) slices)"
-          # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again
+          git commit -q -m "Tower gate: versus measured"
           for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true

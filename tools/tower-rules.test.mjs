@@ -124,7 +124,10 @@ test('rule 8: every floor has its rival page, kept current by the deploy and the
   // the files are regenerated on every deploy and every gate run (deploy.yml, tower-gate.yml); here: every served floor has one and the index maps it
   const { build } = await import('./rival-pages.mjs'); assert.equal(typeof build, 'function');
   for (const f of served().floors) assert.ok(idx.rivals[f.site] || idx.rivals[siteSlug(f.site)], f.site + ' is not in rivals/index.json');
-  for (const wf of ['deploy.yml', 'tower-gate.yml']) assert.match(fs.readFileSync(path.join(ROOT, '.github', 'workflows', wf), 'utf8'), /node tools\/rival-pages\.mjs/, wf + ' regenerates the rival pages');
+  assert.match(fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'deploy.yml'), 'utf8'), /node tools\/rival-pages\.mjs/, 'deploy.yml regenerates the rival pages');
+  const gate = fs.readFileSync(path.join(ROOT, '.github', 'workflows', 'tower-gate.yml'), 'utf8');
+  assert.match(gate, /node tools\/tower-gate\.mjs --versus/);
+  assert.doesNotMatch(gate, /node tools\/rival-pages\.mjs/);
 });
 
 test('rule 8: a rival page shows only cited facts, escapes what it reads, and names the rival in plain text', async () => {

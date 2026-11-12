@@ -17,3 +17,34 @@ output, pre.list { display: block; white-space: pre-wrap; margin: .8rem 0; }
 .row button { flex: 0 0 auto; }
 .history { margin-top: 2rem; color: var(--d-ink-2); }
 .history h2 { color: var(--d-ink); }
+
+/* Elevator. Visitors get the taped sign. The owner gets the floor, the fight, and the numbers. */
+.elv { position: relative; max-width: 100%; }
+.elv-doors { display: grid; grid-template-columns: 1fr 2px 1fr; height: 14rem; border-radius: 14px; overflow: hidden; background: #10141c; border: 1px solid #2a2a2a; }
+.elv-door { background: linear-gradient(180deg, #242a38, #12151c 55%, #1a1e28); }
+.elv-seam { background: rgb(var(--d-key) / .4); }
+.elv-sign {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%) rotate(-3deg);
+  margin: 0; padding: 1.15rem 1.3rem .9rem; width: min(14rem, 78%); text-align: center;
+  background: #f3efe6; color: #161616; font-family: ui-serif, Georgia, serif; font-size: clamp(1.5rem, 6vw, 1.85rem);
+  font-weight: 700; line-height: 1.15; box-shadow: 0 12px 28px rgba(0, 0, 0, .38);
+}
+.elv-tape { position: absolute; left: 50%; top: -11px; width: 4.4rem; height: .95rem; transform: translateX(-50%) rotate(4deg); background: rgb(var(--d-key) / .42); }
+.elv-live { display: grid; gap: .9rem; }
+.elv-head { display: grid; justify-items: center; }
+.elv-arrow { width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 16px solid rgb(var(--d-key)); filter: drop-shadow(0 0 8px rgb(var(--d-key) / .75)); }
+.elv-num { margin: .15rem 0 0; font-size: clamp(3.2rem, 18vw, 4.6rem); line-height: .9; font-variant-numeric: tabular-nums; font-weight: 700; color: rgb(var(--d-key)); text-shadow: 0 0 16px rgb(var(--d-key) / .55); }
+.elv-of { margin: .15rem 0 0; color: var(--d-ink-3); font-variant-numeric: tabular-nums; }
+.elv-shaft { position: relative; height: 6.5rem; border-radius: 12px; background: #0c0e14; border: 1px solid #2a2a2a; overflow: hidden; }
+.elv-car { position: absolute; left: 10px; right: 10px; bottom: 8px; height: 2rem; border-radius: 7px; background: rgb(var(--d-key)); animation: elv-rise 1.4s steps(var(--steps, 1), end) both; }
+.elv-fight { margin: 0; font-size: clamp(1.2rem, 5vw, 1.6rem); overflow-wrap: anywhere; }
+.elv-card { border-top: 1px solid #2a2a2a; padding-top: .8rem; }
+.elv-card h2 { font-size: 1rem; margin: 0 0 .3rem; overflow-wrap: anywhere; }
+.elv-scroll { overflow-x: auto; max-width: 100%; }
+.elv-card table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.elv-card th, .elv-card td { text-align: left; padding: .4rem .35rem; border-bottom: 1px solid #222; white-space: nowrap; }
+.elv-card tr[data-v="better"] td:last-child { color: rgb(var(--d-teal)); }
+.elv-card tr[data-v="worse"] td:last-child { color: rgb(var(--d-warm)); }
+.elv-when { margin: .35rem 0 0; color: var(--d-ink-3); font-size: .9rem; }
+@keyframes elv-rise { from { transform: translateY(0); } to { transform: translateY(calc(var(--floor, 0) * -2.1rem)); } }
+@media (prefers-reduced-motion: reduce) { .elv-car { animation: none; } }

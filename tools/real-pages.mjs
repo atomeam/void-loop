@@ -489,7 +489,7 @@ export const SPECS = {
     await t.click('#upper'); t.ok((await t.val('#text')) === 'THE QUICK BROWN FOX JUMPS.', 'UPPERCASE'); await t.share('#link');
   },
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
-  '/versus/': async (t) => { t.ok(await t.p.locator('a[href="/rotate-letters/"]').isVisible(), 'lists rotate letters'); t.ok(await t.p.locator('a[href="/track-times/"]').isVisible(), 'lists track times'); },
+  '/versus/': async (t) => { t.ok(/Out of Order/.test(await t.p.locator('h1').innerText()), 'the sign is the page'); t.ok((await t.p.locator('table').count()) === 0, 'no comparison table'); },
   '/rotate-letters/': async (t) => { await t.fill('#text', 'Ab!'); await t.fill('#shift', '1'); await t.p.waitForTimeout(100); t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!'); },
   '/studio/': async (t) => { await t.fill('#script', 'Verse: One line.\nCritic: Two lines.'); await t.click('#play'); await t.p.waitForTimeout(300); t.ok(/Playing 2 lines/.test(await t.text('#status')), 'two typed lines play one after another'); await t.click('#stop'); await t.p.waitForTimeout(200); t.ok(/Stopped/.test(await t.text('#status')), 'Stop stops'); },
   '/track-times/': async (t) => { t.ok(/6:45/.test(await t.text('#total')), 'the sample list runs 6:45'); await t.fill('#list', 'Song one 1:00\nSong two 2:00'); await t.p.waitForTimeout(100); t.ok(/3:00/.test(await t.text('#total')), 'two lengths add to 3:00'); },
