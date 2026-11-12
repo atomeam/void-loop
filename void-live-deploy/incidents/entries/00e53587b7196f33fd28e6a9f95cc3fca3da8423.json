@@ -1,0 +1,16 @@
+{
+ "at": "2026-11-12T22:18:19.334Z",
+ "sha": "00e53587b7196f33fd28e6a9f95cc3fca3da8423",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43315825044",
+ "suite": "browser suite on main",
+ "checks": [
+  "business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step"
+ ],
+ "touched": [
+  "domains/growth-inbox.md",
+  "void-live-deploy/self.json",
+  "void-live-deploy/skills/deps.json",
+  "void-live-deploy/skills/index.json",
+  "void-live-deploy/skills/roi-pack.js"
+ ]
+}
