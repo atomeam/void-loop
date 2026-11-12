@@ -1,50 +1,5 @@
 [
  {
-  "at": "2026-11-04T09:44:49Z",
-  "passed": 83,
-  "of": 87,
-  "ms": 320,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "fimls by kurosawa",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "book recommendations like the hobbit",
-    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 13,
-   "of": 15,
-   "medianMs": 2168,
-   "failed": [
-    {
-     "ask": "convert 100 usd to eur",
-     "why": [
-      "refused"
-     ]
-    },
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "new ground passed, kept as a regression case: \"yo what language does the word kindergarten come from\" (skill:define)"
- },
- {
   "at": "2026-11-04T11:32:55Z",
   "kind": "visitor",
   "visitor": {
@@ -7944,6 +7899,24 @@
      "ask": "what can you do",
      "why": [
       "slow 10149 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T17:45:34Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1057,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16556 ms"
      ]
     }
    ]
