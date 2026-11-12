@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-04T15:29:24Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 3254,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 14988 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-04T15:56:44Z",
   "kind": "visitor",
   "visitor": {
@@ -7929,5 +7911,23 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"handoff pack for my SaaS idea\" (skill:handoffs)"
+ },
+ {
+  "at": "2026-11-12T19:14:59Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 438,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8213 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
