@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T18:24:58.411Z",
+  "at": "2026-11-12T19:41:04.984Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,36 +34,14 @@
       }
     },
     "podcasts": {
-      "score": 91.3,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
           "ask": "play the latest episode of serial",
           "failed": [
             "episode"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of freakonomics radio",
-          "failed": [
-            "audio"
           ],
           "score": 85.7
         },
@@ -132,7 +110,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -146,10 +124,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -257,10 +234,17 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 95.4,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
