@@ -18,19 +18,17 @@ import { newKey, newShareId, isId, isKey, hashKey } from '../../lib/calshare.js'
 import { RSVP, parseReply, withReply } from '../../lib/rsvp.js';
 
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
+import { tablesReady } from '../../lib/db.js';
 const off = () => json({ ok: false, error: 'invite replies are off for now' }, 503);
 const gone = () => json({ ok: false, error: 'no such invite' }, 404);
 const slow = (secs) => json({ ok: false, error: 'slow down' }, 429, { 'retry-after': String(secs) });
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = (async () => {
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_rsvp (id TEXT PRIMARY KEY, owner_h TEXT NOT NULL, reply_h TEXT NOT NULL, replies TEXT NOT NULL, created INTEGER NOT NULL, touched INTEGER NOT NULL)').run();
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_rsvp_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)').run(); // k: kind + a hashed client key, or kind + "all"; no address
-  })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests
+const ready = tablesReady([ // made once per isolate (lib/db.js, convergence step 3)
+  'CREATE TABLE IF NOT EXISTS void_rsvp (id TEXT PRIMARY KEY, owner_h TEXT NOT NULL, reply_h TEXT NOT NULL, replies TEXT NOT NULL, created INTEGER NOT NULL, touched INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_rsvp_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)', // k: kind + a hashed client key, or kind + "all"; no address
+]);
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests
 const used = async (env, k, day) => { const r = await env.DB.prepare('SELECT n, day FROM void_rsvp_days WHERE k = ?').bind(k).first(); return r && r.day === day ? Number(r.n) || 0 : 0; };
 const tick = (env, k, day) => env.DB.prepare('INSERT INTO void_rsvp_days (k, day, n) VALUES (?, ?, 1) ON CONFLICT(k) DO UPDATE SET n = CASE WHEN day = excluded.day THEN n + 1 ELSE 1 END, day = excluded.day').bind(k, day).run();
 

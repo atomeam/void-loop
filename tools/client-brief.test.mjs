@@ -21,7 +21,8 @@ test('client-brief run packages a brief without inventing live status', () => {
   });
   assert.equal(ret, 'client-brief');
   assert.match(html, /Client brief: Acme onboarding/);
-  assert.match(html, /Verse owns the heavy lifting/);
+  assert.match(html, /A short brief of the systems included and how to get status/);
+  assert.doesNotMatch(html, /heavy lifting/i);
   assert.match(html, /What is clarified/);
   assert.match(html, /Current ownership/);
   assert.match(html, /Next handoff/);

@@ -22,8 +22,9 @@ test('proposal-pack run names the subject and does not invent status or send any
   });
   assert.equal(ret, 'proposal-pack');
   assert.match(html, /Proposal pack: client onboarding/);
-  assert.match(html, /Verse owns the heavy lifting/);
+  assert.match(html, /The client keeps the outcome and the decisions/);
   assert.match(html, /Nothing sent|nothing sent/);
+  assert.doesNotMatch(html, /heavy lifting/i);
   assert.doesNotMatch(html, /Last check: green/);
   assert.doesNotMatch(html, /ready for handoff/);
 });

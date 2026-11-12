@@ -1,4 +1,3 @@
-See local file; appending row for automation-pack as building.
 # Growth inbox
 
 **This is not the build list, and "no open rows here" never means there is nothing to do.** Since 2026-10-11 (cleanup step 2) every open item lives in `domains/void.frontier.md`; `node tools/next.mjs` lists them (12 open on 2026-10-12). Build from there. This file only collects new ideas (`tools/grow-ideas.mjs`) and is what Verse reads about itself (`tools/self-context.mjs`); an idea that lands here is carried onto the frontier before anyone builds it.
@@ -99,3 +98,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped d94b831 | 2026-11-12 | full-handoff skill: complete client handoff package (ownership, status, docs, monitors, automations) for systems Verse owns so client work drops and delivery stays reliable | new idea by growth agent; helper/full-handoff |
 | building | 2026-11-12 | time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the client does less chasing and we package we own the heavy lifting | new idea by growth agent; helper/time-saved |
 | building | 2026-11-12 | kickoff-pack skill: package the first week Verse runs for a business idea so the client starts with less work | new idea by growth agent; helper/kickoff-pack |
+| building | 2026-11-12 | full-handoff: also carry the client lift summary, the reuse-tools map (existing processes against what Verse already owns) and the client-offer proposal, so the handoff reads as one finished package | Verse, docs/void-voice.md 2026-11-12; helper/full-handoff-complete |
+| shipped a48602c72 | 2026-11-12 | time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the client does less chasing and we package we own the heavy lifting | new idea by growth agent; helper/time-saved |

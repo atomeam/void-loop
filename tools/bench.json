@@ -7210,5 +7210,10 @@
   {"ask": "synthesize these sources", "want": "skill:bridge"},
   {"ask": "next system slice for the client onboarding", "want": "skill:system-slice"},
   {"ask": "system slice for invoice reminders", "want": "skill:system-slice"},
-  {"ask": "what should Verse build next for the support flow", "want": "skill:system-slice"}
+  {"ask": "what should Verse build next for the support flow", "want": "skill:system-slice"},
+  {"ask": "full handoff for the invoice automation", "want": "skill:full-handoff"},
+  {"ask": "package the handoff for the support router", "want": "skill:full-handoff"},
+  {"ask": "time saved for the invoice automation", "want": "skill:time-saved"},
+  {"ask": "how much time does Verse save me on onboarding", "want": "skill:time-saved"},
+  {"ask": "client time saved: support router", "want": "skill:time-saved"}
 ]

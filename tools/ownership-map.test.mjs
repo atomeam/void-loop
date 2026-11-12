@@ -23,6 +23,7 @@ test('ownership-map run names the process and splits ownership', () => {
   assert.match(html, /Ownership map: client onboarding/);
   assert.match(html, /What Verse owns/);
   assert.match(html, /What the client owns/);
-  assert.match(html, /We own the heavy lifting/);
+  assert.match(html, /The client keeps outcomes and approvals/);
+  assert.doesNotMatch(html, /heavy lifting/i);
   assert.doesNotMatch(html, /Last check: green/);
 });

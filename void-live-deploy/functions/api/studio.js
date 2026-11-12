@@ -22,22 +22,20 @@ import { cleanLine } from '../../lib/image-gen.js';
 import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 const json = (o, status = 200) => jsonNoStore(o, status);
+import { batchReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 const why = (e) => redact(String((e && e.message) || e || 'error')).replace(/\s+/g, ' ').slice(0, 300);
 const timed = (p, ms, what) => { let t; return Promise.race([p, new Promise((_, no) => { t = setTimeout(() => no(new Error(what + ' took over ' + Math.round(ms / 1000) + ' s')), ms); })]).finally(() => clearTimeout(t)); };
 const off = (env) => /^(1|true|yes|on)$/i.test(String((env && env.STUDIO_OFF) || '').trim());
 export const BENCH_CAP = 6000, PAINT_MS = 90000, JUDGE_MS = 45000, VIDEO_MS = 280000;
 const ownerVideoCap = (env) => { const n = Number(env && env.OWNER_VIDEO_DAILY_USD); return Number.isFinite(n) && n >= 0 ? Math.min(n, 5) : 1; };
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = env.DB.batch([
-    // void_studio_runs2: the first table held 'flaws' scores the judge read as a flaw count (inverted); those rows are not mixed in
-    env.DB.prepare('CREATE TABLE IF NOT EXISTS void_studio_runs2 (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT NOT NULL, model TEXT NOT NULL, bench TEXT NOT NULL, size INTEGER NOT NULL, score REAL NOT NULL, match REAL NOT NULL, clean REAL NOT NULL, look REAL NOT NULL, w INTEGER, h INTEGER, ms INTEGER NOT NULL, neurons INTEGER NOT NULL, worst TEXT)'),
-    env.DB.prepare('CREATE TABLE IF NOT EXISTS void_studio_spend (day TEXT NOT NULL, who TEXT NOT NULL, usd REAL NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, who))'),
-  ]).catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; };
+const ready = batchReady([ // made once per isolate in one batch (lib/db.js, convergence step 3)
+  // void_studio_runs2: the first table held 'flaws' scores the judge read as a flaw count (inverted); those rows are not mixed in
+  'CREATE TABLE IF NOT EXISTS void_studio_runs2 (id INTEGER PRIMARY KEY AUTOINCREMENT, day TEXT NOT NULL, model TEXT NOT NULL, bench TEXT NOT NULL, size INTEGER NOT NULL, score REAL NOT NULL, match REAL NOT NULL, clean REAL NOT NULL, look REAL NOT NULL, w INTEGER, h INTEGER, ms INTEGER NOT NULL, neurons INTEGER NOT NULL, worst TEXT)',
+  'CREATE TABLE IF NOT EXISTS void_studio_spend (day TEXT NOT NULL, who TEXT NOT NULL, usd REAL NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, who))',
+]);
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset();
 export const ensureStudio = ensure; // the video page's route (functions/api/clip.js) counts its dollars in the same spend table
 
 const toB64 = (bytes) => { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s); };

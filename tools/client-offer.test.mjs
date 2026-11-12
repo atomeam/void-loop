@@ -22,8 +22,9 @@ test('client-offer run packages a sellable offer', () => {
   });
   assert.equal(ret, 'client-offer');
   assert.match(html, /Client offer: email automation/);
-  assert.match(html, /Verse owns the heavy lifting/);
+  assert.match(html, /An offer of the systems, automations, monitoring and handoff included/);
   assert.match(html, /What Verse takes over/);
+  assert.doesNotMatch(html, /heavy lifting/i);
   assert.match(html, /Reduced client work/);
   assert.match(html, /Next step/);
 });

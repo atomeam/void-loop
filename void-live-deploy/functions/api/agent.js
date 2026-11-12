@@ -19,16 +19,14 @@ import { planOf, routeFree, loadRegistry } from '../../lib/answer-free.js';
 import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 const json = (o, status = 200) => jsonNoStore(o, status, { 'x-robots-tag': 'noindex' });
+import { readyOnce } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER, seen INTEGER NOT NULL DEFAULT 0)';
 const SEEN = 'ALTER TABLE void_agent_tasks ADD COLUMN seen INTEGER NOT NULL DEFAULT 0';
 const FACING = new Set(['needs_yes', 'done', 'failed']);
 const okThread = (t) => /^[a-z0-9]{16,40}$/.test(String(t || ''));
 const okId = (id) => /^[a-z0-9]{8,40}$/.test(String(id || ''));
-let ready = null;
-async function table(db) {
-  if (!ready) ready = (async () => { await db.prepare(TABLE).run(); try { await db.prepare(SEEN).run(); } catch (_) { /* the column is already there */ } })().catch((e) => { ready = null; throw e; });
-  return ready;
-}
+// made once per isolate (lib/db.js, convergence step 3); the seen column is added to an older table, and is already there after that
+const table = readyOnce(async (db) => { await db.prepare(TABLE).run(); try { await db.prepare(SEEN).run(); } catch (_) { /* the column is already there */ } });
 
 /** a background step may set `next` only while the task is not already declined or resumed. A no or a yes always may. Pure. */
 export function mayWriteStatus(current, next) {

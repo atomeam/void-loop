@@ -24,20 +24,18 @@ import { cleanName, cleanText, commentProblem, newCheck, checkOk, THREAD_RE, ID_
 export const POST_MINUTE = 2, POST_DAY = 15, POST_ALL = 1000, THREAD_MAX = 300, REPORTS_HIDE = 3, TOPICS_MAX = 500;
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'comments are off for now' }, 503);
+import { tablesReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 function newId() { const a = new Uint8Array(10); crypto.getRandomValues(a); return [...a].map((x) => 'abcdefghijklmnopqrstuvwxyz234567'[x & 31]).join(''); }
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = (async () => {
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_comments (id TEXT PRIMARY KEY, thread TEXT NOT NULL, name TEXT NOT NULL, text TEXT NOT NULL, at INTEGER NOT NULL, reports INTEGER NOT NULL DEFAULT 0)').run();
-    await env.DB.prepare('CREATE INDEX IF NOT EXISTS void_comments_thread ON void_comments (thread, at)').run();
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_forum (id TEXT PRIMARY KEY, title TEXT NOT NULL, name TEXT NOT NULL, at INTEGER NOT NULL, last INTEGER NOT NULL, replies INTEGER NOT NULL DEFAULT 0, reports INTEGER NOT NULL DEFAULT 0)').run();
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_comments_seen (k TEXT PRIMARY KEY, day TEXT NOT NULL)').run();
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_comments_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)').run();
-  })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; };
+const ready = tablesReady([ // made once per isolate (lib/db.js, convergence step 3)
+  'CREATE TABLE IF NOT EXISTS void_comments (id TEXT PRIMARY KEY, thread TEXT NOT NULL, name TEXT NOT NULL, text TEXT NOT NULL, at INTEGER NOT NULL, reports INTEGER NOT NULL DEFAULT 0)',
+  'CREATE INDEX IF NOT EXISTS void_comments_thread ON void_comments (thread, at)',
+  'CREATE TABLE IF NOT EXISTS void_forum (id TEXT PRIMARY KEY, title TEXT NOT NULL, name TEXT NOT NULL, at INTEGER NOT NULL, last INTEGER NOT NULL, replies INTEGER NOT NULL DEFAULT 0, reports INTEGER NOT NULL DEFAULT 0)',
+  'CREATE TABLE IF NOT EXISTS void_comments_seen (k TEXT PRIMARY KEY, day TEXT NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_comments_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)',
+]);
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset();
 const used = async (env, k, day) => { const r = await env.DB.prepare('SELECT n FROM void_comments_days WHERE k = ? AND day = ?').bind(k, day).first(); return r ? Number(r.n) || 0 : 0; };
 const tick = (env, k, day) => env.DB.prepare('INSERT INTO void_comments_days (k, day, n) VALUES (?, ?, 1) ON CONFLICT(k) DO UPDATE SET n = CASE WHEN day = excluded.day THEN n + 1 ELSE 1 END, day = excluded.day').bind(k, day).run();
 async function threadExists(env, thread) {

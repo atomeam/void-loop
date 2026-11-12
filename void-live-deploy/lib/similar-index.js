@@ -471,6 +471,30 @@ export default {
     ]
    }
   ],
+  "stage-marks": [
+   {
+    "name": "stage-organize",
+    "examples": [
+     "put the kept cards in folder recipes",
+     "open folder recipes",
+     "tag the clock as work",
+     "show only things tagged work",
+     "colour label the clock red",
+     "save this layout as morning"
+    ]
+   },
+   {
+    "name": "label",
+    "examples": [
+     "label the clock kitchen",
+     "label the note groceries",
+     "label it pasta",
+     "put a label on the timer that says pasta",
+     "give the clock a label of office",
+     "add a label that says to do"
+    ]
+   }
+  ],
   "rooms": [
    {
     "name": "room",
@@ -547,6 +571,30 @@ export default {
      "csv to json",
      "yaml to json",
      "json to yaml"
+    ]
+   }
+  ],
+  "tables": [
+   {
+    "name": "csv-table",
+    "examples": [
+     "csv table: name,age ⏎ ann,30 ⏎ bo,25",
+     "paste csv: item;price ⏎ tea;3 ⏎ cake;5",
+     "table from csv: a,b ⏎ 1,2",
+     "show the dropped files",
+     "drag a file onto the stage",
+     "make a table from a,b,c"
+    ]
+   },
+   {
+    "name": "list-tools",
+    "examples": [
+     "check all on the list",
+     "remove checked items from the list",
+     "sort the list",
+     "sum of column 2",
+     "transpose the table",
+     "turn the list into a table"
     ]
    }
   ],
@@ -727,7 +775,8 @@ export default {
      "full handoff for the invoice automation",
      "client handoff pack on onboarding flow",
      "package the handoff for the support router",
-     "show the complete handoff for weekly reports"
+     "show the complete handoff for weekly reports",
+     "full handoff for client onboarding with lift and offer"
     ]
    }
   ],
@@ -923,7 +972,7 @@ export default {
     "examples": [
      "clarify this business idea: a tool that turns customer emails into running automations",
      "turn this idea into a system plan: weekly status reports that write themselves",
-     "structure this business idea for Verse to own the heavy lifting",
+     "structure this business idea into a system plan",
      "make this idea a system plan: client onboarding that runs itself"
     ]
    },
@@ -943,10 +992,10 @@ export default {
    {
     "name": "heavy-lift-map",
     "examples": [
-     "map the heavy lifting for client onboarding",
+     "map the systems for client onboarding",
      "heavy lift map: invoice reminders that run themselves",
      "what does Verse own for the support ticket router",
-     "own the heavy lifting for weekly status reports"
+     "systems map for weekly status reports"
     ]
    },
    {

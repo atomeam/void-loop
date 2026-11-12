@@ -22,7 +22,7 @@ function run(text, api) {
   const name = subjectOf(text);
   showPage((el) => {
     el.innerHTML = '<h2>Client brief: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. This brief keeps the client from chasing status.</p>'
+      + '<p>A short brief of the systems included and how to get status.</p>'
       + '<h3>What is clarified</h3><p>The business idea is turned into systems Verse designs, builds, connects, tests and monitors.</p>'
       + '<h3>Current ownership</h3><ul>'
       + '<li>Verse owns design, build, connect, test, monitor and handoff</li>'
@@ -31,7 +31,7 @@ function run(text, api) {
       + '<h3>Status</h3><p>Systems are live or in the next slice. Monitors and status cards are owned by Verse.</p>'
       + '<h3>Next handoff</h3><p>Ask for the progress-report or docs-pack when the next slice ships. Client does less reading raw status.</p>'
       + '<p class="sub">Nothing is sent. The brief stays with the client.</p>'
-      + '<div class="src">Source: A-to-Mind client brief · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind client brief</div>';
   });
   return 'client-brief';
 }

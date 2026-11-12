@@ -6,12 +6,15 @@
 // shown as a caption on the video (a headless browser has no speech voices) and written next to it as the title and
 // description an upload will carry. Nothing is uploaded here: that is step 2, with the owner's YouTube credentials.
 //   node tools/record.mjs [id] [--seconds 20] [--out media]   -> media/<id>.webm and media/<id>.json { title, description, tags, caption }
+//   a take under the bar (tools/film-grade.mjs) is re-shot once with the buttons in another order and the better take kept; --no-reshoot skips that
 // id: a lab experiment such as attention-7 (default: the newest one not filmed yet, from VOID_FILMED, the film release tags).
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { scoreOf, takeBeatMs, toBeat } from './film-sound.mjs'; // the film's score and its tempo: scene changes land on its beats
+import { gradeAndKeep, tapOrder, keepBetter } from './film-grade.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const site = path.resolve(here, '..', 'void-live-deploy');
@@ -130,7 +133,7 @@ function serve() {
 }
 
 /** film one experiment: returns { video, meta } paths */
-export async function record(id, { seconds = 20, out = path.resolve(here, '..', 'media') } = {}) {
+export async function record(id, { seconds = 20, out = path.resolve(here, '..', 'media'), alt = false } = {}) { // alt: the re-shoot's other path through the page (frontier #26 step 2)
   const { chromium } = await import('playwright-core');
   const { toolList } = await import('../void-live-deploy/skills/make.js');
   const ship = String(id).startsWith('ship-');
@@ -151,6 +154,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   // beat-locked cuts: the film's own score (tools/film-sound.mjs, picked by the film's id) has a tempo, and the take's clock starts when the page is made (that is when the
   // video starts); every change of scene waits for the next beat of the score, in the take's time (the cut is 15% faster)
   let tookMs = 0, syncAt = 0; const score = scoreOf(id), beat = takeBeatMs(score), tick = [], t0 = Date.now();
+  let taps = 0; const cards = { hook: false, ending: false }; // whether the hook and ending cards rendered (the film's scorecard reads them)
   const page = await ctx.newPage(), cutsSeen = [];
   const onBeat = async (minMs, every = 1) => { await page.waitForTimeout(toBeat(Date.now() - t0, beat, minMs, every)); tick.push(Date.now() - t0); }; // tick: when each scene change was let go, for the trace
   try {
@@ -186,6 +190,10 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
       window.__vfx = {
         card(kicker, text, mark) { const c = fx('data-v-card', (kicker ? '<div class="k">' + esc(kicker) + '</div>' : '') + '<div class="h">' + esc(text) + '</div>' + (mark ? '<div class="m">Verse</div>' : ''));
           const h = c.querySelector('.h'); for (let px = 34; px > 16 && (c.scrollHeight > c.clientHeight || h.scrollWidth > h.clientWidth); px -= 2) h.style.fontSize = px + 'px'; return c; }, // shrink to fit, never clip
+        shown() { // the card on screen now rendered: words in it, inside the frame, not still faded in (tools/film-grade.mjs reads it)
+          const c = [...document.querySelectorAll('[data-v-card]')].pop(), h = c && c.querySelector('.h'); if (!h || !(h.innerText || '').trim()) return false;
+          const r = h.getBoundingClientRect(), st = getComputedStyle(h);
+          return r.width > 0 && r.height > 0 && r.left >= -1 && r.right <= innerWidth + 1 && r.top >= -1 && r.bottom <= innerHeight + 1 && Number(st.opacity) > 0.5 && st.visibility !== 'hidden'; },
         cuts() { // the text-bounds check: every overlay word inside the frame and its box (no clipped line, no hidden overflow)
           const W = innerWidth, H = innerHeight, bad = [];
           for (const e of document.querySelectorAll('[data-v-fx], [data-v-fx] *')) { const t = (e.innerText || '').trim(); if (!t || e.closest('[data-v-bar]')) continue;
@@ -208,21 +216,21 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     // the hook: the first second decides whether anyone stays
     await onBeat(300); syncAt = Date.now() - t0; await fx('sync'); await page.waitForTimeout(110); // the sync mark, on a beat
     await fx('card', 'an AI built this itself', words.hook, false);
-    await onBeat(1400, 2); cutsSeen.push(...(await fx('cuts')) || []);
+    await onBeat(1400, 2); cutsSeen.push(...(await fx('cuts')) || []); cards.hook = !!(await fx('shown'));
     await fx('clear');
     // the demo, then the finding (when the ledger has one, its seconds taken from the demo so the film stays as long), then the ending
     const until = Date.now() + Math.max(4, seconds - 4 - (words.finding ? FINDING_MS / 1000 : 0)) * 1000;
     await page.waitForTimeout(300);
     // the page's own demo when it has one; then its buttons, one after another, as a person would try it: tight, no dead air
     await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k) && k !== '__vfx').map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
-    const buttons = ship ? [] : await page.$$('button:visible'), starts = []; // a shipped ask is filmed answering itself, nothing to press
+    const buttons = ship ? [] : await page.$$('button:visible'), starts = []; taps = 0; // a shipped ask is filmed answering itself, nothing to press
     for (const b of buttons) if (/\b(?:start|begin|play|go|run|try|demo|example|made-up|sample|new)\b/i.test(await b.innerText().catch(() => ''))) starts.push(b);
-    for (const b of [...starts, ...buttons.filter((x) => !starts.includes(x))]) {
+    for (const b of tapOrder(starts, buttons.filter((x) => !starts.includes(x)), alt)) { // the re-shoot takes another path through the page
       if (Date.now() > until - 1200) break;
       const label = ((await b.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim(); // the whole label, wrapped, never cut
       await b.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' })).catch(() => {});
       if (label) await fx('chip', 'tap: ' + label);
-      await b.click({ timeout: 1000 }).catch(() => {});
+      await b.click({ timeout: 1000 }).then(() => { taps++; }, () => {}); // taps shown: the film's own scorecard reads it (tools/film-grade.mjs)
       await b.evaluate((el) => window.__vfx && window.__vfx.punch(el)).catch(() => {});
       await onBeat(1000);
     }
@@ -237,7 +245,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     }
     // the ending: the call to action on the same card as the hook, so the last frame flows into the first and the Short loops
     await fx('card', 'try it free · a-to-mind.com', words.hook, true);
-    await onBeat(500); cutsSeen.push(...(await fx('cuts')) || []);
+    await onBeat(500); cutsSeen.push(...(await fx('cuts')) || []); cards.ending = !!(await fx('shown'));
     await onBeat(1800, 2);
     if (cutsSeen.length && process.env.VOID_FILM_CUTS !== 'warn') throw new Error('film text cut off: ' + [...new Set(cutsSeen)].join(' | '));
   } finally {
@@ -249,8 +257,9 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const video = path.join(out, id + '.webm');
   fs.renameSync(raw, video);
   const meta = path.join(out, id + '.json');
-  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), bpm: score.bpm, beatMs: beat, beatLocked: true, syncAt, tookMs, ...(process.env.VOID_FILM_TRACE ? { trace: tick.map((t) => ({ at: t, offBeat: Math.min(t % beat, beat - (t % beat)) | 0 })) } : {}), recorded: new Date().toISOString() }, null, 2) + '\n');
-  return { video, meta };
+  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), bpm: score.bpm, beatMs: beat, beatLocked: true, syncAt, tookMs, taps, cards, ...(alt ? { reshot: true } : {}), ...(process.env.VOID_FILM_TRACE ? { trace: tick.map((t) => ({ at: t, offBeat: Math.min(t % beat, beat - (t % beat)) | 0 })) } : {}), recorded: new Date().toISOString() }, null, 2) + '\n');
+  const grade = gradeAndKeep(id, video, meta); // frontier #26 step 2: the film grades itself (still seconds, taps, the hook and ending cards); a film is kept even if grading fails
+  return { video, meta, grade };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -270,8 +279,20 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   for (const id of ids) {
     const release = await acquire('recording ' + id + ' (tools/record.mjs)'); // one heavy browser job at a time on this machine
     try {
-      const r = await record(id, { seconds: Number(arg('--seconds')) || 20, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) });
+      const opts = { seconds: Number(arg('--seconds')) || 20, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) };
+      const r = await record(id, opts);
       console.log('recorded ' + path.relative(process.cwd(), r.video) + ' and ' + path.relative(process.cwd(), r.meta));
+      // frontier #26 step 2: a film under the bar is re-shot once with another path through the page, and the better take is kept
+      if (r.grade && !r.grade.pass && !process.argv.includes('--no-reshoot')) {
+        const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'reshoot-'));
+        try {
+          const again = await record(id, { ...opts, out: tmp, alt: true });
+          const keep = keepBetter(r.grade, again.grade);
+          if (keep === 'second') { fs.copyFileSync(again.video, r.video); fs.copyFileSync(again.meta, r.meta); }
+          console.log('re-shot ' + id + ' under the bar: kept the ' + (keep === 'second' ? 're-shoot' : 'first take'));
+        } catch (e) { console.log('re-shoot of ' + id + ' skipped: ' + String(e.message || e).split('\n')[0]); }
+        finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+      }
     } finally { release(); }
   }
 }

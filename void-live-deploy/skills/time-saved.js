@@ -1,6 +1,6 @@
 /**
  * time-saved skill — client-visible estimate of hours the client no longer spends because Verse owns the systems, monitors, tests and handoffs.
- * Packages "we own the heavy lifting" with a concrete number. Pure estimate from typical process load; nothing is sent or claimed as measured.
+ * Packages a typical-hours estimate with the systems, monitors, tests and handoffs included. Pure estimate from typical process load; nothing is sent or claimed as measured.
  * "time saved for the invoice automation", "how much time does Verse save me on onboarding", "client time saved: support router".
  */
 export function isTimeSaved(text) {

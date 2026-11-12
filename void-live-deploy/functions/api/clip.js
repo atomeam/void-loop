@@ -30,19 +30,17 @@ import { cacheReq } from './image.js';
 
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
+import { batchReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 const off = (env) => !env || !env.AI || !env.DB || /^(1|true|yes|on)$/i.test(String(env.STUDIO_OFF || '').trim());
 const resting = (why, status = 200, extra = {}) => json({ state: 'resting', why, say: sayOf(why) }, status, extra);
 const short = (s) => redact(String(s || '')).replace(/\s+/g, ' ').slice(0, 160);
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = env.DB.batch([
-    env.DB.prepare('CREATE TABLE IF NOT EXISTS void_clip_state (k TEXT PRIMARY KEY, on_ INTEGER NOT NULL, why TEXT NOT NULL, at INTEGER NOT NULL)'),
-    env.DB.prepare('CREATE TABLE IF NOT EXISTS void_clip_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)'),
-  ]).then(() => ensureStudio(env)).catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its tables made again
+const ready = batchReady([ // made once per isolate in one batch, then the studio's spend table (lib/db.js, convergence step 3)
+  'CREATE TABLE IF NOT EXISTS void_clip_state (k TEXT PRIMARY KEY, on_ INTEGER NOT NULL, why TEXT NOT NULL, at INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_clip_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)',
+], (env) => ensureStudio(env));
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its tables made again
 const readState = async (env) => { const r = await env.DB.prepare('SELECT on_, why, at FROM void_clip_state WHERE k = ?').bind('video').first(); return r ? { on: r.on_, why: r.why, at: r.at } : null; };
 const writeState = (env, s) => env.DB.prepare('INSERT INTO void_clip_state (k, on_, why, at) VALUES (?, ?, ?, ?) ON CONFLICT(k) DO UPDATE SET on_ = excluded.on_, why = excluded.why, at = excluded.at').bind('video', s.on, s.why, s.at).run();
 const used = async (env, k, day) => { const r = await env.DB.prepare('SELECT n FROM void_clip_days WHERE k = ? AND day = ?').bind(k, day).first(); return r ? Number(r.n) || 0 : 0; };
