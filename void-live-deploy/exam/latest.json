@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T17:57:36.697Z",
+  "at": "2026-11-12T20:48:00.385Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,31 +34,18 @@
       }
     },
     "podcasts": {
-      "score": 91.9,
+      "score": 92.9,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of radiolab",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of planet money",
+          "ask": "play the latest episode of hardcore history",
           "failed": [
             "audio",
+            "show",
             "episode"
           ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
-            "fast"
-          ],
-          "score": 83.3
+          "score": 57.1
         },
         {
           "ask": "play the episode before that",
@@ -155,18 +142,10 @@
       }
     },
     "directions": {
-      "score": 96.3,
+      "score": 98.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "directions to times square",
-          "failed": [
-            "skill",
-            "route"
-          ],
-          "score": 66.7
-        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -260,10 +239,31 @@
       }
     },
     "sports": {
-      "score": 95.4,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "nba team celtics",
           "failed": [
@@ -391,7 +391,7 @@
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 91.9
+    "domain": "sports",
+    "score": 92.6
   }
 }

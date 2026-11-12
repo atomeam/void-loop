@@ -1,0 +1,12 @@
+{
+ "at": "2026-11-12T21:09:35.220Z",
+ "sha": "98311b6a02b95b617ea3f3c8056c63e3c03e72c3",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43304575582",
+ "suite": "browser suite on main",
+ "checks": [
+  "walker: a slow drag lifts the figure and sets it back on the floor where it is let go (about 64 px left), never a speech bubble, still walking and still kept"
+ ],
+ "touched": [
+  "void-live-deploy/skills/inventory.js"
+ ]
+}

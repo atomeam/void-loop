@@ -248,3 +248,10 @@ Picked living figures (least recently advanced, 2026-11-04 14:15; its next quest
 - Folded: nothing pending; no open forethinkers branches or think-tank PRs.
 - Result: refit the Science 2025 Florida Acropora dose-response curves from open data (matches published ED50/ED95); Florida-only baselines at each 2026 station dose; binomial readout for the Dry Tortugas split; open question 7 answered; new open question 8.
 - Board: reef survival odds card row.
+
+## 2026-11-12 14:15 ET
+
+- Track: printing working machines, open question 9 (least recently advanced).
+- Folded: nothing pending; #2717 and #2726 were merged and their branches are gone.
+- Result: drift over 1,000 slips bounded on paper; fatigue and wear small, friction (0.2 to 0.5 published) decides; ring re-centred at 0.78 N per lobe; new open question 10.
+- Board: clutch sizer card row updated with the friction band.

@@ -52,7 +52,7 @@ export const FAMILIES = [
   { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['repo', 'gh-file', 'digest', 'movie', 'pick-for-me', 'video', 'video-play', 'hear', 'define', 'technical-context', 'words', 'spanish', 'translate', 'palindrome', 'news', 'podcast-search', 'local-stations', 'joke', 'riddle', 'compliment', 'quote', 'fact', 'proverb', 'magic8', 'swaps', 'film-metadata', 'media-pick', 'book', 'show', 'sport', 'scores', 'sports-browse', 'fantasy', 'pdf-card', 'pdf-tools', 'kanban-board', 'coral', 'senolytic', 'trialwatch', 'releasenotes', 'writing-aids', 'text-tools', 'morse', 'ascii', 'leet', 'lorem', 'study-cards'] },
   { id: 'life', name: 'Out in the world', for: 'food delivery, rides and Waymo, remote jobs, social feeds and dating', skills: ['rides', 'work', 'social', 'boards', 'fanfic', 'dating', 'service-health'] },
   { id: 'stage', name: 'The stage', for: 'notes, lists, links and how the stage looks and is arranged', skills: ['telemetry-route', 'bridge', 'file-sorter', 'sticky', 'photos', 'notebook', 'notes-fill', 'calendar-fill', 'recipes-fill', 'generators-fill', 'terminal', 'notepad', 'pulse', 'friction', 'collide', 'bench', 'link', 'kept', 'list', 'tab', 'group', 'layer', 'label', 'dismiss', 'lock', 'light-look', 'dark-look', 'recent', 'showcase', 'type-filter', 'collectible', 'fly', 'riot', 'mutate', 'sudden-death', 'overload', 'extinction', 'feud', 'oracle', 'crowd', 'unkeepable', 'spectators', 'negative-summons', 'echo-disagrees', 'near-choir', 'minimap', 'ask-clipboard', 'habit-ring', 'recipe-stack', 'constellation-weaver', 'forge-table', 'night-ritual', 'archive-of-one', 'codex', 'echo-chamber', 'time-capsule', 'whisper-network', 'sheaf-check', 'spectral-review', 'task-diagram', 'gauge-feedback', 'eigenwork', 'homotopy-edit', 'plan-stability', 'anneal-ambition', 'partial-answer', 'draft-triad', 'stale-work', 'certainty-budget', 'interrupt-priority', 'causal-scars', 'counterfactual-draft', 'witness-claims', 'task-board', 'template-list', 'error-garden', 'idea-certificate', 'noun-heat', 'hunting-question', 'contradiction-lamp', 'ask-diff', 'family-gravity', 'deep-work', 'soundscape', 'stage-print', 'note-tools', 'outline-note', 'csv-table', 'qr-scan', 'list-tools', 'list-templates', 'stage-arrange', 'stage-style', 'stage-organize', 'accessibility-modes', 'stage-find', 'dismissed-pile', 'bookmarks', 'stage-export', 'copy-stack', 'stage-image', 'media-object', 'backdrop'] },
-  { id: 'self', name: 'Verse itself', formerly: ['V01D', 'Void'], for: 'how Verse grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['lab', 'team-chat', 'tower', 'studios', 'dependency-health', 'backlog-digest', 'remediation-velocity', 'guide', 'growth', 'v01d-fixes', 'merges', 'goal', 'intent', 'different', 'know', 'state', 'memory', 'watch', 'status', 'system-status', 'systems-monitor', 'incident', 'actions', 'automations', 'proposal', 'services', 'delivery-pack', 'monitor-pack', 'verify-pack', 'business-clarify', 'system-blueprint', 'client-handoff', 'system-handoff', 'full-handoff', 'proposal-pack', 'heavy-lift-map', 'ownership-map', 'store', 'share', 'web4', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health', 'incident-autopsy', 'fix-audit', 'deps', 'fringe-to-skill', 'skill-eclipse', 'miss-jobs', 'ask-immune', 'four-channels', 'stakes-phase', 'own-parts', 'about-skill', 'similar', 'approve-card', 'memory-graph', 'memory-preview', 'wants', 'podcast', 'connect-pack', 'client-intake', 'client-status-pack', 'delivery-board', 'status-digest', 'faucet', 'handoff-checklist', 'reuse-pack', 'ownership-pack', 'client-brief', 'client-offer', 'automation-pack', 'automation-status', 'lift-summary', 'time-saved', 'reliability-pack', 'docs-pack', 'feedback-loop', 'progress-report', 'system-slice'] },
+  { id: 'self', name: 'Verse itself', formerly: ['V01D', 'Void'], for: 'how Verse grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['lab', 'team-chat', 'tower', 'studios', 'dependency-health', 'backlog-digest', 'remediation-velocity', 'guide', 'growth', 'v01d-fixes', 'merges', 'goal', 'intent', 'different', 'know', 'state', 'memory', 'watch', 'status', 'system-status', 'systems-monitor', 'incident', 'actions', 'automations', 'proposal', 'services', 'delivery-pack', 'monitor-pack', 'verify-pack', 'business-clarify', 'system-blueprint', 'client-handoff', 'system-handoff', 'full-handoff', 'proposal-pack', 'heavy-lift-map', 'ownership-map', 'store', 'share', 'web4', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health', 'incident-autopsy', 'fix-audit', 'deps', 'fringe-to-skill', 'skill-eclipse', 'miss-jobs', 'ask-immune', 'four-channels', 'stakes-phase', 'own-parts', 'about-skill', 'similar', 'approve-card', 'memory-graph', 'memory-preview', 'wants', 'podcast', 'connect-pack', 'client-intake', 'client-status-pack', 'delivery-board', 'status-digest', 'faucet', 'handoff-checklist', 'reuse-pack', 'ownership-pack', 'client-brief', 'client-offer', 'automation-pack', 'automation-status', 'lift-summary', 'time-saved', 'docs-pack', 'feedback-loop', 'progress-report', 'system-slice', 'reliability-pack'] },
   { id: 'decide', name: 'Deciding', for: 'ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards', skills: ['decide-cards', 'decision-matrix', 'triangulate'] },
   { id: 'safety-play', name: 'Safety and small delights', for: 'privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)', skills: ['advice', 'pwcheck', 'safety-kit', 'photo-scrub', 'stage-fx', 'card-play'] },
 ];
@@ -125,4 +125,148 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
     const label = n.length >= 6 ? '[^\'"`]{0,60}\\b' : '(?:3d:\\s*)?(?:[a-z]+ and )?';
     const browser = (suiteText.match(new RegExp('skills/' + esc(n) + '\\.js|skill:' + esc(n) + '\\b|(?:check|want)\\(\\s*[\'"`]' + label + word + '\\b', 'gi')) || []).length;
     // its own tests: suite() in the skill, or a unit test in tools/ that imports the skill's file
-    // a test may also load the skill from the skills folder it names ("resolve(dir, 'suntimes.js')" in a file that points dir at void-live-deploy/skills, a
+    // a test may also load the skill from the skills folder it names ("resolve(dir, 'suntimes.js')" in a file that points dir at void-live-deploy/skills, as tools/sky-skills.test.mjs does): the same test, written differently
+    const viaDir = (t) => /['"]void-live-deploy['"]\s*,\s*['"]skills['"]/.test(t) && new RegExp('resolve\\(\\s*\\w+\\s*,\\s*[\'"]' + esc(n) + '\\.js[\'"]\\s*\\)').test(t);
+    const unit = unitTexts.some((t) => new RegExp('skills/' + esc(n) + '(?:-rules)?\\.js[\'"`]').test(t) || viaDir(t)); // a game's rules are often their own file
+    // real asks: a benchmark ask whose wanted answer is this skill ("skill:weather", or "calc" / "calc|answer" for the core ones)
+    const routed = bench.filter((b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n)).length;
+    const wants = (b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n);
+    const failing = [...new Set(bench.filter((b) => wants(b) && missed.includes(String(b.ask).toLowerCase())).map((b) => b.ask))];
+    const smokedAll = [...(Array.isArray(smoke.failing[n]) ? smoke.failing[n] : []), ...(retest.failing[n] || [])], smoked = smokedAll.length ? smokedAll.slice(0, 3) : null;
+    const streak = streaks[n] || 0;
+    const lv = liveFindings(n, listFindings, read); // a kept artifact of a real call to the service it wraps
+    out[n] = { suite: !smoked && (unit || /\bsuite\s*\(\s*\)\s*\{/.test(src)), browser, bench: routed, ...(failing.length ? { failing } : {}), ...(smoked ? { smoke: smoked } : {}), ...(lv.n ? { live: lv.n, liveAt: lv.at } : {}), ...(streak ? { streak } : {}) };
+  }
+  return out;
+}
+
+/** the benchmark's last conclusive run on main: { at: 'YYYY-MM-DD' | '', recorded: whether its misses were written }. Pure apart from the reads. */
+export function benchRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
+  const day = (t) => (typeof t === 'string' && /^\d{4}-\d{2}-\d{2}/.test(t) ? t.slice(0, 10) : '');
+  let m = null, best = null;
+  try { m = JSON.parse(read('tools/bench.misses.json')); } catch (_) {}
+  try { best = JSON.parse(read('tools/bench.best.json')); } catch (_) {}
+  const recorded = !!(m && Array.isArray(m.misses));
+  return { at: (recorded && day(m.at)) || day(best && best.latency && best.latency.ci && best.latency.ci.at) || day(best && best.date) || '', recorded };
+}
+
+/** the daily smoke test's last record: { at: 'YYYY-MM-DD' | '', failing: { skill: [what] } }; none written, nothing. Pure apart from the read. */
+export function smokeRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
+  try { const j = JSON.parse(read('tools/skills-smoke.json')); return { at: typeof j.at === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.at) ? j.at : '', failing: j && j.failing && typeof j.failing === 'object' ? j.failing : {}, streak: j && j.streak && typeof j.streak === 'object' ? j.streak : {} }; } catch (_) { return { at: '', failing: {}, streak: {} }; }
+}
+
+/** the daily re-test's last record (tools/retest.json): { at, passed: Set of skills, failing: { skill: [what] } }. Pure apart from the read. */
+export function retestRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
+  const out = { at: '', passed: new Set(), failing: {} };
+  try {
+    const j = JSON.parse(read('tools/retest.json'));
+    out.at = typeof j.at === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.at) ? j.at : '';
+    for (const [k, r] of Object.entries(j && j.retested && typeof j.retested === 'object' ? j.retested : {})) { if (r && r.ok) out.passed.add(k); else if (r && Array.isArray(r.failing) && r.failing.length) out.failing[k] = r.failing.map((x) => 're-test: ' + x); }
+  } catch (_) {}
+  return out;
+}
+
+/** the share of a skill's benchmark asks that passed on the bench's last run, or null when it can't be known. Pure. */
+export function successRate(e, recorded) {
+  if (!recorded || !e || !(e.bench > 0)) return null;
+  const failing = Array.isArray(e.failing) ? e.failing.length : 0;
+  return Math.round(Math.max(0, e.bench - failing) / e.bench * 1000) / 1000;
+}
+
+/** the evidence from the repo's own tests, as the `why` words say it (the benchmark part left out), to see when it changed. Pure. */
+export const testsOf = (why) => String(why || '').split(', ').filter((w) => !/ in the benchmark$/.test(w) && !/ live findings?$/.test(w) && !/^\d{4}-\d{2}-\d{2}$/.test(w)).join(', ');
+/** when a skill was last tested: its tests' date (today when they changed since the last file, else carried from it) or the bench's
+ * run date, the newer; a tie keeps what the last file said. Pure. */
+export function lastTested(e, why, prevRow, today, bench, smoke, retestAt = '') {
+  const tests = testsOf(why), prevTests = prevRow ? testsOf(prevRow.why) : null, c = [];
+  // real runs first, so on a tie they name the date rather than the carried "seen in the repo" date of its tests
+  if (e && e.live > 0 && e.liveAt) c.push({ at: e.liveAt, by: 'a live call' }); // the day of its newest kept answer from the real service
+  if (e && e.bench > 0 && bench && bench.at) c.push({ at: bench.at, by: 'the benchmark' });
+  if (smoke && smoke.at && !(e && e.smoke)) c.push({ at: smoke.at, by: 'the daily smoke test' });
+  if (retestAt && !(e && e.smoke)) c.push({ at: retestAt, by: 'a re-test' }); // the 7-day re-test it passed (tools/retest.mjs) // every listed skill is loaded and matched that day; one that failed has no passing test to date
+  if (tests && tests !== 'nothing checks it yet') c.push({ at: prevRow && prevRow.last_tested && prevTests === tests ? prevRow.last_tested : today, by: 'its tests' });
+  if (!c.length) return null;
+  const top = c.reduce((a, b) => (b.at > a.at ? b : a));
+  return c.find((x) => x.at === top.at && prevRow && x.by === prevRow.last_tested_by) || top;
+}
+
+/** the families with each skill rated, the counts, and any skill no family holds. Pure, given the evidence. */
+// The decay timer (asked by Verse, ask-20261015-0614-1: "flag stale experiments"): an experiment carries the day it was first
+// rated one (`since`, kept across rewrites); one left an experiment longer than STALE_DAYS is flagged for review. Flag only:
+// nothing is ever deleted or retired by this; a builder decides (test it, or retire it through the ledger).
+export const STALE_DAYS = 14;
+/** carry each experiment's `since` over from the last families.json; a new experiment starts today. Pure. */
+export function carrySince(fams, prev, today) {
+  const old = new Map(); for (const f of (prev && prev.families) || []) for (const s of f.skills || []) if (s.since) old.set(s.name, s.since);
+  for (const f of fams) for (const s of f.skills) if (s.tier === 'experiment') s.since = old.get(s.name) || today;
+  return fams;
+}
+/** experiments older than `days` on `now` (YYYY-MM-DD), oldest first: [{ name, family, since, days }]. Pure. */
+export function staleExperiments(fam, now, days = STALE_DAYS) {
+  const out = [], t = Date.parse(now + 'T00:00:00Z');
+  for (const f of (fam && fam.families) || []) for (const s of f.skills || []) {
+    if (s.tier !== 'experiment' || !s.since) continue;
+    const d = Math.floor((t - Date.parse(s.since + 'T00:00:00Z')) / 864e5);
+    if (d > days) out.push({ name: s.name, family: f.name, since: s.since, days: d });
+  }
+  return out.sort((a, b) => b.days - a.days);
+}
+
+export const PROMOTED_KEEP_DAYS = 60;
+/** the day a skill last moved up a rating: today when its tier is higher than the last file's, the last file's day while it is under PROMOTED_KEEP_DAYS old and the tier held, else none. Pure. */
+export function promotedOn(tier, prevRow, today) {
+  if (!prevRow || !TIERS.includes(prevRow.tier)) return null; // first rating: nothing moved
+  if (TIERS.indexOf(tier) > TIERS.indexOf(prevRow.tier)) return today;
+  const p = prevRow.promoted;
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(p || '')) && TIERS.indexOf(tier) >= TIERS.indexOf(prevRow.tier) && daysOld(p, today) <= PROMOTED_KEEP_DAYS ? p : null;
+}
+
+export function build(names, ev, meta = {}) {
+  const placed = new Set(FAMILIES.flatMap((f) => f.skills));
+  const prevRows = new Map(); for (const f of (meta.prev && meta.prev.families) || []) for (const s of f.skills || []) if (s && s.name) prevRows.set(s.name, s);
+  const bench = meta.bench || { at: '', recorded: false }, today = meta.today || new Date().toISOString().slice(0, 10), smoke = meta.smoke || { at: '', failing: {}, streak: {} }, retest = meta.retest || { at: '', passed: new Set(), failing: {} };
+  const families = FAMILIES.map((f) => {
+    const skills = f.skills.filter((n) => names.includes(n)).map((n) => { const e = ev[n] || {}, x = { name: n, ...ratingOf(e, today) }; if (e.failing && e.failing.length) x.failing = e.failing.slice(0, 3); // failing: bench asks it got wrong
+      if (e.smoke) x.smoke = e.smoke; // the daily smoke test's failures (its self-test does not count while they stand)
+      const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke, retest.at && retest.passed.has(n) ? retest.at : ''); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
+      const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
+      const pr = promotedOn(x.tier, prevRows.get(n), today); if (pr) x.promoted = pr; // the day it moved up a rating (asked by Verse)
+      if (Number.isFinite(+(smoke.streak || {})[n])) x.streak = +smoke.streak[n]; // clean smoke runs in a row
+      const rel = meta.sources && meta.sources[n] ? reliabilityOf(meta.sources[n], x, e, today) : null; if (rel) x.source = rel; // source reliability (asked by Verse)
+      return x; });
+    const count = Object.fromEntries(TIERS.map((t) => [t, skills.filter((s) => s.tier === t).length]));
+    const sources = meta.sources && SOURCE_FAMILIES.includes(f.id) ? familySources(skills) : null;
+    return { id: f.id, name: f.name, ...(f.formerly ? { formerly: f.formerly } : {}), for: f.for, count, ...(sources ? { sources } : {}), skills };
+  });
+  const totals = Object.fromEntries(TIERS.map((t) => [t, families.reduce((n, f) => n + f.count[t], 0)]));
+  return { families, totals, unplaced: names.filter((n) => !placed.has(n)), missing: [...placed].filter((n) => !names.includes(n)) };
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // a family skill (lib/skill-family.js) is rated by its members, each still a skill with its own evidence
+  // skills/order/ is the source. index.json is the copy the deploy writes, so a new skill is in a family before that copy exists.
+  const names = readOrder().flatMap((n) => {
+    let src = ''; try { src = readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'); } catch (_) { return [n]; }
+    const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(src);
+    return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
+  let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
+  const readRepo = (p) => readFileSync(resolve(root, p), 'utf8');
+  const sources = Object.fromEntries(FAMILIES.filter((f) => SOURCE_FAMILIES.includes(f.id)).flatMap((f) => f.skills).filter((n) => names.includes(n)).map((n) => [n, scanSkill(n, readRepo)]));
+  const b = build(names, evidence(names), { prev, bench: benchRun(), smoke: smokeRun(), retest: retestRun(), today: new Date().toISOString().slice(0, 10), sources });
+  carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
+  if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
+  const json = JSON.stringify({ note: 'Verse\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, ...(smokeRun().at ? { smoke_at: smokeRun().at } : {}), ...(benchRun().at ? { bench_at: benchRun().at } : {}), totals: b.totals, families: b.families }, null, 1) + '\n';
+  const problems = [];
+  if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));
+  if (b.missing.length) problems.push('family members that are not skills (remove or rename): ' + b.missing.join(', '));
+  if (process.argv.includes('--check')) {
+    // the file is a build output (deploy runs this). A pull request that also commits it conflicts with every other one.
+    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== json) console.log('families.json lags the skills; the deploy rewrites it (node tools/families.mjs)');
+    if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
+    console.log('ok: ' + names.length + ' skills in ' + b.families.length + ' families'); process.exit(0);
+  }
+  if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
+  writeFileSync(OUT, json);
+  for (const f of b.families) console.log(f.name.padEnd(20) + ' ' + String(f.skills.length).padStart(3) + ' skills   ' + TIERS.map((t) => t + ' ' + f.count[t]).join(', '));
+  console.log('all'.padEnd(20) + ' ' + String(names.length).padStart(3) + ' skills   ' + TIERS.map((t) => t + ' ' + b.totals[t]).join(', '));
+}

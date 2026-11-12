@@ -2,7 +2,7 @@
  "about": "The floor Verse is on. It is assimilated only when the gate verifies every aspect against the live site and its feature study has nothing missing; until then it stays the floor and low-confidence aspects are retried (docs/TOWER-RULES.md, tools/tower-target.mjs).",
  "id": "travel: flightconnections.com",
  "since": "2026-11-09",
- "n": 14,
+ "n": 16,
  "progressAt": "2026-11-12",
  "season": {
   "start": "2026-11-06",

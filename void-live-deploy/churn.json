@@ -1,91 +1,87 @@
 {
- "at": "2026-11-11T20:11:46.138Z",
+ "at": "2026-11-12T20:51:51.345Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 137
+   "changes": 123
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 137
+   "changes": 122
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 109
+   "changes": 119
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 105
-  },
-  {
-   "file": "domains/handoff.md",
-   "changes": 87
+   "changes": 115
   },
   {
    "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
-   "changes": 59
+   "changes": 60
+  },
+  {
+   "file": "domains/handoff.md",
+   "changes": 58
   },
   {
    "file": "domains/conductor.json",
-   "changes": 50
+   "changes": 48
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
+   "changes": 41
   },
   {
    "file": "domains/tower-self.json",
-   "changes": 49
-  },
-  {
-   "file": "tools/site-test.json",
-   "changes": 38
+   "changes": 40
   },
   {
    "file": "void-live-deploy/design-loop.json",
-   "changes": 36
+   "changes": 40
   },
   {
-   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
-   "changes": 36
-  },
-  {
-   "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 34
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 33
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 33
+   "file": "tools/site-test.json",
+   "changes": 39
   },
   {
    "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
-   "changes": 31
+   "changes": 29
+  },
+  {
+   "file": "domains/growth-inbox.md",
+   "changes": 28
   },
   {
    "file": "void-live-deploy/color/colour-picker-tool/index.html",
-   "changes": 30
+   "changes": 28
+  },
+  {
+   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 28
+  },
+  {
+   "file": "void-live-deploy/markets/currency-converter/index.html",
+   "changes": 28
   },
   {
    "file": "void-live-deploy/news/global-headlines/index.html",
    "changes": 28
   },
   {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 26
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 27
   },
   {
-   "file": "domains/growth-inbox.md",
-   "changes": 25
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 27
   },
   {
-   "file": "docs/TAGTEAM.md",
-   "changes": 23
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
+   "file": "void-live-deploy/tower.target.json",
    "changes": 23
   },
   {
@@ -93,67 +89,51 @@
    "changes": 22
   },
   {
-   "file": "docs/PARITY/github.md",
-   "changes": 21
-  },
-  {
-   "file": "docs/PARITY/hugging-face.md",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/tower.target.json",
-   "changes": 21
-  },
-  {
    "file": "tools/families.mjs",
    "changes": 20
   },
   {
-   "file": "void-live-deploy/assimilated.json",
+   "file": "void-live-deploy/tower.size.json",
    "changes": 20
   },
   {
+   "file": "docs/TAGTEAM.md",
+   "changes": 18
+  },
+  {
    "file": "tools/real-pages.mjs",
-   "changes": 19
+   "changes": 18
   },
   {
-   "file": "void-live-deploy/tower.size.json",
-   "changes": 19
+   "file": "void-live-deploy/assimilated.json",
+   "changes": 17
   },
   {
-   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
-   "changes": 15
-  },
-  {
-   "file": "docs/PARITY/gmail.md",
-   "changes": 14
-  },
-  {
-   "file": "docs/PARITY/google-search.md",
-   "changes": 14
+   "file": "void-live-deploy/skills/first.json",
+   "changes": 17
   },
   {
    "file": "void-live-deploy/tower.sweep.json",
+   "changes": 16
+  },
+  {
+   "file": "docs/PARITY/lichess.md",
    "changes": 14
   },
   {
-   "file": "docs/PARITY/youtube.md",
+   "file": "docs/PARITY/github.md",
    "changes": 13
   },
   {
-   "file": "tools/automerge.mjs",
+   "file": "docs/PARITY/hugging-face.md",
    "changes": 13
   },
   {
-   "file": "tools/conductor-core.mjs",
+   "file": "tools/bench.json",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/functions/api/team.js",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/lib/guard.js",
+   "file": "void-live-deploy/tower.features.json",
    "changes": 13
   }
  ]

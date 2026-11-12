@@ -1,0 +1,1 @@
+{"at": "2026-11-12T20:45:00Z", "by": "grok-bot", "kind": "build", "what": "The merge gate installs missing packages once instead of failing every pull request"}

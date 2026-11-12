@@ -3,9 +3,36 @@
     "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
     "from": "page",
     "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-11: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-11) did not work (credits)",
-    "at": "2026-11-11T19:49:47.043Z",
+    "learned": "2026-11-12: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-12) did not work (credits)",
+    "at": "2026-11-12T20:22:59.897Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
+    "from": "page",
+    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
+    "learned": "2026-11-12: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"; error: the change: answered 413 no state",
+    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-12) did not work",
+    "at": "2026-11-12T12:56:45.647Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
+    "from": "page",
+    "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
+    "learned": "2026-11-12: worked; 30 tools listed",
+    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-12) worked",
+    "at": "2026-11-12T00:35:08.338Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-rides-osrm-public-demo-router-router-",
+    "from": "page",
+    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
+    "learned": "2026-11-11: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
+    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-11) worked",
+    "at": "2026-11-11T21:29:32.666Z",
     "seen": 1
   },
   {
@@ -15,33 +42,6 @@
     "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
     "retain": "convertlive.com was surpassed by /convert/unit-converter/",
     "at": "2026-11-11T14:27:58Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
-    "from": "page",
-    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
-    "learned": "2026-11-11: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"; error: the change: answered 413 no state",
-    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-11) did not work",
-    "at": "2026-11-11T11:58:02.889Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
-    "from": "page",
-    "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
-    "learned": "2026-11-11: worked; 30 tools listed",
-    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-11) worked",
-    "at": "2026-11-11T01:27:33.471Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-rides-osrm-public-demo-router-router-",
-    "from": "page",
-    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
-    "learned": "2026-11-10: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
-    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-10) worked",
-    "at": "2026-11-10T20:48:25.302Z",
     "seen": 1
   },
   {
