@@ -6336,5 +6336,6 @@
   {"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "build", "what": "Tests for the owner sign-in link and the remote-job regions (tools/owner-link.test.mjs, tools/job-regions.test.mjs)"},
   {"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "build", "what": "Each film grades itself after it is recorded: seconds with nothing moving, the longest still stretch and the taps shown go into its scorecard"},
   {"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "build", "what": "Pasted csv tables and list tables answer from one place now, every ask landing where it did before (skills/tables.js)"},
-  {"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "fix", "what": "The time-saved card has its place in the routing order and on the book's \"Verse itself\" page, so the skill list is current again"}
+  {"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "fix", "what": "The time-saved card has its place in the routing order and on the book's \"Verse itself\" page, so the skill list is current again"},
+  {"at": "2026-11-12T20:22:59Z", "by": "video-gen-live", "kind": "finding", "what": "video-gen checked against the live site, occasion 34: video is off: the partner video model says the account has no AI Gateway credits yet; Verse last tested the video model at 2026-11-12T15:04:50.773Z, and /video/ is served (artifact findings/video-gen/2026-11-12T2022.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/video-gen/2026-11-12T2022.json"}
 ]
