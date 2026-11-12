@@ -386,7 +386,7 @@ async function run(text, api) {
     const { showPage } = api;
     showPage((el) => {
       el.classList.add('tower-card');
-      el.innerHTML = visitorHtml();
+      el.innerHTML = visitorHtml() + '<p class="tw-head" hidden>Versus</p>';
       ownerModel().then((m) => { if (m && el.isConnected) el.innerHTML = ownerHtml(m); }).catch(() => {});
     });
     return 'tower';
