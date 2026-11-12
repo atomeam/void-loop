@@ -1,7 +1,7 @@
 /**
  * proposal-pack skill — turn a business idea or process into a client proposal
  * that packages what Verse owns (design, build, connect, test, monitor, docs, handoff)
- * and what the client keeps (outcomes, decisions). Frames "we own the heavy lifting".
+ * and what the client keeps (outcomes, decisions).
  * Built from the delivery practice already on main (delivery-pack, system-handoff,
  * heavy-lift-map). Nothing is sent; no status is invented.
  */
@@ -27,7 +27,7 @@ function run(text, api) {
   const name = subjectOf(text);
   showPage((el) => {
     el.innerHTML = '<h2>Proposal pack: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. The client keeps the outcome and the decisions.</p>'
+      + '<p>The client keeps the outcome and the decisions.</p>'
       + '<h3>What Verse owns</h3><ul>'
       + '<li>Capture and clarify the idea into a system plan</li>'
       + '<li>Design, build, connect, test and monitor the systems</li>'

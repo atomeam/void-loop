@@ -40,7 +40,7 @@ async function run(text, api) {
   showPage((el) => {
     const items = pack.items.map(i => '<li>' + esc(i) + '</li>').join('');
     el.innerHTML = '<h2>Handoff checklist: ' + esc(name) + '</h2>'
-      + '<p class="sub">Verse owns the heavy lifting. This checklist makes the handoff reliable.</p>'
+      + '<p class="sub">This checklist lists the handoff steps.</p>'
       + '<ul>' + items + '</ul>'
       + '<p class="sub">Nothing is invented as already done. Ask for the live status or the pack when ready.</p>'
       + '<div class="src">Source: A-to-Mind handoff checklist · nothing sent</div>';

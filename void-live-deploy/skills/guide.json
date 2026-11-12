@@ -7193,7 +7193,7 @@
    "chapter": "self",
    "name": "delivery-pack",
    "title": "Delivery pack",
-   "line": "Capture a business idea and turn it into a structured handoff package that reduces client work: clarified idea, systems to design/build/connect/test/monitor, status/docs/automations to hand off, and the \"we own the heavy lifting\" package",
+   "line": "Capture a business idea and turn it into a structured handoff package that reduces client work: clarified idea, systems to design/build/connect/test/monitor, status/docs/automations to hand off, and the lift-summary package",
    "examples": [
     "package this idea: automate client onboarding",
     "handoff pack for my SaaS idea",
@@ -7244,11 +7244,11 @@
    "chapter": "self",
    "name": "business-clarify",
    "title": "Business clarify",
-   "line": "Capture and clarify a business idea into a system plan that Verse can own the heavy lifting for",
+   "line": "Capture and clarify a business idea into a system plan",
    "examples": [
     "clarify this business idea: a tool that turns customer emails into running automations",
     "turn this idea into a system plan: weekly status reports that write themselves",
-    "structure this business idea for Verse to own the heavy lifting"
+    "structure this business idea into a system plan"
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
@@ -7261,7 +7261,7 @@
    "chapter": "self",
    "name": "system-blueprint",
    "title": "System blueprint",
-   "line": "Map an inbound business idea into a structured system plan (A-to-Mind: facilitate ideas and take over the heavy lifting)",
+   "line": "Map an inbound business idea into a structured system plan",
    "examples": [
     "blueprint this: late invoice follow-ups for clients",
     "turn this into a system: new lead intake from the website form",
@@ -7345,9 +7345,9 @@
    "chapter": "self",
    "name": "heavy-lift-map",
    "title": "Heavy lift map",
-   "line": "Turn a business process or idea into a concrete map of what Verse owns so the client does less: systems to design/build/connect/test/monitor, automations that run themselves, and the handoff package (status, docs, running jobs) that proves \"we own the heavy lifting.\"",
+   "line": "Turn a business process or idea into a concrete map of the systems, automations and handoff package included for that process",
    "examples": [
-    "map the heavy lifting for client onboarding",
+    "map the systems for client onboarding",
     "heavy lift map: invoice reminders that run themselves",
     "what does Verse own for the support ticket router"
    ],
@@ -7362,7 +7362,7 @@
    "chapter": "self",
    "name": "ownership-map",
    "title": "Ownership map",
-   "line": "Map a business process into clear ownership: what Verse owns (systems, automations, monitoring, heavy lifting) versus what the client owns (outcomes, approvals, final decisions), so handoff is unambiguous and client work is reduced",
+   "line": "Map a business process into clear ownership: what Verse owns (systems, automations, monitoring) versus what the client owns (outcomes, approvals, final decisions), so handoff is unambiguous and client work is reduced",
    "examples": [
     "ownership map for client onboarding",
     "map ownership for invoice reminders",
@@ -7980,10 +7980,10 @@
    "chapter": "self",
    "name": "client-offer",
    "title": "Client offer",
-   "line": "Package a business idea into a sellable offer that Verse owns the heavy lifting",
+   "line": "Package a business idea into a sellable offer of the systems, automations, monitoring and handoff included",
    "examples": [
     "client offer for the email automation",
-    "offer to own the heavy lifting for weekly reports",
+    "offer for weekly reports",
     "package this as an offer: client onboarding that runs itself"
    ],
    "tier": "proven",
@@ -8030,11 +8030,11 @@
    "chapter": "self",
    "name": "lift-summary",
    "title": "Lift summary",
-   "line": "A short client-facing summary that packages \"we own the heavy lifting\" for a business idea",
+   "line": "A short summary of the systems, automations, monitoring and handoff included for a business idea",
    "examples": [
     "lift summary for client onboarding",
-    "we own the heavy lifting for invoice reminders",
-    "package the heavy lifting for the support flow"
+    "lift summary for invoice reminders",
+    "package a lift summary for the support flow"
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
@@ -8115,7 +8115,7 @@
    "chapter": "self",
    "name": "system-slice",
    "title": "System slice",
-   "line": "Propose the next concrete system slice Verse will design, build, connect, test or monitor for a business idea or process so the client does less and Verse owns the heavy lifting",
+   "line": "Propose the next concrete system slice Verse will design, build, connect, test or monitor for a business idea or process",
    "examples": [
     "next system slice for the client onboarding",
     "system slice for invoice reminders",

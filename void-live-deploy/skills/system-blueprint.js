@@ -1,6 +1,5 @@
 /**
- * system-blueprint skill — map an inbound business idea into a structured system plan
- * (A-to-Mind: facilitate ideas and take over the heavy lifting).
+ * system-blueprint skill — map an inbound business idea into a structured system plan.
  * "blueprint this: late invoice follow-ups" / "turn this into a system: ..." / "idea to system: ..."
  * also the asks from the idea-to-system and system-sketch drafts: "system plan for: ...",
  * "sketch the system for: ...", "system design for ...". A "blueprint of" that is not a system

@@ -22,7 +22,7 @@ function run(text, api) {
   const name = subjectOf(text);
   showPage((el) => {
     el.innerHTML = '<h2>Ownership pack: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. The client owns the outcome.</p>'
+      + '<p>A split of what Verse owns and what the client owns.</p>'
       + '<h3>Verse owns</h3><ul>'
       + '<li>Capture and clarify the idea into a system plan</li>'
       + '<li>Design, build, connect, test and monitor the systems</li>'
@@ -37,7 +37,7 @@ function run(text, api) {
       + '<h3>Next delivery step</h3>'
       + '<p>Ask "system status for ' + esc(name) + '" or "system handoff for ' + esc(name) + '" to hand off a living card.</p>'
       + '<p class="sub">Nothing is sent. Ownership is named so the client does less.</p>'
-      + '<div class="src">Source: A-to-Mind ownership pack · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind ownership pack</div>';
   });
   return 'ownership-pack';
 }

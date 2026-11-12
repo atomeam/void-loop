@@ -1,5 +1,5 @@
 /**
- * ownership-map skill — map a business process into clear ownership: what Verse owns (systems, automations, monitoring, heavy lifting)
+ * ownership-map skill — map a business process into clear ownership: what Verse owns (systems, automations, monitoring)
  * versus what the client owns (outcomes, approvals, final decisions), so handoff is unambiguous and client work is reduced.
  * Rules-based, offline. Card stays on the stage.
  * "ownership map for client onboarding", "what does Verse own vs the client for invoice reminders", "map ownership for support tickets"
@@ -62,7 +62,7 @@ function run(text, api) {
   const el = showPage((p) => { p.innerHTML = '<h2>Ownership map</h2><div class="sub">building…</div>'; });
   const html = [
     `<h2>Ownership map: ${esc(process)}</h2>`,
-    `<p class="sub">Clear split so Verse owns the heavy lifting and the client keeps the outcomes.</p>`,
+    `<p class="sub">A clear split of what Verse owns and what the client owns.</p>`,
     `<h3>What Verse owns</h3><ul>`,
     ...own.verse.map(v => `<li>${esc(v)}</li>`),
     `</ul>`,
@@ -74,7 +74,7 @@ function run(text, api) {
     `<li>Docs of the systems and automations Verse runs</li>`,
     `<li>Confirm-line approvals already in place for any send or spend</li>`,
     `</ul>`,
-    `<p><strong>We own the heavy lifting.</strong> Client work is reduced to outcomes and approvals.</p>`,
+    `<p>The client keeps outcomes and approvals.</p>`,
     `<div class="src">Source: A-to-Mind ownership practice</div>`
   ].join('');
   el.innerHTML = html; // void-review: ok (every interpolated value is passed through esc)

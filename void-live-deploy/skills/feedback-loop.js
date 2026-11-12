@@ -27,7 +27,7 @@ export function loopFor(subject) {
       'Capture and clarify the feedback into systems',
       'Propose the adjustment or next slice',
       'Hand off the updated status so the client does not chase',
-      'We own the heavy lifting of the iteration'
+      'The next iteration of the system, tests and handoff'
     ],
     clientDoesLess: 'The client no longer organizes feedback or designs the next piece themselves'
   };
@@ -40,13 +40,13 @@ async function run(text, api) {
   showPage((el) => {
     const owns = pack.owns.map(i => '<li>' + esc(i) + '</li>').join('');
     el.innerHTML = '<h2>Feedback loop: ' + esc(name) + '</h2>'
-      + '<p class="sub">Verse owns the heavy lifting. This captures feedback and turns it into the next reliable delivery.</p>'
+      + '<p class="sub">This captures feedback and turns it into the next delivery.</p>'
       + '<h3>Captured</h3><p>' + esc(pack.captured) + '</p>'
       + '<h3>What next</h3><p>' + esc(pack.next) + '</p>'
       + '<h3>What Verse owns</h3><ul>' + owns + '</ul>'
       + '<h3>How the client does less</h3><p>' + esc(pack.clientDoesLess) + '</p>'
       + '<p class="sub">Nothing is built yet. Ask for the system-slice or progress-report when ready.</p>'
-      + '<div class="src">Source: A-to-Mind feedback loop · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind feedback loop</div>';
   });
   return 'feedback-loop';
 }
