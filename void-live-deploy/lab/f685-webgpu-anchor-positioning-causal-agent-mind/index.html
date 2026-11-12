@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0c10; --fg: #e0e6f0; --accent: #5ce1e6; --card: #161b22; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  #canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .portal {
+    position: absolute; width: 140px; height: 90px; background: var(--card);
+    border: 1px solid #2a3440; border-radius: 12px; padding: 8px; font-size: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.4); cursor: grab; z-index: 10;
+    transition: border-color .2s, transform .1s;
+    anchor-name: --agent; /* will be overridden per portal */
+  }
+  .portal:hover { border-color: var(--accent); }
+  .portal.dragging { cursor: grabbing; z-index: 20; }
+  .portal h3 { margin: 0 0 4px; font-size: 13px; color: var(--accent); }
+  .portal p { margin: 0; opacity: .7; }
+  #hud { position: fixed; top: 12px; left: 12px; z-index: 30; background: rgba(10,12,16,.75);
+    padding: 10px 14px; border-radius: 8px; font-size: 13px; backdrop-filter: blur(4px); }
+  button, label { margin: 4px; padding: 6px 10px; background: #1c2330; color: var(--fg);
+    border: 1px solid #2a3440; border-radius: 6px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  #status { font-size: 11px; opacity: .6; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-anchor-positioning-causal-agent-mind · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial interface for The Verse canvas: a swarm of causal agents simulated on WebGPU compute (with Canvas2D fallback).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-anchor-positioning-causal-agent-mind · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial interface for The Verse canvas: a swarm of causal agents simulated on WebGPU compute (with Canvas2D fallback).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f685-webgpu-anchor-positioning-causal-agent-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f685-webgpu-anchor-positioning-causal-agent-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <div><strong>F685 · Anchor Causal Agent Mind</strong></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="orient">Enable Orientation</button>
+  <label>Agents <input id="nAgents" type="range" min="8" max="24" value="12"></label>
+  <div id="status">Move pointer · drag portals · residual drives MLPs</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-anchor-positioning-causal-agent-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

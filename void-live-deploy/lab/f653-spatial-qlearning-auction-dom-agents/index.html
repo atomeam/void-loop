@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root { --bg:#0a0a12; --fg:#e8e8f0; --acc:#6cf; --card:#1a1a28; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+canvas { position:absolute; inset:0; width:100%; height:100%; }
+.agent { position:absolute; width:72px; height:48px; background:var(--card); border:2px solid var(--acc); border-radius:8px; padding:4px; font-size:11px; cursor:pointer; user-select:none; transition:transform .15s; z-index:2; box-shadow:0 4px 12px #0006; }
+.agent.best { border-color:#fc6; box-shadow:0 0 12px #fc6; }
+.agent .fit { color:#8f8; }
+#hud { position:absolute; top:8px; left:8px; right:8px; z-index:10; display:flex; gap:8px; flex-wrap:wrap; pointer-events:none; }
+#hud > * { pointer-events:auto; background:#000a; padding:6px 10px; border-radius:6px; border:1px solid #333; }
+button { background:#222; color:var(--fg); border:1px solid #555; padding:6px 12px; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#log { position:absolute; bottom:8px; left:8px; max-width:40%; font-size:12px; opacity:.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial Q-Learning Auction DOM Agents · Verse lab</title>
+<meta name="description" content="A discrete spatial market for The Verse canvas. A 16×16 resource grid (Canvas2D) holds depleting claimable value.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial Q-Learning Auction DOM Agents · Verse lab">
+<meta property="og:description" content="A discrete spatial market for The Verse canvas. A 16×16 resource grid (Canvas2D) holds depleting claimable value.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f653-spatial-qlearning-auction-dom-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f653-spatial-qlearning-auction-dom-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="grid"></canvas>
+  <div id="hud">
+    <button id="seal">Seal best policies</button>
+    <span id="status">Init…</span>
+    <span id="tabs">tabs:1</span>
+  </div>
+  <div id="log"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spatial Q-Learning Auction DOM Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

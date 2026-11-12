@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+  #ui { position: absolute; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 8px; max-width: 320px; }
+  button, input { margin: 4px; padding: 6px 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; }
+  .card { position: absolute; padding: 6px 10px; background: rgba(30,30,50,0.85); border: 1px solid #66f; border-radius: 6px; cursor: grab; user-select: none; z-index: 5; font-size: 14px; white-space: pre; }
+  .card:active { cursor: grabbing; }
+  .zone { position: absolute; border: 2px dashed #0f0; border-radius: 8px; padding: 8px; color: #0f0; font-size: 12px; z-index: 2; pointer-events: none; }
+  #status { font-size: 12px; color: #aaa; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial Constrained Char-RNN Garden · Verse lab</title>
+<meta name="description" content="A local character-level generative mind embodied in space. A tiny Elman RNN (hidden size 16) running in the main thread (Worker-ready) generates characters that">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial Constrained Char-RNN Garden · Verse lab">
+<meta property="og:description" content="A local character-level generative mind embodied in space. A tiny Elman RNN (hidden size 16) running in the main thread (Worker-ready) generates characters that">
+<meta property="og:url" content="https://a-to-mind.com/lab/f695-spatial-constrained-char-rnn-garden/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f695-spatial-constrained-char-rnn-garden/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F695 Spatial Constrained Char-RNN Garden</div>
+  <input id="seed" placeholder="seed text" value="hello">
+  <button id="gen">Generate</button>
+  <button id="step">Step</button>
+  <button id="seal">Seal</button>
+  <button id="orient">Orient</button>
+  <button id="reset">Reset</button>
+  <div id="status">Ready. Offline generative spatial garden.</div>
+</div>
+<div id="garden"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spatial Constrained Char-RNN Garden</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

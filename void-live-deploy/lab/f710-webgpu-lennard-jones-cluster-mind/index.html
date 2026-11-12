@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:12px; left:12px; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; font-size:13px; max-width:280px; z-index:10; }
+button { margin:4px 4px 0 0; padding:4px 8px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#portals { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.portal { position:absolute; width:60px; height:40px; background:rgba(40,80,180,0.35); border:1px solid #6af; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#cef; transform:translate(-50%,-50%); transition:opacity 0.3s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Lennard-Jones Cluster Mind · Verse lab</title>
+<meta name="description" content="A previously unused molecular-dynamics kernel: particles interacting via the Lennard-Jones pair potential (attractive/repulsive at different ranges) on a Canvas2D">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Lennard-Jones Cluster Mind · Verse lab">
+<meta property="og:description" content="A previously unused molecular-dynamics kernel: particles interacting via the Lennard-Jones pair potential (attractive/repulsive at different ranges) on a Canvas2D">
+<meta property="og:url" content="https://a-to-mind.com/lab/f710-webgpu-lennard-jones-cluster-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f710-webgpu-lennard-jones-cluster-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <b>F710 Lennard-Jones Cluster Mind</b><br>
+  Novel pair-potential MD kernel (not mass-spring, not NCA, not policy MLP).<br>
+  Mouse: attract/repel. Click: seal best cluster params.<br>
+  Particles: <span id="n">0</span> | Clusters: <span id="c">0</span> | Energy: <span id="e">0</span>
+  <br><button id="reset">Reset</button><button id="seal">Seal Genome</button><button id="load">Load</button>
+</div>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Lennard-Jones Cluster Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/photo-palette/" data-tool="Photo palette">Use it: Photo palette</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

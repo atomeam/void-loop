@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#hud { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+#hud button { margin-right:8px; background:#223; color:#adf; border:1px solid #46a; padding:4px 10px; border-radius:4px; cursor:pointer; }
+#grid { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; width:100vw; height:100vh; gap:4px; }
+canvas { width:100%; height:100%; background:#111; border-radius:6px; transition:transform .3s; cursor:crosshair; }
+.fit { box-shadow:0 0 20px #0ff; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Multi-Wave Genome Competition Mind · Verse lab</title>
+<meta name="description" content="Four independent discrete wave-equation membranes compete for user attention on The Verse canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Multi-Wave Genome Competition Mind · Verse lab">
+<meta property="og:description" content="Four independent discrete wave-equation membranes compete for user attention on The Verse canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f698-multi-wave-genome-competition-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f698-multi-wave-genome-competition-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  F698 Wave Genome Competition<br>
+  <button id="seal">Seal genomes</button>
+  <button id="reset">Reset</button>
+  <span id="status">ready</span>
+</div>
+<div id="grid"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Multi-Wave Genome Competition Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
