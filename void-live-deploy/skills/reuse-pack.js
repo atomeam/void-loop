@@ -19,7 +19,7 @@ function extractProcess(text) {
   return m ? m[1].trim() : 'the described process';
 }
 
-function suggestReuse(process) {
+export function suggestReuse(process) {
   const t = process.toLowerCase();
   const hits = [];
   if (/email|inbox|message|customer|support|ticket/.test(t)) {
