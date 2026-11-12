@@ -33,7 +33,7 @@ export const balanceCall = (chain, addr) => ({ jsonrpc: '2.0', id: 1, method: ch
 async function balanceOf(chain, addr) {
   for (const url of CHAIN[chain].rpc) {
     try {
-      const j = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(balanceCall(chain, addr)) }).then((r) => { if (!r.ok) throw 0; return r.json(); });
+      const j = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(balanceCall(chain, addr)) }).then((r) => { if (!r.ok) throw 0; return r.json(); }); // void-review: ok (a fallback, not a batch: the second public node is asked only when the first fails)
       const v = chain === 'eth' ? j && j.result : j && j.result && j.result.value;
       if (v != null) return unitsOf(chain, v);
     } catch (_) {}
