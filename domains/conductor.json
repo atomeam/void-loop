@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-12T07:41:45.898Z",
+ "updated": "2026-11-12T07:51:12.732Z",
  "last24h": {
-  "ticks": 22,
-  "started": 42,
+  "ticks": 23,
+  "started": 45,
   "requeued": 1,
   "setAside": 1,
   "probes": 0,
@@ -12,58 +12,94 @@
  "broken": [],
  "held": [
   {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
+   "id": "mwau0ded",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
+   "id": "mwau7dgo",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
+   "id": "mwavhzoe",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
+   "id": "mwaw4bg9",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
+   "id": "mwawomei",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mwav1pw9",
-   "why": "no executor for retest"
+   "id": "mwaxgnhr",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mwazktlm",
-   "why": "no executor for bot"
+   "id": "mway8e3z",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mwazktnz",
-   "why": "no executor for bot"
+   "id": "mwb2rdef",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mwazktrq",
-   "why": "no executor for bot"
+   "id": "mwb8vvz4",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mwazktv3",
-   "why": "no executor for bot"
+   "id": "mwbfid91",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "mwazktv9",
-   "why": "no executor for bot"
+   "id": "mwcckvqs",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mwcf54df",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mwcg2h14",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mwcm4wyk",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mwcuue69",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "want-page-tools-json",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "want-guard-hourly-main-green",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mw9j2cvx",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mw9n5pkm",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mw9omg8a",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 30,
    "cap": 90
   },
   "day": {
-   "used": 16,
+   "used": 46,
    "cap": 360
   },
   "room": true,
@@ -73,10 +109,10 @@
   "mva30i2e": 1794469305898,
   "mvbl52gd": 1794469305898,
   "mveb8rsi": 1794469305898,
-  "mvu167w7": 1794411161002,
-  "mveb8svc": 1794411161002,
+  "mvu167w7": 1794469872732,
+  "mveb8svc": 1794469872732,
   "mvfu4evy": 1794421253468,
-  "mva30j4u": 1794421253468,
+  "mva30j4u": 1794469872732,
   "mvpuq9g6": 1794421817438,
   "mwa0agd2": 1794421817438,
   "mvpuqaee": 1794422390825,
@@ -90,88 +126,88 @@
  },
  "sweptAt": 1794469305898,
  "blueprintsAt": 1794469305898,
- "visitorAt": "2026-11-12T05:48:10Z",
+ "visitorAt": "2026-11-12T07:42:58Z",
  "visitorFiled": [
-  "heal:helper-ownership-map",
-  "heal:helper-client-intake",
-  "heal:helper-loop-carry-e6be",
-  "review:2609",
-  "versus:timeclockwizard.com",
-  "versus:slightlydifferent.co.nz",
-  "versus:hexrom.com",
-  "versus:colorlib.com",
-  "versus:steamcommunity.com",
-  "versus:united-hoster.de",
-  "versus:want-tower-finance",
-  "heal:helper-connect-pack",
-  "review:2614",
-  "heal:helper-reuse-pack",
-  "review:2616",
-  "heal:helper-credits-faucet-e39c",
-  "review:2622",
-  "gap:se-3123",
-  "review:2620",
-  "review:2619",
-  "review:2621",
-  "probe:ownership-map-for-client-onboardin",
-  "probe:map-ownership-for-invoice-reminder",
-  "review:2627",
-  "review:2628",
-  "review:2629",
-  "heal:helper-least-tower-0b57",
-  "review:2630",
-  "review:2631",
-  "review:2636",
-  "review:2639",
-  "review:2641",
-  "heal:helper-color-by-number-238b",
-  "heal:helper-delete-tower-48f9",
-  "review:2645",
-  "heal:helper-fix-main-suite-log-showca",
-  "review:2647",
-  "will:overhaul-site-video-persona-playtest-bes",
-  "versus:rightarion.ru",
-  "versus:cavea.plus",
-  "versus:whatismyip.org",
-  "versus:w3counter.com",
-  "review:2655",
-  "heal:helper-system-slice",
-  "review:2656",
-  "heal:helper-team-chat-card",
-  "review:2661",
-  "heal:helper-lift-summary",
-  "review:2660",
-  "review:2664",
-  "feature:team-2886",
-  "retest:ownership-pack",
-  "review:2671",
-  "heal:helper-recruit-clock-07d1",
-  "heal:helper-feedback-loop",
-  "review:2677",
-  "heal:helper-shows-live-6fca",
-  "heal:helper-brain-ask",
-  "review:2683",
-  "heal:helper-docs-pack",
-  "review:2685",
-  "bot:headline-slug",
-  "bot:summary-keywords",
-  "bot:frame-ratio",
-  "bot:readable-summary",
-  "bot:loud-headline",
-  "heal:helper-client-brief",
-  "probe:what-automations-will-verse-own-fo",
-  "probe:propose-automations-for-the-suppor",
-  "review:2667",
-  "review:2705",
-  "review:2706",
-  "heal:helper-delivery-board",
-  "review:2707",
-  "probe:how-do-i-use-this",
-  "heal:helper-status-digest",
-  "review:2713",
-  "tv:relationship-history-logger",
-  "probe:what-can-you-do-for-my-startup",
-  "review:2717"
+  "review:2393",
+  "versus:want-tower-social",
+  "feature:isitchristmas-com-e13cdb96",
+  "feature:random-org-7201fd3d",
+  "feature:random-org-e1ac6f7a",
+  "review:2413",
+  "versus:mega.co.nz",
+  "versus:example.com",
+  "versus:uisp.com",
+  "versus:samsunghealth.com",
+  "review:2435",
+  "review:2441",
+  "tv:hvac-remote-management",
+  "tv:art-provenance-tracker",
+  "versus:bttrack.com",
+  "versus:dalyfeds.com",
+  "tv:healthy-snack-alternatives",
+  "tv:irish-pub-locator",
+  "review:2482",
+  "feature:random-org-ea756452",
+  "feature:random-org-9f6f952d",
+  "feature:random-org-ccb2ecd2",
+  "versus:everycom.store",
+  "versus:adnext.mobi",
+  "versus:protopage.com",
+  "versus:tinyurl.com",
+  "miss:film-metadata",
+  "versus:juicychat.ai",
+  "versus:oneyeard.com",
+  "versus:want-tower-password",
+  "review:2504",
+  "versus:share.google",
+  "versus:g.co",
+  "versus:amazon.co.uk",
+  "versus:amazon.de",
+  "versus:live-video.net",
+  "review:2509",
+  "review:2511",
+  "review:2512",
+  "review:2302",
+  "review:2315",
+  "review:2514",
+  "review:2519",
+  "visit:translate-hello-to-spanish",
+  "review:2485",
+  "versus:zpecloud.com",
+  "versus:aurashinehub.com",
+  "versus:pokupon.ua",
+  "versus:uniteforliteracy.com",
+  "review:2546",
+  "versus:tsundere.pw",
+  "versus:arcticfoxhaircolor.com",
+  "versus:hexcol.com",
+  "versus:junit.org",
+  "review:2563",
+  "feature:wordcounter-net-510e5696",
+  "feature:convertunits-com-fd227592",
+  "feature:unitconverters-net-a1eba45d",
+  "review:2583",
+  "review:2585",
+  "review:2590",
+  "heal:helper-proposal-pack",
+  "review:2597",
+  "review:2599",
+  "feature:flightconnections-co-5e8de345",
+  "feature:flightconnections-co-e4b41463",
+  "feature:flightconnections-co-65bcb77f",
+  "heal:helper-client-status-pack",
+  "review:2605",
+  "heal:helper-client-offer",
+  "heal:helper-automation-pack",
+  "review:2694",
+  "heal:helper-book-green-main",
+  "review:2699",
+  "review:2701",
+  "heal:helper-shows-live-clean",
+  "review:2702",
+  "heal:helper-shows-craft-6fca",
+  "review:2708",
+  "probe:bridge-these-inputs"
  ],
  "ticks": [
   {
@@ -913,6 +949,46 @@
    "sweep": true,
    "blueprints": 0,
    "held": 11,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-12T07:51:12.732Z",
+   "open": 368,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 117
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 348,
    "warnings": 1
   }
  ]
