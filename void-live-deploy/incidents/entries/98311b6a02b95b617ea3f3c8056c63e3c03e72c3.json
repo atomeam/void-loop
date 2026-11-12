@@ -8,5 +8,10 @@
  ],
  "touched": [
   "void-live-deploy/skills/inventory.js"
+ ],
+ "passed": [
+  1,
+  2,
+  4
  ]
 }
