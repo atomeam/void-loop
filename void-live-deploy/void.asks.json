@@ -2469,30 +2469,8 @@
   ],
   "totals": {
     "asked": 265,
-    "built": 264,
+    "built": 265,
     "through": "2026-11-12T01:28:00Z",
-    "open": [
-      {
-        "ask": "Build the missing jobs for flightconnections.com to meet the current target.",
-        "at": "2026-11-12T01:28:00Z",
-        "kind": "daily",
-        "small": false,
-        "times": 2,
-        "ids": [
-          "ask-20261111-2243-1",
-          "ask-20261111-2246-1",
-          "ask-20261111-2249-1",
-          "ask-20261111-2253-1",
-          "ask-20261111-2258-1",
-          "ask-20261111-2307-1",
-          "ask-20261111-2314-1",
-          "ask-20261111-2341-1",
-          "ask-20261111-2348-1",
-          "ask-20261112-0034-1",
-          "ask-20261112-0108-1",
-          "ask-20261112-0128-1"
-        ]
-      }
-    ]
+    "open": []
   }
 }
