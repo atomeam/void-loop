@@ -1356,7 +1356,7 @@
    "note": "Run 25 of the lists routine. Main's verify was green at the start, but five checks it skips when nothing they cover changes were red on main (found when this branch touched skills); fixed here. Five open pull requests (#2732, #2733, #2736, #2739, #2740), all helper or harden branches with their own skill files; only the generated skills/index.json is shared, which the second merge regenerates. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
    "items": [
     {
-     "what": "main red (found this run): docs/MAP.md did not name time-saved (#2729), 8 skill families had no inventory line, and skills/guide.json, docs/HANDOFF-GAPS.md and lib/similar-index.js were stale; a map.d line, 8 inventory lines and the three regenerated",
+     "what": "main red (found this run): docs/MAP.md did not name time-saved (#2729), and skills/guide.json, docs/HANDOFF-GAPS.md and lib/similar-index.js were stale; a map.d line and the three regenerated (the missing inventory lines for 7 families landed on main in the same hour, 98311b6a0; this run keeps them and adds stage-marks)",
      "list": "main red (found this run)",
      "status": "built"
     },
