@@ -17,7 +17,7 @@ import { dayOf, secondsToMidnight, clientKey } from '../../lib/reactions.js';
 import { newKey, newShareId, isId, isKey, hashKey } from '../../lib/calshare.js';
 import { RSVP, parseReply, withReply } from '../../lib/rsvp.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'invite replies are off for now' }, 503);
 const gone = () => json({ ok: false, error: 'no such invite' }, 404);
 const slow = (secs) => json({ ok: false, error: 'slow down' }, 429, { 'retry-after': String(secs) });

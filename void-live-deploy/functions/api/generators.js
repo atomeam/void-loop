@@ -26,7 +26,7 @@ import { SEXUAL, HATE } from '../../lib/art-rules.js';
 import { compile, MAX_TEXT } from '../../lib/listgen.js';
 
 export const TITLE_MAX = 60, PUB_MINUTE = 3, PUB_DAY = 10, PUB_ALL = 300, ROWS_MAX = 20000, PLAYS_DAY = 300, REPORTS_HIDE = 3, ID_RE = /^[a-z2-7]{8}$/;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'the hub is off for now' }, 503);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 /** a title: one clean line of at most 60 characters, or 'Untitled'. Pure. */

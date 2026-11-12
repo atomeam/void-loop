@@ -29,7 +29,7 @@ import { whyNot, pickShow, parseFeed, parseChapters, parseTranscript, fromItunes
 
 export const RL_MAX = 20, TTL = 900, MAX_BYTES = 3 * 1024 * 1024, MAX_BYTES_SMALL = 1024 * 1024, TIMEOUT_MS = 8000, DIR_MS = 3000, MAX_HOPS = 4, SELF_FEED = 'https://a-to-mind.com/podcast/rss.xml';
 const OWN = /(?:^|\.)(?:a-to-mind\.com|pages\.dev|workers\.dev)$/i;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const NAME = /^[\p{L}\p{M}\p{N}\s'’&.,:!?-]{1,100}$/u;
 const cc = new Set(COUNTRIES.map((c) => c[0])), genres = new Set(GENRES.map((g) => String(g[0])));
 

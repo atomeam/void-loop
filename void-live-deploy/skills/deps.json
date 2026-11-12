@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1269,
+ "counted": 1270,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 61,
+   "skills": 62,
    "direct": 51,
-   "dependants": 67,
+   "dependants": 68,
    "tests": 6
   },
   {
@@ -73,17 +73,17 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 23,
+   "direct": 23,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
    "file": "lib/reactions.js",
    "skills": 22,
    "direct": 1,
    "dependants": 81,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 22,
-   "direct": 22,
-   "dependants": 22,
    "tests": 1
   },
   {
@@ -185,18 +185,18 @@
    "tests": 1
   },
   {
+   "file": "lib/qr.js",
+   "skills": 14,
+   "direct": 3,
+   "dependants": 30,
+   "tests": 3
+  },
+  {
    "file": "lib/where.js",
    "skills": 14,
    "direct": 11,
    "dependants": 23,
    "tests": 1
-  },
-  {
-   "file": "lib/qr.js",
-   "skills": 13,
-   "direct": 3,
-   "dependants": 29,
-   "tests": 3
   },
   {
    "file": "lib/self-sites.js",
@@ -218,6 +218,13 @@
    "direct": 2,
    "dependants": 50,
    "tests": 4
+  },
+  {
+   "file": "lib/card-mini.js",
+   "skills": 10,
+   "direct": 5,
+   "dependants": 22,
+   "tests": 0
   },
   {
    "file": "lib/astro.js",
@@ -290,11 +297,11 @@
    "tests": 1
   },
   {
-   "file": "lib/card-mini.js",
+   "file": "lib/note-tools.js",
    "skills": 9,
-   "direct": 5,
+   "direct": 4,
    "dependants": 21,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/skyfacts.js",
@@ -360,13 +367,6 @@
    "tests": 1
   },
   {
-   "file": "lib/note-tools.js",
-   "skills": 8,
-   "direct": 4,
-   "dependants": 20,
-   "tests": 1
-  },
-  {
    "file": "lib/skyask.js",
    "skills": 8,
    "direct": 7,
@@ -389,6 +389,13 @@
   },
   {
    "file": "lib/bridges.js",
+   "skills": 8,
+   "direct": 4,
+   "dependants": 10,
+   "tests": 1
+  },
+  {
+   "file": "lib/stage-find.js",
    "skills": 8,
    "direct": 4,
    "dependants": 10,
@@ -423,10 +430,17 @@
    "tests": 4
   },
   {
-   "file": "lib/stage-find.js",
-   "skills": 7,
-   "direct": 4,
-   "dependants": 9,
+   "file": "lib/colour.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 19,
+   "tests": 1
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 6,
+   "direct": 2,
+   "dependants": 17,
    "tests": 1
   },
   {
@@ -493,16 +507,51 @@
    "tests": 2
   },
   {
-   "file": "lib/colour.js",
+   "file": "lib/hash.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 18,
+   "dependants": 17,
    "tests": 1
   },
   {
-   "file": "lib/pwcheck.js",
+   "file": "lib/barcode.js",
    "skills": 5,
-   "direct": 2,
+   "direct": 1,
+   "dependants": 16,
+   "tests": 1
+  },
+  {
+   "file": "lib/cssmin.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 16,
+   "tests": 1
+  },
+  {
+   "file": "lib/csvjson.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 16,
+   "tests": 1
+  },
+  {
+   "file": "lib/markdown.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 16,
+   "tests": 1
+  },
+  {
+   "file": "lib/textdiff.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 16,
+   "tests": 1
+  },
+  {
+   "file": "lib/yamljson.js",
+   "skills": 5,
+   "direct": 1,
    "dependants": 16,
    "tests": 1
   },
@@ -630,55 +679,6 @@
    "skills": 4,
    "direct": 0,
    "dependants": 37,
-   "tests": 1
-  },
-  {
-   "file": "lib/hash.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 16,
-   "tests": 1
-  },
-  {
-   "file": "lib/barcode.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 15,
-   "tests": 1
-  },
-  {
-   "file": "lib/cssmin.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 15,
-   "tests": 1
-  },
-  {
-   "file": "lib/csvjson.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 15,
-   "tests": 1
-  },
-  {
-   "file": "lib/markdown.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 15,
-   "tests": 1
-  },
-  {
-   "file": "lib/textdiff.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 15,
-   "tests": 1
-  },
-  {
-   "file": "lib/yamljson.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 15,
    "tests": 1
   },
   {
@@ -1329,6 +1329,13 @@
    "file": "lib/shape-picture.js",
    "skills": 2,
    "direct": 2,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/stage-image.js",
+   "skills": 2,
+   "direct": 1,
    "dependants": 2,
    "tests": 1
   },
@@ -2332,13 +2339,6 @@
    "direct": 1,
    "dependants": 1,
    "tests": 2
-  },
-  {
-   "file": "lib/stage-image.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
   },
   {
    "file": "lib/stigmergy-law.js",
@@ -6445,6 +6445,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -7638,6 +7639,7 @@
     "skills/languages.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -8024,6 +8026,7 @@
     "skills/gradient.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -8284,6 +8287,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -8308,6 +8312,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -9682,6 +9687,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -10481,6 +10487,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -11530,6 +11537,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/util.js",
     "skills/writing-aids.js"
    ]
@@ -12616,6 +12624,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -12651,6 +12660,7 @@
     "skills/merge.js",
     "skills/oracle.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/rally.js",
     "skills/writing-aids.js"
    ]
@@ -13901,6 +13911,7 @@
     "skills/mind-field.js",
     "skills/ownership.js",
     "skills/proposals.js",
+    "skills/quick-tools.js",
     "skills/reuse-tools.js",
     "skills/riddle-gen.js",
     "skills/rooms.js",
@@ -14124,6 +14135,7 @@
    ],
    "reachedBy": [
     "skills/copy-stack.js",
+    "skills/quick-tools.js",
     "skills/stage-export.js",
     "skills/stage-out.js"
    ]
@@ -14134,6 +14146,9 @@
    ],
    "importedBy": [
     "skills/stage-image.js"
+   ],
+   "reachedBy": [
+    "skills/quick-tools.js"
    ]
   },
   "lib/stage-math.js": {
@@ -14250,6 +14265,7 @@
     "skills/list-starters.js",
     "skills/merge-void.js",
     "skills/null-sweep.js",
+    "skills/quick-tools.js",
     "skills/stage-find.js",
     "skills/stage-out.js"
    ]
@@ -15086,6 +15102,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -16317,6 +16334,7 @@
     "lib/writing-aids.js",
     "skills/lorem.js",
     "skills/password.js",
+    "skills/quick-tools.js",
     "skills/writing-aids.js"
    ]
   },
@@ -19412,6 +19430,14 @@
     "skills/time.js"
    ]
   },
+  "skills/quick-tools.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/stage-image.js",
+    "skills/util.js"
+   ],
+   "importedBy": []
+  },
   "skills/quiz-rules.js": {
    "imports": [
     "lib/observations.js"
@@ -20130,7 +20156,9 @@
     "lib/stage-find.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/quick-tools.js"
+   ]
   },
   "skills/stage-organize.js": {
    "imports": [
@@ -20677,7 +20705,8 @@
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/lorem.js",
-    "skills/password.js"
+    "skills/password.js",
+    "skills/quick-tools.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",

@@ -15,7 +15,7 @@ import { rateLimited } from './answer.js';
 import { SECTIONS, LANGS, SOURCES, feedsFor, parseFeed, stories } from '../../lib/news.js';
 
 export const RL_MAX = 20, TTL = 420, TIMEOUT_MS = 4500, MAX_CHARS = 600000;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 /** the section and language a request asks for; a name outside the closed lists is the default. Pure. */
 export function askIn(url) {
   const p = new URL(url).searchParams, sec = String(p.get('sec') || 'top'), lang = String(p.get('lang') || 'en');

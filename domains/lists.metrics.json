@@ -1180,6 +1180,61 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T11:40:00Z",
+   "run": 22,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.143,
+   "dup_basis": "1 of 7 items was already on main: wishlist #1 still listed \"cache answers at the edge\", live since 2026-10-29 (lib/answer-edge.js)",
+   "median_days": 14.3,
+   "median_basis": "days from queued to built: 0.1 (site-test #2721, 2026-11-12 08:50 UTC), 0.1 (main verify red on the phone tower check, 2026-11-12 09:55 UTC), 2.8 (GAPS batch 5 live marks, on the board since 2026-11-09 15:17 UTC), 14.3 (wishlist #1 edge-cache step, written 2026-10-29 04:30 UTC), 25.3 (stage-image~util overlap since \"qr code for this stage view\", 2026-10-18 03:43 UTC), 28.2 (tests for untested files, 2026-10-15 06:11 UTC), 28.2 (convergence step 3, planned 2026-10-15); median 14.3",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 22 of the lists routine. No open pull requests at the start; main verify was red on one phone tower check (fixed here) and the site tester had one new issue (#2721, fixed here). No list newly reached zero this run: V01D asks were already 0, and the site tester returns to 0 once #2721 closes (it was 0 in run 21).",
+   "items": [
+    {
+     "what": "\"bridge these inputs\" asked by name with nothing staged opens a Bridge card with how to stage inputs and a two-sample bridge, where the skill returned none (skills/bridge.js, tools/bridge-ask.test.mjs)",
+     "list": "site tester (#2721)",
+     "status": "built"
+    },
+    {
+     "what": "stage-image and util are one quick-tools family at 0455, aliases kept, 0 of 6,445 asks moved (skills/quick-tools.js, tools/quick-tools-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "convergence step 3, first half: lib/http.js json and jsonNoStore replace the one-line json of 25 endpoints (tools/http-helpers.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "GAPS batch 5 live marks: rows 53, 60, 78, 81 typed again at a-to-mind.com/?q= and marked verified live",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/bridge-analyzer.test.mjs (lib/bridge.js); the untested allowance 58 to 56",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "main verify red: the phone tower check waits up to 10 s for its card instead of reading it 1.2 s after the ask (tools/test_void.mjs)",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
+    {
+     "what": "wishlist #1 \"cache answers at the edge\": already live",
+     "list": "wishlist",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/answer-edge.js"
+    }
+   ]
   }
  ]
 }

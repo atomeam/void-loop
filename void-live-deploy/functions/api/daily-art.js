@@ -36,7 +36,7 @@ import * as FP from '../../lib/free-pics.js';
 import { cap as dayCap } from '../../lib/daily-cap.js';
 
 export const PHOTO_LOOKUPS_DAY = 120, PHOTO_CONN_DAY = 6, PHOTO_ROWS_DAY = 40, NONE_TTL_MS = 6 * 3600e3, LIMITED_TTL_MS = 30 * 60e3, FETCH_MS = 5000, DEADLINE_MS = 16000;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const enc = (s) => new TextEncoder().encode(s);
 async function sha(s) { return [...new Uint8Array(await crypto.subtle.digest('SHA-256', enc(s)))].map((x) => x.toString(16).padStart(2, '0')).join(''); }
 const bytesOf = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));

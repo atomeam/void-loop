@@ -21,7 +21,7 @@ import { bump } from '../../lib/guard.js';
 import { dayOf, secondsToMidnight, clientKey } from '../../lib/reactions.js';
 import { LIMITS, classify, parseBeacon, countryOf, summarize } from '../../lib/visits.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'the count is off for now' }, 503);
 const slow = (secs, error = 'slow down') => json({ ok: false, error }, 429, { 'retry-after': String(secs) });
 

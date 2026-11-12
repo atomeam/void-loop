@@ -36,7 +36,7 @@
 import { ownerOk } from '../../../lib/guard.js';
 import { LIMITS, TYPES, REPORT_WHY, POW_BITS, limitsOf, codeProblem, cleanText, cleanLine, parseName, tripcode, isSage, excerpt, checkImage, workOk } from '../../../lib/boards.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const bad = (status, say, extra = {}) => json({ ok: false, say, ...extra }, status);
 const enc = new TextEncoder();
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');

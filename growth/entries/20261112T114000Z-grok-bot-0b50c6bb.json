@@ -1,0 +1,1 @@
+{"at":"2026-11-12T11:40:00Z","by":"grok-bot","kind":"build","what":"The bridge analyzer has its own tests: same field under two spellings, an adapter to copy, limits named (tools/bridge-analyzer.test.mjs)"}

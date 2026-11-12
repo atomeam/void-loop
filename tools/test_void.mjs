@@ -1565,7 +1565,8 @@ try {
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
     const P = await fresh({ phone: true });
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => ({ rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]'), wide: document.documentElement.scrollWidth <= innerWidth })).catch((e) => ({ err: String(e) }));
+    // a phone runner can take longer than the ask's 1.2 s to open the card (lists run 22: main failed twice on "no .vpage.on"), so wait for it
+    const v = (await until(() => P.p.$eval('.vpage.on', (c) => ({ rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]'), wide: document.documentElement.scrollWidth <= innerWidth })).catch(() => null), 10000)) || { err: 'no .vpage.on after 10 s' };
     check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }

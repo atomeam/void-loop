@@ -21,7 +21,7 @@ import { bump } from '../../lib/guard.js';
 import { dayOf, secondsToMidnight, clientKey } from '../../lib/reactions.js';
 import { LIMITS, newKey, newShareId, isId, isKey, hashKey, parseDoc } from '../../lib/calshare.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'shared calendars are off for now' }, 503);
 const gone = () => json({ ok: false, error: 'no such calendar, or the link was reset' }, 404);
 const slow = (secs) => json({ ok: false, error: 'slow down' }, 429, { 'retry-after': String(secs) });
