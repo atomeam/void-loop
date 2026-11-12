@@ -248,7 +248,6 @@ for (const [name, file] of [
   ['treasury', 'treasury.test.mjs'],
   ['wallet-watch', 'wallet-watch.test.mjs'],
   ['store', 'store.test.mjs'],
-  ['uni', 'uni.test.mjs'], // full pages are Uni; home, cards, APIs and the Multi tier stay as they are
   ['pay-share', 'pay-share.test.mjs'],
   ['alt-pay', 'alt-pay.test.mjs'],
   ['x402', 'x402.test.mjs'],
