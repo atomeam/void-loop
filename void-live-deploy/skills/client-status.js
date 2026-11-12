@@ -6,10 +6,13 @@
  * at 9890, where client-status-pack sat, asking the members in their old order; a routing replay of every example and near miss landed
  * each one on the same member as before (tools/client-status-family.test.mjs). Each member keeps its file, examples, near misses and
  * tests, and the page still logs skill:client-status-pack / skill:delivery-board (lib/skill-family.js).
- * parts: ['client-status-pack', 'delivery-board']
+ * Lists run 19: status-digest (#2713) joined as the third member; it arrived the same way, with no family, and printed a fixed
+ * "all systems green" line. It now reads the same live readings through delivery-board's progressOf.
+ * parts: ['client-status-pack', 'delivery-board', 'status-digest']
  */
 import { family } from '../lib/skill-family.js';
 import clientStatusPack from './client-status-pack.js';
 import deliveryBoard from './delivery-board.js';
+import statusDigest from './status-digest.js';
 
-export default family('client-status', [clientStatusPack, deliveryBoard]);
+export default family('client-status', [clientStatusPack, deliveryBoard, statusDigest]);

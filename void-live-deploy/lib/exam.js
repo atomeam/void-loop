@@ -256,3 +256,17 @@ export function mediaLine(a) {
   try { const u = new URL(a.src); where = u.host + ', file ' + (u.pathname.split('/').pop() || '').slice(0, 80); } catch (_) {}
   return where + ' · status ' + (a.status || 0) + ' · ' + (a.type || 'no type') + ' · played ' + Number(a.currentTime || 0).toFixed(1) + ' s';
 }
+
+const STOP = new Set('which their there about would could should these those other first after before under again while where when what with from that this have been were into your more most some than then also just only very'.split(' '));
+/** the first long words of a gloss or a passage, lower case, common words left out. Pure (moved from tools/exam.mjs, lists run 19). */
+export function glossWords(html) {
+  return String(html || '').replace(/<[^>]+>/g, ' ').toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 4 && !STOP.has(w)).slice(0, 8);
+}
+/** the first words of the English Etymology section of a Wiktionary TextExtracts answer, or []. Pure. */
+export function etymologyWords(j, word) {
+  const pages = j && j.query && j.query.pages; const page = pages && Object.values(pages)[0];
+  const text = String((page && page.extract) || '');
+  const en = text.search(/^==\s*English\s*==/m), from = en >= 0 ? en : 0;
+  const m = /^===+\s*Etymology[^=\n]*===+\s*\n([\s\S]*?)(?=\n==|$)/m.exec(text.slice(from));
+  return m ? glossWords(m[1]).filter((w) => w !== word) : [];
+}

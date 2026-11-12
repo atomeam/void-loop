@@ -14,7 +14,7 @@
  "bench_at": "2026-11-11",
  "totals": {
   "experiment": 1,
-  "tested": 12,
+  "tested": 13,
   "checked": 4,
   "proven": 417
  },
@@ -3645,7 +3645,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 12,
+    "tested": 13,
     "checked": 1,
     "proven": 66
    },
@@ -4253,6 +4253,13 @@
      "why": "a self-test",
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "status-digest",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-12",
+     "last_tested_by": "its tests"
     },
     {
      "name": "faucet",

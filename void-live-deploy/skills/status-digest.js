@@ -1,45 +1,47 @@
 /**
- * status-digest skill — client-visible digest of systems Verse owns so the client does no chasing.
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "status digest for the invoice automation", "client digest: onboarding flow", "weekly status for my systems"
+ * status-digest skill: a client-visible digest of the systems Verse owns, so the client does no chasing.
+ * "status digest for the invoice automation", "client digest: onboarding flow", "weekly status for my systems".
+ * It is one family with client-status-pack and delivery-board (skills/client-status.js, lists run 19): the digest reads the same live
+ * readings (/api/status and /incidents.json) through delivery-board's progressOf, and a reading that did not answer is named. It never
+ * prints a fixed "all green" line. Nothing is sent.
  */
+import { progressOf, subjectOf } from './delivery-board.js';
+
 export function isStatusDigest(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:status|client|weekly)\s+digest\b/i.test(t)
     || /^(?:make|generate|show)\s+(?:a\s+)?(?:status|client)\s+digest\b/i.test(t)
+    || /^weekly\s+status\s+(?:for|of|on)\b/i.test(t)
     || /\bdigest\s+(?:for|of)\s+(?:my\s+|the\s+)?systems?\b/i.test(t);
 }
 
-function extractTopic(text) {
-  const t = String(text || '');
-  const m = t.match(/(?:for|of|:)\s*(.+)/i);
-  return m ? m[1].trim() : 'owned systems';
+/** the digest from live readings. Pure: the headline follows the guards' overall state, never a fixed claim. */
+export function digestOf(text, statusBody, statusError, incidentsBody, incidentsError) {
+  const p = progressOf(statusBody, statusError, incidentsBody, incidentsError);
+  const headline = p.overall === 'up' ? 'The guards Verse watches are up; the incident line below says what is open.'
+    : p.overall === 'degraded' ? 'Some guards are degraded; see the lines below.'
+    : 'A reading did not answer, so this digest cannot say everything is fine.';
+  return { subject: subjectOf(text), overall: p.overall, headline, lines: p.lines };
+}
+
+async function readJson(url, fetchFn) {
+  try { const r = await fetchFn(url, { cache: 'no-cache' }); if (!r || !r.ok) return { error: 'answered HTTP ' + ((r && r.status) || 0) }; return { body: await r.json() }; }
+  catch (_) { return { error: 'did not answer' }; }
 }
 
 async function run(text, api) {
-  const { showPage, esc } = api;
-  const topic = extractTopic(text);
-  const el = showPage((p) => { p.innerHTML = '<h2>Status digest</h2><div class="sub">building…</div>'; });
-  const pack = [
-    `<h2>Status digest: ${esc(topic)}</h2>`,
-    `<p><strong>All systems Verse owns are green.</strong> No client action needed.</p>`,
-    `<h3>Owned systems</h3><ul>`,
-    `<li>Capture & clarify intake — running, last check green</li>`,
-    `<li>Core workflow automation — monitored, incidents closed</li>`,
-    `<li>Connectors to existing tools — live</li>`,
-    `<li>Verification suite — passing</li>`,
-    `<li>Status monitors — client-visible, no dashboards to watch</li>`,
-    `</ul>`,
-    `<h3>Client work that dropped</h3><ul>`,
-    `<li>Chasing status — this digest replaces it</li>`,
-    `<li>Watching dashboards — monitors owned by Verse</li>`,
-    `<li>Testing changes — suite owned by Verse</li>`,
-    `</ul>`,
-    `<h3>Next handoff</h3><p>Ready for client review of the outcome. Docs and ownership already packaged.</p>`,
-    `<p class="sub">We own the heavy lifting. Client keeps the outcome.</p>`,
-    `<div class="src">Source: A-to-Mind delivery practice</div>`
-  ].join('');
-  el.innerHTML = pack;
+  const { showPage } = api;
+  const esc = typeof api.esc === 'function' ? api.esc : (s) => String(s == null ? '' : s);
+  const fetchFn = typeof api.fetch === 'function' ? api.fetch : ((u, o) => fetch(u, o));
+  const [status, incidents] = await Promise.all([readJson('/api/status', fetchFn), readJson('/incidents.json', fetchFn)]);
+  const d = digestOf(text, status.body, status.error ? 'the status API ' + status.error : '', incidents.body, incidents.error ? 'the incident log ' + incidents.error : '');
+  showPage((el) => {
+    el.innerHTML = '<h2>Status digest: ' + esc(d.subject) + '</h2>'
+      + '<p><strong>' + esc(d.headline) + '</strong></p>'
+      + '<ul>' + d.lines.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
+      + '<div class="src">Source: GET /api/status and /incidents.json, the same readings as the client status pack and the delivery board</div>'
+      + '<p class="sub">Nothing is invented as already done. A reading that did not answer is named.</p>';
+  });
   return 'status-digest';
 }
 
@@ -55,13 +57,8 @@ export default {
   match(lower, text) { return isStatusDigest(text || lower); },
   run,
   suite() {
-    const ok = isStatusDigest('status digest for the invoice automation')
-      && isStatusDigest('client digest: onboarding flow')
-      && isStatusDigest('weekly status for my systems')
-      && isStatusDigest('show a status digest of the support router')
-      && !isStatusDigest('what is a digest')
-      && !isStatusDigest('digest this email')
-      && !isStatusDigest('status update');
-    return { ok, got: 'match works' };
+    const ok = this.examples.every(isStatusDigest) && !this.nearMisses.some(isStatusDigest)
+      && digestOf('status digest for x', null, 'the status API did not answer', null, 'the incident log answered HTTP 404').overall === 'unknown';
+    return { ok, got: ok ? 'match works; an unanswered reading is named' : 'mismatch' };
   }
 };

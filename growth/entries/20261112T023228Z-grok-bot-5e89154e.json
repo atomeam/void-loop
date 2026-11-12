@@ -1,0 +1,1 @@
+{"at":"2026-11-12T02:32:28Z","by":"grok-bot","kind":"fix","what":"The definitions exam checks an etymology ask against Wiktionary's own Etymology section instead of the definition, and its unknown-word case is a word no dictionary has (zorbleflux is Verse's own game) (tools/exam-etymology.test.mjs)","asked":"ask-20261112-0128-2"}

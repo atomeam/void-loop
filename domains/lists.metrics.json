@@ -1036,6 +1036,49 @@
      "link": "https://github.com/atomeam/void-loop/commit/ff0f3b7f7"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T02:40:00Z",
+   "run": 19,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.2,
+   "dup_basis": "1 of 5 items was already done elsewhere: the sports exam ask (run 16 built a score card that answers on a day with no games)",
+   "median_days": 0,
+   "median_basis": "days from queued to built: 0 (status-digest's missing family, red since #2713 at 2026-11-12 01:57 UTC), 0 (its fixed all-green line, same PR), 0 (README group, first asked 2026-11-11 22:09 UTC), 0 (definitions exam group, first asked 2026-11-11 22:09 UTC), 0 (sports exam ask, asked 2026-11-11 15:26 UTC); median 0",
+   "asks_open_start": 4,
+   "asks_open_end": 1,
+   "note": "Run 19 of the lists routine. Main's families and book checks were red after #2713 merged status-digest with no family and with its void-review check failing; that is now evidence on the Up for grabs item about skills reaching main without the generated cards.",
+   "items": [
+    {
+     "what": "status-digest joins the client status family (third member of skills/client-status.js; order file 10020 removed; families, book and guide checks green)",
+     "list": "green foundation / convergence",
+     "status": "built"
+    },
+    {
+     "what": "status-digest reads /api/status and /incidents.json through delivery-board's progressOf instead of a fixed all-green line",
+     "list": "green foundation",
+     "status": "built"
+    },
+    {
+     "what": "definitions exam: an etymology ask is checked against Wiktionary's Etymology section; the unknown-word case is glimbrastic, not Verse's own zorbleflux game (tools/exam-etymology.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "the repository's README.md and docs/README.md (tools/readme.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "sports exam data for MLB, Premier League and Serie A on days with no games",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/domains/handoff.md"
+    }
+   ]
   }
  ]
 }
