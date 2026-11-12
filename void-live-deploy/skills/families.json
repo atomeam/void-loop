@@ -11,7 +11,7 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-12",
- "bench_at": "2026-11-11",
+ "bench_at": "2026-11-12",
  "totals": {
   "experiment": 0,
   "tested": 3,
@@ -1261,8 +1261,8 @@
      "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
      "failing": [
       "days until july 4",
-      "countdown to chirstmas",
-      "how many days until january 1st"
+      "how many days until january 1st",
+      "days until the 1st of march"
      ],
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
@@ -1453,12 +1453,9 @@
      "name": "convert",
      "tier": "proven",
      "why": "a self-test, 9 browser-suite mentions, 5 real asks in the benchmark",
-     "failing": [
-      "72 f to c as a converter card"
-     ],
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.8,
+     "success_rate": 1,
      "streak": 24
     },
     {
@@ -1518,13 +1515,13 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
      "failing": [
+      "calculate a 20% tip on 45",
       "what is a 20% tip on 45",
-      "split 120 between 4 people",
       "18% tip on 64 dollars"
      ],
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.889,
+     "success_rate": 0.861,
      "streak": 24
     },
     {
@@ -1667,9 +1664,12 @@
      "name": "sums",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
+     "failing": [
+      "400 + 562 + 129"
+     ],
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.667,
      "promoted": "2026-11-07",
      "streak": 9
     },
@@ -2751,9 +2751,12 @@
      "name": "notes-fill",
      "tier": "proven",
      "why": "a self-test, 5 real asks in the benchmark",
+     "failing": [
+      "add a note: buy milk"
+     ],
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "promoted": "2026-10-29",
      "streak": 16
     },
@@ -2896,9 +2899,12 @@
      "name": "layer",
      "tier": "proven",
      "why": "a self-test, 7 real asks in the benchmark",
+     "failing": [
+      "put the sticky note in front of everything"
+     ],
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.857,
      "streak": 24
     },
     {
