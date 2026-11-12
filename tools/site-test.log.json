@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-04T07:49:54Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2128,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 19423 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-04T08:16:04Z",
   "kind": "visitor",
   "visitor": {
@@ -7979,5 +7961,23 @@
    "failed": []
   },
   "note": "fix: \"bridge these inputs\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-12T11:36:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 449,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8067 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
