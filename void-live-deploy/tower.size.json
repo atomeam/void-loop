@@ -10629,6 +10629,20 @@
    "weight": 5974968,
    "at": "2026-10-30"
   },
+  "scru.org": {
+   "bytes": 130,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 4,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 48,
+   "shell": "none",
+   "weight": 170,
+   "at": "2026-11-12"
+  },
   "searchexpertfind.com": {
    "refused": true,
    "at": "2026-10-29"

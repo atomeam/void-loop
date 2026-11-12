@@ -3039,7 +3039,6 @@
        "section cho n mo t go i di ch vu",
        "button đa ng nha p",
        "button tra tie n",
-       "button privacy manager",
        "button hu y",
        "button lu u",
        "button đo ng y xo a",
@@ -3087,7 +3086,6 @@
        "section 请选择一个套餐",
        "button 登录",
        "button 支付",
-       "button privacy manager",
        "button 取消",
        "button 保存",
        "button 是 删除",
@@ -6596,8 +6594,6 @@
       "kind": "button",
       "templates": [
        "home",
-       "page:/vn",
-       "page:/cn",
        "page:/tw",
        "page:/airports-by-country",
        "page:/airlines",
@@ -15356,9 +15352,9 @@
      "/flights/distance/",
      "/flights/map/"
     ],
-    "crawled": "2026-11-11"
+    "crawled": "2026-11-12"
    }
   },
-  "updated": "2026-11-11"
+  "updated": "2026-11-12"
  }
 }
