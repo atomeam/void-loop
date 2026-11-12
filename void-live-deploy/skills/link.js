@@ -5,6 +5,7 @@
  * image code). Moved out of void.html in cleanup step 6. The page asks `ask` (create, remove, a bare url) at the place its
  * link code always ran (`askAt`); there is no `ensure`, since a link card means nothing without its url.
  */
+import { urlOf } from '../lib/ask-text.js';
 
 export function hostOf(url) {
   try { return new URL(url).hostname.replace(/^www\./, ''); } catch (_) { return url; }
@@ -27,11 +28,8 @@ export function titleOf(url) {
 
 export const isImageUrl = (url) => /\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(url);
 
-/** the first http(s) url in the text, without trailing punctuation (null when none). Pure. */
-export function urlOf(text) {
-  const m = String(text || '').match(/https?:\/\/[^\s]+/i);
-  return m ? m[0].replace(/[),.!]+$/, '') : null;
-}
+// urlOf: one copy in lib/ask-text.js (convergence step 2, lists run 21); kept as this file's export for its callers and tests
+export { urlOf };
 
 const bareUrl = (raw) => /^https?:\/\/[^\s]+$/i.test(raw.trim()) && !isImageUrl(raw.trim());
 

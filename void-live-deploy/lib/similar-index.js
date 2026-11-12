@@ -644,6 +644,30 @@ export default {
     ]
    }
   ],
+  "cinema": [
+   {
+    "name": "films",
+    "examples": [
+     "films",
+     "voids fillms",
+     "void's films",
+     "where do I watch the films",
+     "show me your videos",
+     "review films"
+    ]
+   },
+   {
+    "name": "movie",
+    "examples": [
+     "pick a movie to watch with me",
+     "movie night",
+     "movie card for Nosferatu (1922)",
+     "scary movies from the 90s",
+     "where can i stream the blair witch project",
+     "where to watch Nosferatu (1922)"
+    ]
+   }
+  ],
   "mind-field": [
    {
     "name": "mind-field-mode",

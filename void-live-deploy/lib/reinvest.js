@@ -104,10 +104,12 @@ export function readWishlist(md) {
   return out;
 }
 const VALUE = { high: 0.9, medium: 0.5, low: 0.2 };
-/** the wishlist's own value word sets a matched candidate's impact; the list's rank breaks ties. Pure. */
+/** the wishlist's own value word sets a matched candidate's impact (matched by its rank, or by its opening word once the row moved). Pure. */
 export function withWishlist(candidates, wish) {
   return (candidates || []).map((c) => {
-    const w = c.wishlist && wish.find((x) => x.rank === c.wishlist && x.item.toLowerCase().includes(String(c.match || c.item).toLowerCase().split(' ')[0]));
+    // the rank first; the wishlist is re-ranked daily (tools/wishlist-rank.mjs), so a row that moved is found by the word its item opens with
+    const word = String(c.match || c.item).toLowerCase().split(' ')[0];
+    const w = c.wishlist && (wish.find((x) => x.rank === c.wishlist && x.item.toLowerCase().includes(word)) || wish.find((x) => x.item.toLowerCase().startsWith(word)));
     return w && VALUE[w.value] != null ? { ...c, impact: VALUE[w.value], from_wishlist: w.rank } : c;
   });
 }

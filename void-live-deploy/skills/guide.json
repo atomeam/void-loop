@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 13,
-    "checked": 1,
-    "proven": 66
+    "tested": 8,
+    "checked": 2,
+    "proven": 70
    },
    "from": 362,
    "to": 442
@@ -2484,7 +2484,7 @@
     "is the air good in Paris"
    ],
    "tier": "proven",
-   "why": "1 browser-suite mention, 7 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 7 real asks in the benchmark",
    "flavor": "An old art of the sky and earth, tested each day before the sun is up. Ask, and see.",
    "glow": 100,
    "n": 123
@@ -2501,7 +2501,7 @@
     "should I wear sunscreen in Phoenix"
    ],
    "tier": "proven",
-   "why": "1 browser-suite mention, 8 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 8 real asks in the benchmark",
    "flavor": "8 who came with a need went away with an answer. The page is theirs. Let the stage be the proof.",
    "glow": 100,
    "n": 124
@@ -7849,8 +7849,10 @@
     "client board on invoice reminders",
     "show the delivery board for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it.",
+   "glow": 100,
    "n": 428
   },
   {
@@ -7915,7 +7917,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. This is the page of reuse-pack.",
    "glow": 100,
    "n": 432
   },
@@ -7946,8 +7948,10 @@
     "brief the client on the systems Verse owns",
     "client brief for invoice reminders"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. This is the page of client-brief.",
+   "glow": 100,
    "n": 434
   },
   {
@@ -7961,8 +7965,10 @@
     "offer to own the heavy lifting for weekly reports",
     "package this as an offer: client onboarding that runs itself"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. This is the page of client-offer.",
+   "glow": 100,
    "n": 435
   },
   {
@@ -7976,8 +7982,10 @@
     "what automations will Verse own for onboarding",
     "propose automations for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. This is the page of automation-pack.",
+   "glow": 100,
    "n": 436
   },
   {
@@ -7991,8 +7999,9 @@
     "what automations are running for onboarding",
     "status of the automations Verse owns for support"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 437
   },
   {
@@ -9194,7 +9203,7 @@
     "different",
     "breath",
     "draw",
-    "films",
+    "cinema",
     "app",
     "film-metadata",
     "veto-council",
@@ -9231,7 +9240,6 @@
     "bench",
     "verse-brain",
     "mind-field",
-    "movie",
     "tilt-arena",
     "rap",
     "similar",
@@ -10463,8 +10471,8 @@
     },
     {
      "rank": 180,
-     "name": "films",
-     "catches": "films"
+     "name": "cinema",
+     "catches": "where do I watch the films"
     },
     {
      "rank": 181,
@@ -10688,43 +10696,43 @@
    "rules": [
     {
      "rank": 217,
-     "name": "movie",
-     "catches": "pick a movie to watch with me"
-    },
-    {
-     "rank": 218,
      "name": "tilt-arena",
      "catches": "always combine anything that can be without taking away"
     },
     {
-     "rank": 219,
+     "rank": 218,
      "name": "rap",
      "catches": "write me a rap about pizza"
     },
     {
-     "rank": 220,
+     "rank": 219,
      "name": "similar",
      "catches": "what's similar to swarm mind"
     },
     {
-     "rank": 221,
+     "rank": 220,
      "name": "media-pick",
      "catches": "pick something to listen to with me"
     },
     {
-     "rank": 222,
+     "rank": 221,
      "name": "music",
      "catches": "make me a song"
     },
     {
-     "rank": 223,
+     "rank": 222,
      "name": "pick-for-me",
      "catches": "pick for me"
     },
     {
-     "rank": 224,
+     "rank": 223,
      "name": "flow-canvas",
      "catches": "flow canvas"
+    },
+    {
+     "rank": 224,
+     "name": "incident-autopsy",
+     "catches": "incident autopsy"
     }
    ],
    "n": 532
@@ -10736,43 +10744,43 @@
    "rules": [
     {
      "rank": 225,
-     "name": "incident-autopsy",
-     "catches": "incident autopsy"
-    },
-    {
-     "rank": 226,
      "name": "event-countdown",
      "catches": "how many hours til gta6"
     },
     {
-     "rank": 227,
+     "rank": 226,
      "name": "codex",
      "catches": "file this in the codex"
     },
     {
-     "rank": 228,
+     "rank": 227,
      "name": "collectible",
      "catches": "make a collectible card of a dragon"
     },
     {
-     "rank": 229,
+     "rank": 228,
      "name": "constellation-weaver",
      "catches": "weave a constellation called night ops"
     },
     {
-     "rank": 230,
+     "rank": 229,
      "name": "family-gravity",
      "catches": "turn on family gravity"
     },
     {
-     "rank": 231,
+     "rank": 230,
      "name": "feud",
      "catches": "start a blood feud between the clock and the note"
     },
     {
-     "rank": 232,
+     "rank": 231,
      "name": "fly",
      "catches": "fly around"
+    },
+    {
+     "rank": 232,
+     "name": "minimap",
+     "catches": "show the minimap"
     }
    ],
    "n": 533
@@ -10784,43 +10792,43 @@
    "rules": [
     {
      "rank": 233,
-     "name": "minimap",
-     "catches": "show the minimap"
-    },
-    {
-     "rank": 234,
      "name": "negative-summons",
      "catches": "summon everything except urgency"
     },
     {
-     "rank": 235,
+     "rank": 234,
      "name": "riot",
      "catches": "start the riot"
     },
     {
-     "rank": 236,
+     "rank": 235,
      "name": "oracle",
      "catches": "ask the glitch oracle why is the sky blue"
     },
     {
-     "rank": 237,
+     "rank": 236,
      "name": "crowd",
      "catches": "summon the crowd"
     },
     {
-     "rank": 238,
+     "rank": 237,
      "name": "unkeepable",
      "catches": "make me something unkeepable"
     },
     {
-     "rank": 239,
+     "rank": 238,
      "name": "spectators",
      "catches": "open the stage to spectators"
     },
     {
-     "rank": 240,
+     "rank": 239,
      "name": "ask-clipboard",
      "catches": "show my recent asks as a card"
+    },
+    {
+     "rank": 240,
+     "name": "deep-work",
+     "catches": "shield everything except the notepad for 25 minutes"
     }
    ],
    "n": 534
@@ -10832,43 +10840,43 @@
    "rules": [
     {
      "rank": 241,
-     "name": "deep-work",
-     "catches": "shield everything except the notepad for 25 minutes"
-    },
-    {
-     "rank": 242,
      "name": "echo-chamber",
      "catches": "replay my best answers from this week"
     },
     {
-     "rank": 243,
+     "rank": 242,
      "name": "echo-disagrees",
      "catches": "echo this"
     },
     {
-     "rank": 244,
+     "rank": 243,
      "name": "eigenwork",
      "catches": "factor my goal launch a podcast"
     },
     {
-     "rank": 245,
+     "rank": 244,
      "name": "error-garden",
      "catches": "plant my mistake: I sent the email before checking it"
     },
     {
-     "rank": 246,
+     "rank": 245,
      "name": "forge-table",
      "catches": "forge these"
     },
     {
-     "rank": 247,
+     "rank": 246,
      "name": "mutate",
      "catches": "mutate this card"
     },
     {
-     "rank": 248,
+     "rank": 247,
      "name": "decide-cards",
      "catches": "ranked list of my movies"
+    },
+    {
+     "rank": 248,
+     "name": "decision-matrix",
+     "catches": "decision matrix for whether to move to Berlin"
     }
    ],
    "n": 535
@@ -10880,43 +10888,43 @@
    "rules": [
     {
      "rank": 249,
-     "name": "decision-matrix",
-     "catches": "decision matrix for whether to move to Berlin"
-    },
-    {
-     "rank": 250,
      "name": "homotopy-edit",
      "catches": "check my edit"
     },
     {
-     "rank": 251,
+     "rank": 250,
      "name": "idea-certificate",
      "catches": "keep this idea: a stage that remembers | why: it makes coming back feel like hom"
     },
     {
-     "rank": 252,
+     "rank": 251,
      "name": "near-choir",
      "catches": "show the near choir"
     },
     {
-     "rank": 253,
+     "rank": 252,
      "name": "night-ritual",
      "catches": "begin the night ritual"
     },
     {
-     "rank": 254,
+     "rank": 253,
      "name": "sudden-death",
      "catches": "sudden death in 60 seconds"
     },
     {
-     "rank": 255,
+     "rank": 254,
      "name": "time-capsule",
      "catches": "seal a time capsule until 2027-01-01"
     },
     {
-     "rank": 256,
+     "rank": 255,
      "name": "archive-of-one",
      "catches": "walk the archive"
+    },
+    {
+     "rank": 256,
+     "name": "noun-heat",
+     "catches": "how hot are my nouns"
     }
    ],
    "n": 536
@@ -10928,43 +10936,43 @@
    "rules": [
     {
      "rank": 257,
-     "name": "noun-heat",
-     "catches": "how hot are my nouns"
-    },
-    {
-     "rank": 258,
      "name": "overload",
      "catches": "overload me"
     },
     {
-     "rank": 259,
+     "rank": 258,
      "name": "plan-stability",
      "catches": "is my plan stable"
     },
     {
-     "rank": 260,
+     "rank": 259,
      "name": "stage-out",
      "catches": "most skills can be combined"
     },
     {
-     "rank": 261,
+     "rank": 260,
      "name": "whisper-network",
      "catches": "leave a whisper on the clock: remember milk"
     },
     {
-     "rank": 262,
+     "rank": 261,
      "name": "extinction",
      "catches": "mass extinction"
     },
     {
-     "rank": 263,
+     "rank": 262,
      "name": "hunting-question",
      "catches": "a question I'm avoiding: should I quit my job"
     },
     {
-     "rank": 264,
+     "rank": 263,
      "name": "miss-jobs",
      "catches": "turn today's misses into jobs"
+    },
+    {
+     "rank": 264,
+     "name": "recipe-stack",
+     "catches": "cook pasta: boil 10 min then rest 2"
     }
    ],
    "n": 537
@@ -10976,43 +10984,43 @@
    "rules": [
     {
      "rank": 265,
-     "name": "recipe-stack",
-     "catches": "cook pasta: boil 10 min then rest 2"
-    },
-    {
-     "rank": 266,
      "name": "ask-immune",
      "catches": "immune check: make the app better and also fix everything"
     },
     {
-     "rank": 267,
+     "rank": 266,
      "name": "causal-scars",
      "catches": "map the scars of my decisions"
     },
     {
-     "rank": 268,
+     "rank": 267,
      "name": "counterfactual-draft",
      "catches": "write the opposite of my plan"
     },
     {
-     "rank": 269,
+     "rank": 268,
      "name": "draft-triad",
      "catches": "three drafts of we are late with the report"
     },
     {
-     "rank": 270,
+     "rank": 269,
      "name": "four-channels",
      "catches": "answer in four channels: should we move to Berlin?"
     },
     {
-     "rank": 271,
+     "rank": 270,
      "name": "list-tools",
      "catches": "check all on the list"
     },
     {
-     "rank": 272,
+     "rank": 271,
      "name": "stakes-phase",
      "catches": "set the stakes"
+    },
+    {
+     "rank": 272,
+     "name": "stale-work",
+     "catches": "show stale work"
     }
    ],
    "n": 538
@@ -11024,43 +11032,43 @@
    "rules": [
     {
      "rank": 273,
-     "name": "stale-work",
-     "catches": "show stale work"
-    },
-    {
-     "rank": 274,
      "name": "witness-claims",
      "catches": "proof-carrying claims"
     },
     {
-     "rank": 275,
+     "rank": 274,
      "name": "certainty-budget",
      "catches": "certainty budget"
     },
     {
-     "rank": 276,
+     "rank": 275,
      "name": "interrupt-priority",
      "catches": "set priority deep"
     },
     {
-     "rank": 277,
+     "rank": 276,
      "name": "stage-find",
      "catches": "search kept items for pizza"
     },
     {
-     "rank": 278,
+     "rank": 277,
      "name": "dismissed-pile",
      "catches": "show the undo pile"
     },
     {
-     "rank": 279,
+     "rank": 278,
      "name": "bookmarks",
      "catches": "favorite this"
     },
     {
-     "rank": 280,
+     "rank": 279,
      "name": "copy-stack",
      "catches": "show my clipboard stack"
+    },
+    {
+     "rank": 280,
+     "name": "study-cards",
+     "catches": "flashcards: hola = hello, gato = cat"
     }
    ],
    "n": 539
@@ -11072,43 +11080,43 @@
    "rules": [
     {
      "rank": 281,
-     "name": "study-cards",
-     "catches": "flashcards: hola = hello, gato = cat"
-    },
-    {
-     "rank": 282,
      "name": "dev-tools",
      "catches": "a"
     },
     {
-     "rank": 283,
+     "rank": 282,
      "name": "accessibility-modes",
      "catches": "dyslexia friendly font"
     },
     {
-     "rank": 284,
+     "rank": 283,
      "name": "about-skill",
      "catches": "play chess"
     },
     {
-     "rank": 285,
+     "rank": 284,
      "name": "backlog-digest",
      "catches": "digest your backlog"
     },
     {
-     "rank": 286,
+     "rank": 285,
      "name": "calendar-file",
      "catches": "export my calendar"
     },
     {
-     "rank": 287,
+     "rank": 286,
      "name": "remediation-velocity",
      "catches": "how fast do you fix your misses"
     },
     {
-     "rank": 288,
+     "rank": 287,
      "name": "dependency-health",
      "catches": "dependency health"
+    },
+    {
+     "rank": 288,
+     "name": "notebook",
+     "catches": "daily note"
     }
    ],
    "n": 540
@@ -11120,43 +11128,43 @@
    "rules": [
     {
      "rank": 289,
-     "name": "notebook",
-     "catches": "daily note"
-    },
-    {
-     "rank": 290,
      "name": "terminal",
      "catches": "set a timer for 5 minutes"
     },
     {
-     "rank": 291,
+     "rank": 290,
      "name": "photos",
      "catches": "my photos"
     },
     {
-     "rank": 292,
+     "rank": 291,
      "name": "ritual-template",
      "catches": "morning routine as calendar events"
     },
     {
-     "rank": 293,
+     "rank": 292,
      "name": "bridge",
      "catches": "bridge these inputs"
     },
     {
-     "rank": 294,
+     "rank": 293,
      "name": "fix-audit",
      "catches": "audit your fixes"
     },
     {
-     "rank": 295,
+     "rank": 294,
      "name": "file-sorter",
      "catches": "sort these files: app.py, LICENSE, data.csv, logo.png"
     },
     {
-     "rank": 296,
+     "rank": 295,
      "name": "fact",
      "catches": "tell me a fact"
+    },
+    {
+     "rank": 296,
+     "name": "quote",
+     "catches": "tell me a quote"
     }
    ],
    "n": 541
@@ -11168,43 +11176,43 @@
    "rules": [
     {
      "rank": 297,
-     "name": "quote",
-     "catches": "tell me a quote"
-    },
-    {
-     "rank": 298,
      "name": "pwcheck",
      "catches": "how secure is my password"
     },
     {
-     "rank": 299,
+     "rank": 298,
      "name": "baseconv",
      "catches": "ff hex to binary"
     },
     {
-     "rank": 300,
+     "rank": 299,
      "name": "photo-tools",
      "catches": "edit a photo"
     },
     {
-     "rank": 301,
+     "rank": 300,
      "name": "imgfit",
      "catches": "resize a photo to 3.5 x 2.5 cm under 50 kb"
     },
     {
-     "rank": 302,
+     "rank": 301,
      "name": "gradient",
      "catches": "gradient generator"
     },
     {
-     "rank": 303,
+     "rank": 302,
      "name": "wheel",
      "catches": "spin the wheel"
     },
     {
-     "rank": 304,
+     "rank": 303,
      "name": "fakeuser",
      "catches": "random user generator"
+    },
+    {
+     "rank": 304,
+     "name": "walker",
+     "catches": "let it walk"
     }
    ],
    "n": 542
@@ -11216,43 +11224,43 @@
    "rules": [
     {
      "rank": 305,
-     "name": "walker",
-     "catches": "let it walk"
-    },
-    {
-     "rank": 306,
      "name": "backdrop",
      "catches": "set the stage to a retro server room"
     },
     {
-     "rank": 307,
+     "rank": 306,
      "name": "toolkit",
      "catches": "what tools do you have"
     },
     {
-     "rank": 308,
+     "rank": 307,
      "name": "boards",
      "catches": "image boards"
     },
     {
-     "rank": 309,
+     "rank": 308,
      "name": "sums",
      "catches": "if 3 apples cost 2.40 how much do 7 cost"
     },
     {
-     "rank": 310,
+     "rank": 309,
      "name": "snippet",
      "catches": "write a python function factorial of n"
     },
     {
-     "rank": 311,
+     "rank": 310,
      "name": "music-tools",
      "catches": "metronome 120 bpm"
     },
     {
-     "rank": 312,
+     "rank": 311,
      "name": "pdf-tools",
      "catches": "merge pdf"
+    },
+    {
+     "rank": 312,
+     "name": "converter",
+     "catches": "mp4 to mp3"
     }
    ],
    "n": 543
@@ -11264,43 +11272,43 @@
    "rules": [
     {
      "rank": 313,
-     "name": "converter",
-     "catches": "mp4 to mp3"
-    },
-    {
-     "rank": 314,
      "name": "kanban-board",
      "catches": "kanban board"
     },
     {
-     "rank": 315,
+     "rank": 314,
      "name": "flights",
      "catches": "flights to lisbon"
     },
     {
-     "rank": 316,
+     "rank": 315,
      "name": "formulas",
      "catches": "pipe surface area calculator"
     },
     {
-     "rank": 317,
+     "rank": 316,
      "name": "lorem",
      "catches": "lorem"
     },
     {
-     "rank": 318,
+     "rank": 317,
      "name": "ascii",
      "catches": "ascii for hello"
     },
     {
-     "rank": 319,
+     "rank": 318,
      "name": "leet",
      "catches": "leet hello"
     },
     {
-     "rank": 320,
+     "rank": 319,
      "name": "advice",
      "catches": "give me advice"
+    },
+    {
+     "rank": 320,
+     "name": "palette",
+     "catches": "random palette"
     }
    ],
    "n": 544
@@ -11312,43 +11320,43 @@
    "rules": [
     {
      "rank": 321,
-     "name": "palette",
-     "catches": "random palette"
-    },
-    {
-     "rank": 322,
      "name": "fanfic",
      "catches": "fan fiction"
     },
     {
-     "rank": 323,
+     "rank": 322,
      "name": "proverb",
      "catches": "tell me a proverb"
     },
     {
-     "rank": 324,
+     "rank": 323,
      "name": "magic8",
      "catches": "magic 8 ball"
     },
     {
-     "rank": 325,
+     "rank": 324,
      "name": "color",
      "catches": "random color"
     },
     {
-     "rank": 326,
+     "rank": 325,
      "name": "morse",
      "catches": "morse code hello"
     },
     {
-     "rank": 327,
+     "rank": 326,
      "name": "sprite-sheet",
      "catches": "clean up a sprite sheet"
     },
     {
-     "rank": 328,
+     "rank": 327,
      "name": "yesno",
      "catches": "yes or no"
+    },
+    {
+     "rank": 328,
+     "name": "password",
+     "catches": "random password"
     }
    ],
    "n": 545
@@ -11360,43 +11368,43 @@
    "rules": [
     {
      "rank": 329,
-     "name": "password",
-     "catches": "random password"
-    },
-    {
-     "rank": 330,
      "name": "random",
      "catches": "d20"
     },
     {
-     "rank": 331,
+     "rank": 330,
      "name": "uuid",
      "catches": "random uuid"
     },
     {
-     "rank": 332,
+     "rank": 331,
      "name": "shuffle",
      "catches": "shuffle these: apple banana cherry"
     },
     {
-     "rank": 333,
+     "rank": 332,
      "name": "team-chat",
      "catches": "team chat"
     },
     {
-     "rank": 334,
+     "rank": 333,
      "name": "emoji",
      "catches": "random emoji"
     },
     {
-     "rank": 335,
+     "rank": 334,
      "name": "hangman",
      "catches": "hangman"
     },
     {
-     "rank": 336,
+     "rank": 335,
      "name": "stopwatch",
      "catches": "stopwatch"
+    },
+    {
+     "rank": 336,
+     "name": "wordladder",
+     "catches": "word ladder from cat to dog"
     }
    ],
    "n": 546
@@ -11408,43 +11416,43 @@
    "rules": [
     {
      "rank": 337,
-     "name": "wordladder",
-     "catches": "word ladder from cat to dog"
-    },
-    {
-     "rank": 338,
      "name": "podcast-search",
      "catches": "podcasts about history"
     },
     {
-     "rank": 339,
+     "rank": 338,
      "name": "emoji-combos",
      "catches": "cat emoji combos"
     },
     {
-     "rank": 340,
+     "rank": 339,
      "name": "studios",
      "catches": "cpan testers"
     },
     {
-     "rank": 341,
+     "rank": 340,
      "name": "local-stations",
      "catches": "local radio"
     },
     {
-     "rank": 342,
+     "rank": 341,
      "name": "palindrome",
      "catches": "palindrome check for a man a plan a canal panama"
     },
     {
-     "rank": 343,
+     "rank": 342,
      "name": "open-tool",
      "catches": "word counter"
     },
     {
-     "rank": 344,
+     "rank": 343,
      "name": "baggage",
      "catches": "how much luggage weight allowed"
+    },
+    {
+     "rank": 344,
+     "name": "rentbuy",
+     "catches": "should i rent or buy"
     }
    ],
    "n": 547
@@ -11456,43 +11464,43 @@
    "rules": [
     {
      "rank": 345,
-     "name": "rentbuy",
-     "catches": "should i rent or buy"
-    },
-    {
-     "rank": 346,
      "name": "idea-to-system",
      "catches": "turn my idea into a system"
     },
     {
-     "rank": 347,
+     "rank": 346,
      "name": "my-device",
      "catches": "what is my ip address"
     },
     {
-     "rank": 348,
+     "rank": 347,
      "name": "noise",
      "catches": "white noise"
     },
     {
-     "rank": 349,
+     "rank": 348,
      "name": "speed-tests",
      "catches": "reaction time test"
     },
     {
-     "rank": 350,
+     "rank": 349,
      "name": "math-quiz",
      "catches": "times tables quiz"
     },
     {
-     "rank": 351,
+     "rank": 350,
      "name": "groups",
      "catches": "random team generator"
     },
     {
-     "rank": 352,
+     "rank": 351,
      "name": "ownership",
      "catches": "who owns what"
+    },
+    {
+     "rank": 352,
+     "name": "monitor-pack",
+     "catches": "monitor pack for client onboarding"
     }
    ],
    "n": 548
@@ -11504,43 +11512,43 @@
    "rules": [
     {
      "rank": 353,
-     "name": "monitor-pack",
-     "catches": "monitor pack for client onboarding"
-    },
-    {
-     "rank": 354,
      "name": "verify-pack",
      "catches": "verify pack for client onboarding"
     },
     {
-     "rank": 355,
+     "rank": 354,
      "name": "client-status",
      "catches": "all systems green"
     },
     {
-     "rank": 356,
+     "rank": 355,
      "name": "client-intake",
      "catches": ""
     },
     {
-     "rank": 357,
+     "rank": 356,
      "name": "handoff-checklist",
      "catches": "handoff checklist for the onboarding automation"
     },
     {
-     "rank": 358,
+     "rank": 357,
      "name": "reuse-tools",
      "catches": "reuse what exists before building"
     },
     {
-     "rank": 359,
+     "rank": 358,
      "name": "faucet",
      "catches": "credits"
     },
     {
-     "rank": 360,
+     "rank": 359,
      "name": "client-brief",
      "catches": "client brief for Acme onboarding"
+    },
+    {
+     "rank": 360,
+     "name": "client-offer",
+     "catches": "client offer for the email automation"
     }
    ],
    "n": 549
@@ -11548,40 +11556,35 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCLXI–CCCLXVII",
+   "title": "Rules CCCLXI–CCCLXVI",
    "rules": [
     {
      "rank": 361,
-     "name": "client-offer",
-     "catches": "client offer for the email automation"
-    },
-    {
-     "rank": 362,
      "name": "automation-pack",
      "catches": "automation pack for invoice reminders"
     },
     {
-     "rank": 363,
+     "rank": 362,
      "name": "lift-summary",
      "catches": "lift summary for client onboarding"
     },
     {
-     "rank": 364,
+     "rank": 363,
      "name": "docs-pack",
      "catches": "docs pack for Acme onboarding"
     },
     {
-     "rank": 365,
+     "rank": 364,
      "name": "feedback-loop",
      "catches": "feedback on the onboarding slice"
     },
     {
-     "rank": 366,
+     "rank": 365,
      "name": "progress-report",
      "catches": "progress report for the onboarding automation"
     },
     {
-     "rank": 367,
+     "rank": 366,
      "name": "system-slice",
      "catches": "next system slice for the client onboarding"
     }

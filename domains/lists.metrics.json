@@ -1122,6 +1122,64 @@
      "link": "https://github.com/atomeam/void-loop/blob/main/tools/csp-hashes.mjs"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T08:40:00Z",
+   "run": 21,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.125,
+   "dup_basis": "1 of 8 items was already on main: \"add 30 seconds\" adding to the running timer (timer.js addMs, from helper/timer-durations)",
+   "median_days": 3.5,
+   "median_basis": "days from queued to built: 0.1 (privacy check red since #2717, 2026-11-12 07:10 UTC), 2.7 x3 (timer halves, the add-seconds duplicate and GAPS batch 6, on the board since 2026-11-09 15:17 UTC), 4.2 (films~movie in the overlap allowance since 2026-11-08 02:57 UTC), 28 (tests for untested files, 2026-10-15 06:11 UTC), 28 (convergence step 2, planned 2026-10-15), 28.1 (wishlist re-rank, 2026-10-15 05:39 UTC); median 3.5",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 21 of the lists routine. No open pull requests at the start; main's privacy check was red from the reef data of #2717 and is fixed here. No list newly reached zero this run (V01D asks reached zero in run 20).",
+   "items": [
+    {
+     "what": "films and movie are one cinema family at 1100, aliases kept, 0 of 6,423 asks moved (skills/cinema.js, tools/cinema-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 2, second half: urlOf and the seven ask-tidier variants are one copy each in lib/ask-text.js (tools/ask-text-step2b.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "the daily wishlist re-rank: tools/wishlist-rank.mjs in upkeep.yml, only the # column moves, lib/reinvest.js finds a moved row (tools/wishlist-rank.test.mjs)",
+     "list": "handoff Up for grabs / wishlist",
+     "status": "built"
+    },
+    {
+     "what": "timer halves from closed PR #2414: \"2 and a half minutes\", \"a minute and a half\", \"an hour and a half\" set the whole length (tools/timer-halves.test.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "\"add 30 seconds\" adds to the running timer (the other timer half of #2414)",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/skills/timer.js"
+    },
+    {
+     "what": "GAPS batch 6 from closed PR #2396: typing speed test, text to speech, keyboard, mouse, dead pixel and battery checks (tools/gaps-batch6.test.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/checkers-rules.test.mjs; the untested allowance 70 to 58",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "main's privacy check: the phone pattern in lib/privacy.js skips the digits after a decimal point (the reef data of #2717 tripped it); the seeded generator's constants marked privacy:ok",
+     "list": "main red (found this run)",
+     "status": "built"
+    }
+   ]
   }
  ]
 }

@@ -4,7 +4,8 @@
  * Places and time zones come from Open-Meteo geocoding; sunrise and sunset from the Open-Meteo forecast. Clock math uses the
  * browser's own time-zone data (Intl), so nothing else is called.
  */
-const CLEAN = (s) => s.replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
+import { cleanEnd } from '../lib/ask-text.js';
+const CLEAN = cleanEnd; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 const PLACE = (s) => CLEAN(s).replace(/^(the\s+)/i, '').replace(/\s+(right\s+)?now$/i, '').replace(/\s+(today|tomorrow)$/i, '').trim();
 const NOT_PLACE = /^(it|this|that|here|there|my\s+\w+|the\s+\w+\s+zone|a\s+\w+|\d+.*)$/i;
 const TIME = '(\\d{1,2}(?::\\d{2})?\\s*(?:am|pm|a\\.m\\.|p\\.m\\.)|\\d{1,2}:\\d{2}|noon|midnight)';

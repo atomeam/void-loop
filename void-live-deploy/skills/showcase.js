@@ -21,11 +21,12 @@ import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of 
 import { reactionBar } from '../lib/reaction-bar.js'; // spectator reactions under a step (the closed list, /api/react)
 import { targetOf } from '../lib/reactions.js';
 import { dockPanel } from '../lib/placement.js'; // where the walkthrough panel goes so it never covers the open card or the ask bar
+import { cleanSaid } from '../lib/ask-text.js';
 export const SEEN_KEY = 'a2m.void.growthSeen.v1'; // when this device first visited: nothing older is ever new to it (a first visit stays empty)
 export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here: a thing is previewed once, then never offered again
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanSaid; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 const ASK_RE = /^(?:(?:hey\s+)?(?:verse|void),?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'?s|\s+is)\s+new|what(?:'?s|\s+is)\s+new(?:,?\s+pussy\s?cat|\s+(?:with\s+you|in\s+(?:verse|void)|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
 
 /** the ask wants the walkthrough. Pure. */

@@ -5,7 +5,8 @@
  * (tools/self-context.mjs). No model call and no web search: the same words every time, with the canon's version, so a stale
  * answer can be told apart from a current one. "what is different about these two words" is not this.
  */
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+import { cleanSaid } from '../lib/ask-text.js';
+const CLEAN = cleanSaid; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 const YOU = '(?:you|(?:verse|void)|a-to-mind|a2m)';
 const ASK_RE = new RegExp('^(?:(?:hey\\s+)?(?:verse|void),?\\s+)?(?:please\\s+)?(?:'
   + 'what\\s+makes\\s+' + YOU + '\\s+(?:different|special|unique)'
