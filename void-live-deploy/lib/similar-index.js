@@ -690,6 +690,47 @@ export default {
     ]
    }
   ],
+  "handoffs": [
+   {
+    "name": "delivery-pack",
+    "examples": [
+     "package this idea: automate client onboarding",
+     "handoff pack for my SaaS idea",
+     "delivery package: invoice reminders that run themselves",
+     "make a delivery pack for the support ticket router"
+    ]
+   },
+   {
+    "name": "client-handoff",
+    "examples": [
+     "client handoff for the onboarding automation",
+     "make a client handoff for the invoice flow",
+     "business handoff for weekly status reports",
+     "package a client handoff for the support ticket router",
+     "generate a client handoff for the client portal"
+    ]
+   },
+   {
+    "name": "system-handoff",
+    "examples": [
+     "system handoff for the onboarding automation",
+     "make a system handoff for invoice reminders",
+     "handoff the system: support ticket router",
+     "handoff this system: client onboarding automation",
+     "package the status handoff for my CRM sync",
+     "hand off the automation for weekly reports"
+    ]
+   },
+   {
+    "name": "full-handoff",
+    "examples": [
+     "full handoff for the invoice automation",
+     "client handoff pack on onboarding flow",
+     "package the handoff for the support router",
+     "show the complete handoff for weekly reports"
+    ]
+   }
+  ],
   "mind-field": [
    {
     "name": "mind-field-mode",
