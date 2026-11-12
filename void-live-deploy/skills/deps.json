@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1270,
+ "counted": 1271,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1428,7 +1428,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 31,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/free-pics.js",
@@ -2709,6 +2709,13 @@
    "skills": 0,
    "direct": 0,
    "dependants": 30,
+   "tests": 1
+  },
+  {
+   "file": "lib/http.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 28,
    "tests": 1
   },
   {
@@ -4236,7 +4243,8 @@
   "functions/api/boards/[[path]].js": {
    "imports": [
     "lib/guard.js",
-    "lib/boards.js"
+    "lib/boards.js",
+    "lib/http.js"
    ],
    "importedBy": [
     "functions/fanfic/rss.js"
@@ -4246,7 +4254,8 @@
    "imports": [
     "lib/guard.js",
     "lib/reactions.js",
-    "lib/calshare.js"
+    "lib/calshare.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4258,7 +4267,8 @@
     "lib/keeper.js",
     "lib/wiki-look.js",
     "lib/models.js",
-    "lib/art-rules.js"
+    "lib/art-rules.js",
+    "lib/http.js"
    ],
    "importedBy": [
     "functions/api/daily-art.js",
@@ -4302,7 +4312,8 @@
     "lib/studio.js",
     "lib/video-gen.js",
     "functions/api/studio.js",
-    "functions/api/image.js"
+    "functions/api/image.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4322,7 +4333,8 @@
     "lib/reactions.js",
     "lib/automation-fix.js",
     "lib/keeper.js",
-    "lib/comments.js"
+    "lib/comments.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4356,7 +4368,8 @@
     "lib/daily-art.js",
     "lib/daily-photo.js",
     "lib/free-pics.js",
-    "lib/daily-cap.js"
+    "lib/daily-cap.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4449,7 +4462,8 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/image-gen.js",
-    "functions/api/image.js"
+    "functions/api/image.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4460,7 +4474,8 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/comments.js",
-    "lib/listgen.js"
+    "lib/listgen.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4471,7 +4486,8 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/art-rules.js",
-    "lib/listgen.js"
+    "lib/listgen.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4536,7 +4552,8 @@
     "lib/guard.js",
     "lib/reactions.js",
     "lib/icsfeed.js",
-    "lib/calendar.js"
+    "lib/calendar.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4550,7 +4567,8 @@
     "lib/art-rules.js",
     "functions/api/card-art.js",
     "functions/api/studio.js",
-    "lib/image-gen.js"
+    "lib/image-gen.js",
+    "lib/http.js"
    ],
    "importedBy": [
     "functions/api/card-art.js",
@@ -4583,7 +4601,8 @@
   "functions/api/local.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/local-media.js"
+    "lib/local-media.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4675,7 +4694,8 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/models.js",
-    "lib/merge-rules.js"
+    "lib/merge-rules.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4716,7 +4736,8 @@
   "functions/api/news.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/news.js"
+    "lib/news.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4746,7 +4767,8 @@
   "functions/api/podcasts.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/podcasts.js"
+    "lib/podcasts.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4810,7 +4832,8 @@
   "functions/api/react.js": {
    "imports": [
     "lib/guard.js",
-    "lib/reactions.js"
+    "lib/reactions.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4822,14 +4845,16 @@
     "lib/recipeimport.js",
     "lib/models.js",
     "functions/api/appraise.js",
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
   "functions/api/recipes.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/recipes.js"
+    "lib/recipes.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4856,7 +4881,8 @@
   "functions/api/repo.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/repo-look.js"
+    "lib/repo-look.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4868,7 +4894,8 @@
     "lib/scores.js",
     "functions/api/scores.js",
     "lib/daily-cap.js",
-    "lib/reports.js"
+    "lib/reports.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -4909,14 +4936,16 @@
     "lib/guard.js",
     "lib/reactions.js",
     "lib/calshare.js",
-    "lib/rsvp.js"
+    "lib/rsvp.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
   "functions/api/scores.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/scores.js"
+    "lib/scores.js",
+    "lib/http.js"
    ],
    "importedBy": [
     "functions/api/report.js"
@@ -5050,7 +5079,8 @@
   "functions/api/tally.js": {
    "imports": [
     "lib/guard.js",
-    "lib/tally.js"
+    "lib/tally.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -5155,7 +5185,8 @@
    "imports": [
     "lib/guard.js",
     "lib/reactions.js",
-    "lib/visits.js"
+    "lib/visits.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -5196,7 +5227,8 @@
   "functions/api/weather.js": {
    "imports": [
     "functions/api/answer.js",
-    "lib/weather.js"
+    "lib/weather.js",
+    "lib/http.js"
    ],
    "importedBy": []
   },
@@ -9726,6 +9758,41 @@
    "imports": [],
    "importedBy": [
     "functions/api/will.js"
+   ]
+  },
+  "lib/http.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/boards/[[path]].js",
+    "functions/api/calshare.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/comments.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/gen-data.js",
+    "functions/api/generators.js",
+    "functions/api/icsfeed.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/react.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/rsvp.js",
+    "functions/api/scores.js",
+    "functions/api/tally.js",
+    "functions/api/visit.js",
+    "functions/api/weather.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/api/x402/[service].js",
+    "functions/fanfic/rss.js"
    ]
   },
   "lib/ics.js": {

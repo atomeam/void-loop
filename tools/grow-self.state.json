@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "43194107832",
-  "at": "2026-11-12T09:45:18Z",
-  "what": "Verse hardened itself: 15 benchmark ask(s) for docs-pack, feedback-loop, lift-summary, progress-report, status-digest.  Why these: bridge (no benchmark ask, evidence tier: experiment); docs-pack (no benchmark ask, evidence tier: tested); feedback-loop (no benchmark ask, evidence tier: tested); lift-summary (no benchmark ask, evidence tier: tested); progress-report (no benchmark ask, evidence tier: tested); status-digest (no benchmark ask, evidence tier: tested). New phrases: “docs pack for Acme onboarding” now opens docs-pack; “client docs for the invoice reminders” now opens docs-pack; “document the system Verse owns for support” now opens docs-pack; “feedback on the onboarding slice” now opens feedback-loop; “client feedback for invoice reminders” now opens feedback-loop; “capture feedback from the status report” now opens feedback-loop; “lift summary for client onboarding” now opens lift-summary; “we own the heavy lifting for invoice reminders” now opens lift-summary; “package the heavy lifting for the support flow” now opens lift-summary; “progress report for the onboarding automation” now opens progress-report; “client progress on invoice reminders” now opens progress-report; “status progress for the support router” now opens progress-report; “status digest for the invoice automation” now opens status-digest; “client digest: onboarding flow” now opens status-digest; “weekly status for my systems” now opens status-digest. Did not route: bridge these inputs; compare these inputs; synthesize these sources.",
-  "try": "docs pack for Acme onboarding",
+  "run": "43211992285",
+  "at": "2026-11-12T11:47:17Z",
+  "what": "Verse hardened itself: 6 benchmark ask(s) for bridge, system-slice.  Why these: bridge (no benchmark ask, evidence tier: tested); system-slice (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: tested). New phrases: “bridge these inputs” now opens bridge; “compare these inputs” now opens bridge; “synthesize these sources” now opens bridge; “next system slice for the client onboarding” now opens system-slice; “system slice for invoice reminders” now opens system-slice; “what should Verse build next for the support flow” now opens system-slice. Did not route: automation status for invoice reminders; status of the automations Verse owns for support; what does Verse own for the onboarding flow; ownership map for weekly reports.",
+  "try": "bridge these inputs",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-12T07:43:02Z",
-    "try": "automation pack for invoice reminders",
-    "closedAt": "2026-11-12T09:44:59Z"
+    "at": "2026-11-12T09:45:18Z",
+    "try": "docs pack for Acme onboarding",
+    "closedAt": "2026-11-12T11:46:59Z"
   }
 }

@@ -7204,5 +7204,11 @@
   {"ask": "status progress for the support router", "want": "skill:progress-report"},
   {"ask": "status digest for the invoice automation", "want": "skill:status-digest"},
   {"ask": "client digest: onboarding flow", "want": "skill:status-digest"},
-  {"ask": "weekly status for my systems", "want": "skill:status-digest"}
+  {"ask": "weekly status for my systems", "want": "skill:status-digest"},
+  {"ask": "bridge these inputs", "want": "skill:bridge"},
+  {"ask": "compare these inputs", "want": "skill:bridge"},
+  {"ask": "synthesize these sources", "want": "skill:bridge"},
+  {"ask": "next system slice for the client onboarding", "want": "skill:system-slice"},
+  {"ask": "system slice for invoice reminders", "want": "skill:system-slice"},
+  {"ask": "what should Verse build next for the support flow", "want": "skill:system-slice"}
 ]
