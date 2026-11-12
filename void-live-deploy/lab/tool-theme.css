@@ -1,0 +1,41 @@
+/* Lab tools that opt into /verse.css (html.vs-tool). Tokens come from that file. */
+html.vs-tool body:not(:has(#verse-nav)):not(:has(#stage)) {
+  padding-top: 0; padding-bottom: 80px; min-height: 100vh; box-sizing: border-box;
+}
+html.vs-tool .card, html.vs-tool .section {
+  position: relative; margin: 0 0 10px; padding: 14px 16px; border-radius: 16px;
+  background: var(--card); box-shadow: var(--d-lift); isolation: isolate; border: 1px solid var(--line);
+}
+html.vs-tool .card h2, html.vs-tool .section h2 {
+  margin: 0 0 8px; font-size: 18px; font-weight: 600; letter-spacing: -.015em; color: var(--d-ink);
+}
+html.vs-tool .list-item input, html.vs-tool input[type=text], html.vs-tool input[type=number],
+html.vs-tool select, html.vs-tool textarea {
+  font: inherit; font-size: 16px; color: var(--d-ink); background: var(--box);
+  border: 1px solid var(--line); border-radius: 10px; padding: 7px 9px; min-height: 40px; box-sizing: border-box;
+}
+html.vs-tool input[type=color] { padding: 2px; width: 48px; min-height: 40px; }
+html.vs-tool button {
+  font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px;
+  padding: 7px 14px; min-height: 40px; background: transparent; color: var(--d-ink); cursor: pointer;
+}
+html.vs-tool button.primary, html.vs-tool button.add-btn, html.vs-tool button.main {
+  background-color: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600;
+}
+html.vs-tool button.secondary, html.vs-tool .list-item button { background: rgb(255 255 255 / .06); }
+html.vs-tool table { border-collapse: collapse; width: 100%; background: var(--card); border-radius: 8px; overflow: hidden; }
+html.vs-tool th, html.vs-tool td { border: 1px solid var(--line); padding: 0.55rem 0.7rem; text-align: left; color: var(--d-ink); }
+html.vs-tool th { background: rgb(var(--d-key) / .12); font-weight: 600; }
+html.vs-tool .empty, html.vs-tool .note, html.vs-tool .subtitle, html.vs-tool .lead, html.vs-tool #status { color: var(--muted); }
+html.vs-tool .vl-bar a { color: inherit; }
+@media print {
+  html.vs-tool, html.vs-tool body { background: #fff !important; color: #111 !important; padding: 0 !important; }
+  html.vs-tool .card, html.vs-tool .section, html.vs-tool table { background: #fff; box-shadow: none; color: #111; }
+  html.vs-tool th, html.vs-tool td { border-color: #ccc; color: #111; }
+  html.vs-tool th { background: #f0f0f0; }
+  html.vs-tool .vl-bar { display: none !important; }
+  html.vs-tool .vs-page h1 { background: none; color: #111; -webkit-text-fill-color: #111; }
+}
+@media screen and (forced-colors: active) {
+  html.vs-tool .vs-page h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
+}
