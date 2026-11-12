@@ -359,5 +359,6 @@
  "feedback-loop": ["capture feedback from the status report","client feedback for invoice reminders","feedback on the onboarding slice","what next from the support flow feedback"],
  "progress-report": ["client progress on invoice reminders","make a progress report for weekly status reports","progress report for the onboarding automation","status progress for the support router"],
  "system-slice": ["next system slice for the client onboarding","propose a system slice for weekly status reports","system slice for invoice reminders","what should verse build next for the support flow"],
- "time-saved": ["client time saved: support router","hours saved for weekly reports","how much time does verse save me on onboarding","time saved for the invoice automation"]
+ "time-saved": ["client time saved: support router","hours saved for weekly reports","how much time does verse save me on onboarding","time saved for the invoice automation"],
+ "reliability-pack": ["reliability pack for the invoice automation","reliability package for weekly reports","sla pack for onboarding","uptime pack for the support router"]
 }

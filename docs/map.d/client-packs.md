@@ -5,3 +5,5 @@ The client packs, each a card offline that says what Verse takes on for a busine
 `skills/status-digest.js` (lists run 19) is the client status family's third member: "status digest for ...", "client digest: ...", "weekly status for ...", a short digest read live from /api/status and /incidents.json.
 
 `skills/time-saved.js` (#2729, lists run 24 gave it its order file) is the client pack that estimates the hours a client no longer spends on a process once Verse owns its systems, monitors, tests and handoffs: "time saved for the invoice automation", "client time saved: support router"; an estimate from typical process load, never claimed as measured.
+
+`skills/reliability-pack.js` packages the suggested monitors, verification checks, the live status reading from /api/status and /incidents.json, and the incident path for a system: "reliability pack for the invoice automation", "SLA pack for onboarding"; nothing is claimed as already measured, and a reading that did not answer is named.

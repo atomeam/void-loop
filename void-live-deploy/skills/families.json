@@ -14,7 +14,7 @@
  "bench_at": "2026-11-12",
  "totals": {
   "experiment": 0,
-  "tested": 1,
+  "tested": 2,
   "checked": 7,
   "proven": 429
  },
@@ -2615,7 +2615,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 28 live findings, 2026-11-11",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 29 live findings, 2026-11-12",
      "last_tested": "2026-11-12",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3649,7 +3649,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 4,
     "proven": 77
    },
@@ -4402,6 +4402,13 @@
      "success_rate": 1,
      "promoted": "2026-11-12",
      "streak": 1
+    },
+    {
+     "name": "reliability-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-12",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },

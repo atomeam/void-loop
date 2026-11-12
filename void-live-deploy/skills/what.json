@@ -297,6 +297,7 @@
  "recipe-stack": "\"cook pasta: boil 10 min then rest 2\": one card with sequential timed steps that advance by themselves",
  "recipes-fill": "A sentence saves or edits one of your recipes",
  "releasenotes": "Write release notes from your own commits",
+ "reliability-pack": "One page that gathers the reliability pieces for a system: suggested monitors, verification checks, a status digest from live readings, and the incident path",
  "remediation-velocity": "\"how fast do you fix your misses\", \"remediation velocity\"",
  "remind": "\"remind me at 5\": uses the confirm line already in lib/approval-core.js",
  "rentbuy": "The year buying a home gets ahead of renting, worked out on your own numbers",
