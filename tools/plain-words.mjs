@@ -140,8 +140,8 @@ export function assess({ title = '', body = '', files = [], branch = '', fork = 
   };
 }
 
-function git(args, cwd) { return execFileSync('git', args, { encoding: 'utf8', cwd, maxBuffer: 64 << 20 }); }
-function gh(args, input) { return execFileSync('gh', args, { encoding: 'utf8', input, maxBuffer: 8 << 20, stdio: ['pipe', 'pipe', 'pipe'] }); }
+function git(args, cwd) { return execFileSync('git', args, { encoding: 'utf8', cwd, maxBuffer: 64 << 20, timeout: 120e3 }); }
+function gh(args, input) { return execFileSync('gh', args, { encoding: 'utf8', input, maxBuffer: 8 << 20, stdio: ['pipe', 'pipe', 'pipe'], timeout: 120e3 }); }
 const firstLine = (e) => String(e && e.message || e).split('\n')[0].slice(0, 160);
 
 function filesFromDiff(diff) {
@@ -187,7 +187,8 @@ function upsertComment(repo, pr, plan) {
   lines.push('', 'The list is `tools/plain-phrases.txt`.');
   const body = lines.join('\n');
   let id = '';
-  try { id = gh(['api', '--paginate', `repos/${repo}/issues/${pr}/comments?per_page=100`, '--jq', '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("' + MARK + '")))][0].id // empty']).trim().split('\n')[0] || ''; } catch (_) { id = ''; }
+  const jq = '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- plain-words")))][0].id // empty';
+  try { id = gh(['api', '--paginate', `repos/${repo}/issues/${pr}/comments?per_page=100`, '--jq', jq]).trim().split('\n')[0] || ''; } catch (_) { id = ''; }
   try { gh(['api', '-X', id ? 'PATCH' : 'POST', id ? `repos/${repo}/issues/comments/${id}` : `repos/${repo}/issues/${pr}/comments`, '--input', '-'], JSON.stringify({ body })); }
   catch (e) { console.log('plain words: the comment was not posted (' + firstLine(e) + ')'); }
 }
