@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-04T08:16:04Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1696,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-04T08:40:37Z",
   "kind": "visitor",
   "visitor": {
@@ -7979,5 +7961,29 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T12:05:12Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 539,
+   "failed": [
+    {
+     "ask": "what's the weather in Lakeland FL",
+     "why": [
+      "slow 12095 ms"
+     ]
+    },
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9763 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
  }
 ]
