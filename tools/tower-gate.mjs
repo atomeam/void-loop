@@ -503,7 +503,7 @@ async function measureFloor(f, data) {
 }
 
 const VERDICTS = path.join(root, 'void-live-deploy', 'versus', 'verdicts.json'); // void-review: ok (root is the repo root, one directory above tools, so this path is void-live-deploy/versus/verdicts.json once)
-/** measure the three Versus tools and write versus/verdicts.json only when a verdict changes. Old floors are not opened. */
+/** measure the three Versus pages and write the numbers when a verdict changes. The numbers never decide a floor. Old floors are not opened. */
 async function measureVersus() {
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
