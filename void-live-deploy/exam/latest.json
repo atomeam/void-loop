@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T12:43:39.655Z",
+  "at": "2026-11-12T15:26:13.964Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,10 +34,25 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 92.9,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of serial",
+          "failed": [
+            "episode"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -229,10 +244,17 @@
       }
     },
     "sports": {
-      "score": 95.4,
+      "score": 93.5,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "nba team celtics",
           "failed": [
@@ -244,9 +266,10 @@
           "ask": "scores",
           "failed": [
             "skill",
-            "board"
+            "board",
+            "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "resultado del real madrid",
@@ -351,14 +374,23 @@
       "fails": []
     },
     "code": {
-      "score": 100,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
-      "fails": []
+      "fails": [
+        {
+          "ask": "now make factorial(0) return 1",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        }
+      ]
     }
   },
   "lowest": {
-    "domain": "units",
-    "score": 93.3
+    "domain": "podcasts",
+    "score": 92.9
   }
 }
