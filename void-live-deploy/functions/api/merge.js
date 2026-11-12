@@ -27,7 +27,7 @@ export const RL_MAX = 6, TIMEOUT_MS = 12000, RAW_MAX = 120;
 export const MERGE_SYSTEM = 'You name a card made by merging two ideas in a quiet card game. You are given two ideas. Invent what they become when merged: a short, vivid, original name (under 40 characters) and one plain sentence (under 120 characters) saying what the new card adds. Reply with ONLY a JSON object {"name": "...", "line": "..."}. Do not give numbers, stats, costs, prices, links or instructions. No markdown. ' + INJECTION_RULE;
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const SECRET_REPLY = 'I keep keys out of everything I touch, so I will not merge that. Name two ideas without a key or a token in them and I will.';
 
 /** a raw typed idea -> its single-line text, cut before it is folded. Pure. */

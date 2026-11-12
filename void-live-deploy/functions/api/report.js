@@ -20,7 +20,7 @@ import { tableIndex, gameFacts, draftRecap, draftPreview, briefFacts, draftBrief
 
 export const RL_MAX = 20, HOUR_CAP = 40, DAY_CAP = 600, MODEL = models('answer');
 const TTL = { recap: 7 * 86400, preview: 1800, brief: 3600, week: 21600, top: 300 };
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
 /** what a request asks: { league, kind, id | day } or null. Pure. */
 export function askIn(url, now = Date.now()) {

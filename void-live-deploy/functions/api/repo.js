@@ -13,7 +13,7 @@ import { rateLimited } from './answer.js';
 import { parseRepo, lookRepo } from '../../lib/repo-look.js';
 
 export const RL_MAX = 6, TTL = 600;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export async function onRequestGet({ request, env, fetchFn = fetch }) {
   const u = new URL(request.url), full = parseRepo(u.searchParams.get('r'));

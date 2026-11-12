@@ -43,7 +43,8 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 | Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | lib/owner-client.js (planned) |
 | `el(tag, attrs, kids)` DOM helper | 5 | actions, memory, proposal, automations, watch | the card system |
 | `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` (**done, lists run 20**) |
-| `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | lib/http.js (planned) |
+| `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | `lib/http.js` (the file exists since lists run 22; these three have their own argument orders and stay for now) |
+| `json(o, status, extra)` one-liner, two forms | 25 (10 plain, 15 no-store) | card-art, local, merge, news, podcasts, recipes, repo, report, scores, weather; boards, calshare, clip, comments, daily-art, gallery, gen-data, generators, icsfeed, image, react, recipeimport, rsvp, tally, visit | `lib/http.js` (**done, lists run 22**, as `json` and `jsonNoStore`) |
 | `modelsOn(env)` | 3 | functions/api/answer, review, figurescript | `lib/models.js` (Claude) |
 | `hex` / `b64u` | 3 + 2 | lib/guard, automations-run, review-api; functions/api/films | `lib/guard.js` (Claude) |
 | `pick` | 2 + 2 | api/reflect + answer; api/figurescript + will | `lib/models.js` |
@@ -76,7 +77,7 @@ Rules for every merge: one PR per row; a snapshot test proves the callers behave
 
 1. **Ask text** (shipped): `lib/ask-text.js`, 23 skills. Smallest, most copied, zero risk.
 2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof. Done: `asOf` and `slug` in lists run 20, `urlOf` and the 7 variants in lists run 21.
-3. **Small server helpers**: lib/http.js (planned) (`json`), lib/db.js (planned) (`ensureTables`, `ready`). Wait for the store track to land first.
+3. **Small server helpers**: `lib/http.js` (`json`, `jsonNoStore`: done for the 25 exact one-liners in lists run 22; the endpoints with their own cache rule or argument order keep theirs for now), lib/db.js (planned) (`ensureTables`, `ready`) next.
 4. **Owner client + `el()`**: one lib/owner-client.js (planned) and a card helper; five skills.
 5. **Router**: Claude folds `modelsOn`/`pick` into `lib/models.js` and the inline matchers left in `void.html` into skills behind the router.
 6. **Budget**: Claude folds `hex`/`b64u` and rate limits into `lib/guard.js`.
@@ -89,6 +90,8 @@ Each step that lands moves its row to **Done** below and its line to **Just fini
 
 ## Done
 
+- **Stage picture and small tools, one family (lists run 22, 2026-11-12)**: `skills/quick-tools.js` makes one routing entry of stage-image (the stage or a card as a PNG, copied, saved, or a QR code of the view) and util (small in-browser tools: passwords, QR codes, colours, word counts, case, hashes, diffs, Markdown, CSV, YAML, CSS), which tools/skill-overlap.mjs listed as a merge candidate (both took "qr code for this stage view"). stage-image is asked first as before, and the family takes 0455-quick-tools where stage-image sat (util sat at 0460, with outline-note, csv-table and qr-scan between). A routing replay of all 6,445 examples, near misses and bench asks moved 0. Aliases kept (both names are parts, the page still logs skill:stage-image / skill:util); regression test: tools/quick-tools-family.test.mjs.
+- **Step 3, first half (lists run 22, 2026-11-12)**: the one-line `json` reply 25 endpoints each wrote out is one copy in `lib/http.js`, as `json` (only the headers given; 10 endpoints) and `jsonNoStore` (no-store first, extra headers win; 15 endpoints). tools/http-helpers.test.mjs keeps the old copies verbatim, compares status, headers and body, checks no endpoint grows the copy back and loads every endpoint that imports it. Left for step 3's second half: the endpoints with their own cache rule or argument order, and lib/db.js.
 - **Films and movies, one family (lists run 21, 2026-11-12)**: `skills/cinema.js` makes one routing entry of films (Verse's own films on /films/) and movie (a movie to watch, a movie card, where to stream one), which tools/skill-overlap.mjs listed as a merge candidate (both took "where do I watch the films"; the pair sat in the overlap allowance since 2026-11-07 while the merge waited). films is asked first as before, and the family takes 1100-cinema where films sat (movie sat at 1400). A routing replay of all 6,423 examples, near misses and bench asks moved 0. Aliases kept (both names are parts, the page still logs skill:films / skill:movie); regression test: tools/cinema-family.test.mjs.
 - **Step 2, second half (lists run 21, 2026-11-12)**: `urlOf` (skills/image.js, skills/link.js; both still export it) and the seven variants of the ask tidier are one copy each in `lib/ask-text.js`. The seven were four forms: `cleanSaid` (growth, showcase, different: cleanLower with straight apostrophes), `cleanEnd` (worldtime, calendar: punctuation dropped only at the very end, then trimmed), `squash` (releasenotes: trim and collapse only) and `cleanFelt` (feelings: trailing commas and spaces dropped too), with `apostrophes` shared. tools/ask-text-step2b.test.mjs keeps the old copies verbatim and compares them on hand-picked and 4,000 generated strings. Step 2 is done; step 3 (small server helpers) is next.
 

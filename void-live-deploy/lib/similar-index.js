@@ -528,6 +528,28 @@ export default {
     ]
    }
   ],
+  "quick-tools": [
+   {
+    "name": "stage-image",
+    "examples": [
+     "copy the stage as an image",
+     "copy this card as a png",
+     "qr code for this stage view",
+     "screenshot the stage"
+    ]
+   },
+   {
+    "name": "util",
+    "examples": [
+     "generate a password",
+     "16 character password",
+     "strong password",
+     "csv to json",
+     "yaml to json",
+     "json to yaml"
+    ]
+   }
+  ],
   "dates": [
    {
     "name": "calendar",

@@ -28,7 +28,7 @@ import { ASPECTS, PER_MINUTE, PER_CONN, PROBE_SECONDS, PROBE_DAILY_USD, PROBE_PR
 import { makeVideo, ensureStudio } from './studio.js';
 import { cacheReq } from './image.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 const off = (env) => !env || !env.AI || !env.DB || /^(1|true|yes|on)$/i.test(String(env.STUDIO_OFF || '').trim());
 const resting = (why, status = 200, extra = {}) => json({ state: 'resting', why, say: sayOf(why) }, status, extra);

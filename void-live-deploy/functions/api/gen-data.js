@@ -17,7 +17,7 @@ import { commentProblem } from '../../lib/comments.js';
 import { SHARED_KEYS } from '../../lib/listgen.js';
 
 export const DATA_MAX = 4096, WRITES_DAY = 5000, CONN_DAY = 300, ID_RE = /^[a-z2-7]{8}$/, KEY_RE = /^[A-Za-z_]\w{0,29}$/;
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const off = () => json({ ok: false, error: 'shared data is off for now' }, 503);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 let ready = null;

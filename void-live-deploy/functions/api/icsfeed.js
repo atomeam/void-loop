@@ -15,7 +15,7 @@ import { dayOf, clientKey } from '../../lib/reactions.js';
 import { FEED, feedUrl, calNameOf, hostName } from '../../lib/icsfeed.js';
 import { parseIcs } from '../../lib/calendar.js';
 
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
+import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const bad = (status, error) => json({ ok: false, error }, status);
 
 async function sha(s) { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32); }
