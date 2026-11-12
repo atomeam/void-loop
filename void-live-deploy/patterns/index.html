@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Patterns · Verse</title>
+<meta name="description" content="Test a pattern against a sample. Matches are marked, flags are yours, and a pattern that could hang the page is refused. It runs on this device.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/patterns/">
+<meta property="og:title" content="Patterns · Verse">
+<meta property="og:description" content="Test a pattern against a sample. Matches are marked. It runs on this device.">
+<meta property="og:url" content="https://a-to-mind.com/patterns/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: pattern, sample; out: matches">
+<style>
+  mark { background: #ffd166; color: #111; border-radius: 3px; }
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Patterns</h1>
+  <p>Type a pattern and a sample. Every match is marked. The work stays on this device. A pattern with a repeat inside a repeat, such as (a+)+, is refused so the page cannot hang.</p>
+  <form>
+    <label for="pattern">Pattern</label>
+    <input id="pattern" name="pattern" type="text" value="\d+" spellcheck="false" autocomplete="off">
+    <label for="flags">Flags</label>
+    <input id="flags" name="flags" type="text" value="" spellcheck="false" autocomplete="off">
+    <label for="sample">Sample</label>
+    <textarea id="sample" name="sample" spellcheck="false">call 555 or 911</textarea>
+    <div class="row">
+      <button type="button" id="copy">Copy matches</button>
+    </div>
+  </form>
+  <p id="count" aria-live="polite"></p>
+  <div id="out" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p>More text tools: <a href="/base64/">Base64</a>, <a href="/word-count/">word counter</a>, <a href="/convert/">unit converter</a>, <a href="/rotate-letters/">rotate letters</a>.</p>
+</main>
+<script type="module" src="/patterns/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

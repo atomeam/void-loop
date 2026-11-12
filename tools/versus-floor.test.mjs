@@ -54,8 +54,8 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   assert.match(pub, /Out of Order/);
   assert.doesNotMatch(pub, /motherfuckingwebsite|rot13|tsundere|better|worse|equal|podcastindex|livescore/);
   const model = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
-  assert.equal(model.floor, 3);
-  assert.equal(model.fight, NEXT[0].rival);
+  assert.equal(model.floor, 7);
+  assert.equal(model.fight, 'crontab.guru');
   const own = ownerHtml(model);
   assert.doesNotMatch(own, /Out of Order/);
   assert.match(own, /page is up/);
@@ -63,16 +63,17 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   assert.match(own, /better/);
   assert.match(own, /still open/);
   assert.match(own, /href="\/our-motherfucking-version\/"/);
+  assert.match(own, /href="\/patterns\/"/);
   assert.match(own, /href="\/podcasts\/"/);
-  assert.doesNotMatch(own, /href="[^"]*(motherfuckingwebsite|rot13|tsundere|podcastindex|livescore|convertlive)/);
+  assert.doesNotMatch(own, /href="[^"]*(motherfuckingwebsite|rot13|tsundere|podcastindex|livescore|convertlive|regex101|crontab|wiktionary)/);
   assert.doesNotMatch(own + pub, /\b(grab|steal|absorb|conquer)\b/i);
 });
 
 test('the owner model keeps the measured rows and follows the gap notes', () => {
   const api = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
   const again = modelFrom(api, gapText({ exam: { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] } } } }));
-  assert.equal(again.floor, 3);
-  assert.equal(again.fight, 'livescore.com');
+  assert.equal(again.floor, 7);
+  assert.equal(again.fight, 'crontab.guru');
   assert.equal(again.sites.find((s) => s.id === 'readable').rows.speed.verdict, 'better');
 });
 
@@ -80,8 +81,9 @@ test('the next fight is the open site whose features match the gaps', () => {
   const exam = { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] }, podcasts: { score: 9, fails: [] } } };
   const gaps = gapText({ exam, nightly: { pick: { id: 'sports', why: 'board' } }, wants: [{ ask: 'a scoreboard' }] });
   const model = viewModel(null, gaps);
-  assert.equal(model.floor, 3);
-  assert.equal(model.fight, 'livescore.com');
+  assert.equal(model.floor, 7);
+  assert.equal(model.fight, 'crontab.guru');
+  assert.equal(model.sites.find((s) => s.id === 'scores').floor, true);
 });
 
 test('the live exam and the open wants name a fight past the three pages', () => {
@@ -89,7 +91,7 @@ test('the live exam and the open wants name a fight past the three pages', () =>
   const self = JSON.parse(readFileSync(new URL('../void-live-deploy/self.json', import.meta.url), 'utf8'));
   const nightly = JSON.parse(readFileSync(new URL('../void-live-deploy/progress/nightly.json', import.meta.url), 'utf8'));
   const model = viewModel(null, gapText({ exam, nightly, wants: self.open }));
-  assert.equal(model.floor, 3);
-  assert.ok(NEXT.some((s) => s.rival === model.fight), model.fight);
-  assert.equal(TOOLS.some((s) => s.rival === model.fight), false);
+  assert.equal(model.floor, 7);
+  assert.equal(model.fight, 'crontab.guru');
+  assert.equal(['podcastindex.org', 'livescore.com', 'convertlive.com', 'regex101.com'].includes(model.fight), false);
 });
