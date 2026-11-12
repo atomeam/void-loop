@@ -708,18 +708,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-12T22:32:47Z",
-   "subject": "Owner elevator for Versus, and measure only those tools (#2749)"
-  },
-  {
-   "at": "2026-11-12T22:32:28Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T22:32:16Z",
-   "subject": "Rerun a failed verify job once before reverting main. (#2748)"
-  },
-  {
    "at": "2026-11-12T22:25:44Z",
    "subject": "Outcome exam: sports 92.6"
   },
@@ -744,7 +732,7 @@
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-12T22:02:38Z",
+   "at": "2026-11-12T22:02:00Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -772,6 +760,10 @@
    "subject": "Lab tools: shared Verse theme on the light pages (#2744)"
   },
   {
+   "at": "2026-11-12T21:28:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-12T21:27:51Z",
    "subject": "Finding: rides asked a live routing service (findings/rides)"
   },
@@ -784,8 +776,16 @@
    "subject": "Outcome exam: code 93.3"
   },
   {
+   "at": "2026-11-12T21:25:33Z",
+   "subject": "kickoff-pack: plain wording, drop 'heavy lifting' and 'Verse will own'"
+  },
+  {
    "at": "2026-11-12T21:17:54Z",
    "subject": "Humble copy: drop 'heavy lifting' boasts from client packages (#2742)"
+  },
+  {
+   "at": "2026-11-12T21:14:26Z",
+   "subject": "Incidents closed: shard(s) 1,2,4,7 passed on 48fffbf4 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
@@ -967,8 +967,8 @@
   }
  ],
  "visible": {
-  "day": 22,
-  "week": 264
+  "day": 23,
+  "week": 265
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1281,
+ "counted": 1279,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -11,9 +11,9 @@
   },
   {
    "file": "lib/ask-text.js",
-   "skills": 60,
+   "skills": 59,
    "direct": 35,
-   "dependants": 114,
+   "dependants": 113,
    "tests": 6
   },
   {
@@ -32,23 +32,23 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 31,
+   "skills": 30,
    "direct": 0,
-   "dependants": 100,
+   "dependants": 99,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 31,
+   "skills": 30,
    "direct": 1,
-   "dependants": 100,
+   "dependants": 99,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 31,
+   "skills": 30,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 98,
    "tests": 6
   },
   {
@@ -73,13 +73,6 @@
    "tests": 1
   },
   {
-   "file": "lib/reactions.js",
-   "skills": 23,
-   "direct": 1,
-   "dependants": 82,
-   "tests": 1
-  },
-  {
    "file": "lib/panel-fit.js",
    "skills": 23,
    "direct": 1,
@@ -87,17 +80,24 @@
    "tests": 1
   },
   {
-   "file": "lib/corrections.js",
+   "file": "lib/reactions.js",
    "skills": 22,
+   "direct": 1,
+   "dependants": 81,
+   "tests": 1
+  },
+  {
+   "file": "lib/corrections.js",
+   "skills": 21,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 67,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
-   "skills": 22,
+   "skills": 21,
    "direct": 6,
-   "dependants": 64,
+   "dependants": 63,
    "tests": 6
   },
   {
@@ -207,9 +207,9 @@
   },
   {
    "file": "lib/success-pulse.js",
-   "skills": 12,
+   "skills": 11,
    "direct": 2,
-   "dependants": 15,
+   "dependants": 14,
    "tests": 2
   },
   {
@@ -239,13 +239,6 @@
    "direct": 9,
    "dependants": 21,
    "tests": 2
-  },
-  {
-   "file": "lib/selfcheck.js",
-   "skills": 10,
-   "direct": 1,
-   "dependants": 13,
-   "tests": 1
   },
   {
    "file": "lib/joins.js",
@@ -350,6 +343,13 @@
    "skills": 9,
    "direct": 3,
    "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/selfcheck.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -1935,13 +1935,6 @@
    "tests": 4
   },
   {
-   "file": "lib/versus-floor.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/video-gen.js",
    "skills": 1,
    "direct": 1,
@@ -2470,14 +2463,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 108,
+   "dependants": 107,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 106,
    "tests": 36
   },
   {
@@ -5226,13 +5219,6 @@
    ],
    "importedBy": []
   },
-  "functions/api/versus-floor.js": {
-   "imports": [
-    "lib/guard.js",
-    "lib/versus-floor.js"
-   ],
-   "importedBy": []
-  },
   "functions/api/video.js": {
    "imports": [
     "lib/video.js"
@@ -5989,7 +5975,6 @@
     "skills/own-parts.js",
     "skills/rally.js",
     "skills/rap.js",
-    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -6182,7 +6167,6 @@
     "skills/mini/pentamote.js",
     "skills/own-parts.js",
     "skills/pulse.js",
-    "skills/reliability-pack.js",
     "skills/stage-marks.js",
     "skills/status-board.js",
     "skills/status-digest.js",
@@ -6484,7 +6468,6 @@
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/reliability-pack.js",
     "skills/showcase.js",
     "skills/status-board.js",
     "skills/status-digest.js",
@@ -8334,7 +8317,6 @@
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -9544,7 +9526,6 @@
     "functions/api/tower-self.js",
     "functions/api/treasury.js",
     "functions/api/v01d-fixes.js",
-    "functions/api/versus-floor.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -10348,7 +10329,6 @@
     "skills/own-parts.js",
     "skills/rally.js",
     "skills/rap.js",
-    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -11149,7 +11129,6 @@
     "skills/own-parts.js",
     "skills/rally.js",
     "skills/rap.js",
-    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -11968,7 +11947,6 @@
     "functions/api/treasury.js",
     "functions/api/unbidden.js",
     "functions/api/v01d-fixes.js",
-    "functions/api/versus-floor.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -13221,7 +13199,6 @@
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/status-board.js",
     "skills/status-digest.js",
@@ -13834,7 +13811,6 @@
     "skills/client-status.js",
     "skills/delivery-board.js",
     "skills/own-parts.js",
-    "skills/reliability-pack.js",
     "skills/status-board.js",
     "skills/status-digest.js",
     "skills/system-status.js",
@@ -14976,7 +14952,6 @@
     "skills/client-status.js",
     "skills/delivery-board.js",
     "skills/own-parts.js",
-    "skills/reliability-pack.js",
     "skills/status-board.js",
     "skills/status-digest.js",
     "skills/system-status.js",
@@ -15935,13 +15910,6 @@
     "functions/api/mcp.js",
     "functions/api/sponsors.js",
     "functions/api/x402/index.js"
-   ]
-  },
-  "lib/versus-floor.js": {
-   "imports": [],
-   "importedBy": [
-    "functions/api/versus-floor.js",
-    "skills/tower.js"
    ]
   },
   "lib/versus.js": {
@@ -17071,7 +17039,6 @@
     "skills/delivery-board.js"
    ],
    "reachedBy": [
-    "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
   },
@@ -17376,9 +17343,6 @@
    "importedBy": [
     "skills/client-status.js",
     "skills/status-digest.js"
-   ],
-   "reachedBy": [
-    "skills/reliability-pack.js"
    ]
   },
   "skills/delivery-pack.js": {
@@ -18501,6 +18465,10 @@
    ],
    "importedBy": []
   },
+  "skills/kickoff-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/know.js": {
    "imports": [],
    "importedBy": []
@@ -19146,9 +19114,7 @@
   },
   "skills/monitor-pack.js": {
    "imports": [],
-   "importedBy": [
-    "skills/reliability-pack.js"
-   ]
+   "importedBy": []
   },
   "skills/monopoly-rules.js": {
    "imports": [],
@@ -19830,14 +19796,6 @@
   "skills/releasenotes.js": {
    "imports": [
     "lib/ask-text.js"
-   ],
-   "importedBy": []
-  },
-  "skills/reliability-pack.js": {
-   "imports": [
-    "skills/monitor-pack.js",
-    "skills/verify-pack.js",
-    "skills/status-digest.js"
    ],
    "importedBy": []
   },
@@ -20540,8 +20498,7 @@
     "skills/delivery-board.js"
    ],
    "importedBy": [
-    "skills/client-status.js",
-    "skills/reliability-pack.js"
+    "skills/client-status.js"
    ]
   },
   "skills/status.js": {
@@ -20562,7 +20519,6 @@
     "lib/brain-everywhere.js",
     "skills/client-status.js",
     "skills/delivery-board.js",
-    "skills/reliability-pack.js",
     "skills/status-digest.js",
     "skills/verse-brain.js"
    ]
@@ -20701,7 +20657,6 @@
    "reachedBy": [
     "skills/client-status.js",
     "skills/delivery-board.js",
-    "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
   },
@@ -20713,7 +20668,6 @@
    "reachedBy": [
     "skills/client-status.js",
     "skills/delivery-board.js",
-    "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
   },
@@ -20972,8 +20926,6 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower-art.js",
-    "lib/versus-floor.js",
-    "versus/open.js",
     "lib/tower.js",
     "lib/obituary.js",
     "lib/gate-badge.js",
@@ -21096,9 +21048,7 @@
   },
   "skills/verify-pack.js": {
    "imports": [],
-   "importedBy": [
-    "skills/reliability-pack.js"
-   ]
+   "importedBy": []
   },
   "skills/verse-brain.js": {
    "imports": [

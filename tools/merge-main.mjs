@@ -1,18 +1,16 @@
 // Bring origin/main into the current branch. Several agents append to the same records at once (tools/bench.json,
 // tools/grown.json, void-live-deploy/void.growth.json, domains/void.agents.log.md), so a branch that sat for an hour almost always "conflicts" there even
 // though both sides only added lines. Those three are resolved here by keeping both sides (main's file as it is, then this branch's new entries
-// that are new; an ask already present is not repeated). The skill index (a one-line list) keeps main's order and puts the skills the
-// branch added after the name before them (tools/merge-index.mjs); if the two sides ordered shared skills differently it stops for a person.
+// that are new; an ask already present is not repeated). The skill index is the union of both sides, keyed by skill id and sorted.
 // Any other conflicted file stops the merge for a person.
 //   node tools/merge-main.mjs            fetch, merge, resolve the append-only records, commit (refused while any tracked file has a conflict marker)
 import { execSync, execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
-import { mergeIndex } from './merge-index.mjs';
-import { readOrder, indexText, adoptOrder } from './skills-index.mjs';
 import { APPEND_JSON, APPEND_TEXT, INDEX, keyOf } from './records.mjs'; // the append-only records, shared with tools/revert-records.mjs
 import { settleChecks } from './checks-list.mjs';
+import { INBOX, settleText } from './shared-merge.mjs';
 
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 // tools/families.mjs conflicts are two branches adding skills to the same family list: the settled text is main's
@@ -51,15 +49,15 @@ let indexMerged = null, indexHow = ''; // the settled index text, or null when a
 // order files are not there yet (a branch from before them)
 if (conflicted.includes(INDEX)) {
   try {
-    const l = (n) => JSON.parse(sideOf(n, INDEX) || '[]'), m = mergeIndex(l(1), l(2), l(3)); // null: the two sides order shared names differently
-    const order = resolve(process.cwd(), 'void-live-deploy', 'skills', 'order');
-    if (m && existsSync(order)) { // a skill one side listed by hand (a branch from before the order files) gets its order file at that place
-      const made = adoptOrder(m, order);
-      indexMerged = indexText(readOrder(order)); indexHow = 'regenerated from skills/order/' + (made.length ? ' after making ' + made.join(', ') + ' for the names listed by hand' : ' (both sides\' order files are in the tree)');
-    } else if (m) { indexMerged = JSON.stringify(m) + (sideOf(3, INDEX).endsWith('\n') ? '\n' : ''); indexHow = "kept main's order and added this branch's new skills after the name before them"; }
+    const text = settleText(INDEX, sideOf(3, INDEX), sideOf(2, INDEX)); // main is :3, this branch is :2
+    if (text) { indexMerged = text; indexHow = 'union of both sides, keyed by skill id, sorted'; }
   } catch (e) { console.error('skills/index.json: ' + e.message); } }
-// generated files (families, the book): take main's here, regen() writes them again from the merged tree after the commit
-for (const f of conflicted.filter(isGenerated)) { sh(`git checkout --theirs -- ${f}`); sh(`git add ${f}`); }
+// generated registries: union by skill id. Anything else generated: main's side, regen() writes it again.
+for (const f of conflicted.filter(isGenerated)) {
+  const text = settleText(f, sideOf(3, f), sideOf(2, f));
+  if (text) { writeFileSync(f, text); sh(`git add -- ${f}`); console.log(f + ': union by skill id, sorted'); }
+  else { sh(`git checkout --theirs -- ${f}`); sh(`git add ${f}`); }
+}
 const settled = new Set();
 if (conflicted.includes('tools/checks.mjs')) {
   const text = settleChecks(sideOf(1, 'tools/checks.mjs'), sideOf(2, 'tools/checks.mjs'), sideOf(3, 'tools/checks.mjs'));
@@ -69,6 +67,10 @@ if (conflicted.includes('tools/checks.mjs')) {
     settled.add('tools/checks.mjs');
     console.log('tools/checks.mjs: kept both sides\' check lines');
   }
+}
+if (conflicted.includes(INBOX)) {
+  const text = settleText(INBOX, sideOf(3, INBOX), sideOf(2, INBOX));
+  if (text) { writeFileSync(INBOX, text); sh('git add -- ' + INBOX); settled.add(INBOX); console.log(INBOX + ': rows by ask, status only moves forward'); }
 }
 if (conflicted.includes('docs/HANDOFF-GAPS.md')) {
   try {
