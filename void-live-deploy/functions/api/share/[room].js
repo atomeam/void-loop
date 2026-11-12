@@ -7,8 +7,9 @@
 // typed ever passes (the room drops every other message kind), and the same-origin check above still holds. A guessed public name that is
 // not on the list is a 404, so no stranger wakes a Durable Object for a name they made up.
 import { roomOk, publicRoom } from '../../../lib/share.js';
+import { jsonNoStore } from '../../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
+const json = (status, body) => jsonNoStore(body, status); // status first here, as this endpoint always had it
 
 export async function onRequestGet({ request, env, params }) {
   if ((request.headers.get('upgrade') || '').toLowerCase() !== 'websocket') return json(426, { error: 'a WebSocket only' });

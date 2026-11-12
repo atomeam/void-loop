@@ -1235,6 +1235,66 @@
      "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/answer-edge.js"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T14:50:00Z",
+   "run": 23,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.125,
+   "dup_basis": "1 of 8 items was already resolved: the board's \"three card checks failing on main\" (seen 2026-10-14) no longer fails; every browser-suite shard of Verse verify on main is green (run 43233110879)",
+   "median_days": 28.4,
+   "median_basis": "days from queued to built: 0.03 (main's red fast tests from full-handoff, 2026-11-12 14:02 UTC), 0.03 (delivery-pack~full-handoff overlap, same merge), 3.0 (factorial half of closed PR #2335, on the board since 2026-11-09 15:17 UTC), 28.3 (convergence step 3, planned 2026-10-15), 28.4 (wishlist #15, written 2026-10-15 05:04 UTC), 28.4 (frontier #29 step 5, asked 2026-10-15 05:09 UTC), 28.4 (tests for untested files, 2026-10-15 06:11 UTC), 28.4 (three card checks item, on the board since 2026-10-15 04:50 UTC); median 28.4",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 23 of the lists routine. One open pull request at the start (#2727, a growth-inbox note; no shared files). Main's fast tests were red from #2725 (full-handoff's own example failed its match, and it had no order file); fixed here by the handoffs family. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
+   "items": [
+    {
+     "what": "delivery-pack, client-handoff, system-handoff and full-handoff are one handoffs family at 1192, aliases kept, 0 of 6,476 asks moved besides full-handoff's own example (skills/handoffs.js, tools/handoffs-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "main's red fast tests: full-handoff's example \"show the complete handoff for weekly reports\" matches again, it leaves a handoff checklist to handoff-checklist, and it has its place in the routing order",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 3, json half finished: the other 23 json forms call lib/http.js through one-line wrappers with their old signatures; jsonOkCached added (tools/http-helpers.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/emoji-looks.test.mjs (lib/emoji-looks.js) and tools/event-countdown.test.mjs (skills/event-countdown.js); the untested allowance 56 to 54",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "video card listen mode (a 200 x 200 official player that stays visible and playing) and an accessibility pass: labelled region, polite live line, aria-pressed on CC and Listen, Enter or Space plays a result (tools/video-listen.test.mjs)",
+     "list": "frontier #29 step 5 / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "\"the value of 7 factorial\" goes to the calculator again: snippet leaves a numbered factorial with no code words to wordMath, which also reads \"the value of N factorial\"; 5 bench rows that want calc (tools/factorial-value.test.mjs)",
+     "list": "handoff Up for grabs (closed PR #2335)",
+     "status": "built"
+    },
+    {
+     "what": "Ethereum and Solana public address lookups on the markets card through PublicNode's keyless RPC, read-only, with explorer links (tools/wallet-lookup.test.mjs)",
+     "list": "wishlist #15",
+     "status": "built"
+    },
+    {
+     "what": "three card checks failing on main (seen 2026-10-14): already resolved",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/actions/runs/43233110879"
+    }
+   ]
   }
  ]
 }

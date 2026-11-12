@@ -7,6 +7,7 @@
 import { models, VISION_FALLBACK } from '../../lib/models.js';
 import { valueFrom, appraisalText, isPersonAsk, complimentFor, VISION_PROMPT, bullionOf } from '../../lib/appraise-photo.js';
 import { heardFor, heardLine } from '../../lib/watch-along.js';
+import { json as jsonPlain } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const MAX_IMAGE_CHARS = 1100000; // base64 characters, about 800 KB: the page sends a 768 px JPEG, far under this
 const IMAGE = /^data:image\/(?:png|jpeg|jpg|webp);base64,([A-Za-z0-9+/]+=*)$/;
@@ -50,7 +51,7 @@ export async function spotQuote(fetchImpl = fetch, now = Date.now()) {
   SPOT_CACHE = { t: now, v };
   return v;
 }
-const json = (body, status = 200) => Response.json(body, { status });
+const json = (body, status = 200) => jsonPlain(body, status);
 
 // what Verse heard on TV about things like this (owner, 2026-10-30: Antiques Roadshow "should be learning to help its appraisal"): the
 // appraisal notes Verse wrote while watching (functions/api/watchalong.js), at most 2 that share at least 2 content words with what the

@@ -16,8 +16,9 @@ import { cap } from '../../lib/daily-cap.js';
 import { ANSWER_FALLBACK } from '../../lib/models.js';
 import { reasonOf, recordShortfall } from '../../lib/shortfall.js';
 import { planOf, routeFree, loadRegistry } from '../../lib/answer-free.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
+const json = (o, status = 200) => jsonNoStore(o, status, { 'x-robots-tag': 'noindex' });
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER, seen INTEGER NOT NULL DEFAULT 0)';
 const SEEN = 'ALTER TABLE void_agent_tasks ADD COLUMN seen INTEGER NOT NULL DEFAULT 0';
 const FACING = new Set(['needs_yes', 'done', 'failed']);

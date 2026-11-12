@@ -64,8 +64,9 @@ import { briefOf } from '../../lib/job-guide.js';
 import * as Dream from '../../lib/brain-dream.js';
 import { fire } from '../../lib/automations-run.js';
 import { teamEvent } from '../../lib/automations.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow' } });
+const json = (o, status = 200) => jsonNoStore(o, status, { 'x-robots-tag': 'noindex, nofollow' });
 const bad = (status, say) => json({ ok: false, say }, status);
 const enc = new TextEncoder();
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');

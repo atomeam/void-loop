@@ -10,9 +10,10 @@
 //     edge for ten minutes per address, a failed one is never kept.
 import { rateLimited } from './answer.js';
 import { APIS } from '../../bots/api-bots.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const RL_MAX = 30, TTL = 600, TIMEOUT_MS = 6000, MAX_CHARS = 200000;
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store' } });
+const json = (o, status = 200) => jsonNoStore(o, status);
 /** the APIs this relay serves: only those marked via 'verse'. Pure. */
 export const RELAYED = APIS.filter((a) => a.via === 'verse');
 /** the address to fetch for an id and an input, or null when the id is not relayed or the address leaves the API's own host. Pure. */

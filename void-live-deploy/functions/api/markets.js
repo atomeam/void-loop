@@ -15,6 +15,7 @@
 const rateLimited = async (...a) => (await import('./answer.js')).rateLimited(...a);
 import { recordClose, RECORD_NAME } from '../../lib/markets-record.js';
 import { capsRows, scanRows, COINS, resolve, RANGES, parseStooqDaily, parseYahoo, summarize, closeOn, rowsFromPrices, rowsFromFx } from '../../lib/markets.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const ID_RE = /^[a-z0-9-]{2,40}$/;
 const DEFAULT_IDS = 'bitcoin,ethereum,solana,ripple,dogecoin,cardano,litecoin,binancecoin';
@@ -115,7 +116,7 @@ export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now())
   return out;
 }
 const validDay = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && iso(Date.parse(s + 'T00:00:00Z')) === s && Date.parse(s + 'T00:00:00Z') <= Date.now() && Date.parse(s + 'T00:00:00Z') >= Date.UTC(1970, 0, 1);
-const json = (o, status = 200, cc = 'no-store') => Response.json(o, { status, headers: { 'cache-control': cc } });
+const json = (o, status = 200, cc = 'no-store') => jsonNoStore(o, status, { 'cache-control': cc });
 const slimQ = (q) => (q && q.ok ? { ok: true, sym: q.sym, name: q.name, price: q.price, change: q.change, pct: q.pct, currency: q.currency, kind: q.kind, asOf: q.asOf, source: q.source } : null);
 /** a body from the edge cache, or made (one to three upstream calls, counted against the caller's own bucket) and kept. A good answer is also kept for a day as the
  *  stale copy, served (and said to be old) when the sources fail or the caller is asked to wait; a failure is remembered for 45 seconds so a burst of loads does not wait

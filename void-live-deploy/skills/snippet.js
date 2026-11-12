@@ -1,7 +1,7 @@
 /**
  * snippet skill — a short Python function the ask names, written on the card. No model and no network.
  * "write a python function factorial of n", "a python function that reverses a string".
- * A bare "code" says there is more than one thing it could mean.
+ * A bare "code" says there is more than one thing it could mean. A factorial with a number and no code words is arithmetic, left to the calculator.
  */
 const FACTORIAL = 'def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n';
 const REVERSE = 'def reverse(s):\n    return s[::-1]\n';
@@ -11,6 +11,8 @@ export function snippetOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (!t || t.length > 180) return null;
   if (/^(?:code|coding|program(?:ming)?)$/i.test(t)) return { kind: 'which' };
+  // a number with no code words is arithmetic ("the value of 7 factorial", "10 factorial"): the calculator answers it (wordMath in void.html)
+  if (/factorial/i.test(t) && /\d/.test(t) && !/python|function|funci[oó]n|code|program|script|def\b|write|recursi|algorithm|implement|javascript|\bjs\b/i.test(t)) return null;
   if (/factorial/i.test(t)) return { kind: 'factorial' };
   if (/(?:reverse|invierta|invertir)/i.test(t) && /python|function|funci[oó]n|string|texto|text/i.test(t)) return { kind: 'reverse' };
   return null;

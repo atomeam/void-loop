@@ -12,9 +12,10 @@ import { readNotes } from './watchalong.js';
 import { track } from '../../lib/actions.js';
 import { ideaAskFromNote } from '../../lib/watch-along.js';
 import { noteOfIdea, targetOf, slugOf, scoreIdea, skipOf, buildState, planAll, CATEGORIES, jobOf } from '../../lib/watch-build.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const PER_MIN = 20;
-const json = (body, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
+const json = (body, status = 200) => jsonNoStore(body, status);
 const ideaOf = (s) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 280);
 // the category pages a build may fold into (lib/watch-build.js CATEGORIES): every one of them is a page on the site (tools/blueprint-build.test.mjs)
 const PAGES = CATEGORIES.map((c) => ({ route: c.route, title: c.route }));

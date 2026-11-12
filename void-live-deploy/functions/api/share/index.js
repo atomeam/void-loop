@@ -3,8 +3,9 @@
 // live = the relay (the SHARE Durable Object, share-worker/) is bound; without it, tabs in one browser still share.
 import { mintRoom, inviteLink } from '../../../lib/share.js';
 import { session } from '../../../lib/void-me.js';
+import { jsonNoStore } from '../../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
+const json = (status, body) => jsonNoStore(body, status); // status first here, as this endpoint always had it
 
 export async function onRequestPost({ request, env }) {
   const me = env.DB ? await session(request, env).catch(() => null) : null;

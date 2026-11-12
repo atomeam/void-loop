@@ -1,8 +1,9 @@
 // Verse Tube view counts (owner, 2026-10-15: "Verse should be its own version of YouTube"): one D1 row per film, one upsert per
 // view (the page counts a film once per tab), no KV. GET ?ids=a,b -> { views: { a: 3 } }; POST ?id= -> { id, views }.
 import { ID_RE } from './films.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_film_views (id TEXT PRIMARY KEY, n INTEGER NOT NULL DEFAULT 0)';
-const json = (b, s = 200) => Response.json(b, { status: s, headers: { 'cache-control': 'no-store' } });
+const json = (b, s = 200) => jsonNoStore(b, s);
 export async function onRequestGet({ request, env }) {
   const ids = String(new URL(request.url).searchParams.get('ids') || '').split(',').filter((x) => ID_RE.test(x)).slice(0, 100);
   if (!env.DB || !ids.length) return json({ views: {} });

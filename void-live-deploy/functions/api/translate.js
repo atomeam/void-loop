@@ -23,8 +23,9 @@ import { fetchPage, extract } from '../../lib/translate-web.js';
 import { STYLES, TONES, WRITE_MAX, writePrompt, rewrittenOf, changes, changedWords } from '../../lib/translate-write.js';
 import { imageBytes, describe } from './appraise.js';
 import { rateLimited } from './answer.js';
+import { json as jsonPlain } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (body, status = 200) => Response.json(body, { status });
+const json = (body, status = 200) => jsonPlain(body, status);
 const clean = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 const READ_PROMPT = 'Transcribe exactly the text in this image, in its original language, line by line. Output only the text, nothing else. If there is no text, output NONE.';
 

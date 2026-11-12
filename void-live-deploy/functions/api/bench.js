@@ -23,12 +23,13 @@ import { FINDINGS_SCHEMA } from '../../lib/review-api.js';
 import { ANSWER_RUN, noThink } from './answer.js';
 import { classify } from '../../lib/router.js';
 import { skillQuestion, clefRoute } from '../../lib/clef.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const CHUNK = 8;
 export const ROUTE_CHUNK = 16;
 const FILES = ['builtin'];
 const MODEL_ID = /^@cf\/[a-z0-9][\w.-]{0,60}\/[a-z0-9][\w.-]{0,80}$/i;
-const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
+const json = (status, body) => jsonNoStore(body, status); // status first here, as this endpoint always had it
 const pick = (r) => String((r && (r.response ?? r.choices?.[0]?.message?.content ?? r.result?.response)) || '');
 
 // Clef and Clef-flash as the binding describes them: name, task, description and the raw properties (where Workers AI keeps a
