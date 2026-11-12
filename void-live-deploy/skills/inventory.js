@@ -77,6 +77,15 @@ const WHAT = {
   recent: 'recent asks on an empty box',
   magnetize: 'the post-print magnetize step',
   inventory: 'this list — already built rows',
+  // skill families (lib/skill-family.js): one routing entry each, their members keep their own rows
+  experiments: 'the lab and its experiments',
+  'stage-marks': 'tags, labels, folders and arrows on the stage',
+  'quick-tools': 'a picture of the stage and small in-browser tools',
+  tables: 'pasted tables and tables from lists',
+  cinema: "Verse's films and movies to watch",
+  handoffs: 'handoff packages for a system or a client',
+  'client-status': "a client's delivery status in one card",
+  'time-saved': 'the hours a system saves, worked out',
 };
 
 /** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */

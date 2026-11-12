@@ -31,6 +31,7 @@ import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, image
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const on = (env) => !!(env && env.AI) && !/^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim());
+import { tablesReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 /** the daily cap (owner, 2026-10-17: Verse spends only what it has earned; with no earnings there is no budget): ART_DAILY_CAP when it is a whole number from 0 up, else 30,
  *  and NEVER above FREE_CAP, the free allowance's share this route may use. There is deliberately no path past it: raising it later means reading /api/earnings
  *  (owner-only, net of refunds) for money that covers it and logging each paid painting publicly, and that code does not exist yet. Pure. */
@@ -39,12 +40,9 @@ export const capOf = (env) => { const n = Math.floor(Number(env && env.ART_DAILY
 const today = () => new Date().toISOString().slice(0, 10);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art (subject TEXT PRIMARY KEY, img TEXT NOT NULL, day TEXT NOT NULL)').run().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its table made again
+const ready = tablesReady(['CREATE TABLE IF NOT EXISTS void_art (subject TEXT PRIMARY KEY, img TEXT NOT NULL, day TEXT NOT NULL)']); // made once per isolate (lib/db.js)
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its table made again
 
 // a cartoon's name as usually spelled (lookFor), kept beside its picture so a later ask with the same misspelling gets the right name too
 async function nameOf(env, key) {
