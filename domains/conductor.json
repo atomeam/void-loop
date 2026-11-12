@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-12T13:10:36.675Z",
+ "updated": "2026-11-12T13:20:08.551Z",
  "last24h": {
-  "ticks": 57,
+  "ticks": 58,
   "started": 63,
   "requeued": 1,
   "setAside": 1,
@@ -72,6 +72,10 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
+   "id": "mwdkp801",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
    "id": "want-page-tools-json",
    "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
@@ -86,20 +90,16 @@
   {
    "id": "mw9omg8a",
    "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
-  },
-  {
-   "id": "mw9p82c2",
-   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 3,
    "cap": 90
   },
   "day": {
-   "used": 64,
+   "used": 67,
    "cap": 360
   },
   "room": true,
@@ -1835,6 +1835,27 @@
    "sweep": true,
    "blueprints": 0,
    "held": 360,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-12T13:20:08.551Z",
+   "open": 371,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 363,
    "warnings": 1
   }
  ]
