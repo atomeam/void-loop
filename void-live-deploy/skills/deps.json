@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1271,
+ "counted": 1273,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -66,17 +66,17 @@
    "tests": 1
   },
   {
-   "file": "lib/panel-fit.js",
-   "skills": 23,
-   "direct": 1,
+   "file": "lib/skill-family.js",
+   "skills": 24,
+   "direct": 24,
    "dependants": 24,
    "tests": 1
   },
   {
-   "file": "lib/skill-family.js",
+   "file": "lib/panel-fit.js",
    "skills": 23,
-   "direct": 23,
-   "dependants": 23,
+   "direct": 1,
+   "dependants": 24,
    "tests": 1
   },
   {
@@ -13972,6 +13972,7 @@
     "skills/dates.js",
     "skills/experiments.js",
     "skills/games.js",
+    "skills/handoffs.js",
     "skills/idea-to-system.js",
     "skills/languages.js",
     "skills/list-starters.js",
@@ -16868,7 +16869,9 @@
    "imports": [
     "skills/delivery-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/handoffs.js"
+   ]
   },
   "skills/client-intake.js": {
    "imports": [],
@@ -17197,7 +17200,8 @@
   "skills/delivery-pack.js": {
    "imports": [],
    "importedBy": [
-    "skills/client-handoff.js"
+    "skills/client-handoff.js",
+    "skills/handoffs.js"
    ]
   },
   "skills/dependency-health.js": {
@@ -17675,6 +17679,12 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/full-handoff.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/handoffs.js"
+   ]
+  },
   "skills/game-level.js": {
    "imports": [],
    "importedBy": [
@@ -18062,6 +18072,16 @@
   },
   "skills/handoff-checklist.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/handoffs.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/delivery-pack.js",
+    "skills/client-handoff.js",
+    "skills/system-handoff.js",
+    "skills/full-handoff.js"
+   ],
    "importedBy": []
   },
   "skills/hangman.js": {
@@ -20430,7 +20450,9 @@
   },
   "skills/system-handoff.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/handoffs.js"
+   ]
   },
   "skills/system-slice.js": {
    "imports": [],

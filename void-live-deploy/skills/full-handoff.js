@@ -6,9 +6,10 @@
  */
 export function isFullHandoff(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
+  if (/\bhand-?off\s+checklist\b/i.test(t)) return false; // a handoff checklist stays with handoff-checklist
   return /^(?:full|complete|client)\s+handoff\b/i.test(t)
     || /^(?:handoff|hand-off)\s+(?:pack|package|for|of|on)\b/i.test(t)
-    || /^(?:make|generate|create|show|package)\s+(?:a\s+|the\s+)?(?:full\s+)?handoff\b/i.test(t);
+    || /^(?:make|generate|create|show|package)\s+(?:a\s+|the\s+)?(?:(?:full|complete)\s+)?handoff\b/i.test(t);
 }
 
 export function subjectOf(text) {
@@ -71,7 +72,8 @@ export default {
     'what is a handoff',
     'handoff the baton',
     'status update',
-    'delivery board'
+    'delivery board',
+    'make a handoff checklist for invoice reminders'
   ],
   match: (low, raw) => isFullHandoff(raw || low),
   run,
