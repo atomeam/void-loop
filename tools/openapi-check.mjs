@@ -21,7 +21,7 @@ export const INTERNAL = {
   '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",
   '/api/selfcheck': "Verse's check of its own pages: the status card reads the newest report, and only the owner's self-check job (tools/self-check.mjs, .github/workflows/self-check.yml) hands one in (functions/api/selfcheck.js)",
   '/api/members': "the /members/ page's own API: what paid Verse gives, and a paid member's ideas (passkey session, paid tier from Gumroad, a daily and monthly limit) queued as member: jobs that may only add (functions/api/members.js, lib/members.js, tools/add-only.mjs)",
-  '/api/uni': "Uni checkout for the site (functions/api/uni.js): a Subscribe button opens Stripe Checkout, and Stripe's signed webhook records the subscription. No card data. The page is the only caller.",
+  '/api/page-pass': "Uni checkout for the site (functions/api/page-pass.js): a Subscribe button opens Stripe Checkout, and Stripe's signed webhook records the subscription. No card data. The page is the only caller.",
   '/api/coder': "Verse's coder thinking on Verse's own model: owner only, the Workers AI shape in and out, under an hourly and daily cap (functions/api/coder.js); tools/verse-coder.mjs is the only caller",
   '/api/studies': "the owner's study panel (/studies.html): owner only, read only, lists Verse's private studies; not a public API (functions/api/studies.js)",
   '/api/studio': "Verse's studio (functions/api/studio.js, lib/studio.js): the public GET is the image models' scoreboard read by /image/ and /video/; every POST (the bench, the judge, a clip) is owner only, inside a neuron cap and a daily dollar cap",

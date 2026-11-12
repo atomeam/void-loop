@@ -3,9 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/uni.js';
+import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/page-pass.js';
 import { onRequest as gate } from '../void-live-deploy/functions/_middleware.js';
-import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/uni.js';
+import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/page-pass.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
 
 const KEY = 'sk_test_examplekey123456'; // secret-scan: ok
@@ -29,7 +29,7 @@ const stripe = (opt = {}) => async (url, init) => {
 async function withFetch(fn, impl) { resetLive(); const real = globalThis.fetch; globalThis.fetch = impl; try { return await fn(); } finally { globalThis.fetch = real; resetLive(); } }
 
 test('open paths stay open, full pages are Uni, and a missing key does not lock them', async () => {
-  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/uni', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/rss']) assert.equal(openPath(p), true, p);
+  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/rss']) assert.equal(openPath(p), true, p);
   for (const p of ['/flights/', '/emojis/', '/books/', '/versus/', '/brain/', '/studies.html', '/@sam']) assert.equal(gatedPath(p), true, p);
   assert.equal(backPath('https://evil.example/x'), '/'); assert.equal(money(CENTS), '$20 a month');
   const page = screen({ cents: CENTS }, '/flights/');
@@ -73,9 +73,9 @@ test('prices are reused, Multi can view, Uni is not Multi, and the webhook ignor
   const body = JSON.stringify({ type: 'customer.subscription.updated', data: { object: { id: 'sub_abc123', status: 'canceled', metadata: { plan: 'universe' } } } });
   const t = Math.floor(Date.now() / 1000), header = 't=' + t + ',v1=' + createHmac('sha256', 'whsec_exampleexampleexample').update(t + '.' + body).digest('hex'); // secret-scan: ok
   await grantFirst(DB);
-  assert.equal((await onRequestPost({ request: new Request('https://a-to-mind.com/api/uni', { method: 'POST', headers: { 'stripe-signature': header }, body }), env: { DB, STRIPE_WEBHOOK_SECRET: 'whsec_exampleexampleexample' } })).status, 200);
+  assert.equal((await onRequestPost({ request: new Request('https://a-to-mind.com/api/page-pass', { method: 'POST', headers: { 'stripe-signature': header }, body }), env: { DB, STRIPE_WEBHOOK_SECRET: 'whsec_exampleexampleexample' } })).status, 200);
   assert.equal((await DB.prepare('SELECT status FROM void_uni WHERE sub = ?').bind('sub_abc123').first()).status, 'canceled');
-  const pub = await (await onRequestGet({ request: ask('/api/uni'), env: {} })).json();
+  const pub = await (await onRequestGet({ request: ask('/api/page-pass'), env: {} })).json();
   assert.equal(pub.missing, 'STRIPE_SECRET_KEY'); assert.equal(JSON.stringify(pub).includes(KEY), false);
   const hop = await gate({ request: ask('/shopping/'), env: { ASSETS: { fetch: async () => new Response('/shopping/ /store/ 301\n') } }, next: html('STORE') });
   assert.equal(hop.status, 301); assert.equal(hop.headers.get('location'), 'https://a-to-mind.com/store/');

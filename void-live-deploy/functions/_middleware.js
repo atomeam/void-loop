@@ -1,6 +1,6 @@
 // Full pages (a trailing slash or an html file) answer with Uni unless the visitor is the owner, on Multi, or holds a Uni pass.
 // Home, APIs, assets, legal pages, checkout and health checks are not gated. A Stripe key Stripe will not accept leaves every page open.
-import { gatedPath, liveState, passage, screen, gateHeaders, parseRedirects, redirectTo } from '../lib/uni.js';
+import { gatedPath, liveState, passage, screen, gateHeaders, parseRedirects, redirectTo } from '../lib/page-pass.js';
 
 let redirects = null;
 async function table(env, request) {

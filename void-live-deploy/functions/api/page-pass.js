@@ -1,7 +1,7 @@
 // Uni checkout. GET is the public status (no secrets) or the return from Stripe. POST starts Checkout, or takes Stripe's signed webhook.
 // A stranger can open Checkout. They are not a member until Stripe says the session is a paid UniVerse subscription.
 import { verifyStripe } from '../../lib/store.js';
-import { liveState, startCheckout, finishCheckout, mintPass, savedHtml, backPath, applyStripeEvent, resetLive } from '../../lib/uni.js';
+import { liveState, startCheckout, finishCheckout, mintPass, savedHtml, backPath, applyStripeEvent, resetLive } from '../../lib/page-pass.js';
 
 const json = (body, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
 
