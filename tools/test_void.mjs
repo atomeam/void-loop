@@ -12598,7 +12598,7 @@ try {
     await B.ask("clarify this business idea: a tool that turns customer emails into running automations", 2000);
     const card = await until(async () => B.p.$eval('.thing.kept-card', (e) => e.textContent).catch(() => null), 5000);
     check('business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step',
-      !!card && /Business idea clarified/.test(card) && /The idea/.test(card) && /Problem it solves/.test(card) && /Systems to design/.test(card) && /Automations that take over/.test(card) && /Handoff/.test(card) && /Next delivery step/.test(card) && /turns customer emails/.test(card) && !B.errors.length,
+      !!card && /Business idea clarified/.test(card) && /The idea/.test(card) && /Problem it solves/.test(card) && /Systems to design/.test(card) && /Automations included/.test(card) && /Handoff/.test(card) && /Next delivery step/.test(card) && /turns customer emails/.test(card) && !B.errors.length,
       JSON.stringify({ card: (card || '').slice(0, 400), errors: B.errors }));
     await B.ctx.close(); }
   if (want("agent inbox: approve resumes and the Made shelf reopens the steps")) { const A = await fresh();
