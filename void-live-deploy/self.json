@@ -678,6 +678,18 @@
  },
  "commits": [
   {
+   "at": "2026-11-12T20:53:59Z",
+   "subject": "Lists run 25: main's stale book, map and inventory rows fixed; metrics"
+  },
+  {
+   "at": "2026-11-12T20:52:26Z",
+   "subject": "add descriptions for 7 new family skills in inventory"
+  },
+  {
+   "at": "2026-11-12T20:52:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-12T20:51:35Z",
    "subject": "Lists run 25: lib/db.js in every endpoint, stage-marks family, films check their cards and re-shoot once, propose-fix says why, merge gate…"
   },
@@ -744,18 +756,6 @@
   {
    "at": "2026-11-12T19:17:59Z",
    "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-12T19:10:20Z",
-   "subject": "Verse's voice 2026-11-12: handoff ask queued, current asks refreshed"
-  },
-  {
-   "at": "2026-11-12T19:07:14Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-11-12T18:34:28Z",
-   "subject": "Failed jobs read: run 43275040340 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -937,8 +937,8 @@
   }
  ],
  "visible": {
-  "day": 15,
-  "week": 257
+  "day": 16,
+  "week": 258
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
