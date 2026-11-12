@@ -1,6 +1,6 @@
 /**
  * roi-pack skill — package the return on investment for a business idea or system Verse owns.
- * Shows hours saved, estimated cost avoided and next handoff so selling and delivery stay consistent and the client sees we own the heavy lifting.
+ * Shows hours saved, estimated cost avoided and next handoff so selling and delivery stay consistent and the client sees what Verse handles.
  * Rules-based estimate from typical load. Nothing is sent or claimed as measured.
  * "roi pack for the invoice automation", "return on investment for onboarding flow", "value of Verse owning support router".
  */
@@ -25,7 +25,7 @@ export function packFor(subject) {
     costAvoided: '$400',
     basis: 'Typical small process: 4h/week at $100/h equivalent now owned by Verse',
     owns: ['Status and monitors', 'Verification tests', 'Handoff docs', 'Running automations'],
-    next: 'Client can summon status digest or time saved anytime; Verse keeps owning the heavy lifting'
+    next: 'Client can summon status digest or time saved anytime; Verse keeps running the systems'
   };
 }
 
