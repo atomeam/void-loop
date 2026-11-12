@@ -241,3 +241,10 @@ Picked living figures (least recently advanced, 2026-11-04 14:15; its next quest
 - Folded: nothing pending; #2557, #2570 and #2704 were merged and their branches already deleted.
 - Result: COSMOS replicates the baseline-acceleration × treatment pattern on PCGrimAge in a 958-person RCT; TranslAGE gives cross-study support and public data; new open question 8.
 - Board: clock response card row.
+
+## 2026-11-12 02:10 ET
+
+- Track: planet restoration, open questions 4 and 7 (least recently advanced).
+- Folded: nothing pending; no open forethinkers branches or think-tank PRs.
+- Result: refit the Science 2025 Florida Acropora dose-response curves from open data (matches published ED50/ED95); Florida-only baselines at each 2026 station dose; binomial readout for the Dry Tortugas split; open question 7 answered; new open question 8.
+- Board: reef survival odds card row.
