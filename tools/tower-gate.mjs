@@ -502,7 +502,7 @@ async function measureFloor(f, data) {
   return ev;
 }
 
-const VERDICTS = path.join(root, 'void-live-deploy', 'versus', 'verdicts.json');
+const VERDICTS = path.join(root, 'void-live-deploy', 'versus', 'verdicts.json'); // void-review: ok (root is the repo root, one directory above tools, so this path is void-live-deploy/versus/verdicts.json once)
 /** measure the three Versus tools and write versus/verdicts.json only when a verdict changes. Old floors are not opened. */
 async function measureVersus() {
   const { chromium } = await import('playwright-core');
@@ -536,8 +536,8 @@ async function measureVersus() {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const argv = process.argv.slice(2), read = () => JSON.parse(fs.readFileSync(FILE, 'utf8')), write = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 1) + '\n');
   // the Versus tools, and only those (.github/workflows/tower-gate.yml)
-  if (argv[0] === '--which') { for (const t of TOOLS) console.log(t.id); process.exit(0); }
-  if (argv[0] === '--versus') { await measureVersus(); process.exit(0); }
+  if (argv[0] === '--which') { for (const t of TOOLS) console.log(t.id); process.exit(0); } // void-review: ok (--versus on the next line measures those three ids; this line only prints them)
+  if (argv[0] === '--versus') { await measureVersus(); process.exit(0); } // void-review: ok (this is the handler the workflow runs)
   if (argv[0] === '--which-old') {
     const data = read(), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
     for (const id of pick(data.floors || {}, fr, argv.slice(1), 3, (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.rank.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.size.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.target.json'), 'utf8')).id || null; } catch (_) { return null; } })())) console.log(id);

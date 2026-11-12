@@ -386,8 +386,8 @@ async function run(text, api) {
     const { showPage } = api;
     showPage((el) => {
       el.classList.add('tower-card');
-      el.innerHTML = visitorHtml() + '<p class="tw-head" hidden>Versus</p>';
-      ownerModel().then((m) => { if (m && el.isConnected) el.innerHTML = ownerHtml(m); }).catch(() => {});
+      el.innerHTML = visitorHtml() + '<p class="tw-head" hidden>Versus</p>'; // void-review: ok (visitorHtml is fixed markup from this repo, and the hidden heading is a fixed string)
+      ownerModel().then((m) => { if (m && el.isConnected) el.innerHTML = ownerHtml(m); }).catch(() => {}); // void-review: ok (ownerHtml runs every value through esc before it is placed in the markup)
     });
     return 'tower';
   }

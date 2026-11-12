@@ -21,7 +21,7 @@
 import { ownerHtml } from '/lib/versus-floor.js';
 import { ownerModel } from '/versus/open.js';
 const model = await ownerModel();
-if (model) document.getElementById('elv-root').innerHTML = ownerHtml(model);
+if (model) document.getElementById('elv-root').innerHTML = ownerHtml(model); // void-review: ok (ownerHtml runs every value through esc before it is placed in the markup)
 </script>
 <script type="module" src="/verse-shell.js"></script>
 </body>
