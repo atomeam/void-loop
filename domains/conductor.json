@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-12T07:51:12.732Z",
+ "updated": "2026-11-12T08:00:37.673Z",
  "last24h": {
-  "ticks": 23,
-  "started": 45,
+  "ticks": 24,
+  "started": 47,
   "requeued": 1,
   "setAside": 1,
   "probes": 0,
@@ -76,10 +76,6 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
   {
-   "id": "want-guard-hourly-main-green",
-   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
-  },
-  {
    "id": "mw9j2cvx",
    "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   },
@@ -90,12 +86,16 @@
   {
    "id": "mw9omg8a",
    "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
+  },
+  {
+   "id": "mw9p82c2",
+   "why": "verse-job.yml is paused (the coder's back-off, #2719, until 13:44 UTC)"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 30,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -111,10 +111,10 @@
   "mveb8rsi": 1794469305898,
   "mvu167w7": 1794469872732,
   "mveb8svc": 1794469872732,
-  "mvfu4evy": 1794421253468,
+  "mvfu4evy": 1794470437673,
   "mva30j4u": 1794469872732,
   "mvpuq9g6": 1794421817438,
-  "mwa0agd2": 1794421817438,
+  "mwa0agd2": 1794470437673,
   "mvpuqaee": 1794422390825,
   "mwa0ah54": 1794422390825,
   "mvpuqb4r": 1794422959329,
@@ -989,6 +989,40 @@
    "sweep": false,
    "blueprints": 0,
    "held": 348,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-12T08:00:37.673Z",
+   "open": 367,
+   "started": [
+    {
+     "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mwa0agd2",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 45
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 347,
    "warnings": 1
   }
  ]
