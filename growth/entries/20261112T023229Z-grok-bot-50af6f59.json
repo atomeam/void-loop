@@ -1,1 +1,0 @@
-{"at":"2026-11-12T02:32:29Z","by":"grok-bot","kind":"fix","what":"status-digest joins the client status family and reads the live status and incident readings instead of printing a fixed all-green line; main's book and families checks are green again (tools/client-status-family.test.mjs)"}
