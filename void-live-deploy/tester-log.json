@@ -1,15 +1,48 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 120,
+ "cases": 121,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 214,
+  "visitor": 213,
   "file": 45,
-  "grow": 37,
+  "grow": 38,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-12T08:05:47Z",
+   "passed": 118,
+   "of": 122,
+   "kind": "grow",
+   "ms": 329,
+   "note": "new ground passed, kept as a regression case: \"next system slice for the client onboarding\" (skill:system-slice)",
+   "failed": [
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "refused: don't know this yet"
+    },
+    {
+     "ask": "top coins",
+     "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-12T07:54:14Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-12T07:42:58Z",
    "passed": 116,
@@ -193,20 +226,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-11T17:35:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-11T17:01:48Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -272,16 +291,16 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 46,
+   "runs": 44,
    "passed": 806,
    "of": 880,
    "ms": 377
   },
   {
    "from": "2026-11-05",
-   "runs": 254,
-   "passed": 5971,
-   "of": 7765,
+   "runs": 256,
+   "passed": 6089,
+   "of": 7887,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -356,7 +375,7 @@
   "skill:lock": "2026-11-09T19:12:26Z",
   "skill:magnetize": "2026-11-09T22:14:28Z",
   "skill:make": "2026-11-09T22:14:28Z",
-  "skill:markets": "2026-10-17T10:10:51Z",
+  "skill:markets": "2026-11-12T08:05:47Z",
   "skill:memory": "2026-10-17T10:10:51Z",
   "skill:moon": "2026-10-17T10:10:51Z",
   "skill:motorbody": "2026-10-17T10:26:08Z",
@@ -697,6 +716,7 @@
   "skill:experiments": "2026-11-12T07:42:58Z",
   "skill:ownership": "2026-11-12T07:42:58Z",
   "skill:proposals": "2026-11-12T07:42:58Z",
-  "skill:reuse-tools": "2026-11-12T07:42:58Z"
+  "skill:reuse-tools": "2026-11-12T07:42:58Z",
+  "skill:system-slice": "2026-11-12T08:05:47Z"
  }
 }

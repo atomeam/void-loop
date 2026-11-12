@@ -393,6 +393,9 @@
     },
     {
       "ask": "bridge these inputs"
+    },
+    {
+      "ask": "next system slice for the client onboarding"
     }
   ],
   "candidates": [],
