@@ -192,8 +192,23 @@ function upsertComment(repo, pr, plan) {
   catch (e) { console.log('plain words: the comment was not posted (' + firstLine(e) + ')'); }
 }
 
+/** Two tries, then stop. The counter lives in tools/fix-cap.mjs, which may land in a later commit. */
+async function copyCap(repo, pr, runGh) {
+  try {
+    const { claim } = await import('./fix-cap.mjs');
+    const raw = runGh(['api', '--paginate', `repos/${repo}/issues/${pr}/comments?per_page=100`]);
+    const comments = JSON.parse(raw || '[]');
+    const cap = claim(Array.isArray(comments) ? comments : [], 'copy');
+    if (cap.allowed) {
+      const args = cap.id ? ['api', '-X', 'PATCH', `repos/${repo}/issues/comments/${cap.id}`, '--input', '-'] : ['api', '-X', 'POST', `repos/${repo}/issues/${pr}/comments`, '--input', '-'];
+      try { runGh(args, JSON.stringify({ body: cap.body })); } catch (_) {}
+    }
+    return cap.allowed;
+  } catch (_) { return true; }
+}
+
 /** Rewrite the title and body, and push one commit onto a helper/* branch. Exit 1 when a finding remains. */
-export function applyPlan({ pr, repo, base, head, cwd = process.cwd(), runGit = git, runGh = gh } = {}) {
+export async function applyPlan({ pr, repo, base, head, cwd = process.cwd(), runGit = git, runGh = gh } = {}) {
   if (SKIP_PRS.has(Number(pr))) { console.log('plain words: pull request ' + pr + ' left alone'); return 0; }
   const phrases = loadPhrases(readFileSync(PHRASES_FILE, 'utf8'));
   let title = '', body = '', branch = '', fork = false;
@@ -206,6 +221,7 @@ export function applyPlan({ pr, repo, base, head, cwd = process.cwd(), runGit = 
   let diff = '';
   try { diff = runGit(['diff', '--unified=0', '--no-color', base + '...' + head], cwd); } catch (_) { diff = ''; }
   const plan = assess({ title, body, files: filesFromDiff(diff), branch, fork, phrases, pr });
+  if ((plan.title.changed || plan.body.changed || plan.push) && !(await copyCap(repo, pr, runGh))) { console.log('plain words: already tried twice'); return 1; }
   if (plan.title.changed || plan.body.changed) {
     try { runGh(['api', '-X', 'PATCH', `repos/${repo}/pulls/${pr}`, '--input', '-'], JSON.stringify({ title: plan.title.to, body: plan.body.to })); console.log('plain words: rewrote the title and body'); }
     catch (e) { console.log('plain words: the title was not rewritten (' + firstLine(e) + ')'); plan.findings.push({ file: 'title', line: 1, kind: 'risk', rule: 'plain-words', message: 'the title or body still says a banned phrase and the rewrite did not land', text: title.slice(0, 200) }); }
@@ -225,7 +241,7 @@ export function applyPlan({ pr, repo, base, head, cwd = process.cwd(), runGit = 
 
 function arg(name, argv) { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : ''; }
 
-function main(argv) {
+async function main(argv) {
   const phrases = loadPhrases(readFileSync(PHRASES_FILE, 'utf8'));
   if (argv.includes('--dry')) {
     const plan = assess({ title: arg('--title', argv), body: arg('--body', argv), branch: arg('--branch', argv) || 'helper/dry', phrases, pr: Number(arg('--pr', argv) || 0) });
@@ -235,10 +251,10 @@ function main(argv) {
   if (argv.includes('--apply')) {
     const pr = arg('--pr', argv), repo = process.env.REPO || process.env.GITHUB_REPOSITORY || '';
     if (!/^\d+$/.test(pr) || !repo) { console.error('plain words: --apply needs --pr and REPO'); return 2; }
-    return applyPlan({ pr, repo, base: arg('--base', argv) || 'origin/main', head: arg('--head', argv) || 'HEAD' });
+    return await applyPlan({ pr, repo, base: arg('--base', argv) || 'origin/main', head: arg('--head', argv) || 'HEAD' });
   }
   console.error('usage: node tools/plain-words.mjs --dry --title "..." [--body "..."] | --apply --pr <n> --base origin/main --head HEAD');
   return 2;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(main(process.argv.slice(2)));
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv.slice(2)).then((code) => process.exit(code));
