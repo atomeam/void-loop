@@ -17,6 +17,7 @@ export function openPath(pathname) {
   if (p === '/' || p === '/index.html' || p === '/void.html' || p === '/404.html') return true;
   if (ASSET.test(p) || /\/rss\/?$/.test(p)) return true;
   const bare = p.replace(/\/index\.html$/, '').replace(/\/+$/, '') || '/';
+  if (bare === '/versus') return true; // its own sign; /api/versus-floor and the json it reads stay open as an API and as files
   return OPEN.some((pre) => bare === pre || bare.startsWith(pre + '/'));
 }
 export function gatedPath(pathname) {
