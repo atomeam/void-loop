@@ -112,3 +112,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped d9a68fbfa | 2026-11-12 | systems-owned skill: list the systems, monitors, tests and handoffs Verse owns for a business idea so the client sees the hard work taken over and does less chasing | new idea by growth agent; helper/systems-owned (skill on main; status correction) |
 
 | building | 2026-11-12 | system-plan skill: capture a business idea and turn it into a structured plan of systems, automations, tests, monitors and handoff so the client does less of the setup | new idea by growth agent; helper/system-plan |
+| building | 2026-11-12 | system-plan skill: capture a business idea and turn it into a structured plan of systems, automations, tests, monitors and handoff | new idea by growth agent; helper/system-plan |
