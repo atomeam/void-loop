@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-11T23:34:57.779Z",
+  "at": "2026-11-12T00:07:15.234Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,23 +34,25 @@
       }
     },
     "podcasts": {
-      "score": 93.5,
+      "score": 92.1,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of crime junkie",
+          "ask": "play the latest episode of this american life",
           "failed": [
-            "audio"
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
-          "ask": "play the latest episode of the moth",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
-            "audio"
+            "audio",
+            "episode"
           ],
-          "score": 83.3
+          "score": 71.4
         },
         {
           "ask": "play the episode before that",
@@ -117,10 +119,18 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 93.9,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "wheather in new york",
+          "failed": [
+            "fast",
+            "temp"
+          ],
+          "score": 66.7
+        },
         {
           "ask": "weather",
           "failed": [
@@ -133,9 +143,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -243,12 +254,19 @@
       }
     },
     "sports": {
-      "score": 94.4,
+      "score": 93.5,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "packers score",
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
