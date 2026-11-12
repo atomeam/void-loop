@@ -28,6 +28,7 @@ const probeFor = (id) => withFeatureFacts(probeOf(id), id);
 export const GATE_FLOORS = FLOORS.concat(Object.entries(LANE_PAGES).filter(([k]) => hostOf(k) === k && !FLOORS.some((f) => (hostOf(f.url) || hostOf(f.site)) === k))
   .map(([h, page]) => ({ id: h, site: h, url: 'https://' + h + '/', label: h, page, extra: [] })));
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
+import { TOOLS, rowsFromMeasures, verdictsChanged } from '../void-live-deploy/lib/versus-floor.js';
 // a frontier site Verse already has a page for by topic, as a floor the gate can load (lib/tower.js frontierPage): the target, found by pick() or by id
 export const TOPIC_FLOORS = new Map();
 export function gateFloor(id, frontier = null) {
@@ -501,10 +502,43 @@ async function measureFloor(f, data) {
   return ev;
 }
 
+const VERDICTS = path.join(root, 'void-live-deploy', 'versus', 'verdicts.json');
+/** measure the three Versus tools and write versus/verdicts.json only when a verdict changes. Old floors are not opened. */
+async function measureVersus() {
+  const { chromium } = await import('playwright-core');
+  const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+  let prev = { tools: {} };
+  try { prev = JSON.parse(fs.readFileSync(VERDICTS, 'utf8')); } catch (_) { /* first run */ }
+  const tools = {};
+  let any = false;
+  try {
+    for (const t of TOOLS) {
+      console.log('measuring ' + t.id);
+      try {
+        const verse = await measure(b, new URL(t.page, VERSE).href, t.id + '-verse', null, null);
+        const rival = await measure(b, t.url, t.id + '-rival', null, null);
+        const rows = rowsFromMeasures(verse, rival);
+        if (!rows) { console.log(t.id + ' not measured'); continue; }
+        tools[t.id] = { ...rows, at: new Date().toISOString() };
+        any = true;
+        for (const [k, r] of Object.entries(rows)) console.log(t.id + ' ' + k.padEnd(14) + r.verdict + ' ' + r.verse + ' vs ' + r.best);
+      } catch (e) { console.log('::warning::' + t.id + ' not measured: ' + (e && e.message || e)); }
+    }
+  } finally { await b.close(); }
+  if (!any) { console.log('nothing measured'); return; }
+  const next = { tools: { ...(prev.tools || {}), ...tools } };
+  if (!verdictsChanged(prev, next)) { console.log('verdicts unchanged'); return; }
+  fs.mkdirSync(path.dirname(VERDICTS), { recursive: true });
+  fs.writeFileSync(VERDICTS, JSON.stringify(next, null, 1) + '\n');
+  console.log('wrote versus/verdicts.json');
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const argv = process.argv.slice(2), read = () => JSON.parse(fs.readFileSync(FILE, 'utf8')), write = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 1) + '\n');
-  // --which [changed file ...]: print the floors a post-deploy run measures, one per line (.github/workflows/tower-gate.yml)
-  if (argv[0] === '--which') {
+  // the Versus tools, and only those (.github/workflows/tower-gate.yml)
+  if (argv[0] === '--which') { for (const t of TOOLS) console.log(t.id); process.exit(0); }
+  if (argv[0] === '--versus') { await measureVersus(); process.exit(0); }
+  if (argv[0] === '--which-old') {
     const data = read(), fr = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
     for (const id of pick(data.floors || {}, fr, argv.slice(1), 3, (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.rank.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.size.json'), 'utf8')); } catch (_) { return null; } })(), (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.target.json'), 'utf8')).id || null; } catch (_) { return null; } })())) console.log(id);
     process.exit(0);

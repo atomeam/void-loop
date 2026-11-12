@@ -6,6 +6,8 @@
  * every rival has its own page (/rival/?site=); sites in plain text, no logos; no Verse dates or attempt logs on the card. Real data only.
  */
 import { towerArtSvg } from '../lib/tower-art.js';
+import { visitorHtml, ownerHtml } from '../lib/versus-floor.js';
+import { ownerModel } from '../versus/open.js';
 import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine, countsOf, assimLine, inventoryOf } from '../lib/tower.js?v=ladder-72';
 import { siteSlug } from '../lib/obituary.js';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
@@ -378,7 +380,17 @@ let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
 const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn, pa] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json'), get('/parity.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn, pa }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; t.settled = tg && Array.isArray(tg.settled) ? tg.settled : []; t.target = tg || null; t.inventory = pa && pa.sites ? pa : null; const cur = t.floors.find((f) => f.state === 'current'); t.history = cur ? await get('/history/' + siteSlug(cur.site) + '.json') : null; return t; };
 
+const elevatorOf = (text) => /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+|verse(?:'s)?\s+)?(?:elevator|tower)$/.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 async function run(text, api) {
+  if (elevatorOf(text)) {
+    const { showPage } = api;
+    showPage((el) => {
+      el.classList.add('tower-card');
+      el.innerHTML = visitorHtml();
+      ownerModel().then((m) => { if (m && el.isConnected) el.innerHTML = ownerHtml(m); }).catch(() => {});
+    });
+    return 'tower';
+  }
   if (!towerOf(text)) return 'none';
   const { showPage, esc, say } = api;
   const t = await load();
@@ -390,7 +402,7 @@ async function run(text, api) {
 export default {
   name: 'tower',
   about: 'Versus: real sites as floors, and how many aspects of each Verse has verified it beats.',
-  examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'which sites have you surpassed', 'show the tower', 'open your tower'],
+  examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'elevator', 'the elevator', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
   match(lower, text) { return towerOf(text || lower); },
   run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
