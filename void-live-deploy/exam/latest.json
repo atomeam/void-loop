@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T15:26:13.964Z",
+  "at": "2026-11-12T16:00:25.498Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,24 +34,16 @@
       }
     },
     "podcasts": {
-      "score": 92.9,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of science vs",
           "failed": [
-            "episode"
+            "fast"
           ],
           "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of freakonomics radio",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
         },
         {
           "ask": "play the episode before that",
@@ -118,7 +110,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -134,9 +126,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -249,6 +242,13 @@
       "measured": 18,
       "fails": [
         {
+          "ask": "lakers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "packers score",
           "failed": [
             "board"
@@ -266,10 +266,9 @@
           "ask": "scores",
           "failed": [
             "skill",
-            "board",
-            "rival"
+            "board"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "resultado del real madrid",
@@ -347,17 +346,10 @@
       "fails": []
     },
     "definitions": {
-      "score": 93.3,
+      "score": 96.7,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "define spring",
-          "failed": [
-            "fast"
-          ],
-          "score": 80
-        },
         {
           "ask": "define glimbrastic",
           "failed": [
@@ -390,7 +382,7 @@
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 92.9
+    "domain": "code",
+    "score": 93.3
   }
 }
