@@ -7176,5 +7176,18 @@
   {"ask": "ownership map for client onboarding", "want": "skill:ownership-map"},
   {"ask": "map ownership for invoice reminders", "want": "skill:ownership-map"},
   {"ask": "what does Verse own vs the client for support tickets", "want": "skill:ownership-map"},
-  {"ask": "ownership pack for Acme", "want": "skill:ownership-pack"}
+  {"ask": "ownership pack for Acme", "want": "skill:ownership-pack"},
+  {"ask": "automation pack for invoice reminders", "want": "skill:automation-pack"},
+  {"ask": "what automations will Verse own for onboarding", "want": "skill:automation-pack"},
+  {"ask": "propose automations for the support router", "want": "skill:automation-pack"},
+  {"ask": "what automations are running for onboarding", "want": "skill:automation-status"},
+  {"ask": "client brief for Acme onboarding", "want": "skill:client-brief"},
+  {"ask": "brief the client on the systems Verse owns", "want": "skill:client-brief"},
+  {"ask": "client brief for invoice reminders", "want": "skill:client-brief"},
+  {"ask": "client offer for the email automation", "want": "skill:client-offer"},
+  {"ask": "offer to own the heavy lifting for weekly reports", "want": "skill:client-offer"},
+  {"ask": "package this as an offer: client onboarding that runs itself", "want": "skill:client-offer"},
+  {"ask": "delivery board for the onboarding flow", "want": "skill:delivery-board"},
+  {"ask": "client board on invoice reminders", "want": "skill:delivery-board"},
+  {"ask": "show the delivery board for the support router", "want": "skill:delivery-board"}
 ]
