@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-12T13:01:16.277Z",
+ "updated": "2026-11-12T13:10:36.675Z",
  "last24h": {
-  "ticks": 56,
+  "ticks": 57,
   "started": 63,
   "requeued": 1,
   "setAside": 1,
@@ -134,8 +134,8 @@
   "mwdhh4d8": 1794485642581,
   "mwdhh590": 1794486208023
  },
- "sweptAt": 1794485079582,
- "blueprintsAt": 1794485079582,
+ "sweptAt": 1794489036675,
+ "blueprintsAt": 1794489036675,
  "visitorAt": "2026-11-12T12:05:12Z",
  "visitorFiled": [
   "feature:random-org-7201fd3d",
@@ -1812,6 +1812,27 @@
     "verse-podcast.yml"
    ],
    "sweep": false,
+   "blueprints": 0,
+   "held": 360,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-12T13:10:36.675Z",
+   "open": 368,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 360,
    "warnings": 1
