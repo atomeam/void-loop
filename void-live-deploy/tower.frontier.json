@@ -6929,6 +6929,24 @@
    "hardness": null,
    "title": "Breitband",
    "small": "2026-11-10"
+  },
+  {
+   "site": "scru.org",
+   "rank": 560031,
+   "controls": 0,
+   "bytes": 130,
+   "hardness": null,
+   "title": "SCRU",
+   "small": "2026-11-12"
+  },
+  {
+   "site": "vermeire.com",
+   "rank": 560030,
+   "controls": 0,
+   "bytes": 1083,
+   "hardness": null,
+   "title": "Site en Maintenance",
+   "small": "2026-11-12"
   }
  ]
 }
