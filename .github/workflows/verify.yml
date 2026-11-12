@@ -227,7 +227,7 @@ jobs:
 
       - name: Keep the first failure
         if: steps.test.outcome == 'failure'
-        run: cp -f test-output.txt test-output-first.txt 2>/dev/null || : > test-output-first.txt
+        run: 'cp -f test-output.txt test-output-first.txt 2>/dev/null || : > test-output-first.txt'
 
       - name: Rerun this shard once
         id: rerun

@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/plain-words-d564 · plain words on every pull request title, body and added page copy · 2026-11-12 21:40 UTC
 - openhands · fix/copies-marker · the page matches its two deploy copies again (the copies check was red on main and failed every pull request review) · 2026-11-11 22:00 UTC
 - Cursor cloud agent · helper/shows-craft-6fca · Verse Out Loud and the Shorts are written, voiced, judged, and one studio page plays them · 2026-11-10 15:20 UTC
 - Cursor cloud agent · helper/delete-tower-48f9 · the finished-site Tower, its pages, and the loop that took the next site are removed · 2026-11-10 02:54 UTC
