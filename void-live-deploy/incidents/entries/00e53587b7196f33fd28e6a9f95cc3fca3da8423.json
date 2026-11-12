@@ -12,5 +12,9 @@
   "void-live-deploy/skills/deps.json",
   "void-live-deploy/skills/index.json",
   "void-live-deploy/skills/roi-pack.js"
+ ],
+ "passed": [
+  1,
+  2
  ]
 }
