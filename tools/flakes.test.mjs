@@ -1,7 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { recorded, due, targetOf, askOf, text, DAYS } from './flakes.mjs';
 import { keyOf, APPEND_JSON } from './records.mjs';
+import { decide, namesOf } from './flake-rerun.mjs';
+
+const here = dirname(fileURLToPath(import.meta.url));
 
 const now = new Date('2026-10-11T12:00:00Z'), day = (d) => new Date(now.getTime() - d * 864e5).toISOString();
 
@@ -36,4 +43,21 @@ test('the file is one entry per line, and merge-main and revert-records treat it
   assert.equal(text([]), '[]\n');
   assert.ok(APPEND_JSON.includes('tools/flakes.json'));
   assert.equal(keyOf('tools/flakes.json', { check: 'X', sha: 'A' }), 'x|a');
+});
+
+test('a failed shard is rerun once; a pass stays green; a second fail reverts', () => {
+  assert.equal(decide({ failed: true }).action, 'rerun');
+  const pass = JSON.parse(execFileSync(process.execPath, [join(here, 'flake-rerun.mjs'), 'decide', '--failed', '--rerun', 'pass'], { encoding: 'utf8' }));
+  assert.deepEqual(pass, { action: 'record', green: true, record: true });
+  const again = JSON.parse(execFileSync(process.execPath, [join(here, 'flake-rerun.mjs'), 'decide', '--failed', '--rerun', 'fail'], { encoding: 'utf8' }));
+  assert.equal(again.action, 'revert');
+  assert.equal(again.green, false);
+  const text = 'FAIL walker: a slow drag lifts the figure and sets it back on the floor  -> gone\n';
+  assert.deepEqual(namesOf(text, 'browser-suite shard 8'), ['walker: a slow drag lifts the figure and sets it back on the floor']);
+  const verify = readFileSync(new URL('../.github/workflows/verify.yml', import.meta.url), 'utf8');
+  const rerun = verify.indexOf('Rerun this shard once');
+  assert.ok(rerun > 0 && verify.indexOf('node tools/flake-rerun.mjs land', rerun) > rerun);
+  assert.ok(verify.indexOf('node tools/revert-target.mjs --pick') > verify.indexOf('node tools/flake-rerun.mjs land', rerun));
+  assert.match(verify, /steps\.rerun\.outcome == 'failure'/);
+  assert.match(verify, /steps\.rerun\.outcome == 'success'/);
 });
