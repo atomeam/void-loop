@@ -19,21 +19,36 @@ export function subjectOf(text) {
   return s.length >= 2 ? s.slice(0, 160) : 'this business idea';
 }
 
+export function offerFor(subject) {
+  const name = subjectOf(subject);
+  return {
+    subject: name,
+    today: 'Manual follow-ups, status chasing, repeated setup and monitoring.',
+    takesOver: [
+      'Capture and clarify the idea into a system plan',
+      'Design, build, connect, test and monitor the systems',
+      'Run the automations behind the confirm line',
+      'Hand off status, docs and running jobs'
+    ],
+    reduced: 'No more building the tools, watching the runs, or writing the status. One yes on the outcome.',
+    next: 'Start with a client brief or idea-to-system card for ' + name + '. The offer stays here for sharing.'
+  };
+}
+
 function run(text, api) {
   const { showPage, esc } = api;
   const name = subjectOf(text);
+  const offer = offerFor(text);
+  const takes = offer.takesOver.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Client offer: ' + esc(name) + '</h2>'
       + '<p>Verse owns the heavy lifting so the client does less.</p>'
-      + '<h3>What the client does today</h3><p>Manual follow-ups, status chasing, repeated setup and monitoring.</p>'
+      + '<h3>What the client does today</h3><p>' + esc(offer.today) + '</p>'
       + '<h3>What Verse takes over</h3><ul>'
-      + '<li>Capture and clarify the idea into a system plan</li>'
-      + '<li>Design, build, connect, test and monitor the systems</li>'
-      + '<li>Run the automations behind the confirm line</li>'
-      + '<li>Hand off status, docs and running jobs</li>'
+      + takes
       + '</ul>'
-      + '<h3>Reduced client work</h3><p>No more building the tools, watching the runs, or writing the status. One yes on the outcome.</p>'
-      + '<h3>Next step</h3><p>Start with a client brief or idea-to-system card for ' + esc(name) + '. The offer stays here for sharing.</p>'
+      + '<h3>Reduced client work</h3><p>' + esc(offer.reduced) + '</p>'
+      + '<h3>Next step</h3><p>' + esc(offer.next) + '</p>'
       + '<p class="sub">Nothing is sent. The offer stays with the client.</p>'
       + '<div class="src">Source: A-to-Mind client offer · we own the heavy lifting</div>';
   });

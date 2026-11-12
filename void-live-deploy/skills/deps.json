@@ -17020,7 +17020,12 @@
   },
   "skills/client-offer.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/full-handoff.js"
+   ],
+   "reachedBy": [
+    "skills/handoffs.js"
+   ]
   },
   "skills/client-status-pack.js": {
    "imports": [
@@ -17823,7 +17828,11 @@
    "importedBy": []
   },
   "skills/full-handoff.js": {
-   "imports": [],
+   "imports": [
+    "skills/lift-summary.js",
+    "skills/reuse-pack.js",
+    "skills/client-offer.js"
+   ],
    "importedBy": [
     "skills/handoffs.js"
    ]
@@ -18508,7 +18517,12 @@
   },
   "skills/lift-summary.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/full-handoff.js"
+   ],
+   "reachedBy": [
+    "skills/handoffs.js"
+   ]
   },
   "skills/lift3d.js": {
    "imports": [
@@ -19828,7 +19842,11 @@
   "skills/reuse-pack.js": {
    "imports": [],
    "importedBy": [
+    "skills/full-handoff.js",
     "skills/reuse-tools.js"
+   ],
+   "reachedBy": [
+    "skills/handoffs.js"
    ]
   },
   "skills/reuse-tools.js": {

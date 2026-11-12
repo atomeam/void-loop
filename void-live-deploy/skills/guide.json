@@ -7929,7 +7929,7 @@
    "chapter": "self",
    "name": "reuse-pack",
    "title": "Reuse pack",
-   "line": "Map a business process or idea to existing tools Verse can own or connect instead of inventing new ones",
+   "line": "Map a business process or idea to existing tools that already cover parts of it instead of inventing new ones",
    "examples": [
     "reuse pack for client onboarding",
     "map to existing tools: invoice reminders",
