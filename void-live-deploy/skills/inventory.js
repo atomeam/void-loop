@@ -77,6 +77,13 @@ const WHAT = {
   recent: 'recent asks on an empty box',
   magnetize: 'the post-print magnetize step',
   inventory: 'this list — already built rows',
+  experiments: 'the lab: its catalog count and newest experiments; the fringe experiments and tools opened in a frame',
+  'quick-tools': 'the stage picture and small tools: a stage or card as a PNG, copied, saved or as a QR code of the view',
+  tables: 'pasted tables and list tables: a CSV becomes an editable, sortable table; a data table from a list with sums',
+  cinema: 'films and movies: Verse\'s own films on /films/ and a movie to watch with where to stream',
+  handoffs: 'the client handoff family: delivery pack, client handoff card, system handoff package, full handoff',
+  'client-status': 'client status: the status Verse stores, as a client handoff, plus the ownership/progress/monitors board',
+  'time-saved': 'client-visible estimate of hours the client no longer spends because Verse owns the systems',
 };
 
 /** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */
