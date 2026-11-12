@@ -1,41 +1,5 @@
 [
  {
-  "at": "2026-11-04T11:32:55Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2750,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 12089 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-04T15:01:25Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 3545,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 17676 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-04T15:29:24Z",
   "kind": "visitor",
   "visitor": {
@@ -7922,5 +7886,48 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-12T18:11:26Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1367,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-12T18:22:54Z",
+  "passed": 119,
+  "of": 123,
+  "ms": 344,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "is waymo in austin",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1367,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"handoff pack for my SaaS idea\" (skill:handoffs)"
  }
 ]
