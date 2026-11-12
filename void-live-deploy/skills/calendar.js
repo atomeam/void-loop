@@ -11,9 +11,10 @@ import { countdownOf } from './countdown.js';
 import { pickKind } from '../lib/media.js';
 import { mirror } from '../lib/chat-calendar.js';
 import * as A from '../lib/agenda.js';
+import { cleanEnd } from '../lib/ask-text.js';
 // the longest ask still read as an event to add ("lunch with Ana and Sam at the cafe on Main Street next Tuesday at noon" is 14)
 export const MAX_EVENT_WORDS = 16;
-const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
+const CLEAN = cleanEnd; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 
 function gated(text) {
   const s = CLEAN(text).replace(/^(?:please\s+)/i, '');

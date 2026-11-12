@@ -14,9 +14,9 @@
  "bench_at": "2026-11-11",
  "totals": {
   "experiment": 1,
-  "tested": 13,
-  "checked": 4,
-  "proven": 417
+  "tested": 8,
+  "checked": 5,
+  "proven": 421
  },
  "families": [
   {
@@ -1083,17 +1083,17 @@
     {
      "name": "air",
      "tier": "proven",
-     "why": "1 browser-suite mention, 7 real asks in the benchmark",
-     "last_tested": "2026-11-11",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 7 real asks in the benchmark",
+     "last_tested": "2026-11-12",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
      "name": "uv",
      "tier": "proven",
-     "why": "1 browser-suite mention, 8 real asks in the benchmark",
-     "last_tested": "2026-11-11",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 8 real asks in the benchmark",
+     "last_tested": "2026-11-12",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -3645,9 +3645,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 13,
-    "checked": 1,
-    "proven": 66
+    "tested": 8,
+    "checked": 2,
+    "proven": 70
    },
    "skills": [
     {
@@ -4249,10 +4249,12 @@
     },
     {
      "name": "delivery-board",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-11",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-12"
     },
     {
      "name": "status-digest",
@@ -4307,33 +4309,41 @@
     },
     {
      "name": "client-brief",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-12",
      "streak": 1
     },
     {
      "name": "client-offer",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-12",
      "streak": 1
     },
     {
      "name": "automation-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-11",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-12"
     },
     {
      "name": "automation-status",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-11-11",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-12"
     },
     {
      "name": "lift-summary",

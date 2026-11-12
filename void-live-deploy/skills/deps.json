@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1268,
+ "counted": 1269,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -11,10 +11,10 @@
   },
   {
    "file": "lib/ask-text.js",
-   "skills": 39,
-   "direct": 23,
-   "dependants": 43,
-   "tests": 4
+   "skills": 58,
+   "direct": 35,
+   "dependants": 112,
+   "tests": 6
   },
   {
    "file": "lib/field-kit.js",
@@ -80,6 +80,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 22,
+   "direct": 22,
+   "dependants": 22,
+   "tests": 1
+  },
+  {
    "file": "lib/corrections.js",
    "skills": 21,
    "direct": 0,
@@ -106,13 +113,6 @@
    "direct": 2,
    "dependants": 22,
    "tests": 3
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 21,
-   "direct": 21,
-   "dependants": 21,
-   "tests": 1
   },
   {
    "file": "lib/ladder.js",
@@ -374,6 +374,13 @@
    "tests": 1
   },
   {
+   "file": "lib/movies.js",
+   "skills": 8,
+   "direct": 2,
+   "dependants": 15,
+   "tests": 3
+  },
+  {
    "file": "lib/tool-sites.js",
    "skills": 8,
    "direct": 2,
@@ -393,13 +400,6 @@
    "direct": 8,
    "dependants": 8,
    "tests": 1
-  },
-  {
-   "file": "lib/movies.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 14,
-   "tests": 3
   },
   {
    "file": "lib/art-source.js",
@@ -511,6 +511,13 @@
    "skills": 5,
    "direct": 1,
    "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/film-discovery.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 7,
    "tests": 1
   },
   {
@@ -752,13 +759,6 @@
    "tests": 21
   },
   {
-   "file": "lib/film-discovery.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/gate-badge.js",
    "skills": 4,
    "direct": 1,
@@ -806,6 +806,13 @@
    "direct": 2,
    "dependants": 4,
    "tests": 1
+  },
+  {
+   "file": "lib/movie-intent.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 2
   },
   {
    "file": "lib/stage-math.js",
@@ -981,13 +988,6 @@
    "direct": 3,
    "dependants": 3,
    "tests": 1
-  },
-  {
-   "file": "lib/movie-intent.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/parody.js",
@@ -3059,7 +3059,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/a2a.js",
@@ -3864,7 +3864,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/resize-card.js",
@@ -4836,6 +4836,7 @@
   "functions/api/reflect.js": {
    "imports": [
     "lib/guard.js",
+    "lib/ask-text.js",
     "lib/actions.js",
     "lib/models.js",
     "lib/self-context.js",
@@ -5981,34 +5982,97 @@
   "lib/ask-text.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/reflect.js",
     "lib/stage-pack-c.js",
+    "lib/will-guard.js",
+    "skills/air.js",
+    "skills/calendar.js",
     "skills/cartoon.js",
     "skills/coral.js",
     "skills/dark-look.js",
+    "skills/different.js",
     "skills/dismiss.js",
+    "skills/feelings.js",
     "skills/figure-can.js",
     "skills/figure.js",
     "skills/group.js",
+    "skills/growth.js",
+    "skills/image.js",
     "skills/incident.js",
     "skills/inventory.js",
     "skills/label.js",
     "skills/layer.js",
     "skills/light-look.js",
+    "skills/link.js",
     "skills/motorbody.js",
     "skills/part.js",
+    "skills/pollen.js",
     "skills/print-download.js",
     "skills/print-file.js",
     "skills/printedmotor.js",
+    "skills/releasenotes.js",
     "skills/senolytic.js",
     "skills/show-countdown.js",
+    "skills/showcase.js",
     "skills/status.js",
     "skills/today.js",
     "skills/trialwatch.js",
+    "skills/uv.js",
+    "skills/worldtime.js",
     "skills/zoom-figure.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/answer.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/blueprint.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/feed.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "functions/api/x402/[service].js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/a2a.js",
+    "lib/about-skill.js",
+    "lib/bench-asks.js",
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
+    "lib/built-detail.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/self-context.js",
+    "lib/self-model.js",
+    "lib/sun-day.js",
+    "lib/team-mcp.js",
+    "lib/verse-log.js",
+    "lib/voice.js",
+    "lib/zones.js",
+    "skills/about-skill.js",
+    "skills/calendar-fill.js",
     "skills/client-status-pack.js",
     "skills/client-status.js",
     "skills/codex.js",
@@ -6017,6 +6081,10 @@
     "skills/delivery-board.js",
     "skills/echo-chamber.js",
     "skills/forge-table.js",
+    "skills/growth-tree.js",
+    "skills/guide.js",
+    "skills/merges.js",
+    "skills/mini/growthtree.js",
     "skills/mini/pentamote.js",
     "skills/own-parts.js",
     "skills/pulse.js",
@@ -6024,7 +6092,9 @@
     "skills/status-digest.js",
     "skills/system-status.js",
     "skills/time-capsule.js",
+    "skills/time.js",
     "skills/verse-brain.js",
+    "skills/walker.js",
     "skills/whisper-network.js"
    ]
   },
@@ -8882,6 +8952,7 @@
     "skills/film-metadata.js"
    ],
    "reachedBy": [
+    "skills/cinema.js",
     "skills/media-pick.js",
     "skills/movie.js",
     "skills/pick-for-me.js"
@@ -11050,6 +11121,7 @@
     "skills/movie.js"
    ],
    "reachedBy": [
+    "skills/cinema.js",
     "skills/media-pick.js",
     "skills/pick-for-me.js"
    ]
@@ -11070,6 +11142,7 @@
     "lib/movie-intent.js",
     "skills/calendar-fill.js",
     "skills/calendar.js",
+    "skills/cinema.js",
     "skills/dates.js",
     "skills/film-metadata.js",
     "skills/media-pick.js"
@@ -13816,6 +13889,7 @@
    "imports": [],
    "importedBy": [
     "skills/build-world.js",
+    "skills/cinema.js",
     "skills/client-status.js",
     "skills/date-math.js",
     "skills/dates.js",
@@ -16108,6 +16182,7 @@
   },
   "lib/will-guard.js": {
    "imports": [
+    "lib/ask-text.js",
     "lib/churn.js"
    ],
    "importedBy": [
@@ -16313,7 +16388,9 @@
    ]
   },
   "skills/air.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": [
     "skills/time.js"
    ]
@@ -16579,7 +16656,8 @@
     "skills/countdown.js",
     "lib/media.js",
     "lib/chat-calendar.js",
-    "lib/agenda.js"
+    "lib/agenda.js",
+    "lib/ask-text.js"
    ],
    "importedBy": [
     "skills/calendar-fill.js",
@@ -16688,6 +16766,14 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/cinema.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/films.js",
+    "skills/movie.js"
+   ],
+   "importedBy": []
   },
   "skills/client-brief.js": {
    "imports": [],
@@ -17048,7 +17134,9 @@
    "importedBy": []
   },
   "skills/different.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": []
   },
   "skills/digest.js": {
@@ -17309,7 +17397,9 @@
    "importedBy": []
   },
   "skills/feelings.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": []
   },
   "skills/feud.js": {
@@ -17385,6 +17475,7 @@
   "skills/films.js": {
    "imports": [],
    "importedBy": [
+    "skills/cinema.js",
     "skills/poster.js"
    ]
   },
@@ -17767,7 +17858,8 @@
     "lib/skill-confidence.js",
     "lib/spark.js",
     "lib/autopsy.js",
-    "skills/growth-tree.js"
+    "skills/growth-tree.js",
+    "lib/ask-text.js"
    ],
    "importedBy": [
     "skills/growth-tree.js",
@@ -18007,7 +18099,8 @@
   "skills/image.js": {
    "imports": [
     "lib/free-pics.js",
-    "lib/image-handoff.js"
+    "lib/image-handoff.js",
+    "lib/ask-text.js"
    ],
    "importedBy": []
   },
@@ -18200,7 +18293,9 @@
    "importedBy": []
   },
   "skills/link.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": []
   },
   "skills/list-starters.js": {
@@ -18815,6 +18910,7 @@
     "lib/movie-intent.js"
    ],
    "importedBy": [
+    "skills/cinema.js",
     "skills/media-pick.js",
     "skills/pick-for-me.js"
    ]
@@ -19185,7 +19281,9 @@
    ]
   },
   "skills/pollen.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": [
     "skills/time.js"
    ]
@@ -19414,7 +19512,9 @@
    "importedBy": []
   },
   "skills/releasenotes.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": []
   },
   "skills/remediation-velocity.js": {
@@ -19744,7 +19844,8 @@
     "skills/growth-tree.js",
     "lib/reaction-bar.js",
     "lib/reactions.js",
-    "lib/placement.js"
+    "lib/placement.js",
+    "lib/ask-text.js"
    ],
    "importedBy": [
     "skills/guide.js",
@@ -20596,7 +20697,9 @@
    "importedBy": []
   },
   "skills/uv.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": [
     "skills/time.js"
    ]
@@ -20802,7 +20905,9 @@
    "importedBy": []
   },
   "skills/worldtime.js": {
-   "imports": [],
+   "imports": [
+    "lib/ask-text.js"
+   ],
    "importedBy": [
     "lib/mcp-skills.js",
     "lib/zones.js",

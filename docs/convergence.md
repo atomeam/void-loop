@@ -39,7 +39,7 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 
 | What | Copies | Files | Merge into |
 | --- | --- | --- | --- |
-| The ask tidier `CLEAN` (trim, drop trailing ?!., collapse spaces, maybe lower-case) | 30 (3 identical forms in 23 files, 7 variants) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral; variants in worldtime, releasenotes, calendar, growth, showcase, different, feelings | `lib/ask-text.js` (**done for 23**; the 7 variants next, with an `apostrophes` option) |
+| The ask tidier `CLEAN` (trim, drop trailing ?!., collapse spaces, maybe lower-case) | 30 (3 identical forms in 23 files, 7 variants) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral; variants in worldtime, releasenotes, calendar, growth, showcase, different, feelings | `lib/ask-text.js` (**done for 23**; the 7 variants **done, lists run 21**, as `cleanEnd`, `squash`, `cleanSaid`, `cleanFelt` and `apostrophes`) |
 | Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | lib/owner-client.js (planned) |
 | `el(tag, attrs, kids)` DOM helper | 5 | actions, memory, proposal, automations, watch | the card system |
 | `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` (**done, lists run 20**) |
@@ -52,7 +52,7 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 | `short`, `add` (cycle date maths) | 3 + 3 | period, ovulation, pregnancy | lib/cycle.js (planned) |
 | `slug` | 2 | api/reflect, api/will | `lib/ask-text.js` (**done, lists run 20**; lib/will-guard.js re-exports it) |
 | `seatsFor` | 2 | sorry-rules, aggravation | the board-game rules base |
-| `urlOf` | 2 | image, link | `lib/ask-text.js` |
+| `urlOf` | 2 | image, link | `lib/ask-text.js` (**done, lists run 21**; image and link re-export it) |
 | `ready` (D1 table guard) | 2 | lib/film-reviews, api/support | lib/db.js (planned) |
 | WebGL contexts | 5 kinds | scene3d, figures3d, draw (XR), void-ring, splat | `scene3d.js` |
 | Card shells | 4 | `.vpage` (showPage), `.thing` stage cards, side-card, lift3d | one stage system |
@@ -75,7 +75,7 @@ Rules for every merge: one PR per row; a snapshot test proves the callers behave
 ## Staged merge order
 
 1. **Ask text** (shipped): `lib/ask-text.js`, 23 skills. Smallest, most copied, zero risk.
-2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof. `asOf` and `slug` landed in lists run 20; `urlOf` and the 7 variants are next.
+2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof. Done: `asOf` and `slug` in lists run 20, `urlOf` and the 7 variants in lists run 21.
 3. **Small server helpers**: lib/http.js (planned) (`json`), lib/db.js (planned) (`ensureTables`, `ready`). Wait for the store track to land first.
 4. **Owner client + `el()`**: one lib/owner-client.js (planned) and a card helper; five skills.
 5. **Router**: Claude folds `modelsOn`/`pick` into `lib/models.js` and the inline matchers left in `void.html` into skills behind the router.
@@ -88,6 +88,9 @@ Rules for every merge: one PR per row; a snapshot test proves the callers behave
 Each step that lands moves its row to **Done** below and its line to **Just finished** on the board.
 
 ## Done
+
+- **Films and movies, one family (lists run 21, 2026-11-12)**: `skills/cinema.js` makes one routing entry of films (Verse's own films on /films/) and movie (a movie to watch, a movie card, where to stream one), which tools/skill-overlap.mjs listed as a merge candidate (both took "where do I watch the films"; the pair sat in the overlap allowance since 2026-11-07 while the merge waited). films is asked first as before, and the family takes 1100-cinema where films sat (movie sat at 1400). A routing replay of all 6,423 examples, near misses and bench asks moved 0. Aliases kept (both names are parts, the page still logs skill:films / skill:movie); regression test: tools/cinema-family.test.mjs.
+- **Step 2, second half (lists run 21, 2026-11-12)**: `urlOf` (skills/image.js, skills/link.js; both still export it) and the seven variants of the ask tidier are one copy each in `lib/ask-text.js`. The seven were four forms: `cleanSaid` (growth, showcase, different: cleanLower with straight apostrophes), `cleanEnd` (worldtime, calendar: punctuation dropped only at the very end, then trimmed), `squash` (releasenotes: trim and collapse only) and `cleanFelt` (feelings: trailing commas and spaces dropped too), with `apostrophes` shared. tools/ask-text-step2b.test.mjs keeps the old copies verbatim and compares them on hand-picked and 4,000 generated strings. Step 2 is done; step 3 (small server helpers) is next.
 
 - **Experiments, one family (lists run 20, 2026-11-12)**: `skills/experiments.js` makes one routing entry of lab and make, which tools/skill-overlap.mjs listed as a merge candidate (both took "the lab" and "open the lab": the /lab/ card and make's fringe-lab card for the same place). lab is asked first as before; make sat at 0130 with only anneal-ambition between them, so the family takes 0127-experiments where lab sat. A routing replay of all 6,423 examples, near misses and bench asks moved 0. Aliases kept (both names are parts, the page still logs skill:lab / skill:make); regression test: tools/experiments-family.test.mjs.
 - **Step 2, first half (lists run 20, 2026-11-12)**: `asOf` (air, pollen, uv) and `slug` (functions/api/reflect.js, lib/will-guard.js) are one copy each in `lib/ask-text.js`; will-guard re-exports slug for api/will. tools/ask-text-step2.test.mjs compares both with the old copies, kept verbatim in the test. `urlOf` (image, link) and the 7 CLEAN variants are the second half.

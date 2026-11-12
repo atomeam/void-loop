@@ -12,12 +12,10 @@
  */
 import { resolveSubject, findPictures, creditHtml, stripHtml, esc as escHtml, httpsUrl } from '../lib/free-pics.js';
 import { sendImage, blobOf } from '../lib/image-handoff.js';
+import { urlOf } from '../lib/ask-text.js';
 
-/** the first http(s) url in the text, without trailing punctuation (null when none). Pure. */
-export function urlOf(text) {
-  const m = String(text || '').match(/https?:\/\/[^\s]+/i);
-  return m ? m[0].replace(/[),.!]+$/, '') : null;
-}
+// urlOf: one copy in lib/ask-text.js (convergence step 2, lists run 21); kept as this file's export for its callers and tests
+export { urlOf };
 
 const IMG_EXT = /\.(png|jpe?g|gif|webp|avif|svg)\b/i;
 

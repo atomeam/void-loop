@@ -52,3 +52,8 @@ test('csp-hashes: hashes only inline scripts that run, one rule per page, inside
   }
   assert.ok(!readFileSync(at('void-live-deploy/_headers'), 'utf8').includes('sha256-'), 'hashes are made at deploy, never committed');
 });
+test('the digits after a decimal point are not a phone number; a phone still is (lists run 21)', () => {
+  assert.deepEqual(scanText('14,Upper Keys,2023-12-04,APAL,Wild,25.0137503375,-80.3715803750'), []);
+  assert.deepEqual(scanText('pi is 3.1415926535'), []);
+  for (const t of ['call 415-867-5309', '+1 (415) 867-5309', 'tel.4158675309', 'x 4158675309']) assert.equal(scanText(t)[0]?.kind, 'phone', t);
+});

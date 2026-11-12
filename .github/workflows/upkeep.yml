@@ -2,7 +2,8 @@
 # small (ubuntu, a few minutes at most), writes a data file to main only when it changed, and warns instead of failing.
 #   daily:  clip visits (/c/_stats -> domains/void.clips.json), Piped host health (domains/void.piped.json), the smoke test of every
 #           skill (tools/skills-check.mjs --write tools/skills-smoke.json, then tools/families.mjs: a failing skill's rating drops; asked by Verse),
-#           the 7-day re-test of skills not tested since (tools/retest.mjs -> tools/retest.json; a failure queues one retest:<skill> job; asked by Verse)
+#           the 7-day re-test of skills not tested since (tools/retest.mjs -> tools/retest.json; a failure queues one retest:<skill> job; asked by Verse),
+#           the wishlist re-rank (tools/wishlist-rank.mjs -> docs/wishlist.md)
 #   weekly: dead links in sitemap.xml + llms.txt, npm audit summary, delete branches already merged into main and idle 14+ days
 #   on merge: the PR's Working on line in domains/handoff.md moves to Just finished, and the queue job its body names (`Job: <id>`,
 #           tools/job-link.mjs) goes live: the belt for a merge a person made (the bot's merges mark it live from tools/automerge.mjs)
@@ -52,12 +53,14 @@ jobs:
         run: |
           node tools/retest.mjs || true
           node tools/families.mjs > /dev/null || true
+      - name: Re-rank the wishlist (docs/wishlist.md's own rule; only the # column moves)
+        run: node tools/wishlist-rank.mjs --write || true
       - name: Commit what changed
         run: |
-          git diff --quiet -- domains/void.clips.json domains/void.piped.json tools/skills-smoke.json tools/skills-streak.json tools/retest.json void-live-deploy/skills/families.json && { echo "nothing changed"; exit 0; }
+          git diff --quiet -- domains/void.clips.json domains/void.piped.json tools/skills-smoke.json tools/skills-streak.json tools/retest.json void-live-deploy/skills/families.json docs/wishlist.md && { echo "nothing changed"; exit 0; }
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add domains/void.clips.json domains/void.piped.json tools/skills-smoke.json tools/skills-streak.json tools/retest.json void-live-deploy/skills/families.json
-          git commit -m "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+          git add domains/void.clips.json domains/void.piped.json tools/skills-smoke.json tools/skills-streak.json tools/retest.json void-live-deploy/skills/families.json docs/wishlist.md
+          git commit -m "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test, the wishlist order"
           for i in 1 2 3 4; do git push origin HEAD:main && exit 0; sleep $((2 ** i)); git pull --rebase origin main; done; exit 1
 
   weekly:

@@ -147,12 +147,20 @@ export function unitlessAmount(lower) {
   return m ? m[1] : '';
 }
 
+const HALF_N = '(\\d+(?:\\.\\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty)';
+const HALF_U = '(hours?|hrs?|minutes?|mins?|seconds?|secs?)';
+/** "2 and a half minutes" -> "2.5 minutes", "a minute and a half" / "an hour and a half" -> "1.5 minute" / "1.5 hour" (lists run 21,
+ *  from the timer-halves branch of #2414: these read as 30 seconds, 1 minute and 1 hour before). Pure. */
+export const halves = (s) => String(s || '')
+  .replace(new RegExp('\\b' + HALF_N + '\\s+and\\s+a\\s+half\\s+' + HALF_U + '\\b', 'g'), (_, n, u) => (durationNumber(n) + 0.5) + ' ' + u)
+  .replace(new RegExp('\\b' + HALF_N + '\\s+' + HALF_U + '\\s+and\\s+a\\s+half\\b', 'g'), (_, n, u) => (durationNumber(n) + 0.5) + ' ' + u);
+
 /** the length an ask names, in ms: an alarm, "days until …", "1 hour 30 minutes", "half an hour", a bare number of
  *  minutes; 0 when none. */
 export function parseDuration(text) {
   const alarm = alarmMs(text);
   if (alarm) return alarm;
-  const lower = timerEnglish((text || '').toLowerCase()).replace(/[-‐‑‒–—]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+  const lower = halves(timerEnglish((text || '').toLowerCase()).replace(/[-‐‑‒–—]/g, ' ')).replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
   const daysUntil = lower.match(/(?:how\s+many\s+)?days?\s+until\s+(.+)$/i);
   if (daysUntil) {
     const target = parseTargetDate(daysUntil[1].trim());
@@ -178,7 +186,7 @@ export function parseDuration(text) {
 
 /** the whole ask is a length ("5 minutes", "start 1 hour 30 min", "days until christmas"). Pure. */
 export function isDurationRequest(lower) {
-  const normalized = lower.replace(/[-‐‑‒–—]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+  const normalized = halves(lower.replace(/[-‐‑‒–—]/g, ' ')).replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
   if (/(?:how\s+many\s+)?days?\s+until\s+.+/i.test(normalized)) return true;
   const number = '(?:\\d+(?:\\.\\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)';
   const unit = '(?:hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)';

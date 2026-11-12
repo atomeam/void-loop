@@ -29,7 +29,7 @@ function fit(d) { // Nelder-Mead on (b, log e)
 }
 const ed = (m, q) => m.e * Math.pow(q / (1 - q), -1 / m.b); // dose giving mortality q
 const reps = +(process.argv[2] ?? 1000);
-let seed = 20261112; const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+let seed = 20261112; const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648); // privacy:ok, the constants of a seeded random number generator
 const q = (a, p) => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s[Math.floor(p * (s.length - 1))]; };
 const heat = csv('florida-heat-dose-2023-2026.csv').filter((r) => r.year === '2026');
 const groups = [['APAL', null], ['ACER', null], ['APAL', 'Outplant'], ['ACER', 'Outplant'], ['APAL', 'Wild']];
