@@ -1,5 +1,5 @@
 /**
- * kickoff-pack skill — package the first week Verse will own for a business idea so the client starts with less work.
+ * kickoff-pack skill — package the first week Verse runs for a business idea so the client starts with less work.
  * Lists the clarify step, first system slice, monitors and handoff point. Rules-based, offline. Nothing is sent.
  * "kickoff pack for the invoice automation", "first week ownership for onboarding", "start owning the support router".
  */
@@ -23,11 +23,11 @@ export function packFor(subject) {
     steps: [
       'Capture and clarify the idea (client-intake or business-clarify)',
       'Propose the first system slice Verse will design and build',
-      'Set monitors and verification Verse will own from day one',
+      'Set monitors and verification Verse runs from day one',
       'Prepare the status and handoff package so the client sees progress without chasing'
     ],
     clientDoes: 'Approves the first slice and the outcome; keeps the yes on the confirm line',
-    next: 'Ask for the client-intake or system-slice card next; Verse owns the heavy lifting from the start'
+    next: 'Ask for the client-intake or system-slice card next; Verse runs the systems from the start'
   };
 }
 
@@ -37,12 +37,12 @@ async function run(text, api) {
   const p = packFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Kickoff pack: ' + esc(p.subject) + '</h2>'
-      + '<p>Verse starts owning the heavy lifting in the first week so the client does less from day one.</p>'
+      + '<p>Verse starts running the systems in the first week so the client does less from day one.</p>'
       + '<h3>What Verse owns first</h3><ul>' + p.steps.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>What the client keeps</h3><p>' + esc(p.clientDoes) + '</p>'
       + '<h3>Next</h3><p>' + esc(p.next) + '</p>'
       + '<p class="sub">Nothing is sent or claimed as already built. The pack stays on the stage for sharing.</p>'
-      + '<div class="src">Source: A-to-Mind kickoff-pack · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind kickoff-pack · Verse runs the systems</div>';
   });
   return 'kickoff-pack';
 }
