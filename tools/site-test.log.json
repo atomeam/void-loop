@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-04T01:22:14Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 815,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-04T01:52:46Z",
   "kind": "visitor",
   "visitor": {
@@ -7955,5 +7937,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"bridge these inputs\" (skill:bridge)"
+ },
+ {
+  "at": "2026-11-12T01:17:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1280,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8060 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
