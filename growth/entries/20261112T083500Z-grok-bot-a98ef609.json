@@ -1,1 +1,0 @@
-{"at":"2026-11-12T08:35:00Z","by":"grok-bot","kind":"fix","what":"urlOf and the seven copies of the ask tidier are one copy each in lib/ask-text.js; every string tidies as before (tools/ask-text-step2b.test.mjs)"}

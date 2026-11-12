@@ -1,1 +1,0 @@
-{"at":"2026-11-12T08:35:00Z","by":"grok-bot","kind":"fix","what":"A timer for \"2 and a half minutes\", \"a minute and a half\" or \"an hour and a half\" runs the whole length (tools/timer-halves.test.mjs)"}
