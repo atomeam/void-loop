@@ -13,5 +13,15 @@
   "domains/forethinkers/run-log.md",
   "domains/forethinkers/tracks/planet-restoration.md",
   "domains/void.growth.md"
- ]
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-12T08:21:22.114Z",
+ "closedBy": "cdc2575850bc8fc88ae735216bf36ee7bbe66b4b",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/43179740341",
+ "minutes": 38
 }
