@@ -4,6 +4,7 @@
 //   readyOnce(make)      -> ready(env): runs make(env) once and shares the promise; a failure forgets it, so the next call tries again.
 //                           ready.reset() forgets it on purpose (tests).
 //   tablesReady(sqls)    -> the same, where make runs each statement in order (CREATE TABLE / CREATE INDEX IF NOT EXISTS ...)
+//   batchReady(sqls, then) -> the same, where the statements go to D1 in one batch, then then(env) runs if given (lists run 25)
 
 /** One shared promise per isolate for the work that makes an endpoint's tables. Pure apart from the promise it keeps. */
 export function readyOnce(make) {
@@ -17,3 +18,5 @@ export function readyOnce(make) {
 }
 /** readyOnce over a list of SQL statements run in order on env.DB. */
 export const tablesReady = (sqls) => readyOnce(async (env) => { for (const s of sqls) await env.DB.prepare(s).run(); });
+/** readyOnce over one D1 batch of SQL statements, then an optional follow-up (another endpoint's tables). */
+export const batchReady = (sqls, then) => readyOnce(async (env) => { await env.DB.batch(sqls.map((q) => env.DB.prepare(q))); if (then) await then(env); });

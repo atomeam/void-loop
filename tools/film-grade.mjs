@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Each film grades itself (frontier #26 step 2, first half; lists run 24, 2026-11-12). After a take, measure what a viewer would sit
-// through: the seconds where nothing on screen moves (ffmpeg's freezedetect), the longest still stretch, and how many taps the film
-// showed (tools/record.mjs counts them into the film's .json). The scorecard goes into the film's .json as `grade` and into the job
-// summary. The re-shoot of a film under the bar (another path through the page) is step 2's second half, still open.
+// Each film grades itself (frontier #26 step 2; lists runs 24 and 25, 2026-11-12). After a take, measure what a viewer would sit
+// through: the seconds where nothing on screen moves (ffmpeg's freezedetect), the longest still stretch, how many taps the film
+// showed, and whether the hook and ending cards rendered (tools/record.mjs checks each card on screen and writes taps and cards into
+// the film's .json). The scorecard goes into the film's .json as `grade` and into the job summary. A film under the bar is re-shot
+// once with another path through the page (tapOrder) and the better take is kept (keepBetter).
 //   node tools/film-grade.mjs <film.webm> [--meta film.json]    prints the scorecard; with --meta, writes it into that file
 // Needs ffmpeg on PATH (or FFMPEG=/path/to/ffmpeg). The pure parts are exported for tools/film-grade.test.mjs.
 import fs from 'node:fs';
@@ -29,14 +30,16 @@ export function durationOf(log) {
   return m ? Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3]) : 0;
 }
 /** the scorecard: seconds, still seconds and share, the longest still, taps, and whether the film clears the bar (with the reasons). Pure. */
-export function scorecard({ seconds, stills, taps = null }, bar = BAR) {
+export function scorecard({ seconds, stills, taps = null, cards = null }, bar = BAR) {
   const still = stills.reduce((s, x) => s + Math.max(0, x.end - x.start), 0), longest = stills.reduce((m, x) => Math.max(m, x.end - x.start), 0);
   const share = seconds > 0 ? still / seconds : 0, why = [];
   if (share > bar.maxStillShare) why.push(Math.round(share * 100) + '% of the film is still');
   if (longest > bar.maxLongestStill) why.push('one still stretch of ' + longest.toFixed(1) + ' s');
   if (taps != null && taps < bar.minTaps) why.push('no tap shown');
+  if (cards && cards.hook === false) why.push('the hook card did not render');
+  if (cards && cards.ending === false) why.push('the ending card did not render');
   const r = (n) => Math.round(n * 10) / 10;
-  return { seconds: r(seconds), stillSeconds: r(still), stillShare: Math.round(share * 100) / 100, longestStill: r(longest), taps, pass: !why.length, why };
+  return { seconds: r(seconds), stillSeconds: r(still), stillShare: Math.round(share * 100) / 100, longestStill: r(longest), taps, ...(cards ? { cards: { hook: cards.hook !== false, ending: cards.ending !== false } } : {}), pass: !why.length, why };
 }
 /** the job-summary line for one film. Pure. */
 export const summaryLine = (id, g) => '- ' + id + ': ' + (g.pass ? 'clears the bar' : 'under the bar (' + g.why.join('; ') + ')') + ' · ' + g.seconds + ' s, ' + g.stillSeconds + ' s still, longest ' + g.longestStill + ' s' + (g.taps != null ? ', ' + g.taps + (g.taps === 1 ? ' tap' : ' taps') : '');
@@ -46,7 +49,21 @@ export function gradeFilm(video, metaFile) {
   const meta = metaFile && fs.existsSync(metaFile) ? JSON.parse(fs.readFileSync(metaFile, 'utf8')) : {};
   const log = gradeLog(video);
   const seconds = durationOf(log) || Number(meta.tookMs) / 1000 || 0;
-  return scorecard({ seconds, stills: stillsOf(log, seconds), taps: Number.isFinite(meta.taps) ? meta.taps : null });
+  return scorecard({ seconds, stills: stillsOf(log, seconds), taps: Number.isFinite(meta.taps) ? meta.taps : null, cards: meta.cards && typeof meta.cards === 'object' ? meta.cards : null });
+}
+/** the order the buttons are pressed in: the start-like ones first, then the rest; the re-shoot (alt) takes another path, the rest
+ *  first from the bottom of the page up and the start-like ones last, so a page that stalled on its first button gets a different film. Pure. */
+export function tapOrder(starts, rest, alt = false) {
+  return alt ? [...rest].reverse().concat(starts) : [...starts, ...rest];
+}
+/** which take to keep: 'first' or 'second'. A take that clears the bar wins; otherwise fewer reasons under the bar, then less still
+ *  share, then more taps; a tie or a missing grade keeps the first take. Pure. */
+export function keepBetter(a, b) {
+  if (!b) return 'first'; if (!a) return 'second';
+  if (a.pass !== b.pass) return b.pass ? 'second' : 'first';
+  if (a.why.length !== b.why.length) return b.why.length < a.why.length ? 'second' : 'first';
+  if (a.stillShare !== b.stillShare) return b.stillShare < a.stillShare ? 'second' : 'first';
+  return (b.taps || 0) > (a.taps || 0) ? 'second' : 'first';
 }
 // ffmpeg prints the duration and the freezedetect marks to stderr, whether or not it exits 0
 function gradeLog(video, ffmpeg = process.env.FFMPEG || 'ffmpeg') {

@@ -38,25 +38,22 @@ import { cap as dayCap } from '../../lib/daily-cap.js';
 export const PHOTO_LOOKUPS_DAY = 120, PHOTO_CONN_DAY = 6, PHOTO_ROWS_DAY = 40, NONE_TTL_MS = 6 * 3600e3, LIMITED_TTL_MS = 30 * 60e3, FETCH_MS = 5000, DEADLINE_MS = 16000;
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const enc = (s) => new TextEncoder().encode(s);
+import { tablesReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 async function sha(s) { return [...new Uint8Array(await crypto.subtle.digest('SHA-256', enc(s)))].map((x) => x.toString(16).padStart(2, '0')).join(''); }
 const bytesOf = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 const dataOf = (u) => { const m = /^data:(image\/(?:jpeg|png));base64,([A-Za-z0-9+/]+={0,2})$/.exec(String(u || '')); return m ? { ct: m[1], b64: m[2] } : null; };
 const why = (e) => redact(String((e && e.message) || e || 'error')).replace(/\s+/g, ' ').slice(0, 100);
 const SAFE_HEADERS = { 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; sandbox", 'cross-origin-resource-policy': 'same-origin' };
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = (async () => {
-    const q = (s) => env.DB.prepare(s).run();
-    await q('CREATE TABLE IF NOT EXISTS void_image_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)'); // the same table as functions/api/image.js
-    await q('CREATE TABLE IF NOT EXISTS void_daily_art (k TEXT PRIMARY KEY, day TEXT NOT NULL, state TEXT NOT NULL, img TEXT NOT NULL, source TEXT NOT NULL, at INTEGER NOT NULL, attempts INTEGER NOT NULL)');
-    await q('CREATE TABLE IF NOT EXISTS void_daily_photo (k TEXT PRIMARY KEY, day TEXT NOT NULL, state TEXT NOT NULL, meta TEXT NOT NULL, img TEXT NOT NULL, at INTEGER NOT NULL, id TEXT NOT NULL)');
-    await q('CREATE TABLE IF NOT EXISTS void_daily_block (h TEXT PRIMARY KEY, at INTEGER NOT NULL)');
-    await q('CREATE TABLE IF NOT EXISTS void_daily_src (src TEXT PRIMARY KEY, until INTEGER NOT NULL)');
-  })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; };
+const ready = tablesReady([ // made once per isolate (lib/db.js, convergence step 3)
+  'CREATE TABLE IF NOT EXISTS void_image_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)', // the same table as functions/api/image.js
+  'CREATE TABLE IF NOT EXISTS void_daily_art (k TEXT PRIMARY KEY, day TEXT NOT NULL, state TEXT NOT NULL, img TEXT NOT NULL, source TEXT NOT NULL, at INTEGER NOT NULL, attempts INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_daily_photo (k TEXT PRIMARY KEY, day TEXT NOT NULL, state TEXT NOT NULL, meta TEXT NOT NULL, img TEXT NOT NULL, at INTEGER NOT NULL, id TEXT NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_daily_block (h TEXT PRIMARY KEY, at INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_daily_src (src TEXT PRIMARY KEY, until INTEGER NOT NULL)',
+]);
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset();
 const used = async (env, k, day) => { const r = await env.DB.prepare('SELECT n FROM void_image_days WHERE k = ? AND day = ?').bind(k, day).first(); return r ? Number(r.n) || 0 : 0; };
 const tick = (env, k, day) => env.DB.prepare('INSERT INTO void_image_days (k, day, n) VALUES (?, ?, 1) ON CONFLICT(k) DO UPDATE SET n = CASE WHEN day = excluded.day THEN n + 1 ELSE 1 END, day = excluded.day').bind(k, day).run();
 const forgeToday = async (env, day) => { try { const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE day = ?').bind(day).first(); return Number(r && r.n) || 0; } catch (_) { return 0; } };

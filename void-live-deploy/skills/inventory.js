@@ -84,6 +84,7 @@ const WHAT = {
   handoffs: 'the client handoff family: delivery pack, client handoff card, system handoff package, full handoff',
   'client-status': 'client status: the status Verse stores, as a client handoff, plus the ownership/progress/monitors board',
   'time-saved': 'client-visible estimate of hours the client no longer spends because Verse owns the systems',
+  'stage-marks': 'stage marks: folders, tags, colour labels and layouts on the stage, plus labels and arrows between things',
 };
 
 /** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */

@@ -39,7 +39,7 @@ export const collisionLines = (out) => String(out || '').split('\n').map((l) => 
 export async function landing(file, skill, ask, names, dir) {
   const lower = String(ask).toLowerCase(), fresh = (f) => import(pathToFileURL(f).href + '?v=' + Date.now() + Math.random()).then((m) => m.default);
   let mine;
-  try { mine = await fresh(file); } catch (e) { return { takes: false, by: null, loadError: String(e && e.message || e).slice(0, 200) }; }
+  try { mine = await fresh(file); } catch (e) { return { takes: false, by: null, loadError: loadWhy(file, e).slice(0, 200) }; }
   let takes = false; try { takes = !!mine.match(lower, ask); } catch (_) { takes = false; }
   let by = null;
   for (const n of names || []) {
@@ -80,7 +80,69 @@ export function regressionAsks(miss, bench, skill) {
  * go, else why not. */
 export async function letsGo(file, ask) {
   try { const mod = (await import(pathToFileURL(file).href + '?v=' + Date.now() + Math.random())).default; return mod.match(String(ask).toLowerCase(), ask) ? 'the skill still takes the ask' : ''; }
-  catch (e) { return 'the edited skill did not load: ' + e.message; }
+  catch (e) { return 'the edited skill did not load: ' + loadWhy(file, e); }
+}
+
+/** the first bracket a source leaves open, or a closer with nothing to close: { char, line, closes? } or null. Strings, template
+ *  literals, comments and regex literals are skipped (a regex is a slash where a value starts). Pure. (closed PR #2335's leftover, lists run 25) */
+export function openBracket(src) {
+  const s = String(src || ''), stack = [], pairs = { ')': '(', ']': '[', '}': '{' };
+  let line = 1, prev = '', word = '', i = 0;
+  // inside a template literal from i: to its closing backtick (false) or to a ${ (true, the ${ pushed); i ends on that character
+  const template = () => {
+    for (; i < s.length; i++) {
+      if (s[i] === '\\') { i++; continue; }
+      if (s[i] === '\n') line++;
+      else if (s[i] === '`') return false;
+      else if (s[i] === '$' && s[i + 1] === '{') { stack.push({ char: '${', line }); i++; return true; }
+    }
+    return false;
+  };
+  for (; i < s.length; i++) {
+    const c = s[i];
+    if (c === '\n') { line++; continue; }
+    if (c === '/' && s[i + 1] === '/') { while (i < s.length && s[i] !== '\n') i++; i--; continue; }
+    if (c === '/' && s[i + 1] === '*') { i += 2; while (i < s.length && !(s[i] === '*' && s[i + 1] === '/')) { if (s[i] === '\n') line++; i++; } i++; continue; }
+    if (c === '`') { i++; if (template()) { prev = '{'; word = ''; } else prev = 'v'; continue; }
+    if (c === '"' || c === "'") {
+      for (i++; i < s.length && s[i] !== c; i++) { if (s[i] === '\\') i++; else if (s[i] === '\n') { line++; break; } }
+      prev = 'v'; continue;
+    }
+    if (c === '/' && (!prev || /[(,=:[!&|?{};+\-*%<>~^]/.test(prev) || /^(?:return|typeof|case|in|of|void|delete|throw|else|do|yield|await)$/.test(word))) { // a regex literal
+      let cls = false;
+      for (i++; i < s.length && s[i] !== '\n'; i++) { if (s[i] === '\\') i++; else if (s[i] === '[') cls = true; else if (s[i] === ']') cls = false; else if (s[i] === '/' && !cls) break; }
+      while (/[a-z]/i.test(s[i + 1] || '')) i++; // its flags
+      prev = 'v'; word = ''; continue;
+    }
+    if (c === '}' && stack.length && stack[stack.length - 1].char === '${') { stack.pop(); i++; if (template()) { prev = '{'; word = ''; } else prev = 'v'; continue; }
+    if (c === '(' || c === '[' || c === '{') stack.push({ char: c, line });
+    else if (pairs[c]) { const top = stack.pop(); if (!top || top.char !== pairs[c]) return { char: c, line, closes: top ? top.char : null }; }
+    if (!/\s/.test(c)) { prev = /[\w$)\]]/.test(c) ? 'v' : c; word = /[\w$]/.test(c) ? (/[\w$]/.test(s[i - 1] || '') ? word + c : c) : ''; }
+  }
+  return stack.length ? stack[stack.length - 1] : null;
+}
+/** why an edited file did not load: the error, and for a syntax error the bracket the edit left open (or closed twice). Reads the file. */
+export function loadWhy(file, e) {
+  const msg = String(e && e.message || e);
+  if (!(e instanceof SyntaxError) && !/SyntaxError|Unexpected (end of input|token)/.test(msg)) return msg;
+  let b = null; try { b = openBracket(readFileSync(file, 'utf8')); } catch (_) { b = null; }
+  if (!b) return msg;
+  return msg + (b.closes !== undefined ? ' (a ' + b.char + ' on line ' + b.line + ' closes ' + (b.closes ? 'a ' + b.closes : 'nothing') + ')' : ' (the ' + b.char + ' opened on line ' + b.line + ' is never closed)');
+}
+/** an HTTP error in a few words: a JSON error's own message, or for an HTML error page (the edge's) its title and error code, such as
+ *  "HTTP 503: Worker exceeded resource limits (error 1102)", instead of the page's first bytes. Pure. (closed PR #2335's leftover) */
+export function httpReason(status, body) {
+  const t = String(body || '').trim(), head = 'HTTP ' + status;
+  if (/^</.test(t) || /<html|<!doctype/i.test(t.slice(0, 200))) {
+    const strip = (x) => String(x || '').replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/&#39;|&apos;/g, "'").replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+    const title = strip((/<title[^>]*>([\s\S]*?)<\/title>/i.exec(t) || [])[1]);
+    const code = (/\berror(?:\s*code)?[\s:#]*(1\d{3})\b/i.exec(strip(t)) || [])[1] || '';
+    // "Worker exceeded resource limits | a-to-mind.com | Cloudflare" and "a-to-mind.com | 502: Bad gateway": the words, without the host, the platform or the code
+    const words = title.split('|').map((x) => x.trim().replace(/^(?:error\s*)?\d{3,4}\s*:\s*/i, '')).filter((x) => x && !/^[\w.-]+\.[a-z]{2,}$/i.test(x) && !/^cloudflare$/i.test(x)).join(' · ');
+    return head + (words ? ': ' + words.slice(0, 100) : ' (an HTML error page)') + (code ? ' (error ' + code + ')' : '');
+  }
+  try { const j = JSON.parse(t); const m = j && (j.error || j.message); if (m) return head + ': ' + String(typeof m === 'string' ? m : JSON.stringify(m)).slice(0, 120); } catch (_) {}
+  return head + (t ? ' ' + t.replace(/\s+/g, ' ').slice(0, 120) : '');
 }
 
 // what a card says when the skill took the ask but had no answer for it ("I couldn't find “is nyc”. Try a city name.")
@@ -149,7 +211,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     let res = await go();
     // one more try after a gateway error (2026-10-19: a 502 from the model's route spent a whole tick of the growth clock)
     if (retryable(res.status)) { await new Promise((r) => setTimeout(r, RETRY_MS)); res = await go(); }
-    if (!res.ok) throw new Error(`${method} ${path}: HTTP ${res.status} ${(await res.text()).slice(0, 120)}`); return res.json();
+    if (!res.ok) throw new Error(`${method} ${path}: ${httpReason(res.status, await res.text())}`); return res.json(); // an edge error page is logged by its own title and code
   };
   let job = null, miss;
   try {

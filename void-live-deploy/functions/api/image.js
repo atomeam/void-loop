@@ -37,15 +37,13 @@ import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAP
 export const AI_MS = 25000, POLL_MS = 30000; // both inside the gate's 60 s wait for a first picture (2026-10-25: 40 + 40 s let a slow painter hold a picture past it)
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
+import { tablesReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 const say = (why, de) => (SAYS[why] || SAYS.busy)[de ? 1 : 0];
 const resting = (why, de, status = 200, extra = {}) => json({ state: 'resting', why, say: say(why, de) }, status, extra);
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = env.DB.prepare('CREATE TABLE IF NOT EXISTS void_image_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)').run().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its table made again
+const ready = tablesReady(['CREATE TABLE IF NOT EXISTS void_image_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)']); // made once per isolate (lib/db.js)
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its table made again
 const used = async (env, k, day) => { const r = await env.DB.prepare('SELECT n FROM void_image_days WHERE k = ? AND day = ?').bind(k, day).first(); return r ? Number(r.n) || 0 : 0; };
 const tick = (env, k, day) => env.DB.prepare('INSERT INTO void_image_days (k, day, n) VALUES (?, ?, 1) ON CONFLICT(k) DO UPDATE SET n = CASE WHEN day = excluded.day THEN n + 1 ELSE 1 END, day = excluded.day').bind(k, day).run();
 /** the image page's Workers AI pictures today, for the Art Forge's own count (functions/api/card-art.js madeToday): the two share one cap */
