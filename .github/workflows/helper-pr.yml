@@ -59,7 +59,13 @@ jobs:
           behind=$(git rev-list --count "HEAD..origin/main")
           FAIL=""
           if [ "$behind" -gt 0 ]; then
+            num=$(ghr api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq '.[0].number // empty' || true)
             if git rebase origin/main; then
+              git push --force-with-lease origin "HEAD:$BRANCH"
+            elif [ -n "$num" ] && ! node tools/fix-cap.mjs claim --pr "$num" --kind conflict; then
+              git rebase --abort || true
+              FAIL="conflict fixer already tried twice"
+            elif node tools/shared-merge.mjs --rebase; then
               git push --force-with-lease origin "HEAD:$BRANCH"
             else
               git rebase --abort || true

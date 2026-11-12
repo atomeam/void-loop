@@ -11,6 +11,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BUILD_OUTPUTS } from './generated.mjs';
 import { APPEND_JSON, APPEND_TEXT, keyOf } from './records.mjs';
+import { settleText } from './shared-merge.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const build = new Set(BUILD_OUTPUTS);
@@ -107,9 +108,16 @@ function main() {
       else if (!onlyBuildConflicts(files)) {
         // the append-mostly files settle the same way merge-main.mjs settles them (both sides' new lines), so a
         // branch that only appended does not need a person here either; anything else still stops below
-        const settled = files.filter((f) => APPEND_MOSTLY.has(f));
+        const shared = files.filter((f) => settleText(f, git(['show', `:3:${f}`], dir).stdout || '', git(['show', `:2:${f}`], dir).stdout || '') != null);
+        const settled = files.filter((f) => (APPEND_MOSTLY.has(f) || shared.includes(f)));
         const rest = files.filter((f) => !settled.includes(f));
-        for (const f of settled) {
+        for (const f of shared) {
+          const text = settleText(f, git(['show', `:3:${f}`], dir).stdout || '', git(['show', `:2:${f}`], dir).stdout || '');
+          writeFileSync(resolve(dir, f), text);
+          git(['add', '--', f], dir);
+          console.log('merge-gate: settled ' + f + ' by skill id or inbox row');
+        }
+        for (const f of settled.filter((f) => !shared.includes(f))) {
           if (APPEND_JSON.includes(f)) {
             const theirs = JSON.parse(git(['show', `:3:${f}`], dir).stdout || '[]');
             const ours = JSON.parse(git(['show', `:2:${f}`], dir).stdout || '[]');
