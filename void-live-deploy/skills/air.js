@@ -4,6 +4,7 @@
  * "air quality in Tokyo", "AQI in London", "is the air good in Paris", "what's the air quality in New York".
  * Shows US AQI with a clear label, category, dominant pollutant, short guidance, and dated Open-Meteo sources.
  */
+import { asOf } from '../lib/ask-text.js'; // the reading's date and time, one copy for air, pollen and uv (convergence step 2)
 const US_BANDS = [
   { max: 50, label: 'Good', tip: 'Air looks clear. Everyday outdoor plans are fine.' },
   { max: 100, label: 'Moderate', tip: 'Most people are fine outdoors; sensitive folks may take it easier.' },
@@ -44,13 +45,6 @@ function dominantOf(cur) {
   return best;
 }
 
-function asOf(iso) {
-  if (!iso) return new Date().toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
-  const d = new Date(/T/.test(iso) ? iso : iso + 'T00:00:00');
-  if (Number.isNaN(+d)) return String(iso);
-  return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
-    + ( /T\d/.test(iso) ? ' · ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '');
-}
 
 async function run(text, api) {
   const { showPage, esc } = api;

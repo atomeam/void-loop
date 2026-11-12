@@ -1,2 +1,3 @@
 `checks-list.mjs` `helper-pr.mjs` `humble-copy.mjs` `calendar-rivals-e2e.mjs` `notes-rivals-e2e.mjs` `translate-rivals-e2e.mjs` `brain-probe.mjs` `flow-probe.mjs` `redirect-builders.mjs`
 `proposal-pack` `ownership-map` `handoff-checklist` `reuse-pack` `progress-report` `system-slice`
+- `tools/cards-delta.mjs` (lists run 20, `tools/cards-delta.test.mjs`): Verse review runs the generated cards' checks (refresh --check for index, first, deps, families, guide, what, and the map coverage) on a pull request that touches the skills, the families or the map; only a card the pull request itself leaves stale fails, with its fix named.

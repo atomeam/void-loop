@@ -1,0 +1,1 @@
+{"at":"2026-11-12T05:31:14Z","by":"grok-bot","kind":"build","what":"flightconnections.com's two journeys on /flights/routes/ are scripted: pick Lisbon, set 3 hours, see the nonstop airports with Madrid and without New York; share the link, pick another airport, open the link and get the Lisbon list back (tools/flights-journeys.test.mjs)","asked":"ask-20261112-0128-1"}

@@ -6,6 +6,17 @@
  */
 export const clean = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 export const cleanLower = (s) => clean(s).toLowerCase();
+// convergence step 2 (lists run 20): two more helpers that were copied file to file.
+/** a reading's date (and time, when it has one) in the visitor's words: "Nov 12, 2026 · 3:00 PM"; no reading, today's date. Was in air, pollen and uv. */
+export function asOf(iso) {
+  if (!iso) return new Date().toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+  const d = new Date(/T/.test(iso) ? iso : iso + 'T00:00:00');
+  if (Number.isNaN(+d)) return String(iso);
+  return d.toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })
+    + (/T\d/.test(iso) ? ' · ' + d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '');
+}
+/** a short id from words: lower-case, runs of anything else to one dash, 40 characters at most ("Build the Map!" -> "build-the-map"). Was in api/reflect and lib/will-guard. */
+export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 // long pasted prose (a status report, an email): keyword skills (air, weather, time, country...) must not fire on a word buried in it
 // and read the whole paste as a city. Two or more sentences and over 25 words, or over 220 characters, unless it opens with an
 // instruction for a skill that takes long text ("summarize this transcript: ...", "review this ...", "translate ..."). Pure.

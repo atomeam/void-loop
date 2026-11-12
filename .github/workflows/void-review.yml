@@ -152,6 +152,20 @@ jobs:
             echo "this PR does not touch void-live-deploy/skills/"
           fi
 
+      # a skill that reached main without its family, book page or map line turned main's families and book checks red twice (#2707, #2713):
+      # the cards' own checks now run here, and only a card this pull request leaves stale fails (tools/cards-delta.mjs). About 15 s, no browser.
+      - name: The generated cards and the map are current (only when the PR touches skills or the families)
+        id: cards
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
+        env:
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+        run: |
+          if git diff --name-only "$BASEREF...HEAD" | grep -qE '^(void-live-deploy/skills/|tools/families\.mjs$|docs/MAP\.md$)'; then
+            node tools/cards-delta.mjs --base "$BASEREF" || { echo "::error title=Generated cards::this pull request leaves a generated card or the map stale (see the lines above for the fix)"; exit 1; }
+          else
+            echo "this PR does not touch the skills, the families or the map"
+          fi
+
       # every module the shared tool-page chain loads (lib/toolkit.js and its imports) stays named in the browser suite's shared list
       # (tools/shared-chain.test.mjs): #1663 added one, the list did not name it, and shard 1 went red on main after the merge. Seconds, no browser.
       - name: The shared tool-page chain matches the browser suite's list
@@ -188,10 +202,11 @@ jobs:
           SKILLS: ${{ steps.skills.outcome }}
           CHAIN: ${{ steps.chain.outcome }}
           COPIES: ${{ steps.copies.outcome }}
+          CARDS: ${{ steps.cards.outcome }}
         run: |
           set +e
           review=ok
-          for o in "$BUGS" "$SECRETS" "$PRIVACY" "$SKILLS" "$CHAIN" "$COPIES"; do
+          for o in "$BUGS" "$SECRETS" "$PRIVACY" "$SKILLS" "$CHAIN" "$COPIES" "$CARDS"; do
             if [ "$o" = "failure" ]; then review=fail; fi
           done
           exam=ok

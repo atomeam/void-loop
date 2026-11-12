@@ -215,6 +215,30 @@ export default {
     ]
    }
   ],
+  "experiments": [
+   {
+    "name": "lab",
+    "examples": [
+     "verse lab",
+     "vers lab",
+     "the lab",
+     "open the lab",
+     "show me the lab",
+     "lab experiments"
+    ]
+   },
+   {
+    "name": "make",
+    "examples": [
+     "make a 3d torus",
+     "show me a gold 3d diamond",
+     "make a sphere",
+     "timing game",
+     "uap timeline",
+     "low poly cat"
+    ]
+   }
+  ],
   "time": [
    {
     "name": "timer",

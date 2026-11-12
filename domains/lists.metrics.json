@@ -1079,6 +1079,49 @@
      "link": "https://github.com/atomeam/void-loop/blob/main/domains/handoff.md"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T05:45:00Z",
+   "run": 20,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.2,
+   "dup_basis": "1 of 5 items was already done elsewhere: four of the five secrets leftovers on the board (keeperOf before local skills, scrubOut in answer.js, per-page CSP hashes at deploy, csp-smoke in verify.yml); only the Vault product stays open",
+   "median_days": 5.4,
+   "median_basis": "days from queued to built: 0.25 (the cards item, on the board since lists run 18 at 2026-11-11 23:36 UTC), 1.4 (flightconnections.com asks, first asked 2026-11-10 20:05 UTC), 5.4 (lab~make in the overlap allowance since #2448, 2026-11-06 18:58 UTC), 25 (secrets leftovers, on the board since 2026-10-18), 28 (convergence step 2, planned 2026-10-15); median 5.4",
+   "asks_open_start": 1,
+   "asks_open_end": 0,
+   "note": "Run 20 of the lists routine. Main was green at the start (refresh check clean, the deploy green). The V01D asks list reaches zero once the ledger lines fold on main.",
+   "items": [
+    {
+     "what": "flightconnections.com's two journeys on /flights/routes/ scripted and passing against the live site (tools/tower-journeys.mjs, tools/flights-journeys.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "Verse review runs the generated cards' checks and the map coverage on a pull request that touches the skills, the families or the map; only a card the pull request itself leaves stale fails (tools/cards-delta.mjs)",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "lab and make are one experiments family at 0127, aliases kept, 0 asks moved (tools/experiments-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "convergence step 2, first half: asOf and slug are one copy each in lib/ask-text.js (tools/ask-text-step2.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "secrets leftovers: keeperOf, scrubOut, CSP hashes and csp-smoke",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/tools/csp-hashes.mjs"
+    }
+   ]
   }
  ]
 }

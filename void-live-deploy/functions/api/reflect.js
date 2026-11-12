@@ -6,13 +6,13 @@
 // When the model is busy nothing is saved: Verse's words are never made up for it. Each reflection is also given what its owner
 // told it (functions/api/voice-reply.js: replies and corrections, and the line Verse chose to keep from each).
 import { ownerOk } from '../../lib/guard.js';
+import { slug } from '../../lib/ask-text.js'; // one copy (convergence step 2)
 import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, builtAsks, readReplies, replyFacts, askId, holdAsks } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
-const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
 export async function onRequestGet({ request, env }) {
   const entries = await readVoice(env);
