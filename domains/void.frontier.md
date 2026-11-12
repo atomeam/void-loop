@@ -473,7 +473,7 @@ Shipped first: the video skill (#719): eight platforms' official embeds, search 
 2. Related clips beside the player, added to the queue without stopping playback.
 3. Chapters and a searchable transcript: jump to a word or a scene (YouTube captions where the embed allows; no gpt-oss on the free tier).
 4. Watch parties on a shared stage (skills/share), the host's "skip to" followed by all.
-5. Audio-only mode and an accessibility pass on the card (keyboard, screen reader).
+5. Audio-only mode and an accessibility pass on the card (keyboard, screen reader). Done in lists run 23 (2026-11-12): "audio only" / "listen mode" shrinks the official player to a 200 x 200 square, the smallest the embed terms allow, which stays visible and playing ("show the video" brings it back); the card is a labelled region with a polite live line, CC and Listen carry aria-pressed, and Enter or Space plays a result (tools/video-listen.test.mjs).
 Declined: an offline "smart-cache" that pre-downloads videos (embed only: never downloaded or rehosted).
 
 

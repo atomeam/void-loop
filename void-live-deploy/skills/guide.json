@@ -2829,7 +2829,7 @@
     "countdown to the world cup"
    ],
    "tier": "proven",
-   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the time; set down here after it answered true 3 times. So it is written.",
    "glow": 100,
    "n": 143
@@ -3315,7 +3315,7 @@
    "chapter": "numbers",
    "name": "markets",
    "title": "Markets",
-   "line": "Verse's crypto board: live prices and 7-day sparklines for the top coins, from Verse's own edge-cached /api/markets (CoinGecko underneath, two-minute cache, no KV), and a read-only Bitcoin address lookup by public address (mempool.space public API)",
+   "line": "Verse's crypto board: live prices and 7-day sparklines for the top coins, from Verse's own edge-cached /api/markets (CoinGecko underneath, two-minute cache, no KV), and a read-only Bitcoin address lookup by public address (mempool.space public API), and Ethereum or Solana addresses (PublicNode's keyless RPC)",
    "examples": [
     "crypto prices",
     "crypto board",
