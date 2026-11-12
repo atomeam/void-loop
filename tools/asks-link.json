@@ -405,6 +405,16 @@
       "match": "emojigraph",
       "ledgerAt": "2026-11-03T23:42:07Z",
       "why": "emojigraph.org is already a lane page (lib/self-sites.js row, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15 (decided in lists runs 10, 11, 13 and 16)"
+    },
+    {
+      "match": "\\breadme\\b",
+      "ledgerAt": "2026-11-12T02:32:28Z",
+      "why": "built: the repository has a front page again (README.md at the root and docs/README.md, which was empty), every path it names checked by tools/readme.test.mjs (lists run 19, 2026-11-11)"
+    },
+    {
+      "match": "definitions?\\s+exam.{0,80}(etymolog|unknown)|(etymolog|unknown).{0,80}definitions?\\s+exam",
+      "ledgerAt": "2026-11-12T02:32:28Z",
+      "why": "built: the definitions exam checks an etymology ask against Wiktionary's Etymology section, not the definition, and its unknown-word case is a word no dictionary has instead of Verse's own zorbleflux game (tools/exam-etymology.test.mjs, lists run 19, 2026-11-11)"
     }
   ],
   "extra": [

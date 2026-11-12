@@ -2452,6 +2452,11 @@
       "words": "Assign dedicated runners to the perf3d and glyphs browser checks.",
       "ledgerAt": "2026-11-11T17:36:51Z",
       "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the sports exam data for MLB, Premier League, and Serie A.",
+      "ledgerAt": "2026-11-11T17:36:49Z",
+      "why": "built: the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2463,23 +2468,71 @@
     }
   ],
   "totals": {
-    "asked": 263,
+    "asked": 265,
     "built": 262,
-    "through": "2026-11-10T23:59:00Z",
+    "through": "2026-11-12T01:28:00Z",
     "open": [
       {
         "ask": "Build the missing jobs for flightconnections.com to meet the current target.",
-        "at": "2026-11-10T23:59:00Z",
+        "at": "2026-11-12T01:28:00Z",
         "kind": "daily",
         "small": false,
         "times": 2,
         "ids": [
-          "ask-20261110-2005-1",
-          "ask-20261110-2041-1",
-          "ask-20261110-2359-1",
-          "ask-20261110-2127-1",
-          "ask-20261110-2131-1",
-          "ask-20261110-2215-1"
+          "ask-20261111-2243-1",
+          "ask-20261111-2246-1",
+          "ask-20261111-2249-1",
+          "ask-20261111-2253-1",
+          "ask-20261111-2258-1",
+          "ask-20261111-2307-1",
+          "ask-20261111-2314-1",
+          "ask-20261111-2341-1",
+          "ask-20261111-2348-1",
+          "ask-20261112-0034-1",
+          "ask-20261112-0108-1",
+          "ask-20261112-0128-1"
+        ]
+      },
+      {
+        "ask": "Handle the void-loop readme.",
+        "at": "2026-11-12T01:28:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 1,
+        "ids": [
+          "ask-20261111-2243-3",
+          "ask-20261111-2246-3",
+          "ask-20261111-2249-3",
+          "ask-20261111-2253-3",
+          "ask-20261111-2258-3",
+          "ask-20261111-2307-3",
+          "ask-20261111-2314-2",
+          "ask-20261111-2341-2",
+          "ask-20261111-2348-3",
+          "ask-20261112-0034-3",
+          "ask-20261112-0108-3",
+          "ask-20261112-0128-3"
+        ]
+      },
+      {
+        "ask": "Implement updates to the definitions exam to include etymology and handle unknown terms.",
+        "at": "2026-11-12T01:28:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 1,
+        "ids": [
+          "ask-20261111-2243-2",
+          "ask-20261111-2246-2",
+          "ask-20261111-2249-2",
+          "ask-20261111-2253-2",
+          "ask-20261111-2258-2",
+          "ask-20261111-2307-2",
+          "ask-20261111-2314-3",
+          "ask-20261111-2341-3",
+          "ask-20261111-2348-2",
+          "ask-20261112-0034-2",
+          "ask-20261112-0108-2",
+          "ask-20261112-0128-2"
         ]
       }
     ]

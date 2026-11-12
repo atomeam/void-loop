@@ -100,6 +100,14 @@ const STOP = new Set('which their there about would could should these those oth
 function glossWords(html) {
   return String(html || '').replace(/<[^>]+>/g, ' ').toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 4 && !STOP.has(w)).slice(0, 8);
 }
+/** the first words of the English Etymology section of a Wiktionary TextExtracts answer, or []. Pure. */
+export function etymologyWords(j, word) {
+  const pages = j && j.query && j.query.pages; const page = pages && Object.values(pages)[0];
+  const text = String((page && page.extract) || '');
+  const en = text.search(/^==\s*English\s*==/m), from = en >= 0 ? en : 0;
+  const m = /^===+\s*Etymology[^=\n]*===+\s*\n([\s\S]*?)(?=\n==|$)/m.exec(text.slice(from));
+  return m ? glossWords(m[1]).filter((w) => w !== word) : [];
+}
 async function googleTranslate(q, to) {
   const j = await getJson('https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=en&tl=' + encodeURIComponent(to) + '&q=' + encodeURIComponent(q));
   const parts = j && j[0];
@@ -162,6 +170,12 @@ async function rivalFor(domain, ask, obs) {
   if (domain === 'wordproblems' || (domain === 'calculator' && /percent|apples/i.test(ask.ask))) return wordRival(ask.ask) || (Array.isArray(ask.numbers) ? { any: ask.numbers } : null);
   if (domain === 'timers') return { any: String(ask.expect || '').split('|').filter(Boolean) };
   if (domain === 'maps' && ask.region) return { text: ask.region };
+  if (domain === 'definitions' && ask.word && /\b(?:etymology|word\s+origin|word\s+history|origin\s+of)\b/i.test(ask.ask)) {
+    // an etymology card shows where the word comes from, not what it means (lists run 19): the rival is Wiktionary's own Etymology
+    // section (plain text from TextExtracts), never the definition's gloss
+    const words = etymologyWords(await getJson('https://en.wiktionary.org/w/api.php?action=query&prop=extracts&explaintext=1&format=json&redirects=1&titles=' + encodeURIComponent(ask.word)), ask.word);
+    return words.length ? { words, need: 2 } : null;
+  }
   if (domain === 'definitions' && ask.word) {
     const j = await getJson('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(ask.word) + '?redirect=true');
     const block = j && (j.en || j.English);

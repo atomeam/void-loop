@@ -876,6 +876,15 @@ export default {
      "show the delivery board for the support router",
      "make a delivery board for weekly status reports"
     ]
+   },
+   {
+    "name": "status-digest",
+    "examples": [
+     "status digest for the invoice automation",
+     "client digest: onboarding flow",
+     "weekly status for my systems",
+     "show a status digest of the support router"
+    ]
    }
   ],
   "reuse-tools": [
