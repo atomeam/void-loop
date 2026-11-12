@@ -5,8 +5,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { etymologyWords } from './exam.mjs';
-import { judge } from '../void-live-deploy/lib/exam.js';
+import { judge, etymologyWords } from '../void-live-deploy/lib/exam.js';
 
 const extract = (t) => ({ query: { pages: { 1: { extract: t } } } });
 const SALARY = '== English ==\n\n=== Etymology ===\nFrom Middle English salarie, from Anglo-Norman salarie, from Old French salaire, from Latin salārium ("wages").\n\n=== Pronunciation ===\nIPA\n\n=== Noun ===\nsalary\nFixed payment.';
