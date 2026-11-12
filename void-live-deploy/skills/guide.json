@@ -141,8 +141,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 2,
+    "tested": 2,
+    "checked": 3,
     "proven": 76
    },
    "from": 362,
@@ -7952,8 +7952,8 @@
     "what does Verse own for the onboarding flow",
     "ownership map for weekly reports"
    ],
-   "tier": "tested",
-   "why": "1 real ask in the benchmark",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
    "glow": 100,
    "n": 434
   },
@@ -9163,7 +9163,7 @@
     "note-tools",
     "quick-tools",
     "outline-note",
-    "csv-table",
+    "tables",
     "qr-scan",
     "text-tools",
     "memory-graph",
@@ -9320,7 +9320,6 @@
     "counterfactual-draft",
     "draft-triad",
     "four-channels",
-    "list-tools",
     "stakes-phase",
     "stale-work",
     "witness-claims",
@@ -10076,8 +10075,8 @@
     },
     {
      "rank": 110,
-     "name": "csv-table",
-     "catches": "csv table: name,age ⏎ ann,30 ⏎ bo,25"
+     "name": "tables",
+     "catches": "paste csv: item;price ⏎ tea;3 ⏎ cake;5"
     },
     {
      "rank": 111,
@@ -11021,33 +11020,33 @@
     },
     {
      "rank": 267,
-     "name": "list-tools",
-     "catches": "check all on the list"
-    },
-    {
-     "rank": 268,
      "name": "stakes-phase",
      "catches": "set the stakes"
     },
     {
-     "rank": 269,
+     "rank": 268,
      "name": "stale-work",
      "catches": "show stale work"
     },
     {
-     "rank": 270,
+     "rank": 269,
      "name": "witness-claims",
      "catches": "proof-carrying claims"
     },
     {
-     "rank": 271,
+     "rank": 270,
      "name": "certainty-budget",
      "catches": "certainty budget"
     },
     {
-     "rank": 272,
+     "rank": 271,
      "name": "interrupt-priority",
      "catches": "set priority deep"
+    },
+    {
+     "rank": 272,
+     "name": "stage-find",
+     "catches": "search kept items for pizza"
     }
    ],
    "n": 539
@@ -11059,43 +11058,43 @@
    "rules": [
     {
      "rank": 273,
-     "name": "stage-find",
-     "catches": "search kept items for pizza"
-    },
-    {
-     "rank": 274,
      "name": "dismissed-pile",
      "catches": "show the undo pile"
     },
     {
-     "rank": 275,
+     "rank": 274,
      "name": "bookmarks",
      "catches": "favorite this"
     },
     {
-     "rank": 276,
+     "rank": 275,
      "name": "copy-stack",
      "catches": "show my clipboard stack"
     },
     {
-     "rank": 277,
+     "rank": 276,
      "name": "study-cards",
      "catches": "flashcards: hola = hello, gato = cat"
     },
     {
-     "rank": 278,
+     "rank": 277,
      "name": "dev-tools",
      "catches": "a"
     },
     {
-     "rank": 279,
+     "rank": 278,
      "name": "accessibility-modes",
      "catches": "dyslexia friendly font"
     },
     {
-     "rank": 280,
+     "rank": 279,
      "name": "about-skill",
      "catches": "play chess"
+    },
+    {
+     "rank": 280,
+     "name": "backlog-digest",
+     "catches": "digest your backlog"
     }
    ],
    "n": 540
@@ -11107,43 +11106,43 @@
    "rules": [
     {
      "rank": 281,
-     "name": "backlog-digest",
-     "catches": "digest your backlog"
-    },
-    {
-     "rank": 282,
      "name": "calendar-file",
      "catches": "export my calendar"
     },
     {
-     "rank": 283,
+     "rank": 282,
      "name": "remediation-velocity",
      "catches": "how fast do you fix your misses"
     },
     {
-     "rank": 284,
+     "rank": 283,
      "name": "dependency-health",
      "catches": "dependency health"
     },
     {
-     "rank": 285,
+     "rank": 284,
      "name": "notebook",
      "catches": "daily note"
     },
     {
-     "rank": 286,
+     "rank": 285,
      "name": "terminal",
      "catches": "set a timer for 5 minutes"
     },
     {
-     "rank": 287,
+     "rank": 286,
      "name": "photos",
      "catches": "my photos"
     },
     {
-     "rank": 288,
+     "rank": 287,
      "name": "ritual-template",
      "catches": "morning routine as calendar events"
+    },
+    {
+     "rank": 288,
+     "name": "bridge",
+     "catches": "bridge these inputs"
     }
    ],
    "n": 541
@@ -11155,43 +11154,43 @@
    "rules": [
     {
      "rank": 289,
-     "name": "bridge",
-     "catches": "bridge these inputs"
-    },
-    {
-     "rank": 290,
      "name": "fix-audit",
      "catches": "audit your fixes"
     },
     {
-     "rank": 291,
+     "rank": 290,
      "name": "file-sorter",
      "catches": "sort these files: app.py, LICENSE, data.csv, logo.png"
     },
     {
-     "rank": 292,
+     "rank": 291,
      "name": "fact",
      "catches": "tell me a fact"
     },
     {
-     "rank": 293,
+     "rank": 292,
      "name": "quote",
      "catches": "tell me a quote"
     },
     {
-     "rank": 294,
+     "rank": 293,
      "name": "pwcheck",
      "catches": "how secure is my password"
     },
     {
-     "rank": 295,
+     "rank": 294,
      "name": "baseconv",
      "catches": "ff hex to binary"
     },
     {
-     "rank": 296,
+     "rank": 295,
      "name": "photo-tools",
      "catches": "edit a photo"
+    },
+    {
+     "rank": 296,
+     "name": "imgfit",
+     "catches": "resize a photo to 3.5 x 2.5 cm under 50 kb"
     }
    ],
    "n": 542
@@ -11203,43 +11202,43 @@
    "rules": [
     {
      "rank": 297,
-     "name": "imgfit",
-     "catches": "resize a photo to 3.5 x 2.5 cm under 50 kb"
-    },
-    {
-     "rank": 298,
      "name": "gradient",
      "catches": "gradient generator"
     },
     {
-     "rank": 299,
+     "rank": 298,
      "name": "wheel",
      "catches": "spin the wheel"
     },
     {
-     "rank": 300,
+     "rank": 299,
      "name": "fakeuser",
      "catches": "random user generator"
     },
     {
-     "rank": 301,
+     "rank": 300,
      "name": "walker",
      "catches": "let it walk"
     },
     {
-     "rank": 302,
+     "rank": 301,
      "name": "backdrop",
      "catches": "set the stage to a retro server room"
     },
     {
-     "rank": 303,
+     "rank": 302,
      "name": "toolkit",
      "catches": "what tools do you have"
     },
     {
-     "rank": 304,
+     "rank": 303,
      "name": "boards",
      "catches": "image boards"
+    },
+    {
+     "rank": 304,
+     "name": "sums",
+     "catches": "if 3 apples cost 2.40 how much do 7 cost"
     }
    ],
    "n": 543
@@ -11251,43 +11250,43 @@
    "rules": [
     {
      "rank": 305,
-     "name": "sums",
-     "catches": "if 3 apples cost 2.40 how much do 7 cost"
-    },
-    {
-     "rank": 306,
      "name": "snippet",
      "catches": "write a python function factorial of n"
     },
     {
-     "rank": 307,
+     "rank": 306,
      "name": "music-tools",
      "catches": "metronome 120 bpm"
     },
     {
-     "rank": 308,
+     "rank": 307,
      "name": "pdf-tools",
      "catches": "merge pdf"
     },
     {
-     "rank": 309,
+     "rank": 308,
      "name": "converter",
      "catches": "mp4 to mp3"
     },
     {
-     "rank": 310,
+     "rank": 309,
      "name": "kanban-board",
      "catches": "kanban board"
     },
     {
-     "rank": 311,
+     "rank": 310,
      "name": "flights",
      "catches": "flights to lisbon"
     },
     {
-     "rank": 312,
+     "rank": 311,
      "name": "formulas",
      "catches": "pipe surface area calculator"
+    },
+    {
+     "rank": 312,
+     "name": "lorem",
+     "catches": "lorem"
     }
    ],
    "n": 544
@@ -11299,43 +11298,43 @@
    "rules": [
     {
      "rank": 313,
-     "name": "lorem",
-     "catches": "lorem"
-    },
-    {
-     "rank": 314,
      "name": "ascii",
      "catches": "ascii for hello"
     },
     {
-     "rank": 315,
+     "rank": 314,
      "name": "leet",
      "catches": "leet hello"
     },
     {
-     "rank": 316,
+     "rank": 315,
      "name": "advice",
      "catches": "give me advice"
     },
     {
-     "rank": 317,
+     "rank": 316,
      "name": "palette",
      "catches": "random palette"
     },
     {
-     "rank": 318,
+     "rank": 317,
      "name": "fanfic",
      "catches": "fan fiction"
     },
     {
-     "rank": 319,
+     "rank": 318,
      "name": "proverb",
      "catches": "tell me a proverb"
     },
     {
-     "rank": 320,
+     "rank": 319,
      "name": "magic8",
      "catches": "magic 8 ball"
+    },
+    {
+     "rank": 320,
+     "name": "color",
+     "catches": "random color"
     }
    ],
    "n": 545
@@ -11347,43 +11346,43 @@
    "rules": [
     {
      "rank": 321,
-     "name": "color",
-     "catches": "random color"
-    },
-    {
-     "rank": 322,
      "name": "morse",
      "catches": "morse code hello"
     },
     {
-     "rank": 323,
+     "rank": 322,
      "name": "sprite-sheet",
      "catches": "clean up a sprite sheet"
     },
     {
-     "rank": 324,
+     "rank": 323,
      "name": "yesno",
      "catches": "yes or no"
     },
     {
-     "rank": 325,
+     "rank": 324,
      "name": "password",
      "catches": "random password"
     },
     {
-     "rank": 326,
+     "rank": 325,
      "name": "random",
      "catches": "d20"
     },
     {
-     "rank": 327,
+     "rank": 326,
      "name": "uuid",
      "catches": "random uuid"
     },
     {
-     "rank": 328,
+     "rank": 327,
      "name": "shuffle",
      "catches": "shuffle these: apple banana cherry"
+    },
+    {
+     "rank": 328,
+     "name": "team-chat",
+     "catches": "team chat"
     }
    ],
    "n": 546
@@ -11395,43 +11394,43 @@
    "rules": [
     {
      "rank": 329,
-     "name": "team-chat",
-     "catches": "team chat"
-    },
-    {
-     "rank": 330,
      "name": "emoji",
      "catches": "random emoji"
     },
     {
-     "rank": 331,
+     "rank": 330,
      "name": "hangman",
      "catches": "hangman"
     },
     {
-     "rank": 332,
+     "rank": 331,
      "name": "stopwatch",
      "catches": "stopwatch"
     },
     {
-     "rank": 333,
+     "rank": 332,
      "name": "wordladder",
      "catches": "word ladder from cat to dog"
     },
     {
-     "rank": 334,
+     "rank": 333,
      "name": "podcast-search",
      "catches": "podcasts about history"
     },
     {
-     "rank": 335,
+     "rank": 334,
      "name": "emoji-combos",
      "catches": "cat emoji combos"
     },
     {
-     "rank": 336,
+     "rank": 335,
      "name": "studios",
      "catches": "cpan testers"
+    },
+    {
+     "rank": 336,
+     "name": "local-stations",
+     "catches": "local radio"
     }
    ],
    "n": 547
@@ -11443,43 +11442,43 @@
    "rules": [
     {
      "rank": 337,
-     "name": "local-stations",
-     "catches": "local radio"
-    },
-    {
-     "rank": 338,
      "name": "palindrome",
      "catches": "palindrome check for a man a plan a canal panama"
     },
     {
-     "rank": 339,
+     "rank": 338,
      "name": "open-tool",
      "catches": "word counter"
     },
     {
-     "rank": 340,
+     "rank": 339,
      "name": "baggage",
      "catches": "how much luggage weight allowed"
     },
     {
-     "rank": 341,
+     "rank": 340,
      "name": "rentbuy",
      "catches": "should i rent or buy"
     },
     {
-     "rank": 342,
+     "rank": 341,
      "name": "idea-to-system",
      "catches": "turn my idea into a system"
     },
     {
-     "rank": 343,
+     "rank": 342,
      "name": "my-device",
      "catches": "what is my ip address"
     },
     {
-     "rank": 344,
+     "rank": 343,
      "name": "noise",
      "catches": "white noise"
+    },
+    {
+     "rank": 344,
+     "name": "speed-tests",
+     "catches": "reaction time test"
     }
    ],
    "n": 548
@@ -11491,43 +11490,43 @@
    "rules": [
     {
      "rank": 345,
-     "name": "speed-tests",
-     "catches": "reaction time test"
-    },
-    {
-     "rank": 346,
      "name": "math-quiz",
      "catches": "times tables quiz"
     },
     {
-     "rank": 347,
+     "rank": 346,
      "name": "groups",
      "catches": "random team generator"
     },
     {
-     "rank": 348,
+     "rank": 347,
      "name": "ownership",
      "catches": "who owns what"
     },
     {
-     "rank": 349,
+     "rank": 348,
      "name": "monitor-pack",
      "catches": "monitor pack for client onboarding"
     },
     {
-     "rank": 350,
+     "rank": 349,
      "name": "verify-pack",
      "catches": "verify pack for client onboarding"
     },
     {
-     "rank": 351,
+     "rank": 350,
      "name": "client-status",
      "catches": "all systems green"
     },
     {
-     "rank": 352,
+     "rank": 351,
      "name": "client-intake",
      "catches": ""
+    },
+    {
+     "rank": 352,
+     "name": "handoff-checklist",
+     "catches": "handoff checklist for the onboarding automation"
     }
    ],
    "n": 549
@@ -11539,43 +11538,43 @@
    "rules": [
     {
      "rank": 353,
-     "name": "handoff-checklist",
-     "catches": "handoff checklist for the onboarding automation"
-    },
-    {
-     "rank": 354,
      "name": "reuse-tools",
      "catches": "reuse what exists before building"
     },
     {
-     "rank": 355,
+     "rank": 354,
      "name": "faucet",
      "catches": "credits"
     },
     {
-     "rank": 356,
+     "rank": 355,
      "name": "client-brief",
      "catches": "client brief for Acme onboarding"
     },
     {
-     "rank": 357,
+     "rank": 356,
      "name": "client-offer",
      "catches": "client offer for the email automation"
     },
     {
-     "rank": 358,
+     "rank": 357,
      "name": "automation-pack",
      "catches": "automation pack for invoice reminders"
     },
     {
-     "rank": 359,
+     "rank": 358,
      "name": "lift-summary",
      "catches": "lift summary for client onboarding"
     },
     {
-     "rank": 360,
+     "rank": 359,
      "name": "docs-pack",
      "catches": "docs pack for Acme onboarding"
+    },
+    {
+     "rank": 360,
+     "name": "feedback-loop",
+     "catches": "feedback on the onboarding slice"
     }
    ],
    "n": 550
@@ -11583,20 +11582,15 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCLXI–CCCLXIII",
+   "title": "Rules CCCLXI–CCCLXII",
    "rules": [
     {
      "rank": 361,
-     "name": "feedback-loop",
-     "catches": "feedback on the onboarding slice"
-    },
-    {
-     "rank": 362,
      "name": "progress-report",
      "catches": "progress report for the onboarding automation"
     },
     {
-     "rank": 363,
+     "rank": 362,
      "name": "system-slice",
      "catches": "next system slice for the client onboarding"
     }

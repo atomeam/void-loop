@@ -12,6 +12,7 @@ import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { scoreOf, takeBeatMs, toBeat } from './film-sound.mjs'; // the film's score and its tempo: scene changes land on its beats
+import { gradeAndKeep } from './film-grade.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const site = path.resolve(here, '..', 'void-live-deploy');
@@ -151,6 +152,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   // beat-locked cuts: the film's own score (tools/film-sound.mjs, picked by the film's id) has a tempo, and the take's clock starts when the page is made (that is when the
   // video starts); every change of scene waits for the next beat of the score, in the take's time (the cut is 15% faster)
   let tookMs = 0, syncAt = 0; const score = scoreOf(id), beat = takeBeatMs(score), tick = [], t0 = Date.now();
+  let taps = 0;
   const page = await ctx.newPage(), cutsSeen = [];
   const onBeat = async (minMs, every = 1) => { await page.waitForTimeout(toBeat(Date.now() - t0, beat, minMs, every)); tick.push(Date.now() - t0); }; // tick: when each scene change was let go, for the trace
   try {
@@ -215,14 +217,14 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     await page.waitForTimeout(300);
     // the page's own demo when it has one; then its buttons, one after another, as a person would try it: tight, no dead air
     await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k) && k !== '__vfx').map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
-    const buttons = ship ? [] : await page.$$('button:visible'), starts = []; // a shipped ask is filmed answering itself, nothing to press
+    const buttons = ship ? [] : await page.$$('button:visible'), starts = []; taps = 0; // a shipped ask is filmed answering itself, nothing to press
     for (const b of buttons) if (/\b(?:start|begin|play|go|run|try|demo|example|made-up|sample|new)\b/i.test(await b.innerText().catch(() => ''))) starts.push(b);
     for (const b of [...starts, ...buttons.filter((x) => !starts.includes(x))]) {
       if (Date.now() > until - 1200) break;
       const label = ((await b.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim(); // the whole label, wrapped, never cut
       await b.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' })).catch(() => {});
       if (label) await fx('chip', 'tap: ' + label);
-      await b.click({ timeout: 1000 }).catch(() => {});
+      await b.click({ timeout: 1000 }).then(() => { taps++; }, () => {}); // taps shown: the film's own scorecard reads it (tools/film-grade.mjs)
       await b.evaluate((el) => window.__vfx && window.__vfx.punch(el)).catch(() => {});
       await onBeat(1000);
     }
@@ -249,7 +251,8 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const video = path.join(out, id + '.webm');
   fs.renameSync(raw, video);
   const meta = path.join(out, id + '.json');
-  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), bpm: score.bpm, beatMs: beat, beatLocked: true, syncAt, tookMs, ...(process.env.VOID_FILM_TRACE ? { trace: tick.map((t) => ({ at: t, offBeat: Math.min(t % beat, beat - (t % beat)) | 0 })) } : {}), recorded: new Date().toISOString() }, null, 2) + '\n');
+  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), bpm: score.bpm, beatMs: beat, beatLocked: true, syncAt, tookMs, taps, ...(process.env.VOID_FILM_TRACE ? { trace: tick.map((t) => ({ at: t, offBeat: Math.min(t % beat, beat - (t % beat)) | 0 })) } : {}), recorded: new Date().toISOString() }, null, 2) + '\n');
+  gradeAndKeep(id, video, meta); // frontier #26 step 2: the film grades itself (still seconds, taps); a film is kept even if grading fails
   return { video, meta };
 }
 

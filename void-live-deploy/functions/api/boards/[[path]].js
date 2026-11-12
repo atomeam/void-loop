@@ -37,6 +37,7 @@ import { ownerOk } from '../../../lib/guard.js';
 import { LIMITS, TYPES, REPORT_WHY, POW_BITS, limitsOf, codeProblem, cleanText, cleanLine, parseName, tripcode, isSage, excerpt, checkImage, workOk } from '../../../lib/boards.js';
 
 import { jsonNoStore as json } from '../../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
+import { tablesReady } from '../../../lib/db.js';
 const bad = (status, say, extra = {}) => json({ ok: false, say, ...extra }, status);
 const enc = new TextEncoder();
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
@@ -54,12 +55,9 @@ const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_board_bans (ip TEXT PRIMARY KEY, until INTEGER NOT NULL, why TEXT NOT NULL, at INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_board_spent (id TEXT PRIMARY KEY, at INTEGER NOT NULL)',
 ];
-let ready = null;
-async function tables(env) {
-  if (!ready) ready = (async () => { for (const t of TABLES) await env.DB.prepare(t).run(); })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its tables made again
+const ready = tablesReady(TABLES); // made once per isolate (lib/db.js, convergence step 3)
+async function tables(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its tables made again
 const q1 = (env, sql, ...a) => env.DB.prepare(sql).bind(...a).first();
 const qa = async (env, sql, ...a) => (await env.DB.prepare(sql).bind(...a).all()).results || [];
 const run = (env, sql, ...a) => env.DB.prepare(sql).bind(...a).run();

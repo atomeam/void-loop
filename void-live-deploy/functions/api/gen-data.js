@@ -18,17 +18,15 @@ import { SHARED_KEYS } from '../../lib/listgen.js';
 
 export const DATA_MAX = 4096, WRITES_DAY = 5000, CONN_DAY = 300, ID_RE = /^[a-z2-7]{8}$/, KEY_RE = /^[A-Za-z_]\w{0,29}$/;
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
+import { tablesReady } from '../../lib/db.js';
 const off = () => json({ ok: false, error: 'shared data is off for now' }, 503);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = (async () => {
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_gen_data (id TEXT PRIMARY KEY, data TEXT NOT NULL, day TEXT NOT NULL, writes INTEGER NOT NULL)').run();
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_gen_data_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)').run();
-  })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; };
+const ready = tablesReady([ // made once per isolate (lib/db.js, convergence step 3)
+  'CREATE TABLE IF NOT EXISTS void_gen_data (id TEXT PRIMARY KEY, data TEXT NOT NULL, day TEXT NOT NULL, writes INTEGER NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_gen_data_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)',
+]);
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset();
 const read = async (env, id) => { const r = await env.DB.prepare('SELECT data, day, writes FROM void_gen_data WHERE id = ?').bind(id).first(); let data = {}; try { data = r ? JSON.parse(r.data) : {}; } catch (_) { data = {}; } return { data, day: r && r.day, writes: r ? Number(r.writes) || 0 : 0 }; };
 /** the data after the writes: { data } or { error }. Pure. */
 export function applyWrites(data, writes, secret = isSecret) {

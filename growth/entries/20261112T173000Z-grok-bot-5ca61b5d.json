@@ -1,0 +1,1 @@
+{"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "build", "what": "Tests for the owner sign-in link and the remote-job regions (tools/owner-link.test.mjs, tools/job-regions.test.mjs)"}

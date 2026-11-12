@@ -1295,6 +1295,45 @@
      "link": "https://github.com/atomeam/void-loop/actions/runs/43233110879"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T17:30:00Z",
+   "run": 24,
+   "closed": 4,
+   "touched": 4,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0,
+   "dup_basis": "0 of 4 items was already on main",
+   "median_days": 28.5,
+   "median_basis": "days from queued to built: 25.4 (csv-table~list-tools overlap, both shipped 2026-10-18), 28.5 (convergence step 3 lib/db.js, planned 2026-10-15), 28.5 (tests for untested files, 2026-10-15 06:11 UTC), 28.5 (frontier #26 step 2, written 2026-10-15); median 28.5",
+   "asks_open_start": 0,
+   "asks_open_end": 0,
+   "note": "Run 24 of the lists routine. Two open pull requests at the start (#2732 roi-pack, #2733 kickoff-pack, both helper branches with their own new skill files; not touched). Main's latest finished checks were green. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
+   "items": [
+    {
+     "what": "csv-table and list-tools are one tables family at 0457, aliases kept, 0 of 6,453 asks moved (skills/tables.js, tools/tables-family.test.mjs)",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "convergence step 3, lib/db.js: readyOnce and tablesReady replace the let ready = null table-making promise in 8 endpoints (visit, calshare, react, rsvp, tally, gen-data, fanfic-hits, boards), resetReady kept (tools/db-ready.test.mjs)",
+     "list": "convergence / handoff Up for grabs",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "tests for the biggest untested files: tools/owner-link.test.mjs (lib/owner-link.js) and tools/job-regions.test.mjs (lib/job-regions.js); the untested allowance 55 to 53",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "frontier #26 step 2, first half: each film grades itself (tools/film-grade.mjs: ffmpeg freezedetect still seconds, longest still, taps shown from tools/record.mjs) into its .json and the job summary (tools/film-grade.test.mjs)",
+     "list": "frontier #26 / handoff Up for grabs",
+     "status": "built"
+    }
+   ]
   }
  ]
 }
