@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1275,
+ "counted": 1276,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1722,7 +1722,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 4,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/keep-going.js",
@@ -2803,6 +2803,13 @@
    "tests": 5
   },
   {
+   "file": "lib/db.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
@@ -3752,7 +3759,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/page-picture.js",
@@ -4250,7 +4257,8 @@
    "imports": [
     "lib/guard.js",
     "lib/boards.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": [
     "functions/fanfic/rss.js"
@@ -4261,7 +4269,8 @@
     "lib/guard.js",
     "lib/reactions.js",
     "lib/calshare.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4405,7 +4414,8 @@
   "functions/api/fanfic-hits.js": {
    "imports": [
     "lib/fanfic.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4485,7 +4495,8 @@
     "lib/keeper.js",
     "lib/comments.js",
     "lib/listgen.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4844,7 +4855,8 @@
    "imports": [
     "lib/guard.js",
     "lib/reactions.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4948,7 +4960,8 @@
     "lib/reactions.js",
     "lib/calshare.js",
     "lib/rsvp.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -5096,7 +5109,8 @@
    "imports": [
     "lib/guard.js",
     "lib/tally.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -5206,7 +5220,8 @@
     "lib/guard.js",
     "lib/reactions.js",
     "lib/visits.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -8477,6 +8492,22 @@
    ],
    "importedBy": [
     "skills/busy-blocks.js"
+   ]
+  },
+  "lib/db.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/boards/[[path]].js",
+    "functions/api/calshare.js",
+    "functions/api/fanfic-hits.js",
+    "functions/api/gen-data.js",
+    "functions/api/react.js",
+    "functions/api/rsvp.js",
+    "functions/api/tally.js",
+    "functions/api/visit.js"
+   ],
+   "reachedBy": [
+    "functions/fanfic/rss.js"
    ]
   },
   "lib/decide-cards.js": {

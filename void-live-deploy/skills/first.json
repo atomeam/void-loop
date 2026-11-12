@@ -359,5 +359,6 @@
  "docs-pack": ["client docs for the invoice reminders","docs for the weekly report automation","docs pack for acme onboarding","document the system verse owns for support","handoff docs for the client portal"],
  "feedback-loop": ["capture feedback from the status report","client feedback for invoice reminders","feedback on the onboarding slice","what next from the support flow feedback"],
  "progress-report": ["client progress on invoice reminders","make a progress report for weekly status reports","progress report for the onboarding automation","status progress for the support router"],
- "system-slice": ["next system slice for the client onboarding","propose a system slice for weekly status reports","system slice for invoice reminders","what should verse build next for the support flow"]
+ "system-slice": ["next system slice for the client onboarding","propose a system slice for weekly status reports","system slice for invoice reminders","what should verse build next for the support flow"],
+ "time-saved": ["client time saved: support router","hours saved for weekly reports","how much time does verse save me on onboarding","time saved for the invoice automation"]
 }

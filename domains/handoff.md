@@ -460,7 +460,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-11-12 run 24 · convergence (docs/convergence.md): tables family (csv-table, list-tools); step 3's lib/db.js for 8 endpoints; the overlap check is green
 - 2026-11-12 run 24 · site tester (label site-test): 0 open
 - 2026-11-12 run 24 · frontier (domains/void.frontier.md): 17 open in effect (#26 step 2 half built; #26 stays open for its re-shoot and steps 3-5)
-- 2026-11-12 run 24 · metrics: closed 4 of 4 touched, 0% blocked, duplicate rate 0, median 28.5 days queue to built
+- 2026-11-12 run 24 · metrics: closed 5 of 5 touched (one was main's red index check from #2729, fixed), 0% blocked, duplicate rate 0, median 28.5 days queue to built
 
 ## Ladders
 
