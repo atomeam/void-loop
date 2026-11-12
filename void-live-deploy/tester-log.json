@@ -1,15 +1,52 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 119,
+ "cases": 120,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 216,
+  "visitor": 215,
   "file": 44,
-  "grow": 36,
+  "grow": 37,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-12T00:08:04Z",
+   "passed": 118,
+   "of": 123,
+   "kind": "grow",
+   "ms": 477,
+   "note": "new ground passed, kept as a regression case: \"bridge these inputs\" (skill:bridge)",
+   "failed": [
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "longevity trial watch",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "arcade games",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo create a toon style bird",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "draw yourself pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-11T23:55:41Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-11T23:27:02Z",
    "passed": 0,
@@ -173,95 +210,81 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T20:36:48Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T19:17:53Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-19",
+   "from": "2026-08-20",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-26",
+   "from": "2026-08-27",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-02",
+   "from": "2026-09-03",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-09",
+   "from": "2026-09-10",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-16",
+   "from": "2026-09-17",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-23",
+   "from": "2026-09-24",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-30",
+   "from": "2026-10-01",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-07",
+   "from": "2026-10-08",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-14",
+   "from": "2026-10-15",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-21",
+   "from": "2026-10-22",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-28",
+   "from": "2026-10-29",
    "runs": 36,
-   "passed": 404,
-   "of": 438,
-   "ms": 335
+   "passed": 479,
+   "of": 526,
+   "ms": 377
   },
   {
-   "from": "2026-11-04",
+   "from": "2026-11-05",
    "runs": 264,
-   "passed": 6139,
-   "of": 7960,
+   "passed": 6182,
+   "of": 7995,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -669,6 +692,10 @@
   "skill:proposal-pack": "2026-11-11T01:05:14Z",
   "skill:automation-pack": "2026-11-11T16:46:40Z",
   "skill:lift-summary": "2026-11-11T16:46:40Z",
-  "skill:reuse-pack": "2026-11-11T16:46:40Z"
+  "skill:reuse-pack": "2026-11-11T16:46:40Z",
+  "skill:bridge": "2026-11-12T00:08:04Z",
+  "skill:client-status": "2026-11-12T00:08:04Z",
+  "skill:docs-pack": "2026-11-12T00:08:04Z",
+  "skill:feedback-loop": "2026-11-12T00:08:04Z"
  }
 }
