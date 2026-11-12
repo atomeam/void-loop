@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T16:00:25.498Z",
+  "at": "2026-11-12T17:57:36.697Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,16 +34,31 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 91.9,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of science vs",
+          "ask": "play the latest episode of radiolab",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the moth",
           "failed": [
             "fast"
           ],
-          "score": 85.7
+          "score": 83.3
         },
         {
           "ask": "play the episode before that",
@@ -140,10 +155,18 @@
       }
     },
     "directions": {
-      "score": 98.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "directions to times square",
+          "failed": [
+            "skill",
+            "route"
+          ],
+          "score": 66.7
+        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -237,24 +260,10 @@
       }
     },
     "sports": {
-      "score": 93.5,
+      "score": 95.4,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "lakers score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "nba team celtics",
           "failed": [
@@ -382,7 +391,7 @@
     }
   },
   "lowest": {
-    "domain": "code",
-    "score": 93.3
+    "domain": "podcasts",
+    "score": 91.9
   }
 }
