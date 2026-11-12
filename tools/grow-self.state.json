@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42867507381",
-  "at": "2026-11-10T17:42:07Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for ownership-pack.  Why these: ownership-pack (no benchmark ask, evidence tier: experiment). New phrases: “ownership pack for Acme” now opens ownership-pack. Did not route: what does Verse own for the onboarding flow; ownership map for weekly reports.",
-  "try": "ownership pack for Acme",
+  "run": "43177197429",
+  "at": "2026-11-12T07:43:02Z",
+  "what": "Verse hardened itself: 13 benchmark ask(s) for automation-pack, automation-status, client-brief, client-offer, delivery-board.  Why these: bridge (no benchmark ask, evidence tier: experiment); automation-pack (no benchmark ask, evidence tier: tested); automation-status (no benchmark ask, evidence tier: tested); client-brief (no benchmark ask, evidence tier: tested); client-offer (no benchmark ask, evidence tier: tested); delivery-board (no benchmark ask, evidence tier: tested). New phrases: “automation pack for invoice reminders” now opens automation-pack; “what automations will Verse own for onboarding” now opens automation-pack; “propose automations for the support router” now opens automation-pack; “what automations are running for onboarding” now opens automation-status; “client brief for Acme onboarding” now opens client-brief; “brief the client on the systems Verse owns” now opens client-brief; “client brief for invoice reminders” now opens client-brief; “client offer for the email automation” now opens client-offer; “offer to own the heavy lifting for weekly reports” now opens client-offer; “package this as an offer: client onboarding that runs itself” now opens client-offer; “delivery board for the onboarding flow” now opens delivery-board; “client board on invoice reminders” now opens delivery-board; “show the delivery board for the support router” now opens delivery-board. Did not route: bridge these inputs; compare these inputs; synthesize these sources; automation status for invoice reminders.",
+  "try": "automation pack for invoice reminders",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-10T09:31:23Z",
-    "try": "ownership map for client onboarding",
-    "closedAt": "2026-11-10T17:41:57Z"
+    "at": "2026-11-10T17:42:07Z",
+    "try": "ownership pack for Acme",
+    "closedAt": "2026-11-12T07:42:42Z"
   }
 }
