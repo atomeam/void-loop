@@ -108,6 +108,7 @@ export const LIMITS = {
   weather: { rpm: 30, body: 0 }, // the weather page's forecast for a place (functions/api/weather.js): GET, edge-cached ten minutes, 10 fresh lookups a minute, no model, no KV
   autopilot: { rpm: 20, body: 0 }, // what Verse did on its own (functions/api/autopilot.js): GET, edge-cached ten minutes, reads GitHub and the conductor's record, no model, no write
   status: { rpm: 30, body: 0 }, // Verse's uptime from its own hourly guards (functions/api/status.js): GET, no input, edge-cached a minute, one fixed D1 read, yes/no and times out
+  uni: { rpm: 30, body: 64000 }, // Uni checkout (functions/api/uni.js): a form post, or Stripe's signed webhook. No card data.
   crew: { rpm: 60, body: 0 }, // Verse's crew, wants and priorities (functions/api/crew.js): GET, no input, edge-cached a minute, a few fixed D1 reads
   repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
@@ -127,7 +128,7 @@ export const LIMITS = {
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused
-export const NO_ORIGIN_CHECK = ['gumroad', 'github-events']; // server-to-server: Gumroad's ping, GitHub's webhooks (both checked by their own secret)
+export const NO_ORIGIN_CHECK = ['gumroad', 'github-events', 'uni']; // server-to-server: Gumroad's ping, GitHub's webhooks, Stripe's Uni webhook (each checked by its own secret)
 export const OWNER_WRITES = ['films']; // routes whose large writes only the owner sends: anyone else is refused before a byte of the body is read
 
 const enc = new TextEncoder();
