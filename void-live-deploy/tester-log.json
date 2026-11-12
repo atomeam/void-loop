@@ -11,6 +11,13 @@
  },
  "runs": [
   {
+   "at": "2026-11-12T22:48:56Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
    "at": "2026-11-12T22:17:22Z",
    "passed": 0,
    "of": 0,
@@ -191,13 +198,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 503 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-12T07:54:14Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
@@ -263,14 +263,14 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 58,
+   "runs": 57,
    "passed": 1388,
    "of": 1513,
    "ms": 348
   },
   {
    "from": "2026-11-05",
-   "runs": 242,
+   "runs": 243,
    "passed": 5504,
    "of": 7237,
    "broken": 14,
