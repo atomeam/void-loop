@@ -404,6 +404,6 @@ export default {
   about: 'Versus: real sites as floors, and how many aspects of each Verse has verified it beats.',
   examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'elevator', 'the elevator', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
-  match(lower, text) { return towerOf(text || lower); },
+  match(lower, text) { const t = text || lower; return towerOf(t) || elevatorOf(t); },
   run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
 };
