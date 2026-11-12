@@ -256,7 +256,7 @@
   {
    "state": "shipped",
    "date": "2026-11-03",
-   "ask": "delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations, we own…",
+   "ask": "delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations)",
    "from": "new idea by growth agent; helper/delivery-pack"
   },
   {
@@ -274,7 +274,7 @@
   {
    "state": "shipped",
    "date": "2026-11-05",
-   "ask": "system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors…",
+   "ask": "system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors)",
    "from": "new idea by growth agent; helper/system-handoff"
   },
   {
@@ -298,7 +298,7 @@
   {
    "state": "shipped",
    "date": "2026-11-09",
-   "ask": "ownership-pack skill: clarify what Verse owns versus what the client owns so handoffs reduce client work and package…",
+   "ask": "ownership-pack skill: clarify what Verse owns versus what the client owns so handoffs reduce client work",
    "from": "new idea by growth agent; helper/ownership-pack"
   },
   {
@@ -348,6 +348,30 @@
    "date": "2026-11-12",
    "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
    "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "roi-pack skill: package the return on investment (hours saved, estimated cost avoided) for a business idea Verse owns…",
+   "from": "new idea by growth agent; helper/roi-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "full-handoff: also carry the client lift summary, the reuse-tools map (existing processes against what Verse already…",
+   "from": "Verse, docs/void-voice.md 2026-11-12; helper/full-handoff-complete"
   },
   {
    "state": "shipped",
@@ -684,6 +708,34 @@
  },
  "commits": [
   {
+   "at": "2026-11-12T22:25:44Z",
+   "subject": "Outcome exam: sports 92.6"
+  },
+  {
+   "at": "2026-11-12T22:21:41Z",
+   "subject": "Incidents closed: shard(s) 1,2,7 passed on d0e609b2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-12T22:18:19Z",
+   "subject": "Incident: the browser suite failed on 00e53587 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-12T22:13:51Z",
+   "subject": "Mark shipped status for roi-pack, time-saved and full-handoff complete (#2746)"
+  },
+  {
+   "at": "2026-11-12T22:06:18Z",
+   "subject": "Browser test: business-clarify card now says 'Automations included' (#2745)"
+  },
+  {
+   "at": "2026-11-12T22:05:48Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T22:02:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-12T22:00:38Z",
    "subject": "roi-pack skill: show a client the hours saved and cost avoided when Verse runs their systems; mark time-saved shipped (#2732)"
   },
@@ -734,34 +786,6 @@
   {
    "at": "2026-11-12T21:14:26Z",
    "subject": "Incidents closed: shard(s) 1,2,4,7 passed on 48fffbf4 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-12T21:11:59Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T21:09:55Z",
-   "subject": "Failed jobs read: run 43304575582 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-12T21:09:35Z",
-   "subject": "Incident: the browser suite failed on 98311b6a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-12T21:05:19Z",
-   "subject": "full-handoff: carry lift summary, reuse map and client offer (#2739)"
-  },
-  {
-   "at": "2026-11-12T21:04:25Z",
-   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
-  },
-  {
-   "at": "2026-11-12T21:02:25Z",
-   "subject": "Lists run 25: lib/db.js in every endpoint, stage-marks family, films check their cards and re-shoot once, propose-fix says why, merge gate…"
-  },
-  {
-   "at": "2026-11-12T21:00:20Z",
-   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {
