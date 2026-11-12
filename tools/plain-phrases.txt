@@ -1,0 +1,6 @@
+# Banned phrases for a pull request title, body, and the page copy that pull request adds.
+# One phrase, a tab, then the plain words that replace it. A line with no tab is banned and never rewritten.
+# A replacement that says the work is done (done, shipped, finished, complete, live, fixed) is ignored.
+heavy lifting	hard work
+Verse will own	Verse handles
+we own	Verse does
