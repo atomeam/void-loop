@@ -17,18 +17,16 @@ import { bump } from '../../lib/guard.js';
 import { LIMITS, TALLIES, isTally, parseTally, countsOf, dayOf, secondsToMidnight, clientKey } from '../../lib/tally.js';
 
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
+import { tablesReady } from '../../lib/db.js';
 const off = () => json({ ok: false, error: 'the tally is off for now' }, 503);
 const slow = (secs, error = 'slow down') => json({ ok: false, error }, 429, { 'retry-after': String(secs) });
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = (async () => {
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_tally (tally TEXT NOT NULL, v TEXT NOT NULL, day TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (tally, v, day))').run();
-    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_tally_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)').run(); // k: a hashed client key or "all"; no address
-  })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its tables made again
+const ready = tablesReady([ // made once per isolate (lib/db.js, convergence step 3)
+  'CREATE TABLE IF NOT EXISTS void_tally (tally TEXT NOT NULL, v TEXT NOT NULL, day TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (tally, v, day))',
+  'CREATE TABLE IF NOT EXISTS void_tally_days (k TEXT PRIMARY KEY, day TEXT NOT NULL, n INTEGER NOT NULL)', // k: a hashed client key or "all"; no address
+]);
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its tables made again
 
 async function readCounts(env, of, day) {
   const { results } = await env.DB.prepare('SELECT v, day, n FROM void_tally WHERE tally = ?').bind(of).all();

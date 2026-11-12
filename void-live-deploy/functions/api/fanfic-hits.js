@@ -13,6 +13,7 @@
 // followed from one day to the next or from one story to another; those rows are deleted after a day. No address, no cookie, nothing else.
 import { isFicBoard, readChallenge } from '../../lib/fanfic.js';
 import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
+import { tablesReady } from '../../lib/db.js';
 
 const json = (o, status = 200) => jsonNoStore(o, status);
 const enc = new TextEncoder();
@@ -29,12 +30,9 @@ const TABLES = [
   'CREATE INDEX IF NOT EXISTS void_fanfic_hit_seen_day ON void_fanfic_hit_seen (day)',
   'CREATE TABLE IF NOT EXISTS void_fanfic_hit_rate (h TEXT PRIMARY KEY, m INTEGER NOT NULL, n INTEGER NOT NULL)',
 ];
-let ready = null;
-async function tables(env) {
-  if (!ready) ready = (async () => { for (const t of TABLES) await env.DB.prepare(t).run(); })().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its tables made again
+const ready = tablesReady(TABLES); // made once per isolate (lib/db.js, convergence step 3)
+async function tables(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its tables made again
 
 /** a key that lives one day: HMAC(SALT and the day number, what). The same visitor gives unrelated keys on other days and other stories. */
 export async function dayKey(env, day, what) {

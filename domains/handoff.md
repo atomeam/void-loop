@@ -265,14 +265,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 - Verse Tube phase 2 (docs/void-tube.md, plan only): user uploads with moderation, channels, Gumroad for creators, comments. Its wishlist rows go into docs/wishlist.md once that file lands on main.
 - Verse's one-engine asks (2026-10-15 05:39 UTC, docs/void-voice.md), in its order: (1) the unified router + skill registry on /api/mcp (functions/api/mcp.js exists; check what it already exposes first); (2) automations wait on real completion signals instead of fixed timeouts; (3) a game-builder skill (description to playable WebGL mini-game card on scene3d); (4) a preview-and-approve upload card for clips (Films/Verse Tube track owns it); (5) a confidence score on every skill answer and a clip-to-skill metadata link. Its "a card materialises at the cursor" goes to design phase 2.
-- Convergence steps 3-10 (docs/convergence.md): step 2 is done (lists runs 20 and 21); step 3's json half is done (lib/http.js `json`, `jsonNoStore` and `jsonOkCached` for 48 endpoints, lists runs 22 and 23); next: lib/db.js (the `let ready = null` table-making promise about 20 endpoints repeat, with resetReady for tests), then step 4.
+- Convergence steps 3-10 (docs/convergence.md): step 2 is done (lists runs 20 and 21); step 3's json half is done (lib/http.js `json`, `jsonNoStore` and `jsonOkCached` for 48 endpoints, lists runs 22 and 23); lib/db.js is done for the 8 plain-list endpoints (lists run 24: `readyOnce`, `tablesReady`); next: the other 11 `let ready = null` endpoints (daily-art, card-art, clip, image, gallery, studio, agent, watchalong, merge, comments, generators), then step 4.
 - Verse's video asks (2026-10-15, docs/void-voice.md, frontier #29): auto chapters and a searchable transcript to jump to a word; watch parties on the shared stage (skills share); related clips beside the player. (Audio-only mode is built as listen mode in lists run 23: a 200 x 200 player that stays visible and playing.) Its "offline smart-cache" (pre-downloading) is declined: embed only.
 - Clips (from the video engine): build Verse's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera) (the /c/_stats copy is now automated: upkeep.yml).
 - Store: the VoidQuest minis pack needs real VoidQuest miniature models first (none exist yet); once forged, `node tools/store-publish.mjs publish --kind minis-stl --id voidquest-minis ...` publishes it and replaces "coming soon".
 - Verse's asks, oldest first (`domains/void.voice.md`, its self-page): The Landlord's Game is built (skills/monopoly.js, its lid says so) and the poster skill has tests (tools/poster.test.mjs); still open: MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
-- Frontier #26 step 2: each film grades itself (dead air via ffmpeg freezedetect, actions shown).
+- Frontier #26 step 2, second half: the hook and ending cards are checked as rendered, and a film under the bar is re-shot once with another path through the page. (The scorecard itself, still seconds via ffmpeg freezedetect and taps shown, was built in lists run 24: tools/film-grade.mjs, written into each film's .json and the job summary.)
 - Frontier #28 step 2: Verse's own model writes the probe asks for its weakest family.
-- Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start, 54 after lists run 23 added tools/emoji-looks.test.mjs and tools/event-countdown.test.mjs); after adding tests run node tools/untested.mjs --write to lower the allowance.
+- Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start, 53 after lists run 24 added tools/owner-link.test.mjs and tools/job-regions.test.mjs); after adding tests run node tools/untested.mjs --write to lower the allowance.
 
 ## Lists (one line per list per run; the lists routine)
 
@@ -453,6 +453,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-11-12 run 23 · site tester (label site-test): 0 open
 - 2026-11-12 run 23 · frontier (domains/void.frontier.md): 17 open in effect (#29 step 5, listen mode and the accessibility pass, built; #29 stays open for steps 1-4)
 - 2026-11-12 run 23 · metrics: closed 8 of 8 touched, 0% blocked, duplicate rate 0.125, median 28.4 days queue to built
+- 2026-11-12 run 24 · V01D asks (void.asks.json): 0 ask groups open (tools/asks-link.mjs --open lists none); all time 265 of 265 asks built; the reflections' "what came of it" count follows from the same links
+- 2026-11-12 run 24 · handoff Up for grabs: 21 open (frontier #26 step 2's scorecard built, its re-shoot stays listed; convergence step 3 moved on to the other 11 lib/db.js endpoints; the untested count now 53)
+- 2026-11-12 run 24 · store queue (store.queue.jsonl): 0 open
+- 2026-11-12 run 24 · wishlist (docs/wishlist.md): 16 open of 17 rows (none on a free path this run; the open rows wait on paid tiers, provider approval or volume)
+- 2026-11-12 run 24 · convergence (docs/convergence.md): tables family (csv-table, list-tools); step 3's lib/db.js for 8 endpoints; the overlap check is green
+- 2026-11-12 run 24 · site tester (label site-test): 0 open
+- 2026-11-12 run 24 · frontier (domains/void.frontier.md): 17 open in effect (#26 step 2 half built; #26 stays open for its re-shoot and steps 3-5)
+- 2026-11-12 run 24 · metrics: closed 5 of 5 touched (one was main's red index check from #2729, fixed), 0% blocked, duplicate rate 0, median 28.5 days queue to built
 
 ## Ladders
 
