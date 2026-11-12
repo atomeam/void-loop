@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-12T01:43:01.635Z",
+  "at": "2026-11-12T04:00:45.046Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,43 +34,19 @@
       }
     },
     "podcasts": {
-      "score": 88.9,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "play the latest episode of this american life",
           "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of radiolab",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the daily",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of the ted radio hour",
+          "ask": "play the latest episode of serial",
           "failed": [
             "audio"
           ],
@@ -141,33 +117,25 @@
       }
     },
     "weather": {
-      "score": 94.8,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "weather tomorrow in berlin",
-          "failed": [
-            "fast",
-            "temp"
-          ],
-          "score": 66.7
-        },
-        {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -275,10 +243,31 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 93.5,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -363,24 +352,16 @@
       "fails": []
     },
     "definitions": {
-      "score": 90,
+      "score": 96.7,
       "of": 6,
       "measured": 6,
       "fails": [
         {
-          "ask": "etymology of salary",
+          "ask": "define glimbrastic",
           "failed": [
-            "rival"
+            "fast"
           ],
           "score": 80
-        },
-        {
-          "ask": "define zorbleflux",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
         }
       ]
     },
@@ -398,7 +379,7 @@
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 88.9
+    "domain": "units",
+    "score": 93.3
   }
 }
