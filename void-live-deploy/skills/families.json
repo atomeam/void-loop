@@ -14,9 +14,9 @@
  "bench_at": "2026-11-12",
  "totals": {
   "experiment": 0,
-  "tested": 3,
-  "checked": 6,
-  "proven": 428
+  "tested": 1,
+  "checked": 7,
+  "proven": 429
  },
  "families": [
   {
@@ -3649,9 +3649,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
-    "proven": 76
+    "tested": 1,
+    "checked": 4,
+    "proven": 77
    },
    "skills": [
     {
@@ -3955,10 +3955,12 @@
     },
     {
      "name": "full-handoff",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-12",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-12"
     },
     {
      "name": "proposal-pack",
@@ -4354,10 +4356,12 @@
     },
     {
      "name": "time-saved",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-12",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-12"
     },
     {
      "name": "docs-pack",

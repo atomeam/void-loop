@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
-    "proven": 76
+    "tested": 1,
+    "checked": 4,
+    "proven": 77
    },
    "from": 362,
    "to": 444
@@ -3175,6 +3175,7 @@
    "tier": "proven",
    "why": "a self-test, 9 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Of all the numbers and money, this one is trusted enough to be taught. The void remembers each asking.",
+   "glow": 100,
    "n": 162
   },
   {
@@ -3544,7 +3545,6 @@
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. The void remembers each asking.",
-   "glow": 100,
    "n": 184
   },
   {
@@ -5052,7 +5052,6 @@
    "tier": "proven",
    "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "Proven 5 times over by those who asked, and kept among the stage. Turn the page when you are done.",
-   "glow": 100,
    "n": 265
   },
   {
@@ -5300,7 +5299,6 @@
    "tier": "proven",
    "why": "a self-test, 7 real asks in the benchmark",
    "flavor": "7 who came with a need went away with an answer. The page is theirs.",
-   "glow": 100,
    "n": 280
   },
   {
@@ -7319,8 +7317,9 @@
     "client handoff pack on onboarding flow",
     "package the handoff for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 396
   },
   {
@@ -7930,7 +7929,7 @@
    "chapter": "self",
    "name": "reuse-pack",
    "title": "Reuse pack",
-   "line": "Map a business process or idea to existing tools Verse can own or connect instead of inventing new ones",
+   "line": "Map a business process or idea to existing tools that already cover parts of it instead of inventing new ones",
    "examples": [
     "reuse pack for client onboarding",
     "map to existing tools: invoice reminders",
@@ -8053,8 +8052,10 @@
     "how much time does Verse save me on onboarding",
     "client time saved: support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Asked 3 times in earnest, and never once left unanswered. This is the page of time-saved.",
+   "glow": 100,
    "n": 440
   },
   {
