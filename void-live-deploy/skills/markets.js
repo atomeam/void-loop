@@ -1,17 +1,52 @@
 /**
  * markets skill - Verse's crypto board: live prices and 7-day sparklines for the top coins, from Verse's own edge-cached
  * /api/markets (CoinGecko underneath, two-minute cache, no KV), and a read-only Bitcoin address lookup by public address
- * (mempool.space public API). Read-only by design: no wallets held, no keys or seed phrases, no trades, no advice.
+ * (mempool.space public API), and Ethereum or Solana addresses (PublicNode's keyless RPC). Read-only by design: no wallets held, no keys or seed phrases, no trades, no advice.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }. Single-coin asks ("bitcoin price") stay with crypto.js.
  */
 export const BTC_ADDR = /^(?:bc1[a-z0-9]{25,62}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/;
+// Ethereum and Solana public addresses (wishlist #15, lists run 23): read through PublicNode's keyless RPC (CORS open, no account), the same
+// read-only stance as the Bitcoin lookup. An EVM address is 0x and 40 hex digits; a Solana address is 32 to 44 base58 characters.
+export const ETH_ADDR = /^0x[0-9a-fA-F]{40}$/;
+export const SOL_ADDR = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+export const CHAIN = {
+  eth: { name: 'Ethereum', unit: 'ETH', rpc: ['https://ethereum-rpc.publicnode.com'], explorer: 'https://etherscan.io/address/' },
+  sol: { name: 'Solana', unit: 'SOL', rpc: ['https://solana-rpc.publicnode.com', 'https://api.mainnet-beta.solana.com'], explorer: 'https://solscan.io/account/' },
+};
+/** which chain an address belongs to: the coin word named wins when the address fits it; otherwise the address's own shape (a
+ *  Bitcoin-shaped one stays Bitcoin, as before). 'btc' | 'eth' | 'sol' | null. Pure. */
+export function walletChain(addr, word = '') {
+  const w = String(word || '').toLowerCase(), a = String(addr || '');
+  if (/^(?:btc|bitcoin)$/.test(w)) return BTC_ADDR.test(a) ? 'btc' : null;
+  if (/^(?:eth|ether|ethereum)$/.test(w)) return ETH_ADDR.test(a) ? 'eth' : null;
+  if (/^(?:sol|solana)$/.test(w)) return SOL_ADDR.test(a) ? 'sol' : null;
+  return BTC_ADDR.test(a) ? 'btc' : ETH_ADDR.test(a) ? 'eth' : SOL_ADDR.test(a) ? 'sol' : null;
+}
+/** a whole-unit amount from the chain's smallest unit (wei as a hex string, lamports as a number), up to 8 decimals, no float drift. Pure. */
+export function unitsOf(chain, raw) {
+  const big = chain === 'eth' ? BigInt(String(raw || '0x0')) : BigInt(Math.max(0, Math.floor(Number(raw) || 0)));
+  const dec = chain === 'eth' ? 18 : 9, base = 10n ** BigInt(dec), whole = big / base, frac = (big % base).toString().padStart(dec, '0').slice(0, 8).replace(/0+$/, '');
+  return whole.toLocaleString('en-US') + (frac ? '.' + frac : '');
+}
+/** the JSON-RPC body that reads one address's balance. Pure. */
+export const balanceCall = (chain, addr) => ({ jsonrpc: '2.0', id: 1, method: chain === 'eth' ? 'eth_getBalance' : 'getBalance', params: chain === 'eth' ? [addr, 'latest'] : [addr] });
+async function balanceOf(chain, addr) {
+  for (const url of CHAIN[chain].rpc) {
+    try {
+      const j = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(balanceCall(chain, addr)) }).then((r) => { if (!r.ok) throw 0; return r.json(); });
+      const v = chain === 'eth' ? j && j.result : j && j.result && j.result.value;
+      if (v != null) return unitsOf(chain, v);
+    } catch (_) {}
+  }
+  return null;
+}
 export const SEED_WORDS = /\b(?:seed\s+phrase|private\s+key|recovery\s+phrase|mnemonic)\b/;
 /** { board: true } | { addr } | { refuse } | null. Pure. */
 export function marketsAsk(text) {
   const raw = String(text || '').trim(), t = raw.toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (SEED_WORDS.test(t) && /\b(?:my|here|is|store|keep|save|import|enter)\b/.test(t)) return { refuse: true };
-  const a = raw.replace(/[?!.]+$/, '').match(/^(?:(?:look\s*up|check|show|lookup)\s+)?(?:(?:btc|bitcoin)\s+)?(?:wallet|address|balance(?:\s+of)?)\s+([a-zA-Z0-9]{26,64})$/i);
-  if (a && BTC_ADDR.test(a[1])) return { addr: a[1] };
+  const a = raw.replace(/[?!.]+$/, '').match(/^(?:(?:look\s*up|check|show|lookup)\s+)?(?:(btc|bitcoin|eth|ether|ethereum|sol|solana)\s+)?(?:wallet|address|balance(?:\s+of)?)\s+([a-zA-Z0-9]{26,64})$/i);
+  if (a) { const w = walletChain(a[2], a[1]); if (w === 'btc') return { addr: a[2] }; if (w) return { addr: a[2], chain: w }; }
   if (/^(?:(?:show|open|give)\s+(?:me\s+)?)?(?:the\s+|a\s+)?(?:crypto(?:currency)?|coin|crypto\s+market|markets?)\s*(?:prices?|board|card|chart|charts|tracker|ticker|dashboard)?$/.test(t) && /crypto|coin|market/.test(t)) return { board: true };
   if (/^(?:how\s+(?:is|are)\s+(?:crypto|the\s+crypto\s+market)\s+(?:doing\s+)?(?:today)?|top\s+(?:crypto|coins|cryptocurrencies))$/.test(t)) return { board: true };
   return null;
@@ -90,6 +125,14 @@ async function run(text, api) {
     return 'markets';
   }
   if (q.refuse) { showPage((el) => { el.innerHTML = '<h2>Keep that to yourself</h2><p>Never type a seed phrase or private key into any site, Verse included. Verse only reads public prices and public addresses; it never holds keys or funds.</p>'; }); return 'markets'; }
+  if (q.addr && q.chain) {
+    const c = CHAIN[q.chain], title = c.name + ' address';
+    const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
+    const amt = await balanceOf(q.chain, q.addr);
+    el.innerHTML = amt == null ? '<h2>' + esc(title) + '</h2><p>The lookup service didn\'t answer. Try again in a moment.</p>'
+      : '<h2>' + esc(title) + '</h2><p style="word-break:break-all;font-size:12px">' + esc(q.addr) + '</p><div style="font-size:40px;font-weight:300">' + esc(amt) + ' ' + c.unit + '</div><p class="g-sub">the native ' + c.unit + ' balance only; tokens are on the explorer</p><div class="src">Source: <a href="https://www.publicnode.com/" target="_blank" rel="noopener">PublicNode</a> public RPC · <a href="' + esc(c.explorer + q.addr) + '" target="_blank" rel="noopener">open on ' + (q.chain === 'eth' ? 'Etherscan' : 'Solscan') + '</a> · public data, read-only · not advice</div>';
+    return 'markets';
+  }
   if (q.addr) {
     const el = showPage((p) => { p.innerHTML = '<h2>Bitcoin address</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
     try {
@@ -111,13 +154,13 @@ async function run(text, api) {
       return '<div class="mk-row" style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:52px;font-weight:600">' + esc(c.symbol) + '</span><span style="flex:1">' + esc(money(c.price)) + '</span>'
         + '<svg width="120" height="32" viewBox="0 0 120 32" aria-hidden="true"><path d="' + sparkPath(c.spark) + '" fill="none" stroke="' + col + '" stroke-width="1.5"/></svg>'
         + '<span style="width:64px;text-align:right;color:' + col + '">' + (c.change24h == null ? '' : (up ? '+' : '') + c.change24h.toFixed(2) + '%') + '</span></div>'; }).join('')
-      + '</div><p class="g-sub" style="font-size:12px">7-day lines · 24-hour change · ask "bitcoin wallet &lt;address&gt;" to read a public address</p><div class="src">Source: <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a> · refreshed every 2 minutes · read-only · not financial advice</div>';
+      + '</div><p class="g-sub" style="font-size:12px">7-day lines · 24-hour change · ask "bitcoin wallet &lt;address&gt;", "ethereum wallet 0x…" or "solana wallet &lt;address&gt;" to read a public address</p><div class="src">Source: <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a> · refreshed every 2 minutes · read-only · not financial advice</div>';
   } catch (_) { el.innerHTML = '<h2>Crypto</h2><p>The price service didn\'t answer just now. Ask again in a moment.</p>'; }
   return 'markets';
 }
 export default {
   name: 'markets',
-  examples: ['crypto prices', 'crypto board', 'crypto card', 'top coins', 'bitcoin wallet bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 'here is my seed phrase', 'how much is a gallon of milk', 'price of a dozen eggs', 'price'],
+  examples: ['crypto prices', 'crypto board', 'crypto card', 'top coins', 'bitcoin wallet bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 'ethereum wallet 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', 'solana wallet vines1vzrYbzLMRdu58ou5XTby4qAqVRLmqo36NKPTg', 'here is my seed phrase', 'how much is a gallon of milk', 'price of a dozen eggs', 'price'],
   nearMisses: ['bitcoin price', 'stock market', 'what is crypto', 'price of ethereum in euros'],
   match(lower, text) { return !!(marketsAsk(text || lower) || groceryAsk(text || lower) || whichPriceAsk(text || lower)); },
   run,
