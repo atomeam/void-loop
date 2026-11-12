@@ -1,0 +1,3 @@
+# Full pages are Uni
+
+A full page asks a stranger for Uni. Home and cards stay free. `node --test tools/page-pass.test.mjs`. After deploy, a logged-out `GET /flights/` is the Uni screen when Stripe accepts `STRIPE_SECRET_KEY`; a missing or rejected key leaves the page open. `GET /api/page-pass` reports the gate and the price, never a key. Subscribe opens checkout.stripe.com. The owner, Multi, and a Uni pass still get the page. Do not print the Stripe key, add a card number, or change the MultiVerse price. The screen says Uni and Multi. Stripe's product name is UniVerse.

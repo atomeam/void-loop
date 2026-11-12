@@ -11,6 +11,12 @@ import { writeFileSync, existsSync, appendFileSync } from 'node:fs';
 import { pageProblems, reportOf, KINDS, LOADER } from '../void-live-deploy/lib/selfcheck.js';
 
 export const UA = 'VerseSelfCheck/1 (+https://a-to-mind.com/; reads only, sends nothing)';
+/** headers for a live page check. The owner token, when the workflow has one, is sent and never printed. */
+export function readHeaders(env = process.env) {
+  const headers = { 'user-agent': UA, 'x-void-test': 'self-check' };
+  if (env.VOID_OWNER_TOKEN) headers.authorization = 'Bearer ' + env.VOID_OWNER_TOKEN;
+  return headers;
+}
 export const PAGE_MS = 25000, SETTLE_MS = 1500, LOADER_MS = 8000, AT_ONCE = 6, LINKS_MAX = 800;
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
 
@@ -33,7 +39,7 @@ export function linkPaths(hrefs, site) {
 }
 
 async function openPage(browser, site, path) {
-  const ctx = await browser.newContext({ userAgent: UA, extraHTTPHeaders: { 'x-void-test': 'self-check' }, viewport: { width: 1280, height: 800 } });
+  const ctx = await browser.newContext({ userAgent: UA, extraHTTPHeaders: readHeaders(), viewport: { width: 1280, height: 800 } });
   const page = await ctx.newPage(), origin = new URL(site).origin, seen = { path, errors: [], failed: [], hrefs: [] };
   await ctx.route('**/*', (r) => { const q = r.request(), u = new URL(q.url());
     if (q.method() !== 'GET' || (u.origin === origin && u.pathname === '/api/visit')) return r.fulfill({ status: 204, body: '' });
@@ -64,7 +70,7 @@ async function openPage(browser, site, path) {
 async function deadLinks(paths, site, known) {
   const dead = new Map(), todo = paths.filter((p) => !known.has(p)).slice(0, LINKS_MAX);
   for (let i = 0; i < todo.length; i += 8) await Promise.all(todo.slice(i, i + 8).map(async (p) => {
-    try { const r = await fetch(new URL(p, site), { headers: { 'user-agent': UA, 'x-void-test': 'self-check' }, redirect: 'follow' }); if (r.status >= 400) dead.set(p, r.status); }
+    try { const r = await fetch(new URL(p, site), { headers: readHeaders(), redirect: 'follow' }); if (r.status >= 400) dead.set(p, r.status); }
     catch (e) { dead.set(p, 'no answer'); }
   }));
   return dead;

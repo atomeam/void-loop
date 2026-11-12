@@ -1,0 +1,1 @@
+`skills/roi-pack.js`: a card that packages the return on investment for a business idea Verse would own (hours saved, cost avoided, the next handoff), estimated from typical load and never claimed as measured.
