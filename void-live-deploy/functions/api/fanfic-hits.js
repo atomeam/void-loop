@@ -12,8 +12,9 @@
 // What is kept: per story, its count. Per read, an HMAC of (address, story) keyed by the server's SALT and the day, so a visitor cannot be
 // followed from one day to the next or from one story to another; those rows are deleted after a day. No address, no cookie, nothing else.
 import { isFicBoard, readChallenge } from '../../lib/fanfic.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store' } });
+const json = (o, status = 200) => jsonNoStore(o, status);
 const enc = new TextEncoder();
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
 const DAY = 864e5, MIN = 60e3;

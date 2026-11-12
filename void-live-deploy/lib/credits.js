@@ -5,6 +5,7 @@ import { ensureStoreTables } from './store-db.js';
 import { ensureTables, session } from './void-me.js';
 import { connId } from './guard.js';
 import { workOk } from './boards.js';
+import { jsonNoStore } from './http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const EARN = Object.freeze({ daily: 1, tool: 1, bug: 5, build: 10 });
 export const SPEND = Object.freeze({ answer: 2, skill: 5, cap: 3 });
@@ -38,7 +39,7 @@ export function ensureCredits(env) {
   }
   return p;
 }
-const json = (body, status = 200, extra) => Response.json(body, { status, headers: { 'cache-control': 'no-store', ...(extra || {}) } });
+const json = (body, status = 200, extra) => jsonNoStore(body, status, extra || {});
 async function displayName(env, userId) {
   try {
     const row = await env.DB.prepare('SELECT handle FROM void_pages WHERE user_id = ?').bind(userId).first();

@@ -12,10 +12,11 @@ import { classify } from '../../lib/visits.js';
 import { clientKey } from '../../lib/reactions.js';
 import { HOUSE_BPS, CLAIM, claimOk, poolUnits, windowStart, dayOf, centsOfUnits } from '../../lib/sponsors.js';
 import { ensureSponsor, sponsorUnits, claimUnits } from '../../lib/sponsor-db.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 // USDC from atomic units (6 decimals), with no trailing zeros: 5, 0.01
 const usdcText = (u) => String(Number(BigInt(u)) / 1e6);
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store' } });
+const json = (o, status = 200) => jsonNoStore(o, status);
 const off = () => json({ ok: false, error: 'the claim wall is closed for now' }, 503);
 
 async function pool(env) {

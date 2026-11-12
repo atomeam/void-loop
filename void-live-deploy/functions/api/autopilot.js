@@ -6,10 +6,11 @@
 // allowance is spent by everyone on them: live 2026-10-30), so every deploy writes /autopilot/snapshot.json with the workflow's own token
 // (tools/autopilot-snapshot.mjs) and the GitHub parts are read from it: the same records, as of that deploy, and the page says when that was.
 import { REPO, OWN_EMAILS, summarize, kindCounts, startedByHour } from '../../lib/autopilot.js';
+import { jsonOkCached } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const TTL = 600;
 const GH = 'https://api.github.com', RAW = 'https://raw.githubusercontent.com/' + REPO + '/main/domains/conductor.json';
-const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': status === 200 ? 'public, max-age=300' : 'no-store', ...extra } });
+const json = (o, status = 200, extra = {}) => jsonOkCached(o, status, 300, extra);
 
 async function getJson(fetchFn, url, env) {
   const headers = { accept: 'application/vnd.github+json', 'user-agent': 'a-to-mind.com autopilot' };

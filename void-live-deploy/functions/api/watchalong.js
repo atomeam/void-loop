@@ -21,11 +21,12 @@ import { ownerOk } from '../../lib/guard.js';
 import { models, HEAR_FALLBACK } from '../../lib/models.js';
 import { playableStream, httpsOf } from '../../lib/local-media.js';
 import { stationOf, askMessages, learnMessages, notesFrom, senses, chooseMessages, pickFrom, wordsOf, KINDS, CAPTION_MAX } from '../../lib/watch-along.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const ASK_PER_MIN = 12, LEARN_PER_MIN = 3, LEARN_GAP_S = 120, LEARN_PER_DAY = 400, HEAR_BYTES = 200000, HEAR_MS = 12000, FRAME_MAX = 400000;
 const RADIO_HOSTS = ['de1.api.radio-browser.info', 'all.api.radio-browser.info'];
 const UA = 'VerseBot/1.0 (+https://a-to-mind.com/local/)';
-const json = (body, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
+const json = (body, status = 200) => jsonNoStore(body, status);
 const SCHEMA = [
   'CREATE TABLE IF NOT EXISTS void_watch_notes (h TEXT PRIMARY KEY, at TEXT NOT NULL, day TEXT NOT NULL, medium TEXT NOT NULL, cc TEXT NOT NULL, station TEXT NOT NULL, network TEXT NOT NULL, show TEXT NOT NULL, kind TEXT NOT NULL, topic TEXT NOT NULL, note TEXT NOT NULL, value_cents INTEGER, source TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_watch_runs (k TEXT PRIMARY KEY, n INTEGER NOT NULL, at INTEGER NOT NULL)',

@@ -9,11 +9,12 @@
 // No model call is ever made for a symbol with no price. Nothing a visitor typed reaches the model: it only sees the draft built from the data.
 import { resolve } from './markets.js';
 import { wrapDraft, whyDraft, windowOf, labelFor, validatePolish, polishMessages, SECTORS } from './report.js';
+import { jsonNoStore } from './http.js'; // one copy (lib/http.js, convergence step 3)
 
 // v2 in the key (2026-10-26): reports made from the year-long Yahoo move are not read again
 export const HOUR_MAX = 10, DAY_MAX = 60, VISITOR_MAX = 6, KEEP_DAYS = 3, DRAFT_TTL = 1200, MAX_TOKENS = 260;
 const WRAP_LIST = 'SPX,DJI,NDX,BTC,ETH,EUR/USD,AAPL,MSFT,NVDA,AMZN,GOOGL,META,TSLA,JPM,V,WMT,NFLX,AMD';
-const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store' } });
+const json = (o, status = 200) => jsonNoStore(o, status);
 
 /** D1-backed global store (void_kv): get, put and the sweep of old reports. The counters are lib/daily-cap.js. Tests pass their own. */
 export function d1Store(db) {

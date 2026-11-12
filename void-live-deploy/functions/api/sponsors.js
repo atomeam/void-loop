@@ -10,10 +10,11 @@ import { classify } from '../../lib/visits.js';
 import { clientKey } from '../../lib/reactions.js';
 import { PLANS, SLOTS, HOUSE_BPS, CLAIM, LIMITS, grid, split, centsOfUnits, dayOf } from '../../lib/sponsors.js';
 import { ensureSponsor, tileRows, standing, sponsorUnits, claimUnits } from '../../lib/sponsor-db.js';
+import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 // USDC from atomic units (6 decimals), with no trailing zeros: 5, 0.01
 const usdcText = (u) => String(Number(BigInt(u)) / 1e6);
-const json = (o, status = 200, cache = 'no-store') => Response.json(o, { status, headers: { 'cache-control': cache } });
+const json = (o, status = 200, cache = 'no-store') => jsonNoStore(o, status, { 'cache-control': cache });
 const off = () => json({ ok: false, error: 'the sponsor grid is closed for now' }, 503);
 
 /** the public read, also used by the treasury: the grid, the split and the views, from the database only */
