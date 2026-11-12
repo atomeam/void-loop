@@ -1,7 +1,7 @@
 /**
  * progress-report skill — a client-visible progress report for systems Verse owns.
  * Shows what shipped, current status, open monitors and next handoff points so the client
- * does less chasing and Verse packages "we own the heavy lifting".
+ * does less chasing.
  * Rules-based, offline. Nothing is sent.
  * "progress report for the onboarding automation", "client progress on invoice reminders",
  * "status progress for the support router".
@@ -46,7 +46,7 @@ async function run(text, api) {
     const shipped = rep.shipped.map(i => '<li>' + esc(i) + '</li>').join('');
     const next = rep.next.map(i => '<li>' + esc(i) + '</li>').join('');
     el.innerHTML = '<h2>Progress report: ' + esc(name) + '</h2>'
-      + '<p class="sub">Verse owns the heavy lifting. This report keeps the client informed without extra work.</p>'
+      + '<p class="sub">This report lists progress so the client can stay informed without extra work.</p>'
       + '<h3>Shipped so far</h3><ul>' + shipped + '</ul>'
       + '<h3>Current status</h3><p>' + esc(rep.status) + '</p>'
       + '<h3>Monitors Verse owns</h3><ul>' + rep.monitors.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'

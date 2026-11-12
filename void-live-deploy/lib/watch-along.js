@@ -73,7 +73,7 @@ export function learnMessages({ station, captions = '', frame = '' }) {
   const sys = 'You are Verse, learning from what plays on ' + s.name + (s.network ? ' (' + s.network + ')' : '') + '. Write what is worth keeping as JSON, nothing else: ' +
     '{"show": "the program\'s name if the material names it, else empty", "notes": [{"kind": "appraisal" | "fact" | "idea", "topic": "2 to 5 words", "note": "one sentence in your own words, at most 200 characters", "value_cents": integer or null}]}. ' +
     'appraisal: an object that was valued or priced, with what drives its value; put the dollar value in value_cents (whole cents, the low end of a range) only when the material states it. ' +
-    'fact: something specific and checkable that was said. idea: a small app or tool Verse could build for people, inspired by what played. Prefer ideas that help a business capture a workflow, automate a handoff, or take over heavy lifting. ' +
+    'fact: something specific and checkable that was said. idea: a small app or tool Verse could build for people, inspired by what played. Prefer ideas that help a business capture a workflow or automate a handoff. ' +
     'At most ' + NOTES_MAX + ' notes. No notes for ads, weather or chatter. Never copy more than a few words of the material; never invent a value, a name or a show. ' +
     'When the material is too thin to learn from, answer {"show": "", "notes": []}. ' + DATA_RULE;
   const text = 'Station: ' + s.name + '\n' + (captions ? 'What played (' + (s.kind === 'radio' ? 'speech to text' : 'captions') + '):\n"""\n' + clean(captions, CAPTION_MAX) + '\n"""' : 'No transcript; one picture of the screen is attached.');

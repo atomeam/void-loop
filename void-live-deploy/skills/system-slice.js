@@ -1,6 +1,6 @@
 /**
  * system-slice skill — propose the next concrete system slice Verse will design, build, connect, test or monitor
- * for a business idea or process so the client does less and Verse owns the heavy lifting.
+ * for a business idea or process.
  * Rules-based, offline. Nothing is sent.
  * "next system slice for the client onboarding", "system slice for invoice reminders",
  * "what should Verse build next for the support flow".
@@ -41,12 +41,12 @@ async function run(text, api) {
   showPage((el) => {
     const owns = pack.owns.map(i => '<li>' + esc(i) + '</li>').join('');
     el.innerHTML = '<h2>Next system slice: ' + esc(name) + '</h2>'
-      + '<p class="sub">Verse owns the heavy lifting. This names the next concrete piece so delivery stays reliable.</p>'
+      + '<p class="sub">This names the next concrete piece of the system.</p>'
       + '<h3>Proposed next slice</h3><p>' + esc(pack.nextSlice) + '</p>'
       + '<h3>What Verse owns on this slice</h3><ul>' + owns + '</ul>'
       + '<h3>How the client does less</h3><p>' + esc(pack.clientDoesLess) + '</p>'
       + '<p class="sub">Nothing is built yet. Ask for the ownership pack or progress report when this slice ships.</p>'
-      + '<div class="src">Source: A-to-Mind system slice · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind system slice</div>';
   });
   return 'system-slice';
 }

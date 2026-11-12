@@ -128,7 +128,7 @@ export default {
     const hasRender = html.includes('Client lift summary') && html.includes(lift.owns[0]) && html.includes(lift.clientDoesLess[0])
       && html.includes('Reuse tools map') && html.includes(reuse[0].tool) && html.includes(reuse[0].why)
       && html.includes('Client offer proposal') && html.includes(offer.today) && html.includes(offer.takesOver[0]) && html.includes(offer.reduced)
-      && !/heavy lifting/i.test(html);
+      && !/heavy\s+lifting/i.test(html);
     const pass = ok && hasLift && hasReuse && hasOffer && hasRender;
     return { ok: pass, got: pass ? 'match and package sections render with real data' : 'match or package sections broke' };
   }

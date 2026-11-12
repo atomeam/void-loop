@@ -1,9 +1,9 @@
 /**
- * client-offer skill — package a business idea into a sellable offer that Verse owns the heavy lifting.
+ * client-offer skill — package a business idea into a sellable offer of the systems, automations, monitoring and handoff included.
  * Turns the idea into what the client currently does, what Verse takes over (systems, automations, monitoring, handoff),
  * the reduced client work, and the next step to start. Rules-based, offline. Nothing is sent. The card stays on the stage
  * so the offer can be shared or kept.
- * "client offer for the email automation", "offer to own the heavy lifting for weekly reports",
+ * "client offer for the email automation", "offer for weekly reports",
  * "package this as an offer: client onboarding that runs itself".
  */
 export function isClientOffer(text) {
@@ -42,7 +42,7 @@ function run(text, api) {
   const takes = offer.takesOver.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Client offer: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting so the client does less.</p>'
+      + '<p>An offer of the systems, automations, monitoring and handoff included.</p>'
       + '<h3>What the client does today</h3><p>' + esc(offer.today) + '</p>'
       + '<h3>What Verse takes over</h3><ul>'
       + takes
@@ -50,7 +50,7 @@ function run(text, api) {
       + '<h3>Reduced client work</h3><p>' + esc(offer.reduced) + '</p>'
       + '<h3>Next step</h3><p>' + esc(offer.next) + '</p>'
       + '<p class="sub">Nothing is sent. The offer stays with the client.</p>'
-      + '<div class="src">Source: A-to-Mind client offer · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind client offer</div>';
   });
   return 'client-offer';
 }
@@ -60,7 +60,7 @@ export default {
   name: 'client-offer',
   examples: [
     'client offer for the email automation',
-    'offer to own the heavy lifting for weekly reports',
+    'offer for weekly reports',
     'package this as an offer: client onboarding that runs itself',
     'make a client offer for invoice reminders',
     'offer for the support router'

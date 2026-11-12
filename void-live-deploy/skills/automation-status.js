@@ -47,13 +47,13 @@ async function run(text, api) {
   showPage((el) => {
     const list = items.map(i => '<li>' + esc(i.name) + ': ' + esc(i.status) + '</li>').join('');
     el.innerHTML = '<h2>Automation status: ' + esc(name) + '</h2>'
-      + '<p class="sub">Verse owns the heavy lifting. This is the status the client can summon anytime.</p>'
+      + '<p class="sub">This is the status of the automations the client can summon anytime.</p>'
       + '<h3>Running automations</h3><ul>' + list + '</ul>'
       + '<h3>Client does less</h3>'
       + '<p>No watching dashboards, no asking "is it running?". One card, one status.</p>'
       + '<h3>Next</h3>'
       + '<p>Ask for the handoff checklist or docs pack when ready to hand off.</p>'
-      + '<div class="src">Source: A-to-Mind automation status · we own the heavy lifting · nothing sent</div>';
+      + '<div class="src">Source: A-to-Mind automation status · nothing sent</div>';
   });
   return 'automation-status';
 }

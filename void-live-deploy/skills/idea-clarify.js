@@ -1,6 +1,6 @@
 /**
  * idea-clarify skill — capture a rough business idea and clarify it into systems to design, build, connect, test, and monitor,
- * plus handoff points, so A-to-Mind can take over the heavy lifting.
+ * plus handoff points.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "clarify this idea: lead capture for our SaaS", "idea clarify: automate invoice follow-ups", "capture and clarify the onboarding flow"
  */
@@ -32,7 +32,7 @@ async function run(text, api) {
     `<h3>Handoff</h3><ul>`,
     `<li>Status doc: current state, last test green, what we own vs client owns</li>`,
     `<li>Running automations: approvals via the confirm line</li>`,
-    `<li>Package: "we own the heavy lifting" — client keeps the outcome</li>`,
+    `<li>The handoff package — the client keeps the outcome</li>`,
     `</ul>`,
     `<p class="sub">Clarified so delivery is reliable and client work drops.</p>`,
     `<div class="src">Source: A-to-Mind idea-to-system practice</div>`
