@@ -1,9 +1,9 @@
 /**
- * lift-summary skill — a short client-facing summary that packages "we own the heavy lifting"
- * for a business idea. Lists the systems Verse owns, the client work that drops, and the next
+ * lift-summary skill — a short summary of the systems, automations, monitoring and handoff
+ * included for a business idea. Lists the systems included, the client work that drops, and the next
  * handoff step so selling and delivery stay consistent and reliable.
- * "lift summary for client onboarding", "we own the heavy lifting for invoice reminders",
- * "package the heavy lifting for the support flow".
+ * "lift summary for client onboarding", "lift summary for invoice reminders",
+ * "package a lift summary for the support flow".
  * Rules-based, offline. Nothing is sent. Reuses the delivery practice already on main.
  */
 export function isLiftSummary(text) {
@@ -45,12 +45,12 @@ async function run(text, api) {
   showPage((el) => {
     const owns = pack.owns.map(i => '<li>' + esc(i) + '</li>').join('');
     const less = pack.clientDoesLess.map(i => '<li>' + esc(i) + '</li>').join('');
-    el.innerHTML = '<h2>We own the heavy lifting: ' + esc(name) + '</h2>'
+    el.innerHTML = '<h2>Lift summary: ' + esc(name) + '</h2>'
       + '<p class="sub">A short package for the client. Verse takes the systems; the client keeps the outcome.</p>'
       + '<h3>What Verse owns</h3><ul>' + owns + '</ul>'
       + '<h3>Client work that drops</h3><ul>' + less + '</ul>'
       + '<h3>Next</h3><p>' + esc(pack.next) + '</p>'
-      + '<div class="src">Source: A-to-Mind lift summary · we own the heavy lifting · nothing sent</div>';
+      + '<div class="src">Source: A-to-Mind lift summary · nothing sent</div>';
   });
   return 'lift-summary';
 }
@@ -60,13 +60,12 @@ export default {
   name: 'lift-summary',
   examples: [
     'lift summary for client onboarding',
-    'we own the heavy lifting for invoice reminders',
-    'package the heavy lifting for the support flow',
+    'lift summary for invoice reminders',
+    'package a lift summary for the support flow',
     'make a lift summary for weekly status reports'
   ],
   nearMisses: [
     'what is a lift',
-    'heavy lifting',
     'summary of the system',
     'proposal pack for onboarding'
   ],

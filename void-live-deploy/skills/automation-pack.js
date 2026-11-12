@@ -52,14 +52,14 @@ function run(text, api) {
   showPage((el) => {
     const list = autos.map((a) => '<li>' + esc(a) + '</li>').join('');
     el.innerHTML = '<h2>Automation pack: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. These automations run behind the confirm line so the client does less.</p>'
+      + '<p>These automations run behind the confirm line.</p>'
       + '<h3>Automations Verse will own</h3><ul>' + list + '</ul>'
       + '<h3>Client does less</h3>'
       + '<p>No building the jobs, no watching them run, no chasing status. One yes on the outcome.</p>'
       + '<h3>Next step</h3>'
       + '<p>Ask for the monitor-pack or system-slice for ' + esc(name) + ' to deepen ownership.</p>'
       + '<p class="sub">Nothing is sent. The pack stays with the client.</p>'
-      + '<div class="src">Source: A-to-Mind automation pack · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind automation pack</div>';
   });
   return 'automation-pack';
 }

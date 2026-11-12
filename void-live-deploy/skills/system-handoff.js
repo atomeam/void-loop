@@ -21,7 +21,7 @@ function run(text, api) {
   const name = systemOf(text);
   showPage((el) => {
     el.innerHTML = '<h2>System handoff: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. The client keeps the outcome.</p>'
+      + '<p>The package lists the plan, status, docs and automations. The client keeps the outcome.</p>'
       + '<h3>Package</h3><ul>'
       + '<li>Plan: ask "blueprint this: ' + esc(name) + '"</li>'
       + '<li>Status: ask "system status for ' + esc(name) + '" (a real check, not a sample)</li>'

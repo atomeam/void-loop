@@ -775,7 +775,8 @@ export default {
      "full handoff for the invoice automation",
      "client handoff pack on onboarding flow",
      "package the handoff for the support router",
-     "show the complete handoff for weekly reports"
+     "show the complete handoff for weekly reports",
+     "full handoff for client onboarding with lift and offer"
     ]
    }
   ],
@@ -971,7 +972,7 @@ export default {
     "examples": [
      "clarify this business idea: a tool that turns customer emails into running automations",
      "turn this idea into a system plan: weekly status reports that write themselves",
-     "structure this business idea for Verse to own the heavy lifting",
+     "structure this business idea into a system plan",
      "make this idea a system plan: client onboarding that runs itself"
     ]
    },
@@ -991,10 +992,10 @@ export default {
    {
     "name": "heavy-lift-map",
     "examples": [
-     "map the heavy lifting for client onboarding",
+     "map the systems for client onboarding",
      "heavy lift map: invoice reminders that run themselves",
      "what does Verse own for the support ticket router",
-     "own the heavy lifting for weekly status reports"
+     "systems map for weekly status reports"
     ]
    },
    {

@@ -21,8 +21,9 @@ test('ownership-pack run names ownership without inventing status', () => {
   });
   assert.equal(ret, 'ownership-pack');
   assert.match(html, /Ownership pack: Acme/);
-  assert.match(html, /Verse owns the heavy lifting/);
+  assert.match(html, /A split of what Verse owns and what the client owns/);
   assert.match(html, /Client owns/);
+  assert.doesNotMatch(html, /heavy lifting/i);
   assert.doesNotMatch(html, /Last check: green/);
   assert.doesNotMatch(html, /up/);
 });
