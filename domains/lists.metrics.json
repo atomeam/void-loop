@@ -1343,18 +1343,23 @@
   {
    "at": "2026-11-12T20:45:00Z",
    "run": 25,
-   "closed": 6,
-   "touched": 6,
+   "closed": 7,
+   "touched": 7,
    "pct_blocked": 0,
    "top_block": "none this run",
    "dup_rate": 0,
-   "dup_basis": "0 of 6 items was already on main",
-   "median_days": 27.2,
-   "median_basis": "days from queued to built: 6.7 (closed PR #2335's propose-fix reasons, opened 2026-11-06), 6.7 (its merge-gate install, same PR), 25.7 (label~stage-organize overlap, stage-organize shipped 2026-10-18), 28.6 (convergence step 3 lib/db.js, planned 2026-10-15), 28.6 (tests for untested files, 2026-10-15), 28.6 (frontier #26 step 2, written 2026-10-15); median 27.2",
+   "dup_basis": "0 of 7 items was already on main",
+   "median_days": 25.7,
+   "median_basis": "days from queued to built: 0.4 (main's stale book, map and inventory rows after time-saved #2729 and the family skills), 6.7 (closed PR #2335's propose-fix reasons, opened 2026-11-06), 6.7 (its merge-gate install, same PR), 25.7 (label~stage-organize overlap, stage-organize shipped 2026-10-18), 28.6 (convergence step 3 lib/db.js, planned 2026-10-15), 28.6 (tests for untested files, 2026-10-15), 28.6 (frontier #26 step 2, written 2026-10-15); median 25.7",
    "asks_open_start": 0,
    "asks_open_end": 0,
-   "note": "Run 25 of the lists routine. Main was green at the start. Five open pull requests (#2732, #2733, #2736, #2739, #2740), all helper or harden branches with their own skill files; only the generated skills/index.json is shared, which the second merge regenerates. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
+   "note": "Run 25 of the lists routine. Main's verify was green at the start, but five checks it skips when nothing they cover changes were red on main (found when this branch touched skills); fixed here. Five open pull requests (#2732, #2733, #2736, #2739, #2740), all helper or harden branches with their own skill files; only the generated skills/index.json is shared, which the second merge regenerates. No list newly reached zero this run: V01D asks, the store queue and the site tester were already 0.",
    "items": [
+    {
+     "what": "main red (found this run): docs/MAP.md did not name time-saved (#2729), 8 skill families had no inventory line, and skills/guide.json, docs/HANDOFF-GAPS.md and lib/similar-index.js were stale; a map.d line, 8 inventory lines and the three regenerated",
+     "list": "main red (found this run)",
+     "status": "built"
+    },
     {
      "what": "convergence step 3 finished: lib/db.js for the other 11 endpoints (daily-art, card-art, clip, image, gallery, studio, agent, watchalong, merge, comments, generators), batchReady added for the one-batch ones, resetReady kept (tools/db-ready.test.mjs)",
      "list": "convergence / handoff Up for grabs",
