@@ -1,1 +1,0 @@
-{"at": "2026-11-12T17:30:00Z", "by": "grok-bot", "kind": "build", "what": "Eight endpoints share one way of making their tables (lib/db.js), every reply unchanged"}
