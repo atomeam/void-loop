@@ -1557,9 +1557,9 @@ try {
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
     const P = await fresh();
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => ({ sign: (c.querySelector('.elv-sign') || {}).textContent, text: c.innerText, rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]') })).catch((e) => ({ err: String(e) }));
+    const v = await P.p.$eval('.vpage.on', (c) => ({ name: (c.querySelector('.tw-head') || {}).textContent, text: c.innerText, rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]') })).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
-    check('tower: the card is the elevator sign and does not list the finished-site pages', /Out of Order/.test(v.sign || '') && !v.rot && !v.tower && !/rot13\.com|motherfuckingwebsite|tsundere\.pw/.test(v.text || '') && !P.errors.length, JSON.stringify(v).slice(0, 500));
+    check('tower: the card is Versus and does not list the finished-site pages', v.name === 'Versus' && !v.rot && !v.tower && !/rot13\.com|motherfuckingwebsite|tsundere\.pw/.test(v.text || '') && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
