@@ -1,4 +1,5 @@
-// tools/film-grade.mjs (frontier #26 step 2, first half): each film grades itself from ffmpeg's freezedetect and the taps it showed.
+// tools/film-grade.mjs (frontier #26 step 2): each film grades itself from ffmpeg's freezedetect, the taps it showed and whether the
+// hook and ending cards rendered; a film under the bar is re-shot once with another path through the page and the better take kept.
 // Run: node --test tools/film-grade.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,7 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { stillsOf, durationOf, scorecard, summaryLine, gradeAndKeep } from './film-grade.mjs';
+import { stillsOf, durationOf, scorecard, summaryLine, gradeAndKeep, tapOrder, keepBetter } from './film-grade.mjs';
 
 const LOG = `Input #0, matroska,webm, from 'f.webm':
   Duration: 00:00:21.48, start: 0.000000, bitrate: 300 kb/s
@@ -48,4 +49,34 @@ test('a real film: half of it still is under the bar, the scorecard lands in its
 });
 test('grading never throws: a film that cannot be read is still kept', () => {
   assert.equal(gradeAndKeep('missing', '/nonexistent/film.webm', ''), null);
+});
+test('a hook or ending card that did not render puts the film under the bar', () => {
+  const ok = scorecard({ seconds: 20, stills: [], taps: 2, cards: { hook: true, ending: true } });
+  assert.equal(ok.pass, true); assert.deepEqual(ok.cards, { hook: true, ending: true });
+  const bad = scorecard({ seconds: 20, stills: [], taps: 2, cards: { hook: true, ending: false } });
+  assert.equal(bad.pass, false); assert.deepEqual(bad.why, ['the ending card did not render']);
+  assert.equal(scorecard({ seconds: 20, stills: [], taps: 2 }).cards, undefined, 'an older film with no card check is not marked down');
+});
+test('the re-shoot takes another path through the page', () => {
+  assert.deepEqual(tapOrder(['start'], ['a', 'b', 'c']), ['start', 'a', 'b', 'c']);
+  assert.deepEqual(tapOrder(['start'], ['a', 'b', 'c'], true), ['c', 'b', 'a', 'start']);
+  const rest = ['a', 'b']; tapOrder([], rest, true); assert.deepEqual(rest, ['a', 'b'], 'the page order is not changed in place');
+});
+test('the better take is kept: clears the bar, then fewer reasons, less still, more taps; a tie keeps the first', () => {
+  const g = (pass, why, stillShare, taps) => ({ pass, why, stillShare, taps });
+  assert.equal(keepBetter(g(false, ['x'], 0.4, 1), g(true, [], 0.1, 3)), 'second');
+  assert.equal(keepBetter(g(true, [], 0.1, 3), g(false, ['x'], 0, 9)), 'first');
+  assert.equal(keepBetter(g(false, ['x', 'y'], 0.4, 1), g(false, ['x'], 0.5, 1)), 'second');
+  assert.equal(keepBetter(g(false, ['x'], 0.4, 1), g(false, ['x'], 0.3, 1)), 'second');
+  assert.equal(keepBetter(g(false, ['x'], 0.4, 1), g(false, ['x'], 0.4, 2)), 'second');
+  assert.equal(keepBetter(g(false, ['x'], 0.4, 1), g(false, ['x'], 0.4, 1)), 'first');
+  assert.equal(keepBetter(g(false, ['x'], 0.4, 1), null), 'first');
+  assert.equal(keepBetter(null, g(false, ['x'], 0.4, 1)), 'second');
+});
+test('record.mjs checks the hook and ending cards and re-shoots a film under the bar once', () => {
+  const src = readFileSync(new URL('./record.mjs', import.meta.url), 'utf8');
+  assert.match(src, /cards\.hook = !!\(await fx\('shown'\)\)/);
+  assert.match(src, /cards\.ending = !!\(await fx\('shown'\)\)/);
+  assert.match(src, /tapOrder\(starts, .*alt\)/);
+  assert.match(src, /alt: true/); assert.match(src, /keepBetter\(r\.grade, again\.grade\)/);
 });

@@ -24,6 +24,7 @@ import { stationOf, askMessages, learnMessages, notesFrom, senses, chooseMessage
 import { jsonNoStore } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 
 export const ASK_PER_MIN = 12, LEARN_PER_MIN = 3, LEARN_GAP_S = 120, LEARN_PER_DAY = 400, HEAR_BYTES = 200000, HEAR_MS = 12000, FRAME_MAX = 400000;
+import { batchReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 const RADIO_HOSTS = ['de1.api.radio-browser.info', 'all.api.radio-browser.info'];
 const UA = 'VerseBot/1.0 (+https://a-to-mind.com/local/)';
 const json = (body, status = 200) => jsonNoStore(body, status);
@@ -31,8 +32,7 @@ const SCHEMA = [
   'CREATE TABLE IF NOT EXISTS void_watch_notes (h TEXT PRIMARY KEY, at TEXT NOT NULL, day TEXT NOT NULL, medium TEXT NOT NULL, cc TEXT NOT NULL, station TEXT NOT NULL, network TEXT NOT NULL, show TEXT NOT NULL, kind TEXT NOT NULL, topic TEXT NOT NULL, note TEXT NOT NULL, value_cents INTEGER, source TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_watch_runs (k TEXT PRIMARY KEY, n INTEGER NOT NULL, at INTEGER NOT NULL)',
 ];
-let ready = null;
-const schema = (env) => (ready = ready || env.DB.batch(SCHEMA.map((q) => env.DB.prepare(q))).catch((e) => { ready = null; throw e; }));
+const schema = batchReady(SCHEMA); // made once per isolate in one batch (lib/db.js, convergence step 3)
 
 const said = (r) => String((r && (r.response || r.text || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && (r.result.response || r.result.text)))) || '').trim();
 async function chat(env, messages, max_tokens) {
