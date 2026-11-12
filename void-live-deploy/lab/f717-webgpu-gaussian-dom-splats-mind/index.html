@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+#canvas { position:absolute; inset:0; width:100%; height:100%; }
+.splat {
+  position:absolute; width:80px; height:80px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,200,100,0.8), rgba(100,150,255,0.2));
+  pointer-events:auto; cursor:pointer; will-change:transform, filter, opacity;
+  transition: none;
+}
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; border-radius:8px; }
+button { margin:2px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-gaussian-dom-splats-mind · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial interface for The Verse canvas: a small number of living &quot;Gaussian splat&quot; agents embodied as absolute-positioned DOM cards whose position">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-gaussian-dom-splats-mind · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial interface for The Verse canvas: a small number of living &quot;Gaussian splat&quot; agents embodied as absolute-positioned DOM cards whose position">
+<meta property="og:url" content="https://a-to-mind.com/lab/f717-webgpu-gaussian-dom-splats-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f717-webgpu-gaussian-dom-splats-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <span id="status">F717 Gaussian DOM Splats</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-gaussian-dom-splats-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

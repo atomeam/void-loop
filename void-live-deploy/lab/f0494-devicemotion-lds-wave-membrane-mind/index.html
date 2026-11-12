@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; z-index:1; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#2040a0; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+.membrane { position:absolute; width:80px; height:60px; background:rgba(100,180,255,0.25); border:2px solid #80c0ff; border-radius:8px; z-index:5; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:12px; text-align:center; user-select:none; backdrop-filter:blur(2px); }
+#status { font-size:12px; margin-top:8px; white-space:pre-wrap; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceMotion LDS Wave Membrane Mind · Verse lab</title>
+<meta name="description" content="A local Linear Dynamical System (LDS: state x{t+1} = A xt + B ut, with fixed or lightly adaptive A/B matrices) receives continuous DeviceMotion acceleration (or">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceMotion LDS Wave Membrane Mind · Verse lab">
+<meta property="og:description" content="A local Linear Dynamical System (LDS: state x{t+1} = A xt + B ut, with fixed or lightly adaptive A/B matrices) receives continuous DeviceMotion acceleration (or">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0494-devicemotion-lds-wave-membrane-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0494-devicemotion-lds-wave-membrane-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ui">
+  <h3>F0494 LDS Wave Membrane</h3>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Initializing...</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceMotion LDS Wave Membrane Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

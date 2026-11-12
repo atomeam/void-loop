@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.7); padding:10px; border-radius:8px; max-width:280px; }
+button, input { margin:4px 2px; padding:4px 8px; }
+.card { position:absolute; background:rgba(20,20,40,.85); border:1px solid #446; border-radius:6px; padding:6px; min-width:140px; font-size:12px; cursor:move; z-index:5; }
+.card h4 { margin:0 0 4px; }
+#status { position:absolute; bottom:10px; left:10px; background:rgba(0,0,0,.6); padding:6px; border-radius:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-user-sdf-sculptor · Verse lab</title>
+<meta name="description" content="A constructive spatial tool for The Verse canvas: the user authors a small set of analytic SDF primitives (spheres, boxes) whose parameters live in floating DOM">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-user-sdf-sculptor · Verse lab">
+<meta property="og:description" content="A constructive spatial tool for The Verse canvas: the user authors a small set of analytic SDF primitives (spheres, boxes) whose parameters live in floating DOM">
+<meta property="og:url" content="https://a-to-mind.com/lab/f720-webgpu-user-sdf-sculptor/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f720-webgpu-user-sdf-sculptor/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="addSphere">Add Sphere</button>
+  <button id="addBox">Add Box</button>
+  <button id="reset">Reset</button><br>
+  <button id="dlPng">Download PNG</button>
+  <button id="dlJson">Download JSON</button>
+  <button id="share">Copy Share Link</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-user-sdf-sculptor</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

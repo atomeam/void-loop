@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; overflow: hidden; }
+#controls { position: fixed; top: 10px; left: 10px; z-index: 100; background: #222; padding: 12px; border-radius: 8px; max-width: 320px; }
+textarea { width: 100%; height: 80px; background: #333; color: #eee; border: 1px solid #555; }
+button { margin: 4px; padding: 8px 12px; background: #0a84ff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+#canvas { position: relative; width: 100vw; height: 100vh; }
+.item { position: absolute; background: #2c2c2e; border: 1px solid #444; padding: 8px 12px; border-radius: 6px; cursor: grab; user-select: none; min-width: 80px; text-align: center; font-size: 14px; }
+.item.dragging { z-index: 10; opacity: 0.8; cursor: grabbing; }
+.centroid { position: absolute; width: 8px; height: 8px; background: #0a84ff; border-radius: 50%; pointer-events: none; opacity: 0.6; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial packing list organizer · Verse lab</title>
+<meta name="description" content="Job: A traveler pastes or types items for a trip; the page groups them spatially by category using a local force simulation, lets the user drag to reorder or">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial packing list organizer · Verse lab">
+<meta property="og:description" content="Job: A traveler pastes or types items for a trip; the page groups them spatially by category using a local force simulation, lets the user drag to reorder or">
+<meta property="og:url" content="https://a-to-mind.com/lab/f694-spatial-force-packing-list/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f694-spatial-force-packing-list/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="controls">
+  <h3>Packing List Maker</h3>
+  <textarea id="input" placeholder="One item per line&#10;optional: item:category"></textarea>
+  <br>
+  <button id="add">Add / Update Items</button>
+  <button id="clear">Clear</button>
+  <button id="export">Copy List</button>
+  <button id="download">Download .txt</button>
+  <button id="save">Save</button>
+  <div id="status"></div>
+</div>
+<div id="canvas"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spatial packing list organizer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

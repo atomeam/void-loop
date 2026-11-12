@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --accent:#4cc9f0; --crit:#f72585; --text:#e8e8e8; --muted:#888; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:1rem 1.2rem; border-bottom:1px solid #222; }
+  h1 { margin:0; font-size:1.4rem; }
+  .sub { color:var(--muted); font-size:.9rem; margin:.3rem 0 0; }
+  main { display:grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - 80px); }
+  @media (max-width:800px) { main { grid-template-columns:1fr; } }
+  aside { padding:1rem; border-right:1px solid #222; background:#12141a; }
+  textarea { width:100%; height:180px; background:#0d0f14; color:var(--text); border:1px solid #333; border-radius:6px; padding:.6rem; font:13px ui-monospace,monospace; }
+  label { display:block; margin:.8rem 0 .3rem; font-size:.85rem; color:var(--muted); }
+  button, .btn { background:var(--accent); color:#000; border:0; padding:.5rem 1rem; border-radius:6px; font-weight:600; cursor:pointer; margin:.3rem .3rem 0 0; }
+  button.secondary { background:#333; color:var(--text); }
+  #timeline { position:relative; height:420px; background:#0d0f14; border:1px solid #222; border-radius:8px; overflow:auto; margin:1rem; }
+  .bar { position:absolute; height:28px; border-radius:4px; display:flex; align-items:center; padding:0 8px; font-size:12px; color:#000; cursor:grab; user-select:none; white-space:nowrap; overflow:hidden; }
+  .bar.critical { background:var(--crit); color:#fff; }
+  .bar.normal { background:var(--accent); }
+  .bar:active { cursor:grabbing; }
+  #stats { padding:0 1rem; font-size:.9rem; color:var(--muted); }
+  #output { margin:1rem; white-space:pre-wrap; font:13px ui-monospace,monospace; background:#0d0f14; padding:1rem; border-radius:8px; min-height:80px; }
+  .toast { position:fixed; bottom:1rem; right:1rem; background:#333; padding:.6rem 1rem; border-radius:6px; display:none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Project dependency planner · Verse lab</title>
+<meta name="description" content="Job: Paste a list of tasks with durations and predecessors; the page lays them out as a spatial timeline of bars you can drag to reorder or adjust, computes the">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Project dependency planner · Verse lab">
+<meta property="og:description" content="Job: Paste a list of tasks with durations and predecessors; the page lays them out as a spatial timeline of bars you can drag to reorder or adjust, computes the">
+<meta property="og:url" content="https://a-to-mind.com/lab/f665-spatial-dependency-planner/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f665-spatial-dependency-planner/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Project dependency planner</h1>
+  <p class="sub">Paste tasks (name | days | predecessors). Drag bars. Download the chart or copy the schedule. Saved on this device.</p>
+</header>
+<main>
+  <aside>
+    <label>Tasks (one per line: name | days | pred1, pred2)</label>
+    <textarea id="input" placeholder="Design | 3 |
+Build | 5 | Design
+Test | 2 | Build
+Review | 1 | Test
+Deploy | 1 | Review
+Docs | 2 | Design"></textarea>
+    <button id="plan">Plan</button>
+    <button id="reset" class="secondary">Reset</button>
+    <div style="margin-top:1rem">
+      <button id="png">Download PNG</button>
+      <button id="copy" class="secondary">Copy schedule</button>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin-top:1rem">Critical path is pink. Drag a bar to adjust its start (snaps if it would break a dependency).</p>
+  </aside>
+  <section>
+    <div id="stats"></div>
+    <div id="timeline"></div>
+    <div id="output"></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

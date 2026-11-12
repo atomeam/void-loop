@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4cc9f0; --text:#e8eaed; --muted:#9aa0a6; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); }
+header { padding:12px 16px; background:#16181d; border-bottom:1px solid #2a2e36; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+h1 { font-size:1.1rem; margin:0; font-weight:600; }
+.controls { display:flex; gap:8px; flex-wrap:wrap; }
+button, input[type=file] { background:var(--accent); color:#000; border:0; padding:8px 12px; border-radius:6px; font-weight:600; cursor:pointer; font-size:0.9rem; }
+button.secondary { background:#2a2e36; color:var(--text); }
+button:disabled { opacity:0.5; }
+#board { position:relative; min-height:60vh; background:#12141a; border:1px dashed #2a2e36; margin:12px; border-radius:8px; overflow:hidden; }
+.card { position:absolute; width:180px; background:var(--card); border:1px solid #2a2e36; border-radius:8px; padding:10px; box-shadow:0 4px 12px rgba(0,0,0,.4); cursor:move; user-select:none; }
+.card input, .card textarea { width:100%; background:#0f1115; color:var(--text); border:1px solid #2a2e36; border-radius:4px; padding:4px; margin:4px 0; font-size:0.85rem; }
+.card .code { font-family:monospace; font-size:0.75rem; color:var(--accent); word-break:break-all; }
+.card .row { display:flex; gap:4px; align-items:center; }
+.card .row button { padding:4px 8px; font-size:0.8rem; }
+#video, #preview { max-width:100%; display:block; margin:8px auto; border-radius:6px; }
+#status { padding:8px 16px; color:var(--muted); font-size:0.85rem; }
+.hidden { display:none !important; }
+footer { padding:12px 16px; font-size:0.75rem; color:var(--muted); text-align:center; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Barcode Spatial Inventory · Verse lab</title>
+<meta name="description" content="Job: Point your phone camera at product barcodes or QR codes; the page detects them locally, lets you name the item and set quantity, then drag the cards around a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Barcode Spatial Inventory · Verse lab">
+<meta property="og:description" content="Job: Point your phone camera at product barcodes or QR codes; the page detects them locally, lets you name the item and set quantity, then drag the cards around a">
+<meta property="og:url" content="https://a-to-mind.com/lab/f670-barcode-spatial-inventory/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f670-barcode-spatial-inventory/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Barcode Spatial Inventory</h1>
+  <div class="controls">
+    <button id="startCam">Start Camera</button>
+    <button id="stopCam" class="secondary" disabled>Stop</button>
+    <label class="secondary" style="padding:8px 12px; border-radius:6px; cursor:pointer;">
+      Upload photo <input type="file" id="fileIn" accept="image/*" class="hidden">
+    </label>
+    <button id="addManual" class="secondary">Add manual</button>
+    <button id="exportCsv">Download CSV</button>
+    <button id="exportPng">Download PNG</button>
+    <button id="clearAll" class="secondary">Clear</button>
+  </div>
+</header>
+<div id="status">Ready. Camera works best in Chromium browsers. Photo upload works everywhere.</div>
+<video id="video" class="hidden" playsinline></video>
+<canvas id="preview" class="hidden"></canvas>
+<div id="board"></div>
+<footer>Everything stays on this device. Scan, arrange, keep. Verse F670.</footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

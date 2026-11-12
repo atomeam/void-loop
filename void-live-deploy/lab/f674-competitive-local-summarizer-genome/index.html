@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; background: #0f0f12; color: #e0e0e0; }
+h1 { font-size: 1.4rem; }
+textarea { width: 100%; height: 120px; background: #1a1a1e; color: #fff; border: 1px solid #333; padding: 0.5rem; }
+button { background: #4a6cf7; color: white; border: none; padding: 0.5rem 1rem; margin: 0.3rem; border-radius: 4px; cursor: pointer; }
+button:hover { background: #3a5ce7; }
+.candidates { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.card { background: #1a1a1e; border: 1px solid #333; padding: 0.8rem; border-radius: 6px; }
+.card h3 { margin: 0 0 0.5rem; font-size: 0.9rem; color: #aaa; }
+.summary { font-size: 0.95rem; line-height: 1.4; }
+.status { font-size: 0.85rem; color: #8f8; margin: 0.5rem 0; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Competitive Local Summarizer Genome · Verse lab</title>
+<meta name="description" content="Job: Paste or type text; several tiny on-device models compete to produce extractive summaries; rate the best one to seal and transfer its genome to other tabs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Competitive Local Summarizer Genome · Verse lab">
+<meta property="og:description" content="Job: Paste or type text; several tiny on-device models compete to produce extractive summaries; rate the best one to seal and transfer its genome to other tabs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f674-competitive-local-summarizer-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f674-competitive-local-summarizer-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Competitive Local Summarizer</h1>
+<p>Paste text. Tiny local models compete. Rate the best to seal and share its genome across tabs. Download the winner.</p>
+<textarea id="src" placeholder="Paste or type your text here..."></textarea>
+<div>
+  <button id="run">Run Competition</button>
+  <button id="dl">Download Best</button>
+  <button id="copy">Copy Best</button>
+</div>
+<div id="status" class="status"></div>
+<div id="cands" class="candidates"></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

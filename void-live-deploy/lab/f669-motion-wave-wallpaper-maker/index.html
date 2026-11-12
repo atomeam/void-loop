@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<style>
+  :root { --bg: #0f0f12; --fg: #e8e8f0; --accent: #6cf; --card: #1a1a22; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, sans-serif; display: flex; flex-direction: column; height: 100dvh; }
+  header { padding: 12px 16px; background: var(--card); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 1.15rem; font-weight: 600; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button, input[type=range] { background: #2a2a36; color: var(--fg); border: 1px solid #444; border-radius: 6px; padding: 8px 12px; font: inherit; }
+  button:active { background: #3a3a48; }
+  button.primary { background: var(--accent); color: #111; border: none; font-weight: 600; }
+  canvas { flex: 1; width: 100%; touch-action: none; background: #000; display: block; }
+  .status { font-size: 0.85rem; opacity: 0.75; padding: 4px 16px; }
+  label { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Motion wallpaper maker · Verse lab</title>
+<meta name="description" content="Job: Tilt your phone or drag on the screen to paint energy into a live wave field; a tiny local causal model steers the evolution.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Motion wallpaper maker · Verse lab">
+<meta property="og:description" content="Job: Tilt your phone or drag on the screen to paint energy into a live wave field; a tiny local causal model steers the evolution.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f669-motion-wave-wallpaper-maker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f669-motion-wave-wallpaper-maker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Motion Wallpaper Maker</h1>
+  <div class="controls">
+    <button id="freeze" class="primary">Freeze & Download PNG</button>
+    <button id="reset">Reset</button>
+    <button id="copy">Copy seed</button>
+    <label>Speed <input type="range" id="speed" min="0.2" max="2" step="0.05" value="1"></label>
+    <label>Damp <input type="range" id="damp" min="0.90" max="0.999" step="0.001" value="0.97"></label>
+  </div>
+</header>
+<div class="status" id="status">Tilt or drag to inject energy. Local causal model steers the waves.</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

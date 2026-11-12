@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#ddd; font-family:system-ui; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.7); padding:10px; border-radius:8px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#222; color:#fff; border:1px solid #555; cursor:pointer; }
+.portal { position:absolute; width:100px; height:60px; background:rgba(40,60,100,.6); border:2px solid #6cf; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:grab; user-select:none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Spectral Genome Mind · Verse lab</title>
+<meta name="description" content="True WebXR hand/gaze (with pointer fallback) provides causal input to a local tiny linear model (not MLP/RNN) that modulates a WebGPU compute spectral residual">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Spectral Genome Mind · Verse lab">
+<meta property="og:description" content="True WebXR hand/gaze (with pointer fallback) provides causal input to a local tiny linear model (not MLP/RNN) that modulates a WebGPU compute spectral residual">
+<meta property="og:url" content="https://a-to-mind.com/lab/f659-webxr-hand-spectral-genome-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f659-webxr-hand-spectral-genome-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ui">
+  <div>F659 Hand Spectral Genome Mind</div>
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="sealBtn">Seal Best Genome</button>
+  <div id="status">Pointer mode · Fitness: 0</div>
+</div>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Spectral Genome Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

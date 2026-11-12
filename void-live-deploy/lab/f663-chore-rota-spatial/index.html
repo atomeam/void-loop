@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4a9eff; --text:#e6e6e6; --muted:#888; --good:#4caf50; --warn:#ff9800; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #333; }
+h1 { margin:0; font-size:1.4rem; }
+.container { max-width:1100px; margin:0 auto; padding:1rem; }
+.inputs { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+@media (max-width:700px) { .inputs { grid-template-columns:1fr; } }
+textarea, input { width:100%; background:var(--card); color:var(--text); border:1px solid #333; border-radius:6px; padding:0.5rem; font:inherit; }
+label { display:block; margin-bottom:0.3rem; font-size:0.9rem; color:var(--muted); }
+.toolbar { display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0; align-items:center; }
+button { background:var(--accent); color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font:inherit; }
+button.secondary { background:#333; }
+.grid-wrap { overflow-x:auto; margin:1rem 0; }
+table.rota { width:100%; border-collapse:collapse; background:var(--card); border-radius:8px; overflow:hidden; }
+table.rota th, table.rota td { border:1px solid #333; padding:0.4rem; min-width:80px; vertical-align:top; }
+table.rota th { background:#222; font-weight:600; text-align:center; }
+.person { font-weight:600; background:#222; }
+.cell { min-height:60px; position:relative; }
+.chore-card { background:#2a3a4a; border:1px solid var(--accent); border-radius:4px; padding:0.25rem 0.4rem; margin:2px; cursor:grab; font-size:0.85rem; display:inline-block; user-select:none; }
+.chore-card:active { cursor:grabbing; }
+.load-bar { height:4px; background:#333; border-radius:2px; margin-top:4px; }
+.load-fill { height:100%; background:var(--good); border-radius:2px; }
+.stats { font-size:0.85rem; color:var(--muted); margin:0.5rem 0; }
+.pool { min-height:50px; background:#1a1d24; border:1px dashed #444; border-radius:6px; padding:0.5rem; margin:0.5rem 0; }
+footer { text-align:center; padding:1rem; color:var(--muted); font-size:0.8rem; }
+canvas { display:none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Chore rota maker · Verse lab</title>
+<meta name="description" content="Job: A household enters people and chores, then drags chores onto a weekly grid of people and days.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Chore rota maker · Verse lab">
+<meta property="og:description" content="Job: A household enters people and chores, then drags chores onto a weekly grid of people and days.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f663-chore-rota-spatial/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f663-chore-rota-spatial/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Chore Rota Maker</h1>
+  <p>Drag chores onto the weekly grid. Balance for fairness. Download or share the plan.</p>
+</header>
+<div class="container">
+  <div class="inputs">
+    <div>
+      <label for="people">People (one per line)</label>
+      <textarea id="people" rows="6" placeholder="Alex&#10;Jordan&#10;Sam"></textarea>
+    </div>
+    <div>
+      <label for="chores">Chores (one per line, optional: name,difficulty)</label>
+      <textarea id="chores" rows="6" placeholder="Dishes,2&#10;Vacuum,3&#10;Trash,1&#10;Cook dinner,4"></textarea>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button id="balance">Balance fairly</button>
+    <button id="clear" class="secondary">Clear assignments</button>
+    <button id="png">Download PNG</button>
+    <button id="copy" class="secondary">Copy list</button>
+    <button id="share" class="secondary">Share link</button>
+    <span id="stats" class="stats"></span>
+  </div>
+  <div class="pool" id="pool"><em>Unassigned chores appear here. Drag them onto cells.</em></div>
+  <div class="grid-wrap">
+    <table class="rota" id="rota">
+      <thead><tr id="header-row"><th>Person</th></tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+</div>
+<canvas id="export"></canvas>
+<footer>Everything stays on this device. Verse is now Verse everywhere.</footer>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

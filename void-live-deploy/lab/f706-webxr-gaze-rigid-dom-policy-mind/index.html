@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#scene { position:relative; width:100vw; height:100vh; perspective:800px; transform-style:preserve-3d; }
+.card {
+  position:absolute; width:90px; height:70px; background:rgba(40,60,120,0.75);
+  border:1px solid #88aaff; border-radius:8px; display:flex; align-items:center; justify-content:center;
+  font-size:12px; text-align:center; transform-style:preserve-3d; pointer-events:auto; cursor:pointer;
+  transition:box-shadow 0.2s;
+}
+.card.focused { box-shadow:0 0 20px #aaf; background:rgba(80,100,200,0.9); }
+#hud { position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:6px; font-size:13px; z-index:10; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #55a; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-gaze-rigid-dom-policy-mind · Verse lab</title>
+<meta name="description" content="Novel hybrid spatial mind: a local tiny MLP policy network (2-layer, ~20 params) continuously maps WebXR gaze direction (or pointer-as-gaze fallback) plus agent">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-gaze-rigid-dom-policy-mind · Verse lab">
+<meta property="og:description" content="Novel hybrid spatial mind: a local tiny MLP policy network (2-layer, ~20 params) continuously maps WebXR gaze direction (or pointer-as-gaze fallback) plus agent">
+<meta property="og:url" content="https://a-to-mind.com/lab/f706-webxr-gaze-rigid-dom-policy-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f706-webxr-gaze-rigid-dom-policy-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  F706 Gaze-Policy Rigid DOM Mind<br>
+  Gaze: <span id="gaze">pointer</span> | Fitness: <span id="fit">0</span> | Agents: <span id="n">0</span><br>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="reward">Reward Nearest</button>
+</div>
+<div id="scene"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-gaze-rigid-dom-policy-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
