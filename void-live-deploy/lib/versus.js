@@ -67,6 +67,9 @@ export async function fillVersus(context, kind) {
     html = putText(html, 'list', list);
     html = putText(html, 'out', p.text);
     html = putText(html, 'total', p.rows.length ? p.rows.length + ' tracks, ' + clock(p.total) + ' in all' : '');
+    const share = '/track-times/?list=' + encodeURIComponent(list);
+    html = html.replace(/(<a\b[^>]*\bid="share"[^>]*\bhref=")[^"]*/i, '$1' + share);
+    html = putText(html, 'share', share);
   } else {
     const raw = url.searchParams.get('html') || '';
     const w = weigh(raw);

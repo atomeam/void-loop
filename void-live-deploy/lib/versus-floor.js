@@ -10,14 +10,14 @@ export const ASPECTS = Object.freeze([
   { id: 'offline', hi: true, unit: '' },
 ]);
 
-/** the three Versus pages. Each one exists and works, so each is a floor. The gate still measures them. */
+/** the three Versus pages. A floor only once the rebuilt page is live and does the job. The gate still measures them. */
 export const TOOLS = Object.freeze([
-  { id: 'readable', name: 'A readable page', page: '/our-motherfucking-version/', rival: 'motherfuckingwebsite.com', url: 'https://motherfuckingwebsite.com/', kind: 'page', works: true, features: ['plain page', 'weigh markup'] },
-  { id: 'tracks', name: 'Track times', page: '/track-times/', rival: 'tsundere.pw', url: 'https://tsundere.pw/', kind: 'page', works: true, features: ['track list', 'start times'] },
-  { id: 'letters', name: 'Rotate letters', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'page', works: true, features: ['letter shift'] },
+  { id: 'readable', name: 'A readable page', page: '/our-motherfucking-version/', rival: 'motherfuckingwebsite.com', url: 'https://motherfuckingwebsite.com/', kind: 'page', works: false, features: ['plain page', 'weigh markup'] },
+  { id: 'tracks', name: 'Track times', page: '/track-times/', rival: 'tsundere.pw', url: 'https://tsundere.pw/', kind: 'page', works: false, features: ['track list', 'start times'] },
+  { id: 'letters', name: 'Rotate letters', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'page', works: false, features: ['letter shift'] },
 ]);
 
-/** pages that already do the job, so they are floors. The open rows are the fights still to build. */
+/** pages that already do the job are floors. Open rows are smallest job first. The large sites are last and are not floors until a page does the whole job. Their order is the visit list, least visited first: spotify.com 78, youtube.com 10, and the maps lane on google.com at 1 (tower.rank.json, 2026-11-02). YouTube's home page also measured 68 controls (tower.size.json, 2026-10-30). Spotify's size read was refused, and Maps was not counted, so those two are not given a made-up control count. */
 export const NEXT = Object.freeze([
   { id: 'podcasts', name: 'Podcast player', page: '/podcasts/', rival: 'podcastindex.org', url: 'https://podcastindex.org/', kind: 'page', works: true, features: ['podcast', 'audio', 'episode'] },
   { id: 'scores', name: 'Scoreboard', page: '/scores/', rival: 'livescore.com', url: 'https://www.livescore.com/', kind: 'page', works: true, features: ['score', 'board', 'standings'] },
@@ -26,10 +26,10 @@ export const NEXT = Object.freeze([
   { id: 'schedules', name: 'Schedules', page: '/schedules/', rival: 'crontab.guru', url: 'https://crontab.guru/', kind: 'page', works: true, features: ['cron', 'schedule'] },
   { id: 'meanings', name: 'Word meanings', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: true, features: ['define', 'dictionary', 'meaning'] },
   { id: 'qr', name: 'QR codes', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: true, features: ['qr', 'code'] },
-  { id: 'clips', name: 'Clips', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: false, features: ['video', 'play', 'trailer'] },
-  { id: 'songs', name: 'Songs', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, features: ['song', 'play', 'audio'] },
-  { id: 'directions', name: 'Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: false, features: ['directions', 'route', 'map'] },
   { id: 'text-diff', name: 'Text comparison', page: '/text-diff/', rival: 'diffchecker.com', url: 'https://www.diffchecker.com/', kind: 'page', works: false, features: ['diff', 'compare'] },
+  { id: 'songs', name: 'Songs', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, late: true, features: ['song', 'play', 'audio'] },
+  { id: 'clips', name: 'Clips', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: false, late: true, features: ['video', 'play', 'trailer'] },
+  { id: 'directions', name: 'Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: false, late: true, features: ['directions', 'route', 'map'] },
 ]);
 
 export const SITES = Object.freeze([...TOOLS, ...NEXT]);
@@ -82,12 +82,13 @@ export function gapText({ exam, nightly, wants, misses } = {}) {
   return parts.filter(Boolean).join(' ');
 }
 
-/** how many feature words show up in the gap notes. Ties keep list order. Size is ignored. Pure. */
+/** how many feature words show up in the gap notes. A late row waits until every earlier open row is a floor. Ties keep list order. Pure. */
 export function rankSites(sites, gaps) {
   const words = String(gaps || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2);
   const hit = (f) => words.some((w) => f.includes(w) || w.includes(f));
+  const late = (s) => s.late ? 1 : 0;
   return sites.map((s, i) => ({ s, i, n: (s.features || []).filter((f) => hit(String(f).toLowerCase())).length }))
-    .sort((a, b) => b.n - a.n || a.i - b.i).map((x) => x.s);
+    .sort((a, b) => late(a.s) - late(b.s) || b.n - a.n || a.i - b.i).map((x) => x.s);
 }
 
 const sigOf = (tools) => TOOLS.map((t) => t.id + '=' + ASPECTS.map((a) => ((tools[t.id] || {})[a.id] || {}).verdict || '-').join(',')).join('|');
