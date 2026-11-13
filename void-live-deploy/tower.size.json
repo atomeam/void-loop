@@ -5905,6 +5905,20 @@
    "refused": true,
    "at": "2026-10-29"
   },
+  "fullstackwebdev.ru": {
+   "bytes": 16260,
+   "controls": 1,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 71,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 1174,
+   "shell": "none",
+   "weight": 18970,
+   "at": "2026-11-13"
+  },
   "g.co": {
    "bytes": 7223,
    "controls": 3,

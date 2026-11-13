@@ -3039,7 +3039,6 @@
        "section cho n mo t go i di ch vu",
        "button đa ng nha p",
        "button tra tie n",
-       "button privacy manager",
        "button hu y",
        "button lu u",
        "button đo ng y xo a",
@@ -3087,7 +3086,6 @@
        "section 请选择一个套餐",
        "button 登录",
        "button 支付",
-       "button privacy manager",
        "button 取消",
        "button 保存",
        "button 是 删除",
@@ -3615,6 +3613,7 @@
        "section password",
        "section choose your premium plan",
        "button pay",
+       "button privacy manager",
        "button cancel",
        "button save",
        "button yes delete",
@@ -3643,8 +3642,7 @@
        "section to algeria",
        "section to algeria with a stopover",
        "section to tunisia",
-       "section to tunisia with a stopover",
-       "button privacy manager"
+       "section to tunisia with a stopover"
       ]
      },
      {
@@ -4333,13 +4331,16 @@
       ],
       "title": "Flights from South Africa, Flights from Kenya, Flights from Tanzania, Flights from Nigeria",
       "features": [
-       "grid grid",
+       "section my airline lists",
+       "section airlines flying",
+       "section all airlines",
+       "section aircraft flying",
+       "section all aircraft",
        "section flight connections",
        "section select departure airport",
        "section select destination",
        "section on this page",
        "section all airports in",
-       "section airlines flying",
        "section low cost airlines flying",
        "section information on points miles",
        "section which places within N miles can i reach",
@@ -4466,13 +4467,8 @@
        "section prices",
        "section alliances",
        "section airlines",
-       "section my airline lists",
-       "section airlines flying direction",
-       "section all airlines",
        "section classes",
        "section aircraft",
-       "section aircrafts flying direction",
-       "section all aircraft",
        "grid all aircraft",
        "section alternative options",
        "section adblocker detected",
@@ -4496,6 +4492,7 @@
        "content canvas",
        "nav breadcrumb",
        "content languages",
+       "grid grid",
        "section international to africa",
        "section to south africa",
        "section to south africa with a stopover",
@@ -4515,8 +4512,7 @@
        "section to italy with a stopover",
        "section to belgium",
        "section to belgium with a stopover",
-       "section what are the best international destinations in africa for",
-       "section aircraft flying"
+       "section what are the best international destinations in africa for"
       ]
      },
      {
@@ -5292,16 +5288,15 @@
       "title": "Flights from Papua New Guinea, Flights from Fiji",
       "features": [
        "section my airline lists",
-       "section airlines flying direction",
+       "section airlines flying",
        "section all airlines",
-       "section aircrafts flying direction",
+       "section aircraft flying",
        "section all aircraft",
        "section flight connections",
        "section select departure airport",
        "section select destination",
        "section on this page",
        "section all airports in",
-       "section airlines flying",
        "section information on points miles",
        "section which places within N miles can i reach",
        "section which destinations lie within N N miles of",
@@ -6560,8 +6555,6 @@
       "kind": "button",
       "templates": [
        "home",
-       "page:/vn",
-       "page:/cn",
        "page:/tw",
        "page:/airports-by-country",
        "page:/airlines",
@@ -8084,6 +8077,7 @@
        "like:/flights-from-belize-bz",
        "like:/flights-from-ireland-ie",
        "like:/flights-from-indonesia-id",
+       "like:/flights-from-papua-new-guinea-pg",
        "like:/flights-from-ghana-gh",
        "page:/flights-from-st-barth%C3%A9lemy-bl",
        "page:/flights-from-ethiopia-et"
@@ -13438,28 +13432,6 @@
       "templates": [
        "like:/flights-from-south-africa-za",
        "page:/flights-from-ethiopia-et"
-      ],
-      "verse": "missing",
-      "found": []
-     },
-     {
-      "key": "section airlines flying direction",
-      "name": "airlines_flying direction_",
-      "kind": "section",
-      "templates": [
-       "like:/flights-from-south-africa-za",
-       "like:/flights-from-papua-new-guinea-pg"
-      ],
-      "verse": "missing",
-      "found": []
-     },
-     {
-      "key": "section aircrafts flying direction",
-      "name": "aircrafts_flying direction_",
-      "kind": "section",
-      "templates": [
-       "like:/flights-from-south-africa-za",
-       "like:/flights-from-papua-new-guinea-pg"
       ],
       "verse": "missing",
       "found": []
