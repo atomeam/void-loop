@@ -10,7 +10,7 @@ import { entryProblem } from './grow.mjs';
 
 const AT = '2026-10-30T18:41:07.000Z', NOW = Date.parse(AT);
 const OFF = { on: false, why: 'credits', say: SAYS.credits, checkedAt: '2026-10-30T16:02:11.000Z', checking: false, clipsLeft: 0, perConnection: 3 };
-const PAGE = { status: 200, state: true, make: true, handoff: true };
+const PAGE = { status: 200, state: true, make: true, handoff: true, gate: false };
 const api = (body, status = 200) => ({ status, body });
 
 test('video-gen-live: video off for credits, with a fresh test and the page served, passes its checks but is not ok (no clip path, so no rating), and its ledger line is a valid finding', () => {
@@ -46,7 +46,12 @@ test('video-gen-live: the page must be served with its state line, its Make butt
   assert.equal(pageProblem({ ...PAGE, make: false, handoff: false }), '/video/ has no make, handoff');
   assert.equal(pageProblem({ status: 404 }), 'GET /video/ answered 404'); assert.equal(pageProblem(null), 'GET /video/ answered nothing');
   const html = '<meta name="verse-handoff" content="x"><p id="state"></p><button id="make">';
-  assert.deepEqual(pageOf(200, html), { status: 200, state: true, make: true, handoff: true, bytes: html.length });
+  assert.deepEqual(pageOf(200, html), { status: 200, state: true, make: true, handoff: true, gate: false, bytes: html.length });
+  const gate = '<meta name="verse-gate" content="uni"><h1>Uni</h1>';
+  const gated = pageOf(200, gate);
+  assert.equal(gated.gate, true); assert.equal(gated.state, false); assert.equal(pageProblem(gated), '');
+  assert.equal(recordOf({ first: api(OFF), page: gated, at: AT }).checksPass, true);
+  assert.match(ledgerWhat(recordOf({ first: api(OFF), page: gated, at: AT, occasion: 1 })), /Uni gate/);
   assert.equal(recordOf({ first: api(OFF), page: { ...PAGE, state: false }, at: AT }).checksPass, false);
 });
 
