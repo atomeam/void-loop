@@ -102,6 +102,9 @@ export const SAYS = Object.freeze({
 // 512x512 (Cloudflare changelog, 2026-01-15), and the server cannot shrink a 1024 picture inside its CPU limit, so the page shrinks the picture it
 // shows to EDIT_MAX on its longest side and sends that copy with the picture's own reference (functions/api/image.js changeOf).
 export const CHANGE_MAX = 300, EDIT_MAX = 504, EDIT_BYTES = 160000;
+// a change POST: the shrunk copy as base64 (EDIT_BYTES * 4 / 3) plus the JSON around it. The guard uses this same cap
+// (lib/guard.js), so a one-line change is not refused as too big before the route sees it.
+export const CHANGE_BODY = 240000;
 /** the reference copy's size for a picture of [w, h]: the longest side EDIT_MAX, the other in proportion. Pure. */
 export const editSizeOf = ([w, h]) => { const s = EDIT_MAX / Math.max(w, h); return [Math.round(w * s), Math.round(h * s)]; };
 /** a JPEG's or a PNG's own width and height, read from its header with no decode: { type, w, h }, or null when it is neither. Pure. */

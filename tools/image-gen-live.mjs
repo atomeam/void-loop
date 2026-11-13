@@ -3,7 +3,9 @@
 // the page's own edit size (lib/image-gen.js editSizeOf, the copy the page's "Change it" sends; ImageMagick or ffmpeg on the runner), changes it
 // with one fixed line (POST { act: 'change' }), then asks the same change again, which must come from the edge cache for free.
 // Cost: at most 2 Workers AI pictures a day of the page's AI_SHARE (the paint, when the bench picks Workers AI, and the change); the repeat is free.
-// Nothing a person typed is sent, no key is used, and no picture bytes are kept: the artifact holds states, sizes, painters and SHA-256 hashes.
+// Nothing a person typed is sent, and no picture bytes are kept: the artifact holds states, sizes, painters and SHA-256 hashes.
+// A signed-out /image/ that answers with the Uni gate is not a missing page. When VOID_OWNER_TOKEN is set, the same read is repeated
+// with that pass and make, pics, the script and the hand-off are checked on that page. The token is not sent to the painter.
 // The answer is kept as an artifact (findings/image-gen/<date>T<hhmm>.json, attempt "live", the occasion number) and as one `finding` line in the
 // growth ledger pointing at it. checksPass: every read answered a known state in the route's own words (a picture of the right size and a
 // 64-hex ref, or a resting reason from SAYS), and a changed picture came back changed, then cached. `ok` is checksPass AND a real change made.
@@ -50,21 +52,34 @@ export function answerProblem(a, what, size) {
   if (size && (a.w !== size[0] || a.h !== size[1])) return what + ': ' + a.w + 'x' + a.h + ', not ' + size.join('x');
   return '';
 }
-export const pageOf = (status, html) => ({ status, make: html.includes('id="make"'), pics: html.includes('id="pics"'), app: /<script[^>]+src="[^"]*app\.js/.test(html), handoff: /<meta name="verse-handoff"/.test(html) || /\/lib\/(?:image-)?handoff\.js/.test(html) });
+const headerOf = (headers, name) => !headers ? '' : (typeof headers.get === 'function' ? headers.get(name) : headers[name]) || '';
+/** a signed-out read of a full page is the Uni gate when the header or the page says so. Pure. */
+export const gateOf = (html, headers) => headerOf(headers, 'x-verse-gate') === 'uni' || /<meta name="verse-gate" content="uni"/.test(String(html || ''));
+export const pageOf = (status, html, headers) => ({ status, make: String(html || '').includes('id="make"'), pics: String(html || '').includes('id="pics"'), app: /<script[^>]+src="[^"]*app\.js/.test(String(html || '')), handoff: /<meta name="verse-handoff"/.test(String(html || '')) || /\/lib\/(?:image-)?handoff\.js/.test(String(html || '')), gate: gateOf(html, headers) });
 export const scriptOf = (status, js) => ({ status, changeIt: /function changeIt\(/.test(js), sendsChange: /act: 'change'/.test(js), shrinks: /const smallOf = /.test(js) });
-export function pageProblem(p, s) {
+export function pageProblem(p, s, opened) {
   if (!p || p.status !== 200) return 'GET /image/ answered ' + ((p && p.status) || 'nothing');
-  const missing = ['make', 'pics', 'app'].filter((k) => !p[k]);
-  if (missing.length) return '/image/ has no ' + missing.join(', ');
+  if (opened) {
+    if (opened.status !== 200) return 'GET /image/ with the owner pass answered ' + (opened.status || 'nothing');
+    if (opened.gate) return '/image/ still shows the Uni gate with the owner pass';
+    const missing = ['make', 'pics', 'app', 'handoff'].filter((k) => !opened[k]);
+    if (missing.length) return '/image/ with the owner pass has no ' + missing.join(', ');
+  } else if (p.gate) {
+    // a stranger gets the Uni gate; the tool page is behind the pass
+  } else {
+    const missing = ['make', 'pics', 'app'].filter((k) => !p[k]);
+    if (missing.length) return '/image/ has no ' + missing.join(', ');
+  }
   if (!s || s.status !== 200) return 'GET /image/app.js answered ' + ((s && s.status) || 'nothing');
   const gone = ['changeIt', 'sendsChange', 'shrinks'].filter((k) => !s[k]);
   return gone.length ? '/image/app.js has no ' + gone.join(', ') : '';
 }
 
 /** The record of one live check. Pure: the reads go in, the artifact comes out. */
-export function recordOf({ left = null, page = null, script = null, paint = null, copy = null, change = null, again = null, ms = 0, error = '', at = new Date().toISOString(), occasion = 1 }) {
+const pageBits = (p) => p ? { status: p.status, make: !!p.make, pics: !!p.pics, app: !!p.app, handoff: !!p.handoff, gate: !!p.gate } : null;
+export function recordOf({ left = null, page = null, opened = null, script = null, paint = null, copy = null, change = null, again = null, ms = 0, error = '', at = new Date().toISOString(), occasion = 1 }) {
   const size = SHAPES[ASK.shape];
-  let problem = error || pageProblem(page, script) || answerProblem(paint, 'the paint', size);
+  let problem = error || pageProblem(page, script, opened) || answerProblem(paint, 'the paint', size);
   if (!problem && paint.state === 'art') {
     // without the edit copy the change is never asked, so the check would stay green while testing nothing: that is a problem
     if (!copy || !copy.ok) problem = 'the edit copy: ' + ((copy && copy.why) || 'not made');
@@ -83,7 +98,7 @@ export function recordOf({ left = null, page = null, script = null, paint = null
     ask: 'can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line',
     request: [SITE + '/api/image', SITE + '/image/', SITE + '/image/app.js'], status: (paint && paint.status) || 0, ms: Math.round(ms),
     checksPass: !problem, ok: changed, left: Number.isInteger(left) ? left : null,
-    page: page ? { status: page.status, make: !!page.make, pics: !!page.pics, app: !!page.app, handoff: !!page.handoff } : null,
+    page: pageBits(page), opened: pageBits(opened),
     script: script ? { status: script.status, changeIt: !!script.changeIt, sendsChange: !!script.sendsChange, shrinks: !!script.shrinks } : null,
     paint, copy: copy ? { ok: !!copy.ok, tool: copy.tool || null, type: copy.type || null, w: copy.w || null, h: copy.h || null, bytes: copy.bytes || null, why: copy.why || '' } : null,
     change, again: again ? { state: again.state, cached: again.cached, same: !!(again.img && change && change.img && again.img.sha256 === change.img.sha256) } : null,
@@ -95,12 +110,13 @@ export const artifactName = (rec) => rec.at.slice(0, 13) + rec.at.slice(14, 16) 
 /** The ledger line for a record: one plain sentence, what happened and where the artifact is. */
 export function ledgerWhat(rec) {
   const where = ' (artifact findings/image-gen/' + artifactName(rec) + ')', first = rec.occasion > 1 ? ', occasion ' + rec.occasion : ' for the first time';
+  const pageWords = rec.page && rec.page.gate ? ', and /image/ answers with the Uni gate' : ', and /image/ is served';
   if (!rec.checksPass) return 'image-gen live check found a problem on a-to-mind.com: ' + rec.error + '; attempt live, occasion ' + rec.occasion + where;
   const p = rec.paint || {};
-  if (p.state !== 'art') return 'image-gen checked against the live site' + first + ': the painter is resting (' + p.why + '), in its own words, and /image/ is served' + where;
+  if (p.state !== 'art') return 'image-gen checked against the live site' + first + ': the painter is resting (' + p.why + '), in its own words' + pageWords + where;
   const painted = 'a ' + p.w + 'x' + p.h + ' picture painted by ' + p.painter + (p.cached ? ' (from the cache)' : '');
-  if (rec.ok) return 'image-gen checked against the live site' + first + ': ' + painted + ', changed with one typed line at its own size by Workers AI, and the same change again came from the cache' + where;
-  return 'image-gen checked against the live site' + first + ': ' + painted + '; the change is resting (' + ((rec.change && rec.change.why) || '?') + '), in its own words' + where;
+  if (rec.ok) return 'image-gen checked against the live site' + first + ': ' + painted + ', changed with one typed line at its own size by Workers AI, and the same change again came from the cache' + pageWords + where;
+  return 'image-gen checked against the live site' + first + ': ' + painted + '; the change is resting (' + ((rec.change && rec.change.why) || '?') + '), in its own words' + pageWords + where;
 }
 
 /** The occasion number: one more than the artifacts already kept. */
@@ -133,13 +149,18 @@ async function post(fetchFn, site, body) {
   return { answer: answerOf(res.status, j), img: j && j.img };
 }
 /** one live check: the count, the page and its script, the paint, the copy, the change and the change again. */
-export async function checkOnce(fetchFn = fetch, shrink = shrinkWith, site = SITE) {
+export async function checkOnce(fetchFn = fetch, shrink = shrinkWith, site = SITE, token = '') {
   const t0 = Date.now();
   try {
     const l = await fetchFn(site + '/api/image', { headers: { ...HEAD, accept: 'application/json' }, cache: 'no-store', signal: AbortSignal.timeout(20000) });
     let left = null; try { const j = await l.json(); left = Number.isInteger(j && j.left) ? j.left : null; } catch (_) {}
     const p = await fetchFn(site + '/image/', { headers: HEAD, cache: 'no-store', signal: AbortSignal.timeout(20000) });
-    const page = pageOf(p.status, await p.text());
+    const page = pageOf(p.status, await p.text(), p.headers);
+    let opened = null;
+    if (token) {
+      const o = await fetchFn(site + '/image/', { headers: { ...HEAD, authorization: 'Bearer ' + token }, cache: 'no-store', signal: AbortSignal.timeout(20000) });
+      opened = pageOf(o.status, await o.text(), o.headers);
+    }
     const s = await fetchFn(site + '/image/app.js', { headers: HEAD, cache: 'no-store', signal: AbortSignal.timeout(20000) });
     const script = scriptOf(s.status, await s.text());
     const painted = await post(fetchFn, site, ASK), paint = painted.answer;
@@ -152,13 +173,13 @@ export async function checkOnce(fetchFn = fetch, shrink = shrinkWith, site = SIT
         if (change.state === 'art') again = (await post(fetchFn, site, body)).answer;
       }
     }
-    return { left, page, script, paint, copy, change, again, ms: Date.now() - t0 };
+    return { left, page, opened, script, paint, copy, change, again, ms: Date.now() - t0 };
   } catch (e) { return { ms: Date.now() - t0, error: 'unreachable: ' + ((e && (e.cause && e.cause.code || e.name || e.message)) || 'error') }; }
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const dry = process.argv.includes('--dry');
-  const res = await checkOnce();
+  const res = await checkOnce(fetch, shrinkWith, SITE, process.env.VOID_OWNER_TOKEN || '');
   const rec = recordOf({ ...res, occasion: nextOccasion() });
   console.log(JSON.stringify(rec, null, 1));
   if (!dry && rec.status) {

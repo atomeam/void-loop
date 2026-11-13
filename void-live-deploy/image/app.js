@@ -79,7 +79,7 @@ import { sendImage, blobOf } from '/lib/image-handoff.js';
     $('pubNew').addEventListener('click', () => pub('new')); $('pubTop').addEventListener('click', () => pub('top'));
     // the page's own shrunk copy of a picture for a change: the model takes reference pictures smaller than 512x512 only (lib/image-gen.js)
     const smallOf = (src, size) => new Promise((ok, no) => { const im = new Image(); im.onload = () => { try { const [w, h] = editSizeOf(size), c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(im, 0, 0, w, h);
-      let out = c.toDataURL('image/jpeg', 0.9); if (out.length > EDIT_BYTES * 4 / 3) out = c.toDataURL('image/jpeg', 0.7); ok(out); } catch (e) { no(e); } }; im.onerror = no; im.src = src; });
+      const cap = Math.ceil(EDIT_BYTES * 4 / 3); let out = ''; for (const q of [0.9, 0.7, 0.5, 0.35]) { out = c.toDataURL('image/jpeg', q); if (out.length <= cap) break; } ok(out); } catch (e) { no(e); } }; im.onerror = no; im.src = src; });
     async function changeIt(p, text, go) {
       const change = text.trim(); if (!change) { say(T.changeQ); return; }
       if (!navigator.onLine) { say(T.offline); return; }

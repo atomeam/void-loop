@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/image-change-f60f · /image/ signed-out Uni gate is not a missing page, and a one-line change fits the route · 2026-11-13 23:15 UTC
 - Cursor cloud agent · cursor/dictionary-transition-11ee · Dictionary opts out of the page transition, and QR loads its code from a new address so a cached module cannot drop qrHex · 2026-11-13 22:26 UTC
 - Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC
 - Cursor cloud agent · helper/track-times-11ee · rebuild /track-times/ to the Versus page: the album list, a share link, and a sourced history · 2026-11-13 19:40 UTC

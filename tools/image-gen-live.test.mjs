@@ -78,6 +78,49 @@ test('image-gen-live: answers and the page are checked against their contract', 
   assert.match(recordOf({ page: pageOf(500, ''), script: SCRIPT, paint: art(), at: AT }).error, /\/image\/ answered 500/);
 });
 
+test('image-gen-live: a signed-out Uni gate is not a missing page, and the owner pass is what the tool page is judged on', () => {
+  const gate = pageOf(200, '<meta name="verse-gate" content="uni"><h1>Uni</h1>', { 'x-verse-gate': 'uni' });
+  assert.equal(gate.gate, true); assert.equal(gate.make, false);
+  assert.equal(pageProblem(gate, SCRIPT), '');
+  const paint = art(), change = art({ ref: REF2, change: CHANGE }, 2), again = art({ ref: REF2, change: CHANGE, cached: true }, 2);
+  const rec = recordOf({ page: gate, script: SCRIPT, paint, copy: COPY, change, again, at: AT });
+  assert.equal(rec.checksPass, true, rec.error); assert.equal(rec.page.gate, true);
+  assert.match(ledgerWhat(rec), /\/image\/ answers with the Uni gate/);
+  const opened = pageOf(200, '<button id="make"></button><div id="pics"></div><script type="module" src="/image/app.js"></script><link rel="modulepreload" href="/lib/image-handoff.js">');
+  assert.equal(pageProblem(gate, SCRIPT, opened), '');
+  assert.match(pageProblem(gate, SCRIPT, pageOf(200, '<div id="pics"></div>')), /owner pass has no make, app, handoff/);
+  assert.match(pageProblem(gate, SCRIPT, pageOf(200, '<meta name="verse-gate" content="uni">')), /still shows the Uni gate with the owner pass/);
+  const missed = recordOf({ page: gate, script: SCRIPT, opened: pageOf(200, '<div id="pics"></div>'), paint, at: AT });
+  assert.equal(missed.checksPass, false); assert.match(missed.error, /owner pass has no/);
+});
+
+test('image-gen-live: with an owner pass, checkOnce reads /image/ again and judges that page', async () => {
+  const seen = [];
+  const fetchFn = async (u, o = {}) => {
+    const body = o.body ? JSON.parse(o.body) : null;
+    seen.push([u.replace(SITE, ''), !!(o.headers && o.headers.authorization), body && body.act]);
+    const j = (x) => ({ status: 200, json: async () => x, text: async () => JSON.stringify(x) });
+    if (u.endsWith('/image/')) {
+      const owner = !!(o.headers && o.headers.authorization);
+      const html = owner
+        ? '<button id="make"></button><div id="pics"></div><script type="module" src="/image/app.js"></script><link href="/lib/image-handoff.js">'
+        : '<meta name="verse-gate" content="uni"><h1>Uni</h1>';
+      return { status: 200, headers: { get: (n) => (n === 'x-verse-gate' ? (owner ? 'open' : 'uni') : '') }, text: async () => html };
+    }
+    if (u.endsWith('/image/app.js')) return { status: 200, text: async () => "const smallOf = 1; async function changeIt() { act: 'change' }" };
+    if (!body) return j({ left: 160, perConnection: 24 });
+    if (!body.act) return j({ state: 'art', img: url(png(1024, 1024, 1)), painter: 'workers-ai', w: 1024, h: 1024, ref: REF });
+    return j({ state: 'art', img: url(png(1024, 1024, 2)), painter: 'workers-ai', w: 1024, h: 1024, ref: REF2, change: CHANGE, ...(seen.filter((s) => s[2] === 'change').length > 1 ? { cached: true } : {}) });
+  };
+  const shrink = () => ({ ...COPY, src: 'data:image/jpeg;base64,/9j/AAAA' });
+  const res = await checkOnce(fetchFn, shrink, SITE, 'owner-pass');
+  assert.equal(res.page.gate, true); assert.equal(res.opened.make, true); assert.equal(res.opened.handoff, true); assert.equal(res.opened.gate, false);
+  assert.deepEqual(seen.filter((s) => s[0] === '/image/'), [['/image/', false, null], ['/image/', true, null]]);
+  assert.equal(seen.filter((s) => s[0] === '/api/image' && s[1]).length, 0, 'the owner pass is not sent to the painter');
+  const rec = recordOf({ ...res, at: AT });
+  assert.equal(rec.ok, true, rec.error);
+});
+
 test('image-gen-live: checkOnce paints, shrinks, changes and repeats, in that order, and sends only the fixed words', async () => {
   const seen = [];
   const fetchFn = async (u, o = {}) => {
