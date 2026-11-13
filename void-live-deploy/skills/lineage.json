@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 21,
+ "count": 14,
  "skills": {
   "experiments": [
    "toolkit"
@@ -8,12 +8,6 @@
   "drive-share": [
    "calc",
    "convert"
-  ],
-  "kickoff-pack": [
-   "client-intake",
-   "system-slice",
-   "monitor-pack",
-   "full-handoff"
   ],
   "my-device": [
    "eat"
@@ -84,51 +78,6 @@
    "status-digest",
    "verify-pack",
    "full-handoff"
-  ],
-  "system-plan": [
-   "client-intake",
-   "system-slice",
-   "ownership-pack",
-   "reuse-pack",
-   "full-handoff",
-   "verify-pack",
-   "monitor-pack"
-  ],
-  "roi-pack": [
-   "time-saved",
-   "status-digest",
-   "full-handoff"
-  ],
-  "client-weekly": [
-   "status-digest",
-   "time-saved",
-   "delivery-board",
-   "monitor-pack",
-   "full-handoff"
-  ],
-  "delivery-board": [
-   "progress-report",
-   "ownership-pack",
-   "monitor-pack",
-   "system-status",
-   "delivery-pack"
-  ],
-  "delivery-ready": [
-   "systems-owned",
-   "ownership-pack",
-   "monitor-pack",
-   "verify-pack",
-   "full-handoff",
-   "kickoff-pack",
-   "reliability-pack"
-  ],
-  "systems-owned": [
-   "ownership-pack",
-   "monitor-pack",
-   "verify-pack",
-   "full-handoff",
-   "delivery-pack",
-   "roi-pack"
   ]
  }
 }
