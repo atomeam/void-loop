@@ -2,8 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { diffTexts } from '../void-live-deploy/lib/textdiff.js';
-import { diffSummary } from '../void-live-deploy/lib/text-diff-page.js';
+import { diffSummary, foldText } from '../void-live-deploy/lib/text-diff-page.js';
 import { onRequestGet } from '../void-live-deploy/functions/text-diff/index.js';
+
+test('case and extra spaces can be set aside before the lines are compared', () => {
+  assert.equal(foldText('A  b', { lower: true, space: true }), 'a b');
+  assert.equal(diffSummary(diffTexts(foldText('Cat', { lower: true }), foldText('cat', { lower: true }))).line, 'The two texts are the same.');
+  assert.equal(foldText('Cat', {}), 'Cat');
+});
 
 test('a changed line is one removal and one addition', () => {
   const rows = diffTexts('one\ntwo', 'one\nthree');
