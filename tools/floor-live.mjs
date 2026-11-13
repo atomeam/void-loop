@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { SITES } from '../void-live-deploy/lib/versus-floor.js';
+import { publicRivalHits } from './rival-public.mjs';
 const ORIGIN = process.env.FLOOR_LIVE_ORIGIN || 'https://a-to-mind.com';
 const exe = process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || '/usr/bin/google-chrome';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -120,6 +121,8 @@ function arg(name) {
   return i > 0 ? process.argv[i + 1] : '';
 }
 if (process.argv[1] && process.argv[1].endsWith('floor-live.mjs')) {
+  const credits = publicRivalHits();
+  if (credits.length) { console.error('public pages name a rival:\n' + credits.join('\n')); process.exit(1); }
   const ids = (process.env.FLOOR_LIVE_IDS || arg('--ids') || '').split(',').map((s) => s.trim()).filter(Boolean);
   const sites = pagesToRun(SITES, ids);
   const shots = process.env.FLOOR_LIVE_SHOTS || arg('--shots') || '';

@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { generatedTouched, BUILD_OUTPUTS } from './generated.mjs';
 import { APPEND_JSON, APPEND_TEXT } from './records.mjs';
 import { COMMON } from './collide.mjs';
+import { publicRivalHits } from './rival-public.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
@@ -111,6 +112,7 @@ function main() {
     if (outs.every((r) => r.status === 0) && !/lags/.test(text) && indexOk) fresh.push(...BOOK);
   }
   const out = refusals({ behind, files, numstat: numstat.stdout, prs, self, fresh });
+  for (const hit of publicRivalHits()) out.push('a public page names or links its rival: ' + hit);
   if (out.length) { for (const o of out) console.error('pre-pr: ' + o); process.exit(1); }
   console.log('pre-pr: on top of main, ' + diffSize(numstat.stdout).lines + ' changed lines (at most ' + MAX_LINES + '), no build output, ' + (prs ? 'no file another open PR changes' : 'open PRs not checked (gh could not list them)'));
   if (args.includes('--check-only')) return;
