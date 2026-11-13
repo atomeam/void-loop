@@ -1,6 +1,6 @@
 /**
  * sustain-pack skill — package the ongoing care, monitors, updates and incident path Verse owns for a system
- * so the client stays hands-off after go-live and never takes the heavy lifting back.
+ * so the client stays hands-off after go-live and never takes the hard work back.
  * Rules-based, offline. Nothing is sent or claimed as already running.
  * "sustain pack for the invoice system", "ongoing care for the support automation", "keep owning the onboarding flow".
  */
