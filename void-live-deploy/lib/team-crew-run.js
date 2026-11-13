@@ -311,7 +311,7 @@ export async function crewTick(env, now = Date.now()) {
   const films = guards.find((g) => g && g.id === 'hourly-films-page');
   if (films && films.now !== 'up') {
     const live = await get(env, ORIGIN + '/films/', { max: 2e6, ms: 10000 });
-    if (live.status === 200 && live.text.includes('VERSE FILMS')) films.now = 'up';
+    if (live.status === 200 && /VERSE (?:FILMS|HOLOVIDS)/.test(live.text)) films.now = 'up';
   }
   const ev = { at: new Date(now).toISOString(), exam: ex.exam, examSrc: ex.src, tower: tw.status === 200 ? json(tw.text) : null, guards, probe: pr,
     links: walk ? walk.links : [], walk, misses7, sales30, ideas: idl, size: sz && sz.status === 200 ? json(sz.text) : null, main };

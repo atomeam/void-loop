@@ -31,7 +31,7 @@ Only the coder's kinds (`TEAM_KINDS`: heal, will, voice, versus, feature, review
 
 ## Open wants on /team/
 
-Verse files a want from evidence (`lib/team-crew.js` `wantsOf`) and the conductor (`tools/conductor-core.mjs`) starts a job whose id or target contains `want-`, or whose note says `wanted by Verse`, before an old repair. A want closes only when its number moves (`measure` in `lib/team-crew-run.js`). Tower aspect counts do not file wants. A TV idea is a mode of the page `categoryOf` names (`/notes/`, `/weather/`, `/photos/exif/`), not a new page. A revenue want stays open until a verified sale; the thread says that, because a promo draft is not a sale. The Films guard reads `https://a-to-mind.com/films/` for `VERSE FILMS`. That page stays public.
+Verse files a want from evidence (`lib/team-crew.js` `wantsOf`) and the conductor (`tools/conductor-core.mjs`) starts a job whose id or target contains `want-`, or whose note says `wanted by Verse`, before an old repair. A want closes only when its number moves (`measure` in `lib/team-crew-run.js`). Tower aspect counts do not file wants. A TV idea is a mode of the page `categoryOf` names (`/notes/`, `/weather/`, `/photos/exif/`), not a new page. A revenue want stays open until a verified sale; the thread says that, because a promo draft is not a sale. The Films guard reads `https://a-to-mind.com/films/` for `VERSE HOLOVIDS`. That page stays public.
 
 What starts it: a crew tick (`POST /api/automations/tick`, every 15 minutes) retires open tower wants and aims idea jobs; the conductor's next tick claims the want.
 
