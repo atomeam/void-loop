@@ -36,7 +36,7 @@ export function nextFor(subject) {
 
 async function run(text, api) {
   const { showPage } = api;
-  const esc = typeof api.esc === 'function' ? api.esc : (s) => String(s == null ? '' : s);
+  const esc = typeof api.esc === 'function' ? api.esc : (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const n = nextFor(text);
   const list = (arr) => arr.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
