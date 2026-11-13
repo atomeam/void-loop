@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as C from '../void-live-deploy/lib/team-crew.js';
 import * as T from '../void-live-deploy/lib/team.js';
-import { crewTick, crewView, foldIdeaWants } from '../void-live-deploy/lib/team-crew-run.js';
+import { crewTick, crewView, foldIdeaWants, retireTowerWants, aimIdeaJobs } from '../void-live-deploy/lib/team-crew-run.js';
 import * as API from '../void-live-deploy/functions/api/team.js';
 
 function d1() {
@@ -61,10 +61,11 @@ const rows = (env, sql, ...a) => env.DB.raw.prepare(sql).all(...a);
 
 test('the wants come from evidence, cite it, name one number, and are ranked: broken pages, the exam, the Tower, then private counts', () => {
   const w = C.wantsOf({ at: '2026-11-04T02:00:00Z', exam: EXAM, tower: TOWER, probe: [{ path: '/', status: 200 }, { path: '/x/', status: 500, ms: 30 }], misses7: 9, sales30: 0 });
-  assert.deepEqual(w.map((x) => x.key), ['page-x', 'exam-images', 'exam-words', 'tower-maps', 'tower-sports-flashscore-com', 'misses-2026-w45', 'revenue-2026-11']);
+  assert.deepEqual(w.map((x) => x.key), ['page-x', 'exam-images', 'exam-words', 'misses-2026-w45', 'revenue-2026-11']);
+  assert.equal(w.some((x) => x.lane === 'tower'), false, 'aspect counts do not file work');
   for (const x of w) { assert.ok(x.cite.length && x.cite.every((c) => /^https:\/\//.test(c.url)), x.key); assert.ok(T.TEAM_KINDS.includes(x.kind), x.key + ' is a kind the team takes'); }
   assert.equal(w[1].metric.value, 73.9); assert.match(w[1].why, /draw a red circle/);
-  assert.equal(w.find((x) => x.key === 'tower-maps').metric.value, 2, 'worse and equal are not wins');
+  assert.equal(C.towerMisses(TOWER.floors.maps).length, 2, 'worse and equal are not wins; promos still read them');
   assert.ok(w.find((x) => x.key === 'misses-2026-w45').private && !/ask \d/.test(JSON.stringify(w)), 'what visitors typed never appears');
   assert.deepEqual(C.wantsOf({}), [], 'no evidence, no want: nothing is made up');
   assert.equal(C.wantsOf({ exam: { cases: [{ id: 'c1', ask: 'time in Tokyo', ok: false }] } })[0].key, 'exam-case-c1');
@@ -182,6 +183,7 @@ test('a TV or radio idea is built once, by the blueprint lane: the want adopts t
   const idea = { h: 'abc123def456', topic: 'Art provenance tracker', note: 'Track who owned a painting.', show: 'Antiques Roadshow', value_cents: 900 };
   const w = C.wantsOf({ ideas: [idea] }).find((x) => x.lane === 'idea');
   assert.equal(w.target, 'tv:art-provenance-tracker'); assert.equal(C.jobOf(w).target, 'tv:art-provenance-tracker', 'filed in the blueprint lane, never as a feature: job beside it');
+  assert.match(w.why, /\/photos\/exif\//, 'art provenance is a mode of the photo page');
   const env = world(); await crewTick(env, T0);
   // an older want (filed before this) whose own feature: job waits beside the lane's tv: job for the same idea
   const ins = (id, target, state) => env.DB.raw.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').run(id, 'build it', target, state, '', '2026-11-04T00:00:00Z', '2026-11-04T00:00:00Z');
@@ -196,4 +198,19 @@ test('a TV or radio idea is built once, by the blueprint lane: the want adopts t
   assert.deepEqual({ ...wk('idea-old1') }, { job: 'tv123', metric: 'joblive:tv123' }, 'the want now closes when the lane\'s build is live');
   assert.deepEqual([q('want-idea-old2').target, q('want-idea-old2').state], ['tv:hvac-remote-management', 'queued'], 'no lane job yet: its own job moves into the lane');
   assert.deepEqual(await foldIdeaWants(env, T0 + 120e3), [], 'folded once');
+  assert.deepEqual((await aimIdeaJobs(env, T0 + 180e3)).sort(), ['idea-old1', 'idea-old2']);
+  assert.match(rows(env, 'SELECT ask FROM void_queue WHERE id = ?', 'tv123')[0].ask, /Improve \/photos\/exif\/ as a mode/);
+  assert.match(rows(env, 'SELECT ask, note FROM void_queue WHERE id = ?', 'want-idea-old2')[0].ask, /Improve \/weather\/ as a mode/);
+  assert.match(rows(env, 'SELECT note FROM void_queue WHERE id = ?', 'want-idea-old2')[0].note, /wanted by Verse/);
+});
+
+test('an open tower aspect want is closed, and the queue job is set aside', async () => {
+  const env = world();
+  await crewTick(env, T0);
+  env.DB.raw.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').run('want-tower-finance', 'win aspects', 'versus:want-tower-finance', 'queued', '', '2026-11-04T00:00:00Z', '2026-11-04T00:00:00Z');
+  env.DB.raw.prepare("INSERT INTO void_team_wants (key, lane, kind, title, label, metric, better, baseline, latest, cite, private, job, thread, state, filed, checked) VALUES ('tower-finance', 'tower', 'versus', 'Win 9 more aspects on the finance floor', 'finance aspects short', 'tower:finance', 'down', 9, 9, '[]', 0, 'want-tower-finance', 4242, 'open', ?, ?)").run(T0, T0);
+  assert.deepEqual(await retireTowerWants(env, T0 + 60e3), ['tower-finance']);
+  assert.equal(rows(env, "SELECT state FROM void_team_wants WHERE key = 'tower-finance'")[0].state, 'set aside');
+  assert.equal(rows(env, "SELECT state FROM void_queue WHERE id = 'want-tower-finance'")[0].state, 'set aside');
+  assert.match(rows(env, 'SELECT body FROM void_team_msgs WHERE thread = 4242 ORDER BY id DESC')[0].body, /aspect counts no longer make work/);
 });

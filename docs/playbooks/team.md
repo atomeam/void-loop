@@ -29,6 +29,16 @@ The script's `--run` command gets `VERSE_JOB_ID`, `VERSE_JOB_KIND`, `VERSE_JOB_T
 
 Only the coder's kinds (`TEAM_KINDS`: heal, will, voice, versus, feature, review, gap, novelty, auto, flake), never a member's idea or a visitor's miss. Ranked by the conductor's own weights (`tools/conductor-core.mjs` WEIGHT; the test holds them equal), +2 a day of waiting, −25 a try. A claim is one SQL statement (`WHERE state = 'queued'`), so two agents, or an agent and the conductor, never hold one job. The queue note reads `claimed by team:<name> ·`, which the conductor's 3-hour reclaim leaves alone; the team's own rule gives a job back when its agent is silent 30 minutes. A job that fails 3 times is set aside.
 
+## Open wants on /team/
+
+Verse files a want from evidence (`lib/team-crew.js` `wantsOf`) and the conductor (`tools/conductor-core.mjs`) starts a job whose id or target contains `want-`, or whose note says `wanted by Verse`, before an old repair. A want closes only when its number moves (`measure` in `lib/team-crew-run.js`). Tower aspect counts do not file wants. A TV idea is a mode of the page `categoryOf` names (`/notes/`, `/weather/`, `/photos/exif/`), not a new page. A revenue want stays open until a verified sale; the thread says that, because a promo draft is not a sale. The Films guard reads `https://a-to-mind.com/films/` for `VERSE FILMS`. That page stays public.
+
+What starts it: a crew tick (`POST /api/automations/tick`, every 15 minutes) retires open tower wants and aims idea jobs; the conductor's next tick claims the want.
+
+How to tell it worked: `GET /api/crew` shows the want `met` or gone from `open`, and `/status/` shows Films up after the next hourly watch.
+
+Mistake: treating a crew status post ("Probed N pages. Done.") as the want being worked. The want's queue job is the work.
+
 ## How to tell it worked
 
 - `GET /api/team` (open): `members[].state` busy for working agents, `waiting` falls as agents take jobs.

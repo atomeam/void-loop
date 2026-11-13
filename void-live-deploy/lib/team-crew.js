@@ -8,13 +8,13 @@
  *   - The crew: house members of the team chat that run on Verse's own clock (POST /api/automations/tick, every 15 minutes), on Cloudflare,
  *     with no machine of anyone's in the loop. Each has one lane, does real work in it (probes, crawls, reads the exam and the Tower, drafts
  *     promos), and posts what it did. A crew member never holds a build-queue job (auto = 0), never spends and never writes outside.
- *   - The wants: what Verse's brain reads in its own evidence (the outcome exam, the Tower's verdicts, pages that fail, links that break,
+ *   - The wants: what Verse's brain reads in its own evidence (the outcome exam, pages that fail, links that break,
  *     asks it missed, sales, what it learned on TV and radio) becomes a want with a cited source and one measured number. A want is filed as
  *     a build-queue job (a team kind, so any coder claims it) with a thread in #work, and it closes only when that number moves the right way.
  * Pure: no fetch, no storage. Tests: tools/team-crew.test.mjs.
  */
 
-import { slugOf } from './watch-build.js'; // a TV or radio idea's blueprint job is tv:<slug> (tools/watch-build.mjs queues it)
+import { slugOf, categoryOf, CATEGORIES } from './watch-build.js'; // a TV or radio idea's blueprint job is tv:<slug> (tools/watch-build.mjs queues it)
 export const RETIRED = Object.freeze([{ id: 'c7e0000000a1', channel: 'tower' }]); // TowerScout: it mapped sites and filed nothing a visitor can use
 export const CREW = Object.freeze([
   { id: 'c7e0000000a2', slug: 'exam-coach', name: 'ExamCoach', every: 60, channel: 'exam', lane: 'exam',
@@ -65,8 +65,6 @@ export function rivalOf(floor) {
   const m = /(?:^|:\s*)((?:[a-z0-9-]+\.)+[a-z]{2,})$/i.exec(s(floor, 120));
   return m ? m[1].toLowerCase() : '';
 }
-const towerWeight = (miss) => miss.reduce((n, m) => n + (m.verdict === 'worse' ? 3 : 1), 0);
-
 /**
  * Verse's wants, from its evidence, most urgent first. ev (every field optional; a missing one makes no want and measures nothing):
  *   exam     /exam/latest.json { domains: { <d>: { score, fails: [{ ask }] } } } or /progress/exam.json { cases: [{ id, ask, ok }] }
@@ -116,18 +114,7 @@ export function wantsOf(ev = {}) {
       why: 'The outcome exam case "' + s(c.ask, 60) + '" regressed.', done: 'The case passes on the next exam run.',
       cite: [{ what: 'outcome exam', url: 'https://a-to-mind.com/progress/exam.json' }], metric: { id: 'examcase:' + s(c.id, 40), label: '"' + s(c.ask, 40) + '" passes', better: 'up', value: 0 } });
   }
-  // the Tower: the floors furthest from a clean win
-  const floors = ev.tower && ev.tower.floors && typeof ev.tower.floors === 'object' ? Object.entries(ev.tower.floors) : [];
-  const weak = floors.map(([f, rows]) => ({ f, miss: towerMisses(rows) })).filter((x) => x.miss.length)
-    .sort((a, b) => towerWeight(b.miss) - towerWeight(a.miss) || (a.f < b.f ? -1 : 1)).slice(0, 2);
-  for (const { f, miss } of weak) {
-    const rival = rivalOf(f);
-    want({ key: 'tower-' + slug(f, 40), lane: 'tower', title: 'Win ' + miss.length + ' more aspect' + (miss.length === 1 ? '' : 's') + ' on the ' + s(f, 50) + ' floor',
-      why: 'The Tower has Verse short on ' + s(f, 50) + ': ' + miss.slice(0, 4).map((m) => m.aspect + ' (' + m.verdict + ')').join(', ') + '. ' + (miss[0].evidence ? 'Evidence: ' + miss[0].evidence : ''),
-      done: 'The next Tower run has fewer aspects short on this floor' + (rival ? ', measured against ' + rival + ' across its whole site' : '') + '.',
-      cite: [{ what: 'Tower evidence', url: 'https://a-to-mind.com/tower.evidence.json' }].concat(rival ? [{ what: 'rival', url: 'https://' + rival + '/' }] : []),
-      metric: { id: 'tower:' + s(f, 80), label: s(f, 40) + ' aspects short', better: 'down', value: miss.length } });
-  }
+  // Tower aspect counts are not work. Win/lose scoring by aspect was dropped; towerMisses still feeds promo drafts only.
   // what visitors asked and Verse missed: a count only, the asks stay on the owner-only list
   if (num(ev.misses7) != null && ev.misses7 >= 5) {
     want({ key: 'misses-' + weekOf(at), lane: 'miss', title: 'Answer more of the asks Verse missed this week', private: true,
@@ -145,8 +132,10 @@ export function wantsOf(ev = {}) {
   const idea = (ev.ideas || []).filter((i) => i && i.h && i.topic).sort((a, b) => (b.value_cents || 0) - (a.value_cents || 0))[0];
   if (idea) {
     const key = 'idea-' + slug(idea.h, 10);
+    const home = categoryOf(idea, CATEGORIES.map((c) => ({ route: c.route, title: c.route })));
+    const onto = home ? home.route : 'the page that already covers it';
     want({ key, lane: 'idea', title: 'Build "' + s(idea.topic, 60) + '" onto a-to-mind.com, linked to a paid product',
-      why: 'Verse noted on ' + s(idea.show || idea.station, 60) + ': ' + s(idea.note, 220) + '. Extend the page that already covers it (combine pages); build new only if none fits.',
+      why: 'Verse noted on ' + s(idea.show || idea.station, 60) + ': ' + s(idea.note, 220) + '. Add it as a mode of ' + onto + '; a new page only when none fits.',
       done: 'The change is live on a-to-mind.com and links one of: ' + PRODUCTS.map((p) => p.name).join(', ') + '.',
       cite: [{ what: 'Verse\'s TV and radio notes', url: 'https://a-to-mind.com/api/watchalong?kind=idea' }], metric: { id: 'joblive:want-' + key, label: 'the build is live', better: 'up', value: 0 },
       // one build, not two (the owner asked on 2026-11-06 for every blueprint to build by itself): the idea is built

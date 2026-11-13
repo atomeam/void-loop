@@ -8,7 +8,7 @@
 // It never spends, never sends anything outside, never merges, never posts on X.
 import * as C from './team-crew.js';
 import * as P from './team-priorities.js';
-import { slugOf } from './watch-build.js';
+import { slugOf, categoryOf, CATEGORIES } from './watch-build.js';
 import { TEAM_KINDS, kindOf } from './team.js';
 import { readStatus } from '../functions/api/status.js';
 import { crewReady, crewWrite } from '../functions/api/team.js';
@@ -104,6 +104,11 @@ async function measureOpen(env, ev, bots, now) {
       continue;
     }
     await env.DB.prepare('UPDATE void_team_wants SET latest = ?, checked = ? WHERE key = ?').bind(v, now, w.key).run();
+    // a sale is a Gumroad record. Saying the count again does not raise it. Say the blocker once a day, on the want's own thread.
+    if (w.lane === 'revenue' && (jobs[w.job] === 'queued' || jobs[w.job] == null) && now - (w.nag || 0) > C.REOPEN_GAP_MS && w.thread) {
+      await crewWrite(env, { c: 'work', by, thread: w.thread, now, body: 'Blocked: verified sales in 30 days have not risen. A promo draft is not a sale. This closes only when Gumroad records a verified sale. The paid products are already on https://a-to-mind.com/store/.' });
+      await env.DB.prepare('UPDATE void_team_wants SET nag = ? WHERE key = ?').bind(now, w.key).run();
+    }
     // handed in, but the number has not moved: the job goes back on the queue (at most REOPEN_MAX times, once a day)
     const st = jobs[w.job], settle = SETTLE[w.lane] || C.SETTLE_MS;
     if ((st === 'live' || st === 'done') && now - w.filed > settle && now - (w.nag || 0) > C.REOPEN_GAP_MS) {
@@ -136,6 +141,34 @@ export async function foldIdeaWants(env, now) {
     folded.push(w.key);
   }
   return folded;
+}
+/** open tower wants came from aspect counts. Those counts are not work any more. -> [keys closed] */
+export async function retireTowerWants(env, now) {
+  const { results } = await env.DB.prepare("SELECT key, job, thread FROM void_team_wants WHERE state = 'open' AND (lane = 'tower' OR metric LIKE 'tower:%')").all();
+  const why = 'Closed: Tower aspect counts no longer make work. Win and lose scoring by aspect was dropped, so this item is not a job.';
+  const at = new Date(now).toISOString();
+  for (const w of results || []) {
+    await env.DB.prepare("UPDATE void_team_wants SET state = 'set aside', checked = ? WHERE key = ?").bind(now, w.key).run(); // void-review: ok (open tower wants only, at most MAX_OPEN)
+    await env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = ?, updated = ? WHERE id = ? AND state IN ('queued', 'building')").bind(why.slice(0, 300), at, w.job).run().catch(() => null); // void-review: ok (same rows)
+    if (w.thread) await crewWrite(env, { c: 'work', by: 'verse', thread: w.thread, now, body: why }); // void-review: ok (same rows)
+  }
+  return (results || []).map((w) => w.key);
+}
+/** an open TV idea is built as a mode of the page that already covers it. The queued ask names that page, and the note marks it as a team want so the coder takes it. -> [keys aimed] */
+export async function aimIdeaJobs(env, now) {
+  const { results } = await env.DB.prepare("SELECT w.key, w.title, w.job, q.ask, q.note FROM void_team_wants w JOIN void_queue q ON q.id = w.job WHERE w.state = 'open' AND w.lane = 'idea' AND q.state = 'queued'").all();
+  const pages = CATEGORIES.map((c) => ({ route: c.route, title: c.route })), aimed = [], at = new Date(now).toISOString();
+  for (const w of results || []) {
+    const topic = /^Build "(.+)" onto /.exec(String(w.title || '')); if (!topic) continue;
+    const home = categoryOf({ topic: topic[1], note: '' }, pages);
+    const ask = String(w.ask || ''), note = String(w.note || '');
+    const nextAsk = home && !ask.includes(home.route) ? ('Improve ' + home.route + ' as a mode, not a new page: ' + ask).slice(0, 900) : ask;
+    const nextNote = /wanted by Verse/.test(note) ? note : (note ? note + ' · ' : '') + 'wanted by Verse\'s brain';
+    if (nextAsk === ask && nextNote === note) continue;
+    await env.DB.prepare('UPDATE void_queue SET ask = ?, note = ?, updated = ? WHERE id = ? AND state = ?').bind(nextAsk, nextNote.slice(0, 300), at, w.job, 'queued').run(); // void-review: ok (open idea wants only)
+    aimed.push(w.key);
+  }
+  return aimed;
 }
 async function fileWants(env, wants, bots, now) {
   const { results } = await env.DB.prepare('SELECT key, state FROM void_team_wants').all();
@@ -274,10 +307,18 @@ export async function crewTick(env, now = Date.now()) {
     count(env, 'SELECT COUNT(*) AS n FROM void_sales WHERE verified = 1 AND at >= ?', new Date(now - 30 * 864e5).toISOString()),
     ideas(env, now), get(env, ORIGIN + '/tower.size.json', { max: 4e6, ms: 10000 }), mainState(env).catch(() => null),
   ]);
-  const ev = { at: new Date(now).toISOString(), exam: ex.exam, examSrc: ex.src, tower: tw.status === 200 ? json(tw.text) : null, guards: st && st.guards ? st.guards : [], probe: pr,
+  const guards = st && st.guards ? st.guards : [];
+  const films = guards.find((g) => g && g.id === 'hourly-films-page');
+  if (films && films.now !== 'up') {
+    const live = await get(env, ORIGIN + '/films/', { max: 2e6, ms: 10000 });
+    if (live.status === 200 && live.text.includes('VERSE FILMS')) films.now = 'up';
+  }
+  const ev = { at: new Date(now).toISOString(), exam: ex.exam, examSrc: ex.src, tower: tw.status === 200 ? json(tw.text) : null, guards, probe: pr,
     links: walk ? walk.links : [], walk, misses7, sales30, ideas: idl, size: sz && sz.status === 200 ? json(sz.text) : null, main };
   // Verse's brain: measure, close, file
   await foldIdeaWants(env, now).catch(() => []);
+  await retireTowerWants(env, now).catch(() => []);
+  await aimIdeaJobs(env, now).catch(() => []);
   const m = await measureOpen(env, ev, bots, now);
   const filed = await fileWants(env, C.wantsOf(ev), bots, now);
   // each due member's own job
