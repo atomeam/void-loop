@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-13T16:57:50.694Z",
+ "sha": "dce1e0ecdf9d8ae7409a8e917028f3cf109ee3eb",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43463499082",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+ ],
+ "touched": [
+  "void-live-deploy/lab/catalog.json",
+  "void-live-deploy/lab/f718-subscription-tracker/app.js",
+  "void-live-deploy/lab/f718-subscription-tracker/index.html",
+  "void-live-deploy/lab/f721-webxr-hand-decision-tree-spatial-notes/app.js",
+  "void-live-deploy/lab/f721-webxr-hand-decision-tree-spatial-notes/index.html",
+  "void-live-deploy/lab/f722-webgpu-spectral-fourier-portal-mind/app.js",
+  "void-live-deploy/lab/f722-webgpu-spectral-fourier-portal-mind/index.html",
+  "void-live-deploy/lab/f723-gamepad-causal-mlp-dom-swarm-mind/app.js",
+  "void-live-deploy/lab/f723-gamepad-causal-mlp-dom-swarm-mind/index.html",
+  "void-live-deploy/lab/f724-genetic-lsystem-spatial-note-grower/app.js",
+  "void-live-deploy/lab/f724-genetic-lsystem-spatial-note-grower/index.html",
+  "void-live-deploy/lab/f725-webgpu-quantum-phase-interference-portal-mind/app.js",
+  "void-live-deploy/lab/f725-webgpu-quantum-phase-interference-portal-mind/index.html",
+  "void-live-deploy/lab/f726-webxr-hand-spring-evo-spatial-cards/app.js",
+  "void-live-deploy/lab/f726-webxr-hand-spring-evo-spatial-cards/index.html"
+ ],
+ "shards": [
+  2
+ ]
+}
