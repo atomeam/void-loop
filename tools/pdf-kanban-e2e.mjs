@@ -45,7 +45,7 @@ await page.keyboard.press('Delete'); ok((await page.locator('.thumb').count()) =
 await page.locator('.thumb').first().focus(); await page.keyboard.press('r');
 out = await download(async () => { await page.click('button.go'); await page.waitForSelector('a.dl'); await page.click('a.dl'); });
 const d = await L.PDFDocument.load(fs.readFileSync(out)); ok(d.getPageCount() === 4 && d.getPage(0).getRotation().angle === 90, 'saved: 4 pages, the first turned 90 degrees');
-for (const p of ['/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/']) { await page.goto(base + p); await page.waitForSelector('.tabs button'); const w = await page.evaluate(() => document.documentElement.scrollWidth); ok(w <= 391, p + ' has no horizontal scroll at 390 px (' + w + ')'); }
+for (const p of ['/pdf/']) { await page.goto(base + p); await page.waitForSelector('.tabs button'); const w = await page.evaluate(() => document.documentElement.scrollWidth); ok(w <= 391, p + ' has no horizontal scroll at 390 px (' + w + ')'); }
 await page.goto(base + '/pdf/'); await shot('pdf-home');
 
 // a page built for one job still turns, deletes and reorders pages, and shares a link

@@ -12,18 +12,6 @@ export const PDF_SITES = Object.freeze([
     does: 'Merge, split, reorder, rotate, delete and extract pages, compress, turn images into a PDF and pages into images, add page numbers and a watermark, crop, and edit the title and author. No task or page limit, no account, nothing uploaded, and the page works offline after one visit.',
     asks: ['merge pdf', 'split pdf', 'compress pdf', 'jpg to pdf', 'reorder pdf pages', 'watermark pdf', 'crop pdf', 'pdf tools offline'],
     links: [['Merge PDFs', '/pdf/?tool=merge'], ['Split a PDF', '/pdf/?tool=split'], ['Organize pages', '/pdf/?tool=pages'], ['Compress a PDF', '/pdf/?tool=compress'], ['Images to PDF', '/pdf/?tool=img2pdf'], ['PDF to images', '/pdf/?tool=pdf2img'], ['Watermark', '/pdf/?tool=watermark'], ['Page numbers', '/pdf/?tool=numbers']] },
-  { path: '/pdf/editor/', card: 'rotate a pdf', lane: 'pdf: sejda.com', name: 'PDF page editor', h1: 'PDF page editor', tools: ['pages', 'merge', 'split', 'extract', 'order', 'rotate', 'crop', 'numbers', 'watermark', 'compress', 'img2pdf', 'pdf2img', 'info'],
-    intro: 'Edit a PDF page by page: see every page, move, turn and delete them, crop margins, number and stamp them, edit the title and author, merge and split. No 200-page or three-tasks-a-day limit, no account, and nothing leaves this device.',
-    does: 'Edit PDFs by page: thumbnails you reorder, rotate and delete, crop, page numbers, watermark, document info, merge, split and compress. No page or task limits, no account, nothing uploaded.',
-    asks: ['pdf page editor', 'edit pdf pages online', 'crop pdf', 'edit pdf title and author', 'pdf editor no limits', 'rearrange pdf pages'], links: [] },
-  { path: '/pdf/suite/', card: 'online pdf tools', lane: 'pdf: tools.pdf24.org', name: 'PDF tools that work offline', h1: 'PDF tools that work offline', tools: ['merge', 'split', 'pages', 'extract', 'order', 'rotate', 'compress', 'img2pdf', 'pdf2img', 'numbers', 'watermark', 'crop', 'info'],
-    intro: 'The whole set of PDF tools on your device, with no server in the middle: open this page once and it keeps working with the network cut. Merge, split, move and delete pages, rotate, compress, pictures to PDF and back, number, stamp, crop. No account, no upload.',
-    does: 'Every PDF tool in one set that works offline after one visit: merge, split, reorder, rotate, delete, compress, images to PDF and back, page numbers, watermark, crop. Nothing is uploaded, no account.',
-    asks: ['pdf tools offline', 'offline pdf merge', 'pdf tools no upload', 'private pdf tools', 'pdf tools no account'], links: [] },
-  { path: '/pdf/studio/', card: 'compress pdf', lane: 'pdf: smallpdf.com', name: 'PDF studio', h1: 'PDF studio', tools: ['compress', 'merge', 'split', 'pages', 'rotate', 'extract', 'order', 'img2pdf', 'pdf2img', 'numbers', 'watermark', 'crop', 'info'],
-    intro: 'Make a PDF smaller, join it, split it and tidy its pages in a few clicks. Compress with a strength you choose, convert pictures to PDF and PDF pages to pictures, rotate, number, stamp and crop. Every file stays on this device.',
-    does: 'Compress, merge, split, rotate and tidy PDFs, convert images to PDF and PDF to images, number pages, add a watermark and crop. Your files stay on your device: no upload, no account, no daily limit.',
-    asks: ['pdf compressor', 'reduce pdf size', 'pdf to image', 'image to pdf', 'convert jpg to pdf', 'pdf size reducer'], links: [] },
 ]);
 
 const KB_ALL = { boards: 1, wip: 1, lanes: 1, labels: 1, due: 1, checklist: 1, comments: 1, assignee: 1, archive: 1, filter: 1, trello: 1, timer: 1, recur: 1, print: 1, csv: 1, share: 1, colour: 1, templates: 1 };
