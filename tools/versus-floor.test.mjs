@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { plainVerdict, rowsFromMeasures, isFloor, rankSites, verdictsChanged, viewModel, modelFrom, visitorHtml, ownerHtml, gapText, TOOLS, NEXT, SITES } from '../void-live-deploy/lib/versus-floor.js';
+import { plainVerdict, rowsFromMeasures, isFloor, rankSites, verdictsChanged, viewModel, modelFrom, visitorHtml, ownerHtml, gapText, checklistFrom, TOOLS, NEXT, SITES } from '../void-live-deploy/lib/versus-floor.js';
 
 const full = { speed: 100, reliability: 3, mobile: 0, a11y: 0, offline: 1 };
 const slow = { speed: 400, reliability: 3, mobile: 12, a11y: 2, offline: 0 };
@@ -43,6 +43,15 @@ test('the next site is the one whose features match the gap notes, not the bigge
   assert.equal(rankSites(sites, '')[0].id, 'big');
 });
 
+test('a checklist marks a feature only when the page text shows its words', () => {
+  const c = checklistFrom(['plain page', 'weigh markup'], ['share link'], 'a plain page you can share', 'weigh markup on the original');
+  assert.equal(c.rows[0].verse, true);
+  assert.equal(c.rows[0].rival, false);
+  assert.equal(c.rows[1].verse, false);
+  assert.equal(c.rows[1].rival, true);
+  assert.equal(c.extra[0].name, 'share link');
+});
+
 test('a run with the same verdicts is not a change', () => {
   const a = { tools: { readable: { speed: { verdict: 'better', verse: 1, best: 2 } } } };
   const b = { tools: { readable: { speed: { verdict: 'better', verse: 9, best: 8 } } } };
@@ -60,13 +69,15 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   const own = ownerHtml(model);
   assert.doesNotMatch(own, /Out of Order/);
   assert.match(own, /page is up/);
-  assert.match(own, /motherfuckingwebsite\.com/);
-  assert.match(own, /better/);
-  assert.match(own, /A readable page<\/a><\/p><div class="elv-scroll">/);
+  assert.match(own, /href="https:\/\/motherfuckingwebsite\.com\/" target="_blank" rel="noopener noreferrer"/);
+  assert.match(own, /100 ms/);
+  assert.match(own, /400 ms/);
+  assert.match(own, /plain page/);
+  assert.match(own, /elv-shots/);
   assert.match(own, /href="\/our-motherfucking-version\/"/);
   assert.match(own, /href="\/patterns\/"/);
   assert.match(own, /href="\/podcasts\/"/);
-  assert.doesNotMatch(own, /href="[^"]*(motherfuckingwebsite|rot13|tsundere|podcastindex|livescore|convertlive|regex101|crontab|wiktionary|myqrcode|youtube|spotify|maps\.google|programiz|diffchecker)/);
+  assert.doesNotMatch(pub, /target="_blank"/);
   assert.doesNotMatch(own + pub, /\b(grab|steal|absorb|conquer)\b/i);
 });
 
