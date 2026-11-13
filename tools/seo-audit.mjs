@@ -22,7 +22,7 @@ const SKIP_PAGE = /^\/(?:void\.html|404\.html|handoff\.html|studies\.html|surfac
 export function walk(dir = root, base = '') {
   const files = new Set(), pages = [];
   const go = (d, b) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
-    if (e.name.startsWith('.')) continue;
+    if (e.name.startsWith('.') && e.name !== '.well-known') continue;
     const full = path.join(d, e.name), p = b + '/' + e.name;
     if (e.isDirectory()) { if (!(b === '' && SKIP_DIR.has(e.name)) || ['lib', 'skills', 'vendor', 'fonts', 'models', 'data'].includes(e.name)) go(full, p); continue; }
     files.add(p);
