@@ -55,8 +55,13 @@ and keeps going</textarea>
   <div id="diff" aria-live="polite"></div>
   <p id="err" role="status"></p>
   <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/rotate-letters/" data-param="text" data-from="#changed" data-fallback="hello">ROT13 Text Scrambler</a>
+    <a data-base="/patterns/" data-param="sample" data-from="#changed" data-fallback="hello">Regex Tester</a>
+  </nav>
 </main>
 <script type="module" src="/text-diff/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

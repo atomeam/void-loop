@@ -130,9 +130,14 @@
   <p class="srcs" id="feat">What is here: a live scoreboard, final scores and schedules for 12 leagues, box scores and play by play, standings, team pages, favourites (My teams) kept on this device, search across sports for teams, events, venues and players, stories written by Verse from the data, and a free read-only API.</p>
   <p class="srcs" id="srcs">Scores come from the public score feeds of <a href="https://www.espn.com/" rel="noopener">ESPN</a> (unofficial), <a href="https://www.openligadb.de/" rel="noopener">OpenLigaDB</a> (Bundesliga) and <a href="https://github.com/jolpica/jolpica-f1" rel="noopener">Jolpica</a> (Formula 1), read by Verse's server and kept a short while. Data may be delayed by a minute or more. Followed teams stay on this device. No odds, no betting, no fantasy.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#out" data-fallback="score">Text Compare</a>
+    <a data-base="/podcasts/" data-param="q" data-fallback="football">Podcast Search</a>
+  </nav>
 </main>
 
 <script>addEventListener('load', () => { import('/scores/app.js').catch(() => {}); }); // the page's code, after the load event (scores/app.js)</script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

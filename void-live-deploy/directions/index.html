@@ -34,8 +34,12 @@
   <div id="out" aria-live="polite"></div>
   <p id="err" role="status"></p>
   <p>More: <a href="/weather/">weather</a>, <a href="/flights/">flights</a>, <a href="/convert/">unit converter</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/time/" data-param="q" data-from="#to" data-fallback="London">Time zones</a>
+  </nav>
 </main>
 <script type="module" src="/directions/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

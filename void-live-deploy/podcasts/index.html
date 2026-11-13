@@ -136,6 +136,9 @@
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/translate/">Translate</a> <a href="/word-count/">Word counter</a> <a href="/local/">Local TV and radio</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <p class="srcs" id="srcs">Shows come from <a href="https://performance-partners.apple.com/search-api" rel="noopener">Apple's free public podcast directory</a> (search and charts), or from any RSS feed you paste. Verse reads a feed once through its own server, with a size and time limit and only public https addresses, and keeps the answer for 15 minutes; the audio always streams straight from the publisher and never passes through Verse. Follows, your place in each episode, the queue, speed and saved episodes stay on this device. There are no paid subscriptions, ratings or reviews, and nothing syncs between devices; export your follows as OPML to move them.</p>
   <footer><a href="/">Verse</a> · <a href="/podcast/">Verse Out Loud</a> · <a href="/tools/">every tool</a></footer>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/songs/" data-param="title" data-from="#q" data-fallback="history">Song Player</a>
+  </nav>
 </main>
 
 <div id="mini" hidden><span id="miniT"></span><button type="button" id="miniBack" aria-label="Back 15 seconds">⟲ 15</button><button type="button" id="miniPP" class="go" aria-label="Play">Play</button><button type="button" id="miniFwd" aria-label="Forward 30 seconds">30 ⟳</button></div>
@@ -421,5 +424,6 @@
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

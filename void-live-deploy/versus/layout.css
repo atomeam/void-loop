@@ -86,3 +86,6 @@ html.vs-tool textarea, html.vs-tool input[type="text"], html.vs-tool input[type=
 @media (max-width: 640px) {
   html.vs-tool main { border-radius: 16px; padding: 1rem .85rem 2rem; }
 }
+nav.with { display: flex; flex-wrap: wrap; gap: .45rem .7rem; align-items: center; margin: 1.4rem 0 0; padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / .08); }
+nav.with span { font-size: .95rem; color: var(--d-ink-2); }
+nav.with a { min-height: var(--vs-touch); display: inline-flex; align-items: center; }

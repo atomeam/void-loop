@@ -36,8 +36,13 @@
     <h2>The original site</h2>
     <p>rot13.com has been a letter shifter since at least <a href="https://web.archive.org/web/20010302000000/http://rot13.com/">a saved copy from 2001</a>. The page does not say who made it, so this one does not guess. The trick is older than the site: a <a href="https://en.wikipedia.org/wiki/ROT13">letter shift of 13</a>, used for centuries and still its own undo. The <a href="https://rot13.com/">live site</a> is the one Verse went up against. Ours still answers when script is off, and the link keeps the text.</p>
   </section>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#text" data-fallback="hello">Text Compare</a>
+    <a data-base="/meanings/" data-param="word" data-from="#text" data-fallback="hello">Dictionary</a>
+  </nav>
 </main>
 <script type="module" src="/rotate-letters/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

@@ -29,8 +29,13 @@
   <ul id="next"></ul>
   <p id="err" role="status"></p>
   <p>More: <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>, <a href="/convert/">unit converter</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#next" data-fallback="09:00">Text Compare</a>
+    <a data-base="/convert/" data-param="q" data-from="#line" data-fallback="1 hour in minutes">Unit Converter</a>
+  </nav>
 </main>
 <script type="module" src="/schedules/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>
