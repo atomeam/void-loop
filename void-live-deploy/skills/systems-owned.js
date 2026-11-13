@@ -47,7 +47,7 @@ async function run(text, api) {
       + '<h3>What Verse owns</h3><ul>' + p.systems.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>Next</h3><p>' + esc(p.next) + '</p>'
       + '<p class="sub">Reuse existing tools and packs. Nothing invented as already running until a check answers.</p>'
-      + '<div class="src">Source: A-to-Mind systems-owned · we own the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind systems-owned · verse does the hard work</div>';
   });
   return 'systems-owned';
 }
