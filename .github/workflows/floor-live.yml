@@ -21,7 +21,7 @@ jobs:
         with: { node-version: 22 }
       - run: npm ci --no-audit --no-fund && npx playwright-core install --with-deps chromium && echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
       - name: Run the merged floor pages on the live site
-        run: node tools/floor-live.mjs --shots floor-shots ${{ github.event_name == 'workflow_dispatch' && '--mark' || '' }}
+        run: node tools/floor-live.mjs --shots floor-shots ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.pr == '' && '--mark' || '' }}
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
       - uses: actions/upload-artifact@v4

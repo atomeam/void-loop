@@ -73,7 +73,11 @@ export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKE
     for (const s of sites) {
       const page = await browser.newPage({ extraHTTPHeaders: token ? { authorization: 'Bearer ' + token } : {} });
       const problems = [];
-      page.on('console', (msg) => { if (msg.type() === 'error' || /content security policy|refused to connect/i.test(msg.text())) problems.push(msg.text().slice(0, 160)); });
+      page.on('console', (msg) => {
+        const text = msg.text();
+        if (/cloudflareinsights|beacon\.min\.js/i.test(text)) return;
+        if (msg.type() === 'error' || /content security policy|refused to connect/i.test(text)) problems.push(text.slice(0, 160));
+      });
       page.on('pageerror', (err) => problems.push(String(err).slice(0, 160)));
       let shot = '';
       try {
