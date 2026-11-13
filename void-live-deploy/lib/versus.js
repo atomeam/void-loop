@@ -73,8 +73,13 @@ export async function fillVersus(context, kind) {
   } else {
     const raw = url.searchParams.get('html') || '';
     const w = weigh(raw);
+    const line = raw ? w.bytes + ' bytes · ' + w.images + ' pictures · ' + w.fonts + ' font requests · ' + w.scripts + ' scripts' : '';
     html = putText(html, 'html', raw);
-    html = putText(html, 'out', raw ? w.bytes + ' bytes · ' + w.images + ' pictures · ' + w.fonts + ' font requests · ' + w.scripts + ' scripts' : '');
+    html = putText(html, 'out', line);
+    if (line) {
+      const href = '/text-diff/?changed=' + encodeURIComponent(line);
+      html = html.replace(/<a\b[^>]*\bdata-base="\/text-diff\/"[^>]*>/i, (tag) => tag.replace(/\bhref="[^"]*"/, 'href="' + href + '"'));
+    }
   }
   return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }
