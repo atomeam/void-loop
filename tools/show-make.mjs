@@ -4,8 +4,8 @@ import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { VOICES, VOICE_AF, contentWords, publishScores, parseShow, BAD_EPISODE } from '../void-live-deploy/lib/show-pipe.js';
-import { ask } from './show-pipe.mjs';
+import { VOICES, contentWords, publishScores, parseShow, BAD_EPISODE } from '../void-live-deploy/lib/show-pipe.js';
+import { ask, shapeVoice, normalizeMix } from './show-pipe.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const KOKORO = process.env.KOKORO_DIR || (process.env.HOME + '/kokoro');
@@ -152,8 +152,8 @@ export function speakLines(lines, mp3) {
   lines.forEach((line, i) => {
     const raw = join(dir, i + '.wav'), fx = join(dir, i + '.fx.wav');
     const timed = timedAll[i];
-    const fxRun = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', raw, '-af', VOICE_AF[line.who], '-ar', '24000', '-ac', '1', fx], { encoding: 'utf8' });
-    if (fxRun.status !== 0) throw new Error(String(fxRun.stderr).slice(-200));
+    try { shapeVoice(raw, fx, line.who, { ar: '24000' }); }
+    catch (e) { throw new Error(String(e && e.message || e).slice(-200)); }
     const probed = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', fx], { encoding: 'utf8' });
     const dur = parseFloat(probed.stdout) || timed.seconds;
     const scale = timed.seconds ? dur / timed.seconds : 1;
@@ -166,8 +166,11 @@ export function speakLines(lines, mp3) {
   });
   const lst = join(dir, 'list.txt');
   writeFileSync(lst, list.map((f) => "file '" + f + "'").join('\n'));
-  const mix = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', lst, '-af', 'loudnorm=I=-16:TP=-1.5:LRA=11', '-ar', '24000', '-ac', '1', '-b:a', '96k', mp3], { encoding: 'utf8' });
-  if (mix.status !== 0) throw new Error(String(mix.stderr).slice(-300));
+  const wav = join(dir, 'mix.wav');
+  const cat = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', lst, '-ar', '24000', '-ac', '1', wav], { encoding: 'utf8' });
+  if (cat.status !== 0) throw new Error(String(cat.stderr).slice(-300));
+  try { normalizeMix(wav, mp3, ['-ar', '24000', '-ac', '1', '-b:a', '96k']); }
+  catch (e) { throw new Error(String(e && e.message || e).slice(-300)); }
   return { words, beats, seconds: beats.length ? beats[beats.length - 1].to + 0.28 : 0 };
 }
 

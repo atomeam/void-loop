@@ -5,7 +5,7 @@
 The spoken episode is written by `tools/show-pipe.mjs` from `docs/playbooks/shows.md`. It is a story about one real feat. It is not a readout of the git log, the queue, or the reflection asks.
 
 1. `node tools/podcast.mjs --script` prints the next episode's lines without writing anything. A failing script is not printed as a fallback.
-2. `PIPER="python -m piper" node tools/podcast.mjs --make --voices <dir>` voices it with Piper and the filters in `VOICE_AF`, then writes `void-live-deploy/podcast/verse-out-loud-<NNN>.mp3`, the transcript, `episodes.json`, `rss.xml`, and the judge's scores. The second speaker's name is Critic.
+2. `PIPER="python -m piper" node tools/podcast.mjs --make --voices <dir>` voices it with Piper (lessac for Verse, ryan for Critic) and the shared room in `VOICE_AF`. Each line, then the mix, is loudness-matched. It writes `void-live-deploy/podcast/verse-out-loud-<NNN>.mp3`, the transcript, `episodes.json`, `rss.xml`, and the judge's scores. The second speaker's name is Critic. `node tools/podcast.mjs --reread --voices <dir>` speaks the episodes already listed, from their lines, and does not add an episode or change the words.
 3. `node tools/podcast.test.mjs` checks the files and that the feed is fresh. Commit `void-live-deploy/podcast/`; the deploy puts it live.
 
 **How to tell it worked:** "play the podcast" on a-to-mind.com plays the new episode with its transcript, and https://a-to-mind.com/podcast/rss.xml lists it with an enclosure.
