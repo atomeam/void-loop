@@ -7,9 +7,10 @@
  */
 export function isDeliveryReady(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:is\s+(?:this|the|it)\s+)?(?:delivery|handoff)\s+ready\b/i.test(t)
-    || /^(?:ready\s+(?:for|to)\s+(?:handoff|delivery)|check\s+delivery\s+readiness)\b/i.test(t)
-    || /\bdelivery\s+ready\s+for\b/i.test(t);
+  return /\b(?:delivery|handoff)\s+ready\b/i.test(t)
+    || /\bready\s+(?:for|to)\s+(?:handoff|delivery)\b/i.test(t)
+    || /\bcheck\s+delivery\s+readiness\b/i.test(t)
+    || /\bis\s+(?:this|the|it)\s+delivery\s+ready\b/i.test(t);
 }
 
 export function subjectOf(text) {
