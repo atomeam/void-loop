@@ -65,7 +65,7 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   assert.match(own, /href="\/our-motherfucking-version\/"/);
   assert.match(own, /href="\/patterns\/"/);
   assert.match(own, /href="\/podcasts\/"/);
-  assert.doesNotMatch(own, /href="[^"]*(motherfuckingwebsite|rot13|tsundere|podcastindex|livescore|convertlive|regex101|crontab|wiktionary)/);
+  assert.doesNotMatch(own, /href="[^"]*(motherfuckingwebsite|rot13|tsundere|podcastindex|livescore|convertlive|regex101|crontab|wiktionary|myqrcode)/);
   assert.doesNotMatch(own + pub, /\b(grab|steal|absorb|conquer)\b/i);
 });
 
@@ -92,6 +92,6 @@ test('the live exam and the open wants name a fight past the three pages', () =>
   const nightly = JSON.parse(readFileSync(new URL('../void-live-deploy/progress/nightly.json', import.meta.url), 'utf8'));
   const model = viewModel(null, gapText({ exam, nightly, wants: self.open }));
   assert.equal(model.floor, 8);
-  assert.equal(model.fight, 'wiktionary.org');
-  assert.equal(['podcastindex.org', 'livescore.com', 'convertlive.com', 'regex101.com', 'crontab.guru'].includes(model.fight), false);
+  assert.equal(model.fight, 'myqrcode.com');
+  assert.equal(['podcastindex.org', 'livescore.com', 'convertlive.com', 'regex101.com', 'crontab.guru', 'wiktionary.org'].includes(model.fight), false);
 });

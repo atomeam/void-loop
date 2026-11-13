@@ -25,6 +25,7 @@ export const NEXT = Object.freeze([
   { id: 'patterns', name: 'Pattern tester', page: '/patterns/', rival: 'regex101.com', url: 'https://regex101.com/', kind: 'page', works: true, features: ['code', 'regex', 'pattern'] },
   { id: 'schedules', name: 'Schedules', page: '/schedules/', rival: 'crontab.guru', url: 'https://crontab.guru/', kind: 'page', works: true, features: ['cron', 'schedule'] },
   { id: 'meanings', name: 'Word meanings', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: false, features: ['define', 'dictionary', 'meaning'] },
+  { id: 'qr', name: 'QR codes', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: false, features: ['qr', 'code'] },
 ]);
 
 export const SITES = Object.freeze([...TOOLS, ...NEXT]);
