@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1282,
+ "counted": 1287,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1042,7 +1042,7 @@
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 2
   },
   {
@@ -1070,8 +1070,15 @@
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 36,
+   "tests": 0
   },
   {
    "file": "lib/markets.js",
@@ -1081,11 +1088,11 @@
    "tests": 5
   },
   {
-   "file": "lib/store-products.js",
+   "file": "lib/store.js",
    "skills": 2,
-   "direct": 0,
+   "direct": 1,
    "dependants": 35,
-   "tests": 0
+   "tests": 6
   },
   {
    "file": "lib/proposal.js",
@@ -1093,13 +1100,6 @@
    "direct": 1,
    "dependants": 34,
    "tests": 2
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 34,
-   "tests": 6
   },
   {
    "file": "lib/products.js",
@@ -2470,14 +2470,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 108,
+   "dependants": 111,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 110,
    "tests": 36
   },
   {
@@ -2491,22 +2491,22 @@
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 71,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 71,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 67,
-   "tests": 10
+   "dependants": 70,
+   "tests": 11
   },
   {
    "file": "lib/earnings.js",
@@ -3049,6 +3049,13 @@
   },
   {
    "file": "lib/music-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/page-pass.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -4044,6 +4051,12 @@
    ],
    "importedBy": []
   },
+  "functions/_middleware.js": {
+   "imports": [
+    "lib/page-pass.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/_middleware.js": {
    "imports": [
     "lib/guard.js"
@@ -4776,6 +4789,13 @@
     "functions/api/answer.js",
     "lib/news.js",
     "lib/http.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/page-pass.js": {
+   "imports": [
+    "lib/store.js",
+    "lib/page-pass.js"
    ],
    "importedBy": []
   },
@@ -5629,6 +5649,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
@@ -9555,11 +9576,13 @@
     "lib/automations-run.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/void-me.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
@@ -9582,6 +9605,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
     "functions/api/podcasts.js",
@@ -11885,6 +11909,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/_middleware.js",
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
@@ -11929,6 +11954,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -11988,6 +12014,7 @@
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js",
     "lib/void-me.js"
@@ -12016,6 +12043,16 @@
     "skills/gamebox.js"
    ]
   },
+  "lib/page-pass.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/void-me.js"
+   ],
+   "importedBy": [
+    "functions/_middleware.js",
+    "functions/api/page-pass.js"
+   ]
+  },
   "lib/page-picture.js": {
    "imports": [],
    "importedBy": []
@@ -12028,6 +12065,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -12060,6 +12098,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -12091,6 +12130,7 @@
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js"
    ]
@@ -12280,6 +12320,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
@@ -14772,6 +14813,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
@@ -14799,6 +14841,7 @@
     "lib/alt-pay.js"
    ],
    "importedBy": [
+    "functions/api/page-pass.js",
     "functions/api/store/[[path]].js",
     "lib/price-lock.js",
     "skills/store.js"
@@ -16087,9 +16130,11 @@
     "functions/api/watch.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -16117,6 +16162,7 @@
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
     "functions/api/podcasts.js",
@@ -16314,6 +16360,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -16346,6 +16393,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
     "functions/api/podcasts.js",
@@ -16377,6 +16425,7 @@
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js"
    ]
@@ -17387,6 +17436,10 @@
     "skills/client-handoff.js",
     "skills/handoffs.js"
    ]
+  },
+  "skills/delivery-ready.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -20720,6 +20773,10 @@
     "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
+  },
+  "skills/systems-owned.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/tab.js": {
    "imports": [

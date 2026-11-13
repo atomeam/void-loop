@@ -2457,6 +2457,11 @@
       "words": "Fix the sports exam data for MLB, Premier League, and Serie A.",
       "ledgerAt": "2026-11-11T17:36:49Z",
       "why": "built: the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the sports exam for 'yankees score' and 'how did the chiefs do'.",
+      "ledgerAt": "2026-11-11T17:36:49Z",
+      "why": "built: the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2468,9 +2473,87 @@
     }
   ],
   "totals": {
-    "asked": 265,
+    "asked": 269,
     "built": 265,
-    "through": "2026-11-12T01:28:00Z",
-    "open": []
+    "through": "2026-11-13T00:09:00Z",
+    "open": [
+      {
+        "ask": "Fix the card export overflow in the card capture mechanism.",
+        "at": "2026-11-13T00:09:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 2,
+        "ids": [
+          "ask-20261112-2203-1",
+          "ask-20261112-2209-1",
+          "ask-20261112-2217-1",
+          "ask-20261112-2237-1",
+          "ask-20261112-2241-2",
+          "ask-20261112-2243-2",
+          "ask-20261112-2251-2",
+          "ask-20261112-2308-2",
+          "ask-20261112-2322-3",
+          "ask-20261112-2335-3",
+          "ask-20261112-2341-1",
+          "ask-20261113-0009-3"
+        ]
+      },
+      {
+        "ask": "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores.",
+        "at": "2026-11-13T00:09:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 3,
+        "ids": [
+          "ask-20261112-2132-1",
+          "ask-20261112-2209-2",
+          "ask-20261112-2217-2",
+          "ask-20261112-2237-2",
+          "ask-20261112-2241-1",
+          "ask-20261112-2308-1",
+          "ask-20261112-2322-2",
+          "ask-20261113-0009-2",
+          "ask-20261112-2243-1",
+          "ask-20261112-2251-1",
+          "ask-20261112-2335-2",
+          "ask-20261112-2341-2"
+        ]
+      },
+      {
+        "ask": "Update the Bridge card logic to handle cases with fewer than two staged inputs.",
+        "at": "2026-11-12T23:41:00Z",
+        "kind": "build",
+        "small": true,
+        "times": 1,
+        "ids": [
+          "ask-20261112-2103-3",
+          "ask-20261112-2106-3",
+          "ask-20261112-2109-3",
+          "ask-20261112-2121-3",
+          "ask-20261112-2132-3",
+          "ask-20261112-2203-2",
+          "ask-20261112-2209-3",
+          "ask-20261112-2217-3",
+          "ask-20261112-2243-3",
+          "ask-20261112-2251-3",
+          "ask-20261112-2308-3",
+          "ask-20261112-2341-3"
+        ]
+      },
+      {
+        "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
+        "at": "2026-11-13T00:09:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 1,
+        "ids": [
+          "ask-20261112-2203-3",
+          "ask-20261112-2316-1",
+          "ask-20261112-2322-1",
+          "ask-20261112-2335-1",
+          "ask-20261113-0009-1"
+        ]
+      }
+    ]
   }
 }
