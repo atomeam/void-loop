@@ -759,7 +759,7 @@ Object.assign(SPECS, {
   },
   '/arcade/': async (t) => {
     t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
-    t.ok((await t.p.locator('#games button').count()) === 2, 'the new games play on this page');
+    t.ok((await t.p.locator('#games button').count()) >= 12, 'the hosted games play on this page');
     t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
     await t.click('#games button[data-id="gap-glide"]');
     await t.p.waitForTimeout(250);
@@ -770,6 +770,12 @@ Object.assign(SPECS, {
     await t.click('#games button[data-id="cross-bus"]');
     await t.p.keyboard.press('ArrowUp');
     t.ok(/curb/i.test(await t.text('#play')), 'Cross the Bus says how to cross');
+    await t.p.setViewportSize({ width: 390, height: 844 });
+    await t.click('#games button[data-id="token-stand"]');
+    await t.p.waitForTimeout(200);
+    await t.click('#play button:has-text("Act")');
+    await t.p.waitForTimeout(300);
+    t.ok(/you [1-9]/.test(await t.text('#status')), 'a phone tap on Act sells a day at the stand: ' + (await t.text('#status')).slice(0, 80));
   },
   '/lab/mind-map/': async (t) => {
     await t.click('#sample'); await t.p.waitForTimeout(300);

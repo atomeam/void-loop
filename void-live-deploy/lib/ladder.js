@@ -4,7 +4,7 @@
 // under 400), and the growth card shows the record and the ratings. Pure over the record; the storage is lib/state.js.
 import { read, write } from './state.js';
 
-export const START = 1000, STEP = 16, FLOOR = 400, GAMES = ['pong', 'snake', 'null-sweep', 'merge-void', 'dim-void', 'void-breaker', 'gap-glide', 'cross-bus']; // every Studio game with Verse as player two (domains/void.game-studio.md) records here
+export const START = 1000, STEP = 16, FLOOR = 400, GAMES = ['pong', 'snake', 'null-sweep', 'merge-void', 'dim-void', 'void-breaker', 'gap-glide', 'cross-bus', 'debris-field', 'null-waves', 'packet-maze', 'jump-stack', 'stackwell', 'push-packets', 'nine-grid', 'glyph-verse', 'three-alike', 'token-stand']; // every Studio game with Verse as player two (domains/void.game-studio.md) records here
 const blank = () => Object.fromEntries(GAMES.map((g) => [g, { void: 0, you: 0, draw: 0 }]));
 
 /** the record with one more finished match: winner 'void', 'you' or 'draw' (anything else is not counted). Pure. */
@@ -30,9 +30,9 @@ export function finish(game, winner, s) {
   return l;
 }
 
-export const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake', 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Verse', 'dim-void': 'Dim the Verse', 'void-breaker': 'Verse Breaker', 'gap-glide': 'Gap Glide', 'cross-bus': 'Cross the Bus' };
+export const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake', 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Verse', 'dim-void': 'Dim the Verse', 'void-breaker': 'Verse Breaker', 'gap-glide': 'Gap Glide', 'cross-bus': 'Cross the Bus', 'debris-field': 'Debris Field', 'null-waves': 'Null Waves', 'packet-maze': 'Packet Maze', 'jump-stack': 'Jump Stack', stackwell: 'Stackwell', 'push-packets': 'Push Packets', 'nine-grid': 'Nine Grid', 'glyph-verse': 'Glyph Verse', 'three-alike': 'Three Alike', 'token-stand': 'Token Stand' };
 /** the ask that opens each arcade game (the game rack's arcade row). */
-export const ASKS = { pong: 'play pong', snake: 'play snake', 'null-sweep': 'null sweep', 'merge-void': 'merge verse', 'dim-void': 'dim the verse', 'void-breaker': 'verse breaker', 'gap-glide': 'gap glide', 'cross-bus': 'cross the bus' };
+export const ASKS = { pong: 'play pong', snake: 'play snake', 'null-sweep': 'null sweep', 'merge-void': 'merge verse', 'dim-void': 'dim the verse', 'void-breaker': 'verse breaker', 'gap-glide': 'gap glide', 'cross-bus': 'cross the bus', 'debris-field': 'debris field', 'null-waves': 'null waves', 'packet-maze': 'packet maze', 'jump-stack': 'jump stack', stackwell: 'stackwell', 'push-packets': 'push packets', 'nine-grid': 'nine grid', 'glyph-verse': 'glyph verse', 'three-alike': 'three alike', 'token-stand': 'token stand' };
 /** one plain line per arcade game for the rack: its title and, once you have played it, the record. Pure. */
 export const arcadeRow = (ladder, g) => TITLES[g] + (played(ladder, g) ? ' · I won ' + (+ladder[g].void || 0) + ', you won ' + (+ladder[g].you || 0) : '');
 /** the growth card's line: '' until a match is finished. Every value is a number or a fixed title. Pure. */

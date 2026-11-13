@@ -1,9 +1,6 @@
 import { GAMES, TITLES, ASKS } from '/lib/ladder.js';
 import { drive } from '/lib/studio-play.js';
-import * as glide from '/skills/gap-glide-rules.js';
-import * as bus from '/skills/cross-bus-rules.js';
-
-const HOST = { 'gap-glide': glide, 'cross-bus': bus };
+import { HOST } from '/arcade/host.js';
 const MORE = [
   ['Chess', 'play chess', 'You play white. Verse plays black.'],
   ['Checkers', 'play checkers', 'You take the light pieces. Verse takes the dark ones.'],
@@ -102,4 +99,4 @@ function moreAppend(a) { $('more').append(a); }
 
 const open = new URLSearchParams(location.search).get('play');
 if (HOST[open]) { how.textContent = HOST[open].how; mark(open); paint(open); }
-else if (GAMES[0]) how.textContent = 'Pick a game. Gap Glide and Cross the Bus play on this page. The others open on the stage, with every rule they already have.';
+else if (GAMES[0]) how.textContent = 'Pick a game. Twelve rounds play on this page, against Verse. The others open on the stage, with every rule they already have.';

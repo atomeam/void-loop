@@ -1,10 +1,24 @@
-// Gap Glide, Cross the Bus, Debris Field and Null Waves: pure rules, Verse is seat 2, a round is a seed.
+// Studio rounds: pure rules, Verse is seat 2, a round is a seed.
+// skills/gap-glide.js skills/cross-bus.js skills/debris-field.js skills/null-waves.js skills/packet-maze.js
+// skills/jump-stack.js skills/stackwell.js skills/push-packets.js skills/nine-grid.js skills/glyph-verse.js
+// skills/three-alike.js skills/token-stand.js
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as G from '../void-live-deploy/skills/gap-glide-rules.js';
 import * as B from '../void-live-deploy/skills/cross-bus-rules.js';
+import * as debris from '../void-live-deploy/skills/debris-field-rules.js';
+import * as waves from '../void-live-deploy/skills/null-waves-rules.js';
+import * as maze from '../void-live-deploy/skills/packet-maze-rules.js';
+import * as jump from '../void-live-deploy/skills/jump-stack-rules.js';
+import * as stack from '../void-live-deploy/skills/stackwell-rules.js';
+import * as push from '../void-live-deploy/skills/push-packets-rules.js';
+import * as grid from '../void-live-deploy/skills/nine-grid-rules.js';
+import * as glyph from '../void-live-deploy/skills/glyph-verse-rules.js';
+import * as three from '../void-live-deploy/skills/three-alike-rules.js';
+import * as stand from '../void-live-deploy/skills/token-stand-rules.js';
 import { asked, daySeed, roundLink } from '../void-live-deploy/lib/studio-play.js';
 import { TITLES, GAMES } from '../void-live-deploy/lib/ladder.js';
+import { HOST } from '../void-live-deploy/arcade/host.js';
 
 test('the same seed is the same opening, and a round link carries the seed and the score', () => {
   assert.deepEqual(G.create(4).pipes.map((p) => p.c), G.create(4).pipes.map((p) => p.c));
@@ -19,10 +33,13 @@ test('asks open the new games and leave the famous names alone', () => {
   assert.equal(asked("let's play cross the bus", ['cross the bus']), true);
   assert.equal(asked('play flappy bird', ['gap glide']), false);
   assert.equal(asked('play frogger', ['cross the bus']), false);
-  for (const id of ['gap-glide', 'cross-bus']) {
+  for (const id of Object.keys(HOST)) {
     assert.ok(GAMES.includes(id), id);
     assert.doesNotMatch(TITLES[id], /void/i, id);
+    assert.equal(asked('play ' + TITLES[id].toLowerCase(), [TITLES[id].toLowerCase()]), true, id);
   }
+  assert.equal(asked('play tetris', ['stackwell']), false);
+  assert.equal(asked('play wordle', ['glyph verse']), false);
 });
 
 test('Gap Glide: a careful glider lasts longer than Verse, and the game ends', () => {
@@ -32,6 +49,25 @@ test('Gap Glide: a careful glider lasts longer than Verse, and the game ends', (
   const one = G.selfPlay(2);
   assert.ok(one.over === 'you' || one.over === 'void' || one.over === 'draw');
   assert.ok(one.tick > 10);
+});
+
+test('each hosted round ends, and a careful player can beat Verse', () => {
+  const rounds = [debris, waves, maze, jump, stack, push, grid, glyph, three, stand];
+  for (const game of rounds) {
+    const one = game.selfPlay(1), two = game.selfPlay(1);
+    assert.ok(one.over === 'you' || one.over === 'void' || one.over === 'draw', game.id + ' ends');
+    assert.deepEqual(one, two, game.id + ' seed');
+    assert.equal(HOST[game.id].id, game.id);
+  }
+  assert.equal(waves.selfPlay(1).over, 'you');
+  assert.equal(maze.selfPlay(1).over, 'you');
+  assert.equal(jump.selfPlay(1).over, 'you');
+  assert.equal(push.selfPlay(2).over, 'you');
+  assert.equal(grid.selfPlay(4).over, 'you');
+  assert.equal(glyph.selfPlay(5).over, 'you');
+  assert.equal(stand.selfPlay(3).over, 'you');
+  assert.deepEqual(glyph.mark('amber', 'amber'), ['hit', 'hit', 'hit', 'hit', 'hit']);
+  assert.deepEqual(glyph.mark('amber', 'maple'), ['near', 'near', 'miss', 'miss', 'near']);
 });
 
 test('Cross the Bus: both riders finish a round, and the far curb is reachable', () => {

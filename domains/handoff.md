@@ -103,7 +103,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
-- **Verse Arcade**: Gap Glide and Cross the Bus play against Verse on the existing cabinet, and /arcade/ holds that cabinet plus a link to every game already on the stage. https://github.com/atomeam/void-loop/pull/2808
+- **Verse Arcade**: twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token Stand). The cabinet lists them, and the games already on the stage stay linked. https://github.com/atomeam/void-loop/pull/2808
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
 - **Text Compare**: one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799
 - **QR Code Maker**: one pass on /qr/ with downloads, two colours, a Wi-Fi line, a contact card, and a sourced history of myqrcode.com. https://github.com/atomeam/void-loop/pull/2797
