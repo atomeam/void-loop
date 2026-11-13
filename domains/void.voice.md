@@ -10,21 +10,29 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-12. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-13. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Build the missing jobs for flightconnections.com. (daily, 2026-11-12) `ask-20261112-0128-1`
-- Handle the void-loop readme. *(small)* (daily, 2026-11-12) `ask-20261112-0128-3`
-- Implement updates to the definitions exam to include etymology and handle unknown terms. *(small)* (daily, 2026-11-12) `ask-20261112-0128-2`
-- Fix the sports exam data for MLB, Premier League, and Serie A. (after a build, 2026-11-11) `ask-20261111-1526-2`
+- Fix the card export overflow in the card capture. (daily, 2026-11-13) `ask-20261113-0009-3`
+- Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores. (daily, 2026-11-13) `ask-20261113-0009-2`
+- Fix the factorial(0) code exam to ensure it returns 1. *(small)* (daily, 2026-11-13) `ask-20261113-0009-1`
+- Update the Bridge card logic to handle cases with fewer than two staged inputs. *(small)* (after a build, 2026-11-12) `ask-20261112-2341-3`
+- Fix the sports exam for 'yankees score' and 'how did the chiefs do'. (after a build, 2026-11-12) `ask-20261112-0841-1`
+- Build the missing jobs for flightconnections.com. (after a build, 2026-11-12) `ask-20261112-0244-1`
+- Implement updates to the definitions exam to include etymology and handle unknown terms. (after a build, 2026-11-12) `ask-20261112-0207-2`
+- Handle the void-loop readme. *(small)* (after a build, 2026-11-12) `ask-20261112-0207-3`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261112-0128-1` queued, not decided yet
-- `ask-20261112-0128-3` queued, not decided yet
-- `ask-20261112-0128-2` queued, not decided yet
-- `ask-20261111-1526-2` queued, not decided yet
+- `ask-20261113-0009-3` queued, not decided yet
+- `ask-20261113-0009-2` queued, not decided yet
+- `ask-20261113-0009-1` queued, not decided yet
+- `ask-20261112-2341-3` queued, not decided yet
+- `ask-20261112-0841-1` queued, not decided yet
+- `ask-20261112-0244-1` queued, not decided yet
+- `ask-20261112-0207-2` queued, not decided yet
+- `ask-20261112-0207-3` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -10830,6 +10838,352 @@ Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to
 > **Next video trick:** A seamless light-leak transition between stage-style themes.
 
 Asks: "Build the missing jobs for flightconnections.com."; "Implement updates to the definitions exam to include etymology and handle unknown terms." (small); "Handle the void-loop readme." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T20:55:33.021Z -->
+### 2026-11-12 20:55 UTC · after a build
+
+**Asked:** This just shipped: "add descriptions for 7 new family skills in inventory". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 365 entries, including 17 recent business capabilities like client-intake and full-handoff. While 265 of 269 total asks are built, the system is stalled on three specific items: the card capture export overflow, sports data retrieval for the Yankees, Chiefs, and Packers, and Bridge card logic for fewer than two inputs. The latest update added descriptions for 7 new family skills in inventory.
+>
+> **How I would make it better:** The card capture mechanism must be fixed to prevent data loss from export overflow. Bridge card logic should be updated to handle scenarios where fewer than two inputs are staged.
+>
+> **Next video trick:** a video effect that uses the 'splat' skill to transition between different stage-styles.
+
+Asks: "Fix the card export overflow in the card capture mechanism."; "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T21:03:09.557Z -->
+### 2026-11-12 21:03 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 363 entries, including a new handoffs family at 1192. Recent shipments include a travel gate for flightconnections.com and sports gates for onefootball.com and flashscore.com. Most asks (265 of 269) have been built, but critical stability issues remain in card capture and sports data retrieval.
+>
+> **How I would make it better:** The card capture mechanism requires an immediate fix for export overflow. Bridge card logic must be updated to handle fewer than two staged inputs to prevent 'none' returns in skills/bridge.js.
+>
+> **Next video trick:** Learn to generate a rhythmic syncopation effect using only code-driven canvas particles for a new clip.
+
+Asks: "Fix the card export overflow in the card capture mechanism." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T21:06:12.712Z -->
+### 2026-11-12 21:06 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 25: lib/db.js in every endpoint, stage-marks family, films check their cards and re-shoot once, propose-fix says why, merge gate installs once, two files tested". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 362 entries, including recently shipped skills like client-intake, reuse-pack, and system-slice. The system just completed Lists run 25, which integrated lib/db.js into every endpoint and added the stage-marks family. Current focus is on resolving high-frequency open asks related to card export overflow and sports data stability.
+>
+> **How I would make it better:** The Bridge card logic requires an update to handle fewer than two staged inputs to prevent 'none' returns in skills/bridge.js. The card capture mechanism needs a fix for export overflow to close a high-frequency open ask.
+>
+> **Next video trick:** Implement a seamless transition between different analytical depths when a topic shifts suddenly.
+
+Asks: "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture mechanism."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T21:09:32.142Z -->
+### 2026-11-12 21:09 UTC · after a build
+
+**Asked:** This just shipped: "full-handoff: carry lift summary, reuse map and client offer". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 362 entries, with recent deployments adding a complete client handoff family including full-handoff, reuse-pack, and client-offer. Current operations are managing the transition to flightconnections.com, while the system handles 265 completed asks out of 269 total. Active development is focused on bridging inputs and expanding cinema and handoff families.
+>
+> **How I would make it better:** The Bridge card logic must be updated to handle fewer than two staged inputs to prevent 'none' returns in skills/bridge.js. The card capture mechanism requires a fix to resolve the export overflow issue. The sports data retrieval needs stabilization to ensure reliable scores for the Yankees, Chiefs, and Packers.
+>
+> **Next video trick:** Implement a seamless transition effect that maintains analytical depth when a user suddenly shifts topics.
+
+Asks: "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture mechanism."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T21:21:12.411Z -->
+### 2026-11-12 21:21 UTC · after a build
+
+**Asked:** This just shipped: "Humble copy: drop 'heavy lifting' boasts from client packages". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 362 entries, including recently shipped client-facing skills like status-digest, system-slice, and client-intake. The flightconnections.com journey is passing live tests, and the handoffs family now contains 1,192 asks. My current operational state is defined by resolving open asks related to card export overflows, sports data stability, and Bridge card logic.
+>
+> **How I would make it better:** The sports data retrieval must be stabilized to fix the 92.6 score on the sports exam for Yankees and Chiefs queries. Bridge card logic needs an update to handle cases with fewer than two staged inputs to prevent 'none' returns. The card capture mechanism requires a fix for the export overflow issue.
+>
+> **Next video trick:** Learn a video effect to simulate the transition from a 2D sketch to a 3D forge mesh [S1].
+
+Asks: "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture mechanism." (small); "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T21:32:42.134Z -->
+### 2026-11-12 21:32 UTC · after a build
+
+**Asked:** This just shipped: "Lab tools: shared Verse theme on the light pages". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 362 entries, and recent shipments include a shared Verse theme for light pages in Lab tools. The system is currently working to stabilize sports data retrieval to improve the 92.6 score on the sports exam, specifically for Yankees and Chiefs queries. Open asks include fixing the card export overflow in the card capture mechanism and updating the Bridge card logic to handle cases with fewer than two staged inputs.
+>
+> **How I would make it better:** The sports exam score of 92.6 must be improved by stabilizing data retrieval for specific queries like 'yankees score' and 'how did the chiefs do'. The Bridge card logic needs to be updated to prevent 'none' returns when fewer than two inputs are staged.
+>
+> **Next video trick:** Learn to create a seamless transition between a 3D model in the forge and a real-world physical print preview.
+
+Asks: "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture mechanism."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:03:42.981Z -->
+### 2026-11-12 22:03 UTC · after a build
+
+**Asked:** This just shipped: "roi-pack skill: show a client the hours saved and cost avoided when Verse runs their systems; mark time-saved shipped". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 362 entries, including recently shipped client-facing skills like roi-pack and full-handoff. Current operations show successful journeys for flightconnections.com, but sports data retrieval for Yankees and Chiefs remains unstable. The system is currently integrating new handoffs families and stabilizing the bridge logic.
+>
+> **How I would make it better:** The sports data retrieval must be stabilized to improve the 92.6 score, specifically for Yankees and Chiefs queries. Bridge card logic should be updated to handle cases with fewer than two staged inputs to prevent 'none' returns.
+>
+> **Next video trick:** Implement a video transition effect that uses a stage-fx overlay to mask a jump-cut between two different media-objects.
+
+Asks: "Fix the card export overflow in the card capture mechanism."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small); "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:09:42.936Z -->
+### 2026-11-12 22:09 UTC · after a build
+
+**Asked:** This just shipped: "Browser test: look for the business-clarify card's new label". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 362 entries, including recently shipped client-facing skills like system-slice, progress-report, and status-digest. Current operations show successful deployment of flightconnections.com jobs and improved bridge card logic. However, several critical technical tasks remain open, specifically regarding card capture overflow and sports data stabilization.
+>
+> **How I would make it better:** The sports data retrieval for Yankees and Chiefs must be stabilized to improve the 92.6 score. Additionally, the card capture mechanism needs a fix for the card export overflow to prevent data loss during capture.
+>
+> **Next video trick:** Learn to perform a seamless 'invisible card' transition where a 3D miniature appears to emerge from a flat 2D UI element [S1].
+
+Asks: "Fix the card export overflow in the card capture mechanism."; "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:17:14.836Z -->
+### 2026-11-12 22:17 UTC · after a build
+
+**Asked:** This just shipped: "Mark shipped status for roi-pack, time-saved and full-handoff complete". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 362 entries, incorporating recently shipped client-facing skills such as roi-pack, time-saved, and full-handoff. Current operations successfully deployed flightconnections.com jobs and improved Bridge card logic, though technical debt persists in core telemetry and data retrieval. The system is currently transitioning from building individual tools to packaging them into business-ready ownership and delivery suites.
+>
+> **How I would make it better:** The Bridge card logic must be refined to handle cases with fewer than two staged inputs to avoid returning 'none' to the site tester. Reliability in sports data retrieval for the Yankees, Chiefs, and Packers must be stabilized to improve scoring.
+>
+> **Next video trick:** Learn to use a camera to capture a physical 3D printed object from the forge and overlay digital UI elements onto the real-world footage.
+
+Asks: "Fix the card export overflow in the card capture mechanism." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:17:29.103Z -->
+### 2026-11-12 22:17 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 362 entries, with recent additions including client-facing ownership and delivery skills like roi-pack, time-saved, and full-handoff. My builders successfully deployed flightconnections.com jobs and resolved Bridge card logic for staged inputs. Growth remains steady with 173 changes in the last 7 days, though specific core reliability issues persist.
+>
+> **How I would make it better:** The telemetry reporting logic must be synchronized so failure counts and specific error names match perfectly. Sports data retrieval for the Yankees, Chiefs, and Packers needs stabilization to improve scores.
+>
+> **Weakest operational area:** The weakest operational area is the unresolved ask queue, specifically the card export overflow in the card capture mechanism which has been asked 47 times.
+>
+> **Next targeted capability:** The next targeted capability is fixing podcast exam failures for audio and episode detection to prevent low scores in core audio tasks.
+>
+> **Next video trick:** Learn a transition effect where a 3D miniature card morphs into its real-world object counterpart.
+
+Asks: "Fix the card export overflow in the card capture mechanism." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:37:16.384Z -->
+### 2026-11-12 22:37 UTC · after a build
+
+**Asked:** This just shipped: "Rerun a failed verify job once before reverting main". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 362 entries, including new client-facing ownership and delivery skills like roi-pack and full-handoff. Builders recently deployed flightconnections.com jobs and resolved Bridge card logic for staged inputs. Reliability issues persist in telemetry synchronization and sports data retrieval for the Yankees, Chiefs, and Packers.
+>
+> **How I would make it better:** The telemetry reporting logic must be synchronized so failure counts and specific error names match perfectly. Sports data retrieval for the Yankees, Chiefs, and Packers needs stabilization to improve scores.
+>
+> **Next video trick:** Learn how to use a physical deck of cards to perform a 'card spring' to improve manual handling for video clips.
+
+Asks: "Fix the card export overflow in the card capture mechanism."; "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:41:02.697Z -->
+### 2026-11-12 22:41 UTC · after a build
+
+**Asked:** This just shipped: "Owner elevator for Versus, and measure only those tools". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 362 entries, including recently shipped client-facing ownership and delivery skills like roi-pack and full-handoff. Flightconnections.com jobs have been deployed and Bridge card logic for staged inputs has been resolved. Reliability issues persist in sports data retrieval for the Yankees, Chiefs, and Packers, and telemetry reporting requires synchronization to match failure counts with specific error names.
+>
+> **How I would make it better:** Stabilize sports data retrieval for the Yankees, Chiefs, and Packers to improve scores. The telemetry reporting logic must be updated so failure counts and error names are perfectly synchronized to prevent mismatches.
+>
+> **Next video trick:** Learn to use a camera to track the movement of a single coin on a table for a new video effect.
+
+Asks: "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:43:47.310Z -->
+### 2026-11-12 22:43 UTC · after a build
+
+**Asked:** This just shipped: "Settle shared conflicts and require the full check set". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 362 entries, incorporating new client-facing capabilities such as roi-pack, full-handoff, and status-digest. Recent deployments include flightconnections.com jobs and Bridge card logic updates. However, technical debt remains in sports data retrieval for the Yankees, Chiefs, and Packers, and telemetry reporting still requires synchronization of failure counts with error names.
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to prevent mismatches. Sports data retrieval for the Yankees, Chiefs, and Packers needs stabilization to improve accuracy.
+>
+> **Next video trick:** Learn to generate a synchronized 3D shadow effect for the forge's 3D models to enhance depth during inspection.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Fix the card export overflow in the card capture mechanism." (small); "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T22:51:37.855Z -->
+### 2026-11-12 22:51 UTC · after a build
+
+**Asked:** This just shipped: "Rewrite boastful pull request copy in plain words". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 362 entries, including new client-facing capabilities like roi-pack, full-handoff, and status-digest. Recent deployments successfully integrated flightconnections.com jobs and updated Bridge card logic. However, sports data retrieval for the Yankees, Chiefs, and Packers remains unstable, scoring only 92.6 in exams.
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and error names are perfectly synchronized. To improve the sports domain, real photo embeds from official channels should be integrated to replace text-only reports.
+>
+> **Next video trick:** Learn to use a camera-tracking effect to highlight specific 3D elements on the stage during a video clip.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Fix the card export overflow in the card capture mechanism." (small); "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T23:08:19.048Z -->
+### 2026-11-12 23:08 UTC · after a build
+
+**Asked:** This just shipped: "kickoff-pack skill: lay out a client's first week with Verse running their systems; mark building in inbox". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 363 entries, incorporating new client-facing capabilities such as kickoff-pack, roi-pack, and status-digest. Recent deployments successfully integrated flightconnections.com jobs and updated Bridge card logic. However, sports data retrieval for the Yankees and Chiefs remains unstable, scoring 92.6 in exams.
+>
+> **How I would make it better:** The sports domain requires official highlight embeds and real photo integration to replace text-only reports. Telemetry reporting must also be updated to ensure failure counts and error names are perfectly synchronized.
+>
+> **Next video trick:** Learn to use a single light source to create sharp, dramatic shadows for a 3D miniature product shot.
+
+Asks: "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture." (small); "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T23:16:29.780Z -->
+### 2026-11-12 23:16 UTC · after a build
+
+**Asked:** This just shipped: "Floors advance when the page works". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, incorporating new client-facing capabilities like kickoff-pack, roi-pack, and status-digest. Recent deployments successfully integrated flightconnections.com jobs and updated Bridge card logic. However, sports data retrieval for the Yankees and Chiefs remains unstable, scoring 92.6 in exams.
+>
+> **How I would make it better:** The sports domain requires official highlight embeds and real photo integration to replace text-only reports. Telemetry reporting must be updated to ensure failure counts and error names are perfectly synchronized.
+>
+> **Next video trick:** Learn a video transition that uses a card's 'arrive' animation to mask a scene cut.
+
+Asks: "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T23:22:29.212Z -->
+### 2026-11-12 23:22 UTC · after a build
+
+**Asked:** This just shipped: "Full pages ask for Uni". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 363 entries, recently adding client-facing capabilities like kickoff-pack, roi-pack, and status-digest. Recent deployments integrated flightconnections.com jobs and updated Bridge card logic. However, sports data retrieval for the Yankees, Chiefs, and Packers is unstable, scoring 92.6 in exams.
+>
+> **How I would make it better:** The sports domain needs official highlight embeds and real photo integration to replace current text-only reports. Telemetry reporting must be updated to ensure failure counts and error names are perfectly synchronized.
+>
+> **Next video trick:** Learn to use a physical magnet to create a 'magnetic card' effect for a 3D miniature.
+
+Asks: "Fix the factorial(0) code exam to ensure it returns 1."; "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T23:35:07.739Z -->
+### 2026-11-12 23:35 UTC · after a build
+
+**Asked:** This just shipped: "Leave /versus/ on its own sign". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recent client-facing capabilities like kickoff-pack, roi-pack, and status-digest. Current deployments have integrated flightconnections.com jobs and updated Bridge card logic. While several handoffs families are now unified, sports data retrieval for the Yankees, Chiefs, and Packers remains unstable with a score of 92.6.
+>
+> **How I would make it better:** The sports domain needs official highlight embeds and real photo integration to replace current text-only reports. Telemetry reporting must be updated so failure counts and error names are perfectly synchronized.
+>
+> **Next video trick:** Learn to use the 'masking' effect with a physical card to simulate a digital UI element appearing on a real surface.
+
+Asks: "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Fix the card export overflow in the card capture."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-12T23:41:54.662Z -->
+### 2026-11-12 23:41 UTC · after a build
+
+**Asked:** This just shipped: "reliability-pack skill: package the uptime targets and checks Verse runs so the client doesn't set or chase them; mark building in inbox". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 364 entries. Recently shipped capabilities include the reliability-pack, which packages uptime targets and checks, and several client-facing business skills like the roi-pack, system-slice, and full-handoff. The system is currently transitioning toward becoming a tool for business owners by offering packages like the client lift summary and delivery-board.
+>
+> **How I would make it better:** The sports domain requires official highlight embeds and real photo integration to replace current text-only reports. Telemetry reporting must be updated so failure counts and error names are perfectly synchronized to avoid contradictions between the ledger and system cards.
+>
+> **Next video trick:** A cinematic transition effect that uses a blurred motion vector to bridge two separate video clips on the stage.
+
+Asks: "Fix the card export overflow in the card capture."; "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers scores."; "Update the Bridge card logic to handle cases with fewer than two staged inputs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T00:09:07.816Z -->
+### 2026-11-13 00:09 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 364 entries, with 182 changes made in the last 7 days including 18 new capabilities and 66 improvements. Recent shipping includes the reliability-pack and several business-focused skills like the roi-pack and system-slice.
+>
+> **How I would make it better:** The transition toward business ownership via the client lift summary and delivery-board should be prioritized. Telemetry reporting must be updated to ensure failure counts and error names are perfectly synchronized to prevent contradictions.
+>
+> **Weakest operational area:** The factorial code exam is the weakest operational area, having scored 93.3, which is the lowest recorded score.
+>
+> **Next targeted capability:** Fix the factorial(0) code exam to ensure it returns 1 because this failed skill was a recorded low point.
+>
+> **Next video trick:** A glitch-transition effect where one object morphs into another via pixelated displacement.
+
+Asks: "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture."
 
 *Verse flagged this one for Adam.*
 
