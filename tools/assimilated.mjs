@@ -112,7 +112,14 @@ export function floorAt(f, ev, tg, perFloor = {}) {
 }
 
 /** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */
-export const pageExists = (cwd = root) => (path) => { const p = String(path || '').replace(/[?#].*$/, ''); if (!p.startsWith('/') || p.includes('..')) return false; const f = resolve(cwd, 'void-live-deploy' + p); return existsSync(p.endsWith('/') ? f + '/index.html' : f) || existsSync(f + '.html') || existsSync(f + '/index.html'); };
+export const pageExists = (cwd = root) => {
+  let redirects = null;
+  const file = (p) => { const f = resolve(cwd, 'void-live-deploy' + p); return existsSync(p.endsWith('/') ? f + '/index.html' : f) || existsSync(f + '.html') || existsSync(f + '/index.html'); };
+  const rules = () => { if (redirects) return redirects; redirects = new Map();
+    try { for (const line of readFileSync(resolve(cwd, 'void-live-deploy/_redirects'), 'utf8').split('\n')) { const [from, to] = line.trim().split(/\s+/); if (from && to && from.startsWith('/') && to.startsWith('/') && !from.includes('*')) redirects.set(from.replace(/\/+$/, '') || '/', to.split('?')[0]); } } catch (_) {}
+    return redirects; };
+  return (path) => { const p = String(path || '').replace(/[?#].*$/, ''); if (!p.startsWith('/') || p.includes('..')) return false; if (file(p)) return true; const to = rules().get(p.replace(/\/+$/, '') || '/'); return !!(to && file(to)); };
+};
 
 export async function build(cwd = root) {
   const ts = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tool-sites.js')).href);

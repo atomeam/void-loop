@@ -122,10 +122,6 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /jobs/tags/ | text, location | items, url | yes | handoff-types.json |
 | /journal/ | text | url | yes | its tag |
 | /kanban/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/flow/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/quick/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/simple/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/teams/ | items, text | items, table | yes | handoff-types.json |
 | /lab/ | - | - | no | its tag |
 | /lab/044-resonant-echo-portals/ | - | - | no | its tag |
 | /lab/048-evolving-particle-life-mind/ | - | - | no | its tag |
@@ -773,12 +769,6 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /password/strength/ | text | text | yes | its tag |
 | /patterns/ | text, code | text | yes | its tag |
 | /pdf/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/editor/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/merge/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/organize/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/studio/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/suite/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/toolbox/ | image, text | image, text | yes | handoff-types.json |
 | /photos/ | image | image, color | yes | handoff-types.json |
 | /photos/exif/ | image | image, color | yes | handoff-types.json |
 | /photos/exifeditor/ | image | image, color | yes | handoff-types.json |
