@@ -48,3 +48,41 @@ output, pre.list { display: block; white-space: pre-wrap; margin: .8rem 0; }
 .elv-when { margin: .35rem 0 0; color: var(--d-ink-3); font-size: .9rem; }
 @keyframes elv-rise { from { transform: translateY(0); } to { transform: translateY(calc(var(--floor, 0) * -2.1rem)); } }
 @media (prefers-reduced-motion: reduce) { .elv-car { animation: none; } }
+
+/* The shared look for every Versus tool page. One sheet, so a page is not restyled on its own. */
+html.vs-tool {
+  background:
+    radial-gradient(900px 420px at 50% -12%, rgb(var(--d-key) / .18), transparent 60%),
+    #07080d;
+}
+html.vs-tool main {
+  border: 1px solid rgb(255 255 255 / .08);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgb(255 255 255 / .045), rgb(255 255 255 / .015));
+  box-shadow: 0 28px 80px rgb(0 0 0 / .38), inset 0 1px 0 rgb(255 255 255 / .07);
+}
+html.vs-tool h1 {
+  font-size: clamp(2rem, 6vw, 2.55rem);
+  letter-spacing: -0.03em;
+  text-shadow: 0 0 28px rgb(var(--d-key) / .35);
+}
+html.vs-tool button {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / .14), 0 10px 28px rgb(var(--d-key) / .28);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+html.vs-tool button:hover { transform: translateY(-1px); }
+html.vs-tool button:focus-visible, html.vs-tool input:focus-visible, html.vs-tool textarea:focus-visible {
+  outline: 2px solid rgb(var(--d-key) / .8);
+  outline-offset: 2px;
+}
+html.vs-tool textarea, html.vs-tool input[type="text"], html.vs-tool input[type="search"], html.vs-tool input[type="number"] {
+  background: rgb(8 10 16 / .82);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .04);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.vs-tool button { transition: none; }
+  html.vs-tool button:hover { transform: none; }
+}
+@media (max-width: 640px) {
+  html.vs-tool main { border-radius: 16px; padding: 1rem .85rem 2rem; }
+}
