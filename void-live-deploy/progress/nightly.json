@@ -1,15 +1,15 @@
 {
- "at": "2026-11-12T16:02:21.272Z",
+ "at": "2026-11-13T15:29:21.753Z",
  "share": {
-  "loop": 70,
-  "outside": 828,
-  "bot": 105,
-  "of": 898,
-  "share": 7.8
+  "loop": 53,
+  "outside": 517,
+  "bot": 108,
+  "of": 570,
+  "share": 9.3
  },
  "pick": {
   "kind": "exam",
-  "id": "podcasts",
-  "why": "lowest exam domain podcasts at 92.9"
+  "id": "timers",
+  "why": "lowest exam domain timers at 76.7"
  }
 }
