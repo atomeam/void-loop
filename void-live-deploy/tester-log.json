@@ -11,6 +11,13 @@
  },
  "runs": [
   {
+   "at": "2026-11-13T18:02:25Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
    "at": "2026-11-13T16:20:24Z",
    "passed": 0,
    "of": 0,
@@ -193,32 +200,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T18:22:54Z",
-   "passed": 119,
-   "of": 123,
-   "kind": "grow",
-   "ms": 344,
-   "note": "new ground passed, kept as a regression case: \"handoff pack for my SaaS idea\" (skill:handoffs)",
-   "failed": [
-    {
-     "ask": "is waymo in austin",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -284,16 +265,16 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 86,
-   "passed": 2201,
-   "of": 2352,
+   "runs": 90,
+   "passed": 2290,
+   "of": 2447,
    "ms": 379
   },
   {
    "from": "2026-11-06",
-   "runs": 214,
-   "passed": 4488,
-   "of": 6171,
+   "runs": 210,
+   "passed": 4399,
+   "of": 6076,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
