@@ -26,7 +26,7 @@ export const NEXT = Object.freeze([
   { id: 'schedules', name: 'Cron Schedule Explainer', page: '/schedules/', rival: 'crontab.guru', url: 'https://crontab.guru/', kind: 'page', works: false, checked: true, features: ['cron', 'schedule'] },
   { id: 'meanings', name: 'Dictionary', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: false, checked: true, features: ['define', 'dictionary', 'meaning'] },
   { id: 'qr', name: 'QR Code Maker', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: false, checked: true, features: ['qr', 'code'], extras: ['svg download', 'wifi text', 'contact card'] },
-  { id: 'text-diff', name: 'Text Compare', page: '/text-diff/', rival: 'diffchecker.com', url: 'https://www.diffchecker.com/', kind: 'page', works: false, features: ['diff', 'compare'] },
+  { id: 'text-diff', name: 'Text Compare', page: '/text-diff/', rival: 'diffchecker.com', url: 'https://www.diffchecker.com/', kind: 'page', works: false, checked: true, features: ['diff', 'compare'], extras: ['share link', 'set case aside', 'set spaces aside'] },
   { id: 'songs', name: 'Song Player', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, late: true, features: ['song', 'play', 'audio'] },
   { id: 'clips', name: 'Video Player', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: false, late: true, features: ['video', 'play', 'trailer'] },
   { id: 'directions', name: 'Driving Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: false, late: true, features: ['directions', 'route', 'map'] },

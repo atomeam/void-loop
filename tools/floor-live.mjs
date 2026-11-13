@@ -52,6 +52,7 @@ const JOBS = {
   scores: async (page) => { await page.goto(ORIGIN + '/scores/?league=epl&tab=standings', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => { const t = (document.querySelector('#out') || {}).textContent || ''; return t.length > 40 && !/upcoming schedules for the league/.test(t); }, null, { timeout: 20000 }); },
   tracks: async (page) => { await page.goto(ORIGIN + '/track-times/', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => /43:53/.test(document.body.innerText) && /Schizoid/.test(document.body.innerText), null, { timeout: 8000 }); },
   readable: async (page) => { await page.goto(ORIGIN + '/our-motherfucking-version/', { waitUntil: 'domcontentloaded' }); await page.fill('#html', '<p>Hi</p><img alt="" src="a.png">'); await page.waitForFunction(() => /1 pictures/.test((document.querySelector('#out') || {}).textContent || ''), null, { timeout: 8000 }); },
+  'text-diff': async (page) => { await page.goto(ORIGIN + '/text-diff/', { waitUntil: 'domcontentloaded' }); await page.fill('#original', 'one\ntwo'); await page.fill('#changed', 'one\nthree'); await page.waitForFunction(() => /1 line removed, 1 line added/.test((document.querySelector('#say') || {}).textContent || ''), null, { timeout: 8000 }); },
 };
 async function shoot(page, dir, id) {
   if (!dir) return '';

@@ -27,6 +27,7 @@
   #diff [data-t="same"] { color: var(--d-ink-3, #9a9a9a); }
   #diff [data-t="skip"] { color: var(--d-ink-3, #9a9a9a); grid-template-columns: 1fr; }
   #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+  @view-transition { navigation: none; }
 </style>
 </head>
 <body>
@@ -35,29 +36,44 @@
   <p>This page is for anyone who has two copies of a text and wants to see what was added, what was removed, and what stayed.</p>
   <p class="original">The original: <a href="https://www.diffchecker.com/" target="_blank" rel="noopener noreferrer">diffchecker.com</a></p>
   <p>Paste an original and a changed copy. Every line that was removed, added, or left as it was is marked. A space, a blank line, and a change of case all count. The work stays on this device. Up to 3000 lines on a side.</p>
-  <form>
+  <form method="get" action="/text-diff/">
     <div class="pair">
       <div>
         <label for="original">Original</label>
+        <input id="file-original" type="file" accept="text/plain,.txt,.md,.csv,.json">
         <textarea id="original" name="original" spellcheck="false">The quick brown fox
 jumps over the lazy dog</textarea>
       </div>
       <div>
         <label for="changed">Changed</label>
+        <input id="file-changed" type="file" accept="text/plain,.txt,.md,.csv,.json">
         <textarea id="changed" name="changed" spellcheck="false">The quick brown fox
 jumps over a lazy dog
 and keeps going</textarea>
       </div>
     </div>
-    <div class="row"><button type="button" id="copy">Copy the comparison</button></div>
+    <label><input id="fold-case" name="case" value="1" type="checkbox"> Set letter case aside</label>
+    <label><input id="fold-space" name="space" value="1" type="checkbox"> Set extra spaces aside</label>
+    <div class="row"><button type="submit">Compare</button><button type="button" id="copy">Copy the comparison</button></div>
   </form>
   <p id="say" aria-live="polite"></p>
   <div id="diff" aria-live="polite"></div>
   <p id="err" role="status"></p>
-  <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>.</p>
+  <p>Share this comparison: <a id="share" style="overflow-wrap:anywhere" href="/text-diff/?original=The%20quick%20brown%20fox%0Ajumps%20over%20the%20lazy%20dog&amp;changed=The%20quick%20brown%20fox%0Ajumps%20over%20a%20lazy%20dog%0Aand%20keeps%20going">/text-diff/?original=The%20quick%20brown%20fox</a></p>
+  <h2>How to use it</h2>
+  <p>The boxes open on two short lines about a fox. One line is the same. One line was removed, and two lines were added. A space and a change of case both count until you set them aside. Paste, or choose a text file for either side. Press Compare if scripts are off. The address still holds both texts.</p>
+  <h2>The name</h2>
+  <p>diffchecker.com was registered on 14 June 2010. The registry record read on 13 November 2026 lists that registration at 01:34:34 UTC, a last change on 15 May 2026, and expiration on 14 June 2027. The registrar on that record is NameCheap, Inc. The name servers are mia.ns.cloudflare.com and sergi.ns.cloudflare.com. The status is client transfer prohibited. Source: the <a href="https://rdap.verisign.com/com/v1/domain/diffchecker.com" rel="noopener noreferrer">registry RDAP record</a>. The record does not name a person.</p>
+  <h2>The first saved page</h2>
+  <p>The earliest saved copy opened for this page is the <a href="https://web.archive.org/web/20100618024338/http://diffchecker.com/" rel="noopener noreferrer">18 June 2010 capture</a>, four days after the name was registered. It says diffChecker is a free online diff tool that gives the text differences between two files. It asks you to upload or paste two files and click Find Difference. The page has File 1 and File 2, each with upload or paste.</p>
+  <h2>Who says he made it</h2>
+  <p>Ahmad Wali Sidiqi writes on his own site that he is the owner of Checker Software Inc., and that he has been founder and chief executive of Diffchecker since June 2010. He describes it as a way to compare text, documents, images, spreadsheets, and folders, online and on the desktop. Source: <a href="https://www.sidiqi.net/" rel="noopener noreferrer">sidiqi.net</a>. The registry record above does not name him. The June 2010 page does not name him either.</p>
+  <h2>What this page leaves out</h2>
+  <p>This page compares text, on this device, and does not keep a copy. It does not compare pictures, PDFs, Word files, or folders. It does not save a comparison on a server, and it does not add comments. A change inside a line is shown as the whole line. Setting case or extra spaces aside is a choice on this page. The default still counts both.</p>
+  <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">Regex Tester</a>, <a href="/base64/">Base64</a>.</p>
   <nav class="with" aria-label="Use this with"><span>Use this with</span>
-    <a data-base="/rotate-letters/" data-param="text" data-from="#changed" data-fallback="hello">ROT13 Text Scrambler</a>
-    <a data-base="/patterns/" data-param="sample" data-from="#changed" data-fallback="hello">Regex Tester</a>
+    <a href="/rotate-letters/?text=The%20quick%20brown%20fox%0Ajumps%20over%20a%20lazy%20dog%0Aand%20keeps%20going" data-base="/rotate-letters/" data-param="text" data-from="#changed" data-fallback="hello">ROT13 Text Scrambler</a>
+    <a data-base="/patterns/" data-param="sample" data-from="#changed" data-fallback="hello" href="/patterns/?sample=The%20quick%20brown%20fox%0Ajumps%20over%20a%20lazy%20dog%0Aand%20keeps%20going">Regex Tester</a>
   </nav>
 </main>
 <script type="module" src="/text-diff/app.js"></script>
