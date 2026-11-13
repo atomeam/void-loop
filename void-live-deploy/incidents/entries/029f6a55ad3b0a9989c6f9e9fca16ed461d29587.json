@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-13T00:34:53.087Z",
+ "sha": "029f6a55ad3b0a9989c6f9e9fca16ed461d29587",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43330507728",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+ ],
+ "touched": [
+  "docs/map.d/client-packs.md",
+  "domains/growth-inbox.md",
+  "tools/families.mjs",
+  "void-live-deploy/self.json",
+  "void-live-deploy/skills/deps.json",
+  "void-live-deploy/skills/families.json",
+  "void-live-deploy/skills/first.json",
+  "void-live-deploy/skills/guide.json",
+  "void-live-deploy/skills/index.json",
+  "void-live-deploy/skills/inventory.js",
+  "void-live-deploy/skills/lineage.json",
+  "void-live-deploy/skills/monitor-pack.js",
+  "void-live-deploy/skills/order/10030-reliability-pack",
+  "void-live-deploy/skills/reliability-pack.js",
+  "void-live-deploy/skills/verify-pack.js"
+ ],
+ "shards": [
+  2
+ ]
+}
