@@ -7,6 +7,7 @@
 // cross-site writes from other websites' pages (Gumroad's server-to-server ping and Verse's own tools send no Origin), no CORS,
 // nosniff and no-store by default. Owner keys are compared in constant time.
 import { OWNER_ACCOUNTS, ACCOUNT_ID_RE } from './owner-accounts.js';
+import { CHANGE_BODY } from './image-gen.js';
 
 export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
@@ -92,7 +93,7 @@ export const LIMITS = {
   arbitrage: { rpm: 30, body: 0 }, // GET only: a coin from a closed list of two in, every venue pair's net gap out (functions/api/arbitrage.js), edge-cached 20 s; a miss asks 5 fixed public hosts once each
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
   'card-art': { rpm: 30, body: 2000 }, // the Art Forge (functions/api/card-art.js): a subject word in, a cached picture out; the model runs at most 3 times a minute per connection and 30 times a day in all
-  image: { rpm: 30, body: 2000 }, // the text-to-image page (functions/api/image.js): a prompt of 400 characters in, one picture out; 6 a minute and 24 a day per hashed connection and the day's shared cap in the route itself
+  image: { rpm: 30, body: CHANGE_BODY }, // the text-to-image page (functions/api/image.js): a prompt stays small in the route; "Change it" sends the page's shrunk copy (lib/image-gen.js CHANGE_BODY). The old 2,000 byte cap answered 413 before the route saw a change. 6 a minute and 24 a day per hashed connection and the day's shared cap stay in the route
   clip: { rpm: 30, body: 4000 }, // the video page (functions/api/clip.js): GET is the on/off state (and starts the six-hourly self-check while off); POST is one short clip, 2 a minute and 3 a day per hashed connection inside the day's public dollars
   studio: { rpm: 30, body: 6000000 }, // the studio (functions/api/studio.js): GET is the scoreboard; every POST is owner-only (the bench's fixed prompts, a picture or four video frames to judge, a clip with an optional first frame of up to 4 MB) inside the bench's neuron cap and the video dollar cap
   'daily-art': { rpm: 240, body: 0 }, // the daily picture for the reports (functions/api/daily-art.js): GET (a picture, or its credit as JSON), closed lists, one painting per kind, key and day, a day's budget; photos only from three fixed APIs; the owner's refresh, diag and delete
