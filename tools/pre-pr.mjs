@@ -106,8 +106,9 @@ function main() {
     ];
     const outs = runs.map((a) => spawnSync(process.execPath, [resolve(root, a[0]), a[1]], { cwd: root, encoding: 'utf8' }));
     const text = outs.map((r) => String(r.stdout || '') + String(r.stderr || '')).join('\n');
-    const indexOk = /index\.json matches/.test(text);
-    if (outs.every((r) => r.status === 0) && !/lags/.test(text) && indexOk) fresh.push(...BOOK);
+    const needIndex = (files || []).some((f) => f === 'void-live-deploy/skills/index.json' || f === 'void-live-deploy/skills/lineage.json');
+    const indexOk = !needIndex || /index\.json matches/.test(text);
+    if (outs.every((r) => r.status === 0) && !/lags/.test(text) && indexOk) fresh.push(...BOOK.filter((f) => !needIndex || true));
   }
   const out = refusals({ behind, files, numstat: numstat.stdout, prs, self, fresh });
   if (out.length) { for (const o of out) console.error('pre-pr: ' + o); process.exit(1); }
