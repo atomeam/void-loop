@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; inset:0; }
+.note { position:absolute; width:180px; min-height:80px; background:rgba(40,40,60,0.9); border:1px solid #666; border-radius:8px; padding:8px; cursor:grab; box-shadow:0 4px 12px rgba(0,0,0,.5); resize:both; overflow:auto; }
+.note:active { cursor:grabbing; }
+#ui { position:fixed; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.7); padding:10px; border-radius:8px; }
+button { margin:2px; padding:6px 10px; background:#333; color:#fff; border:1px solid #555; border-radius:4px; cursor:pointer; }
+button:hover { background:#444; }
+#status { font-size:12px; margin-top:6px; color:#aaa; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Plain name: Hand Pose Spatial Notes · Verse lab</title>
+<meta name="description" content="Ledger ID: F-721 (frontier series)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Plain name: Hand Pose Spatial Notes · Verse lab">
+<meta property="og:description" content="Ledger ID: F-721 (frontier series)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f721-webxr-hand-decision-tree-spatial-notes/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f721-webxr-hand-decision-tree-spatial-notes/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="add">Add Note</button>
+  <button id="xr">Enter Hand XR</button>
+  <button id="seal">Seal Best Rules</button>
+  <button id="download">Download JSON</button>
+  <button id="share">Share Link</button>
+  <button id="reset">Reset</button>
+  <div id="status">Pointer mode. Drag notes. XR optional.</div>
+</div>
+<div id="notes"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Plain name: Hand Pose Spatial Notes</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
