@@ -7215,5 +7215,8 @@
   {"ask": "package the handoff for the support router", "want": "skill:full-handoff"},
   {"ask": "time saved for the invoice automation", "want": "skill:time-saved"},
   {"ask": "how much time does Verse save me on onboarding", "want": "skill:time-saved"},
-  {"ask": "client time saved: support router", "want": "skill:time-saved"}
+  {"ask": "client time saved: support router", "want": "skill:time-saved"},
+  {"ask": "reliability pack for the invoice automation", "want": "skill:reliability-pack"},
+  {"ask": "SLA pack for onboarding", "want": "skill:reliability-pack"},
+  {"ask": "uptime pack for the support router", "want": "skill:reliability-pack"}
 ]
