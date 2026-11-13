@@ -18,8 +18,8 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
-import { VOICE_AF, featsFrom, trendLine } from '../void-live-deploy/lib/show-pipe.js';
-import { writeShow, recordScore, loadScores } from './show-pipe.mjs';
+import { VOICE_PACE, featsFrom, trendLine } from '../void-live-deploy/lib/show-pipe.js';
+import { writeShow, recordScore, loadScores, shapeVoice, normalizeMix, matchLevel } from './show-pipe.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const site = resolve(root, 'void-live-deploy');
@@ -174,28 +174,65 @@ function inputs(to, n, days) {
 // every command runs with execFileSync and an argument list: nothing is read by a shell
 const ff = (...a) => execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...a]);
 const dur = (f) => +execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).toString().trim();
-function speak(ep, voices, out) {
+export function speak(ep, voices, out, opts = {}) {
   const [pcmd, ...pargs] = (process.env.PIPER || 'python3 -m piper').split(/\s+/).filter(Boolean);
   const tmp = resolve(tmpdir(), 'verse-podcast-' + process.pid); mkdirSync(tmp, { recursive: true });
   const model = { Verse: resolve(voices, 'en_US-lessac-medium.onnx'), Critic: resolve(voices, 'en_US-ryan-medium.onnx') };
-  const list = []; let t = 0;
-  ff('-f', 'lavfi', '-i', 'anullsrc=r=22050:cl=mono', '-t', '0.45', `${tmp}/gap.wav`);
+  const bedOn = opts.bed != null ? !!opts.bed : !process.env.PODCAST_NO_BED;
+  const saved = opts.lock ? ep.lines.map((l) => Number(l.t)) : null;
+  const wavs = [];
   ep.lines.forEach((l, i) => {
     const f = `${tmp}/${String(i).padStart(3, '0')}.wav`;
-    const pace = l.who === 'Critic' ? '1.18' : '1.08';
-    execFileSync(pcmd, [...pargs, '-m', model[l.who], '--length-scale', pace, '--sentence-silence', '0.12', '-f', f], { input: l.text, stdio: ['pipe', 'ignore', 'inherit'] });
-    ff('-i', f, '-af', VOICE_AF[l.who] || VOICE_AF.Verse, '-ar', '22050', '-ac', '1', `${f}.r.wav`);
-    list.push(`file '${f}.r.wav'`, `file '${tmp}/gap.wav'`);
-    l.t = Math.round(t * 10) / 10; t += dur(`${f}.r.wav`) + 0.45;
+    const pace = String(VOICE_PACE[l.who] || VOICE_PACE.Verse);
+    execFileSync(pcmd, [...pargs, '-m', model[l.who] || model.Verse, '--length-scale', pace, '--noise-scale', '0', '--noise-w-scale', '0', '--sentence-silence', '0.12', '-f', f], { input: l.text, stdio: ['pipe', 'ignore', 'inherit'] });
+    shapeVoice(f, `${f}.r.wav`, l.who, { ar: '22050' });
+    wavs.push({ file: `${f}.r.wav`, dur: dur(`${f}.r.wav`) });
   });
-  // a Loop Grid-style bed (an 8-step pentatonic pattern of soft sine notes, made here by ffmpeg, no samples, no licence) under the
-  // opening and the closing line
+  // keep each line's start when the new take still fits in its slot, so a re-read does not move the transcript
+  let locked = !!saved && saved.length === wavs.length && saved.every((n) => Number.isFinite(n));
+  const gaps = wavs.map((w, i) => {
+    if (!locked || i + 1 >= saved.length) return 0.45;
+    let room = +(saved[i + 1] - saved[i] - w.dur).toFixed(3);
+    // a line that runs slightly past its old start is eased back into the slot, so the transcript times stay put
+    if (room < 0.08) {
+      const slot = saved[i + 1] - saved[i] - 0.1;
+      const tempo = slot > 0.3 ? +(w.dur / slot).toFixed(3) : 9;
+      if (tempo > 1 && tempo <= 1.06) {
+        const fitted = w.file + '.fit.wav';
+        ff('-i', w.file, '-af', `atempo=${tempo}`, '-ar', '22050', '-ac', '1', fitted);
+        w.file = fitted;
+        w.dur = dur(fitted);
+        matchLevel(w.file, { ar: '22050' });
+        w.dur = dur(w.file);
+        room = +(saved[i + 1] - saved[i] - w.dur).toFixed(3);
+      }
+    }
+    if (room < 0.08) locked = false;
+    return room;
+  });
+  if (!locked) gaps.fill(0.45);
+  const list = [];
+  let t = 0;
+  // a Loop Grid-style bed (an 8-step pentatonic pattern of soft sine notes, made here by ffmpeg, no samples, no licence)
+  // before the first line and after the last
   const bed = (secs, name) => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 293.66, 392]; const step = 0.3, bar = notes.length * step;
     const expr = notes.map((f, i) => `(between(mod(t,${bar}),${i * step},${(i + 1) * step})*sin(2*PI*${f}*t)*exp(-6*(mod(t,${bar})-${i * step})))`).join('+');
-    ff('-f', 'lavfi', '-i', `aevalsrc='0.18*(${expr})':s=22050:d=${secs}`, '-af', `afade=t=in:d=0.6,afade=t=out:st=${secs - 1.2}:d=1.2`, '-ac', '1', `${tmp}/${name}.wav`); return `${tmp}/${name}.wav`; };
-  if (!process.env.PODCAST_NO_BED) { const a = bed(3.6, 'bed-in'), b = bed(4.2, 'bed-out'); list.unshift(`file '${a}'`); list.push(`file '${b}'`); ep.lines.forEach((l) => { l.t = Math.round((l.t + 3.6) * 10) / 10; }); }
+    ff('-f', 'lavfi', '-i', `aevalsrc='0.18*(${expr})':s=22050:d=${secs}`, '-af', `afade=t=in:d=0.6,afade=t=out:st=${Math.max(0, secs - 1.2)}:d=1.2`, '-ac', '1', `${tmp}/${name}.wav`); return `${tmp}/${name}.wav`; };
+  const open = locked && saved[0] > 0.2 ? saved[0] : 3.6;
+  if (bedOn) { list.push(`file '${bed(locked ? open : 3.6, 'bed-in')}'`); t = locked ? open : 3.6; }
+  else if (locked && saved[0] > 0.05) { ff('-f', 'lavfi', '-i', 'anullsrc=r=22050:cl=mono', '-t', saved[0].toFixed(3), `${tmp}/lead.wav`); list.push(`file '${tmp}/lead.wav'`); t = saved[0]; }
+  wavs.forEach((w, i) => {
+    const g = `${tmp}/gap-${i}.wav`;
+    ff('-f', 'lavfi', '-i', 'anullsrc=r=22050:cl=mono', '-t', Math.max(0.08, gaps[i]).toFixed(3), g);
+    list.push(`file '${w.file}'`, `file '${g}'`);
+    ep.lines[i].t = locked ? saved[i] : Math.round(t * 10) / 10;
+    t += w.dur + Math.max(0.08, gaps[i]);
+  });
+  if (bedOn) { list.push(`file '${bed(4.2, 'bed-out')}'`); t += 4.2; }
   writeFileSync(`${tmp}/list.txt`, list.join('\n'));
-  ff('-f', 'concat', '-safe', '0', '-i', `${tmp}/list.txt`, '-ac', '1', '-ar', '22050', '-b:a', '48k', '-id3v2_version', '3', '-metadata', `title=${SHOW.title} ${ep.n}`, '-metadata', `artist=${SHOW.author}`, out);
+  const wav = `${tmp}/mix.wav`;
+  ff('-f', 'concat', '-safe', '0', '-i', `${tmp}/list.txt`, '-ac', '1', '-ar', '22050', wav);
+  normalizeMix(wav, out, ['-ac', '1', '-ar', '22050', '-b:a', '48k', '-id3v2_version', '3', '-metadata', `title=${SHOW.title} ${ep.n}`, '-metadata', `artist=${SHOW.author}`]);
   const seconds = dur(out);
   rmSync(tmp, { recursive: true, force: true });
   return seconds;
@@ -238,9 +275,20 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       recordScore('episode', ep.title, ep.scores, fact);
       console.log(`episode ${n}: ${file}, ${Math.round(seconds)} s, ${bytes} bytes`);
       console.log(JSON.stringify(ep.scores));
+    } else if (process.argv.includes('--reread')) {
+      const voices = arg('--voices'); if (!voices) { console.error('--voices <dir with the two .onnx voices>'); process.exit(2); }
+      for (const ep of data.episodes) {
+        const file = resolve(DIR, ep.file);
+        const seconds = speak(ep, voices, file, { bed: !!(ep.lines[0] && ep.lines[0].t >= 1), lock: true });
+        ep.bytes = statSync(file).size;
+        ep.seconds = Math.round(seconds);
+        console.log(`reread ${ep.n}: ${ep.file}, ${ep.seconds} s, ${ep.bytes} bytes`);
+      }
+      writeFileSync(resolve(DIR, 'episodes.json'), JSON.stringify(data, null, 1) + '\n');
+      writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes));
     } else if (process.argv.includes('--rss')) {
       writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes)); console.log('rss.xml: ' + data.episodes.length + ' episodes');
-    } else console.log('node tools/podcast.mjs --script | --make --voices <dir> | --rss');
+    } else console.log('node tools/podcast.mjs --script | --make --voices <dir> | --reread --voices <dir> | --rss');
   };
   go().catch((e) => { console.error(String(e && e.message || e).slice(0, 300)); process.exit(1); });
 }

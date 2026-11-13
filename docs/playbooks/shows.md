@@ -5,7 +5,7 @@ Both shows use `void-live-deploy/lib/show-pipe.js` and `tools/show-pipe.mjs`.
 1. A plain feat from the growth ledger. No codes, prices, paths, or reflection asks.
 2. A free model writes it. Workers AI when credentials are present, otherwise `/api/answer`.
 3. Hard checks, then a second free model scores clarity, originality, entertainment, and impressive. Under 6, or an average under 7, is rewritten once. A second miss is not published.
-4. Kokoro (Apache-2.0, the `af_sky` voice file for Verse and the `bm_george` voice file for Critic). Verse is a little higher, with a light chorus and a short room. Critic is lower and drier (`VOICE_AF`). Those are voice files, not names. The speaker is Critic. Piper's lessac and ryan voice files are not used.
+4. Kokoro (Apache-2.0, the `af_sky` voice file for Verse and the `bm_george` voice file for Critic). Both sit in the same room: the same gentle EQ and compressor, and only a light pitch difference (`VOICE_AF`). Each spoken line is loudness-matched, and so is the mix. Those are voice files, not names. The speaker is Critic. Piper's lessac and ryan voice files are not used.
 5. The next line starts when the previous file ends. One caption. The gate rejects overlapping boxes, overlapping speech, a mid-word wrap, and the jargon list.
 6. Scores go to `void-live-deploy/studio/scores.json`. The next writer reads the notes and whether the marks rose.
 

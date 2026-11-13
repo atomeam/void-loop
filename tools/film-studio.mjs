@@ -23,7 +23,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { W, H, SAFE, gate } from './video-gate.mjs';
 import { wrap, padExpr, BED_LUFS } from './shorts.mjs';
-import { CTA as SHOW_CTA, CTA_SAY, VOICE_AF } from '../void-live-deploy/lib/show-pipe.js';
+import { CTA as SHOW_CTA, CTA_SAY, VOICE_PACE } from '../void-live-deploy/lib/show-pipe.js';
+import { shapeVoice } from './show-pipe.mjs';
 
 export const SITE = 'https://a-to-mind.com/';
 export const FPS = 25, CSS_W = 432, CSS_H = 768, SCALE = W / CSS_W;
@@ -226,14 +227,15 @@ function say(text, file, who = 'Verse') {
   let raw = null;
   if (voice && fs.existsSync(voice)) {
     const [cmd, ...args] = (process.env.PIPER || 'python3 -m piper').split(/\s+/).filter(Boolean);
-    const r = run(cmd, [...args, '-m', voice, '--length-scale', who === 'Critic' ? '1.12' : '1.05', '-f', file], { input: text });
+    const r = run(cmd, [...args, '-m', voice, '--length-scale', String(VOICE_PACE[who] || VOICE_PACE.Verse), '-f', file], { input: text });
     if (r.status === 0 && fs.existsSync(file)) raw = file;
   }
-  if (!raw && run('which', ['espeak-ng']).status === 0 && run('espeak-ng', ['-v', who === 'Critic' ? 'en-us+m1' : 'en-us+f3', '-s', who === 'Critic' ? '140' : '165', '-w', file, text]).status === 0) raw = file;
+  if (!raw && run('which', ['espeak-ng']).status === 0 && run('espeak-ng', ['-v', who === 'Critic' ? 'en-us+m1' : 'en-us+f3', '-s', '160', '-w', file, text]).status === 0) raw = file;
   if (!raw) return null;
   const filtered = file.replace(/\.wav$/, '.fx.wav');
-  const fx = run('ffmpeg', ['-y', '-loglevel', 'error', '-i', raw, '-af', VOICE_AF[who] || VOICE_AF.Verse, filtered]);
-  return fx.status === 0 && fs.existsSync(filtered) ? filtered : raw;
+  try { shapeVoice(raw, filtered, who, { ar: '24000' }); }
+  catch (_) { return raw; }
+  return fs.existsSync(filtered) ? filtered : raw;
 }
 // the beat for the lyric video: an 8-step pentatonic pluck, 0.15 s a step (a bar of 1.2 s), and a soft kick on every other step
 const beatExpr = () => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 293.66, 392], step = 0.15, bar = notes.length * step;
