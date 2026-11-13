@@ -1,4 +1,4 @@
-import { cleanWord, sensesFrom } from '/lib/meanings.js';
+import { cleanWord } from '/lib/meanings.js';
 
 const input = document.querySelector('#word');
 const out = document.querySelector('#out');
@@ -52,11 +52,11 @@ async function look(word) {
   if (!word) return;
   err.textContent = 'Looking…';
   try {
-    const r = await fetch('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(word.replace(/ /g, '_')) + '?redirect=true', { signal: AbortSignal.timeout(8000) });
-    if (r.status === 404) { err.textContent = ''; draw(word, []); return; }
-    if (!r.ok) throw new Error('status');
+    const r = await fetch('/api/meanings?word=' + encodeURIComponent(word), { signal: AbortSignal.timeout(8000) });
+    const data = await r.json().catch(() => null);
+    if (!r.ok || !data || data.error) throw new Error('status');
     err.textContent = '';
-    draw(word, sensesFrom(await r.json()));
+    draw(word, data.senses || []);
   } catch (_) {
     err.textContent = 'The dictionary did not answer just now. Try again in a moment.';
   }

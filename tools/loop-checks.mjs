@@ -17,6 +17,7 @@ export const ALWAYS = [
   { file: 'merge-gate.yml', args: (pr) => ['-f', `pr=${pr}`] },
   { file: 'deploy.yml', args: (pr) => ['-f', `pr=${pr}`] },
   { file: 'collide.yml', args: (pr) => ['-f', `pr=${pr}`] },
+  { file: 'floor-live.yml', args: (pr) => ['-f', `pr=${pr}`] },
   { file: 'automerge.yml', args: (pr) => ['-f', `pr=${pr}`] },
 ];
 

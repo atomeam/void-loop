@@ -1,5 +1,6 @@
-// Fills /meanings/?word= from the public dictionary so the page answers with scripts off.
-import { cleanWord, sensesFrom } from '../../lib/meanings.js';
+// Fills /meanings/?word= from /api/meanings so the page answers with scripts off.
+import { cleanWord } from '../../lib/meanings.js';
+import { answer } from '../api/meanings.js';
 
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -17,14 +18,17 @@ export async function onRequestGet(context) {
   const asset = await context.next();
   let html = await asset.text();
   html = html.replace(/(id="word"[^>]*\bvalue=")[^"]*/, '$1' + esc(word));
-  let senses = [];
+  const api = new URL('/api/meanings', url);
+  api.searchParams.set('word', word);
   let note = '';
+  let filled = '';
   try {
-    const r = await fetch('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(word.replace(/ /g, '_')) + '?redirect=true', { signal: AbortSignal.timeout(8000) });
-    if (r.ok) senses = sensesFrom(await r.json());
-    else if (r.status !== 404) note = 'The dictionary did not answer just now. Try again in a moment.';
+    const res = await answer(new Request(api, { headers: context.request.headers }), context.env);
+    const data = await res.json();
+    if (!res.ok || data.error) note = data.error || 'The dictionary did not answer just now. Try again in a moment.';
+    else filled = block(data.word || word, data.senses || []);
   } catch (_) { note = 'The dictionary did not answer just now. Try again in a moment.'; }
-  html = html.replace('<div id="out" aria-live="polite"></div>', '<div id="out" aria-live="polite">' + (note ? '' : block(word, senses)) + '</div>');
+  html = html.replace('<div id="out" aria-live="polite"></div>', '<div id="out" aria-live="polite">' + (note ? '' : filled) + '</div>');
   if (note) html = html.replace('<p id="err" role="status"></p>', '<p id="err" role="status">' + esc(note) + '</p>');
   return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }

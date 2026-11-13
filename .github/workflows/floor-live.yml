@@ -1,0 +1,24 @@
+name: floor-live
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr: { description: pull request number, required: false, type: string }
+concurrency:
+  group: floor-live-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions: { contents: read }
+jobs:
+  floor-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund && npx playwright-core install --with-deps chromium && echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - run: node tools/floor-live.mjs
+        env: { VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} }

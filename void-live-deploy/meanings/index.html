@@ -4,22 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Word meanings · Verse</title>
-<meta name="description" content="Look up what a word means. Senses, the part of speech, and one example when the dictionary has one. A word that is not there is said so.">
+<title>Dictionary · Verse</title>
+<meta name="description" content="A dictionary for anyone who wants a plain definition of a word, with the part of speech and an example when one exists.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/meanings/">
-<meta property="og:title" content="Word meanings · Verse">
-<meta property="og:description" content="Look up what a word means. A word that is not there is said so.">
+<meta property="og:title" content="Dictionary · Verse">
+<meta property="og:description" content="A dictionary for anyone who wants a plain definition of a word, with the part of speech and an example when one exists.">
 <meta property="og:url" content="https://a-to-mind.com/meanings/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="verse-handoff" content="in: text; out: text">
 </head>
 <body>
 <main>
-  <h1>Word meanings</h1>
+  <h1>Dictionary</h1>
+  <p>This dictionary is for anyone who wants a plain definition of a word, with the part of speech and an example when one exists.</p>
   <p class="original">The original: <a href="https://en.wiktionary.org/" target="_blank" rel="noopener noreferrer">wiktionary.org</a></p>
-  <p>Type a word. The page lists the senses, the part of speech, and one example when there is one. A word that is not in the dictionary is said so, instead of a guess.</p>
   <form method="get" action="/meanings/">
     <label for="word">Word</label>
     <input id="word" name="word" type="search" value="" spellcheck="true" autocomplete="off" enterkeyhint="search">
@@ -28,7 +28,9 @@
   <div id="out" aria-live="polite"></div>
   <p id="err" role="status"></p>
   <p class="src" id="src"></p>
-  <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>.</p>
+  <h2>How to look a word up</h2>
+  <p>Type one word, or a phrase of two or three words, and press Look up. Each sense shows the part of speech, up to three definitions, and one short example when the dictionary has one. If the word is not there, the page says so instead of guessing. The link under the result opens that same entry on the original site.</p>
+  <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">Regex Tester</a>, <a href="/base64/">Base64</a>.</p>
 </main>
 <script type="module" src="/meanings/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
