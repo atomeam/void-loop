@@ -3,7 +3,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&':
 const clock = (sec) => { const s = Math.max(0, Math.round(sec)), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60; const mm = String(m).padStart(h ? 2 : 1, '0'), ss = String(r).padStart(2, '0'); return h ? h + ':' + String(m).padStart(2, '0') + ':' + ss : mm + ':' + ss; };
 const secs = (t) => { const p = String(t || '').split(':').map((n) => Number(n)); if (p.some((n) => !Number.isFinite(n) || n < 0) || p.length < 2 || p.length > 3) return null; return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p[0] * 60 + p[1]; };
 
-/** letters move by `places` (1 through 25). Anything else stays. 13 undoes 13. */
+/** letters move by `places`. 0 and 26 leave letters where they are. Anything that is not a letter stays. 13 undoes 13. */
 export function rotateLetters(text, places) {
   let n = Math.trunc(Number(places));
   if (!Number.isFinite(n)) n = 13;
@@ -11,6 +11,36 @@ export function rotateLetters(text, places) {
   return String(text || '').replace(/[A-Za-z]/g, (ch) => {
     const base = ch <= 'Z' ? 65 : 97;
     return String.fromCharCode(base + ((ch.charCodeAt(0) - base + n) % 26));
+  });
+}
+
+/** the menu on the page: 1 through 25. A missing amount, 0, or anything past 25 becomes 13 or 25. */
+export function shiftPlaces(places) {
+  let n = Math.trunc(Number(places));
+  if (!Number.isFinite(n) || n === 0) return 13;
+  if (n < 1) return 13;
+  if (n > 25) return 25;
+  return n;
+}
+
+/** the shift that reads a result back. 13 stays 13. 5 becomes 21. */
+export function reverseShift(places) {
+  return 26 - shiftPlaces(places);
+}
+
+function selectShift(html, shift) {
+  return String(html).replace(/<select\b[^>]*\bid="shift"[\s\S]*?<\/select>/i, (block) => {
+    const cleared = block.replace(/\sselected(?:="selected"|='selected')?/gi, '');
+    return cleared.replace(new RegExp('(<option\\b[^>]*\\bvalue="' + shift + '")', 'i'), '$1 selected');
+  });
+}
+
+function handoffHref(html, base, param, value) {
+  const href = base + '?' + param + '=' + encodeURIComponent(value);
+  const needle = base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return String(html).replace(new RegExp('<a\\b[^>]*\\bdata-base="' + needle + '"[^>]*>', 'i'), (tag) => {
+    if (/\bhref="/.test(tag)) return tag.replace(/\bhref="[^"]*"/, 'href="' + href + '"');
+    return tag.replace('<a', '<a href="' + href + '"');
   });
 }
 
@@ -57,10 +87,17 @@ export async function fillVersus(context, kind) {
   let html = await asset.text();
   if (kind === 'rotate') {
     const text = url.searchParams.get('text') || '';
-    const shift = String(Math.min(25, Math.max(1, Math.trunc(Number(url.searchParams.get('shift')) || 13))));
+    const shift = shiftPlaces(url.searchParams.get('shift'));
+    const result = rotateLetters(text, shift);
+    const alphabet = rotateLetters('ABCDEFGHIJKLMNOPQRSTUVWXYZ', shift);
+    const word = (result.match(/[A-Za-z]+/) || [])[0] || '';
     html = putText(html, 'text', text);
-    html = html.replace(/(id="shift"[^>]*\bvalue=")[^"]*/, '$1' + shift);
-    html = putText(html, 'out', rotateLetters(text, shift));
+    html = selectShift(html, String(shift));
+    html = putText(html, 'out', result);
+    html = putText(html, 'map', 'A goes to ' + alphabet[0] + ', and Z goes to ' + alphabet[25] + '.');
+    if (word) html = putText(html, 'wordbit', word);
+    if (result.trim()) html = handoffHref(html, '/text-diff/', 'changed', result);
+    if (word) html = handoffHref(html, '/meanings/', 'word', word);
   } else if (kind === 'tracks') {
     const list = url.searchParams.get('list') || '';
     const p = parseTracks(list);
@@ -73,8 +110,13 @@ export async function fillVersus(context, kind) {
   } else {
     const raw = url.searchParams.get('html') || '';
     const w = weigh(raw);
+    const line = raw ? w.bytes + ' bytes · ' + w.images + ' pictures · ' + w.fonts + ' font requests · ' + w.scripts + ' scripts' : '';
     html = putText(html, 'html', raw);
-    html = putText(html, 'out', raw ? w.bytes + ' bytes · ' + w.images + ' pictures · ' + w.fonts + ' font requests · ' + w.scripts + ' scripts' : '');
+    html = putText(html, 'out', line);
+    if (line) {
+      const href = '/text-diff/?changed=' + encodeURIComponent(line);
+      html = html.replace(/<a\b[^>]*\bdata-base="\/text-diff\/"[^>]*>/i, (tag) => tag.replace(/\bhref="[^"]*"/, 'href="' + href + '"'));
+    }
   }
   return new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }

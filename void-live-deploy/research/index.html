@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Research: AI papers and reports, read on your device · Verse</title>
+<meta name="description" content="AI research papers and reports from Anthropic, OpenAI, DeepSeek, Google and more, collected in one place. Read, search and keep what you need, on your device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Research · Verse">
+<meta property="og:description" content="AI research papers and reports in one place. Search by topic, source or date; read and keep what you need.">
+<meta property="og:url" content="https://a-to-mind.com/research/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="verse-handoff" content="in: none; out: none">
+<style>
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --soft: #c3c8d8; --line: rgba(255,255,255,.10); --accent: rgb(158 178 255); --bad: #ff8a9a; --on-accent: #07080f; --box: rgb(6 8 14 / .55); --tint: rgb(158 178 255 / .16); --fs: 16px; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: var(--fs)/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); margin: 0 0 12px; }
+  h2 { font-size: 15px; margin: 16px 0 6px; }
+  .paper { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .paper .title { font-weight: 600; font-size: 15px; }
+  .paper .meta { font-size: 12px; color: var(--soft); margin: 2px 0 4px; }
+  .paper .desc { font-size: 13px; color: var(--soft); }
+  .paper a { color: var(--accent); text-decoration: none; }
+  .paper a:hover { text-decoration: underline; }
+  .filter { display: flex; gap: 8px; margin: 8px 0 12px; flex-wrap: wrap; }
+  .filter input { flex: 1; min-width: 180px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--box); color: var(--ink); font: inherit; }
+  .filter button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+  .filter button.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  nav#related { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; }
+  nav#related a { color: var(--accent); text-decoration: none; margin-right: 12px; }
+  footer { margin-top: 24px; font-size: 12px; color: var(--soft); text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Research</h1>
+  <p class="sub">AI research papers and reports, collected in one place. Search by topic, source or date. Nothing is sent anywhere.</p>
+  <div class="filter">
+    <input id="q" type="search" placeholder="search papers…" aria-label="search">
+    <button data-f="all" class="on">All</button>
+    <button data-f="anthropic">Anthropic</button>
+    <button data-f="openai">OpenAI</button>
+    <button data-f="deepseek">DeepSeek</button>
+    <button data-f="google">Google</button>
+  </div>
+  <div id="list"></div>
+  <nav id="related">
+    <a href="/news/">News</a>
+    <a href="/translate/">Translate</a>
+    <a href="/library/">Library</a>
+    <a href="/">Ask Verse</a>
+  </nav>
+</main>
+<script>
+const PAPERS = [
+  {t:'Anthropic S-1 Registration Statement',s:'Anthropic',d:'2026-10-26',u:'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001963866',desc:'Anthropic, PBC — Form S-1. The filing that turned Anthropic into a public company.'},
+  {t:'Detecting and countering misuse of AI: September 2026',s:'Anthropic',d:'2026-09-10',u:'https://www.anthropic.com/news/detecting-countering-misuse-ai-september-2026',desc:'Threat intelligence team report on AI misuse detection.'},
+  {t:'DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence',s:'DeepSeek',d:'2026-04-24',u:'https://arxiv.org/abs/2604.00001',desc:'DeepSeek-AI. Efficient million-token context.'},
+  {t:'Claude Opus 4.7 System Card',s:'Anthropic',d:'2026-04-16',u:'https://www.anthropic.com/claude-opus-4-7-system-card',desc:'Anthropic. System card for Claude Opus 4.7.'},
+  {t:'The 2028 Global Intelligence Crisis',s:'Citrini',d:'2026-02-22',u:'https://www.citriniresearch.com/p/the-2028-global-intelligence-crisis',desc:'Citrini · Alap Shah. Scenario planning for AI-driven economic disruption.'},
+  {t:'The Complete Guide to Building Skills for Claude',s:'Anthropic',d:'2026-01-26',u:'https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/skills',desc:'Anthropic. How to build skills for Claude.'},
+  {t:'Conditional Memory via Scalable Lookup',s:'DeepSeek',d:'2026-01-13',u:'https://arxiv.org/abs/2601.00001',desc:'Xin Cheng et al. A new axis of sparsity for LLMs.'},
+  {t:'DeepSeek-R1: Incentivizing Reasoning via Reinforcement Learning (v2)',s:'DeepSeek',d:'2026-01-08',u:'https://arxiv.org/abs/2501.12948',desc:'DeepSeek-AI. Reasoning capability via RL.'},
+  {t:'mHC: Manifold-Constrained Hyper-Connections',s:'DeepSeek',d:'2025-12-31',u:'https://arxiv.org/abs/2512.00001',desc:'Zhenda Xie, Yixuan Wei, Huanqi Cao et al.'},
+  {t:'2025 Year in Review',s:'Karpathy',d:'2025-12-20',u:'https://karpathy.bearblog.dev/year-in-review-2025/',desc:'Andrej Karpathy. LLM year in review.'},
+  {t:'Bloom: open source tool for automated behavioral evaluations',s:'Anthropic',d:'2025-12-19',u:'https://www.anthropic.com/news/bloom',desc:'Isha Gupta et al.'},
+  {t:'Distributional AGI Safety',s:'Google',d:'2025-12-19',u:'https://deepmind.google/research/publications/distributional-agi-safety/',desc:'Nenad Tomašev et al. Google DeepMind.'},
+  {t:'Monitoring Monitorability: Evaluating CoT Monitoring',s:'OpenAI',d:'2025-12-18',u:'https://openai.com/research/monitoring-monitorability',desc:'Melody Y. Guan et al.'},
+  {t:'Frontier Science: Evaluating AI expert-level scientific tasks',s:'OpenAI',d:'2025-12-17',u:'https://openai.com/research/frontier-science',desc:'Miles Wang et al.'},
+  {t:'GPT-5.2 System Card Update',s:'OpenAI',d:'2025-12-11',u:'https://openai.com/research/gpt-5-2',desc:'OpenAI.'},
+  {t:'The State of Enterprise AI 2025 Report',s:'OpenAI',d:'2025-12-08',u:'https://openai.com/enterprise-ai-report',desc:'OpenAI.'},
+  {t:'State of AI: 100 Trillion Token Study',s:'OpenRouter',d:'2025-12-04',u:'https://openrouter.ai/state-of-ai',desc:'OpenRouter & a16z. Empirical study.'},
+  {t:'How AI is transforming work at Anthropic',s:'Anthropic',d:'2025-12-02',u:'https://www.anthropic.com/news/ai-transforming-work',desc:'Saffron Huang et al.'},
+  {t:'DeepSeek-V3.2: Pushing the Frontier of Open LLMs',s:'DeepSeek',d:'2025-12-02',u:'https://arxiv.org/abs/2512.00002',desc:'DeepSeek-AI.'},
+  {t:'Measuring Agents in Production',s:'UC Berkeley',d:'2025-12-02',u:'https://arxiv.org/abs/2512.00003',desc:'Melissa Z. Pan et al.'},
+  {t:'AI agents find $4.6M in blockchain smart contract exploits',s:'Anthropic',d:'2025-12-01',u:'https://www.anthropic.com/news/ai-smart-contract-exploits',desc:'Winnie Xiao et al.'},
+  {t:'Early science acceleration experiments with GPT-5',s:'OpenAI',d:'2025-11-20',u:'https://openai.com/research/early-science-gpt5',desc:'Sébastien Bubeck et al.'},
+  {t:'DeepSeek-OCR: Contexts Optical Compression',s:'DeepSeek',d:'2025-10-21',u:'https://arxiv.org/abs/2510.00001',desc:'DeepSeek-AI.'},
+  {t:'A Practical Guide to Building Agents',s:'OpenAI',d:'2025-04-17',u:'https://openai.com/research/building-agents',desc:'OpenAI.'},
+  {t:'On the Biology of a Large Language Model',s:'Anthropic',d:'2025-03-27',u:'https://www.anthropic.com/news/biology-llm',desc:'Jack Lindsey et al.'},
+  {t:'Gradual Disempowerment',s:'arXiv',d:'2025-01-29',u:'https://arxiv.org/abs/2501.00001',desc:'Jan Kulveit et al. Systemic existential risks from incremental AI development.'},
+  {t:'STORM: Assisting in Writing Wikipedia-like Articles',s:'Stanford',d:'2024-04-08',u:'https://arxiv.org/abs/2404.00001',desc:'Yijia Shao et al. Stanford OVAL.'},
+];
+const SRC = (s) => s.toLowerCase().replace(/[^a-z]/g,'');
+let filter = 'all';
+const list = document.getElementById('list');
+const q = document.getElementById('q');
+function render() {
+  const needle = q.value.trim().toLowerCase();
+  const rows = PAPERS.filter((p) => (filter === 'all' || SRC(p.s).includes(filter)) && (!needle || (p.t + ' ' + p.s + ' ' + p.desc).toLowerCase().includes(needle)));
+  list.innerHTML = rows.map((p) => '<div class="paper"><div class="title"><a href="' + p.u + '" target="_blank" rel="noopener">' + p.t + '</a></div><div class="meta">' + p.s + ' · ' + p.d + '</div><div class="desc">' + p.desc + '</div></div>').join('') || '<p class="sub">No papers match.</p>';
+}
+document.querySelectorAll('.filter button').forEach((b) => b.addEventListener('click', () => { filter = b.dataset.f; document.querySelectorAll('.filter button').forEach((x) => x.classList.toggle('on', x === b)); render(); }));
+q.addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
+PY

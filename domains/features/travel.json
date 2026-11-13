@@ -2101,6 +2101,27 @@
     "host": "flightconnections.com",
     "at": "2026-11-09",
     "id": "mw9mkoak"
+   },
+   {
+    "target": "feature:flightconnections-co-16bb714c",
+    "feature": "API path /oauth",
+    "host": "flightconnections.com",
+    "at": "2026-11-13",
+    "id": "mwffyap8"
+   },
+   {
+    "target": "feature:flightconnections-co-8e95a3b2",
+    "feature": "API path /v2/abr",
+    "host": "flightconnections.com",
+    "at": "2026-11-13",
+    "id": "mwffybp1"
+   },
+   {
+    "target": "feature:flightconnections-co-a2eec86b",
+    "feature": "Full screen mode",
+    "host": "flightconnections.com",
+    "at": "2026-11-13",
+    "id": "mwffycn6"
    }
   ]
  },

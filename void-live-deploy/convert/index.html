@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Unit converter: every unit at once, exact · Verse</title>
+<title>Unit Converter · Verse</title>
 <meta name="description" content="Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology. Type a value in any unit and every other unit of its kind updates at once, both ways, from exact definitions (an inch is 0.0254 m exactly), with the formula and your choice of precision. Type 100 c to f. Works offline. No ads.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Unit converter · Verse">
+<meta property="og:title" content="Unit Converter · Verse">
 <meta property="og:description" content="52 kinds of unit (495 units), every unit of a kind at once, both ways, exact, with the formula. Type 100 c to f. Share a conversion as a link.">
 <meta property="og:url" content="https://a-to-mind.com/convert/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -55,7 +55,8 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
 </head>
 <body>
 <main>
-  <h1>Unit converter</h1>
+  <h1>Unit Converter</h1>
+  <p>This page is for anyone who wants to turn a measurement in one unit into another, and see the same value in the rest of that family.</p>
   <p class="original">The original: <a href="https://convertlive.com/" target="_blank" rel="noopener noreferrer">convertlive.com</a></p>
   <label for="ask" class="note" style="display:block;text-align:left">Type a conversion from any unit to any other, or a value in any unit below</label>
   <input type="text" id="ask" value="1 m" spellcheck="false" autocomplete="off" placeholder="100 c to f, 5 km in miles, how many feet in a mile">
@@ -75,6 +76,10 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
 <!-- /asks -->
 <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/base64/bases/">Base converter</a> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/calculator/">Calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Works offline after one visit; nothing you type leaves this device. <a href="/">Ask Verse anything</a></footer>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#ask" data-fallback="1 m">Text Compare</a>
+    <a data-base="/schedules/" data-param="line" data-fallback="0 9 * * 1-5">Cron Schedule Explainer</a>
+  </nav>
 </main>
 <script type="module">
   // the default converter above is in the HTML, so the first paint is the finished page; the code comes in after the load event and redraws the
@@ -151,5 +156,6 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

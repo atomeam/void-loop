@@ -59,5 +59,5 @@ document.querySelector('#copy').addEventListener('click', () => {
 
 const q = new URLSearchParams(location.search);
 if (q.has('original')) original.value = q.get('original');
-if (q.has('changed')) changed.value = q.get('changed');
+if (q.has('changed') || q.has('text') || q.has('q')) changed.value = q.get('changed') || q.get('text') || q.get('q');
 if (!diff.querySelector('[data-t]')) show();

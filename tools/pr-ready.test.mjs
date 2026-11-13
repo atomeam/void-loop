@@ -4,7 +4,7 @@ let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
 const SHA = 'abc1234def', T0 = Date.parse('2026-10-09T12:00:00Z');
 const run = (name, conclusion = 'success', status = 'completed', id = 1) => ({ id, name, status, conclusion, completed_at: '2026-10-09T12:00:00Z', html_url: 'https://x/' + name });
-const FULL = ['void-review', 'merge-gate', 'test-and-deploy', 'collide'].map((name, i) => run(name, 'success', 'completed', i + 1));
+const FULL = ['void-review', 'merge-gate', 'test-and-deploy', 'collide', 'floor-live'].map((name, i) => run(name, 'success', 'completed', i + 1));
 function fake({ checks = FULL, comments = [], reviews = [], threads = [], pr = {} } = {}) {
   return (path) => {
     if (/\/pulls\/\d+$/.test(path)) return { state: 'open', merged: false, draft: false, head: { sha: SHA }, ...pr };
@@ -37,7 +37,7 @@ ok(R({ checks: [run('test-and-deploy', 'failure'), run('void-review')] }).state 
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', 'failure')] }).state === 'stop', 'bench failed: stop');
 ok(R({ checks: [run('test-and-deploy')] }).state === 'wait', 'test-and-deploy alone is not the expected set');
 ok(R({ checks: [run('test-and-deploy', null, 'in_progress')] }).state === 'wait', 'no void-review check and the suite still running: wait');
-ok(R({ checks: [run('test-and-deploy', 'failure', 'completed', 1), run('test-and-deploy', 'success', 'completed', 2), run('void-review'), run('merge-gate'), run('collide')] }).state === 'merge', 'the newest run counts');
+ok(R({ checks: [run('test-and-deploy', 'failure', 'completed', 1), run('test-and-deploy', 'success', 'completed', 2), run('void-review'), run('merge-gate'), run('collide'), run('floor-live')] }).state === 'merge', 'the newest run counts');
 // CodeRabbit
 // CodeRabbit is never waited on: still reviewing, asked and not posted, or rate-limited all merge on green
 ok(R({ comments: [{ user: { login: CR }, body: 'review in progress by coderabbit.ai' }] }).state === 'merge', 'CodeRabbit still reviewing: merge, no wait');

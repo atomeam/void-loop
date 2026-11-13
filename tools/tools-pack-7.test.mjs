@@ -114,6 +114,8 @@ test('cron explain and next runs', () => {
   assert.equal(say('0 9 * * 1-5'), 'At 09:00 on Monday through Friday.');
   assert.equal(say('30 2 1 * *'), 'At 02:30 on day-of-month 1.');
   assert.equal(say('@daily'), 'At 00:00 every day.');
+  assert.equal(say('@reboot'), 'When the computer starts.');
+  assert.equal(D.nextRuns('@reboot', new Date(2026, 0, 1)).length, 0);
   assert.equal(say('0 0 1 jan *'), 'At 00:00 on day-of-month 1 in January.');
   assert.match(say('15,45 8-17 * * mon-fri'), /minutes 15 and 45 past every hour from 8 through 17 on Monday through Friday/);
   assert.match(say('0 9 15 * 1'), /either the date or the weekday/);

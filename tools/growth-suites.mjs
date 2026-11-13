@@ -35,7 +35,7 @@ for (const name of readdirSync(dir)) {
   const mod = await import(pathToFileURL(resolve(dir, name)).href);
   const skill = mod.default;
   if (!skill || typeof skill.suite !== 'function') continue;
-  const r = skill.suite();
+  const r = await skill.suite();
   const ok = !!(r && r.ok);
   console.log((ok ? 'pass ' : 'FAIL ') + skill.name + (ok ? '' : '  -> ' + (r && r.got)));
   if (!ok) failed += 1;

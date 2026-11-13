@@ -26,7 +26,7 @@ test('a page that works is a floor, and a worse measurement does not take it awa
   assert.equal(isFloor(TOOLS[0]), false);
   assert.equal(isFloor(TOOLS[1]), false);
   assert.equal(isFloor(TOOLS[2]), false);
-  assert.equal(isFloor(NEXT[0]), true);
+  assert.equal(isFloor(NEXT[0]), false);
   assert.equal(isFloor({ kind: 'page', page: '/x/', works: true }, rows), true);
   assert.equal(isFloor({ kind: 'page', page: '/x/', works: false }, rows), false);
   assert.equal(isFloor({ kind: 'card', page: '/x/', works: true }, rows), false);
@@ -64,38 +64,39 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   assert.match(pub, /Out of Order/);
   assert.doesNotMatch(pub, /motherfuckingwebsite|rot13|tsundere|better|worse|equal|podcastindex|livescore/);
   const model = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
-  assert.equal(model.floor, 7);
+  assert.equal(model.floor, 0);
   assert.equal(model.fight, 'motherfuckingwebsite.com');
   const own = ownerHtml(model);
   assert.doesNotMatch(own, /Out of Order/);
-  assert.match(own, /page is up/);
+  assert.match(own, /still open/);
   assert.match(own, /href="https:\/\/motherfuckingwebsite\.com\/" target="_blank" rel="noopener noreferrer"/);
   assert.match(own, /100 ms/);
   assert.match(own, /400 ms/);
   assert.match(own, /plain page/);
   assert.match(own, /elv-shots/);
   assert.match(own, /href="\/our-motherfucking-version\/"/);
-  assert.match(own, /href="\/patterns\/"/);
-  assert.match(own, /href="\/podcasts\/"/);
+  assert.equal(SITES.some((s) => s.works), false);
   assert.doesNotMatch(pub, /target="_blank"/);
   assert.doesNotMatch(own + pub, /\b(grab|steal|absorb|conquer)\b/i);
 });
 
 test('the owner model keeps the measured rows and follows the gap notes', () => {
   const api = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
-  const again = modelFrom(api, gapText({ exam: { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] } } } }));
-  assert.equal(again.floor, 7);
+  const again = modelFrom(api, '');
+  assert.equal(again.floor, 0);
   assert.equal(again.fight, 'motherfuckingwebsite.com');
   assert.equal(again.sites.find((s) => s.id === 'readable').rows.speed.verdict, 'better');
+  const scored = modelFrom(api, gapText({ exam: { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] } } } }));
+  assert.equal(scored.fight, 'livescore.com');
 });
 
 test('the next fight is the open site whose features match the gaps', () => {
   const exam = { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] }, podcasts: { score: 9, fails: [] } } };
   const gaps = gapText({ exam, nightly: { pick: { id: 'sports', why: 'board' } }, wants: [{ ask: 'a scoreboard' }] });
   const model = viewModel(null, gaps);
-  assert.equal(model.floor, 7);
-  assert.equal(model.fight, 'motherfuckingwebsite.com');
-  assert.equal(model.sites.find((s) => s.id === 'scores').floor, true);
+  assert.equal(model.floor, 0);
+  assert.equal(model.fight, 'livescore.com');
+  assert.equal(isFloor(SITES.find((s) => s.id === 'scores')), false);
 });
 
 test('a large site stays behind every smaller open row', () => {
@@ -105,7 +106,8 @@ test('a large site stays behind every smaller open row', () => {
   assert.ok(ids.indexOf('clips') < ids.indexOf('directions'));
   for (const id of ['songs', 'clips', 'directions']) assert.equal(SITES.find((s) => s.id === id).works, false);
   const model = viewModel(null, 'play a song on youtube and get map directions');
-  assert.equal(model.fight, 'motherfuckingwebsite.com');
+  assert.equal(model.fight, 'livescore.com');
+  assert.equal(SITES.find((s) => s.id === 'songs').late, true);
 });
 
 test('the live exam names an open page, not one that is already a floor', () => {
@@ -113,7 +115,7 @@ test('the live exam names an open page, not one that is already a floor', () => 
   const self = JSON.parse(readFileSync(new URL('../void-live-deploy/self.json', import.meta.url), 'utf8'));
   const nightly = JSON.parse(readFileSync(new URL('../void-live-deploy/progress/nightly.json', import.meta.url), 'utf8'));
   const model = viewModel(null, gapText({ exam, nightly, wants: self.open }));
-  assert.equal(model.floor, 7);
-  assert.equal(model.fight, 'motherfuckingwebsite.com');
-  assert.equal(['podcastindex.org', 'livescore.com', 'convertlive.com', 'regex101.com', 'crontab.guru', 'wiktionary.org', 'myqrcode.com'].includes(model.fight), false);
+  assert.equal(model.floor, 0);
+  const fight = SITES.find((s) => s.rival === model.fight);
+  assert.equal(fight.works, false);
 });

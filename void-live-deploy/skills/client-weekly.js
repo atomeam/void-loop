@@ -7,8 +7,8 @@
  */
 export function isClientWeekly(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:client\s+)?weekly(?:\s+update|\s+summary|\s+digest)?\b/i.test(t)
-    || /^(?:show|make|generate|package)\s+(?:a\s+)?(?:client\s+)?weekly\b/i.test(t)
+  return /^(?:client\s+weekly|weekly\s+(?:update|summary|digest))\b/i.test(t)
+    || /^(?:show|make|generate|package)\s+(?:(?:a|the)\s+)?(?:client\s+)?weekly(?:\s+(?:update|summary|digest))?\b/i.test(t)
     || /\bthis\s+week(?:'s)?\s+(?:summary|update|status)\b/i.test(t);
 }
 

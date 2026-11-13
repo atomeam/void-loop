@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>QR codes · Verse</title>
+<title>QR Code Maker · Verse</title>
 <meta name="description" content="Turn a link or a short line into a code a phone can scan. The drawing is made on this device.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/qr/">
-<meta property="og:title" content="QR codes · Verse">
+<meta property="og:title" content="QR Code Maker · Verse">
 <meta property="og:description" content="Turn a link or a short line into a code a phone can scan. Made on this device.">
 <meta property="og:url" content="https://a-to-mind.com/qr/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -22,7 +22,8 @@
 </head>
 <body>
 <main>
-  <h1>QR codes</h1>
+  <h1>QR Code Maker</h1>
+  <p>This page is for anyone who wants a code a phone can scan from a link or a short line of text.</p>
   <p class="original">The original: <a href="https://myqrcode.com/" target="_blank" rel="noopener noreferrer">myqrcode.com</a></p>
   <p>Type a link or a short line. The page draws a code a phone can scan. The drawing stays on this device, and a line that is too long is refused.</p>
   <form method="get" action="/qr/">
@@ -34,8 +35,12 @@
   <p id="meta"></p>
   <p id="err" role="status"></p>
   <p>More: <a href="/base64/">Base64</a>, <a href="/patterns/">patterns</a>, <a href="/meanings/">word meanings</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#text" data-fallback="hello">Text Compare</a>
+  </nav>
 </main>
 <script type="module" src="/qr/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

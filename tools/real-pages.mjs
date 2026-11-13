@@ -490,7 +490,18 @@ export const SPECS = {
   },
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
   '/versus/': async (t) => { t.ok(/Out of Order/.test(await t.p.locator('h1').innerText()), 'the sign is the page'); t.ok((await t.p.locator('table').count()) === 0, 'no comparison table'); },
-  '/rotate-letters/': async (t) => { await t.fill('#text', 'Ab!'); await t.fill('#shift', '1'); await t.p.waitForTimeout(100); t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!'); },
+  '/rotate-letters/': async (t) => {
+    await t.fill('#text', 'Ab!'); await t.p.selectOption('#shift', '1'); await t.p.waitForTimeout(100);
+    t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!');
+    t.ok(/A goes to B/.test(await t.text('#map')), 'ROT1 sends A to B');
+    await t.click('#back'); await t.p.waitForTimeout(100);
+    t.ok((await t.val('#text')) === 'Bc!', 'read it back puts the result in the box');
+    t.ok((await t.val('#shift')) === '25', 'ROT1 reads back as ROT25');
+    t.ok((await t.text('#out')) === 'Ab!', 'ROT25 of that result is Ab!');
+    const href = await t.p.locator('nav.with a').first().getAttribute('href') || '';
+    t.ok(/changed=Ab(?:!|%21)/.test(href), 'Text Compare opens on the result: ' + href);
+    t.ok((await t.p.locator('a[href="/versus/"]').count()) === 0, 'no link to the owner page');
+  },
   '/patterns/': async (t) => { await t.fill('#pattern', '\\d+'); await t.fill('#sample', 'call 555 or 911'); await t.p.waitForTimeout(100); t.ok(/2 matches/.test(await t.text('#count')), 'two numbers match'); t.ok((await t.p.locator('#out mark').count()) === 2, 'both numbers are marked'); },
   '/schedules/': async (t) => { await t.fill('#line', '0 9 * * 1-5'); await t.p.waitForTimeout(100); t.ok(/09:00/.test(await t.text('#say')), 'weekday 9:00 is said in words'); t.ok((await t.p.locator('#next li').count()) === 3, 'three coming times'); },
   '/meanings/': async (t) => { await t.fill('#word', 'serendipity'); await t.clickText('Look up'); await t.waitText('#out, #err', /not in the dictionary|did not answer|noun|happy/i, 15000); t.ok(/not in the dictionary|did not answer|noun|happy/i.test((await t.text('#out')) + (await t.text('#err'))), 'a word gets a meaning or an honest miss'); },
@@ -502,7 +513,14 @@ export const SPECS = {
   '/text-diff/': async (t) => { await t.fill('#original', 'one\ntwo'); await t.fill('#changed', 'one\nthree'); await t.p.waitForTimeout(100); t.ok(/1 line removed, 1 line added/.test(await t.text('#say')), 'one line removed and one added'); t.ok((await t.p.locator('#diff [data-t="del"]').count()) === 1, 'the old line is marked'); t.ok((await t.p.locator('#diff [data-t="add"]').count()) === 1, 'the new line is marked'); },
   '/studio/': async (t) => { await t.fill('#script', 'Verse: One line.\nCritic: Two lines.'); await t.click('#play'); await t.p.waitForTimeout(300); t.ok(/Playing 2 lines/.test(await t.text('#status')), 'two typed lines play one after another'); await t.click('#stop'); await t.p.waitForTimeout(200); t.ok(/Stopped/.test(await t.text('#status')), 'Stop stops'); },
   '/track-times/': async (t) => { t.ok(/43:53/.test(await t.text('#total')), 'the album list runs 43:53'); t.ok(/Schizoid Man/.test(await t.text('#out')), 'the album list is on the page'); t.ok(/list=/.test(await t.p.locator('#share').getAttribute('href') || ''), 'a share link keeps the list'); t.ok((await t.p.locator('a[href="/versus/"]').count()) === 0, 'no link to the owner page'); t.ok((await t.p.locator('audio, video').count()) === 0, 'nothing plays music'); await t.fill('#list', 'Song one 1:00\nSong two 2:00'); await t.p.waitForTimeout(100); t.ok(/3:00/.test(await t.text('#total')), 'two lengths add to 3:00'); t.ok(/Song(?:\+|%20)one/.test(await t.p.locator('#share').getAttribute('href') || ''), 'the share link follows the typed list'); },
-  '/our-motherfucking-version/': async (t) => { await t.fill('#html', '<p>Hi</p><img alt="" src="a.png">'); await t.p.waitForTimeout(100); t.ok(/1 pictures/.test(await t.text('#out')), 'one picture is counted'); t.ok(/A page you can read/.test(await t.p.locator('h1').innerText()), 'the heading is Verse\'s own'); },
+  '/our-motherfucking-version/': async (t) => {
+    t.ok(/Lightweight Page/.test(await t.p.locator('h1').innerText()), 'the heading says what the page is');
+    await t.fill('#html', '<p>Hi</p><img alt="" src="a.png">'); await t.p.waitForTimeout(100);
+    t.ok(/33 bytes · 1 pictures/.test(await t.text('#out')), 'one picture is counted');
+    const href = await t.p.locator('nav.with a').first().getAttribute('href') || '';
+    t.ok(/changed=33(?:%20|\+)bytes/.test(href), 'Text Compare opens on the weight: ' + href);
+    t.ok((await t.p.locator('a[href="/versus/"]').count()) === 0, 'no link to the owner page');
+  },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
 // the trading bots (owner, 2026-11-06): a backtest on the real candles once /trading-bots/data/ has them, an honest note before; trades export, the link reopens

@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Text comparison · Verse</title>
+<title>Text Compare · Verse</title>
 <meta name="description" content="Compare two texts line by line. Removed lines, added lines, and the lines that stayed. The work stays on this device.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/text-diff/">
-<meta property="og:title" content="Text comparison · Verse">
+<meta property="og:title" content="Text Compare · Verse">
 <meta property="og:description" content="Compare two texts line by line. The work stays on this device.">
 <meta property="og:url" content="https://a-to-mind.com/text-diff/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -31,7 +31,8 @@
 </head>
 <body>
 <main>
-  <h1>Text comparison</h1>
+  <h1>Text Compare</h1>
+  <p>This page is for anyone who has two copies of a text and wants to see what was added, what was removed, and what stayed.</p>
   <p class="original">The original: <a href="https://www.diffchecker.com/" target="_blank" rel="noopener noreferrer">diffchecker.com</a></p>
   <p>Paste an original and a changed copy. Every line that was removed, added, or left as it was is marked. A space, a blank line, and a change of case all count. The work stays on this device. Up to 3000 lines on a side.</p>
   <form>
@@ -54,8 +55,13 @@ and keeps going</textarea>
   <div id="diff" aria-live="polite"></div>
   <p id="err" role="status"></p>
   <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/rotate-letters/" data-param="text" data-from="#changed" data-fallback="hello">ROT13 Text Scrambler</a>
+    <a data-base="/patterns/" data-param="sample" data-from="#changed" data-fallback="hello">Regex Tester</a>
+  </nav>
 </main>
 <script type="module" src="/text-diff/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

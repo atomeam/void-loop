@@ -115,6 +115,7 @@ export const LIMITS = {
   filmfind: { rpm: 20, body: 0 }, // film discovery as JSON (functions/api/filmfind.js): GET only, one fixed host (iTunes), at most 10 upstream GETs per call, edge-cached a day, no KV, no model, nothing written
   holidays: { rpm: 30, body: 0 }, // the next public holidays in one country (functions/api/holidays.js): GET only, two letters in, one fixed host (Nager.Date), edge-cached six hours, no KV, no model
   movies: { rpm: 30, body: 0 }, // real movies (functions/api/movies.js): GET only, a fixed list of sources, edge-cached, no KV, no model
+  meanings: { rpm: 30, body: 0 }, // a word's senses (functions/api/meanings.js): GET, one word in, cached, the meanings page is the caller
   local: { rpm: 30, body: 0 }, // the local TV and radio page (functions/api/local.js): GET, a place in or a point in, Radio Browser and Open-Meteo's geocoder at fixed hosts, edge-cached, 20 fresh lookups a minute, no model, no KV
   ip: { rpm: 30, body: 0 }, // the connection's own public address (functions/api/ip.js): GET, no input, never cached
   where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached

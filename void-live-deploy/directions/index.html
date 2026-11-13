@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Directions · Verse</title>
+<title>Driving Directions · Verse</title>
 <meta name="description" content="Driving time between two places. The time is the road with no live traffic.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/directions/">
-<meta property="og:title" content="Directions · Verse">
+<meta property="og:title" content="Driving Directions · Verse">
 <meta property="og:description" content="Driving time between two places. Road time with no live traffic.">
 <meta property="og:url" content="https://a-to-mind.com/directions/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -20,7 +20,8 @@
 </head>
 <body>
 <main>
-  <h1>Directions</h1>
+  <h1>Driving Directions</h1>
+  <p>This page is for anyone who wants the driving time and the distance between two places.</p>
   <p class="original">The original: <a href="https://maps.google.com/" target="_blank" rel="noopener noreferrer">maps.google.com</a></p>
   <p>Type where you start and where you are going. The page says the driving time and the distance. The time is the open road, with no live traffic.</p>
   <form method="get" action="/directions/">
@@ -33,8 +34,12 @@
   <div id="out" aria-live="polite"></div>
   <p id="err" role="status"></p>
   <p>More: <a href="/weather/">weather</a>, <a href="/flights/">flights</a>, <a href="/convert/">unit converter</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/time/" data-param="q" data-from="#to" data-fallback="London">Time zones</a>
+  </nav>
 </main>
 <script type="module" src="/directions/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>
