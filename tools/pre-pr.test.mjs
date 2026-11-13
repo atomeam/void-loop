@@ -41,4 +41,7 @@ test('a branch opens only when it is on main, small and shares no file with anot
   assert.match(hot, /open PR #7 .* also changes void-live-deploy\/functions\/api\/team\.js/);
   assert.deepEqual(refusals({ behind: 0, files: ['tools/families.mjs'], numstat: '1\t1\ttools/families.mjs', prs: [{ number: 5, title: 'other skill', files: ['tools/families.mjs'] }] }), [], 'a one-line family addition is settled on merge, so two skill PRs may both touch it');
   assert.deepEqual(refusals({ behind: 0, files: ['void-live-deploy/functions/api/team.js'], numstat: '3\t1\tx', prs: null }), [], 'no PR list (offline): the overlap is not judged');
+  const [gen] = refusals({ behind: 0, files: ['void-live-deploy/skills/guide.json'], numstat: '1\t1\tvoid-live-deploy/skills/guide.json', prs: [] });
+  assert.match(gen, /written at deploy/);
+  assert.deepEqual(refusals({ behind: 0, files: ['void-live-deploy/skills/guide.json', 'void-live-deploy/skills/families.json'], numstat: '1\t1\tvoid-live-deploy/skills/guide.json\n1\t1\tvoid-live-deploy/skills/families.json', prs: [], fresh: ['void-live-deploy/skills/guide.json', 'void-live-deploy/skills/families.json'] }), []);
 });
