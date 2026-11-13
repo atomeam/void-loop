@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { rotateLetters, parseTracks, weigh, putText, fillVersus } from '../void-live-deploy/lib/versus.js';
+import { rotateLetters, reverseShift, shiftPlaces, parseTracks, weigh, putText, fillVersus } from '../void-live-deploy/lib/versus.js';
 
 test('letters move, other marks stay, and 13 undoes itself', () => {
   assert.equal(rotateLetters('Ab! z', 1), 'Bc! a');
@@ -21,6 +21,28 @@ test('a track list gets start times, lengths and a total', () => {
 test('weigh counts bytes, pictures, fonts and scripts', () => {
   const w = weigh('<p>Hi</p><img src="a.png"><script src="x"></script>@font-face');
   assert.equal(w.images, 1); assert.equal(w.scripts, 1); assert.equal(w.fonts, 1); assert.ok(w.bytes > 10);
+});
+
+test('the page shift stays on the menu, and the reverse shift reads the text back', () => {
+  assert.equal(shiftPlaces('5'), 5);
+  assert.equal(shiftPlaces('0'), 13);
+  assert.equal(shiftPlaces('26'), 25);
+  assert.equal(reverseShift(13), 13);
+  assert.equal(reverseShift(5), 21);
+  assert.equal(rotateLetters(rotateLetters('Hello, world!', 5), reverseShift(5)), 'Hello, world!');
+});
+
+test('a letter query fills the result, the menu, and the next tool', async () => {
+  const html = '<textarea id="text" name="text"></textarea><select id="shift"><option value="1">ROT1</option><option value="13" selected>ROT13</option></select><output id="out"></output><p id="map">old</p><span id="wordbit">old</span><nav class="with"><a href="/text-diff/?changed=old" data-base="/text-diff/" data-param="changed" data-from="#out">Text Compare</a><a href="/meanings/?word=old" data-base="/meanings/" data-param="word" data-from="#wordbit">Dictionary</a></nav>';
+  const context = { request: new Request('https://example.test/rotate-letters/?text=' + encodeURIComponent('Hello, world!') + '&shift=13'), next: async () => new Response(html) };
+  const body = await (await fillVersus(context, 'rotate')).text();
+  assert.match(body, /Hello, world!/);
+  assert.match(body, /<output id="out">Uryyb, jbeyq!<\/output>/);
+  assert.match(body, /value="13" selected/);
+  assert.match(body, /A goes to N, and Z goes to M\./);
+  assert.match(body, /id="wordbit"[^>]*>Uryyb</);
+  assert.match(body, /href="\/text-diff\/\?changed=Uryyb%2C%20jbeyq!"/);
+  assert.match(body, /href="\/meanings\/\?word=Uryyb"/);
 });
 
 test('putText writes into an element and escapes', () => {

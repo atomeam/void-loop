@@ -14,7 +14,7 @@ export const ASPECTS = Object.freeze([
 export const TOOLS = Object.freeze([
   { id: 'readable', name: 'Lightweight Page', page: '/our-motherfucking-version/', rival: 'motherfuckingwebsite.com', url: 'https://motherfuckingwebsite.com/', kind: 'page', works: false, features: ['plain page', 'weigh markup'] },
   { id: 'tracks', name: 'Album Track Time Adder', page: '/track-times/', rival: 'tsundere.pw', url: 'https://tsundere.pw/', kind: 'page', works: false, features: ['track list', 'start times'] },
-  { id: 'letters', name: 'ROT13 Text Scrambler', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'page', works: false, features: ['letter shift'] },
+  { id: 'letters', name: 'ROT13 Text Scrambler', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'page', works: false, features: ['letter shift'], extras: ['share link', 'read it back', 'scripts off'] },
 ]);
 
 /** Open rows are smallest job first. A row is a floor only when docs/versus-page-checklist.md is checked for that page, including the live browser run. The large sites are last and are not floors until a page does the whole job. Their order is the visit list, least visited first: spotify.com 78, youtube.com 10, and the maps lane on google.com at 1 (tower.rank.json, 2026-11-02). YouTube's home page also measured 68 controls (tower.size.json, 2026-10-30). Spotify's size read was refused, and Maps was not counted, so those two are not given a made-up control count. */
