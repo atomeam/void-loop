@@ -16,6 +16,7 @@ Paste this list into the pull request, still unchecked, and check an item only f
 8. **Nothing lost.** Before editing a page, card, or view, list what the old version did, including git history from before the owner elevator. The pull request has a before/after table. Every old feature stays unless Atom said to remove it.
 9. **Live proof.** Playwright on the live site, with an owner or Uni pass, does the page's main jobs with real inputs and gets the right results. Zero console errors and zero content-security-policy violations. The check is `node tools/floor-live.mjs` in CI (`.github/workflows/floor-live.yml`). For the dictionary that is hello, run, and a word that is not there.
 10. **Clean words and addresses.** The Verse URL does not contain the rival's name or domain, and an existing URL is not changed for a rename. The page and the pull request do not say taking, grabbing, stealing, absorbing, or conquering. Banned phrases in `tools/plain-phrases.txt` stay out of the title, the body, and new page copy.
+11. **Usable together.** The page links to related Verse pages and passes the result in the address (`?text=`, `?list=`, `?q=`, or that page's own parameter), so the next tool opens on the same work. A "Use this with" section holds those links. The live browser check opens at least one of them and finds the value on the next page.
 
 ## How a page is built
 

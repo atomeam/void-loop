@@ -31,8 +31,13 @@
   <h2>How to look a word up</h2>
   <p>Type one word, or a phrase of two or three words, and press Look up. Each sense shows the part of speech, up to three definitions, and one short example when the dictionary has one. If the word is not there, the page says so instead of guessing. The link under the result opens that same entry on the original site.</p>
   <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">Regex Tester</a>, <a href="/base64/">Base64</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/rotate-letters/" data-param="text" data-from="#word" data-fallback="hello">ROT13 Text Scrambler</a>
+    <a data-base="/text-diff/" data-param="changed" data-from="#word" data-fallback="hello">Text Compare</a>
+  </nav>
 </main>
 <script type="module" src="/meanings/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

@@ -35,8 +35,12 @@
   <div id="out" aria-live="polite"></div>
   <p id="err" role="status"></p>
   <p>More: <a href="/music/">music tools</a>, <a href="/podcasts/">podcasts</a>, <a href="/clips/">clips</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/podcasts/" data-param="q" data-from="#title" data-fallback="song">Podcast Search</a>
+  </nav>
 </main>
 <script type="module" src="/songs/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

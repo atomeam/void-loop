@@ -76,6 +76,10 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
 <!-- /asks -->
 <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/base64/bases/">Base converter</a> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/calculator/">Calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Works offline after one visit; nothing you type leaves this device. <a href="/">Ask Verse anything</a></footer>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#ask" data-fallback="1 m">Text Compare</a>
+    <a data-base="/schedules/" data-param="line" data-fallback="0 9 * * 1-5">Cron Schedule Explainer</a>
+  </nav>
 </main>
 <script type="module">
   // the default converter above is in the HTML, so the first paint is the finished page; the code comes in after the load event and redraws the
@@ -152,5 +156,6 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

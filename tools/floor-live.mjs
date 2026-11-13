@@ -35,6 +35,14 @@ export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKE
       try {
         await (JOBS[s.id] || (async (p) => { await p.goto(ORIGIN + s.page, { waitUntil: 'domcontentloaded' }); await p.waitForSelector('h1'); }))(page);
         if (await page.locator('meta[name="verse-gate"]').count()) throw new Error('uni gate');
+        await page.waitForFunction(() => { const a = document.querySelector('nav.with a'); return a && /=/.test(a.getAttribute('href') || ''); }, null, { timeout: 8000 });
+        const href = await page.locator('nav.with a').first().getAttribute('href');
+        const passed = [...new URL(href, page.url()).searchParams.values()].find((v) => v.trim());
+        if (!passed) throw new Error('handoff has no result');
+        await page.locator('nav.with a').first().click();
+        await page.waitForLoadState('domcontentloaded');
+        const landed = (await page.locator('body').innerText()) + (await page.locator('input, textarea').first().inputValue().catch(() => ''));
+        if (!landed.includes(passed.replace(/\s+/g, ' ').trim().slice(0, 24))) throw new Error('next page missed the handoff');
         if (problems.length) throw new Error(problems[0]);
         results.push({ id: s.id, ok: true, reason: '' });
       } catch (e) { results.push({ id: s.id, ok: false, reason: String(e && e.message || e).slice(0, 160) }); }
