@@ -29,6 +29,7 @@ const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
 import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
 const SECRET_REPLY = 'I keep keys out of everything I touch, so I will not merge that. Name two ideas without a key or a token in them and I will.';
+import { tablesReady } from '../../lib/db.js'; // one copy (lib/db.js, convergence step 3)
 
 /** a raw typed idea -> its single-line text, cut before it is folded. Pure. */
 export const rawIdea = (v) => String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, RAW_MAX);
@@ -45,12 +46,9 @@ export function parseMerge(text) {
 /** the user message: only the folded keys of the two ideas, in quotes. Pure. */
 export const mergePrompt = (ka, kb) => 'Merge these two ideas.\nFirst: "' + ka + '"\nSecond: "' + kb + '"';
 
-let ready = null;
-async function ensure(env) {
-  if (!ready) ready = env.DB.prepare('CREATE TABLE IF NOT EXISTS void_merges (pair TEXT PRIMARY KEY, name TEXT NOT NULL, line TEXT NOT NULL, first_seen TEXT NOT NULL)').run().catch((e) => { ready = null; throw e; });
-  await ready;
-}
-export const resetReady = () => { ready = null; }; // tests: a new fake database needs its table made again
+const ready = tablesReady(['CREATE TABLE IF NOT EXISTS void_merges (pair TEXT PRIMARY KEY, name TEXT NOT NULL, line TEXT NOT NULL, first_seen TEXT NOT NULL)']); // made once per isolate (lib/db.js)
+async function ensure(env) { await ready(env); }
+export const resetReady = () => ready.reset(); // tests: a new fake database needs its table made again
 
 async function cached(env, pair) {
   try { await ensure(env); return await env.DB.prepare('SELECT name, line, first_seen FROM void_merges WHERE pair = ?').bind(pair).first(); } catch (_) { return null; }

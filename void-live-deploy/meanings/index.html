@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Word meanings · Verse</title>
+<meta name="description" content="Look up what a word means. Senses, the part of speech, and one example when the dictionary has one. A word that is not there is said so.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/meanings/">
+<meta property="og:title" content="Word meanings · Verse">
+<meta property="og:description" content="Look up what a word means. A word that is not there is said so.">
+<meta property="og:url" content="https://a-to-mind.com/meanings/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: word; out: senses">
+</head>
+<body>
+<main>
+  <h1>Word meanings</h1>
+  <p>Type a word. The page lists the senses, the part of speech, and one example when there is one. A word that is not in the dictionary is said so, instead of a guess.</p>
+  <form method="get" action="/meanings/">
+    <label for="word">Word</label>
+    <input id="word" name="word" type="search" value="" spellcheck="true" autocomplete="off" enterkeyhint="search">
+    <div class="row"><button type="submit">Look up</button></div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p class="src" id="src"></p>
+  <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>.</p>
+</main>
+<script type="module" src="/meanings/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

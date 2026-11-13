@@ -11,7 +11,7 @@ name: Verse review
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, edited, synchronize, reopened, ready_for_review]
   workflow_dispatch:
     inputs:
       pr:
@@ -28,7 +28,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write # push one plain-words commit onto a helper/* branch
   pull-requests: write
   actions: write # wake automerge after a review the bot dispatched (below)
 
@@ -58,6 +58,22 @@ jobs:
         with:
           ref: ${{ steps.pr.outputs.sha }}
           fetch-depth: 0 # the diff needs the base
+
+      # Title, body, and the page copy this pull request adds (tools/plain-words.mjs, tools/plain-phrases.txt).
+      # A title or body is rewritten here. A safe rewrite of a helper/* branch is one commit on that branch.
+      # Anything left is a failing step, so the verdict below does not approve it.
+      - name: Plain words in the title, the body and the added copy
+        id: plain
+        if: ${{ inputs.report_only != true }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          node tools/plain-words.mjs --apply --pr "$PR" --base "$BASEREF" --head HEAD
 
       - name: Skip if this SHA was already approved by Verse
         id: done
@@ -203,10 +219,11 @@ jobs:
           CHAIN: ${{ steps.chain.outcome }}
           COPIES: ${{ steps.copies.outcome }}
           CARDS: ${{ steps.cards.outcome }}
+          PLAIN: ${{ steps.plain.outcome }}
         run: |
           set +e
           review=ok
-          for o in "$BUGS" "$SECRETS" "$PRIVACY" "$SKILLS" "$CHAIN" "$COPIES" "$CARDS"; do
+          for o in "$BUGS" "$SECRETS" "$PRIVACY" "$SKILLS" "$CHAIN" "$COPIES" "$CARDS" "$PLAIN"; do
             if [ "$o" = "failure" ]; then review=fail; fi
           done
           exam=ok

@@ -1,0 +1,88 @@
+{
+ "tools": {
+  "readable": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 94,
+    "best": 63
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-13T14:38:48.941Z"
+  },
+  "tracks": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 139,
+    "best": 80
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 258
+   },
+   "accessibility": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-13T14:39:14.512Z"
+  },
+  "letters": {
+   "speed": {
+    "verdict": "better",
+    "verse": 164,
+    "best": 223
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 282
+   },
+   "accessibility": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-13T14:39:41.294Z"
+  }
+ }
+}

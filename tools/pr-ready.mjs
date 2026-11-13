@@ -12,8 +12,28 @@
 // Verse's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
 //   never blocks: what it has found on this head is reported in `extra`, and a finding Verse missed is a rule to teach
 //   code-review.js (domains/void.frontier.md #1), not a reason to hold a merge.
+import { claim } from './fix-cap.mjs';
+
 export const CR = 'coderabbitai[bot]';
 const OK = ['success', 'skipped', 'neutral'];
+// Every pull request's own checks (tools/loop-checks.mjs ALWAYS). A head that only has the checks an outside app
+// reported (2 of 2, both skipped) has not been reviewed. #2732 was opened by the actions bot, so those workflows
+// did not start with the pull request.
+export const EXPECTED_CHECKS = ['void-review', 'merge-gate', 'test-and-deploy', 'collide'];
+
+/** Which expected checks are missing, still running, or red on this exact head. A skipped expected check counts as missing. Pure. */
+export function checkGap(runs) {
+  const by = new Map();
+  for (const r of runs || []) { const prev = by.get(r.name); if (!prev || (r.id || 0) > (prev.id || 0)) by.set(r.name, r); }
+  const missing = [], pending = [];
+  for (const name of EXPECTED_CHECKS) {
+    const r = by.get(name);
+    if (!r || r.conclusion === 'skipped') { missing.push(name); continue; }
+    if (r.status !== 'completed') { pending.push(name); continue; }
+    if (r.conclusion !== 'success' && r.conclusion !== 'neutral') return { failed: r, missing, pending };
+  }
+  return { missing, pending };
+}
 
 export function readiness(gh, repo, pr) {
   const p = gh(`repos/${repo}/pulls/${pr}`);
@@ -27,6 +47,15 @@ export function readiness(gh, repo, pr) {
   const runs = [latest('test-and-deploy'), latest('bench'), latest('void-review')].filter(Boolean);
   const failed = runs.find((r) => r.status === 'completed' && !OK.includes(r.conclusion) && r.conclusion !== 'cancelled');
   if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${rUrl(failed)}` };
+  const gap = checkGap(all);
+  if (gap.failed && EXPECTED_CHECKS.includes(gap.failed.name)) return { ...base, state: 'stop', why: `${gap.failed.name} ${gap.failed.conclusion}: ${rUrl(gap.failed)}` };
+  if (gap.missing.length || gap.pending.length) {
+    const updated = Date.parse(p.updated_at || '');
+    const quiet = !Number.isNaN(updated) && Date.now() - updated > 180000;
+    const reviewRunning = all.some((r) => r.name === 'void-review' && r.status !== 'completed' && r.conclusion !== 'skipped');
+    const why = gap.missing.length ? 'missing checks on ' + sha.slice(0, 7) + ': ' + gap.missing.join(', ') : 'checks still running: ' + gap.pending.join(', ');
+    return { ...base, state: 'wait', why, missingChecks: gap.missing, noReview: gap.missing.length > 0 && quiet && !reviewRunning, branch: p.head && p.head.ref };
+  }
   // the one wait: Verse's own review, which reports in seconds (a PR from before that check falls back on the suite)
   const gate = runs.find((r) => r.name === 'void-review') || runs.find((r) => r.name === 'test-and-deploy');
   // reviews/comments can exceed one page on a long-lived PR (a loop once hid the latest verdict); read all of them
@@ -94,7 +123,12 @@ export function resolveMain(run, gh, { repo, pr, branch, tools, dir }) {
       return { state: 'conflict', files, commented: !mine || mine.body !== body };
     }
     const sha = git(['rev-parse', 'HEAD'], dir).trim();
+    const comments = gh(`repos/${repo}/issues/${pr}/comments?per_page=100`) || [];
+    const cap = claim(Array.isArray(comments) ? comments : [], 'conflict');
+    if (!cap.allowed) return { state: 'capped', why: 'the conflict fixer already tried twice on this pull request' };
     git(['push', 'origin', `HEAD:refs/heads/${branch}`], dir);
+    const save = cap.id ? ['api', '-X', 'PATCH', `repos/${repo}/issues/comments/${cap.id}`, '-f', 'body=' + cap.body] : ['api', '-X', 'POST', `repos/${repo}/issues/${pr}/comments`, '-f', 'body=' + cap.body];
+    try { run('gh', save); } catch (_) {}
     // a push made with the workflow token leaves the new head's pull_request runs approval-required; start the same checks
     run('node', [tools + '/loop-checks.mjs', '--pr', String(pr), '--ref', branch, '--repo', repo, '--from', 'resolve']);
     return { state: 'pushed', sha };

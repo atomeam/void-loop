@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0f1115; --fg: #e8e8e8; --accent: #5eead4; --muted: #888; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, sans-serif; padding: 1rem; }
+  h1 { font-size: 1.4rem; margin: 0 0 1rem; }
+  .controls { display: grid; gap: 0.75rem; max-width: 48rem; margin-bottom: 1rem; }
+  label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.9rem; }
+  input[type="range"], input[type="number"], select, input[type="text"] { padding: 0.4rem; background: #1a1d24; color: var(--fg); border: 1px solid #333; border-radius: 4px; }
+  .row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: end; }
+  button { background: var(--accent); color: #0f1115; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; }
+  button:hover { filter: brightness(1.1); }
+  pre, textarea { background: #1a1d24; border: 1px solid #333; border-radius: 6px; padding: 0.75rem; overflow: auto; white-space: pre; font: 10px/1.1 ui-monospace, monospace; max-height: 70vh; width: 100%; }
+  .status { color: var(--muted); font-size: 0.85rem; }
+  canvas { display: none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>image-ascii-art · Verse lab</title>
+<meta name="description" content="Job: Upload a photo; set character width, contrast, and charset; see a live ASCII preview that updates as you tweak; copy the text or download a .txt file.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="image-ascii-art · Verse lab">
+<meta property="og:description" content="Job: Upload a photo; set character width, contrast, and charset; see a live ASCII preview that updates as you tweak; copy the text or download a .txt file.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f651-image-ascii-art/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f651-image-ascii-art/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Image to ASCII Art</h1>
+<p class="status">Fully offline. Nothing leaves this device.</p>
+
+<div class="controls">
+  <label>Image
+    <input type="file" id="file" accept="image/*">
+  </label>
+  <div class="row">
+    <label>Width (chars)
+      <input type="number" id="width" min="20" max="200" value="80">
+    </label>
+    <label>Contrast
+      <input type="range" id="contrast" min="0.5" max="2.5" step="0.1" value="1.2">
+    </label>
+    <label>Charset
+      <select id="charset">
+        <option value=" .:-=+*#%@">Standard</option>
+        <option value=" .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$">Detailed</option>
+        <option value=" ░▒▓█">Blocks</option>
+        <option value="custom">Custom</option>
+      </select>
+    </label>
+  </div>
+  <label id="customLabel" style="display:none">Custom charset (light → dark)
+    <input type="text" id="customCharset" value=" .-=*#">
+  </label>
+  <div class="row">
+    <button id="copy">Copy ASCII</button>
+    <button id="download">Download .txt</button>
+    <span class="status" id="info"></span>
+  </div>
+</div>
+
+<pre id="preview">Upload an image to begin.</pre>
+<canvas id="canvas"></canvas>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

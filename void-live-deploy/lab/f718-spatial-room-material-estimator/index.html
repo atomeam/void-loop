@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --card:#1a1d24; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.4 system-ui,sans-serif; }
+header { padding:12px 16px; border-bottom:1px solid #333; }
+h1 { margin:0; font-size:1.2rem; }
+main { display:flex; flex-wrap:wrap; gap:12px; padding:12px; }
+#canvasWrap { flex:1 1 480px; background:#111; border-radius:8px; overflow:hidden; }
+canvas { display:block; background:#16181e; touch-action:none; cursor:crosshair; }
+aside { flex:1 1 280px; background:var(--card); padding:12px; border-radius:8px; }
+label { display:block; margin:8px 0 2px; font-size:0.85rem; opacity:0.8; }
+input, button { width:100%; padding:8px; margin:4px 0; background:#222; color:var(--fg); border:1px solid #444; border-radius:4px; }
+button { background:#222; cursor:pointer; }
+button.primary { background:var(--acc); color:#000; font-weight:600; }
+.totals { background:#222; padding:8px; border-radius:4px; margin-top:8px; font-size:0.9rem; }
+.room { margin:4px 0; padding:4px; background:#252830; border-radius:4px; }
+footer { padding:8px 16px; font-size:0.8rem; opacity:0.6; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Room material planner · Verse lab</title>
+<meta name="description" content="A practical spatial tool for The Verse canvas: users draw wall segments and close rooms on a Canvas2D surface. Areas are computed from closed polygons.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Room material planner · Verse lab">
+<meta property="og:description" content="A practical spatial tool for The Verse canvas: users draw wall segments and close rooms on a Canvas2D surface. Areas are computed from closed polygons.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f718-spatial-room-material-estimator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f718-spatial-room-material-estimator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Room Material Planner</h1>
+  <p>Draw walls. Close loops for rooms. Get paint & flooring estimates. Download plan + list.</p>
+</header>
+<main>
+  <div id="canvasWrap">
+    <canvas id="c" width="640" height="480"></canvas>
+  </div>
+  <aside>
+    <label>Wall height (m)</label>
+    <input type="number" id="height" value="2.4" step="0.1" min="0.5">
+    <label>Paint coverage (m²/L)</label>
+    <input type="number" id="coverage" value="12" step="1" min="1">
+    <label>Coats</label>
+    <input type="number" id="coats" value="2" step="1" min="1">
+    <label>Waste %</label>
+    <input type="number" id="waste" value="10" step="1" min="0">
+    <label>Tile size (cm)</label>
+    <input type="number" id="tile" value="30" step="1" min="5">
+    <div class="totals" id="totals">Draw a closed room to see estimates.</div>
+    <button id="closeRoom">Close room</button>
+    <button id="undo">Undo last point</button>
+    <button id="clear">Clear all</button>
+    <button id="save" class="primary">Save layout</button>
+    <button id="png">Download plan PNG</button>
+    <button id="csv">Download materials CSV</button>
+    <div id="rooms"></div>
+  </aside>
+</main>
+<footer>Everything stays on this device. Offline after load. Verse is now Verse everywhere.</footer>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

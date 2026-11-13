@@ -47,7 +47,7 @@ const WHAT = {
   'idea-to-system': 'a business idea made real: a plan card for a vague idea, or a system plan that builds into Verse',
   'build-world': 'build in your world: a strategy game where summons are resources and the camp builds, or a thing forged as a printable model',
   'reuse-tools': 'reuse what exists before building: a process mapped to the tools Verse can own or connect, and which existing tools to reuse first',
-  'ownership': 'who owns what for a process: the heavy lifting Verse takes on, what Verse owns versus the client, and the ownership card for a handoff',
+  'ownership': 'who owns what for a process: what Verse owns versus the client, and the ownership card for a handoff',
   'proposals': 'a client proposal from an idea, a process, a request or an email: what Verse owns and what the client keeps',
   'client-handoff': 'a shareable handoff card for one system: what Verse owns and what the client keeps',
   'system-handoff': 'the handoff package for a system Verse takes on: ownership, docs and how to ask its status',
@@ -77,6 +77,15 @@ const WHAT = {
   recent: 'recent asks on an empty box',
   magnetize: 'the post-print magnetize step',
   inventory: 'this list — already built rows',
+  experiments: 'the lab: its catalog count and newest experiments; the fringe experiments and tools opened in a frame',
+  'quick-tools': 'the stage picture and small tools: a stage or card as a PNG, copied, saved or as a QR code of the view',
+  tables: 'pasted tables and list tables: a CSV becomes an editable, sortable table; a data table from a list with sums',
+  cinema: 'films and movies: Verse\'s own films on /films/ and a movie to watch with where to stream',
+  handoffs: 'the client handoff family: delivery pack, client handoff card, system handoff package, full handoff',
+  'client-status': 'client status: the status Verse stores, as a client handoff, plus the ownership/progress/monitors board',
+  'time-saved': 'client-visible estimate of hours the client no longer spends because Verse owns the systems',
+  'reliability-pack': 'suggested monitors, verification checks, the live status reading and the incident path for a system, with no uptime claimed until a real check answers',
+  'stage-marks': 'stage marks: folders, tags, colour labels and layouts on the stage, plus labels and arrows between things',
 };
 
 /** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */

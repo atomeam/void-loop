@@ -5,18 +5,31 @@
 // print only "FAIL merge-policy" and a duration (2026-11-05, #2315).
 //   node tools/merge-gate.mjs
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BUILD_OUTPUTS } from './generated.mjs';
 import { APPEND_JSON, APPEND_TEXT, keyOf } from './records.mjs';
+import { settleText } from './shared-merge.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const build = new Set(BUILD_OUTPUTS);
 // the append-mostly text files: a conflict there is two branches appending at the same spot, settled by keeping
 // both sides' new lines (the same rule tools/merge-main.mjs applies); anything else still needs a person
 const APPEND_MOSTLY = new Set([...APPEND_TEXT, ...APPEND_JSON, 'tools/families.mjs']);
+
+/** the npm packages a red run could not find ("Cannot find package 'playwright-core'", ERR_MODULE_NOT_FOUND on a bare name), with
+ *  their scope; relative and absolute paths are a real missing file, not a missing install. Pure. (closed PR #2335's leftover, lists run 25) */
+export function missingPackages(report) {
+  const out = new Set();
+  for (const m of String(report || '').matchAll(/Cannot find (?:package|module) '([^']+)'/g)) {
+    const spec = m[1];
+    if (/^(?:\.|\/|[a-z]:\\|file:|node:)/i.test(spec)) continue;
+    out.add(spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]);
+  }
+  return [...out].sort();
+}
 
 /** true when every conflicted path is a file the deploy rewrites. Pure. */
 export function onlyBuildConflicts(files) {
@@ -95,9 +108,16 @@ function main() {
       else if (!onlyBuildConflicts(files)) {
         // the append-mostly files settle the same way merge-main.mjs settles them (both sides' new lines), so a
         // branch that only appended does not need a person here either; anything else still stops below
-        const settled = files.filter((f) => APPEND_MOSTLY.has(f));
+        const shared = files.filter((f) => settleText(f, git(['show', `:3:${f}`], dir).stdout || '', git(['show', `:2:${f}`], dir).stdout || '') != null);
+        const settled = files.filter((f) => (APPEND_MOSTLY.has(f) || shared.includes(f)));
         const rest = files.filter((f) => !settled.includes(f));
-        for (const f of settled) {
+        for (const f of shared) {
+          const text = settleText(f, git(['show', `:3:${f}`], dir).stdout || '', git(['show', `:2:${f}`], dir).stdout || '');
+          writeFileSync(resolve(dir, f), text);
+          git(['add', '--', f], dir);
+          console.log('merge-gate: settled ' + f + ' by skill id or inbox row');
+        }
+        for (const f of settled.filter((f) => !shared.includes(f))) {
           if (APPEND_JSON.includes(f)) {
             const theirs = JSON.parse(git(['show', `:3:${f}`], dir).stdout || '[]');
             const ours = JSON.parse(git(['show', `:2:${f}`], dir).stdout || '[]');
@@ -154,10 +174,20 @@ function main() {
     const restore = changed.filter((f) => !keep.has(f));
     if (restore.length) git(['checkout', '--', ...restore], dir);
     git(['clean', '-fd'], dir);
-    const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
+    const runChecks = () => spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', maxBuffer: 20e6,
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
     });
+    let checks = runChecks();
+    // a red run that only lacked an installed package: install the lockfile once (no install scripts) and run the checks again, so a
+    // missing package does not fail every pull request; a second red run is the real answer
+    const missing = (checks.status ?? 1) !== 0 ? missingPackages(String(checks.stdout || '') + String(checks.stderr || '')) : [];
+    if (missing.length && existsSync(resolve(dir, 'package-lock.json'))) {
+      console.log('merge-gate: the checks could not find ' + missing.join(', ') + '; installing the lockfile once and running them again');
+      const ci = spawnSync('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6, timeout: 300000 });
+      if (ci.status === 0) checks = runChecks();
+      else console.error('merge-gate: npm ci exited ' + ci.status + ': ' + String(ci.stderr || (ci.error && ci.error.message) || '').split('\n').slice(-3).join(' ').slice(0, 300));
+    }
     if (checks.stdout) process.stdout.write(checks.stdout);
     if (checks.stderr) process.stderr.write(checks.stderr);
     if (checks.error) console.error('merge-gate: ' + checks.error.message);

@@ -62,7 +62,7 @@ export function cardHtml(subject, tools, esc) {
     + '<li>The tests that prove the connections stay green</li>'
     + '<li>The handoff docs that name what is reused vs newly built</li>'
     + '</ul>'
-    + '<p><strong>We own the heavy lifting of integration.</strong> Client work stays on the outcome.</p>'
+    + '<p>Client work stays on the outcome.</p>'
     + '<div class="src">Source: A-to-Mind delivery practice · existing tools checked first</div>';
 }
 

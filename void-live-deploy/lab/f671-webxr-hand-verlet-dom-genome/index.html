@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg:#0a0a12; --card:#1a1a2e; --accent:#7c5cff; }
+* { box-sizing:border-box; }
+html,body { margin:0; height:100%; background:var(--bg); color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.card {
+  position:absolute; width:90px; height:70px; background:var(--card);
+  border:2px solid var(--accent); border-radius:12px; padding:8px;
+  font-size:12px; cursor:grab; user-select:none; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.4); transition:border-color .2s;
+}
+.card.rewarded { border-color:#5cff7c; }
+#hud {
+  position:fixed; top:12px; left:12px; background:rgba(0,0,0,.6); padding:10px 14px;
+  border-radius:8px; font-size:13px; z-index:10; max-width:280px;
+}
+button {
+  background:var(--accent); color:#fff; border:none; padding:6px 12px; border-radius:6px;
+  cursor:pointer; margin:4px 4px 0 0;
+}
+#status { margin-top:6px; font-size:11px; opacity:.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-hand-verlet-dom-genome · Verse lab</title>
+<meta name="description" content="Branches away from the recent spatial-planner and generative-utility cluster (barcode inventory F670, motion wallpaper F669, eyedropper palette F668">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-hand-verlet-dom-genome · Verse lab">
+<meta property="og:description" content="Branches away from the recent spatial-planner and generative-utility cluster (barcode inventory F670, motion wallpaper F669, eyedropper palette F668">
+<meta property="og:url" content="https://a-to-mind.com/lab/f671-webxr-hand-verlet-dom-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f671-webxr-hand-verlet-dom-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <strong>Hand Physics Genome</strong><br>
+  Wave hand or drag pointer to fling cards.<br>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-hand-verlet-dom-genome</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

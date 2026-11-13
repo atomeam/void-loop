@@ -97,6 +97,7 @@ const seenCheck = new Set();
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
   ['humble-copy', 'humble-copy.test.mjs'],
+  ['plain-words', 'plain-words.test.mjs'],
   ['log-only', 'log-only.test.mjs'],
   ['handoff-scan', 'handoff-scan.test.mjs'],
   ['handoff-e2e', 'handoff-e2e.mjs'],

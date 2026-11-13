@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0f1419; --card: #1a2332; --accent: #3d8bfd; --warn: #e05d44; --ok: #2ecc71; --text: #e8eef6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; }
+  header { padding: 1rem 1.2rem; border-bottom: 1px solid #2a3544; }
+  h1 { margin: 0 0 0.3rem; font-size: 1.4rem; }
+  .sub { opacity: 0.75; font-size: 0.9rem; }
+  .wrap { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 80px); }
+  @media (max-width: 800px) { .wrap { grid-template-columns: 1fr; } }
+  aside { padding: 1rem; border-right: 1px solid #2a3544; background: #121820; overflow-y: auto; }
+  main { padding: 1rem; overflow: auto; }
+  label { display: block; font-size: 0.85rem; margin: 0.8rem 0 0.3rem; opacity: 0.9; }
+  textarea, input { width: 100%; background: #0d1218; border: 1px solid #2a3544; color: var(--text); padding: 0.5rem; border-radius: 6px; font: inherit; }
+  button { background: var(--accent); color: #fff; border: 0; padding: 0.55rem 0.9rem; border-radius: 6px; cursor: pointer; font: inherit; margin: 0.3rem 0.3rem 0.3rem 0; }
+  button.secondary { background: #2a3544; }
+  button:active { transform: scale(0.98); }
+  .guests { display: flex; flex-wrap: wrap; gap: 0.4rem; min-height: 60px; padding: 0.5rem; background: #0d1218; border-radius: 8px; margin: 0.5rem 0; }
+  .guest { background: var(--card); border: 1px solid #3a4a5c; padding: 0.4rem 0.7rem; border-radius: 20px; cursor: grab; user-select: none; font-size: 0.9rem; }
+  .guest:active { cursor: grabbing; }
+  .guest.conflict { border-color: var(--warn); box-shadow: 0 0 0 2px var(--warn); }
+  .tables { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .table { background: #151c26; border: 2px dashed #3a4a5c; border-radius: 12px; padding: 0.8rem; min-height: 140px; }
+  .table.over { border-color: var(--accent); background: #1a2a3a; }
+  .table h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+  .table .seats { display: flex; flex-wrap: wrap; gap: 0.35rem; min-height: 40px; }
+  .status { margin: 0.5rem 0; font-size: 0.85rem; }
+  .status.ok { color: var(--ok); }
+  .status.warn { color: var(--warn); }
+  #exportCanvas { display: none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial Seating Chart · Verse lab</title>
+<meta name="description" content="Job: A host enters guest names and optional keep-together or keep-apart pairs, then drags guests onto numbered tables.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial Seating Chart · Verse lab">
+<meta property="og:description" content="Job: A host enters guest names and optional keep-together or keep-apart pairs, then drags guests onto numbered tables.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f658-spatial-seating-chart/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f658-spatial-seating-chart/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Seating Chart</h1>
+  <div class="sub">Drag guests onto tables. Constraints highlight conflicts. Download PNG or copy the list. Saved on this device.</div>
+</header>
+<div class="wrap">
+  <aside>
+    <label>Guests (one name per line)</label>
+    <textarea id="guestInput" rows="8" placeholder="Alice&#10;Bob&#10;Carol&#10;..."></textarea>
+    <label>Keep together (pairs, one per line: Name1, Name2)</label>
+    <textarea id="togetherInput" rows="3" placeholder="Alice, Bob"></textarea>
+    <label>Keep apart (pairs, one per line: Name1, Name2)</label>
+    <textarea id="apartInput" rows="3" placeholder="Carol, Dave"></textarea>
+    <button id="applyBtn">Apply list</button>
+    <button id="copyBtn" class="secondary">Copy assignments</button>
+    <button id="pngBtn" class="secondary">Download PNG</button>
+    <button id="shareBtn" class="secondary">Copy share link</button>
+    <div class="status" id="status">Ready</div>
+    <label>Unassigned guests</label>
+    <div class="guests" id="unassigned"></div>
+  </aside>
+  <main>
+    <div class="tables" id="tables"></div>
+  </main>
+</div>
+<canvas id="exportCanvas"></canvas>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

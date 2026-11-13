@@ -28,6 +28,8 @@ export const BOASTS = [
   { id: 'awe', re: /\bawe-?inspiring\b|\bin awe\b/gi },
   { id: 'i-made', re: /\b(?:look what I made|I made [\d,]+|everything I made|I built this:)/gi },
   { id: 'win-count', re: /\b\d[\d,]* (?:sites?|rivals?) (?:surpassed|beaten|conquered)\b|\b(?:surpassed|beaten|conquered) [\d,]+ (?:sites?|rivals?)\b/gi },
+  { id: 'heavy-lifting', re: /\bheavy lifting\b/gi },
+  { id: 'does-the-work', re: /\bVerse does the work\b/gi },
 ];
 
 /** ALLOW: [file, boast id, a piece of the matched line, why]. Keep it small and explicit. */

@@ -20,7 +20,7 @@ export function subjectOf(text) {
   return s.length >= 3 ? s.slice(0, 160) : 'the process';
 }
 
-function suggestChecks(subject) {
+export function suggestChecks(subject) {
   const t = subject.toLowerCase();
   const checks = [];
   if (/email|inbox|message|customer|support/.test(t)) {

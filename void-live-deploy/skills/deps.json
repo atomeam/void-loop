@@ -1,19 +1,19 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1273,
+ "counted": 1287,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 62,
+   "skills": 63,
    "direct": 51,
-   "dependants": 68,
+   "dependants": 69,
    "tests": 6
   },
   {
    "file": "lib/ask-text.js",
-   "skills": 58,
+   "skills": 60,
    "direct": 35,
-   "dependants": 112,
+   "dependants": 114,
    "tests": 6
   },
   {
@@ -32,23 +32,23 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 30,
+   "skills": 31,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 100,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 30,
+   "skills": 31,
    "direct": 1,
-   "dependants": 99,
+   "dependants": 100,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 30,
+   "skills": 31,
    "direct": 0,
-   "dependants": 98,
+   "dependants": 99,
    "tests": 6
   },
   {
@@ -67,9 +67,16 @@
   },
   {
    "file": "lib/skill-family.js",
-   "skills": 24,
-   "direct": 24,
-   "dependants": 24,
+   "skills": 26,
+   "direct": 26,
+   "dependants": 26,
+   "tests": 1
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 23,
+   "direct": 1,
+   "dependants": 82,
    "tests": 1
   },
   {
@@ -80,24 +87,17 @@
    "tests": 1
   },
   {
-   "file": "lib/reactions.js",
-   "skills": 22,
-   "direct": 1,
-   "dependants": 81,
-   "tests": 1
-  },
-  {
    "file": "lib/corrections.js",
-   "skills": 21,
+   "skills": 22,
    "direct": 0,
-   "dependants": 67,
+   "dependants": 68,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
-   "skills": 21,
+   "skills": 22,
    "direct": 6,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 6
   },
   {
@@ -207,9 +207,9 @@
   },
   {
    "file": "lib/success-pulse.js",
-   "skills": 11,
+   "skills": 12,
    "direct": 2,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 2
   },
   {
@@ -227,11 +227,25 @@
    "tests": 0
   },
   {
+   "file": "lib/note-tools.js",
+   "skills": 10,
+   "direct": 4,
+   "dependants": 22,
+   "tests": 1
+  },
+  {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
    "dependants": 21,
    "tests": 2
+  },
+  {
+   "file": "lib/selfcheck.js",
+   "skills": 10,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
   },
   {
    "file": "lib/joins.js",
@@ -297,13 +311,6 @@
    "tests": 1
   },
   {
-   "file": "lib/note-tools.js",
-   "skills": 9,
-   "direct": 4,
-   "dependants": 21,
-   "tests": 1
-  },
-  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
@@ -346,10 +353,10 @@
    "tests": 1
   },
   {
-   "file": "lib/selfcheck.js",
+   "file": "lib/bridges.js",
    "skills": 9,
-   "direct": 1,
-   "dependants": 12,
+   "direct": 4,
+   "dependants": 11,
    "tests": 1
   },
   {
@@ -386,13 +393,6 @@
    "direct": 2,
    "dependants": 14,
    "tests": 4
-  },
-  {
-   "file": "lib/bridges.js",
-   "skills": 8,
-   "direct": 4,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/stage-find.js",
@@ -489,6 +489,20 @@
    "file": "lib/pack5-ui.js",
    "skills": 6,
    "direct": 5,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/practice.js",
+   "skills": 6,
+   "direct": 2,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/pulse.js",
+   "skills": 6,
+   "direct": 2,
    "dependants": 6,
    "tests": 1
   },
@@ -608,20 +622,6 @@
    "file": "lib/opposite-era.js",
    "skills": 5,
    "direct": 5,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/practice.js",
-   "skills": 5,
-   "direct": 2,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/pulse.js",
-   "skills": 5,
-   "direct": 2,
    "dependants": 5,
    "tests": 1
   },
@@ -794,6 +794,13 @@
    "tests": 1
   },
   {
+   "file": "lib/stage-tools.js",
+   "skills": 4,
+   "direct": 3,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/tower.js",
    "skills": 4,
    "direct": 3,
@@ -804,6 +811,13 @@
    "file": "lib/field-cards.js",
    "skills": 4,
    "direct": 2,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/list-ops.js",
+   "skills": 4,
+   "direct": 3,
    "dependants": 4,
    "tests": 1
   },
@@ -825,6 +839,13 @@
    "file": "lib/stage-pack-c.js",
    "skills": 4,
    "direct": 4,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/stage-tools-dom.js",
+   "skills": 4,
+   "direct": 3,
    "dependants": 4,
    "tests": 1
   },
@@ -920,11 +941,11 @@
    "tests": 1
   },
   {
-   "file": "lib/stage-tools.js",
+   "file": "lib/list-goal.js",
    "skills": 3,
-   "direct": 3,
+   "direct": 1,
    "dependants": 4,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tome-search.js",
@@ -983,13 +1004,6 @@
    "tests": 1
   },
   {
-   "file": "lib/list-ops.js",
-   "skills": 3,
-   "direct": 3,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/parody.js",
    "skills": 3,
    "direct": 1,
@@ -1011,13 +1025,6 @@
    "tests": 1
   },
   {
-   "file": "lib/stage-tools-dom.js",
-   "skills": 3,
-   "direct": 3,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/studio-card.js",
    "skills": 3,
    "direct": 3,
@@ -1035,7 +1042,7 @@
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 2
   },
   {
@@ -1063,8 +1070,15 @@
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 36,
+   "tests": 0
   },
   {
    "file": "lib/markets.js",
@@ -1074,11 +1088,11 @@
    "tests": 5
   },
   {
-   "file": "lib/store-products.js",
+   "file": "lib/store.js",
    "skills": 2,
-   "direct": 0,
+   "direct": 1,
    "dependants": 35,
-   "tests": 0
+   "tests": 6
   },
   {
    "file": "lib/proposal.js",
@@ -1086,13 +1100,6 @@
    "direct": 1,
    "dependants": 34,
    "tests": 2
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 34,
-   "tests": 6
   },
   {
    "file": "lib/products.js",
@@ -1212,13 +1219,6 @@
    "direct": 2,
    "dependants": 3,
    "tests": 1
-  },
-  {
-   "file": "lib/list-goal.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/photo-ask.js",
@@ -1722,7 +1722,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 4,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/keep-going.js",
@@ -1933,6 +1933,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 4
+  },
+  {
+   "file": "lib/versus-floor.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/video-gen.js",
@@ -2463,14 +2470,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 111,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 106,
+   "dependants": 110,
    "tests": 36
   },
   {
@@ -2484,22 +2491,22 @@
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 71,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 71,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 67,
-   "tests": 10
+   "dependants": 70,
+   "tests": 11
   },
   {
    "file": "lib/earnings.js",
@@ -2520,7 +2527,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 50,
-   "tests": 6
+   "tests": 7
   },
   {
    "file": "lib/persona.js",
@@ -2719,6 +2726,13 @@
    "tests": 1
   },
   {
+   "file": "lib/db.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
    "file": "lib/watch-build.js",
    "skills": 0,
    "direct": 0,
@@ -2793,7 +2807,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 11,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/verse-wallet-address.js",
@@ -3041,6 +3055,13 @@
    "tests": 1
   },
   {
+   "file": "lib/page-pass.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/paypal.js",
    "skills": 0,
    "direct": 0,
@@ -3150,7 +3171,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/daily-photo.js",
@@ -3752,7 +3773,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/page-picture.js",
@@ -4030,6 +4051,12 @@
    ],
    "importedBy": []
   },
+  "functions/_middleware.js": {
+   "imports": [
+    "lib/page-pass.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/_middleware.js": {
    "imports": [
     "lib/guard.js"
@@ -4060,7 +4087,8 @@
     "lib/models.js",
     "lib/shortfall.js",
     "lib/answer-free.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4250,7 +4278,8 @@
    "imports": [
     "lib/guard.js",
     "lib/boards.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": [
     "functions/fanfic/rss.js"
@@ -4261,7 +4290,8 @@
     "lib/guard.js",
     "lib/reactions.js",
     "lib/calshare.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4274,7 +4304,8 @@
     "lib/wiki-look.js",
     "lib/models.js",
     "lib/art-rules.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": [
     "functions/api/daily-art.js",
@@ -4320,7 +4351,8 @@
     "lib/video-gen.js",
     "functions/api/studio.js",
     "functions/api/image.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4341,7 +4373,8 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/comments.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4377,7 +4410,8 @@
     "lib/daily-photo.js",
     "lib/free-pics.js",
     "lib/daily-cap.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4405,7 +4439,8 @@
   "functions/api/fanfic-hits.js": {
    "imports": [
     "lib/fanfic.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4473,7 +4508,8 @@
     "lib/keeper.js",
     "lib/image-gen.js",
     "functions/api/image.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4485,7 +4521,8 @@
     "lib/keeper.js",
     "lib/comments.js",
     "lib/listgen.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4497,7 +4534,8 @@
     "lib/keeper.js",
     "lib/art-rules.js",
     "lib/listgen.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4578,7 +4616,8 @@
     "functions/api/card-art.js",
     "functions/api/studio.js",
     "lib/image-gen.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": [
     "functions/api/card-art.js",
@@ -4706,7 +4745,8 @@
     "lib/keeper.js",
     "lib/models.js",
     "lib/merge-rules.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4749,6 +4789,13 @@
     "functions/api/answer.js",
     "lib/news.js",
     "lib/http.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/page-pass.js": {
+   "imports": [
+    "lib/store.js",
+    "lib/page-pass.js"
    ],
    "importedBy": []
   },
@@ -4844,7 +4891,8 @@
    "imports": [
     "lib/guard.js",
     "lib/reactions.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -4948,7 +4996,8 @@
     "lib/reactions.js",
     "lib/calshare.js",
     "lib/rsvp.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -5061,7 +5110,8 @@
     "lib/models.js",
     "lib/studio.js",
     "lib/image-gen.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": [
     "functions/api/clip.js",
@@ -5096,7 +5146,8 @@
    "imports": [
     "lib/guard.js",
     "lib/tally.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -5195,6 +5246,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/versus-floor.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/versus-floor.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/video.js": {
    "imports": [
     "lib/video.js"
@@ -5206,7 +5264,8 @@
     "lib/guard.js",
     "lib/reactions.js",
     "lib/visits.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": []
   },
@@ -5239,7 +5298,8 @@
     "lib/models.js",
     "lib/local-media.js",
     "lib/watch-along.js",
-    "lib/http.js"
+    "lib/http.js",
+    "lib/db.js"
    ],
    "importedBy": [
     "functions/api/blueprint.js"
@@ -5589,6 +5649,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
@@ -5949,6 +6010,7 @@
     "skills/own-parts.js",
     "skills/rally.js",
     "skills/rap.js",
+    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -6141,6 +6203,8 @@
     "skills/mini/pentamote.js",
     "skills/own-parts.js",
     "skills/pulse.js",
+    "skills/reliability-pack.js",
+    "skills/stage-marks.js",
     "skills/status-board.js",
     "skills/status-digest.js",
     "skills/system-status.js",
@@ -6441,6 +6505,7 @@
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/reliability-pack.js",
     "skills/showcase.js",
     "skills/status-board.js",
     "skills/status-digest.js",
@@ -7325,7 +7390,8 @@
     "skills/connect4.js",
     "skills/games.js",
     "skills/list-tools.js",
-    "skills/othello.js"
+    "skills/othello.js",
+    "skills/tables.js"
    ]
   },
   "lib/built-detail.js": {
@@ -8289,6 +8355,7 @@
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -8476,6 +8543,36 @@
    ],
    "importedBy": [
     "skills/busy-blocks.js"
+   ]
+  },
+  "lib/db.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/agent.js",
+    "functions/api/boards/[[path]].js",
+    "functions/api/calshare.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/comments.js",
+    "functions/api/daily-art.js",
+    "functions/api/fanfic-hits.js",
+    "functions/api/gallery.js",
+    "functions/api/gen-data.js",
+    "functions/api/generators.js",
+    "functions/api/image.js",
+    "functions/api/merge.js",
+    "functions/api/react.js",
+    "functions/api/rsvp.js",
+    "functions/api/studio.js",
+    "functions/api/tally.js",
+    "functions/api/visit.js",
+    "functions/api/watchalong.js"
+   ],
+   "reachedBy": [
+    "functions/api/blueprint.js",
+    "functions/api/mcp.js",
+    "functions/api/x402/[service].js",
+    "functions/fanfic/rss.js"
    ]
   },
   "lib/decide-cards.js": {
@@ -9468,6 +9565,7 @@
     "functions/api/tower-self.js",
     "functions/api/treasury.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/versus-floor.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -9478,11 +9576,13 @@
     "lib/automations-run.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/void-me.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
@@ -9505,6 +9605,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
     "functions/api/podcasts.js",
@@ -10271,6 +10372,7 @@
     "skills/own-parts.js",
     "skills/rally.js",
     "skills/rap.js",
+    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -10466,7 +10568,8 @@
     "skills/list.js"
    ],
    "reachedBy": [
-    "skills/list-tools.js"
+    "skills/list-tools.js",
+    "skills/tables.js"
    ]
   },
   "lib/list-ops.js": {
@@ -10475,6 +10578,9 @@
     "skills/csv-table.js",
     "skills/list-tools.js",
     "skills/list.js"
+   ],
+   "reachedBy": [
+    "skills/tables.js"
    ]
   },
   "lib/list-templates.js": {
@@ -11067,6 +11173,7 @@
     "skills/own-parts.js",
     "skills/rally.js",
     "skills/rap.js",
+    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status-board.js",
@@ -11671,6 +11778,7 @@
     "skills/lorem.js",
     "skills/password.js",
     "skills/quick-tools.js",
+    "skills/tables.js",
     "skills/util.js",
     "skills/writing-aids.js"
    ]
@@ -11801,6 +11909,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/_middleware.js",
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
@@ -11845,6 +11954,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -11884,6 +11994,7 @@
     "functions/api/treasury.js",
     "functions/api/unbidden.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/versus-floor.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
@@ -11903,6 +12014,7 @@
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js",
     "lib/void-me.js"
@@ -11931,6 +12043,16 @@
     "skills/gamebox.js"
    ]
   },
+  "lib/page-pass.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/void-me.js"
+   ],
+   "importedBy": [
+    "functions/_middleware.js",
+    "functions/api/page-pass.js"
+   ]
+  },
   "lib/page-picture.js": {
    "imports": [],
    "importedBy": []
@@ -11943,6 +12065,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -11975,6 +12098,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -12006,6 +12130,7 @@
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js"
    ]
@@ -12195,6 +12320,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
@@ -12438,6 +12564,7 @@
    "reachedBy": [
     "skills/list-tools.js",
     "skills/list.js",
+    "skills/tables.js",
     "skills/time.js"
    ]
   },
@@ -12730,6 +12857,7 @@
    "reachedBy": [
     "skills/constellation-weaver.js",
     "skills/forge-table.js",
+    "skills/stage-marks.js",
     "skills/whisper-network.js"
    ]
   },
@@ -13134,6 +13262,7 @@
     "skills/merges.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/reliability-pack.js",
     "skills/service-health.js",
     "skills/status-board.js",
     "skills/status-digest.js",
@@ -13746,6 +13875,7 @@
     "skills/client-status.js",
     "skills/delivery-board.js",
     "skills/own-parts.js",
+    "skills/reliability-pack.js",
     "skills/status-board.js",
     "skills/status-digest.js",
     "skills/system-status.js",
@@ -14051,8 +14181,10 @@
     "skills/riddle-gen.js",
     "skills/rooms.js",
     "skills/shop.js",
+    "skills/stage-marks.js",
     "skills/stage-out.js",
     "skills/status-board.js",
+    "skills/tables.js",
     "skills/tilt-arena.js",
     "skills/time.js",
     "skills/where-is.js"
@@ -14402,7 +14534,8 @@
     "skills/null-sweep.js",
     "skills/quick-tools.js",
     "skills/stage-find.js",
-    "skills/stage-out.js"
+    "skills/stage-out.js",
+    "skills/tables.js"
    ]
   },
   "lib/stage-port.js": {
@@ -14426,6 +14559,9 @@
     "skills/stage-arrange.js",
     "skills/stage-organize.js",
     "skills/stage-style.js"
+   ],
+   "reachedBy": [
+    "skills/stage-marks.js"
    ]
   },
   "lib/stage-tools.js": {
@@ -14435,6 +14571,9 @@
     "skills/stage-arrange.js",
     "skills/stage-organize.js",
     "skills/stage-style.js"
+   ],
+   "reachedBy": [
+    "skills/stage-marks.js"
    ]
   },
   "lib/stage-watch.js": {
@@ -14674,6 +14813,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
@@ -14701,6 +14841,7 @@
     "lib/alt-pay.js"
    ],
    "importedBy": [
+    "functions/api/page-pass.js",
     "functions/api/store/[[path]].js",
     "lib/price-lock.js",
     "skills/store.js"
@@ -14878,6 +15019,7 @@
     "skills/client-status.js",
     "skills/delivery-board.js",
     "skills/own-parts.js",
+    "skills/reliability-pack.js",
     "skills/status-board.js",
     "skills/status-digest.js",
     "skills/system-status.js",
@@ -15838,6 +15980,13 @@
     "functions/api/x402/index.js"
    ]
   },
+  "lib/versus-floor.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/versus-floor.js",
+    "skills/tower.js"
+   ]
+  },
   "lib/versus.js": {
    "imports": [],
    "importedBy": [
@@ -15981,9 +16130,11 @@
     "functions/api/watch.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -16011,6 +16162,7 @@
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
     "functions/api/podcasts.js",
@@ -16208,6 +16360,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -16240,6 +16393,7 @@
     "functions/api/merge.js",
     "functions/api/mine.js",
     "functions/api/news.js",
+    "functions/api/page-pass.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
     "functions/api/podcasts.js",
@@ -16271,6 +16425,7 @@
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js"
    ]
@@ -16946,7 +17101,12 @@
   },
   "skills/client-offer.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/full-handoff.js"
+   ],
+   "reachedBy": [
+    "skills/handoffs.js"
+   ]
   },
   "skills/client-status-pack.js": {
    "imports": [
@@ -16960,6 +17120,7 @@
     "skills/delivery-board.js"
    ],
    "reachedBy": [
+    "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
   },
@@ -17168,7 +17329,9 @@
     "lib/list-ops.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/tables.js"
+   ]
   },
   "skills/dark-look.js": {
    "imports": [
@@ -17262,6 +17425,9 @@
    "importedBy": [
     "skills/client-status.js",
     "skills/status-digest.js"
+   ],
+   "reachedBy": [
+    "skills/reliability-pack.js"
    ]
   },
   "skills/delivery-pack.js": {
@@ -17270,6 +17436,10 @@
     "skills/client-handoff.js",
     "skills/handoffs.js"
    ]
+  },
+  "skills/delivery-ready.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -17747,7 +17917,11 @@
    "importedBy": []
   },
   "skills/full-handoff.js": {
-   "imports": [],
+   "imports": [
+    "skills/lift-summary.js",
+    "skills/reuse-pack.js",
+    "skills/client-offer.js"
+   ],
    "importedBy": [
     "skills/handoffs.js"
    ]
@@ -18380,6 +18554,10 @@
    ],
    "importedBy": []
   },
+  "skills/kickoff-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/know.js": {
    "imports": [],
    "importedBy": []
@@ -18399,6 +18577,7 @@
    "importedBy": [
     "skills/constellation-weaver.js",
     "skills/forge-table.js",
+    "skills/stage-marks.js",
     "skills/whisper-network.js"
    ]
   },
@@ -18421,6 +18600,7 @@
    "reachedBy": [
     "skills/constellation-weaver.js",
     "skills/forge-table.js",
+    "skills/stage-marks.js",
     "skills/whisper-network.js"
    ]
   },
@@ -18430,7 +18610,12 @@
   },
   "skills/lift-summary.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/full-handoff.js"
+   ],
+   "reachedBy": [
+    "skills/handoffs.js"
+   ]
   },
   "skills/lift3d.js": {
    "imports": [
@@ -18493,7 +18678,9 @@
     "lib/list-ops.js",
     "skills/list.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/tables.js"
+   ]
   },
   "skills/list.js": {
    "imports": [
@@ -18506,6 +18693,9 @@
    ],
    "importedBy": [
     "skills/list-tools.js"
+   ],
+   "reachedBy": [
+    "skills/tables.js"
    ]
   },
   "skills/live.js": {
@@ -19013,7 +19203,9 @@
   },
   "skills/monitor-pack.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/reliability-pack.js"
+   ]
   },
   "skills/monopoly-rules.js": {
    "imports": [],
@@ -19195,7 +19387,8 @@
     "skills/connect4.js",
     "skills/games.js",
     "skills/list-tools.js",
-    "skills/othello.js"
+    "skills/othello.js",
+    "skills/tables.js"
    ]
   },
   "skills/notes-fill.js": {
@@ -19697,6 +19890,14 @@
    ],
    "importedBy": []
   },
+  "skills/reliability-pack.js": {
+   "imports": [
+    "skills/monitor-pack.js",
+    "skills/verify-pack.js",
+    "skills/status-digest.js"
+   ],
+   "importedBy": []
+  },
   "skills/remediation-velocity.js": {
    "imports": [],
    "importedBy": []
@@ -19744,7 +19945,11 @@
   "skills/reuse-pack.js": {
    "imports": [],
    "importedBy": [
+    "skills/full-handoff.js",
     "skills/reuse-tools.js"
+   ],
+   "reachedBy": [
+    "skills/handoffs.js"
    ]
   },
   "skills/reuse-tools.js": {
@@ -19808,6 +20013,10 @@
     "lib/ritual.js",
     "lib/ics.js"
    ],
+   "importedBy": []
+  },
+  "skills/roi-pack.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/room.js": {
@@ -20216,7 +20425,8 @@
     "skills/list.js"
    ],
    "reachedBy": [
-    "skills/list-tools.js"
+    "skills/list-tools.js",
+    "skills/tables.js"
    ]
   },
   "skills/spanish.js": {
@@ -20314,12 +20524,22 @@
     "skills/quick-tools.js"
    ]
   },
+  "skills/stage-marks.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/stage-organize.js",
+    "skills/label.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-organize.js": {
    "imports": [
     "lib/stage-tools.js",
     "lib/stage-tools-dom.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/stage-marks.js"
+   ]
   },
   "skills/stage-out.js": {
    "imports": [
@@ -20377,7 +20597,8 @@
     "skills/delivery-board.js"
    ],
    "importedBy": [
-    "skills/client-status.js"
+    "skills/client-status.js",
+    "skills/reliability-pack.js"
    ]
   },
   "skills/status.js": {
@@ -20398,6 +20619,7 @@
     "lib/brain-everywhere.js",
     "skills/client-status.js",
     "skills/delivery-board.js",
+    "skills/reliability-pack.js",
     "skills/status-digest.js",
     "skills/verse-brain.js"
    ]
@@ -20536,6 +20758,7 @@
    "reachedBy": [
     "skills/client-status.js",
     "skills/delivery-board.js",
+    "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
   },
@@ -20547,12 +20770,25 @@
    "reachedBy": [
     "skills/client-status.js",
     "skills/delivery-board.js",
+    "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
+  },
+  "skills/systems-owned.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/tab.js": {
    "imports": [
     "lib/context-check.js"
+   ],
+   "importedBy": []
+  },
+  "skills/tables.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/csv-table.js",
+    "skills/list-tools.js"
    ],
    "importedBy": []
   },
@@ -20727,6 +20963,10 @@
     "skills/date-math.js"
    ]
   },
+  "skills/time-saved.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/time.js": {
    "imports": [
     "lib/skill-family.js",
@@ -20759,7 +20999,8 @@
     "skills/time.js"
    ],
    "reachedBy": [
-    "skills/list-tools.js"
+    "skills/list-tools.js",
+    "skills/tables.js"
    ]
   },
   "skills/tip.js": {
@@ -20792,6 +21033,8 @@
   "skills/tower.js": {
    "imports": [
     "lib/tower-art.js",
+    "lib/versus-floor.js",
+    "versus/open.js",
     "lib/tower.js",
     "lib/obituary.js",
     "lib/gate-badge.js",
@@ -20914,7 +21157,9 @@
   },
   "skills/verify-pack.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/reliability-pack.js"
+   ]
   },
   "skills/verse-brain.js": {
    "imports": [

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; border-radius:8px; }
+button { margin:2px; padding:6px 10px; background:#223; color:#fff; border:1px solid #445; border-radius:4px; cursor:pointer; }
+.agent { position:absolute; width:40px; height:40px; border-radius:50%; background:hsla(var(--hue),70%,60%,0.8); border:2px solid #fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:10px; transition:transform 0.1s; pointer-events:auto; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Web Audio Panner Orientation MLP Mind · Verse lab</title>
+<meta name="description" content="A previously unattempted combination for The Verse canvas: a swarm of spatial audio sources embodied as living DOM cards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Web Audio Panner Orientation MLP Mind · Verse lab">
+<meta property="og:description" content="A previously unattempted combination for The Verse canvas: a swarm of spatial audio sources embodied as living DOM cards.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f715-web-audio-panner-orientation-mlp-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f715-web-audio-panner-orientation-mlp-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  F715 Spatial Audio MLP Mind<br>
+  <button id="enable">Enable Audio + Orientation</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <span id="status">Locked</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Web Audio Panner Orientation MLP Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

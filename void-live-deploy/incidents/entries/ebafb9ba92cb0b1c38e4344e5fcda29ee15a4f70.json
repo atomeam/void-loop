@@ -1,0 +1,30 @@
+{
+ "at": "2026-11-12T21:58:33.768Z",
+ "sha": "ebafb9ba92cb0b1c38e4344e5fcda29ee15a4f70",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43310664159",
+ "suite": "browser suite on main",
+ "checks": [
+  "business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step"
+ ],
+ "touched": [
+  "tools/checks.d/lab-theme.chk",
+  "tools/lab-theme.test.mjs",
+  "void-live-deploy/lab/f631-chore-rota/app.js",
+  "void-live-deploy/lab/f631-chore-rota/index.html",
+  "void-live-deploy/lab/f639-label-name-tag-sheet/index.html",
+  "void-live-deploy/lab/f646-weighted-decision-matrix/index.html",
+  "void-live-deploy/lab/f667-spatial-room-layout-planner/app.js",
+  "void-live-deploy/lab/f667-spatial-room-layout-planner/index.html",
+  "void-live-deploy/lab/tool-theme.css"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-12T22:18:19.473Z",
+ "closedBy": "00e53587b7196f33fd28e6a9f95cc3fca3da8423",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/43315825044",
+ "minutes": 20
+}

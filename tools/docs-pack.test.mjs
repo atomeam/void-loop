@@ -21,8 +21,9 @@ test('docs-pack run packages docs without inventing live status', () => {
   });
   assert.equal(ret, 'docs-pack');
   assert.match(html, /Docs pack: Acme onboarding/);
-  assert.match(html, /Verse owns the heavy lifting/);
+  assert.match(html, /This card packages the docs for the system/);
   assert.match(html, /What is documented/);
+  assert.doesNotMatch(html, /heavy lifting/i);
   assert.match(html, /Client does less/);
   assert.doesNotMatch(html, /Last check: green/);
   assert.doesNotMatch(html, /uptime/);

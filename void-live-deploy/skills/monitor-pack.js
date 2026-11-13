@@ -20,7 +20,7 @@ export function subjectOf(text) {
   return s.length >= 3 ? s.slice(0, 160) : 'the process';
 }
 
-function suggestMonitors(subject) {
+export function suggestMonitors(subject) {
   const t = subject.toLowerCase();
   const monitors = [];
   if (/email|inbox|message|customer|support/.test(t)) {

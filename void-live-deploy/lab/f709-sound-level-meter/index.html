@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<style>
+  :root { --bg: #0f1419; --fg: #e6edf3; --accent: #58a6ff; --peak: #f85149; --card: #161b22; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 1rem; }
+  h1 { font-size: 1.4rem; margin: 0.5rem 0; }
+  .disclaimer { font-size: 0.8rem; opacity: 0.7; max-width: 36rem; text-align: center; margin: 0.5rem 0 1rem; }
+  .meter { background: var(--card); border-radius: 12px; padding: 1.5rem; width: min(100%, 28rem); text-align: center; box-shadow: 0 4px 24px #0006; }
+  .level { font-size: 4rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; color: var(--accent); }
+  .peak { font-size: 1.2rem; color: var(--peak); margin-top: 0.25rem; }
+  .unit { font-size: 1rem; opacity: 0.8; }
+  canvas { width: 100%; height: 120px; background: #0d1117; border-radius: 8px; margin: 1rem 0; display: block; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin: 1rem 0; }
+  button { background: var(--accent); color: #0f1419; border: none; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  button.secondary { background: #30363d; color: var(--fg); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #status { font-size: 0.85rem; opacity: 0.8; min-height: 1.2em; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sound level meter · Verse lab</title>
+<meta name="description" content="Job: Point your phone at a noise source; the page shows the current level in dBFS from the microphone, holds the peak, draws a short history, and lets you copy the">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sound level meter · Verse lab">
+<meta property="og:description" content="Job: Point your phone at a noise source; the page shows the current level in dBFS from the microphone, holds the peak, draws a short history, and lets you copy the">
+<meta property="og:url" content="https://a-to-mind.com/lab/f709-sound-level-meter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f709-sound-level-meter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Sound level meter</h1>
+<p class="disclaimer">Relative level from this device’s microphone in dBFS. Phones and browsers are not calibrated sound-level meters; values are approximate and device-dependent. Nothing is sent anywhere.</p>
+
+<div class="meter">
+  <div class="level" id="level">—</div>
+  <div class="unit">dBFS</div>
+  <div class="peak" id="peak">Peak: —</div>
+  <canvas id="graph" width="400" height="120"></canvas>
+  <div id="status">Tap Start to allow the microphone.</div>
+</div>
+
+<div class="controls">
+  <button id="start">Start listening</button>
+  <button id="stop" class="secondary" disabled>Stop</button>
+  <button id="copy" class="secondary" disabled>Copy reading</button>
+  <button id="download" class="secondary" disabled>Download CSV</button>
+  <button id="resetPeak" class="secondary">Reset peak</button>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

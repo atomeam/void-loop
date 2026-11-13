@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --hue: 200;
+    --gap: 12px;
+  }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: hsl(var(--hue), 40%, 8%);
+    color: #e0e0e0;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--gap);
+    height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+    transition: grid-template-columns 0.15s ease, gap 0.15s ease;
+  }
+  .cell {
+    background: hsl(var(--hue), 30%, 15%);
+    border: 1px solid hsl(var(--hue), 40%, 30%);
+    border-radius: 8px;
+    padding: 12px;
+    overflow: auto;
+    min-height: 0;
+    outline: none;
+  }
+  .cell:focus {
+    border-color: hsl(var(--hue), 60%, 50%);
+  }
+  #hud {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.6);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 10;
+  }
+  button {
+    margin-right: 8px;
+    background: hsl(var(--hue), 40%, 25%);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.2); }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>pointer-rnn-css-grid-reflow-mind · Verse lab</title>
+<meta name="description" content="Novel combination never previously attempted: a pure-local Elman-style recurrent net (implemented in a Web Worker) whose hidden state is decoded directly into CSS">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="pointer-rnn-css-grid-reflow-mind · Verse lab">
+<meta property="og:description" content="Novel combination never previously attempted: a pure-local Elman-style recurrent net (implemented in a Web Worker) whose hidden state is decoded directly into CSS">
+<meta property="og:url" content="https://a-to-mind.com/lab/f707-pointer-rnn-css-grid-reflow-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f707-pointer-rnn-css-grid-reflow-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="grid">
+  <div class="cell" contenteditable="true">Pointer history drives the layout.</div>
+  <div class="cell" contenteditable="true">Local recurrent net reflows the grid.</div>
+  <div class="cell" contenteditable="true">Edit these notes; they bias the mind.</div>
+  <div class="cell" contenteditable="true">No particles. No absolute agents.</div>
+  <div class="cell" contenteditable="true">The CSS grid template is the embodiment.</div>
+  <div class="cell" contenteditable="true">Seal the weights. Download the state.</div>
+</div>
+<div id="hud">
+  <button id="seal">Seal Mind</button>
+  <button id="reset">Reset Weights</button>
+  <button id="download">Download</button>
+  <span id="status">Move pointer to reflow</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">pointer-rnn-css-grid-reflow-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

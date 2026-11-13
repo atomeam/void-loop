@@ -5580,7 +5580,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-12"
+   "at": "2026-11-13"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -5904,6 +5904,20 @@
   "freshvaultcommunity.nl": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "fullstackwebdev.ru": {
+   "bytes": 16260,
+   "controls": 1,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 71,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 1174,
+   "shell": "none",
+   "weight": 18970,
+   "at": "2026-11-13"
   },
   "g.co": {
    "bytes": 7223,
@@ -6836,7 +6850,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 14,
+   "bytes": 13,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6845,9 +6859,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 13,
-   "weight": 14,
-   "at": "2026-11-12"
+   "text": 12,
+   "weight": 13,
+   "at": "2026-11-13"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -8767,6 +8781,20 @@
    "weight": 487613,
    "at": "2026-10-30"
   },
+  "nivos.net": {
+   "bytes": 1773,
+   "controls": 5,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 35,
+   "routes": 0,
+   "htmlControls": 5,
+   "counted": "rendered",
+   "text": 285,
+   "shell": "none",
+   "weight": 4123,
+   "at": "2026-11-13"
+  },
   "nnamdicenter.org": {
    "bytes": 338380,
    "controls": 18,
@@ -9819,6 +9847,20 @@
    "weight": 654912,
    "at": "2026-10-30"
   },
+  "prostitutkimsk1.xyz": {
+   "bytes": 70,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 0,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "plain",
+   "shell": "none",
+   "text": 37,
+   "weight": 70,
+   "at": "2026-11-13"
+  },
   "proton.me": {
    "bytes": 835896,
    "controls": 318,
@@ -10576,6 +10618,10 @@
    "shell": "none",
    "weight": 733415,
    "at": "2026-10-30"
+  },
+  "sara.ovh": {
+   "refused": true,
+   "at": "2026-11-13"
   },
   "satisfactory-calculator.com": {
    "bytes": 689362,

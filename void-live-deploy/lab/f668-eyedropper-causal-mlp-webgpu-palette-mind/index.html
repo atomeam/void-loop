@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; display:flex; flex-direction:column; height:100vh; }
+header { padding:12px 16px; background:#222; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+button, input { padding:8px 14px; border:0; border-radius:6px; background:#444; color:#fff; cursor:pointer; font-size:14px; }
+button:hover { background:#555; }
+#swatch { width:40px; height:40px; border-radius:6px; border:2px solid #666; background:#333; }
+canvas { flex:1; display:block; background:#000; }
+#info { font-size:12px; opacity:0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>eyedropper-causal-mlp-webgpu-palette-mind · Verse lab</title>
+<meta name="description" content="Branches away from the recent spatial physical layout cluster (room planners F667, kanban F666, dependency F665, chore rota F663, seating, meal, notes).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="eyedropper-causal-mlp-webgpu-palette-mind · Verse lab">
+<meta property="og:description" content="Branches away from the recent spatial physical layout cluster (room planners F667, kanban F666, dependency F665, chore rota F663, seating, meal, notes).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f668-eyedropper-causal-mlp-webgpu-palette-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f668-eyedropper-causal-mlp-webgpu-palette-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <button id="sample">Sample Color (EyeDropper)</button>
+  <div id="swatch" title="Last sample"></div>
+  <button id="train">Train step</button>
+  <button id="reset">Reset mind</button>
+  <button id="save">Save weights</button>
+  <span id="info">MLP ready · particles: 0</span>
+</header>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">eyedropper-causal-mlp-webgpu-palette-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/photo-palette/" data-tool="Photo palette">Use it: Photo palette</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

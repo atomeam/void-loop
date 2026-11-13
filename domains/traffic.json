@@ -1,13 +1,13 @@
 {
- "at": "2026-11-12T13:47Z",
+ "at": "2026-11-13T13:08Z",
  "source": "verse",
  "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
  "week": {
-  "since": "2026-11-06",
+  "since": "2026-11-07",
   "unique": true,
-  "people": 97,
-  "views": 473,
-  "ours": 21419,
+  "people": 74,
+  "views": 311,
+  "ours": 18761,
   "bots": 0
  },
  "days": [
@@ -149,25 +149,33 @@
   },
   {
    "day": "2026-11-12",
-   "all": 649,
-   "people": 19,
-   "ours": 630,
+   "all": 3536,
+   "people": 58,
+   "ours": 3478,
    "bots": 0,
-   "uniquePeople": 13
+   "uniquePeople": 27
+  },
+  {
+   "day": "2026-11-13",
+   "all": 199,
+   "people": 3,
+   "ours": 196,
+   "bots": 0,
+   "uniquePeople": 3
   }
  ],
  "pages": [
   {
    "k": "/",
-   "n": 537
+   "n": 557
   },
   {
    "k": "/lab/",
-   "n": 223
+   "n": 231
   },
   {
    "k": "/team/",
-   "n": 101
+   "n": 102
   },
   {
    "k": "/films/",
@@ -175,14 +183,14 @@
   },
   {
    "k": "/brain/",
+   "n": 32
+  },
+  {
+   "k": "/tools/",
    "n": 31
   },
   {
    "k": "/conquered/",
-   "n": 28
-  },
-  {
-   "k": "/tools/",
    "n": 28
   },
   {
@@ -194,14 +202,14 @@
    "n": 14
   },
   {
-   "k": "/code-review/",
-   "n": 12
+   "k": "/podcasts/",
+   "n": 13
   }
  ],
  "referrers": [
   {
    "k": "google.com",
-   "n": 27
+   "n": 28
   },
   {
    "k": "bing.com",
@@ -215,7 +223,7 @@
  "countries": [
   {
    "k": "US",
-   "n": 1170
+   "n": 1209
   },
   {
    "k": "TR",
@@ -226,15 +234,19 @@
    "n": 10
   },
   {
+   "k": "CN",
+   "n": 6
+  },
+  {
    "k": "NL",
    "n": 5
   },
   {
-   "k": "CN",
-   "n": 4
+   "k": "DE",
+   "n": 3
   },
   {
-   "k": "DE",
+   "k": "GB",
    "n": 3
   },
   {
@@ -246,13 +258,9 @@
    "n": 2
   },
   {
-   "k": "GB",
-   "n": 2
-  },
-  {
    "k": "SG",
    "n": 2
   }
  ],
- "line": "People this week: 97 (473 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+ "line": "People this week: 74 (311 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }

@@ -1,217 +1,45 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 121,
+ "cases": 122,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 213,
+  "visitor": 217,
   "grow": 38,
-  "file": 45,
+  "file": 41,
   "tighten": 2,
   "none": 2
  },
  "runs": [
   {
-   "at": "2026-11-12T15:04:30Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T13:42:50Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T13:13:32Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T12:05:12Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-12T11:36:36Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T08:50:40Z",
-   "passed": 120,
-   "of": 122,
+   "at": "2026-11-13T14:22:25Z",
+   "passed": 110,
+   "of": 125,
    "kind": "file",
-   "ms": 341,
-   "note": "fix: \"bridge these inputs\" only \"waking up\" appeared, never the answer",
+   "ms": 388,
+   "note": "quality upgrade: weakest answer was \"favorite this\" (17 chars)",
    "failed": [
     {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bridge these inputs",
+     "ask": "turn the questions i missed into a five-minute challenge",
      "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-12T08:39:47Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-12T08:05:47Z",
-   "passed": 118,
-   "of": 122,
-   "kind": "grow",
-   "ms": 329,
-   "note": "new ground passed, kept as a regression case: \"next system slice for the client onboarding\" (skill:system-slice)",
-   "failed": [
+    },
     {
-     "ask": "redner a cartoon dragon",
+     "ask": "attention field",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "stlye like mickey mouse",
+     "ask": "flip this card",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "geenrate a toon style dog",
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for ikiru pls",
      "why": "refused: don't know this yet"
     },
     {
-     "ask": "top coins",
-     "why": "console: Failed to load resource: the server responded with a status of 503 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-12T07:54:14Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-12T07:42:58Z",
-   "passed": 116,
-   "of": 124,
-   "kind": "file",
-   "ms": 373,
-   "note": "quality upgrade: weakest answer was \"send it away\" (16 chars)",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "icebreakers about hiking",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "vers lab",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "heavy lift map: invoice reminders that run themselves",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "make a client proposal for invoice reminders",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "map to existing tools: invoice reminders",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-12T07:30:03Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-12T05:48:10Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T04:10:41Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T02:56:30Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T02:27:41Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T01:59:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-12T01:17:47Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T00:08:04Z",
-   "passed": 118,
-   "of": 123,
-   "kind": "grow",
-   "ms": 477,
-   "note": "new ground passed, kept as a regression case: \"bridge these inputs\" (skill:bridge)",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "longevity trial watch",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "arcade games",
+     "ask": "who is the auhtor of dune",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
@@ -219,99 +47,253 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "draw yourself pls",
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "credits",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "client brief for Acme onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "lift summary for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "bridge these inputs",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-13T14:08:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-13T13:41:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-13T13:17:06Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-13T09:57:52Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-13T02:12:37Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-13T01:44:12Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-13T01:17:53Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-12T23:47:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T23:20:39Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T22:48:56Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T22:17:22Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T21:51:01Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T21:24:54Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 13/15"
+  },
+  {
+   "at": "2026-11-12T20:56:45Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T20:15:23Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T19:43:45Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T19:14:59Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-12T18:22:54Z",
+   "passed": 119,
+   "of": 123,
+   "kind": "grow",
+   "ms": 344,
+   "note": "new ground passed, kept as a regression case: \"handoff pack for my SaaS idea\" (skill:handoffs)",
+   "failed": [
+    {
+     "ask": "is waymo in austin",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "film meatdata for ikiru",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
   },
   {
-   "at": "2026-11-11T23:55:41Z",
+   "at": "2026-11-12T18:11:26Z",
    "passed": 0,
    "of": 0,
    "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-11T23:27:02Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
+   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-20",
+   "from": "2026-08-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-27",
+   "from": "2026-08-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-03",
+   "from": "2026-09-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-10",
+   "from": "2026-09-11",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-17",
+   "from": "2026-09-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-24",
+   "from": "2026-09-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-01",
+   "from": "2026-10-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-08",
+   "from": "2026-10-09",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-15",
+   "from": "2026-10-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-22",
+   "from": "2026-10-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-29",
-   "runs": 59,
-   "passed": 1302,
-   "of": 1418,
-   "ms": 336
+   "from": "2026-10-30",
+   "runs": 83,
+   "passed": 2113,
+   "of": 2257,
+   "ms": 373
   },
   {
-   "from": "2026-11-05",
-   "runs": 241,
-   "passed": 5632,
-   "of": 7384,
+   "from": "2026-11-06",
+   "runs": 217,
+   "passed": 4576,
+   "of": 6266,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -728,6 +710,11 @@
   "skill:ownership": "2026-11-12T07:42:58Z",
   "skill:proposals": "2026-11-12T07:42:58Z",
   "skill:reuse-tools": "2026-11-12T07:42:58Z",
-  "skill:system-slice": "2026-11-12T08:05:47Z"
+  "skill:system-slice": "2026-11-12T08:05:47Z",
+  "skill:handoffs": "2026-11-12T18:22:54Z",
+  "skill:quick-tools": "2026-11-12T18:22:54Z",
+  "skill:delivery-dashboard": "2026-11-13T14:22:25Z",
+  "skill:kickoff-pack": "2026-11-13T14:22:25Z",
+  "skill:reliability-pack": "2026-11-13T14:22:25Z"
  }
 }

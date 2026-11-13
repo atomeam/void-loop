@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; }
+#controls { padding: 12px; background: #222; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+input, button, select { padding: 6px 10px; font-size: 14px; }
+#board { position: relative; width: 100%; height: 70vh; background: #1a1a1a; overflow: hidden; border-top: 1px solid #333; }
+.card { position: absolute; min-width: 80px; padding: 8px; background: #333; border: 2px solid #555; border-radius: 6px; cursor: grab; user-select: none; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+.card.pinned { border-color: #0f0; }
+.card.bin0 { background: #2a3a4a; }
+.card.bin1 { background: #3a2a4a; }
+.card.bin2 { background: #4a3a2a; }
+.card.bin3 { background: #2a4a3a; }
+#status { font-size: 12px; opacity: .7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>GPU Spatial Packer · Verse lab</title>
+<meta name="description" content="Job: Enter items with names and relative sizes; a local WebGPU force simulation packs them into non-overlapping spatial bins on the canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="GPU Spatial Packer · Verse lab">
+<meta property="og:description" content="Job: Enter items with names and relative sizes; a local WebGPU force simulation packs them into non-overlapping spatial bins on the canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f673-webgpu-spatial-bin-packer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f673-webgpu-spatial-bin-packer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="controls">
+  <input id="name" placeholder="Item name" />
+  <label>Size <input id="size" type="range" min="1" max="10" value="3" /></label>
+  <button id="add">Add</button>
+  <button id="pack">Pack (GPU if available)</button>
+  <label>Bins <select id="bins"><option>2</option><option>3</option><option selected>4</option></select></label>
+  <button id="png">Download PNG</button>
+  <button id="csv">Download CSV</button>
+  <span id="status">Ready</span>
+</div>
+<div id="board"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">GPU Spatial Packer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

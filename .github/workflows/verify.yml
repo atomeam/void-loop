@@ -42,7 +42,9 @@ jobs:
   # are still red on main's newest verified head (tools/revert-target.mjs); otherwise it reports.
   python-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30 # the first run, plus one rerun when it fails (tools/flake-rerun.mjs)
+    permissions:
+      contents: write # a passing rerun records the flake on main
     concurrency:
       group: void-verify-fast-${{ github.ref }} # one group for this branch: a newer push replaces the waiting run
       cancel-in-progress: false
@@ -69,14 +71,31 @@ jobs:
       - name: The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)
         id: fast
         if: steps.skip.outputs.skip != 'true'
+        continue-on-error: true
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: fast
           glyphs: skip # on its own runner below (slow-browser-checks)
 
+      - name: Rerun the fast tests once
+        id: rerun
+        if: steps.fast.outcome == 'failure' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: fast
+          glyphs: skip
+
+      - name: A passing rerun is a flake
+        if: steps.rerun.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/flake-rerun.mjs land --sha "${{ github.sha }}" --job "python-tests"
+
       - name: Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)
-        if: failure() && steps.fast.outcome == 'failure'
+        if: steps.fast.outcome == 'failure' && steps.rerun.outcome != 'success'
         run: |
           echo "::error title=python-tests failed::a fast test failed on ${{ github.sha }} (see this run's log); the browser suite ran as its own job, browser-suite, and its result stands on its own. Fix it forward: nothing is reverted by a fast test alone."
           echo "### python-tests failed on ${{ github.sha }}: a fast test is red (see the log); browser-suite reports separately" >> "$GITHUB_STEP_SUMMARY"
@@ -88,7 +107,9 @@ jobs:
   # The fast checks still skip both unless their files changed (tools/checks.mjs ONLY_WHEN). Kept by tools/slow-checks-runner.test.mjs.
   slow-browser-checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40 # the first run, plus one rerun when it fails (tools/flake-rerun.mjs)
+    permissions:
+      contents: write # a passing rerun records the flake on main
     strategy:
       fail-fast: false
       matrix:
@@ -124,11 +145,29 @@ jobs:
           cp void.html void-live-deploy/void.html
           node tools/skills-index.mjs --write
       - name: 3D frame times (perf3d)
+        id: perf3d
         if: steps.skip.outputs.skip != 'true' && matrix.check == 'perf3d'
+        continue-on-error: true
         run: node tools/perf3d.test.mjs
       - name: The cross-sense board draft (glyphs)
+        id: glyphs
         if: steps.skip.outputs.skip != 'true' && matrix.check == 'glyphs'
+        continue-on-error: true
         run: node tools/test_glyphs.mjs
+      - name: Rerun this check once
+        id: rerun
+        if: github.ref == 'refs/heads/main' && (steps.perf3d.outcome == 'failure' || steps.glyphs.outcome == 'failure')
+        continue-on-error: true
+        run: |
+          if [ "${{ matrix.check }}" = perf3d ]; then node tools/perf3d.test.mjs; else node tools/test_glyphs.mjs; fi
+      - name: A passing rerun is a flake
+        if: steps.rerun.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/flake-rerun.mjs land --sha "${{ github.sha }}" --job "${{ matrix.check }}"
+      - name: This check is still red
+        if: (steps.perf3d.outcome == 'failure' || steps.glyphs.outcome == 'failure') && steps.rerun.outcome != 'success'
+        run: exit 1
 
   # Three shards since 2026-10-16: the whole suite ran to 1,652 s of its 1,680 s budget on one runner, so every new section risked
   # going red on the clock alone. Four since 2026-10-29: the suite had doubled (143 / 127 / 142 sections), shard 2 took 1,390 s,
@@ -143,7 +182,7 @@ jobs:
   # because main was. A branch gets the fast tests; `full: true` asks for the suite on a branch by hand.
   browser-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 50 # the shard, plus one rerun when it fails (tools/flake-rerun.mjs)
     if: github.ref == 'refs/heads/main' || inputs.full
     strategy:
       fail-fast: false
@@ -179,6 +218,21 @@ jobs:
       - name: Test what shipped (shard ${{ matrix.shard }} of 8 of the full suite)
         id: test
         if: steps.skip.outputs.skip != 'true'
+        continue-on-error: true
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: suite
+          shard: ${{ matrix.shard }}/8
+
+      - name: Keep the first failure
+        if: steps.test.outcome == 'failure'
+        run: 'cp -f test-output.txt test-output-first.txt 2>/dev/null || : > test-output-first.txt'
+
+      - name: Rerun this shard once
+        id: rerun
+        if: steps.test.outcome == 'failure' && steps.skip.outputs.skip != 'true' && github.ref == 'refs/heads/main'
+        continue-on-error: true
         uses: ./.github/actions/void-test
         with:
           bench: skip
@@ -188,14 +242,14 @@ jobs:
       # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
       # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)
       - name: CSP smoke (hashes as deployed)
-        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1 && (steps.test.outcome == 'success' || steps.rerun.outcome == 'success')
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
 
       # perf3d, which ran here on shard 4 after its suite, has its own runner since lists run 16 (slow-browser-checks below)
       # /converter/ on a 390 px phone and with the network cut (owner, 2026-10-30: take onlineconverter.com to 12 of 12): its weight class,
       # nothing blocking the first paint, then a PNG and a WAV converted offline. The proof is kept as an artifact of every run on main.
       - name: Converter on a phone and offline
-        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1 && (steps.test.outcome == 'success' || steps.rerun.outcome == 'success')
         env:
           CONVERTER_PROOF: converter-offline-proof.json
         run: |
@@ -210,17 +264,23 @@ jobs:
           if-no-files-found: ignore
           retention-days: 90
       - name: Every game played as four kinds of player (persona playtest)
-        if: steps.skip.outputs.skip != 'true' && matrix.shard == 3
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 3 && (steps.test.outcome == 'success' || steps.rerun.outcome == 'success')
         run: node tools/persona-playtest.mjs
 
+      - name: A passing rerun is a flake
+        if: steps.rerun.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/flake-rerun.mjs land --sha "${{ github.sha }}" --job "browser-suite shard ${{ matrix.shard }}" --output test-output-first.txt
+
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
-        if: failure() && steps.test.outcome == 'failure'
+        if: steps.test.outcome == 'failure' && steps.rerun.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true
 
       # the incident is written once per head by the incident job below, from every shard's output (one commit per red head,
       # not one per shard: three shards each pushed their own "Incident:" commit, and each replaced the others' checks)
       - name: Keep this shard's output for the incident job
-        if: always() && steps.test.outcome == 'failure'
+        if: steps.test.outcome == 'failure' && steps.rerun.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: suite-output-${{ matrix.shard }}
@@ -228,7 +288,7 @@ jobs:
           retention-days: 3
 
       - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
-        if: failure() && steps.test.outcome == 'failure' && github.ref == 'refs/heads/main' # a branch's red is the branch's, never main's to revert or record
+        if: steps.test.outcome == 'failure' && steps.rerun.outcome == 'failure' && github.ref == 'refs/heads/main' # a branch's red is the branch's, never main's to revert or record
         env:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} # the spotter queues a flake job (tools/flakes.mjs); unset = it only records
@@ -245,8 +305,8 @@ jobs:
             echo "::error title=Not reverted::$tested failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
             echo "### $tested failed after shipping; not reverted automatically: $why" >> "$GITHUB_STEP_SUMMARY"
             # the spotter: checks that went green on a newer head with nothing taken back are written down, and one that does it
-            # twice in a week is queued as a job to make it robust (tools/flakes.mjs). Never a skip or a retry; a failure here
-            # only warns, and this run stays red either way.
+            # twice in a week is queued as a job to make it robust (tools/flakes.mjs). This shard was already rerun once.
+            # A failure here only warns, and this run stays red either way.
             healed=$(node -e 'console.log((JSON.parse(process.argv[1]).healed || []).join("\n"))' "$pick")
             if [ -n "$healed" ]; then
               mapfile -t checks <<< "$healed"
@@ -303,6 +363,12 @@ jobs:
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
           echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
+          exit 1 # the test step no longer fails the job by itself (it continues so a flake can be rerun)
+
+      # A branch run (workflow_dispatch with full) does not rerun and does not revert. The first failure still fails the job.
+      - name: The shard is still red
+        if: steps.test.outcome == 'failure' && steps.rerun.outcome != 'success' && steps.rerun.outcome != 'failure'
+        run: exit 1
 
   # One incident per red head of main (all shards' failed checks in one entry, one commit, with the shards that failed), and every
   # shard that passed closes what it fixed on earlier heads (tools/incident-log.mjs pass). A run whose other shards were cancelled

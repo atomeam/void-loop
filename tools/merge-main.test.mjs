@@ -6,6 +6,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execSync, spawnSync } from 'node:child_process';
 import { mergeIndex } from './merge-index.mjs';
+import { mergeInbox, mergeRegistry, stages } from './shared-merge.mjs';
+import { claim, guarded, CAP } from './fix-cap.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const INDEX = 'void-live-deploy/skills/index.json';
@@ -37,20 +39,32 @@ function repo(mainList, branchList) {
 }
 const mergeMain = (cwd) => spawnSync(process.execPath, [join(here, 'merge-main.mjs')], { cwd, encoding: 'utf8' });
 
-test('merge-main settles a tail collision in the skill index by keeping both sides', () => {
+test('merge-main settles a skill-index collision as the union, keyed by id and sorted', () => {
   const a = repo(['a', 'b', 'c', 'x'], ['a', 'b', 'c', 'y']);
   const r = mergeMain(a);
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.match(r.stdout, /skills\/index\.json: kept main's order and added this branch's new skills/);
-  assert.deepEqual(JSON.parse(readFileSync(join(a, INDEX), 'utf8')), ['a', 'b', 'c', 'y', 'x']);
+  assert.match(r.stdout, /keyed by skill id, sorted/);
+  assert.deepEqual(JSON.parse(readFileSync(join(a, INDEX), 'utf8')), ['a', 'b', 'c', 'x', 'y']);
   assert.equal(execSync('git status --porcelain', { cwd: a, encoding: 'utf8' }).trim(), '', 'the merge is committed');
 });
 
-test('merge-main still stops for a person when the branch moved a skill', () => {
+test('a rebase onto main settles the index with main in stage 2', () => {
+  assert.deepEqual(stages(false), { main: 3, pr: 2 });
+  assert.deepEqual(stages(true), { main: 2, pr: 3 });
+  const a = repo(['a', 'b', 'c', 'x'], ['a', 'b', 'c', 'y']);
+  execSync('git fetch -q origin main', { cwd: a, stdio: 'ignore' });
+  const conflict = spawnSync('git', ['rebase', 'origin/main'], { cwd: a, encoding: 'utf8' });
+  assert.notEqual(conflict.status, 0, 'the two indexes conflict');
+  const r = spawnSync(process.execPath, [join(here, 'shared-merge.mjs'), '--rebase'], { cwd: a, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(join(a, INDEX), 'utf8')), ['a', 'b', 'c', 'x', 'y']);
+});
+
+test('merge-main still settles the index when the two sides order shared names differently', () => {
   const a = repo(['a', 'b', 'c', 'x'], ['a', 'c', 'b']);
   const r = mergeMain(a);
-  assert.equal(r.status, 1);
-  assert.match(r.stderr, /conflicts need a person: void-live-deploy\/skills\/index\.json/);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.deepEqual(JSON.parse(readFileSync(join(a, INDEX), 'utf8')), ['a', 'b', 'c', 'x']);
 });
 
 // domains/handoff.md and tools/families.mjs are append-mostly: two branches adding a line/skill at the same spot
@@ -121,4 +135,34 @@ test('merge-main still stops for a person on a conflict in a file nobody generat
   const r = mergeMain(a);
   assert.equal(r.status, 1);
   assert.match(r.stderr, /conflicts need a person: docs\/notes\.md/);
+});
+
+test('a growth-inbox row never goes backwards, and a new ask is kept', () => {
+  const table = (rows) => '| status | date | ask | source |\n| --- | --- | --- | --- |\n' + rows.join('\n') + '\n';
+  const main = table(['| shipped abc | 2026-11-01 | share this card | plan |', '| open | 2026-11-02 | a new timer | idea |']);
+  const pr = table(['| open | 2026-11-03 | share this card | old |', '| building | 2026-11-04 | a new timer | idea |', '| open | 2026-11-05 | draw a map | idea |']);
+  const rows = (text) => text.split('\n').filter((l) => l.startsWith('|') && !/status|---/.test(l));
+  const got = rows(mergeInbox(main, pr));
+  assert.ok(got.some((l) => /shipped abc/.test(l) && /share this card/.test(l)), 'a shipped row stays shipped');
+  assert.ok(got.some((l) => /building/.test(l) && /a new timer/.test(l)), 'open moves forward to building');
+  assert.ok(got.some((l) => /draw a map/.test(l)));
+  assert.deepEqual(mergeRegistry(['b', 'a'], ['c', 'a']), ['a', 'b', 'c']);
+});
+
+test('the copy rewriter and the conflict fixer each stop after two attempts', () => {
+  let comments = [];
+  const write = () => true;
+  for (let i = 0; i < CAP; i++) {
+    const step = guarded(comments, 'copy', write);
+    assert.equal(step.allowed, true);
+    assert.equal(step.wrote, true);
+    comments = [{ id: 1, body: step.body }];
+  }
+  const third = guarded(comments, 'copy', write);
+  assert.equal(third.allowed, false);
+  assert.equal(third.wrote, false);
+  const conflict = claim(comments, 'conflict');
+  assert.equal(conflict.allowed, true);
+  assert.equal(claim([{ body: conflict.body }], 'conflict').count, 2);
+  assert.equal(claim([{ body: '<!-- fix-cap copy=0 conflict=2 -->' }], 'conflict').allowed, false);
 });

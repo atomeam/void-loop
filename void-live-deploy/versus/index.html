@@ -5,25 +5,29 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Versus · Verse</title>
-<meta name="description" content="Verse's own working versions of other sites' jobs: a readable page, a timed track list, and a letter rotator.">
+<meta name="description" content="Versus.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/versus/">
 <meta property="og:title" content="Versus · Verse">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="verse-handoff" content="in: none; out: none">
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/versus-floor.js">
+<link rel="modulepreload" href="/versus/open.js">
+<link rel="modulepreload" href="/lib/owner-link.js">
+<!-- /modulepreload -->
 </head>
 <body>
-<main>
-  <h1>Versus</h1>
-  <p>Three working tools. Verse is a large site; this is one corner of it.</p>
-  <ul>
-    <li><a href="/our-motherfucking-version/">A readable page</a>. Dark type from Verse, plus a count of the bytes, pictures, fonts and scripts in markup you paste.</li>
-    <li><a href="/track-times/">Track times</a>. A timed list you can read, copy, total, and replace with your own.</li>
-    <li><a href="/rotate-letters/">Rotate letters</a>. Shift letters by a number you pick. It still works with scripts off.</li>
-  </ul>
-  <p>Related: <a href="/under-the-hood/">how Verse is built</a>, <a href="/base64/">Base64</a>, <a href="/convert/">unit converter</a>, <a href="/word-count/">word counter</a>.</p>
+<main id="elv-root">
+  <div class="elv" data-owner="0"><div class="elv-doors" aria-hidden="true"><span class="elv-door"></span><span class="elv-seam"></span><span class="elv-door"></span></div><h1 class="elv-sign"><span class="elv-tape" aria-hidden="true"></span>Out of Order</h1></div>
 </main>
+<script type="module">
+import { ownerHtml } from '/lib/versus-floor.js';
+import { ownerModel } from '/versus/open.js';
+const model = await ownerModel();
+if (model) document.getElementById('elv-root').innerHTML = ownerHtml(model); // void-review: ok (ownerHtml runs every value through esc before it is placed in the markup)
+</script>
 <script type="module" src="/verse-shell.js"></script>
 </body>
 </html>

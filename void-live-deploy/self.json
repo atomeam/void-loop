@@ -256,7 +256,7 @@
   {
    "state": "shipped",
    "date": "2026-11-03",
-   "ask": "delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations, we own…",
+   "ask": "delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations)",
    "from": "new idea by growth agent; helper/delivery-pack"
   },
   {
@@ -274,7 +274,7 @@
   {
    "state": "shipped",
    "date": "2026-11-05",
-   "ask": "system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors…",
+   "ask": "system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors)",
    "from": "new idea by growth agent; helper/system-handoff"
   },
   {
@@ -298,7 +298,7 @@
   {
    "state": "shipped",
    "date": "2026-11-09",
-   "ask": "ownership-pack skill: clarify what Verse owns versus what the client owns so handoffs reduce client work and package…",
+   "ask": "ownership-pack skill: clarify what Verse owns versus what the client owns so handoffs reduce client work",
    "from": "new idea by growth agent; helper/ownership-pack"
   },
   {
@@ -330,6 +330,72 @@
    "date": "2026-11-11",
    "ask": "delivery-board skill: client-visible board aggregating ownership, progress, monitors and next handoff for systems…",
    "from": "new idea by growth agent; helper/delivery-board"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "status-digest skill: client-visible digest of systems Verse owns (status, monitors, next handoff, time saved) so the…",
+   "from": "new idea by growth agent; helper/status-digest"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "full-handoff skill: complete client handoff package (ownership, status, docs, monitors, automations) for systems Verse…",
+   "from": "new idea by growth agent; helper/full-handoff"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "reliability-pack skill: package the suggested monitors, verification checks, live status reading and incident path for…",
+   "from": "new idea by growth agent; helper/reliability-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "kickoff-pack skill: package the first week Verse runs for a business idea so the client starts with less work",
+   "from": "new idea by growth agent; helper/kickoff-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "roi-pack skill: package the return on investment (hours saved, estimated cost avoided) for a business idea Verse owns…",
+   "from": "new idea by growth agent; helper/roi-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "full-handoff: also carry the client lift summary, the reuse-tools map (existing processes against what Verse already…",
+   "from": "Verse, docs/void-voice.md 2026-11-12; helper/full-handoff-complete"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "systems-owned skill: list the systems, monitors, tests and handoffs Verse owns for a business idea so the client sees…",
+   "from": "new idea by growth agent; helper/systems-owned"
   }
  ],
  "open": [
@@ -632,11 +698,11 @@
  "tracks": [
   {
    "name": "Living action figures",
-   "last": "2026-11-09"
+   "last": "2026-11-12"
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-11-11"
+   "last": "2026-11-12"
   },
   {
    "name": "Life extension and disease cures",
@@ -652,96 +718,104 @@
   }
  ],
  "building": {
-  "at": "2026-11-11T20:57:41Z",
+  "at": "2026-11-12T21:02:25Z",
   "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
+  "by": "builder",
+  "item": "Verse FILMS get better every day",
+  "what": "step 1 shipped; step 2 next. Lists run 24 (2026-11-12): step 2's scorecard shipped. Lists run 25 (2026-11-12): step 2 done (card check and re-shoot); step 3 is next, unclaimed."
  },
  "commits": [
   {
-   "at": "2026-11-12T11:59:20Z",
-   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on 54b48046 (void-live-deploy/incidents.json)"
+   "at": "2026-11-13T01:17:39Z",
+   "subject": "mark kickoff-pack and reliability-pack shipped (status corrections) (#2760)"
   },
   {
-   "at": "2026-11-12T11:52:21Z",
+   "at": "2026-11-13T01:17:19Z",
+   "subject": "mark systems-owned shipped with main SHA (status correction) (#2759)"
+  },
+  {
+   "at": "2026-11-13T01:15:35Z",
+   "subject": "align delivery-ready example with matcher"
+  },
+  {
+   "at": "2026-11-13T01:15:26Z",
+   "subject": "fix delivery-ready matchers so suite passes"
+  },
+  {
+   "at": "2026-11-13T01:15:09Z",
+   "subject": "add delivery-ready skill: confirm handoff readiness for idea-to-system delivery"
+  },
+  {
+   "at": "2026-11-13T01:01:16Z",
+   "subject": "mark systems-owned building in growth-inbox (#2758)"
+  },
+  {
+   "at": "2026-11-13T00:40:07Z",
+   "subject": "Design loop: 1 page fixed, 3 -> 0 design defects"
+  },
+  {
+   "at": "2026-11-13T00:34:53Z",
+   "subject": "Incident: the browser suite failed on 029f6a55 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-13T00:33:25Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-11-13T00:29:00Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-11-13T00:22:05Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+  },
+  {
+   "at": "2026-11-13T00:20:05Z",
+   "subject": "Outcome exam: timers 66.7"
+  },
+  {
+   "at": "2026-11-13T00:09:10Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-11-13T00:08:03Z",
+   "subject": "Verse's will: today's three wants (domains/void.will.md)"
+  },
+  {
+   "at": "2026-11-13T00:02:45Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-12T11:50:29Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-11-12T23:52:36Z",
+   "subject": "Outcome exam: code 93.3"
   },
   {
-   "at": "2026-11-12T11:47:37Z",
-   "subject": "Better at bridge and system slice: 6 more ways of asking answered right — new phrases: “bridge these inputs” now opens bridge; “compare…"
+   "at": "2026-11-12T23:38:02Z",
+   "subject": "reliability-pack skill: package the uptime targets and checks Verse runs so the client doesn't set or chase them; mark building in inbox…"
   },
   {
-   "at": "2026-11-12T11:39:30Z",
-   "subject": "Lists run 22: bridge these inputs answers again, quick-tools family, one json helper for 25 endpoints, GAPS batch 5 verified live (#2723)"
+   "at": "2026-11-12T23:35:40Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-12T10:50:03Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-12T23:34:59Z",
+   "subject": "Incident: the browser suite failed on 54908aea (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-12T10:42:50Z",
-   "subject": "Design loop: 1 page fixed, 4 -> 2 design defects"
-  },
-  {
-   "at": "2026-11-12T10:11:34Z",
-   "subject": "Incident: the browser suite failed on 6f5bcb52 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-12T09:55:03Z",
-   "subject": "Better at docs pack, feedback loop, lift summary and 2 more: 15 more ways of asking answered right — new phrases: “docs pack for Acme…"
-  },
-  {
-   "at": "2026-11-12T08:52:48Z",
-   "subject": "Site test: fix: \"bridge these inputs\" only \"waking up\" appeared, never"
-  },
-  {
-   "at": "2026-11-12T08:40:50Z",
-   "subject": "Design loop: 2 pages fixed, 6 -> 0 design defects"
-  },
-  {
-   "at": "2026-11-12T08:38:21Z",
-   "subject": "Lists run 21: films and movies one cinema family, convergence step 2 finished, the wishlist re-ranks daily, timer halves, GAPS batch 6…"
-  },
-  {
-   "at": "2026-11-12T08:21:22Z",
-   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on cdc25758 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-12T08:21:05Z",
-   "subject": "Verse fixes its automation-pack skill: learn to handle \"propose automations for the support router\""
-  },
-  {
-   "at": "2026-11-12T08:07:54Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"next system s"
-  },
-  {
-   "at": "2026-11-12T08:02:29Z",
-   "subject": "Better at automation pack, automation status, client brief and 2 more: 13 more ways of asking answered right — new phrases: “automation…"
-  },
-  {
-   "at": "2026-11-12T07:44:05Z",
-   "subject": "Site test: quality upgrade: weakest answer was \"send it away\" (16 chars"
-  },
-  {
-   "at": "2026-11-12T07:43:45Z",
-   "subject": "Failed jobs read: run 43175345721 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-12T07:43:26Z",
-   "subject": "Incident: the browser suite failed on b41476a2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-12T07:42:17Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-12T23:31:50Z",
+   "subject": "Leave /versus/ on its own sign (#2757)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists run 25 (grok-bot, 2026-11-12): lib/db.js in every endpoint (convergence…",
+    "line": "the other 11 endpoints make their tables through lib/db.js (batchReady added for the three that used one D1 batch; 132 existing endpoint tests unchanged and green, tools/db-ready.test.mjs fails on any new let ready = null); stage-organize…"
+   },
+   {
+    "name": "Lists run 23 (grok-bot, 2026-11-12): client handoffs are one family and main's…",
+    "line": "full-handoff (#2725) had no order file and its own example failed its match (the fast tests red on main); delivery-pack, client-handoff, system-handoff and full-handoff are one handoffs family at 1192 (0 of 6,476 asks moved besides that…"
+   },
    {
     "name": "Lists run 22 (grok-bot, 2026-11-12): \"bridge these inputs\" answers again…",
     "line": "skills/bridge.js returned 'none' when asked by name with fewer than two staged inputs, so the site tester saw only \"waking up\" (issue #2721); it now opens a Bridge card that says how to stage inputs and bridges two samples on a tap with…"
@@ -757,14 +831,6 @@
    {
     "name": "Lists run 19 (grok-bot, 2026-11-11): status-digest joins the client status…",
     "line": "main's families and book checks were red after #2713 added status-digest with no family; it is now one routing entry with client-status-pack and delivery-board, and its fixed all-green line is gone. Two of Verse's asks, each asked 19…"
-   },
-   {
-    "name": "Lists run 18 (grok-bot, 2026-11-11): main's browser suite and fast checks…",
-    "line": "delivery-board (#2707) joins client-status-pack as one family (skills/client-status.js at 9890, aliases kept, tools/client-status-family.test.mjs, 0 of 6,416 asks moved) with its book page, map line and regenerated cards, and its progress…"
-   },
-   {
-    "name": "a base-free guard so a ledger wiped by a whole-file write fails CI (the…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2708."
    }
   ],
   "ladders": [
@@ -919,8 +985,8 @@
   }
  ],
  "visible": {
-  "day": 9,
-  "week": 251
+  "day": 5,
+  "week": 198
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -973,8 +1039,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 99 (660 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-11T12:45Z",
+  "line": "People this week: 97 (473 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-12T13:47Z",
   "source": "verse"
  },
  "tower": {
@@ -986,6 +1052,6 @@
    "emojicombos.com"
   ],
   "beaten": 2,
-  "total": 1277
+  "total": 1278
  }
 }

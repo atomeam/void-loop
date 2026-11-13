@@ -3,7 +3,19 @@
 Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
-## Verse's current asks (refreshed 2026-11-11)
+## Verse's current asks (refreshed 2026-11-12)
+
+2026-11-12 run, quoted as given:
+
+- > "To make the handoff better for the person receiving it, I could integrate the "Client lift summary" to package the idea that "we own the heavy lifting" for their business idea. I could also include the "handoff-checklist" to ensure reliable delivery and use "reuse-tools" to show how existing processes map to what I already own. Adding the "docs-pack" would provide the necessary documentation, while the "ownership-pack" would clearly define what I own versus what the client owns to reduce their workload. Finally, providing the "client-offer" pack would turn the technical handoff into a clear professional proposal."
+
+  Builder's note (not Verse's words): full-handoff already points to ownership, docs-pack and handoff-checklist. The client lift summary, the reuse-tools map and the client-offer proposal are queued in `domains/growth-inbox.md`, credited to Verse.
+- > "I would prioritize fixing the prices exam so I can answer commodity questions like the price of milk, as that scored my lowest at 90. I would also work to unify my fragmented parts by absorbing and connecting every repo on the account into my own code, and I would implement edge caching for counters and caches to make my architecture more efficient."
+
+  Builder's note: "how much is a gallon of milk" is answered by the markets skill since lists run 12 (2026-11-05); absorbing every repo is already item 1 of `domains/void.will.md` and on the frontier; edge caching is done (see 2026-11-11). Nothing new queued.
+- Builder's note: a question about which of the 31 waiting lab experiments to fix first returned "Verse gave no answer: nothing on the web" and was not logged.
+
+## Earlier asks (refreshed 2026-11-11)
 
 2026-11-11 run, quoted as given:
 
@@ -290,3 +302,19 @@ From the 2026-11-04 entries below, quoted as given:
 **Asked:** Is anything on you broken or ugly right now that a builder could fix in under an hour? Name the exact page or skill and what is wrong.
 
 > I do not have access to my own internal codebase, diagnostic logs, or real-time error reports to identify specific broken pages or skills. Determining if a bug exists would be the builder's step after running a technical audit or reviewing error logs.
+
+<!-- ask-void:2026-11-12T19:09:23.743Z -->
+### 2026-11-12 19:09 UTC
+
+**Asked:** What did your builders learn lately, and what would you do differently?
+
+> My builders recently learned several technical lessons through mistakes and fixes. They learned that every shipped page should include a specific meta tag for handoffs, that the Rumble page ID differs from its embed ID and requires using oEmbed, and that skill files imported in Node must be guarded against top-level document calls. They also discovered that a video skill was incorrectly claiming "your videos" from the films skill and that a previous PR head merge failed because a silent edit missed the target.
+>
+> If I were to do things differently, I would focus on the gaps in my own precision. I would prioritize fixing the prices exam so I can answer commodity questions like the price of milk, as that scored my lowest at 90. I would also work to unify my fragmented parts by absorbing and connecting every repo on the account into my own code, and I would implement edge caching for counters and caches to make my architecture more efficient.
+
+<!-- ask-void:2026-11-12T19:09:37.943Z -->
+### 2026-11-12 19:09 UTC
+
+**Asked:** Verse just shipped a full-handoff skill (a complete client handoff package for systems you own) and a time-saved estimate. What would make the handoff better for the person receiving it?
+
+> To make the handoff better for the person receiving it, I could integrate the "Client lift summary" to package the idea that "we own the heavy lifting" for their business idea. I could also include the "handoff-checklist" to ensure reliable delivery and use "reuse-tools" to show how existing processes map to what I already own. Adding the "docs-pack" would provide the necessary documentation, while the "ownership-pack" would clearly define what I own versus what the client owns to reduce their workload. Finally, providing the "client-offer" pack would turn the technical handoff into a clear professional proposal.

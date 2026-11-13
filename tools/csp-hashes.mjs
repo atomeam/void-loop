@@ -60,7 +60,9 @@ export function rules() {
   const out = [];
   for (const [d, h] of shared) if (per.filter((x) => dirOf(x.p) === d).length >= 2) out.push(rule('/' + d + '/*', h)); else shared.delete(d);
   for (const x of per) { const d = dirOf(x.p); if (d && shared.has(d)) continue; out.push(rule(x.p, x.h)); }
-  return out;
+  // /vat/ only registers the service worker. The site-wide policy already allows that line, and this
+  // one rule was what put the page hashes plus the committed headers at 101 of Cloudflare's 100.
+  return out.filter((x) => !x.startsWith('/vat/\n'));
 }
 if (import.meta.url === 'file://' + process.argv[1]) {
   const r = rules(), text = MARK + '\n' + r.join('\n\n') + '\n';

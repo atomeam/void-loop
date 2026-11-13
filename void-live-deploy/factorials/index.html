@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Factorials · Verse</title>
+<meta name="description" content="The factorial of a whole number. 0! is 1. The work stays on this device.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/factorials/">
+<meta property="og:title" content="Factorials · Verse">
+<meta property="og:description" content="The factorial of a whole number. 0! is 1.">
+<meta property="og:url" content="https://a-to-mind.com/factorials/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: n; out: factorial">
+<style>
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+  #out h2 { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Factorials</h1>
+  <p>Type a whole number from 0 to 20. The page gives its factorial. 0! is 1, and 1! is 1. The work stays on this device.</p>
+  <form method="get" action="/factorials/">
+    <label for="n">Number</label>
+    <input id="n" name="n" type="text" inputmode="numeric" value="0" maxlength="2" autocomplete="off">
+    <div class="row"><button type="submit">Compute</button></div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p>More: <a href="/calculator/">calculator</a>, <a href="/patterns/">patterns</a>, <a href="/convert/">unit converter</a>.</p>
+</main>
+<script type="module" src="/factorials/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

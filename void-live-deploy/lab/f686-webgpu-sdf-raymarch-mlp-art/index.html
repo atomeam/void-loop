@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.6); padding:12px; border-radius:8px; max-width:280px; }
+button { margin:4px 4px 0 0; padding:6px 10px; background:#2a5; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+button:hover { background:#3b6; }
+#status { font-size:12px; margin-top:8px; opacity:.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-sdf-raymarch-mlp-art · Verse lab</title>
+<meta name="description" content="Job: Tilt your device or move the pointer to drive a local tiny neural net that morphs a 3D form (spheres and a torus rendered by WebGPU raymarching).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-sdf-raymarch-mlp-art · Verse lab">
+<meta property="og:description" content="Job: Tilt your device or move the pointer to drive a local tiny neural net that morphs a 3D form (spheres and a torus rendered by WebGPU raymarching).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f686-webgpu-sdf-raymarch-mlp-art/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f686-webgpu-sdf-raymarch-mlp-art/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <h3 style="margin:0 0 8px">Living 3D Form Sculptor</h3>
+  <p style="margin:0 0 8px;font-size:13px">Tilt or move pointer to sculpt. Click to reward.</p>
+  <button id="seal">Seal genome</button>
+  <button id="shot">Download PNG</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-sdf-raymarch-mlp-art</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#seal { color:#292929 }
+#shot { color:#292929 }
+.vl-note button { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+/* end verse design loop */
+</style>
+</body>
+</html>

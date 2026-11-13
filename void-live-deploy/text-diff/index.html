@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Text comparison · Verse</title>
+<meta name="description" content="Compare two texts line by line. Removed lines, added lines, and the lines that stayed. The work stays on this device.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/text-diff/">
+<meta property="og:title" content="Text comparison · Verse">
+<meta property="og:description" content="Compare two texts line by line. The work stays on this device.">
+<meta property="og:url" content="https://a-to-mind.com/text-diff/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: original, changed; out: diff">
+<style>
+  main { max-width: 64rem; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+  @media (max-width: 700px) { .pair { grid-template-columns: 1fr; } }
+  textarea { font-family: ui-monospace, monospace; font-size: .95rem; min-height: 10rem; }
+  #say { min-height: 1.4em; }
+  #diff { margin: .6rem 0 0; font-family: ui-monospace, monospace; font-size: .92rem; line-height: 1.45; overflow: auto; max-height: 28rem; }
+  #diff div { display: grid; grid-template-columns: 3.2rem 1.2rem 1fr; gap: .35rem; padding: .05rem .3rem; white-space: pre-wrap; word-break: break-word; }
+  #diff [data-t="del"] { color: #ffb4b4; background: rgba(255, 80, 80, .12); }
+  #diff [data-t="add"] { color: #b6f0c8; background: rgba(80, 220, 140, .12); }
+  #diff [data-t="same"] { color: var(--d-ink-3, #9a9a9a); }
+  #diff [data-t="skip"] { color: var(--d-ink-3, #9a9a9a); grid-template-columns: 1fr; }
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Text comparison</h1>
+  <p>Paste an original and a changed copy. Every line that was removed, added, or left as it was is marked. A space, a blank line, and a change of case all count. The work stays on this device. Up to 3000 lines on a side.</p>
+  <form>
+    <div class="pair">
+      <div>
+        <label for="original">Original</label>
+        <textarea id="original" name="original" spellcheck="false">The quick brown fox
+jumps over the lazy dog</textarea>
+      </div>
+      <div>
+        <label for="changed">Changed</label>
+        <textarea id="changed" name="changed" spellcheck="false">The quick brown fox
+jumps over a lazy dog
+and keeps going</textarea>
+      </div>
+    </div>
+    <div class="row"><button type="button" id="copy">Copy the comparison</button></div>
+  </form>
+  <p id="say" aria-live="polite"></p>
+  <div id="diff" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p>More: <a href="/word-count/">word counter</a>, <a href="/patterns/">patterns</a>, <a href="/base64/">Base64</a>.</p>
+</main>
+<script type="module" src="/text-diff/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

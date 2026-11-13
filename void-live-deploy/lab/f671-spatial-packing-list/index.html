@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee; }
+#controls { padding: 12px; background: #1a1a1a; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+input, select, button { padding: 6px 10px; font-size: 14px; border-radius: 4px; border: 1px solid #444; background: #222; color: #eee; }
+button { cursor: pointer; background: #2a5; color: #fff; border: none; }
+button.secondary { background: #444; }
+#board { display: flex; gap: 12px; padding: 12px; min-height: 60vh; }
+.bag { flex: 1; background: #1e1e1e; border: 2px dashed #555; border-radius: 8px; padding: 8px; min-height: 300px; position: relative; }
+.bag h3 { margin: 0 0 8px; font-size: 16px; color: #8cf; }
+.item { background: #333; border: 1px solid #666; border-radius: 6px; padding: 6px 8px; margin: 4px 0; cursor: grab; user-select: none; display: flex; justify-content: space-between; }
+.item.dragging { opacity: 0.5; }
+#status { padding: 8px 12px; background: #1a1a1a; font-size: 14px; }
+#output { display: none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Packing list maker · Verse lab</title>
+<meta name="description" content="Job: Tell the page your trip length, kind of trip and weather; add items (with optional weight); drag them into bags or categories on a spatial board.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Packing list maker · Verse lab">
+<meta property="og:description" content="Job: Tell the page your trip length, kind of trip and weather; add items (with optional weight); drag them into bags or categories on a spatial board.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f671-spatial-packing-list/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f671-spatial-packing-list/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="controls">
+  <label>Days <input type="number" id="days" value="7" min="1" max="60" style="width:60px"></label>
+  <label>Type <select id="type"><option>beach</option><option>city</option><option>hiking</option><option>business</option></select></label>
+  <label>Weather <select id="weather"><option>hot</option><option>mild</option><option>cold</option><option>wet</option></select></label>
+  <input type="text" id="itemName" placeholder="Item name" style="width:140px">
+  <input type="number" id="itemWeight" placeholder="grams" style="width:80px" min="0">
+  <button onclick="addItem()">Add</button>
+  <button class="secondary" onclick="suggest()">Suggest</button>
+  <button class="secondary" onclick="copyList()">Copy</button>
+  <button class="secondary" onclick="downloadTxt()">Download TXT</button>
+  <button class="secondary" onclick="downloadPng()">Download PNG</button>
+</div>
+<div id="board">
+  <div class="bag" data-zone="carry"><h3>Carry-on</h3></div>
+  <div class="bag" data-zone="checked"><h3>Checked</h3></div>
+  <div class="bag" data-zone="personal"><h3>Personal</h3></div>
+</div>
+<div id="status">Total weight: 0 g</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Packing list maker</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

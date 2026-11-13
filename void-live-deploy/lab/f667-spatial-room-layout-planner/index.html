@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+header { padding: 20px 16px 12px; }
+header h1 {
+  margin: 0 0 8px;
+  font-weight: 280;
+  letter-spacing: -.03em;
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.05;
+  background: linear-gradient(180deg, #fff 30%, rgb(var(--d-key)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+label { font-size: 0.85rem; color: var(--soft); }
+input[type=number] { width: 60px; }
+#canvas-wrap { position: relative; margin: 16px; background: var(--box); border: 1px solid var(--line); overflow: auto; height: calc(100dvh - 260px); min-height: 280px; border-radius: 16px; }
+#floor { position: relative; background: rgb(var(--d-key) / .20); border: 2px solid rgb(var(--d-key) / .55); }
+.item { position: absolute; background: rgb(var(--d-key) / .45); border: 2px solid rgb(var(--d-key)); border-radius: 4px; cursor: move; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--d-ink); user-select: none; touch-action: none; }
+.item .label { pointer-events: none; }
+.resize { position: absolute; right: -4px; bottom: -4px; width: 12px; height: 12px; background: rgb(var(--d-key)); cursor: nwse-resize; border-radius: 2px; }
+#info { padding: 8px 16px 24px; color: var(--d-ink-2); font-size: 0.9rem; }
+.actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; padding-left: 13rem; }
+@media (max-width: 700px) { .actions { padding-left: 0; padding-bottom: 3.5rem; } }
+@media print {
+  header h1 { background: none; color: #111; -webkit-text-fill-color: #111; }
+  #canvas-wrap { background: #fff; }
+  #floor { background: #e8f0e8; border-color: #333; }
+  .item { color: #111; }
+}
+@media screen and (forced-colors: active) {
+  header h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
+}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Room layout planner · Verse lab</title>
+<meta name="description" content="Job: Enter room dimensions and drag furniture shapes onto a floor plan to plan a layout; download a PNG of the plan and a text list of items with sizes.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Room layout planner · Verse lab">
+<meta property="og:description" content="Job: Enter room dimensions and drag furniture shapes onto a floor plan to plan a layout; download a PNG of the plan and a text list of items with sizes.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f667-spatial-room-layout-planner/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f667-spatial-room-layout-planner/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tool-theme.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Room layout planner</h1>
+  <div class="controls">
+    <label>Width (m) <input type="number" id="roomW" value="4" min="1" max="20" step="0.1"></label>
+    <label>Length (m) <input type="number" id="roomL" value="5" min="1" max="20" step="0.1"></label>
+    <button class="primary" id="setRoom">Set room</button>
+    <button class="secondary" id="addBed">Add bed</button>
+    <button class="secondary" id="addTable">Add table</button>
+    <button class="secondary" id="addChair">Add chair</button>
+    <button class="secondary" id="addSofa">Add sofa</button>
+    <button class="secondary" id="clear">Clear items</button>
+  </div>
+</header>
+<div id="canvas-wrap">
+  <div id="floor"></div>
+</div>
+<div id="info">
+  <div id="stats">Free area: --</div>
+  <div class="actions">
+    <button class="primary" id="download">Download PNG</button>
+    <button class="secondary" id="copyList">Copy item list</button>
+    <button class="secondary" id="save">Save</button>
+  </div>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

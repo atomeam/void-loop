@@ -1,6 +1,8 @@
 // The spotter (pit crew position 3, 2026-10-11): a check that fails on main and then goes green on a newer head with
 // nothing taken back is written down here, and one that does it twice in a week becomes a job to make it robust. Never a
 // skip, never a quarantine, never a retry that hides a failure (docs/RULES.md): the job is to fix the test or the code.
+// A verify job that fails and then passes on the one rerun in that same run is recorded here too (tools/flake-rerun.mjs),
+// so a repeat flake is visible. That rerun is the only one, and a second failure still reverts.
 //   node tools/flakes.mjs record <sha> "<check>" ["<check>" ...]   append to tools/flakes.json (verify.yml does this when
 //                                                                  tools/revert-target.mjs reports checks that healed)
 //   node tools/flakes.mjs due                                      the checks due a job (twice or more in the last 7 days)

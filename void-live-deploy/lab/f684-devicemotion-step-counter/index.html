@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<style>
+  :root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --dim:#888; --card:#1a1d24; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.4 system-ui,sans-serif; padding:1rem; }
+  h1 { font-size:1.4rem; margin:0 0 .5rem; }
+  .row { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin:.5rem 0; }
+  button, input, select { background:var(--card); color:var(--fg); border:1px solid #333; border-radius:6px; padding:.5rem .8rem; font-size:1rem; }
+  button { cursor:pointer; }
+  button.primary { background:var(--acc); color:#000; border:none; font-weight:600; }
+  #stats { font-size:1.8rem; font-weight:700; color:var(--acc); }
+  canvas { width:100%; height:160px; background:#111; border-radius:8px; display:block; margin:.5rem 0; }
+  .sessions { max-height:240px; overflow:auto; background:var(--card); padding:.5rem; border-radius:8px; font-size:.9rem; }
+  .note { color:var(--dim); font-size:.85rem; }
+  label { font-size:.85rem; color:var(--dim); }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceMotion Step Counter · Verse lab</title>
+<meta name="description" content="A practical offline step counter for The Verse canvas. DeviceMotionEvent acceleration magnitude is high-pass filtered and peak-detected to count steps.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceMotion Step Counter · Verse lab">
+<meta property="og:description" content="A practical offline step counter for The Verse canvas. DeviceMotionEvent acceleration magnitude is high-pass filtered and peak-detected to count steps.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f684-devicemotion-step-counter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f684-devicemotion-step-counter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Step Counter & Walk Logger</h1>
+<p class="note">Local pedometer using device motion. Not a medical device. Estimated distance only.</p>
+
+<div class="row">
+  <button id="perm" class="primary">Enable Motion</button>
+  <button id="start">Start Session</button>
+  <button id="stop" disabled>Stop & Save</button>
+  <button id="manual">+1 Step</button>
+</div>
+
+<div id="stats">0 steps · 0.00 m · 0:00</div>
+
+<div class="row">
+  <label>Session name <input id="name" value="Walk" style="width:8rem"></label>
+  <label>Step length (m) <input id="steplen" type="number" step="0.05" value="0.75" style="width:5rem"></label>
+  <label>Sensitivity <input id="sens" type="range" min="0.5" max="4" step="0.1" value="1.5"></label>
+  <span id="sensval">1.5</span>
+</div>
+
+<canvas id="c" width="600" height="160"></canvas>
+
+<div class="row">
+  <button id="export">Download CSV</button>
+  <button id="copy">Copy Log</button>
+  <button id="clear">Clear History</button>
+</div>
+
+<h3>Saved sessions</h3>
+<div id="sessions" class="sessions">None yet.</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Songs · Verse</title>
+<meta name="description" content="Play a short preview of a song. Type the title and who plays it. The preview stays where it is.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/songs/">
+<meta property="og:title" content="Songs · Verse">
+<meta property="og:description" content="Play a short preview of a song. Type the title and who plays it.">
+<meta property="og:url" content="https://a-to-mind.com/songs/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: title, artist; out: preview">
+<style>
+  #out audio { width: min(100%, 28rem); }
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Songs</h1>
+  <p>Type a song and who plays it. The page plays a short preview of the matching recording. A title that is not there is said so.</p>
+  <form method="get" action="/songs/">
+    <label for="title">Song</label>
+    <input id="title" name="title" type="text" value="" maxlength="80" autocomplete="off">
+    <label for="artist">Played by</label>
+    <input id="artist" name="artist" type="text" value="" maxlength="60" autocomplete="off">
+    <div class="row"><button type="submit">Play</button></div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p>More: <a href="/music/">music tools</a>, <a href="/podcasts/">podcasts</a>, <a href="/clips/">clips</a>.</p>
+</main>
+<script type="module" src="/songs/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

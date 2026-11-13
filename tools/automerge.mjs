@@ -269,11 +269,11 @@ for (let p of prs) {
     if (m.state === 'conflict' && nextStep({ readiness: 'resolve', age: ageOf(p.number, r.sha, 'conflict') }).action === 'fix') dispatchFix(p.number, r.sha, 'conflict', (m.files || []).join(', '));
     continue;
   }
-  if (r.state === 'wait' && r.noReview && r.branch) {
+  if (r.state === 'wait' && (r.noReview || (r.missingChecks && r.missingChecks.length)) && r.branch) {
     // opened with the workflow token: the pull_request runs exist and do not start. Start the same checks (not automerge: this is that sweep).
     try {
       ex(process.execPath, [here + '/loop-checks.mjs', '--pr', String(p.number), '--ref', r.branch, '--repo', repo, '--from', 'automerge']);
-      console.log(`#${p.number}: no review had started on ${r.sha.slice(0, 7)}; the pull-request checks were started`);
+      console.log(`#${p.number}: ` + (r.missingChecks && r.missingChecks.length ? 'missing ' + r.missingChecks.join(', ') + ' on ' + r.sha.slice(0, 7) + '; the pull-request checks were started' : 'no review had started on ' + r.sha.slice(0, 7) + '; the pull-request checks were started'));
     } catch (e) { console.log(`#${p.number}: could not start the pull-request checks: ${String(e.stderr || e.message).slice(0, 200)}`); }
     continue;
   }

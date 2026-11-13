@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --col:#252830; --text:#e6e6e6; --accent:#4a9eff; --border:#333; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+header { padding:1rem; text-align:center; border-bottom:1px solid var(--border); }
+h1 { margin:0; font-size:1.4rem; }
+.controls { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; padding:0.75rem; }
+button, input { padding:0.5rem 0.75rem; border-radius:6px; border:1px solid var(--border); background:var(--col); color:var(--text); }
+button { cursor:pointer; background:var(--accent); color:#fff; border:none; }
+button:hover { opacity:0.9; }
+#board { display:flex; gap:1rem; padding:1rem; overflow-x:auto; min-height:60vh; align-items:flex-start; }
+.column { background:var(--col); border-radius:8px; min-width:240px; max-width:280px; padding:0.75rem; flex:0 0 auto; }
+.column h3 { margin:0 0 0.5rem; font-size:1rem; display:flex; justify-content:space-between; align-items:center; }
+.cards { min-height:100px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:0.6rem; margin-bottom:0.5rem; cursor:grab; user-select:none; }
+.card:active { cursor:grabbing; }
+.card .text { margin:0; word-break:break-word; }
+.add-row { display:flex; gap:0.25rem; margin-top:0.5rem; }
+.add-row input { flex:1; font-size:0.9rem; }
+.dragging { opacity:0.5; }
+.toast { position:fixed; bottom:1rem; left:50%; transform:translateX(-50%); background:#333; padding:0.5rem 1rem; border-radius:6px; display:none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial kanban board · Verse lab</title>
+<meta name="description" content="Job: Type tasks into columns (To Do, Doing, Done or custom); drag cards between columns and reorder them.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial kanban board · Verse lab">
+<meta property="og:description" content="Job: Type tasks into columns (To Do, Doing, Done or custom); drag cards between columns and reorder them.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f666-spatial-kanban-board/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f666-spatial-kanban-board/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Spatial Kanban Board</h1>
+  <p>Drag cards between columns. Everything stays on this device.</p>
+</header>
+<div class="controls">
+  <button id="addCol">Add column</button>
+  <button id="exportPng">Download PNG</button>
+  <button id="copyList">Copy list</button>
+  <button id="share">Copy share link</button>
+  <button id="clear">Clear board</button>
+</div>
+<div id="board"></div>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

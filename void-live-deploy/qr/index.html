@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>QR codes · Verse</title>
+<meta name="description" content="Turn a link or a short line into a code a phone can scan. The drawing is made on this device.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/qr/">
+<meta property="og:title" content="QR codes · Verse">
+<meta property="og:description" content="Turn a link or a short line into a code a phone can scan. Made on this device.">
+<meta property="og:url" content="https://a-to-mind.com/qr/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: text; out: code">
+<style>
+  #out { line-height: 0; }
+  #out svg { width: min(16rem, 100%); height: auto; background: #fff; border-radius: 8px; }
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>QR codes</h1>
+  <p>Type a link or a short line. The page draws a code a phone can scan. The drawing stays on this device, and a line that is too long is refused.</p>
+  <form method="get" action="/qr/">
+    <label for="text">Text</label>
+    <textarea id="text" name="text" rows="3" maxlength="500" spellcheck="false" autocomplete="off"></textarea>
+    <div class="row"><button type="submit">Make</button></div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+  <p id="meta"></p>
+  <p id="err" role="status"></p>
+  <p>More: <a href="/base64/">Base64</a>, <a href="/patterns/">patterns</a>, <a href="/meanings/">word meanings</a>.</p>
+</main>
+<script type="module" src="/qr/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

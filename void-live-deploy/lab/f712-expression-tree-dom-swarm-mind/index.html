@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<style>
+:root { --bg:#05050a; --portal:#0ff; --text:#e0e0ff; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { width:100%; height:100%; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; perspective:800px; transform-style:preserve-3d; }
+.agent {
+  position:absolute; width:90px; height:90px; border-radius:18px;
+  background:radial-gradient(circle at 30% 30%, rgba(0,255,255,.35), rgba(0,0,40,.6));
+  border:1px solid rgba(0,255,255,.4); box-shadow:0 0 20px rgba(0,255,255,.25);
+  display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600;
+  cursor:pointer; user-select:none; will-change:transform,filter,border-radius;
+  transition:box-shadow .15s;
+}
+.agent:hover { box-shadow:0 0 32px rgba(0,255,255,.55); }
+#hud {
+  position:fixed; bottom:12px; left:12px; right:12px; z-index:10;
+  display:flex; gap:8px; flex-wrap:wrap; pointer-events:none;
+}
+button, .info {
+  pointer-events:auto; background:#111; color:#0ff; border:1px solid #0ff4;
+  border-radius:8px; padding:6px 10px; font-size:12px; cursor:pointer;
+}
+.info { cursor:default; opacity:.85; }
+#status { position:fixed; top:10px; left:10px; font-size:12px; opacity:.7; z-index:10; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Expression-Tree DOM Swarm Mind · Verse lab</title>
+<meta name="description" content="A swarm of living absolute-positioned DOM cards whose CSS 3D transforms, hues, scales and border-radii are generated each frame by independent evolved expression">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Expression-Tree DOM Swarm Mind · Verse lab">
+<meta property="og:description" content="A swarm of living absolute-positioned DOM cards whose CSS 3D transforms, hues, scales and border-radii are generated each frame by independent evolved expression">
+<meta property="og:url" content="https://a-to-mind.com/lab/f712-expression-tree-dom-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f712-expression-tree-dom-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">F712 · tilt / move · click to reward · seal best genome</div>
+<div id="stage"></div>
+<div id="hud">
+  <button id="seal">Seal Best</button>
+  <button id="reset">Reset All</button>
+  <button id="perm">Enable Orientation</button>
+  <span class="info" id="info">agents: 0 · best fitness: 0</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Expression-Tree DOM Swarm Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

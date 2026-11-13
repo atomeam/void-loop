@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #portals { position: absolute; inset: 0; pointer-events: none; }
+  .portal {
+    position: absolute; background: rgba(20,20,40,0.75); border: 1px solid #88f;
+    border-radius: 12px; padding: 8px 12px; min-width: 120px; backdrop-filter: blur(4px);
+    font-size: 13px; transform: translate(-50%, -50%); transition: transform 0.1s linear;
+    pointer-events: auto; cursor: grab;
+  }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 12px; }
+  button { margin-right: 8px; background: #334; color: #fff; border: 1px solid #66a; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #446; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Wavefield RNN Resonance Mind · Verse lab</title>
+<meta name="description" content="A previously unexplored combination: a real-time 2D wave equation (damped) solved primarily via WebGPU compute shaders (with Canvas2D iterative fallback)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Wavefield RNN Resonance Mind · Verse lab">
+<meta property="og:description" content="A previously unexplored combination: a real-time 2D wave equation (damped) solved primarily via WebGPU compute shaders (with Canvas2D iterative fallback)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f700-webgpu-wavefield-rnn-resonance-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f700-webgpu-wavefield-rnn-resonance-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+<div id="hud">
+  <button id="seal">Seal Mind</button>
+  <button id="xr">Enter XR</button>
+  <span id="status">Initializing…</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Wavefield RNN Resonance Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

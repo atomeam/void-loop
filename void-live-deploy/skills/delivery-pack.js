@@ -1,7 +1,7 @@
 /**
  * delivery-pack skill — capture a business idea and turn it into a structured handoff package
  * that reduces client work: clarified idea, systems to design/build/connect/test/monitor,
- * status/docs/automations to hand off, and the "we own the heavy lifting" package.
+ * status/docs/automations to hand off, and the lift-summary package.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "package this idea: automate client onboarding", "handoff pack for my SaaS idea", "delivery package: ..."
  */
@@ -38,7 +38,7 @@ async function run(text, api) {
     `<li>Docs: how it runs, what the client owns vs what we own</li>`,
     `<li>Running automations: the confirm-line approvals already in place</li>`,
     `</ul>`,
-    `<p class="sub">We own the heavy lifting. Client keeps the outcome.</p>`,
+    `<p class="sub">The package lists the systems, status, docs and automations. The client keeps the outcome.</p>`,
     `<div class="src">Source: A-to-Mind delivery practice</div>`
   ].join('');
   el.innerHTML = pack;

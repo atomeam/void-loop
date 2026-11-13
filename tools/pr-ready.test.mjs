@@ -4,7 +4,8 @@ let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
 const SHA = 'abc1234def', T0 = Date.parse('2026-10-09T12:00:00Z');
 const run = (name, conclusion = 'success', status = 'completed', id = 1) => ({ id, name, status, conclusion, completed_at: '2026-10-09T12:00:00Z', html_url: 'https://x/' + name });
-function fake({ checks = [run('test-and-deploy'), run('void-review')], comments = [], reviews = [], threads = [], pr = {} } = {}) {
+const FULL = ['void-review', 'merge-gate', 'test-and-deploy', 'collide'].map((name, i) => run(name, 'success', 'completed', i + 1));
+function fake({ checks = FULL, comments = [], reviews = [], threads = [], pr = {} } = {}) {
   return (path) => {
     if (/\/pulls\/\d+$/.test(path)) return { state: 'open', merged: false, draft: false, head: { sha: SHA }, ...pr };
     const m = path.match(/check_name=([\w-]+)/); if (m) return { check_runs: checks.filter((c) => c.name === m[1]) };
@@ -24,9 +25,9 @@ ok(R().state === 'merge', 'green CI, clean Verse review, quiet CodeRabbit: merge
 { const r = R({ pr: { head: { sha: SHA, ref: 'fix/x' } } }); ok(r.state === 'merge' && r.branch === 'fix/x', 'a ready PR carries its branch, so automerge can start the suite gate on it'); }
 ok(R({ checks: [run('test-and-deploy'), run('void-review', 'failure')] }).state === 'stop', "Verse's review found a bug: stop");
 ok(R({ checks: [run('test-and-deploy'), run('void-review', null, 'in_progress')] }).state === 'wait', "Verse's review still running: wait");
-ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')] }).state === 'merge', 'suite still running: merge, no wait (it runs again on main)');
-ok(R({ checks: [run('void-review')] }).state === 'merge', 'suite not started yet: merge, no wait');
-ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', null, 'in_progress')] }).state === 'merge', 'bench still running: merge, no wait');
+ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review'), run('merge-gate'), run('collide')] }).state === 'wait', 'an expected check still running: wait');
+{ const r = R({ checks: [run('void-review'), run('CodeRabbit', 'skipped'), run('Macroscope - Correctness Check', 'skipped')], pr: { updated_at: '2026-10-09T12:00:00Z', head: { sha: SHA, ref: 'helper/roi-pack' } } }); ok(r.state === 'wait' && r.noReview === true && r.missingChecks.includes('merge-gate'), 'two reported checks are not the set: wait and start the missing ones'); }
+ok(R({ checks: [...FULL, run('bench', null, 'in_progress')] }).state === 'merge', 'bench still running: merge, the expected set is already green');
 ok(R({ checks: [] }).state === 'wait', 'no check reported yet: wait for Verse\'s review');
 ok(R({ checks: [], pr: { updated_at: new Date().toISOString(), head: { sha: SHA, ref: 'b' } } }).noReview === false, 'a PR seconds old with no review yet: wait, do not dispatch one (its own run is coming)');
 { const r = R({ checks: [], pr: { updated_at: '2026-10-09T12:00:00Z', head: { sha: SHA, ref: 'verse/harden-x' } } }); ok(r.state === 'wait' && r.noReview === true && r.branch === 'verse/harden-x', 'a quiet PR with no review at all (opened by the workflow token): dispatch Verse\'s review on its branch'); }
@@ -34,9 +35,9 @@ ok(!R({ checks: [run('void-review', null, 'in_progress')] }).noReview, 'a review
 
 ok(R({ checks: [run('test-and-deploy', 'failure'), run('void-review')] }).state === 'stop', 'suite failed: stop');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', 'failure')] }).state === 'stop', 'bench failed: stop');
-ok(R({ checks: [run('test-and-deploy')] }).state === 'merge', 'a PR from before the void-review check: the suite decides');
+ok(R({ checks: [run('test-and-deploy')] }).state === 'wait', 'test-and-deploy alone is not the expected set');
 ok(R({ checks: [run('test-and-deploy', null, 'in_progress')] }).state === 'wait', 'no void-review check and the suite still running: wait');
-ok(R({ checks: [run('test-and-deploy', 'failure', 'completed', 1), run('test-and-deploy', 'success', 'completed', 2), run('void-review')] }).state === 'merge', 'the newest run counts');
+ok(R({ checks: [run('test-and-deploy', 'failure', 'completed', 1), run('test-and-deploy', 'success', 'completed', 2), run('void-review'), run('merge-gate'), run('collide')] }).state === 'merge', 'the newest run counts');
 // CodeRabbit
 // CodeRabbit is never waited on: still reviewing, asked and not posted, or rate-limited all merge on green
 ok(R({ comments: [{ user: { login: CR }, body: 'review in progress by coderabbit.ai' }] }).state === 'merge', 'CodeRabbit still reviewing: merge, no wait');
@@ -77,7 +78,7 @@ ok(b.has('git', 'worktree', 'add', '--detach', 'origin/helper/x'), 'the branch i
 ok(b.has('node', '/main/tools/merge-main.mjs'), "merge-main.mjs runs from main's tools, not the branch's");
 ok(b.has('git', 'push', 'origin', 'HEAD:refs/heads/helper/x') && !b.calls.some((c) => c[0] === 'git' && c[1] === 'push' && c.some((x) => /^(-f|--force|--force-with-lease)/.test(x))), 'the merge commit is pushed to the branch, never forced');
 ok(b.has('node', '/main/tools/loop-checks.mjs', '--pr', '7', '--ref', 'helper/x', '--from', 'resolve'), 'the pull-request checks are started on the new head (a token push leaves them approval-required)');
-ok(!b.has('gh', 'api', '-X', 'POST'), 'no comment when it resolved');
+ok(b.has('gh', 'api', '-X', 'POST') && b.calls.some((c) => c.some((x) => String(x).includes('fix-cap'))), 'a resolved merge records one hidden attempt, not a conflict comment');
 ok(b.calls.filter((c) => c[0] === 'git' && c[1] === 'worktree' && c[2] === 'remove').length >= 1, 'the worktree is removed afterwards');
 b = bot({ mergeMain: conflict });
 ok(b.out.state === 'conflict' && b.out.files.join() === 'void.html,tools/x.mjs', 'dirty with a real conflict: the files are named');
