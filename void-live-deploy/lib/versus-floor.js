@@ -27,8 +27,9 @@ export const NEXT = Object.freeze([
   { id: 'meanings', name: 'Word meanings', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: true, features: ['define', 'dictionary', 'meaning'] },
   { id: 'qr', name: 'QR codes', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: true, features: ['qr', 'code'] },
   { id: 'clips', name: 'Clips', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: true, features: ['video', 'play', 'trailer'] },
-  { id: 'songs', name: 'Songs', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, features: ['song', 'play', 'audio'] },
+  { id: 'songs', name: 'Songs', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: true, features: ['song', 'play', 'audio'] },
   { id: 'directions', name: 'Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: false, features: ['directions', 'route', 'map'] },
+  { id: 'factorials', name: 'Factorials', page: '/factorials/', rival: 'programiz.com', url: 'https://www.programiz.com/', kind: 'page', works: false, features: ['factorial'] },
 ]);
 
 export const SITES = Object.freeze([...TOOLS, ...NEXT]);
