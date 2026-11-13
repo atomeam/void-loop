@@ -774,11 +774,8 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /patterns/ | text, code | text | yes | its tag |
 | /pdf/ | image, text | image, text | yes | handoff-types.json |
 | /pdf/editor/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/merge/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/organize/ | image, text | image, text | yes | handoff-types.json |
 | /pdf/studio/ | image, text | image, text | yes | handoff-types.json |
 | /pdf/suite/ | image, text | image, text | yes | handoff-types.json |
-| /pdf/toolbox/ | image, text | image, text | yes | handoff-types.json |
 | /photos/ | image | image, color | yes | handoff-types.json |
 | /photos/exif/ | image | image, color | yes | handoff-types.json |
 | /photos/exifeditor/ | image | image, color | yes | handoff-types.json |
