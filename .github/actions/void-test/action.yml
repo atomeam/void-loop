@@ -49,7 +49,7 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
-        # index.json, families.json and guide.json are generated (never committed). The suite reads the index it just wrote and the book built from it.
+        # The suite reads the index it just wrote. Rebuild the family list and the book from that index so the page count matches the routes.
         node tools/skills-index.mjs --write
         node tools/families.mjs
         node tools/guide.mjs
