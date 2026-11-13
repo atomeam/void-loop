@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/arcade-studio-games-bc88 · four new studio games on the existing arcade ladder, and one /arcade/ page that holds the cabinet and every game · 2026-11-13 23:40 UTC
 - Cursor cloud agent · cursor/dictionary-transition-11ee · Dictionary opts out of the page transition, and QR loads its code from a new address so a cached module cannot drop qrHex · 2026-11-13 22:26 UTC
 - Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC
 - Cursor cloud agent · helper/track-times-11ee · rebuild /track-times/ to the Versus page: the album list, a share link, and a sourced history · 2026-11-13 19:40 UTC
@@ -104,6 +103,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Verse Arcade**: Gap Glide and Cross the Bus play against Verse on the existing cabinet, and /arcade/ holds that cabinet plus a link to every game already on the stage. https://github.com/atomeam/void-loop/pull/2808
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
 - **Text Compare**: one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799
 - **QR Code Maker**: one pass on /qr/ with downloads, two colours, a Wi-Fi line, a contact card, and a sourced history of myqrcode.com. https://github.com/atomeam/void-loop/pull/2797
