@@ -4,6 +4,9 @@ const line = document.querySelector('#line');
 const say = document.querySelector('#say');
 const next = document.querySelector('#next');
 const err = document.querySelector('#err');
+const warn = document.querySelector('#warn');
+const more = document.querySelector('#more');
+let shown = 5;
 
 const clock = (d) => {
   const p = (n) => String(n).padStart(2, '0');
@@ -13,7 +16,7 @@ const clock = (d) => {
 function show() {
   const explained = explainCron(line.value);
   next.replaceChildren();
-  const times = explained.ok ? nextRuns(line.value, new Date(), 5) : [];
+  const times = explained.ok && !explained.reboot ? nextRuns(line.value, new Date(), shown) : [];
   if (!explained.ok) {
     say.textContent = '';
     err.textContent = explained.err;
@@ -39,6 +42,14 @@ function show() {
   const share = document.querySelector('#share');
   share.href = u.pathname + u.search;
   share.textContent = share.href;
+  const raw = line.value.trim().toLowerCase();
+  const notes = [];
+  if (explained.reboot) notes.push('@reboot runs when the computer starts. A plain five-field line does not have it, so there is no next time to list.');
+  else if (raw.split(/\s+/).length === 6) notes.push('A sixth field means seconds. Many cron programs only read five fields.');
+  else if (/[a-z]/.test(raw) && !raw.startsWith('@')) notes.push('Month and weekday names work here. Some cron programs only accept numbers.');
+  warn.textContent = notes.join(' ');
+  more.hidden = !explained.ok || !!explained.reboot || times.length < shown || shown >= 30;
+  document.dispatchEvent(new Event('handoff'));
 }
 
 function fields() {
@@ -90,7 +101,8 @@ document.querySelector('#copy').addEventListener('click', () => {
 for (const button of document.querySelectorAll('[data-field]')) button.addEventListener('click', () => selectField(Number(button.dataset.field)));
 for (const button of document.querySelectorAll('[data-symbol]')) button.addEventListener('click', () => putSymbol(button.dataset.symbol));
 
-line.addEventListener('input', show);
+line.addEventListener('input', () => { shown = 5; show(); });
+more.addEventListener('click', () => { shown = Math.min(30, shown + 5); show(); });
 const q = new URLSearchParams(location.search);
 if (q.has('line')) line.value = q.get('line');
 show();
