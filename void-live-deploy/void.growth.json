@@ -6348,5 +6348,6 @@
   {"at": "2026-11-12T20:45:00Z", "by": "grok-bot", "kind": "build", "what": "Tests for the card layout helper and for who may use what Verse sells (tools/card-tidy.test.mjs, tools/paid-access.test.mjs)"},
   {"at": "2026-11-12T20:45:00Z", "by": "grok-bot", "kind": "build", "what": "Tags and labels on the stage are one family (stage-marks), every ask still lands where it did"},
   {"at": "2026-11-12T20:45:00Z", "by": "grok-bot", "kind": "build", "what": "Each film checks its opening and closing cards, and a weak take is filmed once more another way"},
-  {"at": "2026-11-12T22:26:21Z", "by": "cursor", "kind": "build", "what": "A full page asks for Uni, twenty dollars a month. Cards on the home page stay free, and Multi still makes pages."}
+  {"at": "2026-11-12T22:26:21Z", "by": "cursor", "kind": "build", "what": "A full page asks for Uni, twenty dollars a month. Cards on the home page stay free, and Multi still makes pages."},
+  {"at": "2026-11-13T07:12:01Z", "by": "video-gen-live", "kind": "finding", "what": "video-gen live check found a problem on a-to-mind.com: /video/ has no state, make, handoff; attempt live, occasion 35 (artifact findings/video-gen/2026-11-13T0712.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/video-gen/2026-11-13T0712.json"}
 ]
