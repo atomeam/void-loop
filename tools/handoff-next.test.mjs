@@ -6,7 +6,7 @@ test('handoff-next matches its asks and leaves status and slice alone', () => {
   assert.equal(isHandoffNext('next handoff for the onboarding flow'), true);
   assert.equal(isHandoffNext('handoff next for invoice automation'), true);
   assert.equal(isHandoffNext('what is the next handoff for the support router'), true);
-  assert.equal(subjectOf('next handoff for the onboarding flow'), 'the onboarding flow');
+  assert.equal(subjectOf('next handoff for the onboarding flow'), 'onboarding flow');
   assert.equal(isHandoffNext('system status for the onboarding flow'), false);
   assert.equal(isHandoffNext('next system slice for onboarding'), false);
   assert.equal(isHandoffNext('what is a handoff'), false);
