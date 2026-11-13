@@ -19,7 +19,7 @@ const OK = ['success', 'skipped', 'neutral'];
 // Every pull request's own checks (tools/loop-checks.mjs ALWAYS). A head that only has the checks an outside app
 // reported (2 of 2, both skipped) has not been reviewed. #2732 was opened by the actions bot, so those workflows
 // did not start with the pull request.
-export const EXPECTED_CHECKS = ['void-review', 'merge-gate', 'test-and-deploy', 'collide'];
+export const EXPECTED_CHECKS = ['void-review', 'merge-gate', 'test-and-deploy', 'collide', 'floor-live'];
 
 /** Which expected checks are missing, still running, or red on this exact head. A skipped expected check counts as missing. Pure. */
 export function checkGap(runs) {

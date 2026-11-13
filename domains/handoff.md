@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC
 - Cursor cloud agent · helper/track-times-11ee · rebuild /track-times/ to the Versus page: the album list, a share link, and a sourced history · 2026-11-13 19:40 UTC
 - Cursor cloud agent · helper/plain-words-d564 · plain words on every pull request title, body and added page copy · 2026-11-12 21:40 UTC
 - Cursor cloud agent · helper/uni-pages-131a · full pages ask for Uni, cards on the home page stay free, Multi still makes pages · 2026-11-12 22:20 UTC

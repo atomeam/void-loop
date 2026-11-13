@@ -6,7 +6,7 @@ import { checksFor, prNumber, ghArgs } from './loop-checks.mjs';
 
 test('a diff that touches no filtered path starts the five checks every pull request gets', () => {
   const files = checksFor(['docs/TAGTEAM.md', 'built.txt']).map((c) => c.file);
-  assert.deepEqual(files, ['void-review.yml', 'merge-gate.yml', 'deploy.yml', 'collide.yml', 'automerge.yml']);
+  assert.deepEqual(files, ['void-review.yml', 'merge-gate.yml', 'deploy.yml', 'collide.yml', 'floor-live.yml', 'automerge.yml']);
 });
 
 test('a page diff also starts the critic, and a workflow diff starts the linter', () => {
