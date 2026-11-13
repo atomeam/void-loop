@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/regex-tester-11ee · Regex Tester up to the Versus checklist: matches, a plain reading, replace, and a sourced history · 2026-11-13 21:30 UTC
 - Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC
 - Cursor cloud agent · helper/track-times-11ee · rebuild /track-times/ to the Versus page: the album list, a share link, and a sourced history · 2026-11-13 19:40 UTC
 - Cursor cloud agent · helper/plain-words-d564 · plain words on every pull request title, body and added page copy · 2026-11-12 21:40 UTC
@@ -103,6 +102,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Regex Tester**: one pass on /patterns/ with a plain reading of the pattern, a replacement, and a sourced history of regex101. https://github.com/atomeam/void-loop/pull/2796
 - **ROT13 Text Scrambler**: one pass on /rotate-letters/ with the original shift menu, a sourced history, and links that carry the result. https://github.com/atomeam/void-loop/pull/2792
 - **Lightweight Page**: one pass on /our-motherfucking-version/ with the original's points, the markup scale, and a sourced history. https://github.com/atomeam/void-loop/pull/2793
 - **Lists run 25 (grok-bot, 2026-11-12): lib/db.js in every endpoint (convergence step 3 finished), stage-organize and label are one family, films check their hook and ending cards and re-shoot once under the bar, propose-fix says why, the merge gate installs once, two big files tested, main's stale book and map fixed**: the other 11 endpoints make their tables through lib/db.js (`batchReady` added for the three that used one D1 batch; 132 existing endpoint tests unchanged and green, tools/db-ready.test.mjs fails on any new `let ready = null`); stage-organize and label are one stage-marks family at 0299 (0 of 6,459 asks moved, tools/stage-marks-family.test.mjs); tools/record.mjs checks the hook and ending cards on screen and a film under the bar is filmed again with the buttons in another order, the better take kept (frontier #26 step 2 done, tools/film-grade.test.mjs); tools/propose-fix.mjs logs an edge error page by its title and code and names the bracket a bad edit left open, and tools/merge-gate.mjs runs `npm ci --ignore-scripts` once when a red run only lacked a package (closed PR #2335's leftovers); tools/card-tidy.test.mjs and tools/paid-access.test.mjs (untested allowance 53 to 51); on main, checks that run only when what they cover changes were red (docs/MAP.md did not name time-saved, the book, docs/HANDOFF-GAPS.md and lib/similar-index.js were stale; the 7 missing family inventory lines landed on main in the same hour), fixed here.
