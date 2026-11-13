@@ -4,39 +4,97 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: code">
 <title>QR Code Maker · Verse</title>
-<meta name="description" content="Turn a link or a short line into a code a phone can scan. The drawing is made on this device.">
+<meta name="description" content="Turn a link, a Wi-Fi network, or a contact into a code a phone can scan. Download the drawing. It is made on this device.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/qr/">
 <meta property="og:title" content="QR Code Maker · Verse">
-<meta property="og:description" content="Turn a link or a short line into a code a phone can scan. Made on this device.">
+<meta property="og:description" content="Turn a link, a Wi-Fi network, or a contact into a code a phone can scan.">
 <meta property="og:url" content="https://a-to-mind.com/qr/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
-<meta name="verse-handoff" content="in: text; out: code">
 <style>
   #out { line-height: 0; }
   #out svg { width: min(16rem, 100%); height: auto; background: #fff; border-radius: 8px; }
   #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+  a.dl { display: inline-flex; align-items: center; min-height: var(--vs-touch); padding: .45rem 1rem; border-radius: 10px; background: rgb(var(--d-key)); color: #050505; text-decoration: none; font-weight: 650; }
+  input[type="color"] { width: 4.5rem; height: var(--vs-touch); padding: .2rem; border: 0; background: transparent; }
+  .pair { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; }
+  @view-transition { navigation: none; }
 </style>
 </head>
 <body>
 <main>
   <h1>QR Code Maker</h1>
-  <p>This page is for anyone who wants a code a phone can scan from a link or a short line of text.</p>
+  <p>This page is for anyone who wants a code a phone can scan from a link, a Wi-Fi network, or a contact.</p>
   <p class="original">The original: <a href="https://myqrcode.com/" target="_blank" rel="noopener noreferrer">myqrcode.com</a></p>
-  <p>Type a link or a short line. The page draws a code a phone can scan. The drawing stays on this device, and a line that is too long is refused.</p>
+  <p>Type a link or a short line. The page draws a code a phone can scan, and you can download that drawing. The work stays on this device. A line that is too long is refused. The page uses the strongest error correction that still fits the same size of code.</p>
   <form method="get" action="/qr/">
     <label for="text">Text</label>
     <textarea id="text" name="text" rows="3" maxlength="500" spellcheck="false" autocomplete="off"></textarea>
+    <div class="pair">
+      <div>
+        <label for="dark">Dark</label>
+        <input id="dark" name="dark" type="color" value="#000000">
+      </div>
+      <div>
+        <label for="light">Light</label>
+        <input id="light" name="light" type="color" value="#ffffff">
+      </div>
+    </div>
     <div class="row"><button type="submit">Make</button></div>
   </form>
   <div id="out" aria-live="polite"></div>
   <p id="meta"></p>
   <p id="err" role="status"></p>
-  <p>More: <a href="/base64/">Base64</a>, <a href="/patterns/">patterns</a>, <a href="/meanings/">word meanings</a>.</p>
+  <p class="row"><a class="dl" id="svgdl" download="qr.svg">Download SVG</a><a class="dl" id="pngdl" download="qr.png">Download PNG</a></p>
+  <p>Share this code: <a id="share" style="overflow-wrap:anywhere" href="/qr/">/qr/</a></p>
+
+  <h2>How to use it</h2>
+  <p>Hello is a short line, so the code is version 1. Open it here: <a href="/qr/?text=hello">hello</a>. A phone reads the squares. The quiet margin around them is part of the code, so leave it when you print.</p>
+  <p>Dark and light are the two colours. They need to be different, or a phone may not read the code. Download SVG keeps the drawing sharp at any size. Download PNG is a picture for a slide or a post, and it needs scripts. Press Make if scripts are off. The address still draws the code.</p>
+
+  <h2>A Wi-Fi network</h2>
+  <p>Put a network name and a password here. The button writes the line a phone expects, and the code above uses that line. The password is in the code. Anyone who scans it can join the network.</p>
+  <label for="ssid">Network name</label>
+  <input id="ssid" type="text" autocomplete="off">
+  <label for="pass">Password</label>
+  <input id="pass" type="text" autocomplete="off">
+  <label for="auth">Security</label>
+  <select id="auth">
+    <option value="WPA">WPA</option>
+    <option value="WEP">WEP</option>
+    <option value="nopass">None</option>
+  </select>
+  <div class="row"><button type="button" id="wifi">Put the network in the box</button></div>
+
+  <h2>A contact</h2>
+  <p>A name, a phone number, and an email become a contact card in the box. The code holds that card. It does not look the person up.</p>
+  <label for="cname">Name</label>
+  <input id="cname" type="text" autocomplete="name">
+  <label for="cphone">Phone</label>
+  <input id="cphone" type="text" autocomplete="tel">
+  <label for="cemail">Email</label>
+  <input id="cemail" type="text" autocomplete="email">
+  <div class="row"><button type="button" id="card">Put the contact in the box</button></div>
+
+  <h2>The name</h2>
+  <p>myqrcode.com was registered on 6 April 2008. The registry record read on 13 November 2026 lists that registration at 16:56:38 UTC, a last change on 27 March 2026, and expiration on 6 April 2029. The registrar on that record is MarkMonitor Inc. The name servers are kami.ns.cloudflare.com and robert.ns.cloudflare.com. The status lines are client delete prohibited, client transfer prohibited, client update prohibited, and the same three prohibitions from the registry. Source: the <a href="https://rdap.verisign.com/com/v1/domain/myqrcode.com" rel="noopener noreferrer">registry RDAP record</a>. The record does not name a person.</p>
+
+  <h2>The early address</h2>
+  <p>The earliest saved copy opened for this page is the <a href="https://web.archive.org/web/20100711003040/http://www.myqrcode.com/" rel="noopener noreferrer">11 July 2010 capture</a>. It is a GoDaddy parking page: domain offers, hosting, and a marketplace. It is not a QR code tool. A search of the archive for a saved home page before July 2010 came back empty. Not every later year was opened, so this page does not name the day the parking page became a product.</p>
+  <p>The <a href="https://web.archive.org/web/20210315143414/http://myqrcode.com/" rel="noopener noreferrer">15 March 2021 capture</a> asks for JavaScript and shows almost no other words. The <a href="https://web.archive.org/web/20230105194007/https://myqrcode.com/" rel="noopener noreferrer">5 January 2023 capture</a> is titled "My QR Code - QR Code Generator". Its text offers dynamic codes that can be edited later, scan counts, a choice of content (web pages, PDFs, menus, videos, apps), logos, colours, frames and patterns, and a download as PNG, SVG, or JPG.</p>
+
+  <h2>Who the terms name</h2>
+  <p>The terms, marked last updated March 2026, say the contract is with Outsourcing International EOOD, a Bulgarian company, registration number 204188831, at Office 5, 46 Stefan Mladenov Str, 1700 Sofia, doing business as My QR Code. They also say My QR Code LLC, 169 Madison Ave STE 33098, New York, NY 10016, may take the payment for customers in the United States. The contact line is support@myqrcode.com and the phone is +1-631-892-9925. Source: <a href="https://myqrcode.com/terms-of-use" rel="noopener noreferrer">the terms</a>. Those pages do not say who registered the domain in 2008.</p>
+  <p>On 21 March 2024 a person using the name Robert posted on the Malwarebytes forum as the site. He wrote that codes made there use a shortening name, myqrcode.mobi, so the destination can be changed later and the scans can be counted. A staff reply the same day said the block would be removed. Source: <a href="https://forums.malwarebytes.com/topic/309672-please-remove-block-for-myqrcode/" rel="noopener noreferrer">that forum thread</a>. The post does not say he registered the domain.</p>
+
+  <h2>What this page leaves out</h2>
+  <p>This page draws the code on your device and does not keep a copy. It does not count scans, it does not let you change the destination later, and it does not put a logo in the middle. A logo can cover the squares a phone needs. Frames, pattern shapes, and a JPG download are not here. PNG and SVG are.</p>
+  <p>More: <a href="/base64/">Base64</a>, <a href="/patterns/">Regex Tester</a>, <a href="/meanings/">Dictionary</a>.</p>
   <nav class="with" aria-label="Use this with"><span>Use this with</span>
-    <a data-base="/text-diff/" data-param="changed" data-from="#text" data-fallback="hello">Text Compare</a>
+    <a href="/text-diff/?changed=hello" data-base="/text-diff/" data-param="changed" data-from="#text" data-fallback="hello">Text Compare</a>
   </nav>
 </main>
 <script type="module" src="/qr/app.js"></script>

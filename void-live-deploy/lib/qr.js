@@ -133,11 +133,18 @@ export function penalty(m) {
   return s;
 }
 
-/** the modules as one SVG path, dark on white with a `margin`-module quiet zone; only numbers go into it. Pure. */
-export function qrSvg(q, { margin = 4, label = 'QR code' } = {}) {
+/** a #rgb or #rrggbb colour, or the fallback. Anything else is refused. Pure. */
+export function qrHex(color, fallback) {
+  const s = String(color || '').trim();
+  return /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(s) ? s : fallback;
+}
+
+/** the modules as one SVG path, dark on a light ground with a `margin`-module quiet zone; only numbers and a checked colour go into it. Pure. */
+export function qrSvg(q, { margin = 4, label = 'QR code', dark = '#000', light = '#fff' } = {}) {
   if (!q || !q.modules) return '';
   const n = q.size + margin * 2; let d = '';
+  const ink = qrHex(dark, '#000'), paper = qrHex(light, '#fff');
   q.modules.forEach((row, y) => { let x = 0; while (x < q.size) { if (!row[x]) { x++; continue; } let w = 1; while (x + w < q.size && row[x + w]) w++; d += 'M' + (x + margin) + ' ' + (y + margin) + 'h' + w + 'v1h-' + w + 'z'; x += w; } });
   const safe = String(label).replace(/[^A-Za-z0-9 .,:'-]/g, '');
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges" role="img" aria-label="' + safe + '"><rect width="' + n + '" height="' + n + '" fill="#fff"/><path fill="#000" d="' + d + '"/></svg>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges" role="img" aria-label="' + safe + '"><rect width="' + n + '" height="' + n + '" fill="' + paper + '"/><path fill="' + ink + '" d="' + d + '"/></svg>';
 }
