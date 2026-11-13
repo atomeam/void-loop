@@ -8,11 +8,15 @@ function paint() {
   const nav = document.querySelector('nav.with');
   if (!nav) return;
   for (const a of nav.querySelectorAll('a[data-base]')) {
-    const v = (read(a.dataset.from) || a.dataset.fallback || '').replace(/\s+/g, ' ').trim().slice(0, 500);
+    const el = a.dataset.from && document.querySelector(a.dataset.from);
+    const raw = el ? ('value' in el ? el.value : el.textContent) : (a.dataset.fallback || '');
+    const v = String(raw || '').replace(/\s+/g, ' ').trim().slice(0, 500);
+    if (!v) return;
     const u = new URL(a.dataset.base, location.origin);
-    if (v) u.searchParams.set(a.dataset.param || 'text', v);
+    u.searchParams.set(a.dataset.param || 'text', v);
     a.href = u.pathname + u.search;
   }
 }
 paint();
 document.addEventListener('input', paint);
+document.addEventListener('handoff', paint);
