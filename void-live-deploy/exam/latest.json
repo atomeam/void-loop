@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-13T00:20:01.972Z",
+  "at": "2026-11-13T01:47:23.516Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,17 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of serial",
-          "failed": [
-            "episode"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -110,18 +103,106 @@
       }
     },
     "weather": {
-      "score": 95.8,
+      "score": 63.9,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "weather in paris",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "will it rain tomorrow in london",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "weather in tokyo this week",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "weather in seattle",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 33.3
+        },
+        {
           "ask": "what is the weather in paris",
           "failed": [
+            "answered",
+            "skill",
             "fast",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 33.3
+        },
+        {
+          "ask": "weather in london this weekend",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "what's the weather in miami tomorrow",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "whats teh weather in london",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "wheather in new york",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "weather tomorrow in berlin",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 33.3
         },
         {
           "ask": "weather",
@@ -313,57 +394,10 @@
       "fails": []
     },
     "timers": {
-      "score": 66.7,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "set a timer for 90 seconds",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "a 2 second timer",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "add one minute",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "timer for 5",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "temporizador de 3 minutos",
-          "failed": [
-            "answered",
-            "skill",
-            "fast"
-          ],
-          "score": 40
-        },
-        {
-          "ask": "set a timer for 45 seconds",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     },
     "images": {
       "score": 100,
@@ -414,7 +448,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 66.7
+    "domain": "weather",
+    "score": 63.9
   }
 }
