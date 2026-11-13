@@ -122,10 +122,6 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /jobs/tags/ | text, location | items, url | yes | handoff-types.json |
 | /journal/ | text | url | yes | its tag |
 | /kanban/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/flow/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/quick/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/simple/ | items, text | items, table | yes | handoff-types.json |
-| /kanban/teams/ | items, text | items, table | yes | handoff-types.json |
 | /lab/ | - | - | no | its tag |
 | /lab/044-resonant-echo-portals/ | - | - | no | its tag |
 | /lab/048-evolving-particle-life-mind/ | - | - | no | its tag |

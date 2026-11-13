@@ -23,7 +23,7 @@ test('a tool page, a fix page and a page folder file map to their own URL', () =
   const fix = all.find((p) => p.loc.startsWith('/fix/') && p.loc !== '/fix/');
   assert.deepEqual(map(['void-live-deploy' + fix.loc + 'index.html']), [SITE + fix.loc]);
   // a file in a nested page folder is that page's, not its parent's
-  assert.deepEqual(map(['void-live-deploy/kanban/simple/app.js']), [SITE + '/kanban/simple/']);
+  assert.deepEqual(map(['void-live-deploy/flights/distance/app.js']), [SITE + '/flights/distance/']);
 });
 
 test('the home page: its index.html or the repo void.html, never every file under the site', () => {

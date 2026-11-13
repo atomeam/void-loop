@@ -65,6 +65,14 @@
 /pdf/suite/ /pdf/ 301
 /pdf/studio /pdf/?tool=compress 301
 /pdf/studio/ /pdf/?tool=compress 301
+/kanban/simple /kanban/ 301
+/kanban/simple/ /kanban/ 301
+/kanban/quick /kanban/ 301
+/kanban/quick/ /kanban/ 301
+/kanban/teams /kanban/ 301
+/kanban/teams/ /kanban/ 301
+/kanban/flow /kanban/ 301
+/kanban/flow/ /kanban/ 301
 # /memes/ held one finished site. That section is gone, so the address opens the home page.
 /memes / 301
 /memes/ / 301

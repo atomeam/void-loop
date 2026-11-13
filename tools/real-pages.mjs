@@ -719,7 +719,7 @@ SPECS['/ledger/'] = async (t) => {
   await t.copies('#copycsv', 'Merge the tide tables');
   await t.share('#copylink', async (p) => { await p.waitForFunction(() => document.querySelectorAll('#rows tr').length > 0, null, { timeout: 8000 }).catch(() => {}); return (await p.inputValue('#repo')) === 'test-owner/test-repo' && (await p.getAttribute('#tab-pr', 'aria-selected')) === 'true' && /Merge the tide tables/.test(await p.locator('#rows').innerText()); });
 };
-for (const r of ['/kanban/', '/kanban/simple/', '/kanban/teams/', '/kanban/quick/']) SPECS[r] = kanban(true); SPECS['/kanban/flow/'] = kanban(false);
+SPECS['/kanban/'] = kanban(true);
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
