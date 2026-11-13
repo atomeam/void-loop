@@ -57,6 +57,14 @@ test('the album list uses the printed start times and totals 43:53', () => {
   assert.equal(p.clock(p.total), '43:53');
 });
 
+test('a markup query fills the weight and the next tool', async () => {
+  const html = '<textarea id="html" name="html"></textarea><output id="out"></output><a href="/text-diff/?changed=old" data-base="/text-diff/" data-param="changed" data-from="#out">Text Compare</a>';
+  const context = { request: new Request('https://example.test/our-motherfucking-version/?html=' + encodeURIComponent('<p>Hi</p><img alt="" src="a.png">')), next: async () => new Response(html) };
+  const body = await (await fillVersus(context, 'weigh')).text();
+  assert.match(body, /33 bytes · 1 pictures/);
+  assert.match(body, /href="\/text-diff\/\?changed=33%20bytes/);
+});
+
 test('a track query fills the share link', async () => {
   const html = '<textarea id="list">old</textarea><pre id="out">old</pre><p id="total">old</p><a id="share" href="/track-times/">/track-times/</a>';
   const context = { request: new Request('https://example.test/track-times/?list=' + encodeURIComponent('One 1:00')), next: async () => new Response(html) };
