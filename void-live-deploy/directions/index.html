@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Directions · Verse</title>
+<meta name="description" content="Driving time between two places. The time is the road with no live traffic.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/directions/">
+<meta property="og:title" content="Directions · Verse">
+<meta property="og:description" content="Driving time between two places. Road time with no live traffic.">
+<meta property="og:url" content="https://a-to-mind.com/directions/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: from, to; out: minutes, km">
+<style>
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Directions</h1>
+  <p>Type where you start and where you are going. The page says the driving time and the distance. The time is the open road, with no live traffic.</p>
+  <form method="get" action="/directions/">
+    <label for="from">From</label>
+    <input id="from" name="from" type="text" value="" maxlength="80" autocomplete="off">
+    <label for="to">To</label>
+    <input id="to" name="to" type="text" value="" maxlength="80" autocomplete="off">
+    <div class="row"><button type="submit">Show</button></div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p>More: <a href="/weather/">weather</a>, <a href="/flights/">flights</a>, <a href="/convert/">unit converter</a>.</p>
+</main>
+<script type="module" src="/directions/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>
