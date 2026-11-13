@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { rotateLetters, parseTracks, weigh, putText } from '../void-live-deploy/lib/versus.js';
+import { rotateLetters, parseTracks, weigh, putText, fillVersus } from '../void-live-deploy/lib/versus.js';
 
 test('letters move, other marks stay, and 13 undoes itself', () => {
   assert.equal(rotateLetters('Ab! z', 1), 'Bc! a');
@@ -25,4 +25,20 @@ test('weigh counts bytes, pictures, fonts and scripts', () => {
 
 test('putText writes into an element and escapes', () => {
   assert.equal(putText('<output id="out"></output>', 'out', 'A<B'), '<output id="out">A&lt;B</output>');
+});
+
+test('the album list uses the printed start times and totals 43:53', () => {
+  const raw = '0:00 21st Century Schizoid Man, including Mirrors 7:24\n7:24 I Talk to the Wind 6:05\n13:29 Epitaph, including March for No Reason and Tomorrow and Tomorrow 8:47\n22:16 Moonchild, including The Dream and The Illusion 12:12\n34:28 The Court of the Crimson King, including The Return of the Fire Witch and The Dance of the Puppets 9:25';
+  const p = parseTracks(raw);
+  assert.equal(p.rows.length, 5);
+  assert.equal(p.clock(p.rows[4].start), '34:28');
+  assert.equal(p.clock(p.total), '43:53');
+});
+
+test('a track query fills the share link', async () => {
+  const html = '<textarea id="list">old</textarea><pre id="out">old</pre><p id="total">old</p><a id="share" href="/track-times/">/track-times/</a>';
+  const context = { request: new Request('https://example.test/track-times/?list=' + encodeURIComponent('One 1:00')), next: async () => new Response(html) };
+  const body = await (await fillVersus(context, 'tracks')).text();
+  assert.match(body, /1:00/);
+  assert.match(body, /id="share" href="\/track-times\/\?list=/);
 });
