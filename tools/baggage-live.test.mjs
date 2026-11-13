@@ -50,10 +50,10 @@ test('baggage-live: a figure gone from its page or a page that did not answer is
   assert.equal(gone.ok, false); assert.equal(gone.found, CHECKS.length - 1);
   assert.match(gone.error, /not found: 100 lbs \/ 45 kgs \(American: heavy bags\)/);
   assert.match(ledgerWhat(gone), /found 9 of 10 figures/);
-  const down = all(); down['British Airways: baggage'] = { status: 403, body: '', ms: 300 };
+  const down = all(); down['British Airways: baggage'] = { status: 500, body: '', ms: 300 };
   const rec = recordOf({ pages: down, at: AT });
-  assert.equal(rec.ok, false); assert.equal(rec.error, 'British Airways: baggage: HTTP 403 (3 figures unchecked)');
-  assert.equal(rec.checks.filter((c) => c.source === 'British Airways: baggage').every((c) => !c.found && c.state === 'unchecked'), true, 'a page that did not answer finds nothing, and its figures are unchecked, not gone');
+  assert.equal(rec.ok, false); assert.equal(rec.error, 'British Airways: baggage: HTTP 500 (3 figures unchecked)');
+  assert.equal(rec.checks.filter((c) => c.source === 'British Airways: baggage').every((c) => !c.found && c.state === 'unchecked'), true, 'a page that failed finds nothing, and its figures are unchecked, not gone');
   assert.equal(rec.gone, 0); assert.equal(rec.unchecked, 3); assert.equal(rec.found, CHECKS.length - 3);
   assert.match(ledgerWhat(rec), /found 7 of 10 figures, none gone, 3 unchecked/);
   assert.equal(gone.gone, 1); assert.equal(gone.checks.find((c) => c.figure === '100 lbs / 45 kgs').state, 'gone');
@@ -74,18 +74,23 @@ test('baggage-live: readPages reads each cited page once, and an unreachable pag
   assert.equal(out['American: checked bags'].body, 'page');
 });
 
-test('baggage-live: a refusal alone warns, a figure gone is red, nothing answering is red, all found is green', () => {
+test('baggage-live: a 403 is the source blocking the check and does not fail the run; a figure gone is red; nothing reached is red', () => {
   assert.equal(exitCodeOf(recordOf({ pages: all(), at: AT })), 0);
-  // the day-to-day case since 2026-10-31: aa.com refuses the runner, British Airways answers with every figure
   const aaRefused = all();
   for (const [n] of SOURCES) if (n.startsWith('American')) aaRefused[n] = { status: 403, body: '', ms: 200 };
   const r = recordOf({ pages: aaRefused, at: AT });
-  assert.equal(r.ok, false); assert.equal(r.gone, 0); assert.equal(r.unchecked, 7); assert.equal(exitCodeOf(r), 2);
-  // a refusal and a figure gone on a page that answered: the gone figure wins, red
+  assert.equal(r.ok, true); assert.equal(r.gone, 0); assert.equal(r.unchecked, 0); assert.equal(r.blocked, 7); assert.equal(exitCodeOf(r), 0);
+  assert.equal(r.checks.filter((c) => c.source.startsWith('American')).every((c) => c.state === 'source blocks automated checks'), true);
+  assert.match(ledgerWhat(r), /source blocks automated checks/);
+  assert.equal(entryProblem({ at: '2026-10-30T14:23:05Z', by: 'baggage-live', kind: 'finding', what: ledgerWhat(r), ref: 'https://github.com/atomeam/void-loop/blob/main/findings/baggage/2026-10-30T1423.json' }), null);
+  const altPages = { ...aaRefused, 'British Airways: baggage': ok(PAGES['British Airways: baggage'] + '<p>50 lbs / 23 kgs</p><p>70 lbs / 32 kgs</p><p>62 in / 158 cm</p>') };
+  const via = recordOf({ pages: altPages, at: AT, alternates: { 'American: checked bags': 'British Airways: baggage' } });
+  assert.equal(via.checks.filter((c) => c.source === 'American: checked bags').every((c) => c.state === 'found'), true, 'an already-allowed page that states the figure counts');
+  assert.equal(via.checks.filter((c) => c.source === 'American: heavy bags').every((c) => c.state === 'source blocks automated checks'), true, 'no other allowed page states the heavy-bag figures');
   aaRefused['British Airways: baggage'] = ok('<div>23kg (50lb)</div><div>32kg (70lb)</div>');
   const both = recordOf({ pages: aaRefused, at: AT });
-  assert.equal(both.gone, 1); assert.equal(exitCodeOf(both), 1);
-  assert.match(both.error, /American: checked bags: HTTP 403 \(3 figures unchecked\).*not found: 56 x 45 x 25cm \(British Airways: baggage\)/);
+  assert.equal(both.gone, 1); assert.equal(both.ok, false); assert.equal(exitCodeOf(both), 1);
+  assert.match(both.error, /American: checked bags: HTTP 403 \(3 figures: source blocks automated checks\).*not found: 56 x 45 x 25cm \(British Airways: baggage\)/);
   const none = Object.fromEntries(SOURCES.map(([n]) => [n, { status: 0, body: '', ms: 0, error: 'ENOTFOUND' }]));
   assert.equal(exitCodeOf(recordOf({ pages: none, at: AT })), 3);
 });
