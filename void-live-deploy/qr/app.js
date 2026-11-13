@@ -1,5 +1,10 @@
-import { qrMatrix, qrSvg, qrHex } from '/lib/qr.js';
-import { qrPageText, qrWifi, qrContact } from '/lib/qr-page.js';
+import { qrMatrix, qrSvg } from '/lib/qr.js?v=2';
+import { qrPageText, qrWifi, qrContact } from '/lib/qr-page.js?v=2';
+
+function qrHex(color, fallback) {
+  const s = String(color || '').trim();
+  return /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(s) ? s : fallback;
+}
 
 const input = document.querySelector('#text');
 const dark = document.querySelector('#dark');

@@ -25,6 +25,15 @@ test('hello is a version 1 code', () => {
   assert.equal(code.size, 21);
 });
 
+test('the page does not bind to a previously cached copy of the code module', () => {
+  const html = readFileSync(new URL('../void-live-deploy/qr/index.html', import.meta.url), 'utf8');
+  const app = readFileSync(new URL('../void-live-deploy/qr/app.js', import.meta.url), 'utf8');
+  assert.match(html, /src="\/qr\/app\.js\?v=2"/);
+  assert.match(app, /from '\/lib\/qr\.js\?v=2'/);
+  assert.match(app, /from '\/lib\/qr-page\.js\?v=2'/);
+  assert.doesNotMatch(app, /import \{[^}]*qrHex[^}]*\} from '\/lib\/qr\.js/);
+});
+
 test('a query fills the page when scripts are off', async () => {
   const html = readFileSync(new URL('../void-live-deploy/qr/index.html', import.meta.url), 'utf8');
   const res = await onRequestGet({
