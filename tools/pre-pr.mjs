@@ -95,17 +95,19 @@ function main() {
   const self = args.includes('--pr') ? Number(args[args.indexOf('--pr') + 1]) : (prs || []).find((p) => p.head === head)?.number ?? null;
   // families.json and guide.json are generated. A commit may carry them when they are exactly what the generators write
   // (a skill was placed). A hand edit or a stale copy still says "lags" or exits 1, and is refused.
-  const BOOK = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json', 'void-live-deploy/skills/what.json'];
+  const BOOK = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json', 'void-live-deploy/skills/what.json', 'void-live-deploy/skills/index.json', 'void-live-deploy/skills/lineage.json'];
   const fresh = [];
   if ((files || []).some((f) => BOOK.includes(f))) {
     const runs = [
       ['tools/families.mjs', '--check'],
       ['tools/guide.mjs', '--check'],
       ['tools/what-skills.mjs', '--check'],
+      ['tools/skills-index.mjs', '--check'],
     ];
     const outs = runs.map((a) => spawnSync(process.execPath, [resolve(root, a[0]), a[1]], { cwd: root, encoding: 'utf8' }));
     const text = outs.map((r) => String(r.stdout || '') + String(r.stderr || '')).join('\n');
-    if (outs.every((r) => r.status === 0) && !/lags/.test(text)) fresh.push(...BOOK);
+    const indexOk = /index\.json matches/.test(text);
+    if (outs.every((r) => r.status === 0) && !/lags/.test(text) && indexOk) fresh.push(...BOOK);
   }
   const out = refusals({ behind, files, numstat: numstat.stdout, prs, self, fresh });
   if (out.length) { for (const o of out) console.error('pre-pr: ' + o); process.exit(1); }
