@@ -1,95 +1,5 @@
 [
  {
-  "at": "2026-11-05T00:26:50Z",
-  "passed": 76,
-  "of": 88,
-  "ms": 431,
-  "kind": "file",
-  "key": "bokos like dune | nothing appeared",
-  "failed": [
-   {
-    "ask": "play chess",
-    "why": "fps 1 < 5"
-   },
-   {
-    "ask": "my actions",
-    "why": "load 1324 ms > 1200"
-   },
-   {
-    "ask": "bokos like dune",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "yo automations",
-    "why": "load 1645 ms > 1200"
-   },
-   {
-    "ask": "weather in boston",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "bench icon",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "which games do you know",
-    "why": "load 1328 ms > 1200"
-   },
-   {
-    "ask": "send it away",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "films by kurosawa pls",
-    "why": "nothing appeared"
-   },
-   {
-    "ask": "fimls by kurosawa",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "contéstame en español",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "can we play despacito",
-    "why": "nothing appeared"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1987,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 16232 ms"
-     ]
-    }
-   ]
-  },
-  "note": "fix: \"bokos like dune\" nothing appeared"
- },
- {
-  "at": "2026-11-05T00:39:42Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2315,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 22378 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T01:33:04Z",
   "kind": "visitor",
   "visitor": {
@@ -7739,5 +7649,95 @@
    "failed": []
   },
   "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-13T14:08:05Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 553,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13150 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-13T14:22:25Z",
+  "passed": 110,
+  "of": 125,
+  "ms": 388,
+  "kind": "file",
+  "key": "weak | favorite this",
+  "failed": [
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "attention field",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "flip this card",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film metadata for ikiru pls",
+    "why": "refused: don't know this yet"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo create a toon style bird",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "credits",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "client brief for Acme onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "lift summary for client onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "bridge these inputs",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 553,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13150 ms"
+     ]
+    }
+   ]
+  },
+  "note": "quality upgrade: weakest answer was \"favorite this\" (17 chars)"
  }
 ]

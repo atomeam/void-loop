@@ -3,13 +3,78 @@
  "cases": 122,
  "runsTotal": 300,
  "kinds": {
-  "file": 41,
   "visitor": 217,
   "grow": 38,
+  "file": 41,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-13T14:22:25Z",
+   "passed": 110,
+   "of": 125,
+   "kind": "file",
+   "ms": 388,
+   "note": "quality upgrade: weakest answer was \"favorite this\" (17 chars)",
+   "failed": [
+    {
+     "ask": "turn the questions i missed into a five-minute challenge",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "attention field",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "flip this card",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for ikiru pls",
+     "why": "refused: don't know this yet"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo create a toon style bird",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "credits",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "client brief for Acme onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "lift summary for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "bridge these inputs",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-13T14:08:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-13T13:41:51Z",
    "passed": 0,
@@ -154,20 +219,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-12T17:45:34Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T17:18:23Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -233,16 +284,16 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 85,
-   "passed": 2189,
-   "of": 2345,
-   "ms": 379
+   "runs": 83,
+   "passed": 2113,
+   "of": 2257,
+   "ms": 373
   },
   {
    "from": "2026-11-06",
-   "runs": 215,
-   "passed": 4466,
-   "of": 6141,
+   "runs": 217,
+   "passed": 4576,
+   "of": 6266,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -661,6 +712,9 @@
   "skill:reuse-tools": "2026-11-12T07:42:58Z",
   "skill:system-slice": "2026-11-12T08:05:47Z",
   "skill:handoffs": "2026-11-12T18:22:54Z",
-  "skill:quick-tools": "2026-11-12T18:22:54Z"
+  "skill:quick-tools": "2026-11-12T18:22:54Z",
+  "skill:delivery-dashboard": "2026-11-13T14:22:25Z",
+  "skill:kickoff-pack": "2026-11-13T14:22:25Z",
+  "skill:reliability-pack": "2026-11-13T14:22:25Z"
  }
 }
