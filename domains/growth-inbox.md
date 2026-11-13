@@ -119,3 +119,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-11-12 | system-plan skill: capture a business idea and turn it into a structured plan of systems, automations, tests, monitors and handoff so the client does less of the setup | new idea by growth agent; helper/system-plan |
 | building | 2026-11-12 | system-plan skill: capture a business idea and turn it into a structured plan of systems, automations, tests, monitors and handoff | new idea by growth agent; helper/system-plan |
 | building | 2026-11-13 | client-weekly skill: client-visible weekly summary of systems Verse owns (progress, monitors, time saved estimate, next handoff) so the client does less chasing | new idea by growth agent; helper/client-weekly |
+| building | 2026-11-13 | handoff-next skill: package the next concrete handoff step for a system so the client knows what Verse delivers next and does less chasing or waiting | new idea by growth agent; helper/handoff-next |

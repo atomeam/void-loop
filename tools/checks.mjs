@@ -615,6 +615,7 @@ for (const [name, file] of [
   ['systems-monitor', 'systems-monitor.test.mjs'],
   ['system-blueprint', 'system-blueprint.test.mjs'],
   ['client-handoff', 'client-handoff.test.mjs'],
+  ['handoff-next', 'handoff-next.test.mjs'],
   ['system-handoff', 'system-handoff.test.mjs'],
   ['proposal-pack', 'proposal-pack.test.mjs'],
   ['monitor-pack', 'monitor-pack.test.mjs'],
