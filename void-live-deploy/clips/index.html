@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Clips · Verse</title>
+<meta name="description" content="Find a film by title and play it from the public film archive. The film stays where it is.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/clips/">
+<meta property="og:title" content="Clips · Verse">
+<meta property="og:description" content="Find a film by title and play it from the public film archive.">
+<meta property="og:url" content="https://a-to-mind.com/clips/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: title; out: clip">
+<style>
+  #out iframe { width: 100%; height: 20rem; border: 0; background: #000; border-radius: 8px; }
+  #out button { font: inherit; color: inherit; background: transparent; border: 0; padding: 0; text-align: left; cursor: pointer; }
+  #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Clips</h1>
+  <p>Type a title. The page lists matching films from the public film archive and plays the one you pick. The film stays in the archive.</p>
+  <form method="get" action="/clips/">
+    <label for="q">Title</label>
+    <input id="q" name="q" type="search" value="" maxlength="80" spellcheck="false" autocomplete="off" enterkeyhint="search">
+    <div class="row"><button type="submit">Find</button></div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+  <p id="err" role="status"></p>
+  <p>More: <a href="/films/">short films</a>, <a href="/video/">a clip from a description</a>, <a href="/podcasts/">podcasts</a>.</p>
+</main>
+<script type="module" src="/clips/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>
