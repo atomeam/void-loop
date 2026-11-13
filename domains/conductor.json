@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-12T20:25:20.661Z",
+ "updated": "2026-11-13T07:14:03.569Z",
  "last24h": {
-  "ticks": 46,
-  "started": 34,
+  "ticks": 41,
+  "started": 29,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -11,38 +11,6 @@
  },
  "broken": [],
  "held": [
-  {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
   {
    "id": "mvvql4d9",
    "why": "no executor for route"
@@ -88,27 +56,27 @@
    "why": "no executor for bot"
   },
   {
-   "id": "mwdi4ukx",
+   "id": "mwditzd8",
    "why": "no executor for route"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 5,
    "cap": 90
   },
   "day": {
-   "used": 119,
+   "used": 146,
    "cap": 360
   },
   "room": true,
   "until": null
  },
  "handed": {
-  "mva30i2e": 1794515120661,
-  "mvbl52gd": 1794515120661,
-  "mveb8rsi": 1794469305898,
+  "mva30i2e": 1794554043569,
+  "mvbl52gd": 1794554043569,
+  "mveb8rsi": 1794554043569,
   "mvu167w7": 1794469872732,
   "mveb8svc": 1794469872732,
   "mvfu4evy": 1794470437673,
@@ -131,272 +99,92 @@
   "mwdhh4d8": 1794485642581,
   "mwdhh590": 1794486208023
  },
- "sweptAt": 1794515120661,
- "blueprintsAt": 1794515120661,
- "visitorAt": "2026-11-12T19:43:45Z",
+ "sweptAt": 1794554043569,
+ "blueprintsAt": 1794554043569,
+ "visitorAt": "2026-11-13T02:12:37Z",
  "visitorFiled": [
-  "versus:bttrack.com",
-  "versus:dalyfeds.com",
-  "tv:healthy-snack-alternatives",
-  "tv:irish-pub-locator",
-  "review:2482",
-  "feature:random-org-ea756452",
-  "feature:random-org-9f6f952d",
-  "feature:random-org-ccb2ecd2",
-  "versus:everycom.store",
-  "versus:adnext.mobi",
-  "versus:protopage.com",
-  "versus:tinyurl.com",
-  "miss:film-metadata",
-  "versus:juicychat.ai",
-  "versus:oneyeard.com",
-  "versus:want-tower-password",
-  "review:2504",
-  "versus:share.google",
-  "versus:g.co",
-  "versus:amazon.co.uk",
-  "versus:amazon.de",
-  "versus:live-video.net",
-  "review:2509",
-  "review:2511",
-  "review:2512",
-  "review:2302",
-  "review:2315",
-  "review:2514",
-  "review:2519",
-  "visit:translate-hello-to-spanish",
-  "review:2485",
-  "versus:zpecloud.com",
-  "versus:aurashinehub.com",
-  "versus:pokupon.ua",
-  "versus:uniteforliteracy.com",
-  "review:2546",
-  "versus:tsundere.pw",
-  "versus:arcticfoxhaircolor.com",
-  "versus:hexcol.com",
-  "versus:junit.org",
-  "review:2563",
-  "feature:wordcounter-net-510e5696",
-  "feature:convertunits-com-fd227592",
-  "feature:unitconverters-net-a1eba45d",
-  "review:2583",
-  "review:2585",
-  "review:2590",
-  "heal:helper-proposal-pack",
-  "review:2597",
-  "review:2599",
-  "feature:flightconnections-co-5e8de345",
-  "feature:flightconnections-co-e4b41463",
-  "feature:flightconnections-co-65bcb77f",
-  "heal:helper-client-status-pack",
-  "review:2605",
-  "heal:helper-ownership-map",
-  "heal:helper-client-offer",
-  "heal:helper-automation-pack",
-  "review:2694",
-  "heal:helper-book-green-main",
-  "review:2699",
-  "review:2701",
-  "heal:helper-shows-live-clean",
-  "review:2702",
-  "heal:helper-shows-craft-6fca",
-  "review:2708",
-  "route:status-board-status-of-the-automat",
-  "visit:what-s-the-weather-in-lakeland-f",
-  "review:2728",
-  "review:2729",
-  "review:2731",
-  "review:2732",
-  "probe:what-am-i-missing-in-this-plan",
-  "probe:make-a-client-brief-for-the-agency",
-  "probe:draft-the-handoff-checklist",
-  "probe:show-me-the-ownership-map",
-  "review:2733",
-  "review:2736",
-  "gap:want-exam-code",
-  "review:2739"
+  "probe:map-ownership-for-invoice-reminder",
+  "review:2627",
+  "review:2628",
+  "review:2629",
+  "heal:helper-least-tower-0b57",
+  "review:2630",
+  "review:2631",
+  "review:2636",
+  "review:2639",
+  "review:2641",
+  "heal:helper-color-by-number-238b",
+  "heal:helper-delete-tower-48f9",
+  "review:2645",
+  "heal:helper-fix-main-suite-log-showca",
+  "review:2647",
+  "will:overhaul-site-video-persona-playtest-bes",
+  "versus:rightarion.ru",
+  "versus:cavea.plus",
+  "versus:whatismyip.org",
+  "versus:w3counter.com",
+  "review:2655",
+  "heal:helper-system-slice",
+  "review:2656",
+  "heal:helper-team-chat-card",
+  "review:2661",
+  "heal:helper-lift-summary",
+  "review:2660",
+  "review:2664",
+  "feature:team-2886",
+  "retest:ownership-pack",
+  "review:2671",
+  "heal:helper-recruit-clock-07d1",
+  "heal:helper-feedback-loop",
+  "review:2677",
+  "heal:helper-shows-live-6fca",
+  "heal:helper-brain-ask",
+  "review:2683",
+  "heal:helper-docs-pack",
+  "review:2685",
+  "bot:headline-slug",
+  "bot:summary-keywords",
+  "bot:frame-ratio",
+  "bot:readable-summary",
+  "bot:loud-headline",
+  "heal:helper-client-brief",
+  "review:2667",
+  "review:2705",
+  "review:2706",
+  "heal:helper-delivery-board",
+  "review:2707",
+  "heal:helper-status-digest",
+  "review:2713",
+  "tv:relationship-history-logger",
+  "review:2717",
+  "review:2723",
+  "route:ownership-ownership-map-for-weekly",
+  "heal:helper-full-handoff",
+  "review:2725",
+  "heal:helper-full-handoff-complete",
+  "heal:helper-system-plan",
+  "review:2743",
+  "heal:helper-reliability-pack",
+  "heal:helper-roi-pack",
+  "heal:helper-kickoff-pack",
+  "visit:tell-me-a-joke",
+  "review:2747",
+  "heal:helper-versus-owner-ad9e",
+  "review:2749",
+  "heal:helper-conflict-checks-d564",
+  "heal:helper-uni-pages-131a",
+  "heal:helper-register-delivery-skills",
+  "heal:helper-systems-owned",
+  "review:2758",
+  "probe:how-do-i-use-verse",
+  "probe:what-s-the-next-step-for-the-app",
+  "probe:is-the-bot-running",
+  "probe:summarize-the-last-sprint",
+  "review:2761",
+  "heal:helper-delivery-ready",
+  "heal:want-guard-hourly-films-page"
  ],
  "ticks": [
-  {
-   "at": "2026-11-11T21:02:12.435Z",
-   "open": 360,
-   "started": [
-    {
-     "id": "want-page-tools-json",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 115
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 19,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-11T21:11:38.835Z",
-   "open": 360,
-   "started": [
-    {
-     "id": "want-page-tools-json",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 115
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 19,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-11T21:21:02.704Z",
-   "open": 361,
-   "started": [
-    {
-     "id": "want-page-tools-json",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 115
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 19,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-11T21:40:28.729Z",
-   "open": 362,
-   "started": [
-    {
-     "id": "want-page-tools-json",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 115
-    },
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 19,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-11T21:50:02.938Z",
-   "open": 362,
-   "started": [
-    {
-     "id": "want-page-tools-json",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 115
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 21,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-11T21:59:37.945Z",
-   "open": 362,
-   "started": [
-    {
-     "id": "want-page-tools-json",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 115
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 21,
-   "warnings": 1
-  },
   {
    "at": "2026-11-12T07:41:45.898Z",
    "open": 367,
@@ -1410,6 +1198,46 @@
    "sweep": true,
    "blueprints": 0,
    "held": 21,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-13T07:14:03.569Z",
+   "open": 401,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 12,
    "warnings": 1
   }
  ]
