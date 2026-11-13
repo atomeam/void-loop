@@ -7,7 +7,7 @@
 export function isIncidentPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:incident|firefight|outage)\s+(?:pack|path|response|plan)\b/i.test(t)
-    || /^(?:show|make|generate|package)\s+(?:an?\s+)?(?:incident|outage)\s+(?:pack|path)\b/i.test(t)
+    || /^(?:show|make|generate|package)\s+(?:(?:a|an|the)\s+)?(?:incident|outage)\s+(?:pack|path)\b/i.test(t)
     || /\bclient\s+(?:incident|outage)\s+(?:path|response)\b/i.test(t);
 }
 
