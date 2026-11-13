@@ -35,7 +35,7 @@ export function packFor(subject) {
 
 async function run(text, api) {
   const { showPage } = api;
-  const esc = typeof api.esc === 'function' ? api.esc : (s) => String(s == null ? '' : s);
+  const esc = typeof api.esc === 'function' ? api.esc : (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const p = packFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Sustain pack: ' + esc(p.subject) + '</h2>'
