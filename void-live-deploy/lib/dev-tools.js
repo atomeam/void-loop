@@ -127,6 +127,7 @@ function phrase(parts, kind, word) {
 /** a 5-field cron line in words: { ok, text } or { ok:false, err }. A 6th leading field is read as seconds. Pure. */
 export function explainCron(expr) {
   let s = tidy(expr).toLowerCase();
+  if (s === '@reboot') return { ok: true, text: 'When the computer starts.', reboot: true };
   if (ALIASES[s]) s = ALIASES[s];
   const f = s.split(' ').filter(Boolean);
   let sec = null;
@@ -157,6 +158,7 @@ export function explainCron(expr) {
 /** the next n times a 5-field cron line fires after `from` (minute steps, local time); [] when it never does within a year. Pure. */
 export function nextRuns(expr, from, n = 3) {
   let s = tidy(expr).toLowerCase();
+  if (s === '@reboot') return [];
   if (ALIASES[s]) s = ALIASES[s];
   const f = s.split(' ').filter(Boolean);
   if (f.length !== 5) return [];

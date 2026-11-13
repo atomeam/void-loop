@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-13T20:39:19.179Z",
+  "at": "2026-11-13T21:07:54.654Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,24 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 93.7,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of serial",
-          "failed": [
-            "episode"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -117,47 +103,10 @@
       }
     },
     "weather": {
-      "score": 83.7,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "weather in paris",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "will it rain tomorrow in london",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "weather in tokyo this week",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 33.3
-        },
-        {
-          "ask": "weather in seattle",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
         {
           "ask": "weather",
           "failed": [
@@ -170,10 +119,9 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -281,7 +229,7 @@
       }
     },
     "sports": {
-      "score": 91.7,
+      "score": 90.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -308,6 +256,13 @@
         },
         {
           "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -404,17 +359,10 @@
       "fails": []
     },
     "definitions": {
-      "score": 93.3,
+      "score": 96.7,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "define spring",
-          "failed": [
-            "fast"
-          ],
-          "score": 80
-        },
         {
           "ask": "define glimbrastic",
           "failed": [
@@ -447,7 +395,7 @@
     }
   },
   "lowest": {
-    "domain": "weather",
-    "score": 83.7
+    "domain": "sports",
+    "score": 90.7
   }
 }
