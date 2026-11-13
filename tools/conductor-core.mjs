@@ -188,6 +188,8 @@ export const CODER_RUN_CALLS = 30;
 export function coderShort(budget, now, need = CODER_RUN_CALLS, spare = false) {
   if (spare) return null;
   if (!budget || typeof budget !== 'object') return null;
+  // past the free ceiling the treasury pays for the call. The free count is not a stop.
+  if (budget.paid === true) return null;
   if (budget.room === false) return { until: budget.until || null };
   const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);
   const d = new Date(now);

@@ -26,4 +26,10 @@
     s[p] = 1; fetch(u.href, { cache: 'no-cache' }).catch(function () {}); }); }); // void-review: ok (offline)
   // Verse Brain on every page: lib/brain-everywhere.js (window.verseBrain), after load
   after(1500, function () { var s = d.createElement('script'); s.type = 'module'; s.src = '/lib/brain-everywhere.js'; d.head.appendChild(s); });
+  // modes on the page that already covers the job (notes, photo details, weather)
+  after(0, function () {
+    var p = location.pathname;
+    if (p.indexOf('/notes') !== 0 && p.indexOf('/photos/exif') !== 0 && p.indexOf('/weather') !== 0) return;
+    var s = d.createElement('script'); s.type = 'module'; s.src = '/lib/watched-modes.js'; d.head.appendChild(s);
+  });
 })();

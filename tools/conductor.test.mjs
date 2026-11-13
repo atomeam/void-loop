@@ -195,6 +195,7 @@ test('a coder budget too short for one whole run holds the coder until the windo
   assert.equal(coderShort(null, at), null, 'unknown budget: started as before');
   assert.equal(coderShort({ room: true }, at), null, 'no counts: started as before');
   assert.equal(coderShort(b(0, 360, false), at, 30, true), null, 'a spare free model key: started though the budget is spent');
+  assert.equal(coderShort({ ...b(0, 360, false), paid: true }, at), null, 'the treasury pays past the free ceiling, so the coder is not held to midnight');
   const p = plan({ jobs: [job('w1', 'will:paint')], wf: all({ [AGENT]: { noModel: coderShort(b(0, 349), at) } }), now: NOW });
   assert.ok(!p.start.some((s) => s.wf === AGENT));
   assert.ok(p.held.some((h) => h.id === 'w1' && /until 00:00 UTC/.test(h.why)));
