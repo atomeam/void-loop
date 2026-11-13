@@ -21,6 +21,7 @@ const JOBS = {
   podcasts: async (page) => { await page.goto(ORIGIN + '/podcasts/?q=history', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => { const el = document.querySelector('#results'); return el && !/Searching|did not answer/.test(el.textContent || ''); }, null, { timeout: 20000 }); },
   scores: async (page) => { await page.goto(ORIGIN + '/scores/?league=epl&tab=standings', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => { const t = (document.querySelector('#out') || {}).textContent || ''; return t.length > 40 && !/upcoming schedules for the league/.test(t); }, null, { timeout: 20000 }); },
   tracks: async (page) => { await page.goto(ORIGIN + '/track-times/', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => /43:53/.test(document.body.innerText) && /Schizoid/.test(document.body.innerText), null, { timeout: 8000 }); },
+  readable: async (page) => { await page.goto(ORIGIN + '/our-motherfucking-version/', { waitUntil: 'domcontentloaded' }); await page.fill('#html', '<p>Hi</p><img alt="" src="a.png">'); await page.waitForFunction(() => /1 pictures/.test((document.querySelector('#out') || {}).textContent || ''), null, { timeout: 8000 }); },
 };
 export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKEN || '') {
   if (!token && ORIGIN === 'https://a-to-mind.com') return sites.map((s) => ({ id: s.id, ok: false, reason: 'no owner pass' }));
