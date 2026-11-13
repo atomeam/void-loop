@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { SITES } from '../void-live-deploy/lib/versus-floor.js';
+import { publicRivalHits } from './rival-public.mjs';
 const ORIGIN = process.env.FLOOR_LIVE_ORIGIN || 'https://a-to-mind.com';
 const exe = process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || '/usr/bin/google-chrome';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,17 +17,25 @@ export function pagesToRun(sites, ids) {
   if (want.length) return (sites || []).filter((s) => s && want.includes(s.id));
   return (sites || []).filter((s) => s && s.kind === 'page' && (s.checked === true || s.works === true));
 }
-/** set works:true for ids that passed. An id that is absent, or already true, stays as it is. Pure. */
-export function markWorks(source, ids) {
+/** pass, fail, or pending. A page that has not been checked yet is pending when it misses, so an unrebuilt page does not fail the run. Pure. */
+export function floorKind(site, ok) {
+  if (ok) return 'pass';
+  if (site && site.checked === true) return 'fail';
+  return 'pending';
+}
+/** set works:true for ids that passed, and works:false for pending misses that were counted too early. An id that is absent stays as it is. Pure. */
+export function markWorks(source, ids, clearIds) {
   let out = String(source || '');
   let changed = false;
-  for (const id of ids || []) {
-    if (!/^[a-z0-9-]+$/.test(id)) continue;
-    const re = new RegExp("(id: '" + id + "',[\\s\\S]*?\\bworks: )false");
-    if (!re.test(out)) continue;
-    out = out.replace(re, '$1true');
+  const flip = (id, from, to) => {
+    if (!/^[a-z0-9-]+$/.test(id)) return;
+    const re = new RegExp("(id: '" + id + "',[\\s\\S]*?\\bworks: )" + from);
+    if (!re.test(out)) return;
+    out = out.replace(re, '$1' + to);
     changed = true;
-  }
+  };
+  for (const id of ids || []) flip(id, 'false', 'true');
+  for (const id of clearIds || []) flip(id, 'true', 'false');
   return changed ? out : null;
 }
 const JOBS = {
@@ -120,17 +129,21 @@ function arg(name) {
   return i > 0 ? process.argv[i + 1] : '';
 }
 if (process.argv[1] && process.argv[1].endsWith('floor-live.mjs')) {
+  const credits = publicRivalHits();
+  if (credits.length) { console.error('public pages name a rival:\n' + credits.join('\n')); process.exit(1); }
   const ids = (process.env.FLOOR_LIVE_IDS || arg('--ids') || '').split(',').map((s) => s.trim()).filter(Boolean);
   const sites = pagesToRun(SITES, ids);
   const shots = process.env.FLOOR_LIVE_SHOTS || arg('--shots') || '';
   const results = await runLive(sites, process.env.VOID_OWNER_TOKEN || '', shots);
-  for (const r of results) console.log((r.ok ? 'pass' : 'fail') + ' ' + r.id + (r.reason ? ' ' + r.reason : '') + (r.shot ? ' ' + r.shot : ''));
+  const kindOf = (r) => floorKind(sites.find((s) => s.id === r.id), r.ok);
+  for (const r of results) console.log(kindOf(r) + ' ' + r.id + (r.reason && !r.ok ? ' ' + r.reason : '') + (r.shot ? ' ' + r.shot : ''));
+  const passed = results.filter((r) => r.ok).map((r) => r.id);
+  const pending = results.filter((r) => kindOf(r) === 'pending').map((r) => r.id);
   if (process.argv.includes('--mark')) {
-    const next = markWorks(fs.readFileSync(floorFile, 'utf8'), results.filter((r) => r.ok).map((r) => r.id));
+    const next = markWorks(fs.readFileSync(floorFile, 'utf8'), passed, pending);
     if (next) fs.writeFileSync(floorFile, next);
-    console.log(next ? 'marked ' + results.filter((r) => r.ok).map((r) => r.id).join(', ') : 'marked none');
+    console.log(next ? 'marked ' + passed.join(', ') : 'marked none');
   }
-  const bad = failedFloors(sites, results);
-  const missed = process.argv.includes('--mark') ? results.filter((r) => !r.ok).map((r) => r.id) : [];
-  if (bad.length || missed.length) { console.error('counted floors failed: ' + [...bad, ...missed].join(', ')); process.exit(1); }
+  const bad = results.filter((r) => kindOf(r) === 'fail').map((r) => r.id);
+  if (bad.length) { console.error('counted floors failed: ' + bad.join(', ')); process.exit(1); }
 }
