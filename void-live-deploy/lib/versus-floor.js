@@ -25,8 +25,9 @@ export const NEXT = Object.freeze([
   { id: 'patterns', name: 'Pattern tester', page: '/patterns/', rival: 'regex101.com', url: 'https://regex101.com/', kind: 'page', works: true, features: ['code', 'regex', 'pattern'] },
   { id: 'schedules', name: 'Schedules', page: '/schedules/', rival: 'crontab.guru', url: 'https://crontab.guru/', kind: 'page', works: true, features: ['cron', 'schedule'] },
   { id: 'meanings', name: 'Word meanings', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: true, features: ['define', 'dictionary', 'meaning'] },
-  { id: 'qr', name: 'QR codes', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: false, features: ['qr', 'code'] },
+  { id: 'qr', name: 'QR codes', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: true, features: ['qr', 'code'] },
   { id: 'clips', name: 'Clips', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: false, features: ['video', 'play', 'trailer'] },
+  { id: 'songs', name: 'Songs', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, features: ['song', 'play', 'audio'] },
 ]);
 
 export const SITES = Object.freeze([...TOOLS, ...NEXT]);
