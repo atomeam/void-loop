@@ -29,6 +29,7 @@ export const NEXT = Object.freeze([
   { id: 'clips', name: 'Clips', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: false, features: ['video', 'play', 'trailer'] },
   { id: 'songs', name: 'Songs', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, features: ['song', 'play', 'audio'] },
   { id: 'directions', name: 'Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: false, features: ['directions', 'route', 'map'] },
+  { id: 'text-diff', name: 'Text comparison', page: '/text-diff/', rival: 'diffchecker.com', url: 'https://www.diffchecker.com/', kind: 'page', works: false, features: ['diff', 'compare'] },
 ]);
 
 export const SITES = Object.freeze([...TOOLS, ...NEXT]);
