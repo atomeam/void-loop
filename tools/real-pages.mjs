@@ -490,7 +490,18 @@ export const SPECS = {
   },
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
   '/versus/': async (t) => { t.ok(/Out of Order/.test(await t.p.locator('h1').innerText()), 'the sign is the page'); t.ok((await t.p.locator('table').count()) === 0, 'no comparison table'); },
-  '/rotate-letters/': async (t) => { await t.fill('#text', 'Ab!'); await t.fill('#shift', '1'); await t.p.waitForTimeout(100); t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!'); },
+  '/rotate-letters/': async (t) => {
+    await t.fill('#text', 'Ab!'); await t.p.selectOption('#shift', '1'); await t.p.waitForTimeout(100);
+    t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!');
+    t.ok(/A goes to B/.test(await t.text('#map')), 'ROT1 sends A to B');
+    await t.click('#back'); await t.p.waitForTimeout(100);
+    t.ok((await t.val('#text')) === 'Bc!', 'read it back puts the result in the box');
+    t.ok((await t.val('#shift')) === '25', 'ROT1 reads back as ROT25');
+    t.ok((await t.text('#out')) === 'Ab!', 'ROT25 of that result is Ab!');
+    const href = await t.p.locator('nav.with a').first().getAttribute('href') || '';
+    t.ok(/changed=Ab(?:!|%21)/.test(href), 'Text Compare opens on the result: ' + href);
+    t.ok((await t.p.locator('a[href="/versus/"]').count()) === 0, 'no link to the owner page');
+  },
   '/patterns/': async (t) => { await t.fill('#pattern', '\\d+'); await t.fill('#sample', 'call 555 or 911'); await t.p.waitForTimeout(100); t.ok(/2 matches/.test(await t.text('#count')), 'two numbers match'); t.ok((await t.p.locator('#out mark').count()) === 2, 'both numbers are marked'); },
   '/schedules/': async (t) => { await t.fill('#line', '0 9 * * 1-5'); await t.p.waitForTimeout(100); t.ok(/09:00/.test(await t.text('#say')), 'weekday 9:00 is said in words'); t.ok((await t.p.locator('#next li').count()) === 3, 'three coming times'); },
   '/meanings/': async (t) => { await t.fill('#word', 'serendipity'); await t.clickText('Look up'); await t.waitText('#out, #err', /not in the dictionary|did not answer|noun|happy/i, 15000); t.ok(/not in the dictionary|did not answer|noun|happy/i.test((await t.text('#out')) + (await t.text('#err'))), 'a word gets a meaning or an honest miss'); },
