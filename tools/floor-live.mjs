@@ -14,7 +14,12 @@ const JOBS = {
       await page.waitForFunction((needle) => { const t = ((document.querySelector('#out') || {}).textContent || '') + ((document.querySelector('#err') || {}).textContent || ''); return t.toLowerCase().includes(String(needle).toLowerCase()) && !((document.querySelector('#err') || {}).textContent || '').includes('Looking'); }, re, { timeout: 20000 });
     }
   },
-  patterns: async (page) => { await page.goto(ORIGIN + '/patterns/', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => /2 matches/.test((document.querySelector('#count') || {}).textContent || ''), null, { timeout: 8000 }); },
+  patterns: async (page) => {
+    await page.goto(ORIGIN + '/patterns/', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => /2 matches/.test((document.querySelector('#count') || {}).textContent || '') && /one or more digits/.test((document.querySelector('#explain') || {}).textContent || ''), null, { timeout: 8000 });
+    await page.fill('#replace', '[$&]');
+    await page.waitForFunction(() => (document.querySelector('#replaced') || {}).textContent === 'call [555] or [911]', null, { timeout: 8000 });
+  },
   schedules: async (page) => { await page.goto(ORIGIN + '/schedules/', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => /09:00/.test((document.querySelector('#say') || {}).textContent || '') && document.querySelectorAll('#next li').length >= 1, null, { timeout: 8000 }); },
   letters: async (page) => { await page.goto(ORIGIN + '/rotate-letters/', { waitUntil: 'domcontentloaded' }); await page.fill('#text', 'Hello, world!'); await page.selectOption('#shift', '13'); await page.waitForFunction(() => (document.querySelector('#out') || {}).textContent === 'Uryyb, jbeyq!', null, { timeout: 8000 }); },
   qr: async (page) => { await page.goto(ORIGIN + '/qr/?text=hello', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => !!document.querySelector('#out svg'), null, { timeout: 8000 }); },

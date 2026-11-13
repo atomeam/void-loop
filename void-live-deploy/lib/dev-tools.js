@@ -73,6 +73,275 @@ export function regexPieces(text, matches) {
   return out;
 }
 
+const ESCAPE_WORDS = {
+  d: ['a digit', 'digits', 'digit'],
+  D: ['anything but a digit', 'characters that are not digits', 'character that is not a digit'],
+  w: ['a letter, a digit, or an underscore', 'letters, digits, or underscores', 'letter, digit, or underscore'],
+  W: ['anything but a letter, a digit, or an underscore', 'characters that are not letters, digits, or underscores', 'character that is not a letter, a digit, or an underscore'],
+  s: ['a space, a tab, or a line break', 'spaces, tabs, or line breaks', 'space, tab, or line break'],
+  S: ['anything but whitespace', 'characters that are not whitespace', 'character that is not whitespace'],
+  n: ['a line break', 'line breaks', 'line break'],
+  t: ['a tab', 'tabs', 'tab'],
+  r: ['a carriage return', 'carriage returns', 'carriage return'],
+  b: ['the edge of a word', 'word edges', 'word edge'],
+  B: ['a place that is not the edge of a word', 'places that are not the edge of a word', 'place that is not the edge of a word'],
+};
+
+function capLine(s) {
+  const t = String(s || '').trim();
+  if (!t) return '';
+  return t.charAt(0).toUpperCase() + t.slice(1) + (t.endsWith('.') ? '' : '.');
+}
+
+function quantify(words, q) {
+  if (!q) return words[0];
+  const lazy = q.lazy ? ', as few as it can' : '';
+  if (q.kind === '+') return 'one or more ' + words[1] + lazy;
+  if (q.kind === '*') return 'zero or more ' + words[1] + lazy;
+  if (q.kind === '?') return 'an optional ' + words[2] + lazy;
+  if (!q.open) return 'exactly ' + q.n + ' ' + words[1];
+  if (q.m == null) return q.n + ' or more ' + words[1] + lazy;
+  return 'between ' + q.n + ' and ' + q.m + ' ' + words[1] + lazy;
+}
+
+function readQuantifier(s, i) {
+  const c = s[i];
+  if (c === '*' || c === '+' || c === '?') {
+    const lazy = s[i + 1] === '?';
+    return { kind: c, lazy, end: i + (lazy ? 2 : 1) };
+  }
+  if (c !== '{') return null;
+  const m = /^\{(\d+)(,(\d+)?)?\}/.exec(s.slice(i));
+  if (!m) return null;
+  const lazy = s[i + m[0].length] === '?';
+  return { kind: 'n', n: m[1], m: m[3] == null ? null : m[3], open: !!m[2], lazy, end: i + m[0].length + (lazy ? 1 : 0) };
+}
+
+function readClass(s, i, end) {
+  let j = i + 1;
+  if (s[j] === '^') j += 1;
+  while (j < end) {
+    if (s[j] === '\\') { j += 2; continue; }
+    if (s[j] === ']') return s.slice(i, j + 1);
+    j += 1;
+  }
+  return s.slice(i, end);
+}
+
+function readGroup(s, i, end) {
+  let depth = 0, cls = false;
+  for (let j = i; j < end; j++) {
+    const c = s[j];
+    if (c === '\\') { j += 1; continue; }
+    if (cls) { if (c === ']') cls = false; continue; }
+    if (c === '[') { cls = true; continue; }
+    if (c === '(') depth += 1;
+    else if (c === ')') { depth -= 1; if (depth === 0) return s.slice(i, j + 1); }
+  }
+  return s.slice(i, end);
+}
+
+function literalWords(raw) {
+  if (raw.length === 1) return /[A-Za-z]/.test(raw) ? ['the letter ' + raw, 'of the letter ' + raw, 'letter ' + raw] : ['the character ' + raw, 'of the character ' + raw, 'character ' + raw];
+  return ['the letters ' + raw, 'of the letters ' + raw, 'run of ' + raw];
+}
+
+/** one pattern, read left to right, as short sentences. A pattern the engine rejects is not read. Pure. */
+export function regexExplain(pattern, flags) {
+  const p = String(pattern || '');
+  const check = regexTest(p, flags, '');
+  const notes = ['Every match is listed, not only the first.'];
+  const f = String(flags || '');
+  if (f.includes('i')) notes.push('Capital and small letters count as the same.');
+  if (f.includes('m')) notes.push('The start and end marks also match the start and end of each line.');
+  if (f.includes('s')) notes.push('A dot also matches a line break.');
+  if (f.includes('u')) notes.push('Unicode mode is on.');
+  if (!p) return { ok: true, lines: notes };
+  if (!check.ok) return { ok: false, err: check.err, lines: [] };
+  const walked = explainWalk(p, 0, p.length);
+  const lines = walked.lines.map(capLine).filter(Boolean);
+  if (walked.end < p.length) lines.push(capLine('the rest is left as written: ' + p.slice(walked.end)));
+  return { ok: true, lines: lines.concat(notes) };
+}
+
+function explainWalk(s, from, end) {
+  const alts = [];
+  let cur = [], i = from;
+  while (i < end) {
+    if (s[i] === '|') { alts.push(cur); cur = []; i += 1; continue; }
+    const before = i;
+    const bit = explainAtom(s, i, end);
+    if (!bit || bit.end <= before) break;
+    cur.push(bit.phrase);
+    i = bit.end;
+  }
+  alts.push(cur);
+  if (alts.length > 1) return { lines: [alts.map((part) => part.join(', then ') || 'nothing').join(', or ')], end: i };
+  return { lines: cur, end: i };
+}
+
+function explainAtom(s, i, end) {
+  const c = s[i];
+  if (c === '\\' && i + 1 < end) {
+    const raw = s.slice(i, i + 2);
+    const words = ESCAPE_WORDS[s[i + 1]] || (s[i + 1] === '.' ? ['a period', 'periods', 'period'] : ['the character ' + s[i + 1], 'of the character ' + s[i + 1], 'character ' + s[i + 1]]);
+    const q = readQuantifier(s, i + 2);
+    return { phrase: '`' + raw + (q ? s.slice(i + 2, q.end) : '') + '` means ' + quantify(words, q), end: q ? q.end : i + 2 };
+  }
+  if (c === '[') {
+    const raw = readClass(s, i, end);
+    const body = raw.slice(raw[1] === '^' ? 2 : 1, raw.endsWith(']') ? -1 : undefined);
+    const neg = raw[1] === '^';
+    const words = neg
+      ? ['one character that is not ' + (body || 'empty'), 'characters that are not ' + (body || 'empty'), 'character that is not ' + (body || 'empty')]
+      : ['one character from ' + (body || 'empty'), 'characters from ' + (body || 'empty'), 'character from ' + (body || 'empty')];
+    const q = readQuantifier(s, i + raw.length);
+    return { phrase: '`' + raw + (q ? s.slice(i + raw.length, q.end) : '') + '` means ' + quantify(words, q), end: q ? q.end : i + raw.length };
+  }
+  if (c === '(') {
+    const raw = readGroup(s, i, end);
+    const q = readQuantifier(s, i + raw.length);
+    const shown = '`' + raw + (q ? s.slice(i + raw.length, q.end) : '') + '`';
+    let inner = raw.slice(1, -1);
+    let kind = 'a saved group';
+    const named = /^\?<([A-Za-z][\w]*)>([\s\S]*)$/.exec(inner);
+    if (inner.startsWith('?:')) { kind = 'a group that is not saved'; inner = inner.slice(2); }
+    else if (named) { kind = 'a saved group named ' + named[1]; inner = named[2]; }
+    else if (inner.startsWith('?')) return { phrase: shown + ' is a special group, left as written', end: q ? q.end : i + raw.length };
+    const inside = explainWalk(inner, 0, inner.length);
+    const meaning = (line) => { const m = / means ([\s\S]*)$/.exec(line); return m ? m[1] : line; };
+    const detail = inside.end < inner.length ? 'left partly as written' : (inside.lines.map(meaning).join(', then ') || 'nothing');
+    const many = kind.startsWith('a group that') ? 'groups of ' + detail : 'saved groups of ' + detail;
+    const words = [kind + ': ' + detail, many, 'group of ' + detail];
+    return { phrase: shown + ' means ' + (q ? quantify(words, q) : words[0]), end: q ? q.end : i + raw.length };
+  }
+  if (c === '.') {
+    const words = ['any character except a line break', 'characters, not counting a line break', 'character except a line break'];
+    const q = readQuantifier(s, i + 1);
+    return { phrase: '`' + (q ? s.slice(i, q.end) : '.') + '` means ' + quantify(words, q), end: q ? q.end : i + 1 };
+  }
+  if (c === '^' || c === '$') {
+    const words = c === '^' ? ['the start of the text', 'starts of the text', 'start of the text'] : ['the end of the text', 'ends of the text', 'end of the text'];
+    const q = readQuantifier(s, i + 1);
+    return { phrase: '`' + c + (q ? s.slice(i + 1, q.end) : '') + '` means ' + quantify(words, q), end: q ? q.end : i + 1 };
+  }
+  if ('*+?{'.includes(c)) return { phrase: '`' + c + '` is a repeat with nothing before it', end: i + 1 };
+  let j = i;
+  while (j < end && !'\\[]()|^$.*+?{'.includes(s[j])) j += 1;
+  if (j === i) return null;
+  const q = readQuantifier(s, j);
+  if (q && j - i > 1) {
+    const head = s.slice(i, j - 1), last = s[j - 1];
+    const headPhrase = '`' + head + '` means ' + literalWords(head)[0];
+    const tail = '`' + last + s.slice(j, q.end) + '` means ' + quantify(literalWords(last), q);
+    return { phrase: headPhrase + ', then ' + tail, end: q.end };
+  }
+  const raw = s.slice(i, q ? q.end : j);
+  const lit = s.slice(i, q ? j : j);
+  return { phrase: '`' + raw + '` means ' + quantify(literalWords(q ? lit.slice(-1) : lit), q), end: q ? q.end : j };
+}
+
+/** rewrite each match. $& is the whole match, $1 is the first saved group, and $$ is a dollar sign. Pure. */
+export function regexReplace(pattern, flags, text, replacement) {
+  const result = regexTest(pattern, flags, text);
+  if (!result.ok) return result;
+  const t = String(text || ''), rep = String(replacement || '');
+  let out = '', at = 0;
+  for (const m of result.matches) {
+    if (m.index < at || !m.text) continue;
+    out += t.slice(at, m.index) + rep.replace(/\$\$|\$&|\$(\d{1,2})/g, (all, n) => {
+      if (all === '$$') return '$';
+      if (all === '$&') return m.text;
+      const i = Number(n);
+      return i === 0 ? m.text : (m.groups[i - 1] || '');
+    });
+    at = m.index + m.text.length;
+  }
+  return { ok: true, out: out + t.slice(at), matches: result.matches };
+}
+
+/** the tester's count, marks, match lines, reading, and replacement. Pure. */
+export function regexReport(pattern, flags, sample, replacement) {
+  const result = regexTest(pattern, flags, sample);
+  if (!result.ok) return { ok: false, err: result.err, count: '', pieces: [], matchLines: [], passed: '', explain: [], replaced: '' };
+  const n = result.matches.length;
+  const matchLines = result.matches.map((m, i) => {
+    let line = 'Match ' + (i + 1) + ' is ' + m.text + '. It starts at character ' + (m.index + 1) + '.';
+    m.groups.forEach((g, gi) => { if (g) line += ' Group ' + (gi + 1) + ' is ' + g + '.'; });
+    return line;
+  });
+  const explained = regexExplain(pattern, flags);
+  const rep = String(replacement || '');
+  const replaced = rep ? regexReplace(pattern, flags, sample, rep) : null;
+  return {
+    ok: true,
+    err: '',
+    count: n === 1 ? '1 match' : n + ' matches',
+    pieces: regexPieces(sample, result.matches),
+    matchLines,
+    passed: result.matches.map((m) => m.text).join(' and '),
+    explain: explained.ok ? explained.lines : [],
+    replaced: replaced && replaced.ok ? replaced.out : '',
+  };
+}
+
+const patternEsc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function setInputValue(html, id, value) {
+  const re = new RegExp('(<[^>]*\\bid="' + id + '"[^>]*\\bvalue=")[^"]*', 'i');
+  if (re.test(html)) return html.replace(re, '$1' + patternEsc(value));
+  return html.replace(new RegExp('(<[^>]*\\bid="' + id + '"[^>]*)(>)', 'i'), '$1 value="' + patternEsc(value) + '"$2');
+}
+
+function setElement(html, id, inner, close) {
+  return String(html).replace(new RegExp('(<[^>\\s]*\\sid="' + id + '"[^>]*>)[\\s\\S]*?(</' + close + '>)', 'i'), '$1' + inner + '$2');
+}
+
+/** fill the Regex Tester from a query string. The static page is unchanged when the query is empty. Pure. */
+export function fillPatternHtml(html, params) {
+  const q = params && typeof params.get === 'function' ? params : new URLSearchParams(params || '');
+  if (!['pattern', 'flags', 'sample', 'replace'].some((k) => q.has(k))) return String(html);
+  const pattern = q.has('pattern') ? q.get('pattern') : '';
+  const flags = q.get('flags') || '';
+  const sample = q.has('sample') ? q.get('sample') : '';
+  const replacement = q.get('replace') || '';
+  const report = regexReport(pattern, flags, sample, replacement);
+  let out = String(html);
+  out = setInputValue(out, 'pattern', pattern);
+  out = setInputValue(out, 'flags', flags);
+  out = setElement(out, 'sample', patternEsc(sample), 'textarea');
+  out = setInputValue(out, 'replace', replacement);
+  out = out.replace(/<input\b[^>]*\bid="flag-([imsu])"[^>]*>/gi, (tag, flag) => {
+    const cleared = tag.replace(/\schecked(?:="checked"|='checked')?/i, '');
+    return flags.includes(flag) ? cleared.replace('<input', '<input checked') : cleared;
+  });
+  if (!report.ok) {
+    out = setElement(out, 'count', '', 'p');
+    out = setElement(out, 'out', '', 'div');
+    out = setElement(out, 'err', patternEsc(report.err), 'p');
+    out = setElement(out, 'matchlist', '', 'ol');
+    out = setElement(out, 'passed', '', 'p');
+    out = setElement(out, 'explain', '', 'ol');
+    out = setElement(out, 'replaced', '', 'p');
+    return out;
+  }
+  const marked = report.pieces.map((piece) => piece.hit ? '<mark>' + patternEsc(piece.text) + '</mark>' : patternEsc(piece.text)).join('');
+  const passed = report.passed || '555';
+  out = setElement(out, 'count', patternEsc(report.count), 'p');
+  out = setElement(out, 'out', marked, 'div');
+  out = setElement(out, 'err', '', 'p');
+  out = setElement(out, 'matchlist', report.matchLines.map((line) => '<li>' + patternEsc(line) + '</li>').join(''), 'ol');
+  out = setElement(out, 'passed', patternEsc(report.passed), 'p');
+  out = setElement(out, 'explain', report.explain.map((line) => '<li>' + patternEsc(line) + '</li>').join(''), 'ol');
+  out = setElement(out, 'replaced', patternEsc(replacement ? report.replaced : 'Nothing is rewritten until you type a replacement. $& stands for the whole match, and $1 stands for the first saved group.'), 'p');
+  const share = '/patterns/?pattern=' + encodeURIComponent(pattern) + '&flags=' + encodeURIComponent(flags) + '&sample=' + encodeURIComponent(sample) + (replacement ? '&replace=' + encodeURIComponent(replacement) : '');
+  out = out.replace(/(<a\b[^>]*\bid="share"[^>]*\bhref=")[^"]*/i, '$1' + share);
+  out = setElement(out, 'share', patternEsc(share), 'a');
+  const hand = '/text-diff/?changed=' + encodeURIComponent(passed);
+  out = out.replace(/<a\b[^>]*\bdata-base="\/text-diff\/"[^>]*>/i, (tag) => tag.includes('href="') ? tag.replace(/\bhref="[^"]*"/, 'href="' + hand + '"') : tag.replace('<a', '<a href="' + hand + '"'));
+  return out;
+}
+
 // ---- cron -----------------------------------------------------------------------------------------
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];

@@ -22,7 +22,7 @@ export const NEXT = Object.freeze([
   { id: 'podcasts', name: 'Podcast Search', page: '/podcasts/', rival: 'podcastindex.org', url: 'https://podcastindex.org/', kind: 'page', works: false, features: ['podcast', 'audio', 'episode'] },
   { id: 'scores', name: 'Live Sports Scores', page: '/scores/', rival: 'livescore.com', url: 'https://www.livescore.com/', kind: 'page', works: false, features: ['score', 'board', 'standings'] },
   { id: 'units', name: 'Unit Converter', page: '/convert/', rival: 'convertlive.com', url: 'https://convertlive.com/', kind: 'page', works: false, features: ['convert', 'unit'] },
-  { id: 'patterns', name: 'Regex Tester', page: '/patterns/', rival: 'regex101.com', url: 'https://regex101.com/', kind: 'page', works: false, features: ['code', 'regex', 'pattern'] },
+  { id: 'patterns', name: 'Regex Tester', page: '/patterns/', rival: 'regex101.com', url: 'https://regex101.com/', kind: 'page', works: false, features: ['code', 'regex', 'pattern'], extras: ['plain reading', 'replace', 'share link'] },
   { id: 'schedules', name: 'Cron Schedule Explainer', page: '/schedules/', rival: 'crontab.guru', url: 'https://crontab.guru/', kind: 'page', works: false, features: ['cron', 'schedule'] },
   { id: 'meanings', name: 'Dictionary', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: false, features: ['define', 'dictionary', 'meaning'] },
   { id: 'qr', name: 'QR Code Maker', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: false, features: ['qr', 'code'] },
