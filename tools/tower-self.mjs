@@ -153,8 +153,9 @@ export const fallbackTexts = (fam) => ({ name: clip(fam.title || fam.label, 60),
 /** a free folder under the family's page for the row: the model's slug, else the family's own words, never one taken. Pure. */
 export function slugFor(want, fam, taken) {
   const base = SLUG.test(want || '') ? want : (keywordsOf(fam.label).join('-') || 'more').replace(/[^a-z0-9-]/g, '') + '-tool';
-  for (let i = 1; i < 50; i++) { const s = i === 1 ? base : base + '-' + i, p = fam.base + s + '/'; if (!taken(p)) return p; }
-  return null;
+  const p = fam.base + base + '/';
+  // a name already used is that page's job: add the feature there, never a second page called name-2
+  return taken(p) ? null : p;
 }
 
 // ---- the page ----
@@ -271,7 +272,11 @@ async function build(planFile, outFile, maxBuilt) {
       const baseText = textOf(baseHtmlOf(fam.base)) + ' ' + fam.does;
       let t = validTexts(a, { host: c.host, baseText, fam }), refused = '';
       if (t.problem) { refused = t.problem; const fb = fallbackTexts(fam), mine = (a.asks || []).map((x) => clip(x, 60).toLowerCase()).filter((x) => x.length >= 3 && sharesWords(fam, x) && !brandTokens(c.host).some((bt) => x.replace(/[^a-z0-9]/g, '').includes(bt)) && !DOMAIN.test(x) && !/\bbest\b|#1|better than/.test(x)); t = { ...fb, slug: SLUG.test(String(a.slug || '')) && !brandTokens(c.host).some((bt) => String(a.slug).replace(/-/g, '').includes(bt)) ? String(a.slug) : '', asks: [...new Set([...mine, ...fb.asks])].slice(0, 6) }; }
-      const p = slugFor(t.slug, fam, exists); if (!p) { decision.state[c.host] = { at: now(), outcome: 'discarded', why: 'no free folder under ' + fam.base, ...pick }; save(); continue; }
+      // the family's page already does this job: the missing piece is a mode or section of that page, never a new address
+      if (exists(fam.base)) { decision.state[c.host] = { at: now(), outcome: 'covered', page: fam.base, topic: fam.id, title: clip(r.pages[0].title, 80), why: fam.base + ' already does this job: add what is missing as a mode or section, not a new page', ...pick }; save();
+        decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: add to ' + fam.base + ' what ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') does that it lacks, as a mode or section of that page, not a new page', 200) });
+        console.log(c.host + ': covered by ' + fam.base + ' (' + fam.id + ')'); continue; }
+      const p = slugFor(t.slug, fam, exists); if (!p) { decision.state[c.host] = { at: now(), outcome: 'covered', page: fam.base, topic: fam.id, why: 'that name is already a page under ' + fam.base + ': add the feature there', ...pick }; save(); continue; }
       taken.add(p);
       const lane = fam.id + ': ' + hostOf(c.url);
       const row = { path: p, base: fam.base, page: p + fam.pageTail, ...(fam.askTail !== null ? { ask: p + fam.askTail } : {}), family: fam.id, lane, url: c.url, name: t.name, h1: t.h1, intro: t.intro, does: t.does, asks: t.asks, added: now() };
