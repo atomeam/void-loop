@@ -3,7 +3,7 @@
  * (ownership, monitors, tests, status, docs packaged) so Verse confirms the heavy lifting is covered
  * and the client does less final chasing.
  * Rules-based, offline. Nothing sent. Reuses existing packs.
- * "is the invoice automation delivery ready", "handoff ready for onboarding", "ready to hand off the weekly reports".
+ * "is the invoice automation delivery ready", "handoff ready for onboarding", "ready to handoff the weekly reports".
  */
 export function isDeliveryReady(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
@@ -58,7 +58,7 @@ export default {
   examples: [
     'is the invoice automation delivery ready',
     'handoff ready for onboarding flow',
-    'ready to hand off the weekly reports',
+    'ready to handoff the weekly reports',
     'check delivery readiness for support router'
   ],
   nearMisses: [
