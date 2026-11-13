@@ -47,7 +47,7 @@ async function run(text, api) {
   const d = dashboardFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Delivery dashboard: ' + esc(d.subject) + '</h2>'
-      + '<p><strong>Verse owns the heavy lifting.</strong> Client does less chasing.</p>'
+      + '<p><strong>Verse owns the hard work.</strong> Client does less chasing.</p>'
       + '<h3>Systems Verse owns</h3><ul>' + d.owned.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>Status</h3><p>' + esc(d.status) + '</p>'
       + '<h3>Time saved</h3><p>' + esc(d.timeSaved) + '</p>'
