@@ -2,11 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cleanWord, sensesFrom } from '../void-live-deploy/lib/meanings.js';
 import { UA, defineWord, answer } from '../void-live-deploy/functions/api/meanings.js';
-import { failedFloors, markWorks, pagesToRun, withOwner } from './floor-live.mjs';
+import { failedFloors, floorKind, markWorks, pagesToRun, withOwner } from './floor-live.mjs';
 
 test('a counted page that failed does not stay a floor', () => {
   assert.deepEqual(failedFloors([{ id: 'meanings', works: true }, { id: 'qr', works: false }], [{ id: 'meanings', ok: false }]), ['meanings']);
   assert.deepEqual(failedFloors([{ id: 'qr', works: false }], []), []);
+});
+
+test('an unchecked miss is pending, and a checked miss fails the run', () => {
+  assert.equal(floorKind({ checked: true }, true), 'pass');
+  assert.equal(floorKind({ checked: true }, false), 'fail');
+  assert.equal(floorKind({ works: true }, false), 'pending');
+  assert.equal(floorKind({ checked: false, works: true }, false), 'pending');
 });
 
 test('a clean pass is the only thing that marks a page, and a miss is left false', () => {
@@ -16,6 +23,8 @@ test('a clean pass is the only thing that marks a page, and a miss is left false
   assert.match(marked, /id: 'letters', works: false/);
   assert.equal(markWorks(src, ['missing']), null);
   assert.equal(markWorks("{ id: 'meanings', works: true }\n", ['meanings']), null);
+  const cleared = markWorks("{ id: 'podcasts', works: true }\n", [], ['podcasts']);
+  assert.match(cleared, /id: 'podcasts', works: false/);
   const sites = [{ id: 'meanings', kind: 'page', checked: true, works: false }, { id: 'qr', kind: 'page', works: false }, { id: 'letters', kind: 'page', works: true }];
   assert.deepEqual(pagesToRun(sites, []).map((s) => s.id), ['meanings', 'letters']);
   assert.deepEqual(pagesToRun(sites, ['qr']).map((s) => s.id), ['qr']);
