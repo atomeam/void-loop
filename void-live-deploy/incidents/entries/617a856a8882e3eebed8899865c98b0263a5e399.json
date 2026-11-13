@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-13T20:17:54.421Z",
+ "sha": "617a856a8882e3eebed8899865c98b0263a5e399",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43495824888",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+ ],
+ "touched": [
+  "docs/HANDOFF-GAPS.md",
+  "domains/handoff.md",
+  "tools/real-pages.mjs",
+  "tools/versus-floor.test.mjs",
+  "tools/versus.test.mjs",
+  "void-live-deploy/clips/index.html",
+  "void-live-deploy/directions/index.html",
+  "void-live-deploy/factorials/index.html",
+  "void-live-deploy/lib/versus-floor.js",
+  "void-live-deploy/lib/versus.js",
+  "void-live-deploy/meanings/index.html",
+  "void-live-deploy/patterns/index.html",
+  "void-live-deploy/schedules/index.html",
+  "void-live-deploy/skills/order/10060-full-handoff",
+  "void-live-deploy/skills/order/10080-delivery-pack"
+ ],
+ "shards": [
+  2
+ ]
+}
