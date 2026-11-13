@@ -1,9 +1,33 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { SITES } from '../void-live-deploy/lib/versus-floor.js';
 const ORIGIN = process.env.FLOOR_LIVE_ORIGIN || 'https://a-to-mind.com';
 const exe = process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || '/usr/bin/google-chrome';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const floorFile = path.join(root, 'void-live-deploy/lib/versus-floor.js');
 export function failedFloors(sites, results) {
   return (sites || []).filter((s) => s && s.works === true && !(results || []).some((r) => r.id === s.id && r.ok)).map((s) => s.id);
+}
+/** pages the live run owes a result: the ones named, or every checked page and every page already counting. Pure. */
+export function pagesToRun(sites, ids) {
+  const want = (ids || []).filter(Boolean);
+  if (want.length) return (sites || []).filter((s) => s && want.includes(s.id));
+  return (sites || []).filter((s) => s && s.kind === 'page' && (s.checked === true || s.works === true));
+}
+/** set works:true for ids that passed. An id that is absent, or already true, stays as it is. Pure. */
+export function markWorks(source, ids) {
+  let out = String(source || '');
+  let changed = false;
+  for (const id of ids || []) {
+    if (!/^[a-z0-9-]+$/.test(id)) continue;
+    const re = new RegExp("(id: '" + id + "',[\\s\\S]*?\\bworks: )false");
+    if (!re.test(out)) continue;
+    out = out.replace(re, '$1true');
+    changed = true;
+  }
+  return changed ? out : null;
 }
 const JOBS = {
   meanings: async (page) => {
@@ -29,8 +53,19 @@ const JOBS = {
   tracks: async (page) => { await page.goto(ORIGIN + '/track-times/', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => /43:53/.test(document.body.innerText) && /Schizoid/.test(document.body.innerText), null, { timeout: 8000 }); },
   readable: async (page) => { await page.goto(ORIGIN + '/our-motherfucking-version/', { waitUntil: 'domcontentloaded' }); await page.fill('#html', '<p>Hi</p><img alt="" src="a.png">'); await page.waitForFunction(() => /1 pictures/.test((document.querySelector('#out') || {}).textContent || ''), null, { timeout: 8000 }); },
 };
-export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKEN || '') {
-  if (!token && ORIGIN === 'https://a-to-mind.com') return sites.map((s) => ({ id: s.id, ok: false, reason: 'no owner pass' }));
+async function shoot(page, dir, id) {
+  if (!dir) return '';
+  const file = path.join(dir, 'floor-' + id + '.png');
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    await page.screenshot({ path: file });
+    return file;
+  } catch (_) { return ''; }
+}
+async function gated(page) {
+  return (await page.locator('meta[name="verse-gate"]').count()) > 0;
+}
+export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKEN || '', shots = process.env.FLOOR_LIVE_SHOTS || '') {
   const browser = await chromium.launch({ executablePath: exe, headless: true });
   const results = [];
   try {
@@ -39,28 +74,51 @@ export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKE
       const problems = [];
       page.on('console', (msg) => { if (msg.type() === 'error' || /content security policy|refused to connect/i.test(msg.text())) problems.push(msg.text().slice(0, 160)); });
       page.on('pageerror', (err) => problems.push(String(err).slice(0, 160)));
+      let shot = '';
       try {
+        await page.goto(ORIGIN + s.page, { waitUntil: 'domcontentloaded', timeout: 20000 });
+        if (await gated(page)) throw new Error(token ? 'uni gate' : 'no owner pass');
         await (JOBS[s.id] || (async (p) => { await p.goto(ORIGIN + s.page, { waitUntil: 'domcontentloaded' }); await p.waitForSelector('h1'); }))(page);
-        if (await page.locator('meta[name="verse-gate"]').count()) throw new Error('uni gate');
+        if (await gated(page)) throw new Error(token ? 'uni gate' : 'no owner pass');
+        shot = await shoot(page, shots, s.id);
         await page.waitForFunction(() => { const a = document.querySelector('nav.with a'); return a && /=/.test(a.getAttribute('href') || ''); }, null, { timeout: 8000 });
         const href = await page.locator('nav.with a').first().getAttribute('href');
         const passed = [...new URL(href, page.url()).searchParams.values()].find((v) => v.trim());
         if (!passed) throw new Error('handoff has no result');
         await page.locator('nav.with a').first().click();
         await page.waitForLoadState('domcontentloaded');
+        if (await gated(page)) throw new Error(token ? 'uni gate' : 'no owner pass');
         const landed = (await page.locator('body').innerText()) + (await page.locator('input, textarea').first().inputValue().catch(() => ''));
         if (!landed.includes(passed.replace(/\s+/g, ' ').trim().slice(0, 24))) throw new Error('next page missed the handoff');
         if (problems.length) throw new Error(problems[0]);
-        results.push({ id: s.id, ok: true, reason: '' });
-      } catch (e) { results.push({ id: s.id, ok: false, reason: String(e && e.message || e).slice(0, 160) }); }
+        results.push({ id: s.id, ok: true, reason: '', shot });
+      } catch (e) {
+        if (!shot) shot = await shoot(page, shots, s.id);
+        let reason = String(e && e.message || e).slice(0, 160);
+        if (await gated(page).catch(() => false)) reason = token ? 'uni gate' : 'no owner pass';
+        results.push({ id: s.id, ok: false, reason, shot });
+      }
       await page.close();
     }
   } finally { await browser.close(); }
   return results;
 }
+function arg(name) {
+  const i = process.argv.indexOf(name);
+  return i > 0 ? process.argv[i + 1] : '';
+}
 if (process.argv[1] && process.argv[1].endsWith('floor-live.mjs')) {
-  const results = await runLive();
-  for (const r of results) console.log((r.ok ? 'pass' : 'fail') + ' ' + r.id + (r.reason ? ' ' + r.reason : ''));
-  const bad = failedFloors(SITES, results);
-  if (bad.length) { console.error('counted floors failed: ' + bad.join(', ')); process.exit(1); }
+  const ids = (process.env.FLOOR_LIVE_IDS || arg('--ids') || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const sites = pagesToRun(SITES, ids);
+  const shots = process.env.FLOOR_LIVE_SHOTS || arg('--shots') || '';
+  const results = await runLive(sites, process.env.VOID_OWNER_TOKEN || '', shots);
+  for (const r of results) console.log((r.ok ? 'pass' : 'fail') + ' ' + r.id + (r.reason ? ' ' + r.reason : '') + (r.shot ? ' ' + r.shot : ''));
+  if (process.argv.includes('--mark')) {
+    const next = markWorks(fs.readFileSync(floorFile, 'utf8'), results.filter((r) => r.ok).map((r) => r.id));
+    if (next) fs.writeFileSync(floorFile, next);
+    console.log(next ? 'marked ' + results.filter((r) => r.ok).map((r) => r.id).join(', ') : 'marked none');
+  }
+  const bad = failedFloors(sites, results);
+  const missed = process.argv.includes('--mark') ? results.filter((r) => !r.ok).map((r) => r.id) : [];
+  if (bad.length || missed.length) { console.error('counted floors failed: ' + [...bad, ...missed].join(', ')); process.exit(1); }
 }
