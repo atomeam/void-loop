@@ -66,17 +66,25 @@ async function shoot(page, dir, id) {
 async function gated(page) {
   return (await page.locator('meta[name="verse-gate"]').count()) > 0;
 }
+/** The owner pass is for this site only. Cloudflare's beacon rejects an Authorization header, and the console then reports the script as blocked. */
+export function withOwner(url, origin, token, headers = {}) {
+  const next = { ...headers };
+  let same = false;
+  try { same = new URL(url).origin === new URL(origin).origin; } catch (_) { same = false; }
+  if (token && same) next.authorization = 'Bearer ' + token;
+  else delete next.authorization;
+  return next;
+}
 export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKEN || '', shots = process.env.FLOOR_LIVE_SHOTS || '') {
   const browser = await chromium.launch({ executablePath: exe, headless: true });
   const results = [];
   try {
     for (const s of sites) {
-      const page = await browser.newPage({ extraHTTPHeaders: token ? { authorization: 'Bearer ' + token } : {} });
+      const page = await browser.newPage();
+      if (token) await page.route('**/*', (route) => route.continue({ headers: withOwner(route.request().url(), ORIGIN, token, route.request().headers()) }));
       const problems = [];
       page.on('console', (msg) => {
-        const text = msg.text();
-        if (/cloudflareinsights|beacon\.min\.js/i.test(text)) return;
-        if (msg.type() === 'error' || /content security policy|refused to connect/i.test(text)) problems.push(text.slice(0, 160));
+        if (msg.type() === 'error' || /content security policy|refused to connect/i.test(msg.text())) problems.push(msg.text().slice(0, 160));
       });
       page.on('pageerror', (err) => problems.push(String(err).slice(0, 160)));
       let shot = '';
@@ -90,8 +98,7 @@ export async function runLive(sites = SITES, token = process.env.VOID_OWNER_TOKE
         const href = await page.locator('nav.with a').first().getAttribute('href');
         const passed = [...new URL(href, page.url()).searchParams.values()].find((v) => v.trim());
         if (!passed) throw new Error('handoff has no result');
-        await page.locator('nav.with a').first().click();
-        await page.waitForLoadState('domcontentloaded');
+        await page.goto(new URL(href, page.url()).href, { waitUntil: 'domcontentloaded', timeout: 20000 });
         if (await gated(page)) throw new Error(token ? 'uni gate' : 'no owner pass');
         const landed = (await page.locator('body').innerText()) + (await page.locator('input, textarea').first().inputValue().catch(() => ''));
         if (!landed.includes(passed.replace(/\s+/g, ' ').trim().slice(0, 24))) throw new Error('next page missed the handoff');

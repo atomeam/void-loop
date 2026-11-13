@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cleanWord, sensesFrom } from '../void-live-deploy/lib/meanings.js';
 import { UA, defineWord, answer } from '../void-live-deploy/functions/api/meanings.js';
-import { failedFloors, markWorks, pagesToRun } from './floor-live.mjs';
+import { failedFloors, markWorks, pagesToRun, withOwner } from './floor-live.mjs';
 
 test('a counted page that failed does not stay a floor', () => {
   assert.deepEqual(failedFloors([{ id: 'meanings', works: true }, { id: 'qr', works: false }], [{ id: 'meanings', ok: false }]), ['meanings']);
@@ -19,6 +19,15 @@ test('a clean pass is the only thing that marks a page, and a miss is left false
   const sites = [{ id: 'meanings', kind: 'page', checked: true, works: false }, { id: 'qr', kind: 'page', works: false }, { id: 'letters', kind: 'page', works: true }];
   assert.deepEqual(pagesToRun(sites, []).map((s) => s.id), ['meanings', 'letters']);
   assert.deepEqual(pagesToRun(sites, ['qr']).map((s) => s.id), ['qr']);
+});
+
+test('the owner pass stays on this site, so the analytics beacon is not sent it', () => {
+  const headers = { authorization: 'Bearer already' };
+  const home = withOwner('https://a-to-mind.com/meanings/', 'https://a-to-mind.com', 'secret', headers);
+  assert.equal(home.authorization, 'Bearer secret');
+  const beacon = withOwner('https://static.cloudflareinsights.com/beacon.min.js/token', 'https://a-to-mind.com', 'secret', headers);
+  assert.equal(beacon.authorization, undefined);
+  assert.equal(withOwner('https://a-to-mind.com/qr/', 'https://a-to-mind.com', '', headers).authorization, undefined);
 });
 
 test('a word is one to three words of letters', () => {
