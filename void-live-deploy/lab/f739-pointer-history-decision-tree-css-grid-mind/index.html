@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --bg: #0a0a12; --fg: #e0e0ff; --accent: #6cf; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; height: 100vh; overflow: hidden; }
+#status { position: fixed; top: 8px; left: 8px; z-index: 100; background: rgba(0,0,0,.7); padding: 8px 12px; border-radius: 6px; font-size: 12px; max-width: 320px; }
+#status button { margin: 4px 4px 0 0; padding: 4px 8px; background: #222; color: var(--fg); border: 1px solid #444; cursor: pointer; }
+#grid { display: grid; width: 100%; height: 100%; gap: 4px; padding: 60px 8px 8px; transition: grid-template-columns .4s ease; }
+.portal { background: #112; border: 1px solid #334; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; text-align: center; padding: 4px; transition: all .3s ease; cursor: pointer; position: relative; overflow: hidden; }
+.portal::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at var(--cx,50%) var(--cy,50%), rgba(255,255,255,.15), transparent 70%); pointer-events: none; }
+.portal:hover { filter: brightness(1.2); }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Pointer-History Decision Tree CSS Grid Living Layout Mind · Verse lab</title>
+<meta name="description" content="A pure-JS online decision tree (non-neural, threshold-based splits on pointer trajectory statistics) takes a short history of pointer velocity, acceleration, and">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Pointer-History Decision Tree CSS Grid Living Layout Mind · Verse lab">
+<meta property="og:description" content="A pure-JS online decision tree (non-neural, threshold-based splits on pointer trajectory statistics) takes a short history of pointer velocity, acceleration, and">
+<meta property="og:url" content="https://a-to-mind.com/lab/f739-pointer-history-decision-tree-css-grid-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f739-pointer-history-decision-tree-css-grid-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">
+  <div>F739 Decision Tree Grid Mind</div>
+  <div id="info">features: — | fitness: —</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Trees</button>
+</div>
+<div id="grid"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Pointer-History Decision Tree CSS Grid Living Layout Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

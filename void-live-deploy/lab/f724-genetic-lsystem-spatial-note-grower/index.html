@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#05050a; }
+.note { position:absolute; background:rgba(20,30,50,0.85); border:1px solid #4466aa; border-radius:6px; padding:6px 10px; min-width:80px; max-width:180px; font-size:12px; color:#ccddff; cursor:move; user-select:text; z-index:10; }
+.controls { position:fixed; bottom:12px; left:12px; background:rgba(0,0,0,0.7); padding:10px; border-radius:8px; z-index:20; display:flex; gap:8px; flex-wrap:wrap; }
+button, input { background:#223355; color:#fff; border:1px solid #4466aa; padding:6px 12px; border-radius:4px; cursor:pointer; }
+button:hover { background:#334477; }
+#status { position:fixed; top:12px; left:12px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:6px; font-size:13px; z-index:20; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Genetic L-System Spatial Note Grower · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial mind for The Verse canvas: a local genetic algorithm evolves L-system production rules whose turtle-interpretation generates a branching">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Genetic L-System Spatial Note Grower · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial mind for The Verse canvas: a local genetic algorithm evolves L-system production rules whose turtle-interpretation generates a branching">
+<meta property="og:url" content="https://a-to-mind.com/lab/f724-genetic-lsystem-spatial-note-grower/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f724-genetic-lsystem-spatial-note-grower/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="status">Generation 0 | Fitness — | Tips 0</div>
+<div class="controls">
+  <button id="evolve">Evolve</button>
+  <button id="inject">Inject Clipboard</button>
+  <input id="typein" placeholder="or type token…" style="width:140px">
+  <button id="addtoken">Add Token</button>
+  <button id="seal">Seal Best</button>
+  <button id="reset">Reset</button>
+  <button id="download">Download JSON</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Genetic L-System Spatial Note Grower</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

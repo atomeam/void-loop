@@ -1,5 +1,274 @@
 [
  {
+  "slug": "f742-pointer-fourier-kmeans-css3d-constellation-mind",
+  "num": 742,
+  "title": "Pointer Fourier k-Means CSS 3D Constellation Mind",
+  "blurb": "A pure-JS FFT computes the spectral signature of a short pointer trajectory (velocity and curvature series).",
+  "status": "works",
+  "source": "F742-pointer-fourier-kmeans-css3d-constellation-mind",
+  "hash": "38fb49a9e21f",
+  "grade": "toy",
+  "idea": "palette"
+ },
+ {
+  "slug": "f741-webxr-hand-rnn-constraint-dom-physics-mind",
+  "num": 741,
+  "title": "WebXR Hand RNN Constraint DOM Physics Mind",
+  "blurb": "True WebXR hand tracking (or pointer fallback) provides sequential joint positions as input to a tiny local RNN (echo-state style reservoir + linear readout) per",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F741-webxr-hand-rnn-constraint-dom-physics-mind",
+  "hash": "345b4f87a0bd",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f740-webgpu-boids-mlp-policy-flock-dom-mind",
+  "num": 740,
+  "title": "webgpu-boids-mlp-policy-flock-dom-mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a population of 192 boids (flocking agents) simulated with classic Reynolds rules (separation, alignment",
+  "status": "works",
+  "source": "F740-webgpu-boids-mlp-policy-flock-dom-mind",
+  "hash": "e9501a04ab32",
+  "grade": "toy",
+  "idea": "mindmap"
+ },
+ {
+  "slug": "f739-pointer-history-decision-tree-css-grid-mind",
+  "num": 739,
+  "title": "Pointer-History Decision Tree CSS Grid Living Layout Mind",
+  "blurb": "A pure-JS online decision tree (non-neural, threshold-based splits on pointer trajectory statistics) takes a short history of pointer velocity, acceleration, and",
+  "status": "works",
+  "source": "F739-pointer-history-decision-tree-css-grid-mind",
+  "hash": "1b32e74f8c92",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f738-deviceorientation-hmm-state-dom-portals-mind",
+  "num": 738,
+  "title": "DeviceOrientation HMM State DOM Portals Mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a local Hidden Markov Model (HMM) whose observations are binned DeviceOrientation angles and pointer velocity",
+  "status": "works",
+  "source": "F738-deviceorientation-hmm-state-dom-portals-mind",
+  "hash": "0a68f74701a1",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f737-orientation-hebbian-dom-swarm-mind",
+  "num": 737,
+  "title": "Orientation Hebbian DOM Swarm Mind",
+  "blurb": "A multi-agent swarm of living DOM cards, each embodying a tiny local Hebbian-updated linear model whose causal input is DeviceOrientation (alpha/beta/gamma",
+  "status": "works",
+  "source": "F737-orientation-hebbian-dom-swarm-mind",
+  "hash": "8d5edde07aca",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f736-teleprompter",
+  "num": 736,
+  "title": "Teleprompter",
+  "blurb": "Job: Paste a script, adjust scroll speed and font size, optionally mirror it, then go full screen to read while speaking; pause and resume with a click or spacebar.",
+  "status": "works",
+  "source": "F736-teleprompter",
+  "hash": "e082922b1b96",
+  "grade": "tool"
+ },
+ {
+  "slug": "f735-deviceorientation-knn-spatial-cluster-notes-mind",
+  "num": 735,
+  "title": "SPEC — F735 DeviceOrientation KNN Spatial Cluster Notes Mind",
+  "blurb": "Ledger ID: F-735 (frontier series)",
+  "status": "works",
+  "source": "F735-deviceorientation-knn-spatial-cluster-notes-mind",
+  "hash": "007515ab3324",
+  "grade": "tool"
+ },
+ {
+  "slug": "f734-webgpu-attention-particle-dom-mind",
+  "num": 734,
+  "title": "webgpu-attention-particle-dom-mind",
+  "blurb": "A previously unattempted combination for The Verse canvas: a WebGPU compute-driven particle field that encodes a living key-value memory.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F734-webgpu-attention-particle-dom-mind",
+  "hash": "2ea91abb4b39",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f733-webgpu-lbm-fluid-dom-advect-mind",
+  "num": 733,
+  "title": "WebGPU Lattice Boltzmann Fluid DOM Advect Mind",
+  "blurb": "A 2D Lattice Boltzmann Method (D2Q9) fluid simulation whose macroscopic velocity field physically advects living DOM portals. Pointer drags inject momentum.",
+  "status": "works",
+  "source": "F733-webgpu-lbm-fluid-dom-advect-mind",
+  "hash": "22e72a749055",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f732-webgpu-gray-scott-mlp-param-field-dom-portals-mind",
+  "num": 732,
+  "title": "webgpu-gray-scott-mlp-param-field-dom-portals-mind",
+  "blurb": "Ledger ID: F-732 (frontier series)",
+  "status": "works",
+  "source": "F732-webgpu-gray-scott-mlp-param-field-dom-portals-mind",
+  "hash": "116160ca257a",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f731-tip-calculator",
+  "num": 731,
+  "title": "Tip calculator",
+  "blurb": "Job: Enter the bill amount, pick a tip percent and number of people, choose how to round; get the tip, total and each person's share to copy as a line.",
+  "status": "works",
+  "source": "F731-tip-calculator",
+  "hash": "be904105a59f",
+  "grade": "tool"
+ },
+ {
+  "slug": "f731-webgpu-spiking-neural-portal-mind",
+  "num": 731,
+  "title": "WebGPU Spiking Neural Portal Mind",
+  "blurb": "A population of leaky integrate-and-fire (LIF) spiking neurons runs as a local embodied mind. DeviceOrientation and pointer velocity inject continuous currents.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F731-webgpu-spiking-neural-portal-mind",
+  "hash": "709190ff8696",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f730-bill-splitter",
+  "num": 730,
+  "title": "Bill splitter",
+  "blurb": "Job: Add the people, the items each ordered (or shared), the tax and the tip; get each person's fair total to copy or download.",
+  "status": "works",
+  "source": "F730-bill-splitter",
+  "hash": "9c4ca1511de0",
+  "grade": "tool"
+ },
+ {
+  "slug": "f729-webxr-gaze-bayesian-portal-competition-mind",
+  "num": 729,
+  "title": "WebXR Gaze Bayesian Portal Competition Mind",
+  "blurb": "True WebXR gaze (or pointer-as-gaze fallback) supplies continuous evidence to a population of floating DOM belief portals.",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F729-webxr-gaze-bayesian-portal-competition-mind",
+  "hash": "81af90482818",
+  "grade": "toy",
+  "idea": "mindmap"
+ },
+ {
+  "slug": "f728-webgpu-discrete-ca-audio-spatial-rule-cards-mind",
+  "num": 728,
+  "title": "webgpu-discrete-ca-audio-spatial-rule-cards-mind",
+  "blurb": "Novel combination never previously attempted on The Verse canvas: a discrete cellular automaton (multi-rule Life-like or custom birth/survival) computed on WebGPU",
+  "status": "works",
+  "source": "F728-webgpu-discrete-ca-audio-spatial-rule-cards-mind",
+  "hash": "605f3c93b2fd",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f727-webgpu-pathtracer-orientation-sphere-agents-mind",
+  "num": 727,
+  "title": "WebGPU Pathtracer Orientation Sphere Agents Mind",
+  "blurb": "Ledger ID: F-727 (frontier series)",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F727-webgpu-pathtracer-orientation-sphere-agents-mind",
+  "hash": "bd7decdeae4d",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f726-webxr-hand-spring-evo-spatial-cards",
+  "num": 726,
+  "title": "webxr-hand-spring-evo-spatial-cards",
+  "blurb": "True WebXR hand tracking (wrist/palm positions when available) drives continuous spring-physics attraction for a population of floating DOM spatial note cards.",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F726-webxr-hand-spring-evo-spatial-cards",
+  "hash": "2e03b07abf21",
+  "grade": "toy",
+  "idea": "mindmap"
+ },
+ {
+  "slug": "f725-webgpu-quantum-phase-interference-portal-mind",
+  "num": 725,
+  "title": "WebGPU Quantum Phase Interference Portal Mind",
+  "blurb": "A novel discrete quantum-walk / phase-interference lattice computed on WebGPU.",
+  "status": "works",
+  "source": "F725-webgpu-quantum-phase-interference-portal-mind",
+  "hash": "e894abb3b715",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f724-genetic-lsystem-spatial-note-grower",
+  "num": 724,
+  "title": "Genetic L-System Spatial Note Grower",
+  "blurb": "A novel hybrid spatial mind for The Verse canvas: a local genetic algorithm evolves L-system production rules whose turtle-interpretation generates a branching",
+  "status": "works",
+  "source": "F724-genetic-lsystem-spatial-note-grower",
+  "hash": "0f5378cf0340",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f723-gamepad-causal-mlp-dom-swarm-mind",
+  "num": 723,
+  "title": "Gamepad Causal MLP DOM Swarm Mind",
+  "blurb": "A previously unattempted combination for The Verse canvas: the Gamepad API (left-stick axes + face buttons) supplies continuous causal sequential input to a",
+  "status": "works",
+  "source": "F723-gamepad-causal-mlp-dom-swarm-mind",
+  "hash": "0282cd082f67",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f722-webgpu-spectral-fourier-portal-mind",
+  "num": 722,
+  "title": "webgpu-spectral-fourier-portal-mind",
+  "blurb": "Slug: webgpu-spectral-fourier-portal-mind",
+  "status": "works",
+  "source": "F722-webgpu-spectral-fourier-portal-mind",
+  "hash": "26f0d10eb906",
+  "grade": "tool"
+ },
+ {
+  "slug": "f721-webxr-hand-decision-tree-spatial-notes",
+  "num": 721,
+  "title": "Plain name: Hand Pose Spatial Notes",
+  "blurb": "Ledger ID: F-721 (frontier series)",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F721-webxr-hand-decision-tree-spatial-notes",
+  "hash": "95490e83ff00",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
   "slug": "f720-webgpu-user-sdf-sculptor",
   "num": 720,
   "title": "webgpu-user-sdf-sculptor",
@@ -32,6 +301,16 @@
   "status": "works",
   "source": "F718-spatial-room-material-estimator",
   "hash": "1f006bb9ac3f",
+  "grade": "tool"
+ },
+ {
+  "slug": "f718-subscription-tracker",
+  "num": 718,
+  "title": "Subscription tracker",
+  "blurb": "Job: Add the services you pay for, their price and when they renew; see the monthly and yearly total at once.",
+  "status": "works",
+  "source": "F718-subscription-tracker",
+  "hash": "a378b5ffd841",
   "grade": "tool"
  },
  {

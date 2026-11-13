@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root {
+  --bg: #0f0f12;
+  --fg: #f0f0f0;
+  --accent: #5eead4;
+  --muted: #888;
+  --panel: #1a1a1f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+header {
+  padding: 1rem 1.5rem;
+  background: var(--panel);
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+h1 { margin: 0; font-size: 1.4rem; }
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+label { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+input[type="range"] { width: 100px; }
+input[type="checkbox"] { accent-color: var(--accent); }
+button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button.secondary { background: #333; color: var(--fg); }
+button:hover { opacity: 0.9; }
+#editor {
+  padding: 1rem;
+  flex: 0 0 auto;
+}
+textarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  resize: vertical;
+}
+#prompter {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #000;
+  display: none;
+}
+#prompter.active { display: block; }
+#script {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  padding: 20vh 10vw;
+  transform-origin: center top;
+  will-change: transform;
+}
+#script.mirror { transform: scaleX(-1); }
+#status {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--accent);
+  display: none;
+}
+.fullscreen #status { display: block; }
+@media (max-width: 600px) {
+  .controls { font-size: 0.8rem; }
+}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Teleprompter · Verse lab</title>
+<meta name="description" content="Job: Paste a script, adjust scroll speed and font size, optionally mirror it, then go full screen to read while speaking; pause and resume with a click or spacebar.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Teleprompter · Verse lab">
+<meta property="og:description" content="Job: Paste a script, adjust scroll speed and font size, optionally mirror it, then go full screen to read while speaking; pause and resume with a click or spacebar.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f736-teleprompter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f736-teleprompter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Teleprompter</h1>
+  <div class="controls">
+    <label>Speed <input type="range" id="speed" min="20" max="200" value="60"> <span id="speedVal">60</span></label>
+    <label>Size <input type="range" id="size" min="16" max="72" value="32"> <span id="sizeVal">32</span>px</label>
+    <label><input type="checkbox" id="mirror"> Mirror</label>
+    <label><input type="checkbox" id="voice"> Voice</label>
+    <button id="playBtn">Play</button>
+    <button id="fullBtn" class="secondary">Fullscreen</button>
+    <button id="copyBtn" class="secondary">Copy</button>
+  </div>
+</header>
+<div id="editor">
+  <textarea id="scriptInput" placeholder="Paste your script here…"></textarea>
+</div>
+<div id="prompter">
+  <div id="script"></div>
+</div>
+<div id="status">Paused</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

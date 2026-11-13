@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#000; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+.portal {
+  position:absolute; pointer-events:none; padding:4px 8px; border-radius:6px;
+  background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.3);
+  font-size:12px; white-space:nowrap; transition:transform 0.1s;
+  transform:translate(-50%,-50%);
+}
+#info { position:fixed; top:8px; left:8px; background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; font-size:13px; z-index:10; }
+button { margin:2px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Pathtracer Orientation Sphere Agents Mind · Verse lab</title>
+<meta name="description" content="Ledger ID: F-727 (frontier series)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Pathtracer Orientation Sphere Agents Mind · Verse lab">
+<meta property="og:description" content="Ledger ID: F-727 (frontier series)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f727-webgpu-pathtracer-orientation-sphere-agents-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f727-webgpu-pathtracer-orientation-sphere-agents-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="info">
+  F727 Pathtracer Sphere Agents<br>
+  Tilt device or move pointer. <button id="seal">Seal Genome</button> <button id="reset">Reset</button>
+  <div id="status">Initializing…</div>
+</div>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Pathtracer Orientation Sphere Agents Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
