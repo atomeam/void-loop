@@ -289,6 +289,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run mcp-live.yml --repo "${{ github.repository }}" --ref main && echo "MCP live started" >> "$GITHUB_STEP_SUMMARY"
 
+      # Floor pages stay works:false until this run passes them on the live site. A merge made with the
+      # workflow token starts no push workflow, so the deploy starts the check, the same way it starts MCP live.
+      - name: Start the floor live check against this deploy
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run floor-live.yml --repo "${{ github.repository }}" --ref main && echo "Floor live started" >> "$GITHUB_STEP_SUMMARY"
+
       # Verse in the MCP registry (mcp-registry.yml): a merge automerge makes pushes to main with GITHUB_TOKEN, which starts no push
       # workflow (#642 merged its server.json and the registry run never started), so the deploy starts it too. It publishes
       # server.json's version only when the registry does not have it yet, so most runs end in seconds.
