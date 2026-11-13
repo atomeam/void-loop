@@ -26,7 +26,7 @@ export function packFor(subject) {
       'Incident path and blameless briefs (incident skill) with next steps Verse runs',
       'Scheduled updates, tests and verification Verse owns so the system stays reliable',
       'Weekly or digest status the client can read without chasing (status-digest, client-weekly)',
-      'Time-saved and ROI numbers that keep packaging "Verse owns the heavy lifting"'
+      'Time-saved and ROI numbers that keep packaging "Verse owns the hard work"'
     ],
     clientDoes: 'Approves outcomes and the confirm line; stays out of the dashboards and the ongoing work',
     next: 'Ask for the systems-monitor or status-digest card; Verse keeps the systems running'
@@ -39,12 +39,12 @@ async function run(text, api) {
   const p = packFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Sustain pack: ' + esc(p.subject) + '</h2>'
-      + '<p>Verse keeps owning the systems after handoff so the client does no ongoing heavy lifting.</p>'
+      + '<p>Verse keeps owning the systems after handoff so the client does no ongoing hard work.</p>'
       + '<h3>What Verse continues to own</h3><ul>' + p.owns.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>What the client keeps</h3><p>' + esc(p.clientDoes) + '</p>'
       + '<h3>Next</h3><p>' + esc(p.next) + '</p>'
       + '<p class="sub">Nothing is sent or claimed as already live. The pack stays on the stage for sharing.</p>'
-      + '<div class="src">Source: A-to-Mind sustain-pack · Verse keeps the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind sustain-pack · Verse keeps the hard work</div>';
   });
   return 'sustain-pack';
 }
