@@ -88,7 +88,7 @@ export const legacy = (file = LEGACY_FILE) => { const o = JSON.parse(rd(file) ||
  *  every other, and a shared library deep in the chain (lib/converter.js under /rap/'s video writer) builds links the page never
  *  shows, so neither is its own. */
 function ownSources(dir, routes) {
-  const importsOf = (code, from) => [...code.matchAll(/(?:from|import|<script\b[^>]*\bsrc=)\s*\(?\s*["']((?:\/|\.\.?\/)[\w./-]+\.js)["']/g)]
+  const importsOf = (code, from) => [...code.matchAll(/(?:from|import|<script\b[^>]*\bsrc=)\s*\(?\s*["']((?:\/|\.\.?\/)[\w./-]+\.js)(?:\?[\w.~=&%-]*)?["']/g)]
     .map((m) => (m[1].startsWith('/') ? m[1] : path.posix.normalize(path.posix.join(path.posix.dirname(from), m[1]))));
   const deps = {}, depsOf = (m) => (deps[m] ??= importsOf(rd(path.join(dir, m)), m));
   const reach = (r) => { const seen = new Set(), todo = importsOf(rd(path.join(dir, r, 'index.html')), r + 'index.html');
