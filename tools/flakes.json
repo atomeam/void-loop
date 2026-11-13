@@ -164,5 +164,6 @@
   {"check": "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running", "sha": "ad41c2dd706b68c42043d6384bf63683e803a066", "at": "2026-11-12T02:26:57Z"},
   {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "17d6927e3a669b3e8627f0c23db62faf440a4f0f", "at": "2026-11-13T13:55:24Z"},
   {"check": "one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first sta", "sha": "214e1707b92e4f9c00ab2626e234478a5cf4af60", "at": "2026-11-13T18:00:12Z"},
-  {"check": "python-tests", "sha": "294063e111469f9f2f451b8813759e2060e81901", "at": "2026-11-13T21:57:37Z"}
+  {"check": "python-tests", "sha": "294063e111469f9f2f451b8813759e2060e81901", "at": "2026-11-13T21:57:37Z"},
+  {"check": "browser-suite shard 3", "sha": "10ca3bcac7d28f16f51c5b3e9a36b2984c40de2e", "at": "2026-11-13T23:09:36Z"}
 ]
