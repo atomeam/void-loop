@@ -3,7 +3,7 @@
  * Lists the systems Verse runs, estimated time the client no longer spends, a simple value note,
  * the offer points, and the next handoff step. Rules-based, offline. Nothing is sent or priced as live.
  * "sales pack for client onboarding", "package the offer for invoice automation",
- * "sell the heavy lifting for the support process", "make a sales pack for weekly reports".
+ * "sell the hard work for the support process", "make a sales pack for weekly reports".
  */
 export function isSalesPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
@@ -31,7 +31,7 @@ export function packFor(subject) {
     timeSaved: 'Hours the client no longer spends on setup, chasing status, testing and firefighting (estimate from the time-saved card)',
     value: 'Verse owns the systems, monitors and verification. The client keeps the decisions and the relationship.',
     offer: [
-      'We own the heavy lifting: design, build, connect, test and monitor',
+      'Verse does the hard work: design, build, connect, test and monitor',
       'Client work drops to the minimum: clarify once, approve the handoff',
       'Status, docs and running automations arrive as a finished package',
       'Reliable delivery because Verse watches what it owns'
@@ -47,7 +47,7 @@ async function run(text, api) {
   const list = (arr) => arr.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Sales pack: ' + esc(p.subject) + '</h2>'
-      + '<p><strong>We own the heavy lifting.</strong></p>'
+      + '<p><strong>Verse does the hard work.</strong></p>'
       + '<h3>Systems Verse runs</h3><ul>' + list(p.systems) + '</ul>'
       + '<h3>Time the client no longer spends</h3><p>' + esc(p.timeSaved) + '</p>'
       + '<h3>Value</h3><p>' + esc(p.value) + '</p>'
@@ -64,7 +64,7 @@ export default {
   examples: [
     'sales pack for client onboarding',
     'package the offer for invoice automation',
-    'sell the heavy lifting for the support process',
+    'sell the hard work for the support process',
     'make a sales pack for weekly reports'
   ],
   nearMisses: [
