@@ -21,4 +21,5 @@ jobs:
         with: { node-version: 22 }
       - run: npm ci --no-audit --no-fund && npx playwright-core install --with-deps chromium && echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
       - run: node tools/floor-live.mjs
-        env: { VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} }
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}

@@ -11,7 +11,7 @@ const JOBS = {
     for (const [word, re] of [['hello', 'greeting'], ['run', 'verb'], ['zzqxnotaword', 'not in the dictionary']]) {
       await page.fill('#word', word);
       await page.click('button[type="submit"]');
-      await page.waitForFunction((pattern) => { const t = ((document.querySelector('#out') || {}).textContent || '') + ((document.querySelector('#err') || {}).textContent || ''); return new RegExp(pattern, 'i').test(t) && !/Looking/.test(((document.querySelector('#err') || {}).textContent || '')); }, re, { timeout: 20000 });
+      await page.waitForFunction((needle) => { const t = ((document.querySelector('#out') || {}).textContent || '') + ((document.querySelector('#err') || {}).textContent || ''); return t.toLowerCase().includes(String(needle).toLowerCase()) && !((document.querySelector('#err') || {}).textContent || '').includes('Looking'); }, re, { timeout: 20000 });
     }
   },
   patterns: async (page) => { await page.goto(ORIGIN + '/patterns/', { waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => /2 matches/.test((document.querySelector('#count') || {}).textContent || ''), null, { timeout: 8000 }); },
