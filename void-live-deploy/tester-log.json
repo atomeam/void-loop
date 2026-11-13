@@ -3,13 +3,20 @@
  "cases": 122,
  "runsTotal": 300,
  "kinds": {
-  "file": 44,
-  "visitor": 214,
+  "visitor": 215,
+  "file": 43,
   "grow": 38,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-12T23:47:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-12T23:20:39Z",
    "passed": 0,
@@ -172,86 +179,79 @@
      "why": "only \"waking up\" appeared, never the answer"
     }
    ]
-  },
-  {
-   "at": "2026-11-12T08:39:47Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-20",
+   "from": "2026-08-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-27",
+   "from": "2026-08-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-03",
+   "from": "2026-09-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-10",
+   "from": "2026-09-11",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-17",
+   "from": "2026-09-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-24",
+   "from": "2026-09-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-01",
+   "from": "2026-10-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-08",
+   "from": "2026-10-09",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-15",
+   "from": "2026-10-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-22",
+   "from": "2026-10-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-29",
-   "runs": 56,
-   "passed": 1388,
-   "of": 1513,
-   "ms": 348
+   "from": "2026-10-30",
+   "runs": 55,
+   "passed": 1310,
+   "of": 1425,
+   "ms": 373
   },
   {
-   "from": "2026-11-05",
-   "runs": 244,
+   "from": "2026-11-06",
+   "runs": 245,
    "passed": 5504,
    "of": 7237,
    "broken": 14,
