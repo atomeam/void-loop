@@ -39,10 +39,11 @@ export function apiProblem(a, now) {
 /** what the /video/ page served, checked for the parts the card links to. Pure. */
 export function pageProblem(p) {
   if (!p || p.status !== 200) return 'GET /video/ answered ' + ((p && p.status) || 'nothing');
+  if (p.gate) return ''; // a stranger gets the Uni gate; the tool page is behind the pass
   const missing = ['state', 'make', 'handoff'].filter((k) => !p[k]);
   return missing.length ? '/video/ has no ' + missing.join(', ') : '';
 }
-export const pageOf = (status, html) => ({ status, state: html.includes('id="state"'), make: html.includes('id="make"'), handoff: /<meta name="verse-handoff"/.test(html), bytes: html.length });
+export const pageOf = (status, html) => ({ status, state: html.includes('id="state"'), make: html.includes('id="make"'), handoff: /<meta name="verse-handoff"/.test(html), gate: /<meta name="verse-gate" content="uni"/.test(html), bytes: html.length });
 
 /** The record of one live check. Pure: the reads go in, the artifact comes out. first: the first GET; last: the read the result stands on. */
 export function recordOf({ first, last, page, ms = 0, error = '', at = new Date().toISOString(), occasion = 1 }) {
@@ -55,7 +56,7 @@ export function recordOf({ first, last, page, ms = 0, error = '', at = new Date(
     video: b.on === true ? 'on' : b.on === false ? 'off' : null, why: typeof b.why === 'string' ? b.why.slice(0, 20) : null,
     lastTest: typeof b.checkedAt === 'string' ? b.checkedAt.slice(0, 24) : null, startedSelfCheck: !!(first && first.body && first.body.checking),
     clipsLeft: Number.isInteger(b.clipsLeft) ? b.clipsLeft : null, perConnection: Number.isInteger(b.perConnection) ? b.perConnection : PER_CONN,
-    page: page ? { status: page.status, state: !!page.state, make: !!page.make, handoff: !!page.handoff } : null,
+    page: page ? { status: page.status, state: !!page.state, make: !!page.make, handoff: !!page.handoff, gate: !!page.gate } : null,
     error: problem ? String(problem).replace(/\s+/g, ' ').slice(0, 200) : '',
   };
 }
@@ -68,7 +69,7 @@ export const ledgerWhat = (rec) => {
   if (!rec.checksPass) return 'video-gen live check found a problem on a-to-mind.com: ' + rec.error + '; attempt live, occasion ' + rec.occasion + where;
   const state = rec.video === 'on' ? 'video is on, ' + rec.clipsLeft + ' clips left today' : 'video is off: ' + (whyWords[rec.why] || rec.why);
   return 'video-gen checked against the live site' + (rec.occasion > 1 ? ', occasion ' + rec.occasion : ' for the first time') + ': ' + state
-    + '; Verse last tested the video model at ' + rec.lastTest + (rec.startedSelfCheck ? ' (this check started that test)' : '') + ', and /video/ is served' + where;
+    + '; Verse last tested the video model at ' + rec.lastTest + (rec.startedSelfCheck ? ' (this check started that test)' : '') + (rec.page && rec.page.gate ? ', and /video/ answers with the Uni gate' : ', and /video/ is served') + where;
 };
 
 /** The occasion number: one more than the artifacts already kept. */

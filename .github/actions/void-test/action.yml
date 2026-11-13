@@ -49,8 +49,10 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
-        # index.json is generated (never committed); self-context and the suite read it
+        # index.json, families.json and guide.json are generated (never committed). The suite reads the index it just wrote and the book built from it.
         node tools/skills-index.mjs --write
+        node tools/families.mjs
+        node tools/guide.mjs
         node tools/self-context.mjs
     - name: node tools/fringe.mjs (fringe ledger rules)
       if: inputs.bench != 'only' && inputs.part != 'suite'
