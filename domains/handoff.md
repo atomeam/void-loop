@@ -106,6 +106,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Just finished
 
 - **Dictionary and QR**: Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801
+- **Team wants**: Tower aspect items stop being filed and the four open ones close on the next crew tick; the coder takes the remaining wants before old repairs; Films stays public and the guard looks for Verse Holovids. https://github.com/atomeam/void-loop/pull/2809
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
 - **Text Compare**: one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799
 - **QR Code Maker**: one pass on /qr/ with downloads, two colours, a Wi-Fi line, a contact card, and a sourced history of myqrcode.com. https://github.com/atomeam/void-loop/pull/2797
