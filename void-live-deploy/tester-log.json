@@ -3,13 +3,20 @@
  "cases": 122,
  "runsTotal": 300,
  "kinds": {
-  "file": 41,
-  "visitor": 218,
+  "visitor": 219,
+  "file": 40,
   "grow": 37,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-13T21:11:16Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-13T20:42:01Z",
    "passed": 0,
@@ -193,13 +200,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T21:24:54Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 13/15"
   }
  ],
  "weekly": [
@@ -265,16 +265,16 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 94,
-   "passed": 2483,
-   "of": 2650,
+   "runs": 95,
+   "passed": 2495,
+   "of": 2659,
    "ms": 386
   },
   {
    "from": "2026-11-06",
-   "runs": 206,
-   "passed": 4120,
-   "of": 5785,
+   "runs": 205,
+   "passed": 4028,
+   "of": 5687,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
