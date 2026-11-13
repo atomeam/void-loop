@@ -3,13 +3,62 @@
  "cases": 122,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 219,
-  "file": 40,
+  "visitor": 218,
+  "file": 41,
   "grow": 37,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-13T22:01:05Z",
+   "passed": 116,
+   "of": 124,
+   "kind": "file",
+   "ms": 360,
+   "note": "quality upgrade: weakest answer was \"dyslexia friendly font\" (25 chars)",
+   "failed": [
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "how do i magnetize this?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "lift summary for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "next system slice for the client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "handoff pack for my SaaS idea",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "weekly update for the onboarding flow",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "is the invoice automation delivery ready",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-13T21:48:17Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-13T21:11:16Z",
    "passed": 0,
@@ -186,20 +235,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T22:17:22Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-12T21:51:01Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -265,16 +300,16 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 95,
+   "runs": 94,
    "passed": 2495,
    "of": 2659,
    "ms": 386
   },
   {
    "from": "2026-11-06",
-   "runs": 205,
-   "passed": 4028,
-   "of": 5687,
+   "runs": 206,
+   "passed": 4144,
+   "of": 5811,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -696,6 +731,8 @@
   "skill:quick-tools": "2026-11-12T18:22:54Z",
   "skill:delivery-dashboard": "2026-11-13T14:22:25Z",
   "skill:kickoff-pack": "2026-11-13T14:22:25Z",
-  "skill:reliability-pack": "2026-11-13T14:22:25Z"
+  "skill:reliability-pack": "2026-11-13T14:22:25Z",
+  "skill:client-weekly": "2026-11-13T22:01:05Z",
+  "skill:delivery-ready": "2026-11-13T22:01:05Z"
  }
 }

@@ -1,47 +1,5 @@
 [
  {
-  "at": "2026-11-05T04:27:08Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 13,
-   "of": 15,
-   "medianMs": 2930,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 20250 ms"
-     ]
-    },
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 8169 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 13/15"
- },
- {
-  "at": "2026-11-05T04:55:19Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1941,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 15318 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T05:45:11Z",
   "kind": "visitor",
   "visitor": {
@@ -7665,5 +7623,65 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-13T21:48:17Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 998,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-13T22:01:05Z",
+  "passed": 116,
+  "of": 124,
+  "ms": 360,
+  "kind": "file",
+  "key": "weak | dyslexia friendly font",
+  "failed": [
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "how do i magnetize this?",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "lift summary for client onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "next system slice for the client onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "handoff pack for my SaaS idea",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "weekly update for the onboarding flow",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "is the invoice automation delivery ready",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 998,
+   "failed": []
+  },
+  "note": "quality upgrade: weakest answer was \"dyslexia friendly font\" (25 chars)"
  }
 ]
