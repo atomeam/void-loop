@@ -102,4 +102,4 @@ function moreAppend(a) { $('more').append(a); }
 
 const open = new URLSearchParams(location.search).get('play');
 if (HOST[open]) { how.textContent = HOST[open].how; mark(open); paint(open); }
-else if (GAMES[0]) how.textContent = 'Pick a game. The four new ones play on this page. The others open on the stage, with every rule they already have.';
+else if (GAMES[0]) how.textContent = 'Pick a game. Gap Glide and Cross the Bus play on this page. The others open on the stage, with every rule they already have.';
