@@ -24,6 +24,20 @@ Part of Verse Studio (`domains/void.game-studio.md`; catalogue `domains/void.gam
 - **Legal.** *Atari Games Corp. v. Oman* held that the game's audiovisual display is copyrightable, so the **look** is protected and the **idea and mechanics** are not. One source notes it is hard to tell whether a given copy is illegal. So: no Atari palette, brick layout, sounds or "Breakout" name; Verse's palette, shapes and sounds. *Unresolved:* trademark questions and *Tetris Holding v. Xio* were not found by this search (the law doc already discusses it).
 - **Sources.** [Breakout (video game)](https://en.wikipedia.org/wiki/Breakout_(video_game)), [the story of Breakout](https://www.denofgeek.com/games/the-story-of-breakout), [Atari Archive](https://www.atariarchive.org/?p=962).
 
+## Gap Glide (the one-tap flyer)
+
+- **Rules found.** One button. Gravity pulls a figure down, a tap lifts it, and gaps in a scrolling course are the only safe path. Missing a gap or the edge ends the run. The widely known 2013 game of this shape is one tap, one figure, pipes.
+- **Build.** Two gliders share one seeded course. Seat 1 taps. Seat 2 (Verse) lifts only after it has fallen past the gap centre, so a careful tap beats it. The first to touch a bar or the edge loses. A link carries the seed and the score.
+- **Legal.** The mechanic is free. The 2013 game's name and its art are not used. Verse's title is **Gap Glide**, the working title Void Flap was dropped before shipping because it sat too close to that name, and the bars are plain rectangles in Verse's violet and cyan.
+- **Sources.** [Flappy Bird](https://en.wikipedia.org/wiki/Flappy_Bird).
+
+## Cross the Bus (the lane crossing)
+
+- **Rules found.** A figure crosses lanes of moving traffic from one curb to the other. Touching traffic sends it back or ends the run. The 1981 arcade game is the familiar one: hopping, lanes, a far side.
+- **Build.** You and Verse start on the same near curb and cross the same seeded lanes. A block sends that rider home. Verse steps forward only when the next cell is clear, and steps aside when it is not. The first to the far curb wins.
+- **Legal.** The mechanic is free. The famous name, the animal, and the cabinet art are not used. Title **Cross the Bus**. The movers are plain blocks.
+- **Sources.** [Frogger](https://en.wikipedia.org/wiki/Frogger).
+
 ## Dim the Verse (the lights-toggling puzzle)
 
 - **Rules found.** A 5x5 grid of lights; pressing one toggles it and its horizontal and vertical neighbours; the goal is to turn all of them off. It was a Tiger electronic product of 1995. Not every pattern can be solved: pressing is linear over GF(2), and for 5x5 the null space has dimension 2, so 2^23 of the 2^25 patterns are solvable, each in four ways.

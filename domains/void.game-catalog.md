@@ -66,9 +66,9 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 | Asteroids | Debris Field | shoot the leftovers of a bad merge | wish |
 | Space Invaders | Null Waves | descending waves of requests | wish |
 | Pac-Man-style mazes | Packet Maze | collect packets, avoid the watchers | wish |
-| Flappy-style one-button flyers | Void Flap | one tap, one bot, one gap | wish |
+| Flappy-style one-button flyers | Gap Glide | one tap, one bot, one gap. Shipped under this name (the working title Void Flap sat too close to a famous one-tap game) | playable |
 | Tetris (look and rules; Tetris v. Xio) | Block Void | falling shapes with Verse's own shapes and palette: never the originals' | wish |
-| Frogger | Cross the Bus | cross lanes of traffic to a data bus | wish |
+| Frogger | Cross the Bus | cross lanes of traffic to a data bus | playable |
 | Platformers | Jump Stack | a bot climbs a tower of cards | wish |
 
 ## puzzle (a board and a goal)
