@@ -1,10 +1,10 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 640000,
- "swept": 625540,
+ "cursor": 680000,
+ "swept": 664347,
  "lap": 0,
- "at": "2026-11-12",
+ "at": "2026-11-13",
  "smallest": [
   {
    "rank": 400033,
@@ -40,6 +40,15 @@
    "bytes": 15,
    "words": 1,
    "title": "48.217.180.210",
+   "plain": true
+  },
+  {
+   "rank": 640024,
+   "host": "prostitutkimsk1.xyz",
+   "controls": 0,
+   "bytes": 70,
+   "words": 4,
+   "title": "Запрещенной информации не содержится!",
    "plain": true
   },
   {
@@ -508,6 +517,15 @@
    "bytes": 1381,
    "words": 30,
    "title": "Google Public DNS",
+   "plain": false
+  },
+  {
+   "rank": 640011,
+   "host": "nivos.net",
+   "controls": 5,
+   "bytes": 1773,
+   "words": 71,
+   "title": "msoynet.net / AS196655",
    "plain": false
   },
   {
