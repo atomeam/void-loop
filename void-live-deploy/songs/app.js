@@ -51,7 +51,6 @@ document.querySelector('form').addEventListener('submit', (e) => {
   u.searchParams.set('title', fields.title);
   u.searchParams.set('artist', fields.artist);
   history.replaceState(null, '', u);
-  if (out.querySelector('audio')) return;
   e.preventDefault();
   play(fields);
 });
