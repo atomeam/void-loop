@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-05T05:45:11Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 608,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 14554 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T06:19:18Z",
   "kind": "visitor",
   "visitor": {
@@ -7683,5 +7665,16 @@
    "failed": []
   },
   "note": "quality upgrade: weakest answer was \"dyslexia friendly font\" (25 chars)"
+ },
+ {
+  "at": "2026-11-13T22:12:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1047,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
  }
 ]
