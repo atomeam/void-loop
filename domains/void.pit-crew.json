@@ -1,7 +1,23 @@
 {
-  "at": "2026-11-12T15:38:09.214Z",
+  "at": "2026-11-13T14:56:21.860Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261113-0009-1",
+      "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
+      "target": "voice:ask-20261113-0009-1"
+    },
+    {
+      "id": "ask-20261112-2341-3",
+      "ask": "Update the Bridge card logic to handle cases with fewer than two staged inputs.",
+      "target": "voice:ask-20261112-2341-3"
+    },
+    {
+      "id": "ask-20261112-0207-3",
+      "ask": "Handle the void-loop readme.",
+      "target": "voice:ask-20261112-0207-3"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
