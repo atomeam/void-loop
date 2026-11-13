@@ -19,17 +19,17 @@ export const TOOLS = Object.freeze([
 
 /** Open rows are smallest job first. A row is a floor only when docs/versus-page-checklist.md is checked for that page, including the live browser run. The large sites are last and are not floors until a page does the whole job. Their order is the visit list, least visited first: spotify.com 78, youtube.com 10, and the maps lane on google.com at 1 (tower.rank.json, 2026-11-02). YouTube's home page also measured 68 controls (tower.size.json, 2026-10-30). Spotify's size read was refused, and Maps was not counted, so those two are not given a made-up control count. */
 export const NEXT = Object.freeze([
-  { id: 'podcasts', name: 'Podcast Search', page: '/podcasts/', rival: 'podcastindex.org', url: 'https://podcastindex.org/', kind: 'page', works: true, features: ['podcast', 'audio', 'episode'] },
+  { id: 'podcasts', name: 'Podcast Search', page: '/podcasts/', rival: 'podcastindex.org', url: 'https://podcastindex.org/', kind: 'page', works: false, features: ['podcast', 'audio', 'episode'] },
   { id: 'scores', name: 'Live Sports Scores', page: '/scores/', rival: 'livescore.com', url: 'https://www.livescore.com/', kind: 'page', works: true, features: ['score', 'board', 'standings'] },
-  { id: 'units', name: 'Unit Converter', page: '/convert/', rival: 'convertlive.com', url: 'https://convertlive.com/', kind: 'page', works: true, features: ['convert', 'unit'] },
+  { id: 'units', name: 'Unit Converter', page: '/convert/', rival: 'convertlive.com', url: 'https://convertlive.com/', kind: 'page', works: false, features: ['convert', 'unit'] },
   { id: 'patterns', name: 'Regex Tester', page: '/patterns/', rival: 'regex101.com', url: 'https://regex101.com/', kind: 'page', works: true, checked: true, features: ['code', 'regex', 'pattern'], extras: ['plain reading', 'replace', 'share link'] },
   { id: 'schedules', name: 'Cron Schedule Explainer', page: '/schedules/', rival: 'crontab.guru', url: 'https://crontab.guru/', kind: 'page', works: true, checked: true, features: ['cron', 'schedule'] },
   { id: 'meanings', name: 'Dictionary', page: '/meanings/', rival: 'wiktionary.org', url: 'https://en.wiktionary.org/', kind: 'page', works: true, checked: true, features: ['define', 'dictionary', 'meaning'] },
   { id: 'qr', name: 'QR Code Maker', page: '/qr/', rival: 'myqrcode.com', url: 'https://myqrcode.com/', kind: 'page', works: true, checked: true, features: ['qr', 'code'], extras: ['svg download', 'wifi text', 'contact card'] },
   { id: 'text-diff', name: 'Text Compare', page: '/text-diff/', rival: 'diffchecker.com', url: 'https://www.diffchecker.com/', kind: 'page', works: true, checked: true, features: ['diff', 'compare'], extras: ['share link', 'set case aside', 'set spaces aside'] },
-  { id: 'songs', name: 'Song Player', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: true, late: true, features: ['song', 'play', 'audio'] },
-  { id: 'clips', name: 'Video Player', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: true, late: true, features: ['video', 'play', 'trailer'] },
-  { id: 'directions', name: 'Driving Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: true, late: true, features: ['directions', 'route', 'map'] },
+  { id: 'songs', name: 'Song Player', page: '/songs/', rival: 'spotify.com', url: 'https://open.spotify.com/', kind: 'page', works: false, late: true, features: ['song', 'play', 'audio'] },
+  { id: 'clips', name: 'Video Player', page: '/clips/', rival: 'youtube.com', url: 'https://www.youtube.com/', kind: 'page', works: false, late: true, features: ['video', 'play', 'trailer'] },
+  { id: 'directions', name: 'Driving Directions', page: '/directions/', rival: 'maps.google.com', url: 'https://maps.google.com/', kind: 'page', works: false, late: true, features: ['directions', 'route', 'map'] },
 ]);
 
 export const SITES = Object.freeze([...TOOLS, ...NEXT]);
