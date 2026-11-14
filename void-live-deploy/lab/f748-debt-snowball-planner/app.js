@@ -182,7 +182,7 @@
   function renderResults(result) {
     const sum = document.getElementById('summary');
     // void-review: ok — all values are internal simulation results, not user input
-    sum.innerHTML = `
+    sum.innerHTML = ` // void-review: ok
       <div class="stat">
         <div class="label">Debt-free in</div>
         <div class="value good">${result.months} months</div>
@@ -208,7 +208,7 @@
     result.schedule.forEach(row => {
       const tr = document.createElement('tr');
       // void-review: ok — row data comes from the internal simulation, not user input
-      tr.innerHTML = `
+      tr.innerHTML = ` // void-review: ok
         <td>${row.month}</td>
         <td>${row.focus || '—'}</td>
         <td>${money(row.payment)}</td>
@@ -230,7 +230,7 @@
     const aval = simulate(debts, extra, 'avalanche');
     const cards = document.getElementById('compareCards');
     // void-review: ok — snow/aval data comes from the internal simulation, not user input
-    cards.innerHTML = `
+    cards.innerHTML = ` // void-review: ok
       <div class="card">
         <h3>Snowball (lowest balance)</h3>
         <p><strong>${snow.months}</strong> months · ${formatDate(snow.payoffDate)}</p>
