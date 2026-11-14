@@ -376,6 +376,12 @@
   {
    "state": "shipped",
    "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
    "ask": "roi-pack skill: package the return on investment (hours saved, estimated cost avoided) for a business idea Verse owns…",
    "from": "new idea by growth agent; helper/roi-pack"
   },
@@ -726,111 +732,111 @@
  },
  "commits": [
   {
-   "at": "2026-11-13T01:17:39Z",
-   "subject": "mark kickoff-pack and reliability-pack shipped (status corrections) (#2760)"
-  },
-  {
-   "at": "2026-11-13T01:17:19Z",
-   "subject": "mark systems-owned shipped with main SHA (status correction) (#2759)"
-  },
-  {
-   "at": "2026-11-13T01:15:35Z",
-   "subject": "align delivery-ready example with matcher"
-  },
-  {
-   "at": "2026-11-13T01:15:26Z",
-   "subject": "fix delivery-ready matchers so suite passes"
-  },
-  {
-   "at": "2026-11-13T01:15:09Z",
-   "subject": "add delivery-ready skill: confirm handoff readiness for idea-to-system delivery"
-  },
-  {
-   "at": "2026-11-13T01:01:16Z",
-   "subject": "mark systems-owned building in growth-inbox (#2758)"
-  },
-  {
-   "at": "2026-11-13T00:40:07Z",
-   "subject": "Design loop: 1 page fixed, 3 -> 0 design defects"
-  },
-  {
-   "at": "2026-11-13T00:34:53Z",
-   "subject": "Incident: the browser suite failed on 029f6a55 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-13T00:33:25Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-11-13T00:29:00Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-13T00:22:05Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
-  },
-  {
-   "at": "2026-11-13T00:20:05Z",
-   "subject": "Outcome exam: timers 66.7"
-  },
-  {
-   "at": "2026-11-13T00:09:10Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-13T00:08:03Z",
+   "at": "2026-11-14T00:03:05Z",
    "subject": "Verse's will: today's three wants (domains/void.will.md)"
   },
   {
-   "at": "2026-11-13T00:02:45Z",
+   "at": "2026-11-14T00:02:57Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-11-14T00:02:47Z",
+   "subject": "Floor live: pages that passed the production browser run"
+  },
+  {
+   "at": "2026-11-14T00:01:36Z",
+   "subject": "Add sales-pack skill to package sellable offers for hard work (#2804)"
+  },
+  {
+   "at": "2026-11-14T00:01:33Z",
+   "subject": "Add a feature to the page that already does the job (#2803)"
+  },
+  {
+   "at": "2026-11-14T00:00:52Z",
+   "subject": "Failed jobs read: run 43527533768 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-13T23:58:01Z",
+   "subject": "Floor live: pages that passed the production browser run"
+  },
+  {
+   "at": "2026-11-13T23:56:25Z",
+   "subject": "Skip an unrebuilt floor so it cannot fail the live job. (#2812)"
+  },
+  {
+   "at": "2026-11-13T23:53:17Z",
+   "subject": "Floor live: pages that passed the production browser run"
+  },
+  {
+   "at": "2026-11-13T23:49:10Z",
+   "subject": "Fold the four kanban pages into the one board. (#2810)"
+  },
+  {
+   "at": "2026-11-13T23:48:26Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-12T23:52:36Z",
-   "subject": "Outcome exam: code 93.3"
+   "at": "2026-11-13T23:48:19Z",
+   "subject": "Floor live: pages that passed the production browser run"
   },
   {
-   "at": "2026-11-12T23:38:02Z",
-   "subject": "reliability-pack skill: package the uptime targets and checks Verse runs so the client doesn't set or chase them; mark building in inbox…"
+   "at": "2026-11-13T23:47:35Z",
+   "subject": "Outcome exam: podcasts 91.3"
   },
   {
-   "at": "2026-11-12T23:35:40Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-11-13T23:43:21Z",
+   "subject": "Stop public pages from naming the rival (#2807)"
   },
   {
-   "at": "2026-11-12T23:34:59Z",
-   "subject": "Incident: the browser suite failed on 54908aea (void-live-deploy/incidents.json)"
+   "at": "2026-11-13T23:27:30Z",
+   "subject": "Record the baggage check on the handoff board."
   },
   {
-   "at": "2026-11-12T23:31:50Z",
-   "subject": "Leave /versus/ on its own sign (#2757)"
+   "at": "2026-11-13T23:27:14Z",
+   "subject": "A source that answers 403 leaves baggage figures unchecked and does not fail the run."
+  },
+  {
+   "at": "2026-11-13T23:20:02Z",
+   "subject": "Site test: visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-13T23:15:10Z",
+   "subject": "Outcome exam: sports 90.7"
+  },
+  {
+   "at": "2026-11-13T23:09:36Z",
+   "subject": "Flake: 1 check(s) passed on a rerun of 10ca3bc (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-13T22:56:44Z",
+   "subject": "Tower gate: versus measured"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Lists run 25 (grok-bot, 2026-11-12): lib/db.js in every endpoint (convergence…",
-    "line": "the other 11 endpoints make their tables through lib/db.js (batchReady added for the three that used one D1 batch; 132 existing endpoint tests unchanged and green, tools/db-ready.test.mjs fails on any new let ready = null); stage-organize…"
+    "name": "Baggage check",
+    "line": "a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806"
    },
    {
-    "name": "Lists run 23 (grok-bot, 2026-11-12): client handoffs are one family and main's…",
-    "line": "full-handoff (#2725) had no order file and its own example failed its match (the fast tests red on main); delivery-pack, client-handoff, system-handoff and full-handoff are one handoffs family at 1192 (0 of 6,476 asks moved besides that…"
+    "name": "Dictionary and QR",
+    "line": "Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801"
    },
    {
-    "name": "Lists run 22 (grok-bot, 2026-11-12): \"bridge these inputs\" answers again…",
-    "line": "skills/bridge.js returned 'none' when asked by name with fewer than two staged inputs, so the site tester saw only \"waking up\" (issue #2721); it now opens a Bridge card that says how to stage inputs and bridges two samples on a tap with…"
+    "name": "Owner pass on the beacon",
+    "line": "the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800"
    },
    {
-    "name": "Lists run 21 (grok-bot, 2026-11-12): films and movies are one cinema family…",
-    "line": "skills/cinema.js at 1100 (0 of 6,423 asks moved, tools/cinema-family.test.mjs); urlOf and the seven tidier variants in lib/ask-text.js (tools/ask-text-step2b.test.mjs); tools/wishlist-rank.mjs in upkeep.yml (only the # column moves…"
+    "name": "Text Compare",
+    "line": "one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799"
    },
    {
-    "name": "Lists run 20 (grok-bot, 2026-11-12): flightconnections.com's two journeys…",
-    "line": "the floor's two journeys on /flights/routes/ (pick Lisbon, set 3 h, Madrid listed and New York not; share, pick another airport, reopen the link) pass against the live site, which answers the 25 \"build the missing jobs for…"
+    "name": "QR Code Maker",
+    "line": "one pass on /qr/ with downloads, two colours, a Wi-Fi line, a contact card, and a sourced history of myqrcode.com. https://github.com/atomeam/void-loop/pull/2797"
    },
    {
-    "name": "Lists run 19 (grok-bot, 2026-11-11): status-digest joins the client status…",
-    "line": "main's families and book checks were red after #2713 added status-digest with no family; it is now one routing entry with client-status-pack and delivery-board, and its fixed all-green line is gone. Two of Verse's asks, each asked 19…"
+    "name": "Regex Tester",
+    "line": "one pass on /patterns/ with a plain reading of the pattern, a replacement, and a sourced history of regex101. https://github.com/atomeam/void-loop/pull/2796"
    }
   ],
   "ladders": [
@@ -985,8 +991,8 @@
   }
  ],
  "visible": {
-  "day": 5,
-  "week": 198
+  "day": 1,
+  "week": 199
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -1039,8 +1045,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 97 (473 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-12T13:47Z",
+  "line": "People this week: 74 (311 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-13T13:08Z",
   "source": "verse"
  },
  "tower": {
@@ -1052,6 +1058,6 @@
    "emojicombos.com"
   ],
   "beaten": 2,
-  "total": 1278
+  "total": 1279
  }
 }

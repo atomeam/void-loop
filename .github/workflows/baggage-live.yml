@@ -2,8 +2,9 @@
 # card cites (skills/baggage.js SOURCES: aa.com and britishairways.com, no key, no account) and check that every figure the card
 # states is still written there. The record is kept as an artifact (findings/baggage/<date>T<hhmm>.json, attempt "live", the
 # occasion number) with one `finding` line in the growth ledger pointing at it, committed to main the way rides-live.yml does.
-# Success is every page answering with every figure AND the finding landing on main; the job is red otherwise, so a figure the
-# airline changed shows up the day it changes. Nothing a person typed is sent, nothing secret is used.
+# Success is every page that answered still having its figures, and the finding landing on main. A 403 (aa.com blocks this
+# runner) leaves those figures unchecked and does not make the job red. A figure gone from a page that answered does.
+# Nothing a person typed is sent, nothing secret is used.
 name: Baggage live
 
 on:

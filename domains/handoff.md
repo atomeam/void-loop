@@ -104,6 +104,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Baggage check**: a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806
 - **Dictionary and QR**: Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
 - **Text Compare**: one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799
