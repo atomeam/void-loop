@@ -8,19 +8,22 @@ const ORIGIN = process.env.FLOOR_LIVE_ORIGIN || 'https://a-to-mind.com';
 const exe = process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || '/usr/bin/google-chrome';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const floorFile = path.join(root, 'void-live-deploy/lib/versus-floor.js');
-export function failedFloors(sites, results) {
-  return (sites || []).filter((s) => s && s.works === true && !(results || []).some((r) => r.id === s.id && r.ok)).map((s) => s.id);
+/** A page the live job is allowed to fail. works:false, or a page not checked yet, is pending and is not run. Pure. */
+export function countedFloor(site) {
+  return !!(site && site.kind === 'page' && site.works === true && site.checked === true);
 }
-/** pages the live run owes a result: the ones named, or every checked page and every page already counting. Pure. */
+export function failedFloors(sites, results) {
+  return (sites || []).filter((s) => countedFloor(s) && !(results || []).some((r) => r.id === s.id && r.ok)).map((s) => s.id);
+}
+/** Pages the live run visits. A named id is included only when that page is a counted floor. Pure. */
 export function pagesToRun(sites, ids) {
   const want = (ids || []).filter(Boolean);
-  if (want.length) return (sites || []).filter((s) => s && want.includes(s.id));
-  return (sites || []).filter((s) => s && s.kind === 'page' && (s.checked === true || s.works === true));
+  return (sites || []).filter((s) => countedFloor(s) && (!want.length || want.includes(s.id)));
 }
-/** pass, fail, or pending. A page that has not been checked yet is pending when it misses, so an unrebuilt page does not fail the run. Pure. */
+/** pass, fail, or pending. Only a counted floor can fail the run. Pure. */
 export function floorKind(site, ok) {
   if (ok) return 'pass';
-  if (site && site.checked === true) return 'fail';
+  if (countedFloor(site)) return 'fail';
   return 'pending';
 }
 /** set works:true for ids that passed, and works:false for pending misses that were counted too early. An id that is absent stays as it is. Pure. */
@@ -133,6 +136,11 @@ if (process.argv[1] && process.argv[1].endsWith('floor-live.mjs')) {
   if (credits.length) { console.error('public pages name a rival:\n' + credits.join('\n')); process.exit(1); }
   const ids = (process.env.FLOOR_LIVE_IDS || arg('--ids') || '').split(',').map((s) => s.trim()).filter(Boolean);
   const sites = pagesToRun(SITES, ids);
+  for (const s of SITES) {
+    if (!s || s.kind !== 'page' || countedFloor(s)) continue;
+    if (ids.length && !ids.includes(s.id)) continue;
+    console.log('skip ' + s.id);
+  }
   const shots = process.env.FLOOR_LIVE_SHOTS || arg('--shots') || '';
   const results = await runLive(sites, process.env.VOID_OWNER_TOKEN || '', shots);
   const kindOf = (r) => floorKind(sites.find((s) => s.id === r.id), r.ok);

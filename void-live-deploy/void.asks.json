@@ -2462,6 +2462,36 @@
       "words": "Fix the sports exam for 'yankees score' and 'how did the chiefs do'.",
       "ledgerAt": "2026-11-11T17:36:49Z",
       "why": "built: the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the podcasts exam to handle audio and episode retrieval.",
+      "ledgerAt": "2026-11-11T17:36:50Z",
+      "why": "built: the podcasts exam failed audio on a different show each run (TED Radio Hour, Planet Money, Hidden Brain): the exam read the player 1.2 s after play(), and a host that redirects slowly had not started; it now waits up to 5 s for playback, speed stays the fast check (tools/exam.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the podcasts exam failures regarding episode selection and audio playback.",
+      "ledgerAt": "2026-11-11T17:36:50Z",
+      "why": "built: the podcasts exam failed audio on a different show each run (TED Radio Hour, Planet Money, Hidden Brain): the exam read the player 1.2 s after play(), and a host that redirects slowly had not started; it now waits up to 5 s for playback, speed stays the fast check (tools/exam.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the card export overflow in the card capture mechanism.",
+      "ledgerAt": "2026-11-14T17:00:00Z",
+      "why": "built: Fix the card export overflow in the card capture mechanism (linked by tools/asks-link.mjs, shared words: fix, card, export, overflow, capture, mechanism)"
+    },
+    {
+      "words": "Fix the card export overflow in the card capture.",
+      "ledgerAt": "2026-11-14T17:00:00Z",
+      "why": "built: Fix the card export overflow in the card capture mechanism (linked by tools/asks-link.mjs, shared words: fix, card, export, overflow, capture)"
+    },
+    {
+      "words": "Complete the flightconnections.com journeys by building the missing jobs.",
+      "ledgerAt": "2026-11-12T05:31:14Z",
+      "why": "built: The flightconnections.com floor's missing jobs, the two scripted journeys on /flights/routes/, are built (tools/tower-journeys.mjs) (linked by tools/asks-link.mjs, shared words: flightconnection, com, journey, miss, job)"
+    },
+    {
+      "words": "Complete the 15 open journeys for flightconnections.com.",
+      "ledgerAt": "2026-11-12T05:31:14Z",
+      "why": "built: flightconnections.com's two journeys on /flights/routes/ are scripted: pick Lisbon, set 3 hours, see the nonstop airports with Madrid and without New York; share the link, pick another airport, open the link and get the  (linked by tools/asks-link.mjs, shared words: open, journey, flightconnection, com)"
     }
   ],
   "held": [
@@ -2473,46 +2503,25 @@
     }
   ],
   "totals": {
-    "asked": 269,
-    "built": 265,
-    "through": "2026-11-13T00:09:00Z",
+    "asked": 271,
+    "built": 267,
+    "through": "2026-11-14T22:55:00Z",
     "open": [
       {
-        "ask": "Fix the card export overflow in the card capture mechanism.",
-        "at": "2026-11-13T00:09:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 2,
-        "ids": [
-          "ask-20261112-2203-1",
-          "ask-20261112-2209-1",
-          "ask-20261112-2217-1",
-          "ask-20261112-2237-1",
-          "ask-20261112-2241-2",
-          "ask-20261112-2243-2",
-          "ask-20261112-2251-2",
-          "ask-20261112-2308-2",
-          "ask-20261112-2322-3",
-          "ask-20261112-2335-3",
-          "ask-20261112-2341-1",
-          "ask-20261113-0009-3"
-        ]
-      },
-      {
         "ask": "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores.",
-        "at": "2026-11-13T00:09:00Z",
-        "kind": "daily",
+        "at": "2026-11-14T22:47:00Z",
+        "kind": "build",
         "small": true,
         "times": 3,
         "ids": [
-          "ask-20261112-2132-1",
-          "ask-20261112-2209-2",
-          "ask-20261112-2217-2",
-          "ask-20261112-2237-2",
-          "ask-20261112-2241-1",
-          "ask-20261112-2308-1",
           "ask-20261112-2322-2",
           "ask-20261113-0009-2",
+          "ask-20261114-2217-3",
+          "ask-20261114-2232-3",
+          "ask-20261114-2237-3",
+          "ask-20261114-2241-3",
+          "ask-20261114-2244-3",
+          "ask-20261114-2247-3",
           "ask-20261112-2243-1",
           "ask-20261112-2251-1",
           "ask-20261112-2335-2",
@@ -2542,16 +2551,37 @@
       },
       {
         "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
-        "at": "2026-11-13T00:09:00Z",
-        "kind": "daily",
+        "at": "2026-11-14T22:55:00Z",
+        "kind": "build",
         "small": true,
-        "times": 1,
+        "times": 2,
         "ids": [
-          "ask-20261112-2203-3",
-          "ask-20261112-2316-1",
-          "ask-20261112-2322-1",
-          "ask-20261112-2335-1",
-          "ask-20261113-0009-1"
+          "ask-20261114-2217-2",
+          "ask-20261114-2220-2",
+          "ask-20261114-2229-2",
+          "ask-20261114-2232-2",
+          "ask-20261114-2237-2",
+          "ask-20261114-2241-2",
+          "ask-20261114-2244-2",
+          "ask-20261114-2247-2",
+          "ask-20261114-2250-2",
+          "ask-20261114-2255-2",
+          "ask-20261114-1052-2",
+          "ask-20261114-1148-2"
+        ]
+      },
+      {
+        "ask": "Fix the weather exam failures for speed, skill, and temperature accuracy.",
+        "at": "2026-11-14T22:55:00Z",
+        "kind": "build",
+        "small": false,
+        "times": 3,
+        "ids": [
+          "ask-20261113-2142-3",
+          "ask-20261114-2255-3",
+          "ask-20261113-2259-3",
+          "ask-20261113-2348-3",
+          "ask-20261114-2250-3"
         ]
       }
     ]

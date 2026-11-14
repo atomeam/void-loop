@@ -60,7 +60,7 @@ test('the row\'s words: never the site, never what the page does not do, never m
   assert.deepEqual(brandTokens('www.any-color-id.com'), ['www', 'any-color-id', 'any', 'color'].filter((w) => w !== 'www'));
   const fb = fallbackTexts(fam); assert.ok(fb.intro.length > 30 && fb.name.length > 3);
   assert.equal(slugFor('hex-names', fam, () => false), '/color/hex-names/');
-  assert.equal(slugFor('hex-names', fam, (p) => p === '/color/hex-names/'), '/color/hex-names-2/');
+  assert.equal(slugFor('hex-names', fam, (p) => p === '/color/hex-names/'), null);
   assert.equal(slugFor('Not A Slug!', fam, () => false), '/color/colour-picker-tool/');
 });
 

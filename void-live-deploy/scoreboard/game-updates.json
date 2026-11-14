@@ -1,0 +1,10 @@
+{
+  "cursor": 0,
+  "picks": { "debris-field": 1, "gap-glide": 1 },
+  "scores": {
+    "debris-field": { "update": 1, "note": "Update 1: the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges.", "why": "shipped" },
+    "gap-glide": { "update": 1, "note": "Update 1: one glider, three lives, gates that tighten, and a storm gate. Verse is the ghost score.", "why": "one glider through tightening gates" }
+  },
+  "shown": ["debris-field", "gap-glide"],
+  "bar": "debris-field"
+}

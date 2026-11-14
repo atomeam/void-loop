@@ -100,7 +100,7 @@
    "floor": "travel: flightconnections.com",
    "pages": 59,
    "templates": 22,
-   "features": 611,
+   "features": 609,
    "verse_pages": 2,
    "verse_features": 5,
    "missing": [
@@ -635,8 +635,6 @@
     "to Gabon with a stopover",
     "to Republic of the Congo",
     "to Republic of the Congo with a stopover",
-    "airlines_flying direction_",
-    "aircrafts_flying direction_",
     "International to Africa",
     "to Burundi",
     "to Comoros",
@@ -711,7 +709,7 @@
     "to Yemen",
     "to Yemen with a stopover"
    ],
-   "crawled": "2026-11-13"
+   "crawled": "2026-11-14"
   },
   "tsundere.pw": {
    "floor": "tsundere.pw",

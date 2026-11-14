@@ -1,22 +1,22 @@
 {
-  "at": "2026-11-13T14:56:21.860Z",
+  "at": "2026-11-14T13:49:40.732Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261113-0009-1",
+      "id": "ask-20261114-0017-3",
+      "ask": "Fix the podcasts exam failures regarding episode selection and audio playback.",
+      "target": "voice:ask-20261114-0017-3"
+    },
+    {
+      "id": "ask-20261113-2255-3",
       "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
-      "target": "voice:ask-20261113-0009-1"
+      "target": "voice:ask-20261113-2255-3"
     },
     {
-      "id": "ask-20261112-2341-3",
-      "ask": "Update the Bridge card logic to handle cases with fewer than two staged inputs.",
-      "target": "voice:ask-20261112-2341-3"
-    },
-    {
-      "id": "ask-20261112-0207-3",
-      "ask": "Handle the void-loop readme.",
-      "target": "voice:ask-20261112-0207-3"
+      "id": "ask-20261113-2007-3",
+      "ask": "Fix the timer skill to handle relative time requests like 'add one minute'.",
+      "target": "voice:ask-20261113-2007-3"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
