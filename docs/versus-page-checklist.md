@@ -26,6 +26,7 @@ A report keeps a short list: the page, the pull request, and whether it is live.
 
 ## Standing rules
 
+- A site with nothing a visitor can use, only a page to read or a story, does not get its own floor. It is an entry on Echo Vault (`/echo-vault/`). The entry says what the site was, when, a sourced history, and what it did. The public entry does not link to that site and does not credit it as the original. A comparison stays on the owner Tower.
 - Spotify, YouTube, and Google Maps stay at the end, least visited first, and do not count until a full page does their whole job.
 - Dictionary lookups use `/api/meanings?word=` with `User-Agent: Verse/1.0 (https://a-to-mind.com; contact)`. The browser does not call Wiktionary.
 - Album Track Time Adder opens on the King Crimson list the original prints, keeps paste-your-own-list and a share link, and does not play the music.

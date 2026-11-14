@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC
 - Cursor cloud agent · cursor/skip-unrebuilt-floors-11ee · the live floor job skips a page that is not checked yet, so an unrebuilt page cannot fail the job · 2026-11-13 23:55 UTC
 - Cursor cloud agent · cursor/no-rival-credit-11ee · public pages no longer name or link the rival; the compare stays on the owner Tower · 2026-11-13 23:40 UTC
 - Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC

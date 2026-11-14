@@ -511,6 +511,17 @@ export const SPECS = {
   '/directions/': async (t) => { await t.fill('#from', 'Madrid'); await t.fill('#to', 'Museo del Prado'); await t.clickText('Show'); await t.waitText('#out, #err', /minute|not on the map|No driving route|did not answer/i, 15000); t.ok(/minute|not on the map|No driving route|did not answer/i.test((await t.text('#out')) + (await t.text('#err'))), 'two places get a driving time or an honest miss'); },
   '/factorials/': async (t) => { await t.fill('#n', '0'); await t.clickText('Compute'); await t.p.waitForTimeout(100); t.ok(/0! = 1/.test(await t.text('#out')), '0! is 1'); },
   '/text-diff/': async (t) => { await t.fill('#original', 'one\ntwo'); await t.fill('#changed', 'one\nthree'); await t.p.waitForTimeout(100); t.ok(/1 line removed, 1 line added/.test(await t.text('#say')), 'one line removed and one added'); t.ok((await t.p.locator('#diff [data-t="del"]').count()) === 1, 'the old line is marked'); t.ok((await t.p.locator('#diff [data-t="add"]').count()) === 1, 'the new line is marked'); t.ok(/changed=one/.test(await t.p.locator('#share').getAttribute('href') || ''), 'the share link keeps the changed text'); await t.p.locator('#fold-case').check(); await t.fill('#original', 'Cat'); await t.fill('#changed', 'cat'); await t.p.waitForTimeout(100); t.ok(/same/.test(await t.text('#say')), 'case can be set aside'); },
+  '/echo-vault/': async (t) => {
+    t.ok(/Echo Vault: Internet History Archive/.test(await t.text('h1')), 'the archive is named');
+    t.ok(/translated AI research reports/.test(await t.text('#paper-notes')), 'the reading collection is an entry');
+    t.ok(/exclusive-hosting brochure/.test(await t.text('#hosting-brochure')), 'the brochure is an entry');
+    t.ok((await t.p.locator('a[href*="thunit"], a[href*="randomarea"]').count()) === 0, 'no link to either site');
+    await t.fill('#find', 'brochure');
+    await t.p.waitForTimeout(50);
+    t.ok(await t.p.locator('#paper-notes').isHidden(), 'the other entry is hidden');
+    t.ok(await t.p.locator('#hosting-brochure').isVisible(), 'the brochure stays');
+    t.ok(/q=brochure/.test(await t.p.locator('nav.with a').first().getAttribute('href') || ''), 'News opens on the same words');
+  },
   '/studio/': async (t) => { await t.fill('#script', 'Verse: One line.\nCritic: Two lines.'); await t.click('#play'); await t.p.waitForTimeout(300); t.ok(/Playing 2 lines/.test(await t.text('#status')), 'two typed lines play one after another'); await t.click('#stop'); await t.p.waitForTimeout(200); t.ok(/Stopped/.test(await t.text('#status')), 'Stop stops'); },
   '/track-times/': async (t) => { t.ok(/43:53/.test(await t.text('#total')), 'the album list runs 43:53'); t.ok(/Schizoid Man/.test(await t.text('#out')), 'the album list is on the page'); t.ok(/list=/.test(await t.p.locator('#share').getAttribute('href') || ''), 'a share link keeps the list'); t.ok((await t.p.locator('a[href="/versus/"]').count()) === 0, 'no link to the owner page'); t.ok((await t.p.locator('audio, video').count()) === 0, 'nothing plays music'); await t.fill('#list', 'Song one 1:00\nSong two 2:00'); await t.p.waitForTimeout(100); t.ok(/3:00/.test(await t.text('#total')), 'two lengths add to 3:00'); t.ok(/Song(?:\+|%20)one/.test(await t.p.locator('#share').getAttribute('href') || ''), 'the share link follows the typed list'); },
   '/our-motherfucking-version/': async (t) => {
