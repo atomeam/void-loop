@@ -53,8 +53,7 @@ function paint(id) {
   const status = document.createElement('p'); status.id = 'status';
   const why = document.createElement('p');
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
-  const note = document.createElement('p'); note.textContent = game.how;
-  el.append(cv, status, why, again, note);
+  el.append(cv, status, why, again);
   play.append(el);
   let raf = 0;
   const card = {
@@ -62,7 +61,7 @@ function paint(id) {
     start(fn) { const loop = () => { if (mine !== round) return; raf = requestAnimationFrame(loop); fn(); }; raf = requestAnimationFrame(loop); },
     local(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * game.W / Math.max(1, r.width), y: (e.clientY - r.top) * game.H / Math.max(1, r.height) }; },
   };
-  drive(card, game, {});
+  drive(card, game, game.stick ? { stick: game.stick } : {});
   el.focus({ preventScroll: true });
 }
 
@@ -81,7 +80,7 @@ for (const id of GAMES) {
   const b = document.createElement('button');
   b.type = 'button'; b.dataset.id = id; b.textContent = TITLES[id]; b.title = title;
   b.addEventListener('click', () => {
-    how.textContent = title; mark(id);
+    how.textContent = HOST[id].stick ? '' : title; mark(id);
     const q = new URLSearchParams(location.search);
     if (q.get('play') !== id) history.replaceState(null, '', '/arcade/?play=' + encodeURIComponent(id));
     paint(id);
@@ -98,5 +97,5 @@ for (const [label, ask, line] of MORE) {
 function moreAppend(a) { $('more').append(a); }
 
 const open = new URLSearchParams(location.search).get('play');
-if (HOST[open]) { how.textContent = HOST[open].how; mark(open); paint(open); }
-else if (GAMES[0]) how.textContent = 'Pick a game. Twelve rounds play on this page, against Verse. The others open on the stage, with every rule they already have.';
+if (HOST[open]) { how.textContent = HOST[open].stick ? '' : HOST[open].how; mark(open); paint(open); }
+else if (GAMES[0]) how.textContent = 'Pick a game. Debris Field plays on this page, against Verse. The others open on the stage, with every rule they already have.';

@@ -234,10 +234,10 @@ export const PAGES = Object.freeze(firstOfEach([
     links: [["Verse's README from GitHub", '/g/?gh=atomeam%2Fvoid-loop%2Fmain%2FREADME.md'], ['Lines 1 to 20 of gist.js', '/g/?gh=atomeam%2Fvoid-loop%2Fmain%2Fvoid-live-deploy%2Flib%2Fgist.js&L=1-20'], ['A shopping list', '/g/?text=Milk%0AEggs%0ABread&name=list.md'], ['A code snippet', '/g/?text=console.log(%22hello%22)%3B&name=hello.js'], ['A note to share', '/g/?text=The%20meeting%20moved%20to%203pm%20in%20room%202.&name=note.txt']] },
   // the PDF and Kanban floors (lib/tool-sites.js): the leader's page and one for each site of its lane
   ...SITE_PAGES.map((p) => ({ path: p.path, name: p.name, does: p.does, asks: p.asks, ...(p.links && p.links.length ? { links: p.links, action: p.action || { template: p.path + '?tool={tool}', input: 'tool' } } : {}) })),
-  { path: '/arcade/', name: 'Verse Arcade', does: 'Every game you play against Verse, in one cabinet. Twelve rounds play on the page, including Debris Field, Packet Maze, Glyph Verse and Token Stand. The games already on the stage open there, and a link carries the seed and the score of a round.',
-    asks: ['verse arcade', 'play a game against verse', 'debris field', 'packet maze', 'glyph verse', 'token stand', 'daily arcade game'],
+  { path: '/arcade/', name: 'Verse Arcade', does: 'Every game you play against Verse, in one cabinet. Debris Field plays on the page: slide, fire, and outscore Verse as the waves speed up. The games already on the stage open there, and a link carries the seed and the score of a round.',
+    asks: ['verse arcade', 'play a game against verse', 'debris field', 'daily arcade game', 'play debris field'],
     action: { template: '/arcade/?play={play}', input: 'play' },
-    links: [['Debris Field', '/arcade/?play=debris-field'], ['Packet Maze', '/arcade/?play=packet-maze'], ['Jump Stack', '/arcade/?play=jump-stack'], ['Glyph Verse', '/arcade/?play=glyph-verse'], ['Nine Grid', '/arcade/?play=nine-grid'], ['Token Stand', '/arcade/?play=token-stand'], ['Daily Gap Glide', '/arcade/?play=gap-glide&daily=1']] },
+    links: [['Debris Field', '/arcade/?play=debris-field'], ['Daily Debris Field', '/arcade/?play=debris-field&daily=1'], ['Debris Field, seed 4', '/arcade/?play=debris-field&seed=4'], ['Debris Field, seed 9', '/arcade/?play=debris-field&seed=9'], ['Debris Field, seed 2', '/arcade/?play=debris-field&seed=2']] },
   { path: '/tools/', name: 'Every Verse tool', does: 'Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.',
     asks: ['free online tools', 'online utilities', 'web tools without ads', 'tools that work offline', 'converter and generator tools'] },
 ]));

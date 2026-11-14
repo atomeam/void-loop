@@ -63,7 +63,7 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 | Pong | Verse Pong | already playable (the arcade ladder) | improving |
 | Snake | Verse Snake | already playable | playable |
 | Breakout | Verse Breaker | bricks are failing checks; two paddles, Verse at the top | playable |
-| Asteroids | Debris Field | shoot the leftovers of a bad merge. Square chunks, two ships | playable |
+| Asteroids | Debris Field | a one-minute duel on the cabinet: slide, fire, waves that breathe, the higher score wins | playable |
 | Space Invaders | Null Waves | descending waves of requests. One block, Verse drops one request | playable |
 | Pac-Man-style mazes | Packet Maze | collect packets. Verse hunts them on every other step | playable |
 | Flappy-style one-button flyers | Gap Glide | one tap, one bot, one gap. Shipped under this name (the working title Void Flap sat too close to a famous one-tap game) | playable |
