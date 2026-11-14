@@ -64,6 +64,7 @@ export function drive(card, game, opt = {}) {
   const friend = linked && /^\d+$/.test(q.get('score') || '') ? Number(q.get('score')) : null;
   const stick = opt.stick === 'x'; // a game that slides on one axis: no directional pad, the pointer is the control
   const fly = opt.fly === true; // free movement: keys or a left stick, shots aim themselves or follow the pointer
+  const tap = opt.tap === true; // one tap lifts: no direction row, the picture holds pause and sound
   const named = /^(reckless|careful|verse|show|film)$/.test(q.get('bot') || '') ? q.get('bot') : '';
   if (opt.canvasHud) { if (card.status) card.status.remove(); if (card.why) card.why.remove(); card.status = card.why = null; }
   let heldFire = false, stickPtr = null, aimPt = null, mouseAim = false;
@@ -84,16 +85,16 @@ export function drive(card, game, opt = {}) {
   const share = document.createElement('a');
   share.href = roundLink(game.id, seed, 0, daily); share.textContent = 'Share this round';
   share.style.cssText = 'font-size:13px;align-self:center';
-  if (!stick && !fly) for (const dir of [['Left', 'left'], ['Right', 'right'], ['Up', 'up'], ['Down', 'down']]) {
+  if (!stick && !fly && !tap) for (const dir of [['Left', 'left'], ['Right', 'right'], ['Up', 'up'], ['Down', 'down']]) {
     const b = btn(dir[0], () => {});
     b.addEventListener('pointerdown', () => { edge.dir = dir[1]; if (dir[1] === 'left' || dir[1] === 'right') edge.fire = true; edge.flap = true; });
     tools.append(b);
   }
   const act = btn('Act', () => { edge.flap = true; edge.fire = true; });
-  if (fly && card.stage) {
+  if ((fly || tap) && card.stage) {
     tools.className = 'hud'; tools.style.cssText = ''; tools.append(pause, snd); card.stage.append(tools);
     const row = document.createElement('div'); row.className = 'round'; row.append(same, day, share); card.el.append(row);
-  } else { tools.append(pause, snd, same, day); if (!stick && !fly) tools.append(act); tools.append(share); card.el.append(tools); }
+  } else { tools.append(pause, snd, same, day); if (!stick && !fly && !tap) tools.append(act); tools.append(share); card.el.append(tools); }
   const onKey = (e) => {
     const k = e.key.toLowerCase();
     if (['arrowleft', 'a', 'arrowright', 'd', 'arrowup', 'w', 'arrowdown', 's', ' ', 'shift'].includes(k)) e.preventDefault();
@@ -157,7 +158,7 @@ export function drive(card, game, opt = {}) {
         }
       } catch (_) { /* a browser with no gamepad keeps the keys */ }
     }
-    if (!paused && s.over && (stick || fly) && (firing || edge.dash) && (s.anim || 0) > 50) restart(seed);
+    if (!paused && s.over && (stick || fly || tap) && (firing || edge.dash) && (s.anim || 0) > 50) restart(seed);
     else if (!paused && !s.over) {
       game.tick(s, { flap: edge.flap || (stick && heldFire), fire: firing, hold: fly ? (mouseAim ? heldFire : Number.isFinite(ax)) : firing, mouse: fly && (mouseAim || Number.isFinite(ax)), step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', up: held.up, down: held.down, dir, dash: !!edge.dash, x: stick ? (heldFire ? edge.x : undefined) : edge.x, sx, sy, ax: Number.isFinite(ax) ? ax : undefined, ay: Number.isFinite(ay) ? ay : undefined, bot: named || undefined });
       if (s.sfx && sound) beep(bag);

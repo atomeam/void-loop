@@ -771,7 +771,7 @@ Object.assign(SPECS, {
   '/arcade/': async (t) => {
     await t.p.setViewportSize({ width: 1440, height: 900 });
     t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
-    t.ok((await t.p.locator('#games button').count()) === 1, 'Debris Field is the round that plays on this page');
+    t.ok((await t.p.locator('#games button').count()) === 2, 'Debris Field and Gap Glide play on this page');
     t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
     await t.click('#games button[data-id="debris-field"]');
     await t.p.waitForTimeout(200);

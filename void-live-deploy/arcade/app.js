@@ -63,7 +63,7 @@ function paint(id) {
     start(fn) { const loop = () => { if (mine !== round) return; raf = requestAnimationFrame(loop); fn(); }; raf = requestAnimationFrame(loop); },
     stage, local(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * game.W / Math.max(1, r.width), y: (e.clientY - r.top) * game.H / Math.max(1, r.height) }; },
   };
-  drive(card, game, { fly: !!game.fly, canvasHud: true });
+  drive(card, game, { fly: !!game.fly, tap: !!game.tap, canvasHud: true });
   stage.scrollIntoView({ block: 'start' });
   el.focus({ preventScroll: true });
 }
