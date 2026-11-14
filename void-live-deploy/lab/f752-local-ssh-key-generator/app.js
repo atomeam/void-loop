@@ -67,7 +67,7 @@ function pemFromPkcs8(pkcs8) {
   const lines = b64.match(/.{1,64}/g).join('\n');
   // void-review: ok — "-----BEGIN PRIVATE KEY-----" is the standard PEM header format,
   // not an actual key. The real key material is in `lines`, generated at runtime.
-  return `-----BEGIN PRIVATE KEY-----\n${lines}\n-----END PRIVATE KEY-----\n`;
+  return `-----BEGIN PRIVATE KEY-----\n${lines}\n-----END PRIVATE KEY-----\n`; // void-review: ok (generated key template, not a real key)
 }
 
 function drawFingerprint(rawPub) {
