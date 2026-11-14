@@ -41,7 +41,7 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 
 | Original | Verse title | Twist | Status |
 |---|---|---|---|
-| Lemonade Stand | Token Stand | sell answers, buy tokens, keep the budget honest | wish |
+| Lemonade Stand | Token Stand | sell answers, buy tokens, keep the budget honest. Six days, you set the price, Verse sells at 1 | playable |
 | SimCity | Stage City | zone the stage for cards, services and noise | wish |
 | RollerCoaster Tycoon | Pipeline Park | rides are build steps, queues are the CI | wish |
 | Capitalism-style supply chains | Supply Verse | raw stardust to finished cards | wish |
@@ -63,13 +63,13 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 | Pong | Verse Pong | already playable (the arcade ladder) | improving |
 | Snake | Verse Snake | already playable | playable |
 | Breakout | Verse Breaker | bricks are failing checks; two paddles, Verse at the top | playable |
-| Asteroids | Debris Field | shoot the leftovers of a bad merge | wish |
-| Space Invaders | Null Waves | descending waves of requests | wish |
-| Pac-Man-style mazes | Packet Maze | collect packets, avoid the watchers | wish |
-| Flappy-style one-button flyers | Void Flap | one tap, one bot, one gap | wish |
-| Tetris (look and rules; Tetris v. Xio) | Block Void | falling shapes with Verse's own shapes and palette: never the originals' | wish |
-| Frogger | Cross the Bus | cross lanes of traffic to a data bus | wish |
-| Platformers | Jump Stack | a bot climbs a tower of cards | wish |
+| Asteroids | Debris Field | shoot the leftovers of a bad merge. Square chunks, two ships | playable |
+| Space Invaders | Null Waves | descending waves of requests. One block, Verse drops one request | playable |
+| Pac-Man-style mazes | Packet Maze | collect packets. Verse hunts them on every other step | playable |
+| Flappy-style one-button flyers | Gap Glide | one tap, one bot, one gap. Shipped under this name (the working title Void Flap sat too close to a famous one-tap game) | playable |
+| Tetris (look and rules; Tetris v. Xio) | Stackwell | falling shapes with Verse's own shapes and palette: a bar of three, a domino, a square, a hook. The working title Block Void was renamed before it shipped | playable |
+| Frogger | Cross the Bus | cross lanes of traffic to a data bus | playable |
+| Platformers | Jump Stack | both of you climb one tower of ledges. Verse waits on each ledge | playable |
 
 ## puzzle (a board and a goal)
 
@@ -77,11 +77,11 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 |---|---|---|---|
 | Minesweeper | Null Sweep | find the bad commits; Verse clears the same board with a logic solver | playable |
 | 2048-style merges | Merge Verse | slide and fuse cards; Verse plays the same seed | playable |
-| Sokoban | Push Packets | push boxes onto targets | wish |
-| Sudoku (PD idea) | Void Grid | a number grid | wish |
+| Sokoban | Push Packets | push one packet onto its mark. Verse tugs the wrong way | playable |
+| Sudoku (PD idea) | Nine Grid | a 4 by 4 number grid. The working title Void Grid was renamed before it shipped | playable |
 | Lights Out | Dim the Verse | flip lamps and their neighbours; Verse solves the same board in the fewest presses | playable |
-| Crosswords and word games | Glyph Verse | letters drift in from the void (board-game law) | wish |
-| Match-three | Void Matches | swap three alike | wish |
+| Crosswords and word games | Glyph Verse | six guesses from a list of sixteen words written for Verse | playable |
+| Match-three | Three Alike | swap for three of a kind. The working title Void Matches was renamed before it shipped | playable |
 | Chess, Go, checkers, mancala (PD) | (already in `skills/games.js`) | identical play | improving |
 
 ## sim (a place that runs by itself and is tended)

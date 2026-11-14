@@ -768,6 +768,26 @@ Object.assign(SPECS, {
     t.ok(/^3 words/.test(await t.text('#count')), 'three typed words count as 3 words');
     await t.copies('#copy', 'one two three'); await t.download('#txt', /^dictation-.+\.txt$/);
   },
+  '/arcade/': async (t) => {
+    t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
+    t.ok((await t.p.locator('#games button').count()) >= 12, 'the hosted games play on this page');
+    t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
+    await t.click('#games button[data-id="gap-glide"]');
+    await t.p.waitForTimeout(250);
+    await t.p.keyboard.press('Space');
+    t.ok(await t.p.locator('#play canvas').count() === 1, 'Gap Glide draws on the page');
+    t.ok(/play=gap-glide&seed=/.test(await t.p.locator('#play a').first().getAttribute('href') || ''), 'the share link carries the round');
+    t.ok(/lift/i.test(await t.text('#play')), 'the page says how to play');
+    await t.click('#games button[data-id="cross-bus"]');
+    await t.p.keyboard.press('ArrowUp');
+    t.ok(/curb/i.test(await t.text('#play')), 'Cross the Bus says how to cross');
+    await t.p.setViewportSize({ width: 390, height: 844 });
+    await t.click('#games button[data-id="token-stand"]');
+    await t.p.waitForTimeout(200);
+    await t.click('#play button:has-text("Act")');
+    await t.p.waitForTimeout(300);
+    t.ok(/you [1-9]/.test(await t.text('#status')), 'a phone tap on Act sells a day at the stand: ' + (await t.text('#status')).slice(0, 80));
+  },
   '/lab/mind-map/': async (t) => {
     await t.click('#sample'); await t.p.waitForTimeout(300);
     const src = (await t.p.locator('#map img').getAttribute('src', { timeout: 5000 }).catch(() => '')) || ''; t.ok(/^data:image\/svg|^blob:/.test(src), 'the sample outline draws the map as a picture');

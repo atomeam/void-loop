@@ -105,6 +105,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Verse Arcade**: twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token Stand). The cabinet lists them, and the games already on the stage stay linked. https://github.com/atomeam/void-loop/pull/2808
 - **Dictionary and QR**: Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
 - **Text Compare**: one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799
