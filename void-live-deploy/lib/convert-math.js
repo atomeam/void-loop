@@ -64,6 +64,8 @@ export function cardAsk(value, fromWords, toWords, answer) {
 export function askOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/\b(?:currency|money|exchange|time\s*zones?|pdf|video|image|file|audio|mp3|mp4|youtube|word|docx?|jpe?g|png|heic|text|case|binary|hex|roman|base|color|colour|number\s+to\s+words)\b/.test(t)) return null;
+  const bare = t.match(/^convert\s+(-?\d+(?:\.\d+)?)$/);
+  if (bare) return { open: true, bare: +bare[1] };
   if (/^(?:please\s+)?(?:close|remove|delete|hide|clear|get\s+rid\s+of)\s+(?:the\s+|my\s+)?(?:unit\s+|units\s+)?(?:converter|convert(?:er)?\s+card|conversion\s+card)(?:\s+please)?$/.test(t)) return { close: true };
   // "keep 5 miles to km as a card", "5 miles in km as a converter card": a one-off conversion kept (the tail names the card, so the plain "5 miles in km" stays the answer card's)
   const kp = t.match(/^(?:please\s+)?(?:keep|save|pin)?\s*(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-z°²/ ]+?)\s+(?:to|in|into)\s+([a-z°²/ ]+?)\s+(?:as|on|in|into)\s+(?:a\s+|an\s+|the\s+|my\s+)?(?:converter|conversion|convert|unit)?\s*(?:card|converter)(?:\s+(?:here|on\s+(?:the\s+)?(?:stage|screen|page)))?(?:\s+please)?$/);

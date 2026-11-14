@@ -29,7 +29,7 @@ const stripe = (opt = {}) => async (url, init) => {
 async function withFetch(fn, impl) { resetLive(); const real = globalThis.fetch; globalThis.fetch = impl; try { return await fn(); } finally { globalThis.fetch = real; resetLive(); } }
 
 test('open paths stay open, full pages are Uni, and a missing key does not lock them', async () => {
-  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/api/versus-floor', '/exam/latest.json', '/self.json', '/progress/nightly.json', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/rss', '/versus/', '/versus/index.html']) assert.equal(openPath(p), true, p);
+  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/api/versus-floor', '/exam/latest.json', '/self.json', '/progress/nightly.json', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/', '/films/rss', '/versus/', '/versus/index.html']) assert.equal(openPath(p), true, p);
   for (const p of ['/flights/', '/emojis/', '/books/', '/podcasts/', '/brain/', '/studies.html', '/@sam']) assert.equal(gatedPath(p), true, p);
   assert.equal(gatedPath('/versus/'), false);
   assert.equal(backPath('https://evil.example/x'), '/'); assert.equal(money(CENTS), '$20 a month');
@@ -42,6 +42,7 @@ test('open paths stay open, full pages are Uni, and a missing key does not lock 
     const stranger = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
     assert.match(await stranger.text(), /<h1>Uni<\/h1>/); assert.equal(stranger.headers.get('x-verse-gate'), 'uni');
     assert.equal(await (await gate({ request: ask('/versus/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('Out of Order') })).text(), 'Out of Order');
+    assert.equal(await (await gate({ request: ask('/films/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('VERSE FILMS') })).text(), 'VERSE FILMS');
     assert.match(await (await gate({ request: ask('/podcasts/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('PODS') })).text(), /<h1>Uni<\/h1>/);
     resetLive();
     const owner = await gate({ request: ask('/flights/', { authorization: 'Bearer suite-owner-token' }), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt', READ_TOKEN: 'suite-owner-token' }, next: html('FLIGHTS') });

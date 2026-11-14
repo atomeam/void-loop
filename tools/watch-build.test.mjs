@@ -40,6 +40,10 @@ test('one page per category: an idea with no page of its own folds into its cate
   assert.equal(p.action, 'improve'); assert.equal(p.page, '/photos/exif/'); assert.ok(p.matched.category);
   assert.match(tvSpec({ id: 'j1', ...jobOf(p) }, p), /as a mode .*do not add a second page or a separate matching tool/);
   assert.equal(categoryOf({ topic: 'Agricultural market tracker', note: 'livestock auction prices' }, pages).route, '/markets/');
+  const noted = [{ route: '/notes/', title: 'Notes' }, { route: '/weather/', title: 'Weather' }, { route: '/photos/exif/', title: 'Photo details' }];
+  assert.equal(categoryOf({ topic: 'relationship history logger', note: 'a log of what you did together' }, noted).route, '/notes/');
+  assert.equal(categoryOf({ topic: 'HVAC remote management', note: 'set the heat from away' }, noted).route, '/weather/');
+  assert.equal(categoryOf({ topic: 'art provenance tracker', note: 'who owned a painting' }, noted).route, '/photos/exif/');
   assert.equal(categoryOf({ topic: 'Irish pub locator', note: 'find a pub' }, pages), null, 'nothing fits: a new page is allowed');
   assert.equal(categoryOf(fake, [{ route: '/video/', title: 'Video player' }]), null, 'a category page the site lacks does not count');
 });

@@ -18,6 +18,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC
 - Cursor cloud agent · cursor/skip-unrebuilt-floors-11ee · the live floor job skips a page that is not checked yet, so an unrebuilt page cannot fail the job · 2026-11-13 23:55 UTC
 - Cursor cloud agent · cursor/no-rival-credit-11ee · public pages no longer name or link the rival; the compare stays on the owner Tower · 2026-11-13 23:40 UTC
+- Cursor cloud agent · helper/work-list-44cf · the open /team/ wants: drop Tower aspect items, start the rest, and make the Films guard see the public page · 2026-11-13 23:40 UTC
+- Cursor cloud agent · cursor/dictionary-transition-11ee · Dictionary opts out of the page transition, and QR loads its code from a new address so a cached module cannot drop qrHex · 2026-11-13 22:26 UTC
 - Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC
 - Cursor cloud agent · helper/track-times-11ee · rebuild /track-times/ to the Versus page: the album list, a share link, and a sourced history · 2026-11-13 19:40 UTC
 - Cursor cloud agent · helper/plain-words-d564 · plain words on every pull request title, body and added page copy · 2026-11-12 21:40 UTC
@@ -111,6 +113,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - **Debris Field**: one ship in open space. Chasers, darts, splitters and a heavy crystal come from every edge. Three lives, a shield that spends a hit, and a multiplier that drops when a life does. Verse is the ghost score. The picture fills the viewport. https://github.com/atomeam/void-loop/pull/2818
 - **Verse Arcade**: twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token Stand). The cabinet lists them, and the games already on the stage stay linked. https://github.com/atomeam/void-loop/pull/2808
 - **Dictionary and QR**: Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801
+- **Team wants**: Tower aspect items stop being filed and the four open ones close on the next crew tick; the coder takes the remaining wants before old repairs; Films stays public and the guard looks for Verse Holovids. https://github.com/atomeam/void-loop/pull/2809
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
 - **Text Compare**: one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799
 - **QR Code Maker**: one pass on /qr/ with downloads, two colours, a Wi-Fi line, a contact card, and a sourced history of myqrcode.com. https://github.com/atomeam/void-loop/pull/2797

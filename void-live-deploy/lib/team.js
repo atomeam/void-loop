@@ -325,7 +325,7 @@ export function board(jobs, now, max = 40, scores = null) {
   if (scores) return rows.filter((r) => !(r.leverage != null && /^busywork/.test(r.why || ''))).sort((a, b) => (b.leverage ?? -1) - (a.leverage ?? -1) || Number(b.good) - Number(a.good)).slice(0, max);
   return rows.sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
 }
-const LOW = /repair helper\/|robust: fix the test|handoff-checklist|lift-summary|bookkeeping|exam score|aspects short|example\.com|\bg\.co\b|share\.google|403 forbidden/i;
+const LOW = /repair helper\/|robust: fix the test|handoff-checklist|lift-summary|bookkeeping|aspects short|example\.com|\bg\.co\b|share\.google|403 forbidden/i;
 const VISITOR_HOST = /portchecker\.co|speedtest\.sg|protopage\.com|dalyfeds\.com|everycom\.store/i;
 const TOOL_OF = [
   ['portchecker.co', 'port-check', 'a visitor types a host and a port and reads whether that port is open'],
