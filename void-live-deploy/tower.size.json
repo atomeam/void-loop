@@ -1036,6 +1036,20 @@
    "weight": 3788569,
    "at": "2026-11-14"
   },
+  "bolboljan.co": {
+   "bytes": 15135,
+   "controls": 5,
+   "scripts": 3,
+   "styles": 2,
+   "nodes": 62,
+   "routes": 0,
+   "htmlControls": 5,
+   "counted": "rendered",
+   "text": 437,
+   "shell": "none",
+   "weight": 21755,
+   "at": "2026-11-14"
+  },
   "bold666.com": {
    "bytes": 1535788,
    "controls": 230,
@@ -5612,7 +5626,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-13"
+   "at": "2026-11-14"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6882,7 +6896,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 13,
+   "bytes": 14,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6891,9 +6905,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 12,
-   "weight": 13,
-   "at": "2026-11-13"
+   "text": 13,
+   "weight": 14,
+   "at": "2026-11-14"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -9891,7 +9905,7 @@
    "shell": "none",
    "text": 37,
    "weight": 70,
-   "at": "2026-11-13"
+   "at": "2026-11-14"
   },
   "proton.me": {
    "bytes": 835896,

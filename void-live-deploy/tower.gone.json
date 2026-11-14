@@ -4,14 +4,14 @@
   "unitingchurch.org.au": {
    "status": "parked",
    "since": "2026-11-05T03:43:40.099Z",
-   "checked": "2026-11-14T07:05:25.279Z",
+   "checked": "2026-11-14T11:41:31.318Z",
    "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au",
    "final": "https://controlhosting.net/"
   },
   "id5-sync.com": {
    "status": "non-site",
    "since": "2026-11-06T18:33:06.247Z",
-   "checked": "2026-11-14T07:05:25.279Z",
+   "checked": "2026-11-14T11:41:31.318Z",
    "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features",
    "final": "https://id5-sync.com/",
    "kind": "an ad-tracking or sync endpoint",
@@ -31,7 +31,7 @@
   "oneyeard.com": {
    "status": "gone",
    "since": "2026-11-07T18:26:07.552Z",
-   "checked": "2026-11-14T07:05:25.279Z",
+   "checked": "2026-11-14T11:41:31.318Z",
    "why": "https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed",
    "final": "https://oneyeard.com/",
    "kind": "an access-refusal stub page",
@@ -51,7 +51,7 @@
   "healthtechnologygroup.com": {
    "status": "non-site",
    "since": "2026-11-08T06:47:21.642Z",
-   "checked": "2026-11-14T07:05:25.279Z",
+   "checked": "2026-11-14T11:41:31.318Z",
    "why": "https://healthtechnologygroup.com/ (200) shows 9 characters of text (\"It works!\"), 0 controls, 0 links, 0 forms and 99 bytes of page: an inert stub page, not a site a person uses; Verse lacks none of its features",
    "final": "https://healthtechnologygroup.com/",
    "kind": "an inert stub page",
@@ -71,7 +71,7 @@
   "docs.zoho.com": {
    "status": "parked",
    "since": "2026-11-09T23:09:02.112Z",
-   "checked": "2026-11-14T07:05:25.279Z",
+   "checked": "2026-11-14T11:41:31.318Z",
    "why": "https://docs.zoho.com/ ends on accounts.zoho.com, not docs.zoho.com",
    "final": "https://accounts.zoho.com/signin?servicename=ZohoPC&serviceurl=%2Findex.do"
   }
