@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1287,
+ "counted": 1334,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -13,8 +13,15 @@
    "file": "lib/ask-text.js",
    "skills": 60,
    "direct": 35,
-   "dependants": 114,
+   "dependants": 116,
    "tests": 6
+  },
+  {
+   "file": "lib/state.js",
+   "skills": 44,
+   "direct": 4,
+   "dependants": 92,
+   "tests": 5
   },
   {
    "file": "lib/field-kit.js",
@@ -24,31 +31,31 @@
    "tests": 12
   },
   {
-   "file": "lib/state.js",
+   "file": "lib/ladder.js",
    "skills": 32,
-   "direct": 4,
-   "dependants": 78,
-   "tests": 5
+   "direct": 22,
+   "dependants": 74,
+   "tests": 4
   },
   {
    "file": "lib/keeper.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 100,
+   "dependants": 102,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 31,
    "direct": 1,
-   "dependants": 100,
+   "dependants": 102,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 101,
    "tests": 6
   },
   {
@@ -76,7 +83,7 @@
    "file": "lib/reactions.js",
    "skills": 23,
    "direct": 1,
-   "dependants": 82,
+   "dependants": 84,
    "tests": 1
   },
   {
@@ -90,14 +97,14 @@
    "file": "lib/corrections.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 68,
+   "dependants": 70,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
    "skills": 22,
    "direct": 6,
-   "dependants": 64,
+   "dependants": 66,
    "tests": 6
   },
   {
@@ -113,13 +120,6 @@
    "direct": 2,
    "dependants": 22,
    "tests": 3
-  },
-  {
-   "file": "lib/ladder.js",
-   "skills": 20,
-   "direct": 10,
-   "dependants": 60,
-   "tests": 2
   },
   {
    "file": "lib/mind-field-modes.js",
@@ -153,28 +153,28 @@
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 65,
+   "dependants": 67,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 64,
+   "dependants": 66,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 65,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 61,
+   "dependants": 63,
    "tests": 4
   },
   {
@@ -188,8 +188,8 @@
    "file": "lib/qr.js",
    "skills": 14,
    "direct": 3,
-   "dependants": 30,
-   "tests": 3
+   "dependants": 31,
+   "tests": 4
   },
   {
    "file": "lib/where.js",
@@ -203,7 +203,7 @@
    "skills": 12,
    "direct": 0,
    "dependants": 21,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/success-pulse.js",
@@ -213,10 +213,17 @@
    "tests": 2
   },
   {
+   "file": "lib/studio-play.js",
+   "skills": 12,
+   "direct": 12,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 50,
+   "dependants": 52,
    "tests": 4
   },
   {
@@ -251,63 +258,63 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 50,
+   "dependants": 52,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 49,
+   "dependants": 51,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 49,
+   "dependants": 51,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 51,
    "tests": 1
   },
   {
    "file": "lib/hardened-line.js",
    "skills": 9,
    "direct": 2,
-   "dependants": 48,
+   "dependants": 50,
    "tests": 0
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 50,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 50,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 50,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 50,
    "tests": 1
   },
   {
@@ -517,7 +524,14 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 110,
+   "dependants": 112,
+   "tests": 2
+  },
+  {
+   "file": "lib/textdiff.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 18,
    "tests": 2
   },
   {
@@ -550,13 +564,6 @@
   },
   {
    "file": "lib/markdown.js",
-   "skills": 5,
-   "direct": 1,
-   "dependants": 16,
-   "tests": 1
-  },
-  {
-   "file": "lib/textdiff.js",
    "skills": 5,
    "direct": 1,
    "dependants": 16,
@@ -643,42 +650,42 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 110,
+   "dependants": 112,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 109,
+   "dependants": 111,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 109,
    "tests": 9
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 1
   },
   {
@@ -1042,7 +1049,7 @@
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 44,
+   "dependants": 46,
    "tests": 2
   },
   {
@@ -1056,8 +1063,15 @@
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 40,
+   "dependants": 42,
    "tests": 3
+  },
+  {
+   "file": "lib/pay-share.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 40,
+   "tests": 1
   },
   {
    "file": "lib/store-db.js",
@@ -1067,38 +1081,31 @@
    "tests": 3
   },
   {
-   "file": "lib/pay-share.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 38,
-   "tests": 1
-  },
-  {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 38,
    "tests": 0
   },
   {
    "file": "lib/markets.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 5
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 6
   },
   {
    "file": "lib/proposal.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 34,
+   "dependants": 36,
    "tests": 2
   },
   {
@@ -1207,6 +1214,13 @@
    "tests": 2
   },
   {
+   "file": "lib/video.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 5
+  },
+  {
    "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
@@ -1240,13 +1254,6 @@
    "direct": 2,
    "dependants": 3,
    "tests": 18
-  },
-  {
-   "file": "lib/video.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 3,
-   "tests": 4
   },
   {
    "file": "lib/arcade-ghost.js",
@@ -1364,83 +1371,83 @@
    "file": "lib/models.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 75,
+   "dependants": 77,
    "tests": 17
   },
   {
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 39,
+   "dependants": 41,
    "tests": 2
   },
   {
    "file": "lib/follow-ask.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 41,
    "tests": 1
   },
   {
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 1
   },
   {
    "file": "lib/rap.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 36,
+   "dependants": 38,
    "tests": 5
   },
   {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 2
   },
   {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 32,
+   "dependants": 34,
    "tests": 1
-  },
-  {
-   "file": "lib/actions.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 31,
-   "tests": 2
   },
   {
    "file": "lib/bridge.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/free-pics.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 2
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
+   "dependants": 33,
+   "tests": 2
+  },
+  {
+   "file": "lib/actions.js",
+   "skills": 1,
+   "direct": 0,
    "dependants": 31,
    "tests": 2
   },
@@ -1865,6 +1872,13 @@
    "tests": 1
   },
   {
+   "file": "lib/dev-tools.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 3
+  },
+  {
    "file": "lib/fakeuser.js",
    "skills": 1,
    "direct": 1,
@@ -1891,6 +1905,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
+  },
+  {
+   "file": "lib/hear.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 3
   },
   {
    "file": "lib/imgfit.js",
@@ -2096,13 +2117,6 @@
    "tests": 1
   },
   {
-   "file": "lib/dev-tools.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 3
-  },
-  {
    "file": "lib/duel-rules.js",
    "skills": 1,
    "direct": 1,
@@ -2199,13 +2213,6 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/hear.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 2
   },
   {
    "file": "lib/heat-dose.js",
@@ -2470,259 +2477,259 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 111,
+   "dependants": 113,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 110,
+   "dependants": 112,
    "tests": 36
   },
   {
    "file": "lib/http.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 72,
+   "dependants": 74,
    "tests": 1
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 73,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 73,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 70,
+   "dependants": 72,
    "tests": 11
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 56,
    "tests": 0
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 53,
    "tests": 5
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 50,
+   "dependants": 52,
    "tests": 7
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 45,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 45,
    "tests": 0
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 38,
    "tests": 1
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 38,
    "tests": 9
   },
   {
    "file": "lib/free-router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 35,
    "tests": 1
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 35,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 34,
    "tests": 3
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 34,
    "tests": 0
   },
   {
    "file": "lib/ai-gateway.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/answer-free.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 33,
    "tests": 8
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 2
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 4
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 32,
    "tests": 1
   },
   {
@@ -2817,6 +2824,13 @@
    "tests": 5
   },
   {
+   "file": "lib/drive.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
@@ -2829,13 +2843,6 @@
    "direct": 0,
    "dependants": 9,
    "tests": 2
-  },
-  {
-   "file": "lib/drive.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 1
   },
   {
    "file": "lib/mcp-skills.js",
@@ -3048,6 +3055,13 @@
    "tests": 1
   },
   {
+   "file": "lib/meanings.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -3174,6 +3188,13 @@
    "tests": 1
   },
   {
+   "file": "lib/clips.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/daily-photo.js",
    "skills": 0,
    "direct": 0,
@@ -3181,7 +3202,21 @@
    "tests": 1
   },
   {
+   "file": "lib/directions-page.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/email-send.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/factorials.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3293,6 +3328,13 @@
    "tests": 5
   },
   {
+   "file": "lib/qr-page.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/recipeimport.js",
    "skills": 0,
    "direct": 0,
@@ -3349,7 +3391,21 @@
    "tests": 1
   },
   {
+   "file": "lib/songs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/team-mcp.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/text-diff-page.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3588,6 +3644,13 @@
   },
   {
    "file": "lib/fantasy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/faucet.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4147,6 +4210,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -4169,7 +4233,8 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
-    "functions/api/sing.js"
+    "functions/api/sing.js",
+    "functions/meanings/index.js"
    ]
   },
   "functions/api/apibot.js": {
@@ -4679,6 +4744,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -4694,6 +4760,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -4714,6 +4781,16 @@
     "lib/mcp.js"
    ],
    "importedBy": []
+  },
+  "functions/api/meanings.js": {
+   "imports": [
+    "lib/meanings.js",
+    "functions/api/answer.js",
+    "lib/http.js"
+   ],
+   "importedBy": [
+    "functions/meanings/index.js"
+   ]
   },
   "functions/api/media.js": {
    "imports": [
@@ -5390,8 +5467,28 @@
    ],
    "importedBy": []
   },
+  "functions/clips/index.js": {
+   "imports": [
+    "lib/video.js",
+    "lib/clips.js"
+   ],
+   "importedBy": []
+  },
+  "functions/directions/index.js": {
+   "imports": [
+    "lib/drive.js",
+    "lib/directions-page.js"
+   ],
+   "importedBy": []
+  },
   "functions/emoji/[[path]].js": {
    "imports": [],
+   "importedBy": []
+  },
+  "functions/factorials/index.js": {
+   "imports": [
+    "lib/factorials.js"
+   ],
    "importedBy": []
   },
   "functions/fanfic/rss.js": {
@@ -5425,15 +5522,42 @@
    ],
    "importedBy": []
   },
+  "functions/meanings/index.js": {
+   "imports": [
+    "lib/meanings.js",
+    "functions/api/meanings.js"
+   ],
+   "importedBy": []
+  },
   "functions/our-motherfucking-version/index.js": {
    "imports": [
     "lib/versus.js"
    ],
    "importedBy": []
   },
+  "functions/patterns/index.js": {
+   "imports": [
+    "lib/dev-tools.js"
+   ],
+   "importedBy": []
+  },
+  "functions/qr/index.js": {
+   "imports": [
+    "lib/qr.js",
+    "lib/qr-page.js"
+   ],
+   "importedBy": []
+  },
   "functions/rotate-letters/index.js": {
    "imports": [
     "lib/versus.js"
+   ],
+   "importedBy": []
+  },
+  "functions/songs/index.js": {
+   "imports": [
+    "lib/hear.js",
+    "lib/songs.js"
    ],
    "importedBy": []
   },
@@ -5455,6 +5579,13 @@
     "lib/team-mcp.js",
     "functions/api/team.js",
     "lib/team.js"
+   ],
+   "importedBy": []
+  },
+  "functions/text-diff/index.js": {
+   "imports": [
+    "lib/textdiff.js",
+    "lib/text-diff-page.js"
    ],
    "importedBy": []
   },
@@ -5602,6 +5733,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -5617,6 +5749,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -5647,6 +5780,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/page-pass.js",
@@ -5668,6 +5802,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/api/x402/sponsor/[plan].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
     "lib/sponsor-db.js",
@@ -5701,6 +5836,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -5716,6 +5852,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -5745,6 +5882,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -5760,6 +5898,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -5784,6 +5923,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -5799,6 +5939,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -5948,6 +6089,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -5967,6 +6109,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/brain-everywhere.js",
@@ -6070,6 +6213,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -6088,6 +6232,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
@@ -6152,6 +6297,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -6169,6 +6315,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
@@ -6323,6 +6470,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/news.js",
@@ -6353,6 +6501,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -6469,6 +6618,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -6487,6 +6637,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/brain-everywhere.js",
@@ -6615,6 +6766,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -6633,6 +6785,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -7358,6 +7511,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -7373,6 +7527,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -7443,6 +7598,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -7458,6 +7614,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "skills/formulas.js"
    ]
@@ -7538,6 +7695,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -7556,6 +7714,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -7693,6 +7852,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -7708,6 +7868,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
     "lib/term-card.js",
@@ -7830,6 +7991,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -7848,6 +8010,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -7905,6 +8068,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -7920,6 +8084,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -7996,6 +8161,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -8011,6 +8177,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -8036,6 +8203,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -8051,7 +8219,14 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/clips.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/clips/index.js"
    ]
   },
   "lib/code-review.js": {
@@ -8082,6 +8257,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -8105,6 +8281,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
@@ -8188,6 +8365,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -8203,6 +8381,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/rap-listen.js",
     "lib/rap-song.js",
@@ -8314,6 +8493,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -8332,6 +8512,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/brain-everywhere.js",
@@ -8471,6 +8652,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -8483,6 +8665,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/answer-free.js",
     "lib/bench-asks.js"
    ]
@@ -8588,6 +8771,7 @@
   "lib/dev-tools.js": {
    "imports": [],
    "importedBy": [
+    "functions/patterns/index.js",
     "skills/dev-tools.js"
    ]
   },
@@ -8599,6 +8783,12 @@
    "reachedBy": [
     "functions/api/mcp.js",
     "functions/api/x402/[service].js"
+   ]
+  },
+  "lib/directions-page.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/directions/index.js"
    ]
   },
   "lib/draft.js": {
@@ -8620,6 +8810,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -8635,6 +8826,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -8645,6 +8837,7 @@
   "lib/drive.js": {
    "imports": [],
    "importedBy": [
+    "functions/directions/index.js",
     "lib/mcp.js"
    ],
    "reachedBy": [
@@ -8698,6 +8891,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -8718,6 +8912,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -8802,6 +8997,12 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/factorials.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/factorials/index.js"
+   ]
+  },
   "lib/fakeuser.js": {
    "imports": [],
    "importedBy": [
@@ -8830,6 +9031,10 @@
    "imports": [
     "lib/scores.js"
    ],
+   "importedBy": []
+  },
+  "lib/faucet.js": {
+   "imports": [],
    "importedBy": []
   },
   "lib/field-attention.js": {
@@ -9238,6 +9443,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9253,6 +9459,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/brain-everywhere.js",
     "lib/brain-glow.js",
@@ -9331,6 +9538,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9346,6 +9554,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -9374,6 +9583,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9389,6 +9599,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -9600,6 +9811,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -9626,6 +9838,7 @@
     "functions/api/x402/review.js",
     "functions/fanfic/rss.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/bench-asks.js",
@@ -9659,6 +9872,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9677,6 +9891,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -9788,6 +10003,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9806,6 +10022,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -9855,6 +10072,7 @@
   "lib/hear.js": {
    "imports": [],
    "importedBy": [
+    "functions/songs/index.js",
     "skills/hear.js"
    ]
   },
@@ -9909,6 +10127,7 @@
     "functions/api/image.js",
     "functions/api/local.js",
     "functions/api/markets.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -9955,6 +10174,7 @@
     "functions/api/watch.js",
     "functions/api/x402/[service].js",
     "functions/fanfic/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -10051,6 +10271,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10069,6 +10290,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -10210,6 +10432,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10228,6 +10451,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -10303,6 +10527,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
@@ -10320,6 +10545,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
@@ -10403,14 +10629,26 @@
    "importedBy": [
     "lib/game-health.js",
     "skills/arcade.js",
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
     "skills/dim-void.js",
     "skills/family-health.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
     "skills/growth.js",
+    "skills/jump-stack.js",
     "skills/merge-void.js",
+    "skills/nine-grid.js",
     "skills/null-sweep.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
     "skills/pong.js",
+    "skills/push-packets.js",
     "skills/rack.js",
     "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js",
     "skills/void-breaker.js"
    ],
    "reachedBy": [
@@ -10428,6 +10666,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10446,6 +10685,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -10502,6 +10742,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10520,6 +10761,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -10757,6 +10999,7 @@
     "functions/api/image.js",
     "functions/api/local.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10772,6 +11015,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -10799,6 +11043,7 @@
     "functions/api/image.js",
     "functions/api/local.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10814,6 +11059,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -10909,6 +11155,13 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/meanings.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/meanings.js",
+    "functions/meanings/index.js"
+   ]
+  },
   "lib/measure-ask.js": {
    "imports": [
     "lib/calc-units.js"
@@ -10930,6 +11183,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -10945,6 +11199,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11006,6 +11261,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -11021,6 +11277,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11056,6 +11313,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -11071,6 +11329,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11103,6 +11362,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
@@ -11121,6 +11381,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
@@ -11301,6 +11562,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/memory.js",
     "functions/api/news.js",
     "functions/api/paypal/index.js",
@@ -11319,6 +11581,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
@@ -11450,6 +11713,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -11465,6 +11729,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11495,6 +11760,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -11510,6 +11776,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11543,6 +11810,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/podcasts.js",
     "functions/api/rapvoice.js",
@@ -11557,6 +11825,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11580,6 +11849,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -11595,6 +11865,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
     "lib/term-card.js",
@@ -11659,6 +11930,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11697,6 +11969,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -11878,6 +12151,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -11893,6 +12167,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11948,6 +12223,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -12007,6 +12283,7 @@
     "functions/c/[clip].js",
     "functions/fanfic/rss.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/_middleware.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -12093,6 +12370,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -12124,6 +12402,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -12241,6 +12520,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12256,6 +12536,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -12278,6 +12559,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12293,6 +12575,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -12318,6 +12601,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/page-pass.js",
@@ -12334,6 +12618,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/ai-check.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
@@ -12407,6 +12692,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12427,6 +12713,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/verse-log.js"
@@ -12514,6 +12801,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12529,6 +12817,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -12589,6 +12878,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12604,6 +12894,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -12645,6 +12936,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12660,6 +12952,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/jobs-ui.js",
     "skills/work.js"
@@ -12709,6 +13002,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12727,6 +13021,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -12819,6 +13114,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -12835,6 +13131,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "skills/proposals.js"
    ]
@@ -12889,9 +13186,16 @@
     "skills/writing-aids.js"
    ]
   },
+  "lib/qr-page.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/qr/index.js"
+   ]
+  },
   "lib/qr.js": {
    "imports": [],
    "importedBy": [
+    "functions/qr/index.js",
     "lib/card-image.js",
     "skills/spectators.js",
     "skills/stage-image.js",
@@ -13145,6 +13449,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13159,6 +13464,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/rap-listen.js"
    ]
@@ -13218,6 +13524,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13237,6 +13544,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/brain-everywhere.js",
@@ -13353,6 +13661,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13367,6 +13676,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -13393,6 +13703,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13408,6 +13719,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -13433,6 +13745,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13448,6 +13761,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -13500,6 +13814,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -13521,6 +13836,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
@@ -13566,6 +13882,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13581,6 +13898,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -13649,6 +13967,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13667,6 +13986,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/book-face.js",
@@ -13809,6 +14129,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -13823,7 +14144,8 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
-    "functions/api/x402/[service].js"
+    "functions/api/x402/[service].js",
+    "functions/meanings/index.js"
    ]
   },
   "lib/self-model.js": {
@@ -14035,6 +14357,7 @@
     "functions/api/image.js",
     "functions/api/local.js",
     "functions/api/markets.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14048,6 +14371,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/answer-free.js",
     "lib/bench-asks.js"
    ]
@@ -14125,6 +14449,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14143,6 +14468,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -14281,6 +14607,12 @@
     "skills/time.js"
    ]
   },
+  "lib/songs.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/songs/index.js"
+   ]
+  },
   "lib/spark.js": {
    "imports": [],
    "importedBy": [
@@ -14302,6 +14634,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14320,6 +14653,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -14655,6 +14989,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14673,6 +15008,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/arena.js",
     "lib/bench-asks.js",
@@ -14687,26 +15023,38 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/codex.js",
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
     "skills/dim-void.js",
     "skills/echo-chamber.js",
     "skills/family-health.js",
     "skills/games.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
+    "skills/jump-stack.js",
     "skills/merge-void.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
+    "skills/nine-grid.js",
     "skills/null-sweep.js",
+    "skills/null-waves.js",
     "skills/othello.js",
     "skills/own-parts.js",
+    "skills/packet-maze.js",
     "skills/pong.js",
+    "skills/push-packets.js",
     "skills/rack.js",
     "skills/rebuild-map.js",
     "skills/showcase.js",
     "skills/skill-eclipse.js",
     "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
     "skills/time-capsule.js",
+    "skills/token-stand.js",
     "skills/void-breaker.js",
     "skills/walker.js",
     "skills/whisper-network.js"
@@ -14811,6 +15159,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/page-pass.js",
@@ -14828,6 +15177,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
     "skills/shop.js",
@@ -14861,6 +15211,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14876,6 +15227,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "skills/shop.js"
    ]
@@ -14902,6 +15254,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14917,6 +15270,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/rap-listen.js",
     "lib/rap-song.js",
@@ -14934,6 +15288,23 @@
     "skills/dim-void.js",
     "skills/merge-void.js",
     "skills/null-sweep.js"
+   ]
+  },
+  "lib/studio-play.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
+    "skills/jump-stack.js",
+    "skills/nine-grid.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
+    "skills/push-packets.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js"
    ]
   },
   "lib/studio.js": {
@@ -14980,6 +15351,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -14995,6 +15367,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
     "lib/term-card.js",
@@ -15248,6 +15621,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -15286,6 +15660,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -15354,6 +15729,14 @@
     "skills/terminal.js"
    ]
   },
+  "lib/text-diff-page.js": {
+   "imports": [
+    "lib/textdiff.js"
+   ],
+   "importedBy": [
+    "functions/text-diff/index.js"
+   ]
+  },
   "lib/text-tools.js": {
    "imports": [],
    "importedBy": [
@@ -15363,6 +15746,8 @@
   "lib/textdiff.js": {
    "imports": [],
    "importedBy": [
+    "functions/text-diff/index.js",
+    "lib/text-diff-page.js",
     "skills/util.js"
    ],
    "reachedBy": [
@@ -15507,9 +15892,6 @@
     "lib/flight-sites.js",
     "lib/job-sites.js",
     "lib/self-sites.js"
-   ],
-   "external": [
-    ", "
    ],
    "importedBy": [
     "lib/card-frame.js",
@@ -15859,6 +16241,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -15897,6 +16280,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -16037,6 +16421,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/video.js",
+    "functions/clips/index.js",
     "skills/video-play.js",
     "skills/video.js"
    ]
@@ -16088,6 +16473,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -16103,6 +16489,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js",
     "lib/verse-log.js"
    ]
@@ -16159,6 +16546,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -16181,6 +16569,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -16305,6 +16694,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -16323,6 +16713,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -16388,6 +16779,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -16419,6 +16811,7 @@
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "functions/films/rss.js",
+    "functions/meanings/index.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -16518,6 +16911,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -16535,6 +16929,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -16731,8 +17126,20 @@
   "skills/arcade-card.js": {
    "imports": [],
    "importedBy": [
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
+    "skills/jump-stack.js",
+    "skills/nine-grid.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
     "skills/pong.js",
+    "skills/push-packets.js",
     "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js",
     "skills/void-breaker.js",
     "skills/zorbleflux.js"
    ]
@@ -17133,6 +17540,10 @@
    ],
    "importedBy": []
   },
+  "skills/client-weekly.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/clock.js": {
    "imports": [],
    "importedBy": [
@@ -17309,6 +17720,21 @@
     "lib/team-mcp.js"
    ]
   },
+  "skills/cross-bus-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/cross-bus.js"
+   ]
+  },
+  "skills/cross-bus.js": {
+   "imports": [
+    "skills/cross-bus-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/crowd.js": {
    "imports": [
     "lib/field-kit.js"
@@ -17383,6 +17809,21 @@
    ],
    "importedBy": []
   },
+  "skills/debris-field-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/debris-field.js"
+   ]
+  },
+  "skills/debris-field.js": {
+   "imports": [
+    "skills/debris-field-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/decide-cards.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -17429,6 +17870,10 @@
    "reachedBy": [
     "skills/reliability-pack.js"
    ]
+  },
+  "skills/delivery-dashboard.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/delivery-pack.js": {
    "imports": [],
@@ -17989,6 +18434,21 @@
    ],
    "importedBy": []
   },
+  "skills/gap-glide-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gap-glide.js"
+   ]
+  },
+  "skills/gap-glide.js": {
+   "imports": [
+    "skills/gap-glide-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/gauge-feedback.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -18035,6 +18495,21 @@
   "skills/gh-file.js": {
    "imports": [
     "lib/gist.js"
+   ],
+   "importedBy": []
+  },
+  "skills/glyph-verse-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/glyph-verse.js"
+   ]
+  },
+  "skills/glyph-verse.js": {
+   "imports": [
+    "skills/glyph-verse-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -18150,6 +18625,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -18168,6 +18644,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -18216,6 +18693,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -18234,6 +18712,7 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -18467,6 +18946,10 @@
    ],
    "importedBy": []
   },
+  "skills/incident-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/incident.js": {
    "imports": [
     "lib/ask-text.js"
@@ -18540,6 +19023,21 @@
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
+  },
+  "skills/jump-stack-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/jump-stack.js"
+   ]
+  },
+  "skills/jump-stack.js": {
+   "imports": [
+    "skills/jump-stack-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
   },
   "skills/kanban-board.js": {
    "imports": [
@@ -19355,6 +19853,21 @@
     "skills/where-is.js"
    ]
   },
+  "skills/nine-grid-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/nine-grid.js"
+   ]
+  },
+  "skills/nine-grid.js": {
+   "imports": [
+    "skills/nine-grid-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/noise.js": {
    "imports": [],
    "importedBy": []
@@ -19416,6 +19929,21 @@
     "skills/null-sweep-rules.js",
     "lib/studio-card.js",
     "lib/ladder.js"
+   ],
+   "importedBy": []
+  },
+  "skills/null-waves-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/null-waves.js"
+   ]
+  },
+  "skills/null-waves.js": {
+   "imports": [
+    "skills/null-waves-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -19505,6 +20033,21 @@
     "skills/heavy-lift-map.js",
     "skills/ownership-map.js",
     "skills/ownership-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/packet-maze-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/packet-maze.js"
+   ]
+  },
+  "skills/packet-maze.js": {
+   "imports": [
+    "skills/packet-maze-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -19752,6 +20295,21 @@
    "imports": [
     "lib/pulse.js",
     "skills/incident.js"
+   ],
+   "importedBy": []
+  },
+  "skills/push-packets-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/push-packets.js"
+   ]
+  },
+  "skills/push-packets.js": {
+   "imports": [
+    "skills/push-packets-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -20063,6 +20621,10 @@
     "lib/stage-pack.js",
     "lib/safety.js"
    ],
+   "importedBy": []
+  },
+  "skills/sales-pack.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/savings.js": {
@@ -20480,6 +21042,21 @@
    ],
    "importedBy": []
   },
+  "skills/stackwell-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/stackwell.js"
+   ]
+  },
+  "skills/stackwell.js": {
+   "imports": [
+    "skills/stackwell-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-arrange.js": {
    "imports": [
     "lib/stage-tools.js",
@@ -20743,6 +21320,10 @@
     "skills/handoffs.js"
    ]
   },
+  "skills/system-plan.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/system-slice.js": {
    "imports": [],
    "importedBy": []
@@ -20812,6 +21393,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/meanings.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -20827,6 +21409,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
     "lib/bench-asks.js"
    ]
   },
@@ -20898,6 +21481,21 @@
     "lib/generators-card.js",
     "skills/riddle-gen.js"
    ]
+  },
+  "skills/three-alike-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/three-alike.js"
+   ]
+  },
+  "skills/three-alike.js": {
+   "imports": [
+    "skills/three-alike-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
   },
   "skills/throw-off.js": {
    "imports": [],
@@ -21021,6 +21619,21 @@
     "skills/notepad.js",
     "lib/bridges.js",
     "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/token-stand-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/token-stand.js"
+   ]
+  },
+  "skills/token-stand.js": {
+   "imports": [
+    "skills/token-stand-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
