@@ -46,7 +46,7 @@ async function run(text, api) {
   const client = p.clientOwns.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Scope pack: ' + esc(p.subject) + '</h2>'
-      + '<p class="sub">Clear ownership so the client does less and Verse owns the heavy lifting.</p>'
+      + '<p class="sub">Clear ownership so the client does less and Verse owns the hard work.</p>'
       + '<h3>What Verse owns</h3><ul>' + verse + '</ul>'
       + '<h3>What the client owns</h3><ul>' + client + '</ul>'
       + '<h3>Client work that drops</h3><p>' + esc(p.drops) + '</p>'
