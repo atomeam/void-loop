@@ -1022,6 +1022,38 @@
    "weight": 3083463,
    "at": "2026-10-30"
   },
+  "bolaogalera.com": {
+   "bytes": 3786449,
+   "controls": 71,
+   "scripts": 1,
+   "styles": 2,
+   "nodes": 12,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 1524,
+   "shell": "none",
+   "weight": 3788569,
+   "at": "2026-11-14"
+  },
+  "bold666.com": {
+   "bytes": 1535788,
+   "controls": 230,
+   "scripts": 3,
+   "styles": 1,
+   "nodes": 20,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 923,
+   "shell": "none",
+   "weight": 1541988,
+   "at": "2026-11-14"
+  },
+  "bolivar.academy": {
+   "refused": true,
+   "at": "2026-11-14"
+  },
   "bouldercolorado.gov": {
    "bytes": 288013,
    "controls": 61,
