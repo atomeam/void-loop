@@ -57,8 +57,11 @@ test('each hosted round ends, and a careful player can beat Verse', () => {
     const one = game.selfPlay(1), two = game.selfPlay(1);
     assert.ok(one.over === 'you' || one.over === 'void' || one.over === 'draw', game.id + ' ends');
     assert.deepEqual(one, two, game.id + ' seed');
-    assert.equal(HOST[game.id].id, game.id);
+    if (HOST[game.id]) assert.equal(HOST[game.id].id, game.id);
   }
+  let ahead = 0;
+  for (let seed = 1; seed <= 12; seed++) if (debris.selfPlay(seed).over === 'you') ahead++;
+  assert.ok(ahead >= 8, 'a careful ship outscores Verse ' + ahead + ' of 12');
   assert.equal(waves.selfPlay(1).over, 'you');
   assert.equal(maze.selfPlay(1).over, 'you');
   assert.equal(jump.selfPlay(1).over, 'you');

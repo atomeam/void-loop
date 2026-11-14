@@ -62,6 +62,8 @@ export function drive(card, game, opt = {}) {
   let edge = { flap: false, fire: false, dir: '' };
   const bag = {};
   const friend = linked && /^\d+$/.test(q.get('score') || '') ? Number(q.get('score')) : null;
+  const stick = opt.stick === 'x'; // a game that slides on one axis: no directional pad, the pointer is the control
+  let heldFire = false;
   const tools = document.createElement('div');
   tools.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:6px';
   const pause = btn('Pause', () => { paused = !paused; pause.textContent = paused ? 'Resume' : 'Pause'; pause.setAttribute('aria-pressed', paused ? 'true' : 'false'); });
@@ -75,13 +77,15 @@ export function drive(card, game, opt = {}) {
   const share = document.createElement('a');
   share.href = roundLink(game.id, seed, 0, daily); share.textContent = 'Share this round';
   share.style.cssText = 'font-size:13px;align-self:center';
-  for (const dir of [['Left', 'left'], ['Right', 'right'], ['Up', 'up'], ['Down', 'down']]) {
+  if (!stick) for (const dir of [['Left', 'left'], ['Right', 'right'], ['Up', 'up'], ['Down', 'down']]) {
     const b = btn(dir[0], () => {});
     b.addEventListener('pointerdown', () => { edge.dir = dir[1]; if (dir[1] === 'left' || dir[1] === 'right') edge.fire = true; edge.flap = true; });
     tools.append(b);
   }
   const act = btn('Act', () => { edge.flap = true; edge.fire = true; });
-  tools.append(pause, snd, same, day, act, share);
+  tools.append(pause, snd, same, day);
+  if (!stick) tools.append(act);
+  tools.append(share);
   card.el.append(tools);
   const onKey = (e) => {
     const k = e.key.toLowerCase();
@@ -91,19 +95,24 @@ export function drive(card, game, opt = {}) {
       else if (k === 'arrowright' || k === 'd') { held.right = true; edge.dir = 'right'; }
       else if (k === 'arrowup' || k === 'w') { held.up = true; edge.dir = 'up'; }
       else if (k === 'arrowdown' || k === 's') { held.down = true; edge.dir = 'down'; }
-      else if (k === ' ') { edge.flap = true; edge.fire = true; }
+      else if (k === ' ') { if (stick) heldFire = true; else { edge.flap = true; edge.fire = true; } }
     } else if (e.type === 'keyup') {
       if (k === 'arrowleft' || k === 'a') held.left = false;
       else if (k === 'arrowright' || k === 'd') held.right = false;
       else if (k === 'arrowup' || k === 'w') held.up = false;
       else if (k === 'arrowdown' || k === 's') held.down = false;
+      else if (k === ' ' && stick) heldFire = false;
     }
   };
   card.el.addEventListener('keydown', onKey);
   card.el.addEventListener('keyup', onKey);
-  const point = (e) => { const p = card.local(e); edge.x = p.x; edge.flap = true; edge.fire = true; card.el.focus({ preventScroll: true }); };
+  const point = (e) => {
+    const p = card.local(e); edge.x = p.x; card.el.focus({ preventScroll: true });
+    if (stick) heldFire = true; else { edge.flap = true; edge.fire = true; }
+  };
   card.cv.addEventListener('pointerdown', point);
-  card.cv.addEventListener('pointermove', (e) => { if (e.buttons) edge.x = card.local(e).x; });
+  card.cv.addEventListener('pointermove', (e) => { if (stick ? heldFire : e.buttons) edge.x = card.local(e).x; });
+  if (stick) { const up = () => { heldFire = false; }; card.cv.addEventListener('pointerup', up); card.cv.addEventListener('pointercancel', up); card.cv.addEventListener('pointerleave', up); }
   function restart(next) {
     seed = next >>> 0; s = game.create(seed); done = false; paused = false; pause.textContent = 'Pause'; daily = seed === daySeed();
   }
@@ -111,14 +120,15 @@ export function drive(card, game, opt = {}) {
   card.start(() => {
     if (!paused && !s.over) {
       const dir = edge.dir || (held.left ? 'left' : held.right ? 'right' : held.up ? 'up' : held.down ? 'down' : '');
-      game.tick(s, { flap: edge.flap, fire: edge.fire || edge.dir === 'up', step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', dir, x: edge.x });
+      const firing = edge.fire || edge.dir === 'up' || (stick && heldFire);
+      game.tick(s, { flap: edge.flap || (stick && heldFire), fire: firing, step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', dir, x: stick ? (heldFire ? edge.x : undefined) : edge.x });
       if (s.sfx && sound) beep(bag);
       edge = { flap: false, fire: false, dir: '', x: edge.x };
     }
     game.draw(card.ctx, s);
     const best = s.over ? writeBest(game.id, s.score.you) : (readBest()[game.id] || 0);
     const end = s.over === 'you' ? 'You win' : s.over === 'void' ? 'Verse wins' : s.over === 'draw' ? 'A draw' : '';
-    card.status.textContent = (end ? end + ' · ' : paused ? 'Paused · ' : '') + 'you ' + s.score.you + ' · Verse ' + s.score.void + (best ? ' · best ' + best : '') + (friend != null ? ' · a friend scored ' + friend + ' on this seed' : '') + (s.over || paused ? '' : ' · step ' + s.tick);
+    card.status.textContent = (end ? end + ' · ' : paused ? 'Paused · ' : '') + 'you ' + s.score.you + ' · Verse ' + s.score.void + (best ? ' · best ' + best : '') + (friend != null ? ' · a friend scored ' + friend + ' on this seed' : '') + (stick || s.over || paused ? '' : ' · step ' + s.tick);
     card.why.textContent = s.why ? 'Verse: ' + s.why : '';
     share.href = roundLink(game.id, seed, s.score.you, daily);
     if (s.over && !done) { done = true; if (opt.onDone) opt.onDone(s.over); }

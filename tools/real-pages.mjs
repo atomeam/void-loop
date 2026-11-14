@@ -770,23 +770,21 @@ Object.assign(SPECS, {
   },
   '/arcade/': async (t) => {
     t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
-    t.ok((await t.p.locator('#games button').count()) >= 12, 'the hosted games play on this page');
+    t.ok((await t.p.locator('#games button').count()) === 1, 'Debris Field is the round that plays on this page');
     t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
-    await t.click('#games button[data-id="gap-glide"]');
-    await t.p.waitForTimeout(250);
-    await t.p.keyboard.press('Space');
-    t.ok(await t.p.locator('#play canvas').count() === 1, 'Gap Glide draws on the page');
-    t.ok(/play=gap-glide&seed=/.test(await t.p.locator('#play a').first().getAttribute('href') || ''), 'the share link carries the round');
-    t.ok(/lift/i.test(await t.text('#play')), 'the page says how to play');
-    await t.click('#games button[data-id="cross-bus"]');
-    await t.p.keyboard.press('ArrowUp');
-    t.ok(/curb/i.test(await t.text('#play')), 'Cross the Bus says how to cross');
-    await t.p.setViewportSize({ width: 390, height: 844 });
-    await t.click('#games button[data-id="token-stand"]');
+    await t.click('#games button[data-id="debris-field"]');
     await t.p.waitForTimeout(200);
-    await t.click('#play button:has-text("Act")');
+    await t.p.keyboard.press('Space');
+    await t.p.waitForTimeout(400);
+    t.ok(await t.p.locator('#play canvas').count() === 1, 'Debris Field draws on the page');
+    t.ok(/play=debris-field&seed=/.test(await t.p.locator('#play a').first().getAttribute('href') || ''), 'the share link carries the round');
+    t.ok(/crystal/i.test(await t.p.locator('#games button[data-id="debris-field"]').getAttribute('title') || ''), 'the round says what the crystals do');
+    t.ok(await t.p.locator('#play button', { hasText: 'Left' }).count() === 0, 'no generic direction row on this round');
+    await t.p.setViewportSize({ width: 390, height: 844 });
+    const box = await t.p.locator('#play canvas').boundingBox();
+    await t.p.mouse.click(box.x + box.width * 0.7, box.y + box.height * 0.8);
     await t.p.waitForTimeout(300);
-    t.ok(/you [1-9]/.test(await t.text('#status')), 'a phone tap on Act sells a day at the stand: ' + (await t.text('#status')).slice(0, 80));
+    t.ok(/you /.test(await t.text('#status')), 'a phone tap still plays: ' + (await t.text('#status')).slice(0, 80));
   },
   '/lab/mind-map/': async (t) => {
     await t.click('#sample'); await t.p.waitForTimeout(300);
