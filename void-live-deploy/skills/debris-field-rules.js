@@ -67,9 +67,14 @@ function bossAct(s, f, step) {
     const a = Math.atan2(s.you.y - f.y, s.you.x - f.x);
     f.cvx = Math.cos(a) * 7.4; f.cvy = Math.sin(a) * 7.4;
   }
-  if (f.pat >= 126 && f.pat <= 156) { f.x += (f.cvx || 0) * step; f.y += (f.cvy || 0) * step; }
+  if (f.pat >= 104 && f.pat < 126) s.shake = Math.max(s.shake, 2.5 + (f.pat - 104) * 0.4);
+  if (f.pat >= 126 && f.pat <= 156) {
+    f.x += (f.cvx || 0) * step; f.y += (f.cvy || 0) * step;
+    f.trail = (f.trail || []).concat({ x: f.x, y: f.y }).slice(-10);
+    s.bits.push({ x: f.x - (f.cvx || 0) * 1.4, y: f.y - (f.cvy || 0) * 1.4, vx: -(f.cvx || 0) * 0.04, vy: -(f.cvy || 0) * 0.04, life: 18, size: 16, color: '#ffd7a4' });
+  }
   else if (f.pat >= 104) { f.x += (s.you.x - f.x) * 0.004; f.y += (s.you.y - f.y) * 0.004; }
-  else {
+  else { f.trail = [];
     const d = hypot(s.you.x - f.x, s.you.y - f.y);
     f.x += (s.you.x - f.x) / d * 0.9 * step; f.y += (s.you.y - f.y) / d * 0.9 * step;
   }
@@ -265,7 +270,9 @@ function hull(g, x, y, aim, tick, shield) {
 function foeDraw(g, f) {
   g.save(); g.translate(f.x, f.y); g.rotate(f.spin);
   if (f.kind === 'boss') {
-    g.fillStyle = '#ffb15a'; g.shadowColor = '#ffb15a'; g.shadowBlur = 36;
+    const wind = f.pat >= 104 && f.pat < 126;
+    if (wind) { const k = (f.pat - 104) / 22; g.translate(Math.sin(f.pat * 1.8) * (3 + k * 7), Math.cos(f.pat * 2.2) * (3 + k * 7)); g.shadowBlur = 48 + k * 50; g.shadowColor = '#fff6d2'; }
+    g.fillStyle = '#ffb15a'; g.shadowColor = wind ? '#fff6d2' : '#ffb15a'; if (!wind) g.shadowBlur = 36;
     g.beginPath(); g.moveTo(0, -f.r); g.lineTo(f.r * 0.55, -f.r * 0.35); g.lineTo(f.r * 0.85, f.r * 0.15); g.lineTo(f.r * 0.3, f.r); g.lineTo(-f.r * 0.35, f.r * 0.82); g.lineTo(-f.r * 0.8, f.r * 0.05); g.lineTo(-f.r * 0.45, -f.r * 0.45); g.closePath(); g.fill();
     g.shadowBlur = 0; g.fillStyle = 'rgba(255,248,220,.95)'; g.beginPath(); g.moveTo(0, -f.r * 0.45); g.lineTo(f.r * 0.16, 0); g.lineTo(0, f.r * 0.38); g.lineTo(-f.r * 0.16, 0); g.fill();
     const crack = 1 - f.hp / f.max; g.strokeStyle = '#3a1a08'; g.lineWidth = 4;
@@ -288,8 +295,8 @@ function foeDraw(g, f) {
 export function draw(g, s) {
   s.anim = (s.anim || 0) + 1;
   if (g.canvas) {
-    const bossOn = s.foes.some((f) => f.on && f.kind === 'boss');
-    const tag = (s.mo > 0 ? 'mo' : s.phase) + s.you.lives + (s.you.shield ? 's' : '') + (bossOn ? 'B' : '') + (s.you.dash > 36 ? 'D' : '');
+    const bossOn = s.foes.find((f) => f.on && f.kind === 'boss');
+    const tag = (s.mo > 0 ? 'mo' : s.phase) + s.you.lives + (s.you.shield ? 's' : '') + (bossOn ? 'B' : '') + (bossOn && bossOn.pat >= 104 && bossOn.pat < 126 ? 'W' : '') + (bossOn && bossOn.pat >= 126 ? 'C' : '') + (s.you.dash > 36 ? 'D' : '');
     if (g.canvas.dataset.tag !== tag) g.canvas.dataset.tag = tag;
   }
   if (s.cue && typeof window !== 'undefined') hear(s.cue);
@@ -298,12 +305,18 @@ export function draw(g, s) {
   const bg = g.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#120a2c'); bg.addColorStop(1, '#05040e');
   g.fillStyle = bg; g.fillRect(-40, -40, W + 80, H + 80);
   for (const st of s.stars) {
-    const drift = s.clock * st.z * (0.35 + st.layer);
+    const speed = 0.03 + st.layer * 0.045;
+    const dx = (st.x - s.clock * speed) % W; const dy = (st.y - s.clock * speed * 0.22) % H;
     g.globalAlpha = st.a; g.fillStyle = st.layer === 2 ? '#fff' : '#b7a6e6';
-    g.fillRect((st.x + drift) % W, (st.y + drift * 0.2) % H, st.layer + 1, st.layer + 1);
+    g.fillRect(dx < 0 ? dx + W : dx, dy < 0 ? dy + H : dy, st.layer + 1, st.layer + 1);
   }
   g.globalAlpha = 1;
   if (s.flash) { g.fillStyle = 'rgba(255,210,190,' + (s.flash / 26) + ')'; g.fillRect(0, 0, W, H); }
+  for (const f of s.foes) if (f.kind === 'boss' && f.trail) for (let i = 0; i < f.trail.length; i++) {
+    const p = f.trail[i]; g.globalAlpha = 0.18 + (i + 1) / f.trail.length * 0.55; g.fillStyle = '#ffb15a';
+    g.beginPath(); g.arc(p.x, p.y, f.r * 0.7, 0, 7); g.fill();
+  }
+  g.globalAlpha = 1;
   for (const f of s.foes) foeDraw(g, f);
   const boss = s.foes.find((f) => f.on && f.kind === 'boss');
   if (boss) {
@@ -334,7 +347,7 @@ export function draw(g, s) {
     g.fillText(s.boss ? 'HEAVY CRYSTAL' : 'WAVE ' + s.wave, W / 2, 120); g.textAlign = 'left'; g.globalAlpha = 1;
   }
   if (s.phase === 'title') plate(g, 'DEBRIS FIELD', 'Arrows move. Hold the button to fire. Shift or space dashes.', 1);
-  if (s.phase === 'over') plate(g, s.over === 'you' ? 'YOU BEAT VERSE' : 'RUN OVER', 'you ' + s.score.you + '    Verse ' + s.ghost + '    ·    space or tap to play again', Math.min(1, s.anim / 16));
+  if (s.phase === 'over') endCard(g, s, Math.min(1, s.anim / 16));
   g.restore();
 }
 function stickRing(g, s) {
@@ -352,8 +365,22 @@ function hud(g, s) {
   }
   g.globalAlpha = 1;
   g.fillStyle = s.you.dash > 0 ? 'rgba(79,227,227,.45)' : '#7ef6ff';
-  g.fillRect(148, H - 40, 56 * (s.you.dash > 0 ? Math.max(0.08, 1 - s.you.dash / 48) : 1), 7);
-  g.fillStyle = '#d8fff8'; g.font = '14px ui-sans-serif, system-ui, sans-serif'; g.fillText(s.you.dash > 0 ? 'DASH' : 'DASH READY', 148, H - 48);
+  g.fillRect(W - 230, H - 40, 70 * (s.you.dash > 0 ? Math.max(0.08, 1 - s.you.dash / 48) : 1), 7);
+  g.fillStyle = '#d8fff8'; g.font = '14px ui-sans-serif, system-ui, sans-serif'; g.fillText(s.you.dash > 0 ? 'DASH' : 'DASH READY', W - 230, H - 48);
+}
+function deviceBest() {
+  try { const b = JSON.parse(localStorage.getItem('a2m.void.arcade.best.v1') || '{}'); return b['debris-field'] || 0; } catch (_) { return 0; }
+}
+function endCard(g, s, fade) {
+  const best = Math.max(deviceBest(), s.score.you || 0);
+  g.globalAlpha = 0.72 * fade; g.fillStyle = '#07060f'; g.fillRect(0, H / 2 - 168, W, 336);
+  g.globalAlpha = fade; g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 60px ui-sans-serif, system-ui, sans-serif';
+  g.fillText(s.over === 'you' ? 'YOU BEAT VERSE' : 'RUN OVER', W / 2, H / 2 - 88);
+  g.font = '600 28px ui-sans-serif, system-ui, sans-serif'; g.fillStyle = '#7ef6ff'; g.fillText('You  ' + s.score.you, W / 2, H / 2 - 28);
+  g.fillStyle = '#d2b0ff'; g.fillText('Verse  ' + s.ghost, W / 2, H / 2 + 14);
+  g.fillStyle = '#f4f1ea'; g.fillText('Best  ' + best, W / 2, H / 2 + 56);
+  g.fillStyle = '#4fe3e3'; g.font = '22px ui-sans-serif, system-ui, sans-serif'; g.fillText('space or tap to play again', W / 2, H / 2 + 108);
+  g.textAlign = 'left'; g.globalAlpha = 1;
 }
 function plate(g, title, sub, fade) {
   g.globalAlpha = 0.55 * fade; g.fillStyle = '#07060f'; g.fillRect(0, H / 2 - 100, W, 200);
