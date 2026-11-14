@@ -7218,5 +7218,22 @@
   {"ask": "client time saved: support router", "want": "skill:time-saved"},
   {"ask": "reliability pack for the invoice automation", "want": "skill:reliability-pack"},
   {"ask": "SLA pack for onboarding", "want": "skill:reliability-pack"},
-  {"ask": "uptime pack for the support router", "want": "skill:reliability-pack"}
+  {"ask": "uptime pack for the support router", "want": "skill:reliability-pack"},
+  {"ask": "weekly update for the onboarding flow", "want": "skill:client-weekly"},
+  {"ask": "client weekly for invoice automation", "want": "skill:client-weekly"},
+  {"ask": "this week's summary for support router", "want": "skill:client-weekly"},
+  {"ask": "cross the bus", "want": "skill:cross-bus"},
+  {"ask": "play cross the bus", "want": "skill:cross-bus"},
+  {"ask": "let's play cross the bus", "want": "skill:cross-bus"},
+  {"ask": "debris field", "want": "skill:debris-field"},
+  {"ask": "play debris field", "want": "skill:debris-field"},
+  {"ask": "delivery dashboard for the invoice automation", "want": "skill:delivery-dashboard"},
+  {"ask": "show the dashboard for onboarding", "want": "skill:delivery-dashboard"},
+  {"ask": "client dashboard for weekly reports", "want": "skill:delivery-dashboard"},
+  {"ask": "is the invoice automation delivery ready", "want": "skill:delivery-ready"},
+  {"ask": "handoff ready for onboarding flow", "want": "skill:delivery-ready"},
+  {"ask": "ready to handoff the weekly reports", "want": "skill:delivery-ready"},
+  {"ask": "gap glide", "want": "skill:gap-glide"},
+  {"ask": "play gap glide", "want": "skill:gap-glide"},
+  {"ask": "let's play gap glide", "want": "skill:gap-glide"}
 ]
