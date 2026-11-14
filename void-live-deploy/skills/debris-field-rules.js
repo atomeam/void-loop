@@ -6,7 +6,7 @@ const hypot = (x, y) => Math.hypot(x, y) || 1;
 function blank(seed) {
   const s = {
     n: (seed >>> 0) || 1, tick: 0, clock: 0, phase: 'title', over: null, why: '', anim: 0, ghost: 0,
-    you: { x: W / 2, y: H / 2, vx: 0, vy: 0, lives: 3, cool: 0, inv: 0, spread: 0, shield: 0, alive: 1, aim: 0 },
+    you: { x: W / 2, y: H / 2, vx: 0, vy: 0, lives: 3, cool: 0, inv: 0, dash: 0, spread: 0, shield: 0, alive: 1, aim: 0 },
     shots: [], foes: [], bits: [], pops: [], drops: [], stars: [],
     score: { you: 0 }, mult: 1, chain: 0, shake: 0, stop: 0, mo: 0, wave: 1, banner: 0, boss: 0, flash: 0, sfx: 0, cue: '',
   };
@@ -30,16 +30,17 @@ function burst(s, x, y, color, n, big) {
 }
 function spawn(s, kind, at) {
   if (!at && kind !== 'boss' && s.foes.length > 16) return;
-  const p = at || edge(s);
   const boss = kind === 'boss';
-  const r = boss ? 54 : kind === 'shard' ? 12 : kind === 'dart' ? 12 : 18 + (rng(s) * 8 | 0);
-  const f = { ...p, r, kind, hp: boss ? 16 : kind === 'chase' || kind === 'split' ? 2 : 1, max: boss ? 16 : 2, spin: rng(s) * 6, vr: (rng(s) - 0.5) * 0.08, on: 1, vx: 0, vy: 0 };
+  const p = boss ? { x: W / 2, y: 250 } : (at || edge(s));
+  const r = boss ? 88 : kind === 'shard' || kind === 'bolt' ? 9 : kind === 'dart' ? 12 : 18 + (rng(s) * 8 | 0);
+  const f = { ...p, r, kind, hp: boss ? 28 : kind === 'chase' || kind === 'split' ? 2 : 1, max: boss ? 28 : 2, spin: rng(s) * 6, vr: (rng(s) - 0.5) * 0.08, on: 1, vx: 0, vy: 0, pat: 0 };
   if (kind === 'dart') {
     const a = Math.atan2(s.you.y - f.y, s.you.x - f.x), sp = 4.6 + s.wave * 0.28;
     f.vx = Math.cos(a) * sp; f.vy = Math.sin(a) * sp;
   }
+  if (kind === 'bolt' && at) { f.vx = at.vx; f.vy = at.vy; }
   s.foes.push(f);
-  if (boss) s.boss = 1;
+  if (boss) { s.boss = 1; s.bossAt = s.tick; }
 }
 function nearest(s) {
   let best = null, bd = 1e9;
@@ -53,18 +54,40 @@ function shoot(s, ax, ay) {
   for (const o of fans) s.shots.push({ x: p.x + Math.cos(ang) * 26, y: p.y + Math.sin(ang) * 26, vx: Math.cos(ang + o) * 14, vy: Math.sin(ang + o) * 14, on: 1 });
   p.cool = p.spread > 0 ? 11 : 8; s.cue = 'shot'; s.sfx = 1;
 }
+function bossAct(s, f, step) {
+  f.pat = (f.pat || 0) + 1;
+  if (f.pat > 168) f.pat = 0;
+  if (f.pat === 36) {
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * 6.283 + f.spin;
+      spawn(s, 'bolt', { x: f.x + Math.cos(a) * (f.r + 8), y: f.y + Math.sin(a) * (f.r + 8), vx: Math.cos(a) * 3.3, vy: Math.sin(a) * 3.3 });
+    }
+  }
+  if (f.pat === 118) {
+    const a = Math.atan2(s.you.y - f.y, s.you.x - f.x);
+    f.cvx = Math.cos(a) * 7.4; f.cvy = Math.sin(a) * 7.4;
+  }
+  if (f.pat >= 126 && f.pat <= 156) { f.x += (f.cvx || 0) * step; f.y += (f.cvy || 0) * step; }
+  else if (f.pat >= 104) { f.x += (s.you.x - f.x) * 0.004; f.y += (s.you.y - f.y) * 0.004; }
+  else {
+    const d = hypot(s.you.x - f.x, s.you.y - f.y);
+    f.x += (s.you.x - f.x) / d * 0.9 * step; f.y += (s.you.y - f.y) / d * 0.9 * step;
+  }
+  f.x = clamp(f.x, 100, W - 100); f.y = clamp(f.y, 110, H - 90);
+  f.spin += f.pat >= 104 && f.pat < 126 ? 0.09 : 0.012;
+}
 function moveFoe(s, f, step) {
-  if (f.kind === 'dart') { f.x += f.vx * step; f.y += f.vy * step; return; }
-  const sp = f.kind === 'boss' ? 1.15 : f.kind === 'shard' ? 2.4 + s.wave * 0.08 : f.kind === 'split' ? 1.25 + s.wave * 0.05 : 1.55 + s.wave * 0.1;
+  if (f.kind === 'dart' || f.kind === 'bolt') { f.x += f.vx * step; f.y += f.vy * step; return; }
+  if (f.kind === 'boss') return bossAct(s, f, step);
+  const sp = f.kind === 'shard' ? 2.4 + s.wave * 0.08 : f.kind === 'split' ? 1.25 + s.wave * 0.05 : 1.55 + s.wave * 0.1;
   const d = hypot(s.you.x - f.x, s.you.y - f.y);
   f.vx = (s.you.x - f.x) / d * sp; f.vy = (s.you.y - f.y) / d * sp;
   f.x += f.vx * step; f.y += f.vy * step; f.spin += f.vr;
-  if (f.kind === 'boss' && s.tick % 46 === 0) spawn(s, 'dart', { x: f.x, y: f.y });
 }
 function threat(s, p) {
   let f = null, best = 1e9;
   for (const e of s.foes) if (e.on) {
-    const d = hypot(e.x - p.x, e.y - p.y), w = e.kind === 'dart' ? d * 0.55 : d;
+    const d = hypot(e.x - p.x, e.y - p.y), w = e.kind === 'boss' ? d * 0.7 : e.kind === 'dart' || e.kind === 'bolt' ? d * 0.5 : d;
     if (w < best) { best = w; f = e; }
   }
   return { f, best };
@@ -90,6 +113,11 @@ function pilot(s, input) {
     else if (t.f && t.best < 240) { ax = away(p, t.f).ax; ay = away(p, t.f).ay; }
     else { ax = Math.cos(s.tick / 24); ay = Math.sin(s.tick / 37); scale = 0.8; }
     if ((p.spread || p.shield) && !s.shown) { s.shown = 1; s.shownAt = s.tick; }
+  } else if (input.bot === 'film') {
+    const late = s.tick > 4200;
+    if (late) { ax = Math.sin(s.tick / 26); ay = 0.2; scale = 0.08; }
+    else if (t.f && t.best < 230) { ax = away(p, t.f).ax; ay = away(p, t.f).ay; }
+    else { ax = Math.cos(s.tick / 22); ay = Math.sin(s.tick / 34); scale = 0.8; }
   } else if (input.bot === 'verse') {
     scale = 0.55;
     if (t.f && t.best < 100) { ax = p.x - t.f.x; ay = p.y - t.f.y; } else { ax = Math.cos(s.tick / 34); ay = Math.sin(s.tick / 51); }
@@ -102,10 +130,23 @@ function pilot(s, input) {
   p.vx = clamp(p.vx * 0.88, -6.4, 6.4); p.vy = clamp(p.vy * 0.88, -6.4, 6.4);
   p.x = clamp(p.x + p.vx, 30, W - 30); p.y = clamp(p.y + p.vy, 30, H - 30);
 }
+function shock(s, power) {
+  const p = s.you;
+  for (const f of s.foes) if (f.on) {
+    const dx = f.x - p.x, dy = f.y - p.y, d = Math.hypot(dx, dy) || 1;
+    const reach = f.r + (f.kind === 'boss' ? 80 : 120);
+    if (d < reach) { const push = (f.kind === 'boss' ? 28 : 14) * power; f.x += dx / d * push; f.y += dy / d * push; }
+  }
+  if (power > 1) for (let i = 0; i < 18; i++) {
+    const a = i / 18 * 6.283;
+    s.bits.push({ x: p.x, y: p.y, vx: Math.cos(a) * 8, vy: Math.sin(a) * 8, life: 18, size: 4, color: '#e7fffd' });
+  }
+}
 function hurt(s) {
   const p = s.you;
-  if (p.shield) { p.shield = 0; p.inv = 24; burst(s, p.x, p.y, '#d8fff8', 20, false); return; }
-  p.lives--; p.inv = 70; s.chain = 0; s.mult = 1;
+  shock(s, 2);
+  if (p.shield) { p.shield = 0; p.inv = 90; burst(s, p.x, p.y, '#d8fff8', 20, false); return; }
+  p.lives--; p.inv = 90; s.chain = 0; s.mult = 1;
   burst(s, p.x, p.y, '#ff8d7a', 22, true);
   if (p.lives <= 0) { p.alive = 0; s.mo = 56; burst(s, p.x, p.y, '#7ef6ff', 56, true); s.cue = 'boom'; }
 }
@@ -122,8 +163,9 @@ function rival(seed) {
 export function tick(s, input = {}) {
   if (s.phase === 'over') return s;
   s.clock++; s.sfx = 0; s.cue = '';
-  if (s.phase === 'title') { if (input.fire || input.flap || input.auto || input.bot || input.step || input.left || input.right || input.up || input.down || input.sx || input.sy) s.phase = 'play'; return s; }
+  if (s.phase === 'title') { if (input.fire || input.flap || input.auto || input.bot || input.step || input.dash || input.left || input.right || input.up || input.down || input.sx || input.sy) s.phase = 'play'; return s; }
   s.tick++;
+  if (input.bot === 'film' && s.tick % 70 === 20) input.dash = true;
   s.sx = input.sx || 0; s.sy = input.sy || 0;
   const wave = 1 + (s.tick / 620 | 0);
   if (wave !== s.wave) { s.wave = wave; s.banner = 50; s.boss = 0; }
@@ -132,16 +174,27 @@ export function tick(s, input = {}) {
   const slow = s.mo > 0; if (slow) s.mo--;
   s.shake = Math.max(0, s.shake * 0.86); s.flash = Math.max(0, s.flash - 1);
   if (s.you.alive && !slow) pilot(s, input);
+  if (s.you.alive && !slow && input.dash && s.you.dash <= 0) {
+    const sp = Math.hypot(s.you.vx, s.you.vy);
+    const ux = sp > 0.45 ? s.you.vx / sp : Math.cos(s.you.aim || -1.2);
+    const uy = sp > 0.45 ? s.you.vy / sp : Math.sin(s.you.aim || -1.2);
+    s.you.vx = ux * 17; s.you.vy = uy * 17; s.you.dash = 48;
+    for (let i = 0; i < 10; i++) s.bits.push({ x: s.you.x, y: s.you.y, vx: -ux * (3 + i * 0.8), vy: -uy * (3 + i * 0.8), life: 16, size: 4, color: '#ffffff' });
+    s.cue = 'shot'; s.sfx = 1;
+  }
+  s.you.dash = Math.max(0, s.you.dash - 1);
   if (s.you.alive && s.tick % 2 === 0) s.bits.push({ x: s.you.x - Math.cos(s.you.aim) * 20, y: s.you.y - Math.sin(s.you.aim) * 20, vx: -s.you.vx * 0.2, vy: -s.you.vy * 0.2, life: 12, size: 3, color: '#7ef6ff' });
   const foe = nearest(s);
   if (s.you.alive && !slow) {
-    const ax = Number.isFinite(input.ax) ? input.ax : foe ? foe.x : s.you.x + Math.cos(s.you.aim) * 100;
-    const ay = Number.isFinite(input.ay) ? input.ay : foe ? foe.y : s.you.y + Math.sin(s.you.aim) * 100;
-    shoot(s, ax, ay);
+    const mouse = !!(input.mouse && Number.isFinite(input.ax));
+    const ax = mouse ? input.ax : foe ? foe.x : s.you.x + Math.cos(s.you.aim) * 120;
+    const ay = mouse ? input.ay : foe ? foe.y : s.you.y + Math.sin(s.you.aim) * 120;
+    if (mouse) s.you.aim = Math.atan2(ay - s.you.y, ax - s.you.x);
+    if (!mouse || input.hold) shoot(s, ax, ay);
   }
   s.you.cool = Math.max(0, s.you.cool - 1); s.you.inv = Math.max(0, s.you.inv - 1); s.you.spread = Math.max(0, s.you.spread - 1);
   const quiet = (s.tick % 320) < 16;
-  s.why = s.boss ? 'a heavy crystal has your track' : quiet ? 'a breath, then the next pattern' : 'they are closing from the edges';
+  s.why = s.boss === 1 ? 'a heavy crystal has your track' : quiet ? 'a breath, then the next pattern' : 'they are closing from the edges';
   if (!quiet && s.you.alive && s.tick % Math.max(7, 20 - s.wave) === 0) {
     const roll = rng(s);
     const kind = s.wave >= 3 && roll < 0.34 ? 'dart' : s.wave >= 2 && roll < 0.6 ? 'split' : 'chase';
@@ -150,7 +203,7 @@ export function tick(s, input = {}) {
   if (s.you.alive && s.wave >= 3 && s.tick % 110 === 0) spawn(s, 'dart');
   if (s.you.alive && s.wave % 4 === 0 && !s.boss) spawn(s, 'boss');
   const step = slow ? 0.28 : 1;
-  for (const f of s.foes) if (f.on) { moveFoe(s, f, step); if (f.x < -140 || f.x > W + 140 || f.y < -140 || f.y > H + 140) f.on = 0; }
+  for (const f of s.foes) if (f.on) { moveFoe(s, f, step); if (f.kind !== 'boss' && (f.x < -140 || f.x > W + 140 || f.y < -140 || f.y > H + 140)) f.on = 0; }
   for (const b of s.shots) if (b.on) {
     b.x += b.vx * step; b.y += b.vy * step;
     if (b.x < -20 || b.y < -20 || b.x > W + 20 || b.y > H + 20) b.on = 0;
@@ -158,16 +211,22 @@ export function tick(s, input = {}) {
       b.on = 0; f.hp--;
       if (f.hp <= 0) {
         f.on = 0; s.chain++; s.mult = 1 + Math.min(9, s.chain * 0.5);
-        const pts = Math.round((f.kind === 'boss' ? 50 : 10) * s.mult); s.score.you += pts;
-        s.pops.push({ x: f.x, y: f.y, t: '+' + pts, life: 30 });
-        burst(s, f.x, f.y, f.kind === 'boss' ? '#ffb15a' : '#7ef6ff', f.kind === 'boss' ? 40 : 12, f.kind === 'boss');
+        const pts = Math.round((f.kind === 'boss' ? 400 : 10) * s.mult); s.score.you += pts;
+        s.pops.push({ x: f.x, y: f.y - (f.kind === 'boss' ? 30 : 0), t: '+' + pts, life: f.kind === 'boss' ? 50 : 30 });
+        if (f.kind === 'boss') { s.boss = 2; s.bits.splice(0, Math.max(0, s.bits.length - 30)); }
+        burst(s, f.x, f.y, f.kind === 'boss' ? '#ffb15a' : '#7ef6ff', f.kind === 'boss' ? 80 : 12, f.kind === 'boss');
+        if (f.kind === 'boss') burst(s, f.x, f.y, '#fff6d2', 40, true);
         if (f.kind === 'split') { spawn(s, 'shard', { x: f.x - 14, y: f.y }); spawn(s, 'shard', { x: f.x + 14, y: f.y }); }
         if (f.kind !== 'shard' && rng(s) < 0.22) s.drops.push({ x: f.x, y: f.y, vx: (rng(s) - 0.5) * 0.8, vy: (rng(s) - 0.5) * 0.8, kind: rng(s) < 0.5 ? 'spread' : 'shield', on: 1 });
       } else burst(s, b.x, b.y, '#fff6d2', 5, false);
     }
   }
+  if (s.you.alive && s.you.inv) shock(s, 0.35);
   if (s.you.alive && !s.you.inv) {
-    for (const f of s.foes) if (f.on && hypot(f.x - s.you.x, f.y - s.you.y) < f.r + 18) { f.on = 0; hurt(s); break; }
+    for (const f of s.foes) if (f.on && hypot(f.x - s.you.x, f.y - s.you.y) < f.r + (f.kind === 'boss' ? 8 : 18)) {
+      if (f.kind !== 'boss') f.on = 0;
+      hurt(s); break;
+    }
     for (const d of s.drops) if (d.on && hypot(d.x - s.you.x, d.y - s.you.y) < 30) {
       d.on = 0; if (d.kind === 'spread') s.you.spread = 480; else s.you.shield = 1; s.cue = 'shot'; s.sfx = 1;
     }
@@ -205,9 +264,21 @@ function hull(g, x, y, aim, tick, shield) {
 }
 function foeDraw(g, f) {
   g.save(); g.translate(f.x, f.y); g.rotate(f.spin);
-  const col = f.kind === 'boss' ? '#ffb15a' : f.kind === 'dart' ? '#ff7a8a' : f.kind === 'split' ? '#d2b0ff' : f.kind === 'shard' ? '#f2eeff' : '#f0c36a';
-  g.fillStyle = col; g.shadowColor = col; g.shadowBlur = f.kind === 'boss' ? 28 : 14;
-  if (f.kind === 'dart') { g.beginPath(); g.moveTo(f.r + 8, 0); g.lineTo(-f.r, 7); g.lineTo(-f.r, -7); g.fill(); }
+  if (f.kind === 'boss') {
+    g.fillStyle = '#ffb15a'; g.shadowColor = '#ffb15a'; g.shadowBlur = 36;
+    g.beginPath(); g.moveTo(0, -f.r); g.lineTo(f.r * 0.55, -f.r * 0.35); g.lineTo(f.r * 0.85, f.r * 0.15); g.lineTo(f.r * 0.3, f.r); g.lineTo(-f.r * 0.35, f.r * 0.82); g.lineTo(-f.r * 0.8, f.r * 0.05); g.lineTo(-f.r * 0.45, -f.r * 0.45); g.closePath(); g.fill();
+    g.shadowBlur = 0; g.fillStyle = 'rgba(255,248,220,.95)'; g.beginPath(); g.moveTo(0, -f.r * 0.45); g.lineTo(f.r * 0.16, 0); g.lineTo(0, f.r * 0.38); g.lineTo(-f.r * 0.16, 0); g.fill();
+    const crack = 1 - f.hp / f.max; g.strokeStyle = '#3a1a08'; g.lineWidth = 4;
+    if (crack > 0.12) { g.beginPath(); g.moveTo(-8, -30); g.lineTo(22, 16); g.stroke(); }
+    if (crack > 0.4) { g.beginPath(); g.moveTo(16, -36); g.lineTo(-24, 20); g.stroke(); }
+    if (crack > 0.68) { g.beginPath(); g.moveTo(0, -50); g.lineTo(6, 44); g.stroke(); }
+    if (f.pat >= 104 && f.pat < 126) { g.strokeStyle = '#fff6d2'; g.globalAlpha = 0.9; g.lineWidth = 3; g.beginPath(); g.arc(0, 0, f.r + 14, 0, 7); g.stroke(); }
+    g.restore();
+    return;
+  }
+  const col = f.kind === 'bolt' ? '#ffd2a8' : f.kind === 'dart' ? '#ff7a8a' : f.kind === 'split' ? '#d2b0ff' : f.kind === 'shard' ? '#f2eeff' : '#f0c36a';
+  g.fillStyle = col; g.shadowColor = col; g.shadowBlur = 14;
+  if (f.kind === 'dart' || f.kind === 'bolt') { g.beginPath(); g.moveTo(f.r + 8, 0); g.lineTo(-f.r, 7); g.lineTo(-f.r, -7); g.fill(); }
   else {
     g.beginPath(); g.moveTo(0, -f.r); g.lineTo(f.r * 0.62, -f.r * 0.1); g.lineTo(f.r * 0.35, f.r); g.lineTo(-f.r * 0.35, f.r); g.lineTo(-f.r * 0.62, -f.r * 0.1); g.closePath(); g.fill();
     g.shadowBlur = 0; g.fillStyle = 'rgba(255,250,230,.9)'; g.beginPath(); g.moveTo(0, -f.r * 0.62); g.lineTo(f.r * 0.14, 0); g.lineTo(0, f.r * 0.4); g.lineTo(-f.r * 0.14, 0); g.fill();
@@ -217,7 +288,8 @@ function foeDraw(g, f) {
 export function draw(g, s) {
   s.anim = (s.anim || 0) + 1;
   if (g.canvas) {
-    const tag = (s.mo > 0 ? 'mo' : s.phase) + s.you.lives + (s.you.shield ? 's' : '') + (s.you.spread > 0 ? 'p' : '');
+    const bossOn = s.foes.some((f) => f.on && f.kind === 'boss');
+    const tag = (s.mo > 0 ? 'mo' : s.phase) + s.you.lives + (s.you.shield ? 's' : '') + (bossOn ? 'B' : '') + (s.you.dash > 36 ? 'D' : '');
     if (g.canvas.dataset.tag !== tag) g.canvas.dataset.tag = tag;
   }
   if (s.cue && typeof window !== 'undefined') hear(s.cue);
@@ -233,6 +305,14 @@ export function draw(g, s) {
   g.globalAlpha = 1;
   if (s.flash) { g.fillStyle = 'rgba(255,210,190,' + (s.flash / 26) + ')'; g.fillRect(0, 0, W, H); }
   for (const f of s.foes) foeDraw(g, f);
+  const boss = s.foes.find((f) => f.on && f.kind === 'boss');
+  if (boss) {
+    const bw = boss.r * 2;
+    g.fillStyle = 'rgba(8,6,18,.75)'; g.fillRect(boss.x - bw / 2 - 3, boss.y - boss.r - 22, bw + 6, 12);
+    g.fillStyle = '#ffb15a'; g.fillRect(boss.x - bw / 2, boss.y - boss.r - 19, bw * boss.hp / boss.max, 6);
+    g.fillStyle = 'rgba(8,6,18,.72)'; g.fillRect(W / 2 - 150, 70, 300, 22);
+    g.fillStyle = '#ffb15a'; g.fillRect(W / 2 - 146, 74, 292 * boss.hp / boss.max, 14);
+  }
   for (const d of s.drops) {
     g.save(); g.translate(d.x, d.y); g.fillStyle = d.kind === 'spread' ? '#7ef6ff' : '#d8fff8'; g.shadowColor = g.fillStyle; g.shadowBlur = 16;
     g.beginPath(); g.arc(0, 0, 12, 0, 7); g.fill(); g.restore();
@@ -253,7 +333,7 @@ export function draw(g, s) {
     g.globalAlpha = Math.min(1, s.banner / 22); g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 40px ui-sans-serif, system-ui, sans-serif';
     g.fillText(s.boss ? 'HEAVY CRYSTAL' : 'WAVE ' + s.wave, W / 2, 120); g.textAlign = 'left'; g.globalAlpha = 1;
   }
-  if (s.phase === 'title') plate(g, 'DEBRIS FIELD', 'Arrows to move. Shots find a target. They come from every edge.', 1);
+  if (s.phase === 'title') plate(g, 'DEBRIS FIELD', 'Arrows move. Hold the button to fire. Shift or space dashes.', 1);
   if (s.phase === 'over') plate(g, s.over === 'you' ? 'YOU BEAT VERSE' : 'RUN OVER', 'you ' + s.score.you + '    Verse ' + s.ghost + '    ·    space or tap to play again', Math.min(1, s.anim / 16));
   g.restore();
 }
@@ -271,7 +351,9 @@ function hud(g, s) {
     else { g.globalAlpha = 0.7; g.strokeStyle = '#4fe3e3'; g.lineWidth = 2; g.strokeRect(36.5 + i * 28, H - 39.5, 17, 6); }
   }
   g.globalAlpha = 1;
-  if (s.you.spread > 0) { g.fillStyle = '#7ef6ff'; g.font = '16px ui-sans-serif, system-ui, sans-serif'; g.fillText('SPREAD', 36, H - 56); }
+  g.fillStyle = s.you.dash > 0 ? 'rgba(79,227,227,.45)' : '#7ef6ff';
+  g.fillRect(148, H - 40, 56 * (s.you.dash > 0 ? Math.max(0.08, 1 - s.you.dash / 48) : 1), 7);
+  g.fillStyle = '#d8fff8'; g.font = '14px ui-sans-serif, system-ui, sans-serif'; g.fillText(s.you.dash > 0 ? 'DASH' : 'DASH READY', 148, H - 48);
 }
 function plate(g, title, sub, fade) {
   g.globalAlpha = 0.55 * fade; g.fillStyle = '#07060f'; g.fillRect(0, H / 2 - 100, W, 200);
@@ -290,4 +372,4 @@ function hear(kind) {
     o.start(); o.stop(hear.ac.currentTime + (kind === 'boom' ? 0.2 : 0.03));
   } catch (_) { /* silent */ }
 }
-export const how = 'One ship. Arrows or WASD move it. Shots aim themselves, or follow the pointer. On a phone, the left stick moves and the guns stay hot. Chasers, darts and splitters come in from every edge. A heavy crystal is the wave boss. Three lives. A shield takes the hit that would have cost one. The multiplier climbs with kills and drops when you are hit. Verse is the ghost score for this field, not another ship.';
+export const how = 'One ship. Arrows or WASD move it. On a desktop the pointer aims and holding the button fires. A touch stick moves and the guns stay hot. Shift or space dashes, then it has to cool. Chasers, darts and splitters come in from every edge. A heavy crystal is the wave boss. Three lives, and a hit leaves you clear for a moment. A shield takes the hit that would have cost one. The multiplier climbs with kills and drops when you are hit. Verse is the ghost score for this field, not another ship.';
