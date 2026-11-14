@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-05T10:00:13Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2425,
-   "failed": [
-    {
-     "ask": "what time is it",
-     "why": [
-      "slow 14242 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T10:29:49Z",
   "kind": "visitor",
   "visitor": {
@@ -7522,5 +7504,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"cross the bus\" (skill:cross-bus)"
+ },
+ {
+  "at": "2026-11-14T14:29:24Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1212,
+   "failed": [
+    {
+     "ask": "what's the weather in Lakeland FL",
+     "why": [
+      "slow 12238 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
