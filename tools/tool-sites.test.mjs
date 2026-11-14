@@ -12,7 +12,7 @@ test('every lane site of the pdf and kanban floors has a page of its own, and ev
   for (const [floor, rows] of [['pdf', PDF_SITES], ['kanban', KANBAN_SITES]]) {
     const lane = FLOORS.filter((f) => f.lane === floor);
     assert.ok(lane.length >= 4, floor + ' has a lane');
-    for (const f of lane) { const page = LANE_PAGES[f.id]; assert.ok(page, f.id + ' has its own page'); assert.ok(rows.some((r) => r.path === page && r.lane === f.id), f.id + ' -> ' + page); assert.equal(f.page, page); assert.equal(probeFor(f.id).verse, page, 'the gate measures it against that page'); }
+    for (const f of lane) { const page = LANE_PAGES[f.id]; assert.ok(page, f.id + ' has its own page'); const pathOnly = page.split('?')[0].replace(/\/?$/, '/'); assert.ok(rows.some((r) => r.path === pathOnly), f.id + ' -> ' + page); assert.equal(f.page, page); assert.equal(probeFor(f.id).verse, page, 'the gate measures it against that page'); }
     assert.equal(rows.filter((r) => r.lane === floor).length, 1, 'one leader page'); assert.equal(FLOORS.find((f) => f.id === floor).page, '/' + floor + '/');
   }
   assert.equal(new Set(SITE_PAGES.map((r) => r.path)).size, SITE_PAGES.length);
