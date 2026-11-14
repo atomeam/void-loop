@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/debris-boss-dash-bc88 · Debris Field boss, the blink after a hit, and a dash · 2026-11-14 01:45 UTC
 - Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC
 - Cursor cloud agent · cursor/skip-unrebuilt-floors-11ee · the live floor job skips a page that is not checked yet, so an unrebuilt page cannot fail the job · 2026-11-13 23:55 UTC
 - Cursor cloud agent · cursor/no-rival-credit-11ee · public pages no longer name or link the rival; the compare stays on the owner Tower · 2026-11-13 23:40 UTC
@@ -106,6 +105,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Debris Field boss**: a large crystal with a health bar, a shard ring, a charge and cracks, a second and a half of clear air after a hit, a dash, a labeled sound button, and full screen that keeps the nav. https://github.com/atomeam/void-loop/pull/2819
 - **Debris Field**: one ship in open space. Chasers, darts, splitters and a heavy crystal come from every edge. Three lives, a shield that spends a hit, and a multiplier that drops when a life does. Verse is the ghost score. The picture fills the viewport. https://github.com/atomeam/void-loop/pull/2818
 - **Verse Arcade**: twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token Stand). The cabinet lists them, and the games already on the stage stay linked. https://github.com/atomeam/void-loop/pull/2808
 - **Dictionary and QR**: Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801
