@@ -15,8 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/debris-field-feel-bc88 · Debris Field is one ship in open space, with debris from every edge and Verse as a ghost score · 2026-11-14 01:10 UTC
-- Cursor cloud agent · cursor/debris-field-feel-bc88 · Debris Field fills the stage, with the score on the picture, heavier hits, and a longer run · 2026-11-14 01:10 UTC
 - Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC
 - Cursor cloud agent · cursor/skip-unrebuilt-floors-11ee · the live floor job skips a page that is not checked yet, so an unrebuilt page cannot fail the job · 2026-11-13 23:55 UTC
 - Cursor cloud agent · cursor/no-rival-credit-11ee · public pages no longer name or link the rival; the compare stays on the owner Tower · 2026-11-13 23:40 UTC
@@ -107,6 +105,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Debris Field**: one ship in open space. Chasers, darts, splitters and a heavy crystal come from every edge. Three lives, a shield that spends a hit, and a multiplier that drops when a life does. Verse is the ghost score. The picture fills the viewport. https://github.com/atomeam/void-loop/pull/2818
 - **Verse Arcade**: twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token Stand). The cabinet lists them, and the games already on the stage stay linked. https://github.com/atomeam/void-loop/pull/2808
 - **Dictionary and QR**: Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801
 - **Owner pass on the beacon**: the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800
