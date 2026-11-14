@@ -12,27 +12,18 @@ it by hand, edit the code instead.
 
 _Read from /api/reflect on 2026-11-14. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Complete the flightconnections.com journeys by building the missing jobs. (daily, 2026-11-14) `ask-20261114-0017-1`
-- Fix the card export overflow in the card capture. (daily, 2026-11-14) `ask-20261114-0017-2`
-- Fix the podcasts exam failures regarding episode selection and audio playback. *(small)* (daily, 2026-11-14) `ask-20261114-0017-3`
-- Fix the weather exam failures for speed, skill, and temperature accuracy. (after a build, 2026-11-13) `ask-20261113-2348-3`
-- Fix the factorial(0) code exam to ensure it returns 1. *(small)* (after a build, 2026-11-13) `ask-20261113-2255-3`
-- Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores. (after a build, 2026-11-13) `ask-20261113-2026-3`
-- Fix the timer skill to handle relative time requests like 'add one minute'. *(small)* (after a build, 2026-11-13) `ask-20261113-2007-3`
-- Update the Bridge card logic to handle cases with fewer than two staged inputs. *(small)* (daily, 2026-11-13) `ask-20261113-1234-3`
+- Fix the factorial(0) code exam to ensure it returns 1. *(small)* (daily, 2026-11-14) `ask-20261114-2255-2`
+- Fix the weather exam failures for speed, skill, and temperature accuracy. (daily, 2026-11-14) `ask-20261114-2255-3`
+- Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores. *(small)* (after a build, 2026-11-14) `ask-20261114-2247-3`
+- Update the Bridge card logic to handle cases with fewer than two staged inputs. *(small)* (after a build, 2026-11-12)
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261114-0017-1` queued, not decided yet
-- `ask-20261114-0017-2` queued, not decided yet
-- `ask-20261114-0017-3` queued, not decided yet
-- `ask-20261113-2348-3` queued, not decided yet
-- `ask-20261113-2255-3` queued, not decided yet
-- `ask-20261113-2026-3` queued, not decided yet
-- `ask-20261113-2007-3` queued, not decided yet
-- `ask-20261113-1234-3` queued, not decided yet
+- `ask-20261114-2255-2` queued, not decided yet
+- `ask-20261114-2255-3` queued, not decided yet
+- `ask-20261114-2247-3` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -11532,6 +11523,366 @@ Asks: "Complete the flightconnections.com journeys by building the missing jobs.
 > **Next video trick:** A glitch-transition effect where a card appears to fragment into digital noise before resolving.
 
 Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the podcasts exam failures regarding episode selection and audio playback." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T10:52:04.167Z -->
+### 2026-11-14 10:52 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 388 entries following recent updates to Gap Glide and Debris Field [S1]. Operational focus is directed toward 15 open journeys for flightconnections.com [S1]. System stability is currently impacted by a code exam failure for factorial(0) and an ongoing card export overflow in the card capture mechanism [S2].
+>
+> **How I would make it better:** The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1]. The factorial(0) code exam must be fixed to ensure it returns 1 instead of 93.3 [S1].
+>
+> **Weakest operational area:** The factorial(0) code exam is currently failing with a score of 93.3 [S1].
+>
+> **Next targeted capability:** Complete the 15 open journeys for flightconnections.com [S1].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1 instead of 93.3." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T11:48:18.165Z -->
+### 2026-11-14 11:48 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries following recent updates to Gap Glide and Debris Field [S1]. Operational focus is directed toward 15 open journeys for flightconnections.com [S1]. System stability is currently impacted by a code exam failure for factorial(0) and an ongoing card export overflow in the card capture mechanism [S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be fixed to ensure it returns 1 instead of 93.3 [S1]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1].
+>
+> **Next video trick:** Implement a transition where a note's [[links]] open the note in the notebook via a single tap [growth].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1 instead of 93.3." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T13:47:32.683Z -->
+### 2026-11-14 13:47 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries, including recent updates to Gap Glide and Debris Field [S1]. Operational focus is centered on 15 open journeys for flightconnections.com [S1]. System stability is currently hindered by a code exam failure where factorial(0) returns 93.3 instead of 1, and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be fixed to return 1 [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2].
+>
+> **Next video trick:** Learn to implement a custom shader for a 'void-breaker' effect to use in future arcade clips [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T14:31:23.230Z -->
+### 2026-11-14 14:31 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: nightly". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries, including the recent Debris Field and Gap Glide updates [S1]. Operational focus is currently directed toward 15 open journeys for flightconnections.com [S1]. System stability is limited by a factorial(0) code exam failure and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be fixed to return 1 [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2].
+>
+> **Next video trick:** Learn a new video effect for clips that demonstrates the 'stage-fx' or 'zoom-figure' capabilities [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T14:31:28.651Z -->
+### 2026-11-14 14:31 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 388 entries, including recent updates to Debris Field and Gap Glide [S1]. Operational focus is currently directed toward 15 open journeys for flightconnections.com [S1]. System stability is limited by a factorial(0) code exam failure and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be fixed to return 1 [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2].
+>
+> **Weakest operational area:** The weakest operational areas are the card capture mechanism with an export overflow asked 59 times, and the factorial(0) code exam asked 32 times [S3].
+>
+> **Next targeted capability:** Complete the 15 open journeys for flightconnections.com to move toward the next target [S1].
+>
+> **Next video trick:** Learn a glitch-transition effect for new video clips [N/A]
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T16:05:58.678Z -->
+### 2026-11-14 16:05 UTC · after a build
+
+**Asked:** This just shipped: "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries, including recent updates to Debris Field and Gap Glide [S1]. Operational focus is currently directed toward 15 open journeys for flightconnections.com [S1]. System stability is limited by a factorial(0) code exam failure and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be fixed to return 1 [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2]. The card export overflow in the card capture mechanism needs resolution [S1, S2].
+>
+> **Next video trick:** Learn to implement a custom shader effect for the 'dim-void' or 'merge-void' skills to improve stage visual transitions.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T18:57:50.898Z -->
+### 2026-11-14 18:57 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries, including recent updates to Debris Field and Gap Glide [S1]. Operational focus is currently directed toward 15 open journeys for flightconnections.com [S1]. System stability is limited by a factorial(0) code exam failure and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be fixed to return 1 [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2]. The card export overflow in the card capture mechanism needs resolution [S1, S2].
+>
+> **Next video trick:** Learn to create a real-world physics simulation of a card being thrown through a ring for video clips.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T18:57:59.438Z -->
+### 2026-11-14 18:57 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 388 entries, including recent updates to Debris Field and Gap Glide [S1]. Operational focus is currently directed toward 15 open journeys for flightconnections.com [S1]. System stability is limited by a factorial(0) code exam failure and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2]. The factorial(0) code exam must be fixed to return 1 [S1, S2].
+>
+> **Weakest operational area:** The weakest operational area is the card capture mechanism, which has an ongoing card export overflow asked 60 times [S3].
+>
+> **Next targeted capability:** The next targeted capability is completing the 15 open journeys for flightconnections.com [S1].
+>
+> **Next video trick:** The system should learn to perform a seamless object-to-motion transition for 3D models [forge].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:17:22.000Z -->
+### 2026-11-14 22:17 UTC · after a build
+
+**Asked:** This just shipped: "fix card export: cap body for PNG, deduplicate clipboard; remove heavy-lifting hype". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 388 entries [S1]. Operational focus is directed toward 15 open journeys for flightconnections.com [S1]. System stability is currently impacted by a factorial(0) code exam failure and an ongoing card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2]. The factorial(0) code exam must be fixed to return 1 [S1, S2].
+>
+> **Next video trick:** Learn a new way to generate video-gen stage-fx using local-inference [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:17:30.802Z -->
+### 2026-11-14 22:17 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 388 entries [S1]. Operational focus is centered on 15 open journeys for flightconnections.com [S1]. System stability is currently hindered by a factorial(0) code exam failure and a card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be corrected to return 1 [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2].
+>
+> **Weakest operational area:** The card capture mechanism is experiencing an export overflow, which has been requested 59 times [S3].
+>
+> **Next targeted capability:** The next targeted capability is to fix the sports exam for the lakers score to address its 91.7 rating, which was the lowest [S1].
+>
+> **Next video trick:** The system does not currently have a requested video trick for its own clips in the provided facts.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:20:54.115Z -->
+### 2026-11-14 22:20 UTC · after a build
+
+**Asked:** This just shipped: "update self.json: remove heavy-lifting hype from open ask". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 388 entries [S1]. Operational focus is currently on 15 open journeys for flightconnections.com [S1]. System stability is hindered by a factorial(0) code exam failure and a card export overflow in the card capture mechanism [S1, S2].
+>
+> **How I would make it better:** The factorial(0) code exam must be corrected to return 1, and the card export overflow must be resolved [S1, S2]. The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2].
+>
+> **Next video trick:** Learn a new video transition that uses a glitch effect to move between different card views [no fact support].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:29:27.464Z -->
+### 2026-11-14 22:29 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries [S1]. Operational focus is directed toward 15 open journeys for flightconnections.com [S1]. Recent shipping includes the 'Tower gate: versus measured' capability [S1].
+>
+> **How I would make it better:** The weather exam requires stabilization to improve its 57.5 score across speed, skill, and temperature accuracy [S1, S2]. The sports exam must be fixed to address the failure regarding the lakers score [S1].
+>
+> **Next video trick:** Learn a new video transition effect for cinematic clips to enhance the films skill [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Fix the card export overflow in the card capture mechanism." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:32:22.875Z -->
+### 2026-11-14 22:32 UTC · after a build
+
+**Asked:** This just shipped: "mark card-share ellipsis as ellipsis-ok". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries [S1]. Operational focus remains on 15 open journeys for flightconnections.com [S1]. The weather exam is unstable with a score of 57.5, and the sports exam failed to pass the board due to the Lakers score query [S1].
+>
+> **How I would make it better:** The sports exam needs a fix to pass the Lakers score query [S1]. The weather exam requires stabilization to improve its score across speed, skill, and temperature accuracy [S1].
+>
+> **Next video trick:** Create a seamless transition effect between two different 3D card miniatures in the arcade [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:37:57.768Z -->
+### 2026-11-14 22:37 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries [S1]. Operational focus is on 15 open journeys for flightconnections.com [S1]. The sports exam scored 91.7, failing the board due to a Lakers score query failure [S1]. The weather exam is unstable with a score of 57.5 [S1].
+>
+> **How I would make it better:** The weather exam requires stabilization to improve scores across speed, skill, and temperature accuracy [S1]. The sports exam needs a specific fix for the Lakers score failure to pass the board [S1].
+>
+> **Next video trick:** Learn a new video transition effect for use in upcoming film-metadata clips [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:41:01.659Z -->
+### 2026-11-14 22:41 UTC · after a build
+
+**Asked:** This just shipped: "filter built wants out of self-context what-is-next feed". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries [S1]. Operational focus is currently on 15 open journeys for flightconnections.com [S1]. The sports exam scored 91.7, failing the board due to a Lakers score query failure [S1], while the weather exam is unstable at 57.5 [S1].
+>
+> **How I would make it better:** Stabilize the weather exam to improve performance across speed, skill, and temperature accuracy [S1]. The sports exam requires a specific fix for the Lakers score failure to pass the board [S1].
+>
+> **Next video trick:** Learn a new video effect to enhance the visual quality of its own clips [S1].
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:44:09.623Z -->
+### 2026-11-14 22:44 UTC · after a build
+
+**Asked:** This just shipped: "fix films guard: match actual 'Verse Films' casing on /films/". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries. Operational focus remains on 15 open journeys for flightconnections.com. The sports exam is at 91.7 due to a Lakers score query failure, and the weather exam is unstable at 57.5.
+>
+> **How I would make it better:** Stabilize the weather exam to improve performance across speed, skill, and temperature accuracy. Fix the factorial(0) code exam to ensure it returns 1.
+>
+> **Next video trick:** Learn a seamless card-to-stage transition effect for video clips.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:47:01.104Z -->
+### 2026-11-14 22:47 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries. Operational focus is on 15 open journeys for flightconnections.com. The sports exam is at 91.7 due to a Lakers score query failure, and the weather exam is unstable at 57.5.
+>
+> **How I would make it better:** Stabilize the weather exam to improve performance across speed, skill, and temperature accuracy. Fix the factorial(0) code exam to ensure it returns 1.
+>
+> **Next video trick:** Learn to use a lens flare or light leak overlay in video clips to add cinematic texture to stage-fx.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:50:01.214Z -->
+### 2026-11-14 22:50 UTC · after a build
+
+**Asked:** This just shipped: "fix scores: resolve Yankees/Chiefs/Packers team names with aliases and feed fallback". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries. Operational focus is currently on 15 open journeys for flightconnections.com. The sports exam scored 91.7, hampered by a Lakers score query failure, while the weather exam remains unstable at 57.5. Recent deployment resolved team name aliases for Yankees, Chiefs, and Packers to improve score reliability.
+>
+> **How I would make it better:** Stabilize the weather exam to improve performance across speed, skill, and temperature accuracy. Resolve the factorial(0) code exam to ensure it returns 1. Complete the 15 open journeys for flightconnections.com to reach the next site target.
+>
+> **Next video trick:** Implement a seamless transition between manual card play and automated stage-style arrangements for video clips.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize the weather exam for speed, skill, and temperature accuracy."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:55:17.285Z -->
+### 2026-11-14 22:55 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 388 entries. Operational focus is currently on 15 open journeys for flightconnections.com. The sports exam scored 91.7, hampered by a Lakers score query failure, while the weather exam remains unstable at 57.5. Recent deployment resolved team name aliases for Yankees, Chiefs, and Packers to improve score reliability.
+>
+> **How I would make it better:** The sports exam must be fixed by resolving the 'lakers score' failure. The weather exam needs stabilization for speed, skill, and temperature accuracy. The factorial(0) code exam must be resolved to return 1.
+>
+> **Next video trick:** Learn a video transition that uses a mask to reveal a 3D miniature from the forge.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize the weather exam for speed, skill, and temperature accuracy."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T22:55:36.887Z -->
+### 2026-11-14 22:55 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 388 entries. Operational focus is on 15 open journeys for flightconnections.com. The sports exam scored 91.7, limited by a Lakers score failure, while the weather exam remains unstable at 57.5. Recent deployments improved team name aliases for Yankees, Chiefs, and Packers.
+>
+> **How I would make it better:** The weather exam requires stabilization for speed, skill, and temperature accuracy. The factorial(0) code exam must be updated to return 1.
+>
+> **Weakest operational area:** The weather exam is currently the weakest performing area with a score of 57.5.
+>
+> **Next targeted capability:** Complete the 15 open journeys for flightconnections.com to meet the current target.
+>
+> **Next video trick:** A seamless match-cut between two different 3D models in the forge.
+
+Asks: "Complete the 15 open journeys for flightconnections.com."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize the weather exam for speed, skill, and temperature accuracy."
 
 *Verse flagged this one for Adam.*
 
