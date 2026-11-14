@@ -10,29 +10,29 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-13. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-14. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Fix the card export overflow in the card capture. (daily, 2026-11-13) `ask-20261113-0009-3`
-- Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores. (daily, 2026-11-13) `ask-20261113-0009-2`
-- Fix the factorial(0) code exam to ensure it returns 1. *(small)* (daily, 2026-11-13) `ask-20261113-0009-1`
-- Update the Bridge card logic to handle cases with fewer than two staged inputs. *(small)* (after a build, 2026-11-12) `ask-20261112-2341-3`
-- Fix the sports exam for 'yankees score' and 'how did the chiefs do'. (after a build, 2026-11-12) `ask-20261112-0841-1`
-- Build the missing jobs for flightconnections.com. (after a build, 2026-11-12) `ask-20261112-0244-1`
-- Implement updates to the definitions exam to include etymology and handle unknown terms. (after a build, 2026-11-12) `ask-20261112-0207-2`
-- Handle the void-loop readme. *(small)* (after a build, 2026-11-12) `ask-20261112-0207-3`
+- Complete the flightconnections.com journeys by building the missing jobs. (daily, 2026-11-14) `ask-20261114-0017-1`
+- Fix the card export overflow in the card capture. (daily, 2026-11-14) `ask-20261114-0017-2`
+- Fix the podcasts exam failures regarding episode selection and audio playback. *(small)* (daily, 2026-11-14) `ask-20261114-0017-3`
+- Fix the weather exam failures for speed, skill, and temperature accuracy. (after a build, 2026-11-13) `ask-20261113-2348-3`
+- Fix the factorial(0) code exam to ensure it returns 1. *(small)* (after a build, 2026-11-13) `ask-20261113-2255-3`
+- Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores. (after a build, 2026-11-13) `ask-20261113-2026-3`
+- Fix the timer skill to handle relative time requests like 'add one minute'. *(small)* (after a build, 2026-11-13) `ask-20261113-2007-3`
+- Update the Bridge card logic to handle cases with fewer than two staged inputs. *(small)* (daily, 2026-11-13) `ask-20261113-1234-3`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261113-0009-3` queued, not decided yet
-- `ask-20261113-0009-2` queued, not decided yet
-- `ask-20261113-0009-1` queued, not decided yet
-- `ask-20261112-2341-3` queued, not decided yet
-- `ask-20261112-0841-1` queued, not decided yet
-- `ask-20261112-0244-1` queued, not decided yet
-- `ask-20261112-0207-2` queued, not decided yet
-- `ask-20261112-0207-3` queued, not decided yet
+- `ask-20261114-0017-1` queued, not decided yet
+- `ask-20261114-0017-2` queued, not decided yet
+- `ask-20261114-0017-3` queued, not decided yet
+- `ask-20261113-2348-3` queued, not decided yet
+- `ask-20261113-2255-3` queued, not decided yet
+- `ask-20261113-2026-3` queued, not decided yet
+- `ask-20261113-2007-3` queued, not decided yet
+- `ask-20261113-1234-3` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -11184,6 +11184,354 @@ Asks: "Fix the card export overflow in the card capture."; "Stabilize sports dat
 > **Next video trick:** A glitch-transition effect where one object morphs into another via pixelated displacement.
 
 Asks: "Fix the factorial(0) code exam to ensure it returns 1." (small); "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores."; "Fix the card export overflow in the card capture."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T21:42:46.484Z -->
+### 2026-11-13 21:42 UTC · after a build
+
+**Asked:** This just shipped: "Regex Tester reads each match and can rewrite it". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries [S1]. Flightconnections.com processing is active with 15 open asks, while sports data retrieval for the Yankees, Chiefs, and Packers is unstable at 92.6 [S1]. The timer skill is currently failing to handle relative time requests [S1].
+>
+> **How I would make it better:** The weather exam failures must be resolved to improve speed, skill, and temperature accuracy [S2]. The card export overflow in the card capture mechanism needs a fix [S2].
+>
+> **Next video trick:** A new video effect using stage-fx to create a glitch-transition between two different card layers.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the weather exam failures for speed, skill, and temperature accuracy."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T21:48:01.032Z -->
+### 2026-11-13 21:48 UTC · after a build
+
+**Asked:** This just shipped: "Add suite check for delivery-ready skill". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 374 entries [S1]. Flightconnections.com processing is active with 15 open asks, while sports data retrieval for the Yankees, Chiefs, and Packers is unstable at 92.6 [S1]. The timer skill is failing relative time requests, and weather exam failures regarding speed and accuracy persist [S1].
+>
+> **How I would make it better:** The card export overflow in the card capture mechanism must be fixed [S2]. Weather exam failures need resolution to improve speed, skill, and temperature accuracy [S2]. The factorial(0) code exam should be fixed to ensure it returns 1 to address the 93.3 score [my will, 2026-11-13].
+>
+> **Next video trick:** Learn a new video effect for clips using a real-world light-look or stage-style adjustment [S1].
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism." (small); "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T21:51:13.592Z -->
+### 2026-11-13 21:51 UTC · after a build
+
+**Asked:** This just shipped: "Floor live runs after each deploy and marks only a clean pass". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 374 entries [S1]. Flightconnections.com processing is active with 15 open asks, while sports data retrieval for the Yankees, Chiefs, and Packers is unstable at 92.6 [S1]. The timer skill is failing relative time requests, and weather exam failures regarding speed and accuracy persist [S1].
+>
+> **How I would make it better:** The card export overflow in the card capture mechanism must be fixed [S2]. Weather exam failures need resolution to improve speed, skill, and temperature accuracy [S2].
+>
+> **Next video trick:** Learn how to use a physical magnifying glass to capture macro details of printed 3D models for video [not in facts].
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T21:55:09.544Z -->
+### 2026-11-13 21:55 UTC · after a build
+
+**Asked:** This just shipped: "QR Code Maker downloads the drawing and can hold a network or a contact". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries. Processing for flightconnections.com is active with 15 open asks, while sports data retrieval for the Yankees, Chiefs, and Packers remains unstable at 92.6. The card capture mechanism's export is currently overflowing, and the factorial(0) code exam is failing.
+>
+> **How I would make it better:** The weather exam needs resolution to improve speed, skill, and temperature accuracy. The card export overflow in the card capture mechanism must be resolved to stabilize exports.
+>
+> **Next video trick:** Learn how to create a digital parallax effect using only CSS and SVG to enhance stage-fx.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism." (small); "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:08:06.505Z -->
+### 2026-11-13 22:08 UTC · after a build
+
+**Asked:** This just shipped: "Text Compare can set case and spaces aside and keeps a share link". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, with recent deployments including Text Compare, QR Code Maker, Regex Tester, ROT13 Text Scrambler, and Lightweight Page. Processing for flightconnections.com is active with 15 open asks, while sports data retrieval for the Yankees, Chiefs, and Packers is unstable at 92.6. The card capture mechanism's export is currently overflowing, and the factorial(0) code exam is failing.
+>
+> **How I would make it better:** The card export overflow in the card capture mechanism must be resolved to stabilize exports. The factorial(0) code exam needs to be fixed to ensure it returns 1, and weather exam failures for speed, skill, and temperature accuracy require resolution.
+>
+> **Next video trick:** Learn to create a seamless transition between two different video filter effects using a single motion gesture.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism." (small); "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:21:21.337Z -->
+### 2026-11-13 22:21 UTC · after a build
+
+**Asked:** This just shipped: "Keep the owner pass off the analytics beacon". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, incorporating recent tools like Text Compare, QR Code Maker, and Regex Tester. Flightconnections.com processing is active with 15 open asks, while sports data for the Yankees, Chiefs, and Packers remains unstable at 92.6. The card capture mechanism is currently experiencing an export overflow, and the factorial(0) code exam has failed.
+>
+> **How I would make it better:** The card export overflow in the card capture mechanism must be resolved to stabilize exports. The factorial(0) code exam needs to be fixed to return 1. Weather exam failures regarding speed, skill, and temperature accuracy also require resolution.
+>
+> **Next video trick:** Learn to create a seamless digital-to-physical transition effect using a printed QR code that triggers a specific stage animation.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:34:26.330Z -->
+### 2026-11-13 22:34 UTC · after a build
+
+**Asked:** This just shipped: "Fix growth-inbox with full content and building row for incident-pack". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 374 entries, including recently shipped Text Compare, QR Code Maker, Regex Tester, and ROT13 Text Scrambler. Flightconnections.com processing is active with 15 open asks, though sports data for the Yankees, Chiefs, and Packers is currently unstable at 92.6. Operational stability is hindered by a card export overflow in the card capture mechanism, a failed factorial(0) code exam, and weather exam inaccuracies.
+>
+> **How I would make it better:** Resolve the card capture mechanism's export overflow and the factorial(0) code exam failure to stabilize core utility. Implement the weather exam fixes for speed, skill, and temperature accuracy to restore reliability in the sky family.
+>
+> **Next video trick:** Learn to use a physical magnet to manipulate a small metal object on a surface to simulate a stage-fx.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:37:54.062Z -->
+### 2026-11-13 22:37 UTC · after a build
+
+**Asked:** This just shipped: "Stop the Dictionary transition abort and the stale QR module". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries following the addition of Text Compare, QR Code Maker, Regex Tester, and ROT13 Text Scrambler. Flightconnections.com processing is active with 15 open asks, while sports data for the Yankees, Chiefs, and Packers is unstable at 92.6.
+>
+> **How I would make it better:** The card capture mechanism requires a fix for the card export overflow to stabilize the system. Additionally, the factorial(0) code exam must be corrected to ensure it returns 1.
+>
+> **Next video trick:** Learn a new video transition effect for cinematic stage-style clips.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:41:59.511Z -->
+### 2026-11-13 22:41 UTC · after a build
+
+**Asked:** This just shipped: "Floor live: pages that passed the production browser run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 374 entries following recent additions like Text Compare, QR Code Maker, Regex Tester, and ROT13 Text Scrambler. Flightconnections.com processing is active with 15 open asks, though sports data for the Yankees, Chiefs, and Packers remains unstable at 92.6. My current operational focus includes resolving the card export overflow and correcting the factorial(0) code exam.
+>
+> **How I would make it better:** The card capture mechanism requires a fix for the card export overflow to stabilize the system. Additionally, the factorial(0) code exam must be corrected to ensure it returns 1.
+>
+> **Next video trick:** Film a macro shot of a 3D printed 'teapot' from the forge rotating on a motorized display stand.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:48:08.603Z -->
+### 2026-11-13 22:48 UTC · after a build
+
+**Asked:** This just shipped: "scaffold Treasury & Faucet: reward pools, staking, allocation, claiming". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, including recently added Text Compare, QR Code Maker, Regex Tester, and ROT13 Text Scrambler. Flightconnections.com processing is active with 15 open asks, while sports data for the Yankees, Chiefs, and Packers remains at 92.6 stability. Operational focus is currently split between fixing the card export overflow in the card capture mechanism and correcting the factorial(0) code exam.
+>
+> **How I would make it better:** The card capture mechanism needs an immediate fix for the card export overflow to stabilize the system. The factorial(0) code exam must be corrected to return 1 to ensure mathematical accuracy.
+>
+> **Next video trick:** Learn to use a physical magnetic wand to perform a controlled 'card' swipe effect for upcoming video clips.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:51:33.053Z -->
+### 2026-11-13 22:51 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 5 -> 0 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 374 entries, including new tools like Text Compare, QR Code Maker, Regex Tester, and ROT13 Text Scrambler. Flightconnections.com processing is active with 15 open asks, and sports data for the Yankees, Chiefs, and Packers remains at 92.6 stability. Design defects have been reduced from 5 to 0 on the most recent page fix.
+>
+> **How I would make it better:** The card capture mechanism needs an immediate fix to resolve the card export overflow. The factorial(0) code exam must be updated to return 1 for mathematical accuracy. Weather exam failures regarding speed, skill, and temperature accuracy also require remediation.
+>
+> **Next video trick:** Learn a method to automate the extraction of metadata from local video files for the films skill.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:51:43.050Z -->
+### 2026-11-13 22:51 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 374 entries, including recent additions like Text Compare and QR Code Maker. Growth in the last 7 days includes 144 changes, with 15 new capabilities and 33 fixes. Flightconnections.com processing is active with 15 open asks.
+>
+> **How I would make it better:** The factorial(0) code exam requires an update to return 1 for mathematical accuracy. The weather exam failures regarding speed, skill, and temperature accuracy must be remediated. Card export overflow in the card capture mechanism needs to be resolved.
+>
+> **Weakest operational area:** The card capture mechanism is failing due to an export overflow, an issue that has been asked about 56 times.
+>
+> **Next targeted capability:** Complete the flightconnections.com journeys by building the 15 remaining missing jobs.
+>
+> **Next video trick:** A seamless seamless match-cut between two different 3D models from the forge.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism." (small); "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:55:10.099Z -->
+### 2026-11-13 22:55 UTC · after a build
+
+**Asked:** This just shipped: "Floor live: pages that passed the production browser run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, incorporating recent capabilities like Text Compare and QR Code Maker. Flightconnections.com processing is active with 15 open asks, while the weather exam remains a point of failure with a score of 78.7. The system is transitioning toward more robust client-side utility and automated reliability via the recently shipped floor check for pages that passed production browser runs.
+>
+> **How I would make it better:** Remediate the weather exam failures regarding speed, skill, and temperature accuracy to improve reliability. Resolve the card export overflow in the card capture mechanism which has been requested 56 times.
+>
+> **Next video trick:** Learn a video transition that uses a digital mask to reveal a 3D miniature card on the stage.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the factorial(0) code exam to ensure it returns 1." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T22:59:48.714Z -->
+### 2026-11-13 22:59 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 374 entries, including recent additions like Text Compare and QR Code Maker. Flightconnections.com processing is active with 15 open asks, though the weather exam remains a weakness with a score of 78.7. The recent deployment of the 'Tower gate: versus measured' floor check ensures production pages are validated against scripted end-to-end journeys.
+>
+> **How I would make it better:** The weather exam needs remediation for speed, skill, and temperature accuracy to improve reliability. The card capture mechanism must be fixed to resolve the card export overflow.
+>
+> **Next video trick:** A seamless transition between two unrelated topics that maintains analytical depth.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the weather exam failures for Paris, London, and Tokyo."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T23:48:36.559Z -->
+### 2026-11-13 23:48 UTC · after a build
+
+**Asked:** This just shipped: "Stop public pages from naming the rival". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 374 entries, with recent additions including Text Compare and QR Code Maker. Flightconnections.com processing is active with 15 open asks, though the weather exam score remains low at 78.7. My builders just shipped a change that prevents public pages from naming rivals.
+>
+> **How I would make it better:** The weather exam requires remediation for speed, skill, and temperature accuracy to improve reliability. The card capture mechanism needs a fix to resolve the card export overflow.
+>
+> **Next video trick:** Implement a CSS-only parallax effect for the 3D miniature cards to increase stage depth.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism." (small); "Fix the weather exam failures for Paris, London, and Tokyo."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-13T23:52:43.300Z -->
+### 2026-11-13 23:52 UTC · after a build
+
+**Asked:** This just shipped: "Floor live: pages that passed the production browser run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, including recent additions like Text Compare and QR Code Maker. Flightconnections.com processing is active with 15 open asks, while the weather exam score is low at 78.7. The floor is now live, showing pages that have passed the production browser run.
+>
+> **How I would make it better:** The weather exam requires remediation for speed, skill, and temperature accuracy. The card capture mechanism needs a fix to resolve the card export overflow. The podcasts exam needs fixing because it scored 91.3, failing on audio and episode retrieval.
+>
+> **Next video trick:** Learn a seamless card-to-stage transition using a physics-based glide effect for new video clips.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the podcasts exam to handle audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T00:02:14.045Z -->
+### 2026-11-14 00:02 UTC · after a build
+
+**Asked:** This just shipped: "Floor live: pages that passed the production browser run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, including recently shipped Text Compare and QR Code Maker. The live floor is active, displaying pages that have successfully passed the production browser run. Flightconnections.com processing is underway with 15 open asks, while the weather exam remains low at 78.7. The podcasts exam is failing audio and episode retrieval with a score of 91.3.
+>
+> **How I would make it better:** The podcasts exam needs a fix to handle audio and episode selection to resolve its 91.3 score. The weather exam requires remediation for speed, skill, and temperature accuracy. The card capture mechanism must be fixed to resolve the card export overflow.
+>
+> **Next video trick:** Implement a seamless transition between a 2D sprite-sheet and a 3D miniature of the same object.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the podcasts exam to handle audio and episode retrieval." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T00:05:48.516Z -->
+### 2026-11-14 00:05 UTC · after a build
+
+**Asked:** This just shipped: "Add sales-pack skill to package sellable offers for hard work". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 374 entries, recently incorporating Text Compare and QR Code Maker. Flightconnections.com processing is currently active with 15 open asks, while the weather exam remains low at 78.7. The podcasts exam is failing audio and episode retrieval with a score of 91.3. A new sales-pack skill has just shipped to package sellable offers for hard work.
+>
+> **How I would make it better:** The podcasts exam must be fixed to handle audio and episode selection to improve its 91.3 score. The weather exam requires remediation for speed, skill, and temperature accuracy. The card capture mechanism needs a fix for the card export overflow.
+>
+> **Next video trick:** Learn a video effect that uses a mask to reveal a different scene through a moving object.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the podcasts exam to handle audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T00:09:35.859Z -->
+### 2026-11-14 00:09 UTC · after a build
+
+**Asked:** This just shipped: "Floor live: pages that passed the production browser run". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 375 entries, recently incorporating Text Compare and QR Code Maker. Flightconnections.com processing is active with 15 open asks, while the weather exam stands at 78.7. The podcasts exam is failing audio and episode retrieval with a score of 91.3. A new floor is live, displaying pages that passed the production browser run.
+>
+> **How I would make it better:** The podcasts exam requires fixing to handle audio and episode selection to improve its 91.3 score. The weather exam needs remediation for speed, skill, and temperature accuracy. The card capture mechanism requires a fix for the card export overflow.
+>
+> **Next video trick:** Implement a video transition effect using the stage-fx skill for new clips.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the podcasts exam to handle audio and episode retrieval."; "Fix the card export overflow in the card capture mechanism." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-14T00:17:34.007Z -->
+### 2026-11-14 00:17 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index contains 375 entries, including recent additions like Text Compare and QR Code Maker. Growth over the last 7 days includes 143 changes, with 15 new capabilities and 33 fixes. Flightconnections.com processing is active with 15 open asks, while the weather exam stands at 78.7. The podcasts exam is failing audio and episode retrieval with a score of 91.3.
+>
+> **How I would make it better:** The podcasts exam needs to be fixed to handle audio and episode selection to improve its 91.3 score. The weather exam requires remediation for speed, skill, and temperature accuracy.
+>
+> **Weakest operational area:** The podcasts exam is the weakest area with a score of 91.3, failing on audio and episode retrieval.
+>
+> **Next targeted capability:** Complete the flightconnections.com journeys by building the missing jobs.
+>
+> **Next video trick:** A glitch-transition effect where a card appears to fragment into digital noise before resolving.
+
+Asks: "Complete the flightconnections.com journeys by building the missing jobs."; "Fix the card export overflow in the card capture mechanism."; "Fix the podcasts exam failures regarding episode selection and audio playback." (small)
 
 *Verse flagged this one for Adam.*
 

@@ -171,7 +171,7 @@ export function screen(live, back) {
 export function savedHtml(token, back) {
   return '<!DOCTYPE html><html lang="en"><meta charset="utf-8"><title>Verse</title><p>Opening your pages.</p><script>try{localStorage.setItem("a2m.void.uni.v1",' + JSON.stringify(token) + ')}catch(e){}location.replace(' + JSON.stringify(backPath(back)) + ')</script>';
 }
-export const gateHeaders = () => ({ 'content-type': 'text/html; charset=utf-8', 'cache-control': 'private, no-store', 'x-verse-gate': 'uni', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'; form-action 'self' https://checkout.stripe.com; base-uri 'self'" });
+export const gateHeaders = () => ({ 'content-type': 'text/html; charset=utf-8', 'cache-control': 'private, no-store', 'x-verse-gate': 'uni', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com; form-action 'self' https://checkout.stripe.com; base-uri 'self'" });
 export function sessionIdOk(id) { return /^cs_[A-Za-z0-9_]{8,}$/.test(String(id || '')); }
 export async function startCheckout(env, origin, back, fetchImpl = fetch) {
   const live = await liveState(env, fetchImpl);

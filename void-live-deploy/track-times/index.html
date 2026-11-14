@@ -4,37 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Track times · Verse</title>
-<meta name="description" content="A timed track list you can read, move through, copy, and replace with your own. Totals included. The link keeps the list.">
+<title>Album Track Time Adder · Verse</title>
+<meta name="description" content="King Crimson's debut album as a timed list you can read, copy, and replace. Totals included. The link keeps your list.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/track-times/">
-<meta property="og:title" content="Track times · Verse">
+<meta property="og:title" content="Album Track Time Adder · Verse">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="verse-handoff" content="in: items; out: none">
 </head>
 <body>
 <main>
-  <h1>Track times</h1>
-  <p>Each line is a start time and a title, and a length if you know it. The total is the last start plus the last length. Copy the list, or replace it.</p>
+  <h1>Album Track Time Adder</h1>
+  <p>This page is for anyone who has a list of tracks with times and wants the start time of each one and the length of the whole list.</p>
+  <p>This page lays out a list of pieces: a start time, a title, a length when one is known, and the run time of the whole list. It opens on King Crimson's album <em>In the Court of the Crimson King</em>, the same five titles and start times a live page prints, set out in Verse's own layout. Verse can't do this yet. This site does, so Verse is building its own way to do it.</p>
+  <p>Paste or type any list with times. The layout, the total, and a link that opens the same list again stay on this device. Nothing here plays music.</p>
   <form method="get" action="/track-times/">
     <label for="list">Tracks</label>
-    <textarea id="list" name="list" spellcheck="false">0:00 First light 2:00
-2:00 Second light 3:30
-5:30 Last light 1:15</textarea>
-    <div class="row"><button type="submit">Lay it out</button><button type="button" id="copy">Copy</button></div>
+    <textarea id="list" name="list" spellcheck="false">0:00 21st Century Schizoid Man, including Mirrors 7:24
+7:24 I Talk to the Wind 6:05
+13:29 Epitaph, including March for No Reason and Tomorrow and Tomorrow 8:47
+22:16 Moonchild, including The Dream and The Illusion 12:12
+34:28 The Court of the Crimson King, including The Return of the Fire Witch and The Dance of the Puppets 9:25</textarea>
+    <div class="row"><button type="submit">Lay it out</button><button type="button" id="copy">Copy the list</button></div>
   </form>
-  <p id="total">3 tracks, 6:45 in all</p>
-  <pre class="list" id="out" tabindex="0" aria-label="Track list">0:00	First light	2:00
-2:00	Second light	3:30
-5:30	Last light	1:15</pre>
-  <p>Listening elsewhere on Verse: <a href="/podcast/">Out Loud</a>, <a href="/rap/">a rap</a>, <a href="/versus/">Versus</a>.</p>
+  <p id="total">5 tracks, 43:53 in all</p>
+  <pre class="list" id="out" tabindex="0" aria-label="Track list">0:00	21st Century Schizoid Man, including Mirrors	7:24
+7:24	I Talk to the Wind	6:05
+13:29	Epitaph, including March for No Reason and Tomorrow and Tomorrow	8:47
+22:16	Moonchild, including The Dream and The Illusion	12:12
+34:28	The Court of the Crimson King, including The Return of the Fire Witch and The Dance of the Puppets	9:25</pre>
+  <p>Share this list: <a id="share" style="overflow-wrap:anywhere" href="/track-times/?list=0%3A00%2021st%20Century%20Schizoid%20Man%2C%20including%20Mirrors%207%3A24%0A7%3A24%20I%20Talk%20to%20the%20Wind%206%3A05%0A13%3A29%20Epitaph%2C%20including%20March%20for%20No%20Reason%20and%20Tomorrow%20and%20Tomorrow%208%3A47%0A22%3A16%20Moonchild%2C%20including%20The%20Dream%20and%20The%20Illusion%2012%3A12%0A34%3A28%20The%20Court%20of%20the%20Crimson%20King%2C%20including%20The%20Return%20of%20the%20Fire%20Witch%20and%20The%20Dance%20of%20the%20Puppets%209%3A25">/track-times/?list=0%3A00%2021st%20Century%20Schizoid%20Man%2C%20including%20Mirrors%207%3A24%0A7%3A24%20I%20Talk%20to%20the%20Wind%206%3A05%0A13%3A29%20Epitaph%2C%20including%20March%20for%20No%20Reason%20and%20Tomorrow%20and%20Tomorrow%208%3A47%0A22%3A16%20Moonchild%2C%20including%20The%20Dream%20and%20The%20Illusion%2012%3A12%0A34%3A28%20The%20Court%20of%20the%20Crimson%20King%2C%20including%20The%20Return%20of%20the%20Fire%20Witch%20and%20The%20Dance%20of%20the%20Puppets%209%3A25</a></p>
+  <p>Listening elsewhere on Verse: <a href="/podcast/">Out Loud</a>, <a href="/podcasts/">podcasts</a>, <a href="/music/">music</a>, <a href="/songs/">songs</a>, <a href="/rap/">a rap</a>.</p>
+
   <section class="history">
-    <h2>The original site</h2>
-    <p>A 2018 <a href="https://web.archive.org/web/20180701000000/https://tsundere.pw/">saved copy</a> of the site this tool answers was a radio and links page. A later <a href="https://tsundere.pw/">version</a> showed one 1969 album as a list of start times. This page is a list you can edit. The sample above is Verse's, not that album.</p>
+    <h2>A strange little website</h2>
+    <p>The live page is one screen. Its title element reads "Fripp Don't Interact". Under a video named <code>ROBERFRIPP.mp4</code> it prints "In the Court of the Crimson King [FULL ALBUM] but with no sound", then five start times and titles and nothing else. There is no description tag, no heading tag, and no comment in the markup. A script in that video element sets the player's volume to 0.4. The caption and the script are both in the source. This page does not play the file, so it does not say which one a visitor hears.</p>
+    <p>The address is a <a href="https://en.wikipedia.org/wiki/.pw" rel="noopener noreferrer">.pw name</a>, the country code for Palau, delegated on 12 June 1997. From 25 March 2013 anyone could register one. The registry marketed it as a professional web. Within months it was also a spam problem, and in 2016 an anti-phishing report grouped .pw with .cc, .com and .tk as a large share of malicious registrations. A .pw name is cheap and unrestricted. That is the neighbourhood. It is not an explanation of this particular name.</p>
+    <p>The word itself is in the <a href="https://dictionary.cambridge.org/dictionary/english/tsundere" rel="noopener noreferrer">Cambridge English Dictionary</a>: in anime, a character who seems unpleasant or unkind at first and becomes more pleasant or kind. <a href="https://en.wikipedia.org/wiki/Tsundere" rel="noopener noreferrer">Wikipedia</a> traces it to the Japanese sounds tsun-tsun (aloof) and dere-dere (lovey-dovey), and says the visual novel <em>Rumbling Hearts</em> made the word popular. None of the pages cited here say who chose the domain or why.</p>
+    <p>The public registration record, read from the registry RDAP on 13 November 2026, dates the registration to 6 May 2017. The registration event names the actor "namecheap". The registrar listed on the same record is Porkbun LLC, IANA registrar 1861. There is no transfer event, so the record does not say how those two names relate. The registrant contact is removed. The name expires 6 May 2027, last changed 21 June 2026, and carries "client transfer prohibited" and "client delete prohibited". DNSSEC is not signed. The name servers are <code>hal.ns.cloudflare.com</code> and <code>rose.ns.cloudflare.com</code>.</p>
+    <p>On the same day the DNS answers were: two Cloudflare addresses for the site (104.21.63.106 and 172.67.170.144, plus IPv6), those two name servers, and mail for the name pointed at <code>mail.chunchunmaru.org</code>. A TXT record holds a DKIM key. The mail host's address, 45.79.219.101, reverses to that same host name, and <a href="https://ipinfo.io/45.79.219.101" rel="noopener noreferrer">ipinfo</a> places it on Akamai Connected Cloud (AS63949) in Atlanta. <code>chunchunmaru.org</code> uses the same two Cloudflare name servers and the same mail host. Its website did not answer on HTTP or HTTPS from here. None of that names a person.</p>
+    <p>The Internet Archive's saved copies of the home page, collapsed to distinct files, are few. The 2 September 2018 copy has the title "Evangelion". It plays a video named <code>4kids.mp4</code> at volume 0.4, with no controls, on a background named <code>dep.jpg</code>. Two links sit under it: "Internet Radio Station: Japanese Future Funk, CityPop, &amp; JPop", pointing at <code>/radio</code>, and "How Dog Became a Beneficiary for TF2", pointing at <code>/tf2</code>. The archive has no saved copy of either path. On 13 November 2026 both addresses answered 404 from nginx 1.22.1. What they said is unknown.</p>
+    <p>The next distinct home page in that archive list is the 3 July 2022 copy. It is already the Fripp page: the same title, the same caption, the same five start times, a background named <code>pleaseno.jpg</code>, and <code>ROBERFRIPP.mp4</code>. The copies from 22 March 2024 and 6 April 2025 are that same markup. The live page in November 2026 adds a Cloudflare analytics script and otherwise matches. Nothing in the archive shows the day the radio links became the album list. The gap between September 2018 and July 2022 is simply unsaved.</p>
+    <p>The old files are still on the server. On 13 November 2026, <code>4kids.mp4</code> was 9,436,265 bytes, <code>dep.jpg</code> was 82,372 bytes, and <code>ROBERFRIPP.mp4</code> was 87,925,968 bytes. Each reported Last-Modified of 3 January 2020. That is a server timestamp, not a diary: the 2018 page already named the first two files, so the timestamp is later than the page that used them. <code>style.css</code> is 115 bytes. It paints paragraphs, links, headings and list items white, and sets a 500 pixel column the home page never uses. <code>robots.txt</code> is a block of comments about search and AI signals, and it does not set a yes or a no.</p>
+    <p>Public mentions are thin. A Hacker News search for the exact name returned no hits. Reddit's search refused the request from here, so a Reddit thread was not found and is not ruled out. On GitHub the name shows up as a BitTorrent announce address on port 6969, in lists such as <a href="https://github.com/DeSireFire/animeTrackerList/blob/master/AT_all.txt" rel="noopener noreferrer">animeTrackerList</a>, and the bare name appears in other domain lists that do not say why. A connection to port 6969 timed out from here, so those lists do not show that an announce service answered.</p>
+    <p>Still unknown: who the registrant is, why the name was chosen, what <code>/radio</code> and <code>/tf2</code> contained, who put the album on the page, whether the video has sound, and whether a tracker ever ran. The pages and records above do not say.</p>
+
+    <h2>The album</h2>
+    <p><a href="https://en.wikipedia.org/wiki/In_the_Court_of_the_Crimson_King" rel="noopener noreferrer"><em>In the Court of the Crimson King</em></a>, subtitled <em>An Observation by King Crimson</em>, is the debut album by the English band King Crimson, released 10 October 1969 on Island Records. It was recorded from 7 July to 13 August 1969 at Wessex Sound Studios in London. Early sessions with producer Tony Clarke were dropped, and the band produced it themselves, on a 1-inch 8-channel recorder, engineered by Robin Thompson with Tony Page assisting. Ian McDonald stacked Mellotron and woodwind; on "Epitaph" he recorded two Mellotron parts and moved their volumes against each other so the chords would not sit flat. The band's live debut was 9 April 1969 at the Speakeasy in London. In July 1969 they opened for the Rolling Stones in Hyde Park, before a crowd estimated at 250,000 to 500,000.</p>
+    <p>All the lyrics are by Peter Sinfield. The 1969 listing gives the music as Robert Fripp, Ian McDonald, Greg Lake and Michael Giles on the first, third and fourth pieces, and McDonald alone on the second and the fifth. Lake sang and played bass. Michael Giles played drums, and timpani on "Epitaph". McDonald played woodwinds, keyboards and Mellotron. Fripp played guitar. The album reached number 5 on the UK albums chart and number 28 on the US Billboard 200, and the RIAA certified it gold for 500,000 units in the United States. In 2015 Rolling Stone placed it second on a list of fifty progressive rock albums. Pete Townshend is quoted calling it "an uncanny masterpiece". Robert Christgau called it "ersatz shit".</p>
+    <p>Barry Godber, a computer programmer and a friend of Sinfield's, painted the cover in watercolour from his own face in a mirror. He died in February 1970 of a heart attack, at 24. It was his only painting. Fripp owns it, and has said the face on the outside is the Schizoid Man and the face inside is the Crimson King.</p>
+    <p>The live page prints start times and no lengths. The 1969 listing times the pieces at 7:24, 6:05, 8:47, 12:13 and 9:25, side one ending at 22:16 and the album at 43:54. It also says the inner sleeve of the original pressings, which totalled the album at 42:00, is wrong. Adding the listed 12:13 for "Moonchild" to 22:16 would start the last piece at 34:29. The live page prints 34:28, which is 12:12 after 22:16. A <a href="https://en.wikipedia.org/wiki/In_the_Court_of_the_Crimson_King_(box_set)" rel="noopener noreferrer">2004 remaster listing</a> gives "Moonchild" as 12:12. The list above uses the start times the page prints, 12:12 for that gap, and 9:25 from the 1969 listing for the last piece, which the page does not time. The total on this page is 43:53. The album page's own length is 43:54.</p>
+
+    <h3>21st Century Schizoid Man, including Mirrors</h3>
+    <p>The <a href="https://en.wikipedia.org/wiki/21st_Century_Schizoid_Man" rel="noopener noreferrer">opening piece</a> is 7:24, music by Fripp, McDonald, Lake and Giles, lyrics by Sinfield. Rolling Stone called it a statement of purpose that put rock power, jazz spontaneity and classical precision to one aim, and an early example of heavy metal. The lyrics include "Politicians' funeral pyre / Innocents raped with napalm fire". Sinfield said "death seed" meant a harvest of bad things from Agent Orange, and that "Cat's foot, iron claw" refers to the fable of the monkey and the cat. Before a show on 14 December 1969, Fripp dedicated the song, sarcastically, to Vice President Spiro Agnew. The introduction is Ian McDonald leaning his forearm on the studio's reed organ until it wheezed. Lake wrote the first six notes of the riff. McDonald added the last three.</p>
+
+    <h3>I Talk to the Wind</h3>
+    <p><a href="https://en.wikipedia.org/wiki/I_Talk_to_the_Wind" rel="noopener noreferrer">The second piece</a> is 6:05, music by McDonald, and it starts as soon as the first piece's noise ends. McDonald's flute leads it, with a solo in the middle and a longer one at the end. It was written for the earlier group Giles, Giles and Fripp, the only song on the album with that history, and King Crimson kept it as the soft side. Sinfield said Joni Mitchell was an influence, and in a 1997 interview that it was still his favourite lyric. Two 1968 recordings, one sung by Judy Dyble and one by Peter Giles, are on <em>The Brondesbury Tapes</em>.</p>
+
+    <h3>Epitaph, including March for No Reason and Tomorrow and Tomorrow</h3>
+    <p><a href="https://en.wikipedia.org/wiki/Epitaph_(song)" rel="noopener noreferrer">The third piece</a> is 8:47. The song page calls the lyric a Cold War protest with a dystopian feel, and notes the Mellotron. In 1976 it was a single, with "21st Century Schizoid Man" on the other side. A live album of the original band, and the label Epitaph Records, took the name.</p>
+
+    <h3>Moonchild, including The Dream and The Illusion</h3>
+    <p><a href="https://en.wikipedia.org/wiki/Moonchild_(King_Crimson_song)" rel="noopener noreferrer">The fourth piece</a> is listed at 12:13 in 1969. "The Dream" is a short Mellotron ballad. After about two and a half minutes it becomes "The Illusion", a free improvisation by Fripp, Giles and McDonald that runs to the end. Giles later said they had already recorded the album they wanted, and used the rest to play with no structure, "into nothingness, to see what happened", and that they would have cut it if it had been rubbish. Mike Barnes wrote that a quarter of the album is given over to free improvisation and that reviews still barely mention it. The 2009 remix, by Fripp and Steven Wilson, removed about two minutes and fifty seconds of that improvisation and kept the longer take as a bonus. The piece was not played live for 48 years. After rehearsals in 2013 and 2014, it was played on 18 October 2017 in Austin, Texas.</p>
+
+    <h3>The Court of the Crimson King, including The Return of the Fire Witch and The Dance of the Puppets</h3>
+    <p><a href="https://en.wikipedia.org/wiki/The_Court_of_the_Crimson_King" rel="noopener noreferrer">The last piece</a> is 9:25, music by McDonald, lyrics by Sinfield. It was written over three days around a four-bar Mellotron figure. Four stanzas are split by "The Return of the Fire Witch". The song peaks around seven minutes, pauses, plays "The Dance of the Puppets", and reprises the theme. McDonald and Sinfield had started it in an earlier group, The Creation, as a country and western song. Released as a single, it reached number 80 on the Billboard Hot 100, the only King Crimson single to do so.</p>
   </section>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a href="/text-diff/?changed=0%3A00%2021st%20Century%20Schizoid%20Man" data-base="/text-diff/" data-param="changed" data-from="#out" data-fallback="0:00 21st Century Schizoid Man">Text Compare</a>
+    <a data-base="/podcasts/" data-param="q" data-from="#total" data-fallback="King Crimson">Podcast Search</a>
+  </nav>
 </main>
 <script type="module" src="/track-times/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

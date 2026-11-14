@@ -150,11 +150,22 @@ export function validTexts(t, { host, baseText, fam }) {
 /** text cut to `n` characters at the end of a sentence, never mid-sentence. Pure. */
 export const sentences = (t, n) => { const c = clip(t, 2000); if (c.length <= n) return c.replace(/[,;:]$/, '.'); const cut = c.slice(0, n), at = cut.lastIndexOf('. '); return at > n / 3 ? cut.slice(0, at + 1) : cut.replace(/[,;:]?\s+\S*$/, '') + '.'; };
 export const fallbackTexts = (fam) => ({ name: clip(fam.title || fam.label, 60), h1: clip(fam.title || fam.label, 70), intro: sentences(fam.does, 320), does: sentences(fam.does, 320), asks: (fam.asks || []).slice(0, 6), slug: '' });
-/** a free folder under the family's page for the row: the model's slug, else the family's own words, never one taken. Pure. */
-export function slugFor(want, fam, taken) {
+/** the folder the row would take: the model's slug, else the family's own words. Pure. */
+export function slugPath(want, fam) {
   const base = SLUG.test(want || '') ? want : (keywordsOf(fam.label).join('-') || 'more').replace(/[^a-z0-9-]/g, '') + '-tool';
-  for (let i = 1; i < 50; i++) { const s = i === 1 ? base : base + '-' + i, p = fam.base + s + '/'; if (!taken(p)) return p; }
-  return null;
+  return fam.base + base + '/';
+}
+/** that folder when it is free, else null: a name already used is that page's job, never a second page called name-2. Pure. */
+export function slugFor(want, fam, taken) {
+  const p = slugPath(want, fam);
+  return taken(p) ? null : p;
+}
+/** an existing page under this family that already says this headline, or null when the job is new. The family folder existing is not enough. Pure. */
+export function pageForJob(fam, texts, rows) {
+  const h1 = norm((texts && (texts.h1 || texts.name)) || '');
+  if (!fam || h1.length < 8) return null;
+  const hit = (rows || []).find((r) => (r.family === fam.id || r.base === fam.base) && norm(r.h1 || r.name) === h1);
+  return hit ? hit.path : null;
 }
 
 // ---- the page ----
@@ -271,7 +282,12 @@ async function build(planFile, outFile, maxBuilt) {
       const baseText = textOf(baseHtmlOf(fam.base)) + ' ' + fam.does;
       let t = validTexts(a, { host: c.host, baseText, fam }), refused = '';
       if (t.problem) { refused = t.problem; const fb = fallbackTexts(fam), mine = (a.asks || []).map((x) => clip(x, 60).toLowerCase()).filter((x) => x.length >= 3 && sharesWords(fam, x) && !brandTokens(c.host).some((bt) => x.replace(/[^a-z0-9]/g, '').includes(bt)) && !DOMAIN.test(x) && !/\bbest\b|#1|better than/.test(x)); t = { ...fb, slug: SLUG.test(String(a.slug || '')) && !brandTokens(c.host).some((bt) => String(a.slug).replace(/-/g, '').includes(bt)) ? String(a.slug) : '', asks: [...new Set([...mine, ...fb.asks])].slice(0, 6) }; }
-      const p = slugFor(t.slug, fam, exists); if (!p) { decision.state[c.host] = { at: now(), outcome: 'discarded', why: 'no free folder under ' + fam.base, ...pick }; save(); continue; }
+      // a page that already says this headline, or a name already taken, gets the feature: a new job with a free name still gets its first page
+      const same = pageForJob(fam, t, [...SELF_SITES, ...decision.rows]), want = slugPath(t.slug, fam);
+      if (same || exists(want)) { const page = same || want; decision.state[c.host] = { at: now(), outcome: 'covered', page, topic: fam.id, title: clip(r.pages[0].title, 80), why: page + ' already does this job: add what is missing as a mode or section, not a new page', ...pick }; save();
+        decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: add to ' + page + ' what ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') does that it lacks, as a mode or section of that page, not a new page', 200) });
+        console.log(c.host + ': covered by ' + page + ' (' + fam.id + ')'); continue; }
+      const p = want;
       taken.add(p);
       const lane = fam.id + ': ' + hostOf(c.url);
       const row = { path: p, base: fam.base, page: p + fam.pageTail, ...(fam.askTail !== null ? { ask: p + fam.askTail } : {}), family: fam.id, lane, url: c.url, name: t.name, h1: t.h1, intro: t.intro, does: t.does, asks: t.asks, added: now() };

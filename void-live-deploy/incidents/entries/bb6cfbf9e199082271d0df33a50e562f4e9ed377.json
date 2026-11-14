@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-13T16:27:01.732Z",
+ "sha": "bb6cfbf9e199082271d0df33a50e562f4e9ed377",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43453564317",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+ ],
+ "touched": [
+  "void-live-deploy/progress/nightly.json"
+ ],
+ "shards": [
+  2
+ ],
+ "passed": [
+  2
+ ],
+ "closedAt": "2026-11-13T21:47:38.871Z",
+ "closedBy": "ee69c6d9167ca13703eb4a0b09d10e03a8455c05",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/43510495430",
+ "minutes": 321
+}

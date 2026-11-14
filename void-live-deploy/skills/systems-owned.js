@@ -6,9 +6,8 @@
  */
 export function isSystemsOwned(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:systems?\s+owned|what\s+(?:does|will)\s+verse\s+own|owned\s+systems)\b/i.test(t)
-    || /^(?:show|list|package)\s+(?:the\s+)?(?:systems?\s+owned|owned\s+systems)\b/i.test(t)
-    || /\bverse\s+owns\s+(?:for|the)\b/i.test(t);
+  return /^(?:systems?\s+owned|owned\s+systems)\b/i.test(t)
+    || /^(?:show|list|package)\s+(?:the\s+)?(?:systems?\s+owned|owned\s+systems)\b/i.test(t);
 }
 
 export function subjectOf(text) {
@@ -57,9 +56,9 @@ export default {
   name: 'systems-owned',
   examples: [
     'systems owned for the invoice automation',
-    'what does Verse own for onboarding flow',
+    'systems owned for the onboarding flow',
     'owned systems pack for weekly reports',
-    'show the systems Verse owns for support router'
+    'list the systems owned for the support router'
   ],
   nearMisses: [
     'what is a system',

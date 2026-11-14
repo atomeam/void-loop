@@ -7,16 +7,32 @@ export const CTA_SAY = 'Ask Verse for anything at a to mind dot com.';
 // codes, queue ids, paths, and the internal names a listener should never hear
 export const BANNED = /\b(?:LANE_[A-Z0-9_]+|Queue job|exam score|void\.voice|helper\/[\w.-]+|(?:tools|void-live-deploy)\/[\w./-]+\.(?:mjs|js|yml|json)|[0-9a-f]{9,})\b/i;
 
-/** ffmpeg filters. Verse sits a little higher, with a light chorus and a short room. The Critic sits lower, drier, and a touch slower. */
-/** Kokoro voice files, not names. Verse uses af_sky. Critic uses bm_george. The character's name is Critic. */
+/** Kokoro voice files, not names. Verse uses af_sky. Critic uses bm_george. The character's name is Critic.
+ *  Both speak at a natural pace. The voice file is what tells them apart. */
 export const VOICES = Object.freeze({
-  Verse: { id: 'af_sky', lang: 'en-us', speed: 0.94 },
-  Critic: { id: 'bm_george', lang: 'en-gb', speed: 0.86 },
+  Verse: { id: 'af_sky', lang: 'en-us', speed: 1 },
+  Critic: { id: 'bm_george', lang: 'en-gb', speed: 1 },
 });
+/** Piper length_scale. Both sit next to 1, so neither sounds sped up or slowed down. */
+export const VOICE_PACE = Object.freeze({ Verse: 1, Critic: 1.02 });
+/** One room for both voices: resample to 24 kHz, a light pitch, then the same gentle EQ and compressor.
+ *  No chorus and no echo. The pitch is about one percent, and atempo puts the pace back. */
+const ROOM = 'highpass=f=80,lowpass=f=12000,equalizer=f=3200:t=q:w=1:g=1.2,acompressor=threshold=-18dB:ratio=2:attack=10:release=100';
 export const VOICE_AF = Object.freeze({
-  Verse: 'asetrate=24720,aresample=24000,atempo=0.971,chorus=0.45:0.65:50:0.25:0.18:1.2,aecho=0.8:0.72:20:0.1,highpass=f=140,lowpass=f=9500',
-  Critic: 'asetrate=22560,aresample=24000,atempo=1.064,equalizer=f=280:t=q:w=1:g=2.5,acompressor=threshold=-20dB:ratio=2.5:attack=8:release=80',
+  Verse: 'aresample=24000,asetrate=24240,aresample=24000,atempo=0.9901,' + ROOM,
+  Critic: 'aresample=24000,asetrate=23760,aresample=24000,atempo=1.0101,' + ROOM,
 });
+/** Spoken lines and the finished mix aim here. I is LUFS, TP is dBTP. */
+export const LOUD = Object.freeze({ I: -16, TP: -1.5, LRA: 11 });
+/** Second pass of ffmpeg loudnorm. One gain (linear) when the first pass measured the line, so the voices stay matched.
+ *  A line too short to measure gets a single pass. Pure. */
+export function loudnormPass(measured) {
+  const base = `loudnorm=I=${LOUD.I}:TP=${LOUD.TP}:LRA=${LOUD.LRA}`;
+  const num = (v) => { if (v == null || String(v).trim() === '') return null; const n = Number(String(v).trim()); return Number.isFinite(n) ? n : null; };
+  const I = num(measured && measured.input_i), TP = num(measured && measured.input_tp), LRA = num(measured && measured.input_lra), TH = num(measured && measured.input_thresh);
+  if (I == null || TP == null || LRA == null || TH == null) return base;
+  return `${base}:measured_I=${I}:measured_TP=${TP}:measured_LRA=${LRA}:measured_thresh=${TH}:linear=true`;
+}
 
 const clean = (s) => String(s || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/\s+/g, ' ').trim();
 

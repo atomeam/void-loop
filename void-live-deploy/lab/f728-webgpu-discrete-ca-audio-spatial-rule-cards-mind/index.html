@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { display:block; position:absolute; top:0; left:0; z-index:1; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; }
+button, input { margin:4px; }
+.rule-card {
+  position:absolute; z-index:5; background:rgba(20,30,60,0.85); border:2px solid #66f;
+  border-radius:10px; padding:8px; width:140px; cursor:move; user-select:none;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
+}
+.rule-card h4 { margin:0 0 6px; font-size:13px; }
+.rule-card label { font-size:11px; display:block; }
+.rule-card input[type=number] { width:50px; }
+#status { font-size:12px; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-discrete-ca-audio-spatial-rule-cards-mind · Verse lab</title>
+<meta name="description" content="Novel combination never previously attempted on The Verse canvas: a discrete cellular automaton (multi-rule Life-like or custom birth/survival) computed on WebGPU">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-discrete-ca-audio-spatial-rule-cards-mind · Verse lab">
+<meta property="og:description" content="Novel combination never previously attempted on The Verse canvas: a discrete cellular automaton (multi-rule Life-like or custom birth/survival) computed on WebGPU">
+<meta property="og:url" content="https://a-to-mind.com/lab/f728-webgpu-discrete-ca-audio-spatial-rule-cards-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f728-webgpu-discrete-ca-audio-spatial-rule-cards-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button id="start">Start / Resume Audio</button>
+  <button id="step">Step CA</button>
+  <button id="play">Toggle Auto</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="add">Add Rule Card</button>
+  <div id="status">Ready. Drag cards to paint local rules. Density drives synth.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-discrete-ca-audio-spatial-rule-cards-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

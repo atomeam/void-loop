@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Scores: live scores, schedules and standings · Verse</title>
+<title>Live Sports Scores · Verse</title>
 <meta name="description" content="Live scores, final scores, schedules in your own time zone and standings for the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL and Formula 1. Box scores, team pages, favourite teams kept on your device. No ads, no betting.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Scores · Verse">
+<meta property="og:title" content="Live Sports Scores · Verse">
 <meta property="og:description" content="Live scores, schedules and standings for football, NBA, NFL, MLB, NHL and F1. Favourite teams on your device, no ads, no betting.">
 <meta property="og:url" content="https://a-to-mind.com/scores/">
 <meta property="og:image" content="https://a-to-mind.com/og/scores.png">
@@ -91,7 +91,8 @@
 <nav class="v-modes" aria-label="Sports modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/scores/" aria-current="page">Scores</a><a href="/scores/sports/">Every sport</a></nav>
 
 <main>
-  <h1 id="title">Scores</h1>
+  <h1 id="title">Live Sports Scores</h1>
+  <p>This page is for anyone who wants today's scores, the schedule, and the standings for a league, without ads or betting.</p>
   <p class="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL, MLB, NHL and Formula 1. No ads, no betting.</p>
 
   <nav class="chips" id="leagues" aria-label="League">
@@ -128,9 +129,14 @@
   <p class="srcs" id="feat">What is here: a live scoreboard, final scores and schedules for 12 leagues, box scores and play by play, standings, team pages, favourites (My teams) kept on this device, search across sports for teams, events, venues and players, stories written by Verse from the data, and a free read-only API.</p>
   <p class="srcs" id="srcs">Scores come from the public score feeds of <a href="https://www.espn.com/" rel="noopener">ESPN</a> (unofficial), <a href="https://www.openligadb.de/" rel="noopener">OpenLigaDB</a> (Bundesliga) and <a href="https://github.com/jolpica/jolpica-f1" rel="noopener">Jolpica</a> (Formula 1), read by Verse's server and kept a short while. Data may be delayed by a minute or more. Followed teams stay on this device. No odds, no betting, no fantasy.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/text-diff/" data-param="changed" data-from="#out" data-fallback="score">Text Compare</a>
+    <a data-base="/podcasts/" data-param="q" data-fallback="football">Podcast Search</a>
+  </nav>
 </main>
 
 <script>addEventListener('load', () => { import('/scores/app.js').catch(() => {}); }); // the page's code, after the load event (scores/app.js)</script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

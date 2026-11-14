@@ -4,42 +4,95 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Patterns · Verse</title>
-<meta name="description" content="Test a pattern against a sample. Matches are marked, flags are yours, and a pattern that could hang the page is refused. It runs on this device.">
+<title>Regex Tester · Verse</title>
+<meta name="description" content="Try a search pattern on a sample. Matches are marked, the pattern is read in plain words, and a replacement rewrites each match. It runs on this device.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/patterns/">
-<meta property="og:title" content="Patterns · Verse">
-<meta property="og:description" content="Test a pattern against a sample. Matches are marked. It runs on this device.">
+<meta property="og:title" content="Regex Tester · Verse">
+<meta property="og:description" content="Try a search pattern on a sample. Matches are marked, and the pattern is read in plain words.">
 <meta property="og:url" content="https://a-to-mind.com/patterns/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
-<meta name="verse-handoff" content="in: pattern, sample; out: matches">
+<meta name="verse-handoff" content="in: text, code; out: text">
 <style>
   mark { background: #ffd166; color: #111; border-radius: 3px; }
   #err { color: var(--d-warm, #e7a); min-height: 1.4em; }
+  #out { white-space: pre-wrap; }
+  /* typing updates the address; a navigation transition on every key would abort the last one */
+  @view-transition { navigation: none; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Patterns</h1>
-  <p>Type a pattern and a sample. Every match is marked. The work stays on this device. A pattern with a repeat inside a repeat, such as (a+)+, is refused so the page cannot hang.</p>
-  <form>
+  <h1>Regex Tester</h1>
+  <p>This page is for anyone who has a search pattern and wants to see what it matches, what each piece means, and how a replacement would rewrite the sample.</p>
+  <p>Type a pattern and a sample. Every match is marked, listed with the character it starts on, and read back in a short sentence. A replacement box rewrites those matches. The work stays on this device, using JavaScript's own regular expressions. A pattern with a repeat inside a repeat, such as (a+)+, is refused so the page cannot hang.</p>
+  <form method="get" action="/patterns/">
     <label for="pattern">Pattern</label>
     <input id="pattern" name="pattern" type="text" value="\d+" spellcheck="false" autocomplete="off">
     <label for="flags">Flags</label>
-    <input id="flags" name="flags" type="text" value="" spellcheck="false" autocomplete="off">
+    <input id="flags" name="flags" type="text" value="" placeholder="i m s u" spellcheck="false" autocomplete="off">
+    <label><input id="flag-i" type="checkbox" value="i"> i, same letters either way</label>
+    <label><input id="flag-m" type="checkbox" value="m"> m, start and end of each line</label>
+    <label><input id="flag-s" type="checkbox" value="s"> s, a dot matches a line break</label>
+    <label><input id="flag-u" type="checkbox" value="u"> u, Unicode</label>
     <label for="sample">Sample</label>
     <textarea id="sample" name="sample" spellcheck="false">call 555 or 911</textarea>
+    <label for="replace">Replacement</label>
+    <input id="replace" name="replace" type="text" value="" spellcheck="false" autocomplete="off">
     <div class="row">
+      <button type="submit">Test</button>
       <button type="button" id="copy">Copy matches</button>
     </div>
   </form>
-  <p id="count" aria-live="polite"></p>
-  <div id="out" aria-live="polite"></div>
+  <p id="count">2 matches</p>
+  <div id="out" aria-live="polite">call <mark>555</mark> or <mark>911</mark></div>
   <p id="err" role="status"></p>
+  <h2>Each match</h2>
+  <ol id="matchlist">
+    <li>Match 1 is 555. It starts at character 6.</li>
+    <li>Match 2 is 911. It starts at character 13.</li>
+  </ol>
+  <p>Matches, in order: <span id="passed">555 and 911</span></p>
+  <h2>What the pattern means</h2>
+  <ol id="explain">
+    <li>`\d+` means one or more digits.</li>
+    <li>Every match is listed, not only the first.</li>
+  </ol>
+  <h2>Replacement</h2>
+  <p id="replaced">Nothing is rewritten until you type a replacement. $&amp; stands for the whole match, and $1 stands for the first saved group.</p>
+  <p>Share this test: <a id="share" style="overflow-wrap:anywhere" href="/patterns/?pattern=%5Cd%2B&amp;flags=&amp;sample=call%20555%20or%20911">/patterns/?pattern=%5Cd%2B&amp;flags=&amp;sample=call%20555%20or%20911</a></p>
   <p>More text tools: <a href="/base64/">Base64</a>, <a href="/word-count/">word counter</a>, <a href="/convert/">unit converter</a>, <a href="/rotate-letters/">rotate letters</a>.</p>
+
+  <h2>How to use it</h2>
+  <p>The sample starts as "call 555 or 911", and the pattern <code>\d+</code> means one or more digits. That finds 555 and 911. The first character of the sample is character 1, so 555 starts at character 6.</p>
+  <p>Put <code>(\d+)</code> in the pattern and <code>[$1]</code> in the replacement. The parentheses save the digits, and $1 puts them back inside brackets. Open that test here: <a href="/patterns/?pattern=(%5Cd%2B)&amp;sample=call%20555%20or%20911&amp;replace=%5B%241%5D">digits in brackets</a>. The result is "call [555] or [911]".</p>
+  <p>The flag i treats capital and small letters as the same. The flag m lets ^ and $ match the start and end of each line. The flag s lets a dot match a line break. The flag u turns on Unicode mode. This tester always lists every match, so you do not type g.</p>
+  <p>Copy matches puts "555 and 911" on the clipboard. The share link opens the same pattern, flags, sample, and replacement again. Press Test if scripts are off. The same address still holds the test.</p>
+
+  <h2>The name</h2>
+  <p>The name was registered on 15 August 2012. The registry record read on 13 November 2026 lists that registration at 14:35:32 UTC, a last change on 16 July 2026, and expiration on 15 August 2027. The registrar on that record is NameCheap, Inc. The name servers are dns1.registrar-servers.com and dns2.registrar-servers.com. The status is client transfer prohibited. Source: the registry RDAP record. The record does not name a person.</p>
+
+  <h2>The first saved page</h2>
+  <p>The earliest saved copy opened for this page is the 29 August 2012 capture. The title is "Regular Expressions 101". A note says the site is still in early alpha and asks for bug reports. An update dated 2012-08-27 says a regex quiz is coming, and that fixes are being held back so the quiz work can be stripped out of them. The page has a pattern box, a test string, a place for the explanation, a match result, match groups, a permalink, a clear button, and a quick reference. The options listed are i, m, s, and g. The footer reads "Copyright © 2012 Firas Dib".</p>
+  <p>The 4 January 2013 capture still calls the site early alpha. It says the page is useless without JavaScript, adds "Join us on IRC!", and keeps the Quiz link. The quick reference now has Basic, Advanced, and Tips and tricks.</p>
+
+  <h2>Who made it</h2>
+  <p>On 2 January 2013, InfoQ published an interview with Firas Dib. He said he had kept an IRC bot that explained regular expressions people sent it, and that the bot also ran a quiz. He said the bot was an extra mIRC client a friend ran, written in mIRC's scripting language, and that a text channel was a poor place for a long explanation. He said he started the website around the beginning of the previous summer, and that he rewrote the bot in PHP. He also said the layout came to resemble Rubular, that he used Rubular's quick reference and some smaller pieces, that the rest of the code was his, and that he had written to Rubular's author and put that credit on the site. Source: <a href="https://www.infoq.com/news/2013/01/RegEx101/" rel="noopener noreferrer">InfoQ, 2 January 2013</a>.</p>
+  <p>The project wiki says the site has been created, developed, and maintained by Firas Dib, and that it started as a hobby project. It names six people who help with testing, documentation, and bug reports: OnlineCop, Zarthus, nhahtdh, TWiStErRob, working-name, and Doqnach. Source: the <a href="https://github.com/firasdib/Regex101/wiki/About" rel="noopener noreferrer">About page on the project wiki</a>. The same wiki's FAQ, in Dib's words, says he has no plan to open the source. Source: the <a href="https://github.com/firasdib/Regex101/wiki/FAQ" rel="noopener noreferrer">FAQ</a>. The registry record above still does not name him. The 2012 copyright line and the interview are what connect the name to the site.</p>
+
+  <h2>What came later</h2>
+  <p>The project's own docs show six generations of the editor. They say the current application includes multiple test strings, a text pipeline, and a PCRE2 execution debugger. Source: regex101 docs, project history. The docs do not date each generation on that page.</p>
+
+  <h2>What this page leaves out</h2>
+  <p>This page runs JavaScript's regular expressions and nothing else. It does not step through an engine, it does not keep a library of patterns, and it does not run a quiz. The original's docs also describe more than one test string, a text pipeline, and a PCRE2 debugger. Those are not here. A pattern this page cannot read piece by piece is left as written, and the match list still uses the JavaScript result.</p>
+
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a href="/text-diff/?changed=555%20and%20911" data-base="/text-diff/" data-param="changed" data-from="#passed" data-fallback="555">Text Compare</a>
+  </nav>
 </main>
 <script type="module" src="/patterns/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

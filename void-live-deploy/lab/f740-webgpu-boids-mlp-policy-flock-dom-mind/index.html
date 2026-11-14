@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0c10; --fg: #e0e6ef; --accent: #5ce1e6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  #canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .portal {
+    position: absolute; width: 140px; min-height: 70px; padding: 8px 10px;
+    background: rgba(20,24,32,0.75); border: 1px solid var(--accent); border-radius: 8px;
+    backdrop-filter: blur(4px); pointer-events: auto; cursor: grab; user-select: none;
+    transform-origin: center; transition: background 0.2s;
+    font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .portal:hover { background: rgba(30,40,55,0.9); }
+  .portal strong { color: var(--accent); display: block; margin-bottom: 2px; }
+  #chrome {
+    position: fixed; top: 12px; left: 12px; z-index: 100; background: rgba(10,12,16,0.8);
+    padding: 10px 14px; border-radius: 8px; border: 1px solid #333; max-width: 280px;
+  }
+  #chrome button { margin: 4px 4px 0 0; padding: 4px 8px; background: #222; color: var(--fg); border: 1px solid #444; border-radius: 4px; cursor: pointer; }
+  #chrome button:hover { border-color: var(--accent); }
+  #status { font-size: 11px; color: #aaa; margin-top: 6px; white-space: pre; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-boids-mlp-policy-flock-dom-mind · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial interface for The Verse canvas: a population of 192 boids (flocking agents) simulated with classic Reynolds rules (separation, alignment">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-boids-mlp-policy-flock-dom-mind · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial interface for The Verse canvas: a population of 192 boids (flocking agents) simulated with classic Reynolds rules (separation, alignment">
+<meta property="og:url" content="https://a-to-mind.com/lab/f740-webgpu-boids-mlp-policy-flock-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f740-webgpu-boids-mlp-policy-flock-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="chrome">
+  <div><strong>F740 Boids MLP Flock</strong></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="orient">Enable Tilt</button>
+  <div id="status">loading…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-boids-mlp-policy-flock-dom-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

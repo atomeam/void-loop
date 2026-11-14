@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0a12; --fg: #e0e0ff; --accent: #6cf; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { background: #1a1a2e; color: var(--fg); border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  .portal {
+    position: absolute; pointer-events: none; background: rgba(10,20,40,0.75);
+    border: 1px solid var(--accent); border-radius: 8px; padding: 4px 8px;
+    font-size: 12px; white-space: nowrap; transform: translate(-50%, -50%);
+    transition: left 0.15s, top 0.15s; box-shadow: 0 0 12px rgba(100,200,255,0.4);
+  }
+  #status { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Quantum Phase Interference Portal Mind · Verse lab</title>
+<meta name="description" content="A novel discrete quantum-walk / phase-interference lattice computed on WebGPU.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Quantum Phase Interference Portal Mind · Verse lab">
+<meta property="og:description" content="A novel discrete quantum-walk / phase-interference lattice computed on WebGPU.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f725-webgpu-quantum-phase-interference-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f725-webgpu-quantum-phase-interference-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Lattice</button>
+  <button id="clear">Clear Potential</button>
+  <button id="barriers">Paint Barriers</button>
+</div>
+<div id="status">Drag to inject phase. Click (barrier mode) to paint walls. Seal to persist potential.</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Quantum Phase Interference Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

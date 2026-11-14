@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --bg: #0f1419;
+    --card: #1a2332;
+    --text: #e6edf3;
+    --muted: #8b9bb4;
+    --accent: #58a6ff;
+    --good: #3fb950;
+    --border: #30363d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 1rem;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+  .sub { color: var(--muted); margin-bottom: 1.5rem; }
+  .totals {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .total-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    flex: 1;
+    min-width: 140px;
+  }
+  .total-card strong { font-size: 1.4rem; color: var(--good); }
+  form, .list {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; }
+  input, select, button {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #0d1117;
+    color: var(--text);
+    font-size: 1rem;
+  }
+  button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  button.secondary { background: #21262d; color: var(--text); border: 1px solid var(--border); }
+  .row { display: flex; gap: 0.5rem; }
+  .row > * { flex: 1; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 0.5rem 0.25rem; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
+  .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .actions button { width: auto; padding: 0.6rem 1rem; }
+  .empty { color: var(--muted); text-align: center; padding: 1rem; }
+  footer { margin-top: 2rem; font-size: 0.8rem; color: var(--muted); }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Subscription tracker · Verse lab</title>
+<meta name="description" content="Job: Add the services you pay for, their price and when they renew; see the monthly and yearly total at once.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Subscription tracker · Verse lab">
+<meta property="og:description" content="Job: Add the services you pay for, their price and when they renew; see the monthly and yearly total at once.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f718-subscription-tracker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f718-subscription-tracker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+  <h1>Subscription tracker</h1>
+  <p class="sub">Add what you pay for. Totals update live. Everything stays on this device.</p>
+
+  <div class="totals">
+    <div class="total-card">Monthly<br><strong id="monthly">$0.00</strong></div>
+    <div class="total-card">Yearly<br><strong id="yearly">$0.00</strong></div>
+  </div>
+
+  <form id="form">
+    <div class="row">
+      <div>
+        <label for="name">Service</label>
+        <input id="name" required placeholder="Netflix, Spotify…">
+      </div>
+      <div>
+        <label for="price">Price</label>
+        <input id="price" type="number" step="0.01" min="0" required placeholder="9.99">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="period">Period</label>
+        <select id="period">
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+      </div>
+      <div>
+        <label for="date">Next renewal</label>
+        <input id="date" type="date" required>
+      </div>
+    </div>
+    <button type="submit">Add subscription</button>
+  </form>
+
+  <div class="list">
+    <table id="table">
+      <thead>
+        <tr><th>Service</th><th>Price</th><th>Period</th><th>Next</th><th></th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div id="empty" class="empty">No subscriptions yet.</div>
+  </div>
+
+  <div class="actions">
+    <button id="copy" class="secondary">Copy summary</button>
+    <button id="ics" class="secondary">Download .ics reminders</button>
+    <button id="clear" class="secondary">Clear all</button>
+  </div>
+
+  <footer>Offline after load. Data never leaves your browser. Prices are as you entered them; no taxes or currency conversion.</footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

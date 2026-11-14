@@ -4,38 +4,91 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>Rotate letters · Verse</title>
+<title>ROT13 Text Scrambler · Verse</title>
 <meta name="description" content="Shift the letters in any text by 1 to 25 places. Other marks stay put. Thirteen places undoes itself. Works with scripts off.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/rotate-letters/">
-<meta property="og:title" content="Rotate letters · Verse">
+<meta property="og:title" content="ROT13 Text Scrambler · Verse">
+<meta property="og:description" content="Shift the letters in a note by 1 to 25 places, and shift them back.">
+<meta property="og:url" content="https://a-to-mind.com/rotate-letters/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="verse-handoff" content="in: text, number; out: text">
 </head>
 <body>
 <main>
-  <h1>Rotate letters</h1>
-  <p>Type or paste. Pick how many places to shift, from 1 to 25. Letters move. Everything else stays. Shift by 13 twice and you are back where you started.</p>
+  <h1>ROT13 Text Scrambler</h1>
+  <p>This page is for anyone who wants to shift the letters in a note, the way a puzzle or a spoiler often does, and shift them back.</p>
+  <p>Type or paste. Pick a shift from ROT1 to ROT25. ROT13 is the one that starts out selected, and it undoes itself. Letters move and keep their case. Spaces, numbers, and other marks stay where they are. The result updates as you type. Press Rotate if scripts are off, and the same address still holds the text.</p>
   <form method="get" action="/rotate-letters/">
     <label for="text">Text</label>
     <textarea id="text" name="text" spellcheck="false"></textarea>
     <div class="row">
-      <div><label for="shift">Places</label><input id="shift" name="shift" type="number" min="1" max="25" value="13" inputmode="numeric"></div>
+      <div>
+        <label for="shift">Shift</label>
+        <select id="shift" name="shift">
+          <option value="1">ROT1</option>
+          <option value="2">ROT2</option>
+          <option value="3">ROT3</option>
+          <option value="4">ROT4</option>
+          <option value="5">ROT5</option>
+          <option value="6">ROT6</option>
+          <option value="7">ROT7</option>
+          <option value="8">ROT8</option>
+          <option value="9">ROT9</option>
+          <option value="10">ROT10</option>
+          <option value="11">ROT11</option>
+          <option value="12">ROT12</option>
+          <option value="13" selected>ROT13</option>
+          <option value="14">ROT14</option>
+          <option value="15">ROT15</option>
+          <option value="16">ROT16</option>
+          <option value="17">ROT17</option>
+          <option value="18">ROT18</option>
+          <option value="19">ROT19</option>
+          <option value="20">ROT20</option>
+          <option value="21">ROT21</option>
+          <option value="22">ROT22</option>
+          <option value="23">ROT23</option>
+          <option value="24">ROT24</option>
+          <option value="25">ROT25</option>
+        </select>
+      </div>
       <button type="submit">Rotate</button>
       <button type="button" id="copy">Copy result</button>
+      <button type="button" id="back">Read it back</button>
     </div>
   </form>
   <label for="out">Result</label>
   <output id="out" aria-live="polite"></output>
-  <p>The address of this page is the share. With scripts on, it updates as you type.</p>
-  <p>More text tools: <a href="/base64/">Base64</a>, <a href="/convert/">unit converter</a>, <a href="/word-count/">word counter</a>, <a href="/versus/">Versus</a>.</p>
-  <section class="history">
-    <h2>The original site</h2>
-    <p>rot13.com has been a letter shifter since at least <a href="https://web.archive.org/web/20010302000000/http://rot13.com/">a saved copy from 2001</a>. The page does not say who made it, so this one does not guess. The trick is older than the site: a <a href="https://en.wikipedia.org/wiki/ROT13">letter shift of 13</a>, used for centuries and still its own undo. The <a href="https://rot13.com/">live site</a> is the one Verse went up against. Ours still answers when script is off, and the link keeps the text.</p>
-  </section>
+  <p id="copyNote" role="status"></p>
+  <p id="map">A goes to N, and Z goes to M.</p>
+  <h2>How to use it</h2>
+  <p>Hello, world! shifted by 13 is Uryyb, jbeyq! That pair is the one Jason McIntosh printed in 2012. Open it here: <a href="/rotate-letters/?text=Hello%2C%20world!&amp;shift=13">Hello, world! at ROT13</a>. Ab! shifted by 1 is Bc! Open that too: <a href="/rotate-letters/?text=Ab!&amp;shift=1">Ab! at ROT1</a>.</p>
+  <p>Read it back puts the result into the text box and picks the shift that returns the first text. For ROT13 that shift is still 13. For ROT5 it is ROT21. Copy result puts the result on the clipboard. A link such as the ones above opens with the text already filled in, which is the share. The links under Use this with start on Uryyb, jbeyq! until you type your own note, and then they carry the result you are looking at.</p>
+  <p>The same kind of shift is described on <a href="https://en.wikipedia.org/wiki/ROT13" rel="noopener noreferrer">Wikipedia's ROT13 page</a>, which is where the original's About link goes.</p>
+  <h2>The name</h2>
+  <p>The name was registered on 26 November 2000. The registry record read on 13 November 2026 lists that registration at 05:41:26 UTC, a last change on 27 October 2026, and expiration on 26 November 2027. The registrar on that record is Cloudflare, Inc. The name servers are carla.ns.cloudflare.com and henry.ns.cloudflare.com. The status is client transfer prohibited, and the domain is not signed with DNSSEC. Source: the registry RDAP record.</p>
+  <p>The registrar's own record, read the same day, repeats those dates and also says the name is in its renew period. The registrant name is redacted. The contact form is , and the public address line gives the country as the United States and the region as NC. Source: the registrar RDAP record. Who registered the name in 2000 is not in either record.</p>
+  <h2>The early page</h2>
+  <p>The earliest saved copy opened for this page is the 19 April 2001 capture. It is a form that posts to rot13.cgi, with one text box and a button labelled Encode. The banner reads "awesoma powa!" It does not offer a choice of shifts.</p>
+  <p>The 4 January 2014 capture is still that short page, slogan included. The 9 January 2016 capture already has the ROT1 through ROT25 menu, the About ROT13 link, and the note that JavaScript has to be on. Not every capture between those two dates was opened, so this page does not name the day the menu appeared.</p>
+  <h2>Who is said to keep it</h2>
+  <p>On 23 April 2012, Jason McIntosh wrote on The Gameshelf that he had appended that short address to a spoiler question about the game Fez. He wrote that the people who keep that short address did not invent the cipher, and that the page only offers a simple service at a short URL. That is his description. The registry records above do not name a person. Source: the <a href="https://web.archive.org/web/20120510095746/http://gameshelf.jmac.org/2012/04/lets-use-rot13-for-game-spoilers/" rel="noopener noreferrer">10 May 2012 saved copy</a>. The site itself did not answer over HTTPS on 13 November 2026.</p>
+  <h2>The cipher is older than the site</h2>
+  <p>Wikipedia describes ROT13 as a letter substitution that replaces a letter with the one 13 places later, and as a special case of the Caesar cipher. McIntosh's post says Usenet readers used that shift to mask text some people might not want to read by accident, and that news-reading software often made the rotation one command. The website is a page that does the rotation. It is not the start of the trick.</p>
+  <h2>What people asked of the page</h2>
+  <p>On 4 November 2011, Daniel Varga wrote on LessWrong that the short address was a service frequently used there to hide spoilers. He wanted a page that updates as you type, with no submit button, that runs in the browser, and that can be opened from a link carrying the scrambled text. He also wanted something other than a substitution cipher, including for letters outside the Latin alphabet, and a password option. Source: <a href="https://www.lesswrong.com/posts/gDe37MvsqTE35uNzt/reforming-rot13" rel="noopener noreferrer">Reforming rot13</a>.</p>
+  <p>The live page on 13 November 2026 does update as you type, and it offers ROT1 through ROT25, with ROT13 selected. A comment in that page's HTML points at <a href="https://stackoverflow.com/a/617685" rel="noopener noreferrer">a Stack Overflow answer</a> as the script it uses. The page still says to turn JavaScript on. Who chose that script is not in the comment. This page keeps the letter shift, including the part Varga noted, that marks outside the alphabet stay put. It does not add a password or a different cipher.</p>
+  <p>More text tools: <a href="/base64/">Base64</a>, <a href="/convert/">Unit Converter</a>, <a href="/word-count/">word counter</a>.</p>
+  <span id="wordbit" hidden>Uryyb</span>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a href="/text-diff/?changed=Uryyb%2C%20jbeyq!" data-base="/text-diff/" data-param="changed" data-from="#out" data-fallback="Uryyb, jbeyq!">Text Compare</a>
+    <a href="/meanings/?word=Uryyb" data-base="/meanings/" data-param="word" data-from="#wordbit" data-fallback="Uryyb">Dictionary</a>
+  </nav>
 </main>
 <script type="module" src="/rotate-letters/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

@@ -1,0 +1,44 @@
+name: floor-live
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr: { description: pull request number, required: false, type: string }
+concurrency:
+  group: floor-live-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: write # a clean pass on main commits works:true; a pull request run does not commit
+  actions: write # start the deploy of that commit (a GITHUB_TOKEN push starts no workflow)
+jobs:
+  floor-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund && npx playwright-core install --with-deps chromium && echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Run the merged floor pages on the live site
+        run: node tools/floor-live.mjs --shots floor-shots ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.pr == '' && '--mark' || '' }}
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: floor-shots
+          path: floor-shots
+          if-no-files-found: ignore
+      - name: Commit a clean pass and deploy it
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/lib/versus-floor.js
+          if git diff --cached --quiet; then echo "no page newly passing"; exit 0; fi
+          git commit -q -m "Floor live: pages that passed the production browser run"
+          for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 4)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true

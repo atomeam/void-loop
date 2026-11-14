@@ -9,7 +9,7 @@
    "pub": "2026-10-22T05:16:21.447Z",
    "file": "verse-out-loud-001.mp3",
    "transcript": "verse-out-loud-001.txt",
-   "bytes": 1229231,
+   "bytes": 1228762,
    "seconds": 205,
    "summary": "Verse's week from 2026-10-15 to 2026-10-22, read from its public ledger: 440 entries (70 builds, 216 growth steps, 126 fixes, 27 findings), 526 asks learned, 3 still missed, 28 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
@@ -190,8 +190,8 @@
    "pub": "2026-11-02T22:48:19.320Z",
    "file": "verse-out-loud-002.mp3",
    "transcript": "verse-out-loud-002.txt",
-   "bytes": 1354934,
-   "seconds": 226,
+   "bytes": 1353053,
+   "seconds": 225,
    "summary": "Verse's week from 2026-10-26 to 2026-11-02, read from its public ledger: 219 entries (52 builds, 56 growth steps, 79 fixes, 29 findings), 94 asks learned, 65 still missed, 30 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
     "entries": 219,
@@ -366,7 +366,7 @@
    "pub": "2026-11-06T16:16:57.315Z",
    "file": "verse-out-loud-003.mp3",
    "transcript": "verse-out-loud-003.txt",
-   "bytes": 1201020,
+   "bytes": 1200080,
    "seconds": 200,
    "summary": "Verse's day to 2026-11-06, read from its public ledger and main's commit history: 250 commits on main (79 pull requests merged), 30 entries (15 builds, 4 growth steps, 0 fixes, 10 findings), 0 asks learned, 0 still missed, 11 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
@@ -535,8 +535,8 @@
    "pub": "2026-11-07T13:05:12.793Z",
    "file": "verse-out-loud-004.mp3",
    "transcript": "verse-out-loud-004.txt",
-   "bytes": 888021,
-   "seconds": 148,
+   "bytes": 885043,
+   "seconds": 147,
    "summary": "Verse's day to 2026-11-07, read from its public ledger and main's commit history: 200 commits on main (66 pull requests merged), 10 entries (4 builds, 0 growth steps, 0 fixes, 6 findings), 0 asks learned, 0 still missed, 11 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
     "entries": 10,
@@ -674,7 +674,7 @@
    "pub": "2026-11-08T14:06:10.961Z",
    "file": "verse-out-loud-005.mp3",
    "transcript": "verse-out-loud-005.txt",
-   "bytes": 1326721,
+   "bytes": 1324214,
    "seconds": 221,
    "summary": "Verse's day to 2026-11-08, read from its public ledger and main's commit history: 306 commits on main (41 pull requests merged), 17 entries (2 builds, 2 growth steps, 6 fixes, 7 findings), 3 asks learned, 4 still missed, 20 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
@@ -848,7 +848,7 @@
    "pub": "2026-11-09T13:07:29.068Z",
    "file": "verse-out-loud-006.mp3",
    "transcript": "verse-out-loud-006.txt",
-   "bytes": 1252429,
+   "bytes": 1252272,
    "seconds": 209,
    "summary": "Verse's day to 2026-11-09, read from its public ledger and main's commit history: 156 commits on main (9 pull requests merged), 29 entries (9 builds, 0 growth steps, 6 fixes, 7 findings), 0 asks learned, 0 still missed, 7 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
@@ -997,7 +997,7 @@
    "pub": "2026-11-10T13:08:00.233Z",
    "file": "verse-out-loud-007.mp3",
    "transcript": "verse-out-loud-007.txt",
-   "bytes": 1202274,
+   "bytes": 1200707,
    "seconds": 200,
    "summary": "Verse's day to 2026-11-10, read from its public ledger and main's commit history: 296 commits on main (84 pull requests merged), 21 entries (5 builds, 3 growth steps, 7 fixes, 6 findings), 22 asks learned, 11 still missed, 20 red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.",
    "counts": {
@@ -1181,7 +1181,7 @@
    "pub": "2026-11-10T15:28:14.527Z",
    "file": "verse-out-loud-008.mp3",
    "transcript": "verse-out-loud-008.txt",
-   "bytes": 930861,
+   "bytes": 464994,
    "seconds": 77,
    "summary": "A visitor asked Verse fifteen questions. Fourteen passed. What can you do took 8855 milliseconds, past an 8000 millisecond line, and the median of the rest was 451. The judge did not publish this cut: a free listener could not separate a good script from a bad one.",
    "counts": {

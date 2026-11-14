@@ -1,3 +1,6 @@
+# a reading list with no tool opens its Echo Vault entry
+/research /echo-vault/?entry=paper-notes 301
+/research/ /echo-vault/?entry=paper-notes 301
 # Verse's redirects (Cloudflare Pages): a floor's own name never 404s - Versus's shopping floor is the store
 /shopping /store/ 301
 # the AI check is a mode of the photo details page (owner, 2026-11-03: one page per category, features fold in as modes)
@@ -53,6 +56,26 @@
 /convert/unit-converter/ /convert/ 301
 /convert/unit-converter-2 /convert/ 301
 /convert/unit-converter-2/ /convert/ 301
+/pdf/merge /pdf/?tool=merge 301
+/pdf/merge/ /pdf/?tool=merge 301
+/pdf/organize /pdf/?tool=pages 301
+/pdf/organize/ /pdf/?tool=pages 301
+/pdf/toolbox /pdf/ 301
+/pdf/toolbox/ /pdf/ 301
+/pdf/editor /pdf/?tool=pages 301
+/pdf/editor/ /pdf/?tool=pages 301
+/pdf/suite /pdf/ 301
+/pdf/suite/ /pdf/ 301
+/pdf/studio /pdf/?tool=compress 301
+/pdf/studio/ /pdf/?tool=compress 301
+/kanban/simple /kanban/ 301
+/kanban/simple/ /kanban/ 301
+/kanban/quick /kanban/ 301
+/kanban/quick/ /kanban/ 301
+/kanban/teams /kanban/ 301
+/kanban/teams/ /kanban/ 301
+/kanban/flow /kanban/ 301
+/kanban/flow/ /kanban/ 301
 # /memes/ held one finished site. That section is gone, so the address opens the home page.
 /memes / 301
 /memes/ / 301

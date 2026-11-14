@@ -1,0 +1,543 @@
+{
+ "floor": "research",
+ "verse_page": "/research/",
+ "researched": "2026-11-13",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "randomarea.com": {
+   "url": "https://randomarea.com/",
+   "scanned": "2026-11-13",
+   "leader": true,
+   "pages": [
+    "https://randomarea.com/",
+    "https://randomarea.com/the-complete-guide-to-building-skill-for-claude/",
+    "https://randomarea.com/a-practical-guide-to-building-agents/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Anthropic S-1 注册声明与招股说明书（中文全译）",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"anthropic\", \"1\""
+    },
+    {
+     "name": "识别与应对 AI 滥用：2026 年 9 月",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"2026\", \"9\""
+    },
+    {
+     "name": "DeepSeek-V4：迈向高效的百万 Token 上下文智能",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"deepseek\", \"token\""
+    },
+    {
+     "name": "Claude Opus 4.7 系统卡",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"claude\", \"opu\", \"4\", \"7\""
+    },
+    {
+     "name": "Claude Skills 构建完全指南（中文版）",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"claude\", \"skill\""
+    },
+    {
+     "name": "DeepSeek‑R1：通过强化学习激励大语言模型的推理能力（v2）",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"deepseek\""
+    },
+    {
+     "name": "Dan Wang · 2025 年度信",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"dan\", \"wang\", \"2025\""
+    },
+    {
+     "name": "mHC：流形约束超连接",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"mhc\""
+    },
+    {
+     "name": "2025 年 LLM 年度回顾",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"2025\", \"llm\""
+    },
+    {
+     "name": "Bloom：用于自动化行为评估的开源工具",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"bloom\""
+    },
+    {
+     "name": "分布式 AGI 的安全性",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"agi\""
+    },
+    {
+     "name": "监测可监测性：评估思维链（CoT）监控",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"cot\""
+    },
+    {
+     "name": "前沿科学：评估 AI 执行专家级科学任务的能力",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words"
+    },
+    {
+     "name": "GPT‑5 系统卡更新：GPT‑5.2",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"gpt\", \"5\", \"2\""
+    },
+    {
+     "name": "AI 现状：基于 OpenRouter 的一百万亿 Token 实证研究",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"openrouter\", \"token\""
+    },
+    {
+     "name": "AI 如何改变 Anthropic 的工作方式",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"anthropic\""
+    },
+    {
+     "name": "DeepSeek‑V3.2：推动开源大语言模型前沿",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"deepseek\", \"2\""
+    },
+    {
+     "name": "AI 智能体发现 460 万美元区块链智能合约漏洞",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"460\""
+    },
+    {
+     "name": "公布 NeurIPS 2025 最佳论文奖",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"neurip\", \"2025\""
+    },
+    {
+     "name": "使用 GPT-5 加速科学的早期实验",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"gpt\", \"5\""
+    },
+    {
+     "name": "DeepSeek‑OCR：上下文光学压缩",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"deepseek\", \"ocr\""
+    },
+    {
+     "name": "使用大语言模型从零开始辅助撰写类维基百科文章（STORM）",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"storm\""
+    },
+    {
+     "name": "阅读路径（Two Paths Through This Guide）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"two\", \"path\", \"through\", \"guide\""
+    },
+    {
+     "name": "基础（Fundamentals）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"fundamental\""
+    },
+    {
+     "name": "1) 渐进式披露（Progressive Disclosure）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"1\", \"progressive\", \"disclosure\""
+    },
+    {
+     "name": "2) 可组合性（Composability）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"2\", \"composability\""
+    },
+    {
+     "name": "3) 可移植性（Portability）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"3\", \"portability\""
+    },
+    {
+     "name": "面向 MCP 构建者：Skills + Connectors",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"mcp\", \"skill\", \"connector\""
+    },
+    {
+     "name": "为什么这对 MCP 用户重要",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"mcp\""
+    },
+    {
+     "name": "规划与设计（Planning and Design）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"plann\", \"design\""
+    },
+    {
+     "name": "类别 1：文档与资产生成（Document & Asset Creation）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"1\", \"document\", \"asset\", \"creation\""
+    },
+    {
+     "name": "类别 2：工作流自动化（Workflow Automation）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/research/ shows \"automation\"; not \"2\", \"workflow\""
+    },
+    {
+     "name": "类别 3：MCP 增强（MCP Enhancement）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"3\", \"mcp\", \"enhancement\""
+    },
+    {
+     "name": "定量指标（Quantitative）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"quantitative\""
+    },
+    {
+     "name": "定性指标（Qualitative）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"qualitative\""
+    },
+    {
+     "name": "YAML 前置元数据：最关键部分",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"yaml\""
+    },
+    {
+     "name": "description 字段写法",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"description\""
+    },
+    {
+     "name": "测试与迭代（Testing and Iteration）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"test\", \"iteration\""
+    },
+    {
+     "name": "1) 触发测试（Triggering Tests）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"1\", \"trigger\", \"test\""
+    },
+    {
+     "name": "2) 功能测试（Functional Tests）",
+     "detail": "a heading on /the-complete-guide-to-building-skill-for-claude/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/research/ shows none of its words; not \"2\", \"functional\", \"test\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Anthropic S-1 注册声明与招股说明书（中文全译）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "识别与应对 AI 滥用：2026 年 9 月",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "DeepSeek-V4：迈向高效的百万 Token 上下文智能",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "Claude Opus 4.7 系统卡",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "Claude Skills 构建完全指南（中文版）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "DeepSeek‑R1：通过强化学习激励大语言模型的推理能力（v2）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "Dan Wang · 2025 年度信",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "mHC：流形约束超连接",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "2025 年 LLM 年度回顾",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "Bloom：用于自动化行为评估的开源工具",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "分布式 AGI 的安全性",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "监测可监测性：评估思维链（CoT）监控",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "前沿科学：评估 AI 执行专家级科学任务的能力",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "GPT‑5 系统卡更新：GPT‑5.2",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "AI 现状：基于 OpenRouter 的一百万亿 Token 实证研究",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "AI 如何改变 Anthropic 的工作方式",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "DeepSeek‑V3.2：推动开源大语言模型前沿",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "AI 智能体发现 460 万美元区块链智能合约漏洞",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "公布 NeurIPS 2025 最佳论文奖",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "使用 GPT-5 加速科学的早期实验",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "DeepSeek‑OCR：上下文光学压缩",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "使用大语言模型从零开始辅助撰写类维基百科文章（STORM）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "阅读路径（Two Paths Through This Guide）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "基础（Fundamentals）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "1) 渐进式披露（Progressive Disclosure）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "2) 可组合性（Composability）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "3) 可移植性（Portability）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "面向 MCP 构建者：Skills + Connectors",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "为什么这对 MCP 用户重要",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "规划与设计（Planning and Design）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "类别 1：文档与资产生成（Document & Asset Creation）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "类别 3：MCP 增强（MCP Enhancement）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "定量指标（Quantitative）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "定性指标（Qualitative）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "YAML 前置元数据：最关键部分",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "description 字段写法",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "测试与迭代（Testing and Iteration）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "1) 触发测试（Triggering Tests）",
+   "sites": [
+    "randomarea.com"
+   ]
+  },
+  {
+   "name": "2) 功能测试（Functional Tests）",
+   "sites": [
+    "randomarea.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-13",
+  "queued": []
+ }
+}

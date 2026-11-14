@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Podcasts: search any show, play, follow, queue, download · Verse</title>
+<title>Podcast Search · Verse</title>
 <meta name="description" content="Search millions of podcasts or paste any RSS link. Play with speed from 0.5x to 3x, skip back 15 and forward 30, a sleep timer, chapters, transcripts, a queue and your place saved per episode. Follow shows, see new episodes, save episodes for offline, import and export OPML. All kept on your device, no account.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Podcasts · Verse">
+<meta property="og:title" content="Podcast Search · Verse">
 <meta property="og:description" content="Search any podcast or paste an RSS link; speed, skip, sleep timer, chapters, transcripts, queue, follows and offline downloads on your device, no account.">
 <meta property="og:url" content="https://a-to-mind.com/podcasts/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -84,7 +84,8 @@
 </head>
 <body>
 <main>
-  <h1 id="title">Podcasts</h1>
+  <h1 id="title">Podcast Search</h1>
+  <p>This page is for anyone who wants to find a podcast, play an episode, and keep their place on this device.</p>
   <p class="sub" id="sub">Search any show or paste an RSS link. Play with speed, skip, a sleep timer, chapters and a queue; follow shows, save episodes for offline. Kept on your device, no account.</p>
 
   <form id="f" autocomplete="off" role="search">
@@ -134,6 +135,9 @@
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/translate/">Translate</a> <a href="/word-count/">Word counter</a> <a href="/local/">Local TV and radio</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <p class="srcs" id="srcs">Shows come from <a href="https://performance-partners.apple.com/search-api" rel="noopener">Apple's free public podcast directory</a> (search and charts), or from any RSS feed you paste. Verse reads a feed once through its own server, with a size and time limit and only public https addresses, and keeps the answer for 15 minutes; the audio always streams straight from the publisher and never passes through Verse. Follows, your place in each episode, the queue, speed and saved episodes stay on this device. There are no paid subscriptions, ratings or reviews, and nothing syncs between devices; export your follows as OPML to move them.</p>
   <footer><a href="/">Verse</a> · <a href="/podcast/">Verse Out Loud</a> · <a href="/tools/">every tool</a></footer>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a data-base="/songs/" data-param="title" data-from="#q" data-fallback="history">Song Player</a>
+  </nav>
 </main>
 
 <div id="mini" hidden><span id="miniT"></span><button type="button" id="miniBack" aria-label="Back 15 seconds">⟲ 15</button><button type="button" id="miniPP" class="go" aria-label="Play">Play</button><button type="button" id="miniFwd" aria-label="Forward 30 seconds">30 ⟳</button></div>
@@ -199,7 +203,7 @@
     // ---- views ----
     let shown = null; // the show on the page
     const view = $('view');
-    function homeView() { shown = null; document.title = 'Podcasts: search any show, play, follow, queue, download · Verse'; view.replaceChildren(...homeKids); chart(); }
+    function homeView() { shown = null; document.title = 'Podcast Search · Verse'; view.replaceChildren(...homeKids); chart(); }
     const homeKids = [...view.children];
     async function searchView(q) {
       shown = null; view.replaceChildren(h('h2', { id: 'resH' }, 'Results for "' + q + '"'), h('ul', { class: 'list', id: 'results' }, h('li', { class: 'empty' }, 'Searching…')));
@@ -419,5 +423,6 @@
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

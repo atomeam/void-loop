@@ -220,7 +220,7 @@ test('a workflow-token lap starts the pull-request checks, and a page diff start
   const r = await lap(parseArgs(['--once', '--agent', 'cmd']), { cwd: s.work, env: { ...env(s, 'mkdir -p void-live-deploy && echo card > void-live-deploy/x.js'), VERSE_LOOP_DISPATCH_CHECKS: '1' }, log: quiet });
   assert.equal(r.outcome, 'shipped', r.why);
   const calls = ghCalls(s).map((c) => c.join(' '));
-  for (const file of ['void-review.yml', 'merge-gate.yml', 'deploy.yml', 'collide.yml', 'automerge.yml', 'loop-critic.yml']) {
+  for (const file of ['void-review.yml', 'merge-gate.yml', 'deploy.yml', 'collide.yml', 'floor-live.yml', 'automerge.yml', 'loop-critic.yml']) {
     assert.ok(calls.some((c) => c === 'workflow run ' + file + ' --ref ' + r.branch + ' -f pr=7'), file + ' started on the branch');
   }
   assert.ok(!calls.some((c) => c.includes('workflow-lint.yml')), 'a page diff does not start the workflow linter');

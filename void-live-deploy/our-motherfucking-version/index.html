@@ -5,34 +5,60 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<title>A readable page · Verse</title>
-<meta name="description" content="A dark Verse page in the site's own type, and a count of the bytes, pictures, fonts and scripts in markup you paste.">
+<title>Lightweight Page · Verse</title>
+<meta name="description" content="A readable page, and a count of the bytes, pictures, fonts and scripts in markup you paste. Nothing is uploaded.">
 <link rel="stylesheet" href="/verse.css">
 <link rel="stylesheet" href="/versus/layout.css">
 <link rel="canonical" href="https://a-to-mind.com/our-motherfucking-version/">
-<meta property="og:title" content="A readable page · Verse">
+<meta property="og:title" content="Lightweight Page · Verse">
+<meta property="og:description" content="A plain page you can read, plus a scale for the markup you paste.">
+<meta property="og:url" content="https://a-to-mind.com/our-motherfucking-version/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 </head>
 <body>
 <main>
-  <h1>A page you can read</h1>
-  <p>This page is dark, like the rest of Verse. It uses the site's own type. No extra font file, and no picture. The words stay put if you turn style and script off.</p>
-  <p>Weight is a choice. A picture standing in for a button, a font that must arrive before the sentence, a script that runs before you can read: that is a slow page. Write the sentence. Link the next page. Stop.</p>
+  <h1>Lightweight Page</h1>
+  <p>This page is for anyone who wants a page that stays readable, and a way to weigh how much markup another page is carrying.</p>
+  <p>The original is one page of text. It argues that a good website is already simple, and that the heavy parts are things a builder adds. These are the points it makes, in this page's own words.</p>
+  <h2>What it asks a page to be</h2>
+  <ul>
+    <li>Light, so it loads quickly.</li>
+    <li>Able to fit a small screen and a large one.</li>
+    <li>Readable in more than one browser.</li>
+    <li>Usable by people who do not see the pictures, including people who use a screen reader.</li>
+    <li>Clear enough that the sentence is the point, not a large photograph.</li>
+  </ul>
+  <h2>Where the weight comes from</h2>
+  <p>A hover animation on a banner can cost tens of kilobytes, and a person tapping a phone never sees that hover. A library loaded only to change a background color, or a whole family of font files loaded so one greeting can be huge, is weight the sentence did not need. The original says its own page is lighter than a typical logo or a font stack used for a single hello.</p>
+  <h2>It fits the screen without a special query</h2>
+  <p>The original says a page can respond to the screen by letting the text reflow. It does not use a media query. The words wrap on a wide monitor and on a tiny screen. That is the whole trick.</p>
+  <h2>You can read it</h2>
+  <p>The original uses headings, a list, a quotation, and HTML5 elements so the structure is in the markup, not only in a picture. The words are on the first screen. They are not stretched across several empty screens behind a button whose only job is to scroll.</p>
+  <p>It also says to open the page in a very old browser. The claim is that plain HTML still shows the words there.</p>
+  <h2>It says this is satire</h2>
+  <p>The original says it is not telling you to make every site look like that one page. It says websites are already functional, fast, and accessible, and that the problems are ones builders create. The line it quotes is "Good design is as little design as possible." It points that line at <a href="https://www.vitsoe.com/us/about/good-design" rel="noopener noreferrer">Vitsœ's Good design page</a>. That page, read on 13 November 2026, is about Dieter Rams. The original does not print his name.</p>
   <h2>Weigh some markup</h2>
-  <p>Paste HTML. You get the byte count, and how many pictures, font requests and scripts are in it. Nothing is uploaded anywhere else.</p>
+  <p>Paste HTML. You get the byte count, and how many pictures, font requests, and scripts are in it. Nothing is uploaded. The sample below is a sentence and one picture. Press Weigh it if scripts are off. With scripts on, the count updates as you type, and the address keeps the markup.</p>
   <form method="get" action="/our-motherfucking-version/">
     <label for="html">Markup</label>
-    <textarea id="html" name="html" spellcheck="false"></textarea>
+    <textarea id="html" name="html" spellcheck="false">&lt;p&gt;Hi&lt;/p&gt;&lt;img alt="" src="a.png"&gt;</textarea>
     <button type="submit">Weigh it</button>
   </form>
-  <output id="out" aria-live="polite"></output>
-  <p>From here: <a href="/under-the-hood/">speed and headers, measured</a>, <a href="/versus/">the other Versus tools</a>, <a href="/word-count/">word counter</a>. Ask Verse is in the bar.</p>
-  <section class="history">
-    <h2>The original site</h2>
-    <p>A one-page argument for a plain site was already online on 25 November 2013. The <a href="https://web.archive.org/web/20131125015802/http://motherfuckingwebsite.com/">saved copy</a> does not sign a name. A comment in the <a href="https://motherfuckingwebsite.com/">live page</a> credits @thebarrytone. <a href="https://webernaut.com/threads/creators/barry-t-smith">Webernaut</a> says Barry T. Smith made it that year as a critique of heavy web design. This page does that job in Verse's own words, then weighs the markup you paste.</p>
-  </section>
+  <label for="out">Weight</label>
+  <output id="out" aria-live="polite">33 bytes · 1 pictures · 0 font requests · 0 scripts</output>
+  <h2>The name</h2>
+  <p>The name was registered on 22 November 2013. The registry record read on 13 November 2026 lists that registration at 02:09:07 UTC, a last change on 20 November 2025, and expiration on 22 November 2026. The registrar is NetEarth One Inc., doing business as NetEarth. The name servers are ns1.skystra.com and ns2.skystra.com. The status is client transfer prohibited. That reading is the registry RDAP record. The record does not name a person.</p>
+  <h2>The first saved copy</h2>
+  <p>The earliest saved copy opened for this page is the 25 November 2013 capture, three days after registration. It already has the five rules, the satire heading, the design quotation, and a comment that the site was made by @thebarrytone. It also already includes a script that calls Google Analytics. The live page on 13 November 2026 still has that comment and still includes a Google Analytics script.</p>
+  <h2>Who is said to have made it</h2>
+  <p>The page's own comment is the first source: "This site was made by @thebarrytone." <a href="https://webernaut.com/threads/creators/barry-t-smith" rel="noopener noreferrer">Webernaut's page for Barry T. Smith</a>, read on 13 November 2026, says he built the site in 2013 as a blunt critique of heavy web design, and that he later made txti. The registry record does not confirm that name. This page does not add a motive beyond what those two sources say.</p>
+  <p>More: <a href="/word-count/">word counter</a>, <a href="/under-the-hood/">speed and headers, measured</a>.</p>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a href="/text-diff/?changed=33%20bytes%20%C2%B7%201%20pictures%20%C2%B7%200%20font%20requests%20%C2%B7%200%20scripts" data-base="/text-diff/" data-param="changed" data-from="#out" data-fallback="33 bytes · 1 pictures · 0 font requests · 0 scripts">Text Compare</a>
+  </nav>
 </main>
 <script type="module" src="/our-motherfucking-version/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
 </body>
 </html>

@@ -134,8 +134,9 @@ const HAND_FLOORS = [
   // snake-seeded heats with contested drop spots - all from results typed in, with nothing sent anywhere and no account
   { id: 'tournaments', learned: "a scrim score is arithmetic people must be able to check: placement pays the highest matching threshold, the tiebreakers are points then wins then eliminations then average placement, and the lobby splits into snake-seeded heats, all from the results typed in", site: 'yunite.xyz', url: 'https://yunite.xyz/', ask: 'fortnite tournament scoring', page: '/tournaments/', label: 'Tournament scoring', glyph: '▣', fatality: 'standings with the official tiebreakers, snake heats and contested drop spots worked out from results typed in, with no account, no screenshot and nothing sent', extra: ['point system presets', 'multi-match standings', 'heat split', 'drop spots', 'CSV in and out'] },
 
-  // thunit.com (owner, 2026-10-27): the next target after yunite, a 70-word brochure for "exclusive" hosting on a stock site, with six
-  // unnamed icon links and no tool of any kind. Verse's /hosting/ answers the two claims it makes in numbers: a crowded shared host splits
+  // thunit.com (2026-10-27): a short brochure for exclusive hosting, with six unnamed icon links and no tool.
+  // The brochure's story is an Echo Vault entry. /hosting/ stays the traffic and uptime calculator, which a visitor can use.
+  // Verse's /hosting/ answers the two claims it makes in numbers: a crowded shared host splits
   // its cores and an exclusive one keeps them, and an SLA is downtime per year, month, week and day. The ask is traffic (50 requests/s of
   // 200 KB at 40 ms a worker) and a 99.9% SLA, with the arithmetic, the NGINX or Caddy config and the header set worked out in the page.
   { id: 'hosting', learned: "hosting is arithmetic people must be able to check: sustained bandwidth, monthly transfer, concurrent workers by Little's law, the vCPUs and RAM they need, and the downtime each SLA allows, with a hardened config worked out from the same numbers", site: 'thunit.com', url: 'https://thunit.com/', ask: 'web hosting sizing calculator', page: '/hosting/', label: 'Hosting sizer', glyph: '▤', fatality: 'bandwidth, workers, vCPUs and RAM worked out from your traffic, the downtime each SLA allows, a hardened NGINX or Caddy config (TLS 1.3, headers, rate limit) - no account, nothing sent', extra: ['capacity sizing', 'uptime and SLA', 'server config', 'security headers'] },
@@ -216,10 +217,10 @@ export function selfLanes(lanes, rows) {
 // A site not listed here is still measured against its leader's page until its own page is built.
 export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
   'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
-  'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
+  'pdf: codeshack.io': '/pdf/?tool=merge', 'pdf: 10015.io': '/pdf/?tool=pages', 'pdf: pdfcandy.com': '/pdf/', 'pdf: sejda.com': '/pdf/?tool=pages', 'pdf: tools.pdf24.org': '/pdf/', 'pdf: smallpdf.com': '/pdf/?tool=compress',
   'ndscalc.ru': '/calculator/?mode=vat', // the calculator's VAT mode is ndscalc.ru's page (#2294 said so in its test, not here; lists run 15)
   'sports: thesportsdb.com': '/scores/sports/', emojis: '/emojis/', // emojitracker.com's own page (2026-10-30: the floor came with /emojis/ but no row here, so the lane-page ratchet failed on main)
-  'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
+  'kanban: jasperbernaers.com': '/kanban/', 'kanban: abacktools.com': '/kanban/', 'kanban: wekan.fi': '/kanban/', 'kanban: kanbanflow.com': '/kanban/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   // neuralframes.com's rap lyrics generator (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is") is assimilated by /rap/ (domains/targets/neuralframes.json)
   'music: neuralframes.com': '/rap/',

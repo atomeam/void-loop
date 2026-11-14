@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verse Arcade · Verse</title>
+<meta name="description" content="Every game you can play against Verse, in one cabinet. The new rounds play here. The ones already on the stage open there, with a link that carries a round.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Verse Arcade">
+<meta property="og:description" content="Every game you can play against Verse, in one cabinet. New rounds play here. The ones already on the stage open there.">
+<meta property="og:url" content="https://a-to-mind.com/arcade/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="verse-handoff" content="in: number; out: number">
+<link rel="stylesheet" href="/verse.css">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #241a48, #07060f 62%); color: #f2eeff; font: 17px/1.5 system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: clamp(36px, 7vw, 64px); line-height: 1.05; margin: 12px 0 8px; letter-spacing: -0.03em; }
+  h2 { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #b79bff; margin: 28px 0 8px; }
+  .lead { font-size: 1.15rem; max-width: 40rem; }
+  a { color: #4fe3e3; }
+  #games, #more { display: flex; flex-wrap: wrap; gap: 8px; }
+  button, .chip { font: inherit; color: #f2eeff; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 10px 16px; min-height: 44px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+  button:focus-visible, a:focus-visible { outline: 2px solid #4fe3e3; outline-offset: 2px; }
+  button[aria-pressed="true"] { border-color: #4fe3e3; background: rgba(79,227,227,.14); }
+  #play:not(:empty) { width: 100vw; margin: -20px 0 0 calc(50% - 50vw); }
+  #play .stage { position: relative; width: 100vw; height: calc(100vh - var(--vs-bar, 48px)); display: block; background: #07060f; }
+  #play .stage:fullscreen, #play .stage:fullscreen canvas { width: 100%; height: 100%; }
+  #play canvas { display: block; width: 100%; height: 100%; border-radius: 0; touch-action: none; }
+  #play .hud { position: absolute; top: 12px; right: 12px; z-index: 4; display: flex; gap: 8px; }
+  #play .hud button, #play .full { min-width: 44px; min-height: 44px; background: rgba(7,6,15,.55); }
+  #play .hud button.sound { background: #f4f1ea; color: #141028; font-weight: 700; min-width: 118px; border-color: #f4f1ea; }
+  #play .full { position: absolute; right: 12px; bottom: 12px; z-index: 4; }
+  #play .round { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px 0; }
+  #play button[hidden] { display: none !important; }
+  #how { min-height: 3.2em; }
+  .g-btn { border-radius: 10px; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/arcade/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse Arcade","url":"https://a-to-mind.com/arcade/","description":"Every game you play against Verse, in one cabinet. Debris Field plays on the page: fly one ship, and outscore Verse before the run ends. The games already on the stage open there, and a link carries the seed and the score of a round.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"verse arcade, play a game against verse, debris field, daily arcade game, play debris field","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/arcade/?play={play}"},"play-input":"required name=play"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Verse Arcade","item":"https://a-to-mind.com/arcade/"}]}]}</script>
+<!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
+<!-- /modulepreload -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <div id="play"></div>
+  <h1>Verse Arcade</h1>
+  <p class="lead">This is every game you can play against Verse, gathered in one cabinet, with a round a friend can open from a link.</p>
+  <p><a href="/?q=arcade%20games">Open the 3D cabinet on the stage</a>. The cabinet and the stage cards are the same games.</p>
+  <h2>In the cabinet</h2>
+  <div id="games"></div>
+  <p id="how"></p>
+  <h2>Also on the stage</h2>
+  <div id="more"></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/arcade/?play=debris-field">Debris Field</a><a href="/arcade/?play=debris-field&amp;daily=1">Daily Debris Field</a><a href="/arcade/?play=debris-field&amp;seed=4">Debris Field, seed 4</a><a href="/arcade/?play=debris-field&amp;seed=9">Debris Field, seed 9</a><a href="/arcade/?play=debris-field&amp;seed=2">Debris Field, seed 2</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Use this with"><!-- related --><span class="tk-label">Use with</span> <a href="/learn-to-draw/">Learn to draw</a> <a href="/random/">Random number</a> <a href="/music/">Music tools</a> <a href="/fantasy/">Fantasy tools</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+</main>
+<script type="module">
+import { mountRelated } from '/lib/toolkit.js';
+mountRelated(document.querySelector('#related'), '/arcade/');
+</script>
+<script type="module" src="/arcade/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

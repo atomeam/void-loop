@@ -49,8 +49,10 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
-        # index.json is generated (never committed); self-context and the suite read it
+        # The suite reads the index it just wrote. Rebuild the family list and the book from that index so the page count matches the routes.
         node tools/skills-index.mjs --write
+        node tools/families.mjs
+        node tools/guide.mjs
         node tools/self-context.mjs
     - name: node tools/fringe.mjs (fringe ledger rules)
       if: inputs.bench != 'only' && inputs.part != 'suite'

@@ -3,8 +3,8 @@
   "readable": {
    "speed": {
     "verdict": "worse",
-    "verse": 94,
-    "best": 63
+    "verse": 115,
+    "best": 52
    },
    "reliability": {
     "verdict": "equal",
@@ -26,12 +26,31 @@
     "verse": 0,
     "best": 0
    },
-   "at": "2026-11-13T14:38:48.941Z"
+   "at": "2026-11-14T13:36:20.668Z",
+   "weight": {
+    "verse": 1885,
+    "rival": 2313
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "plain page",
+      "verse": false,
+      "rival": false
+     },
+     {
+      "name": "weigh markup",
+      "verse": false,
+      "rival": false
+     }
+    ],
+    "extra": []
+   }
   },
   "tracks": {
    "speed": {
     "verdict": "worse",
-    "verse": 139,
+    "verse": 100,
     "best": 80
    },
    "reliability": {
@@ -54,13 +73,32 @@
     "verse": 0,
     "best": 0
    },
-   "at": "2026-11-13T14:39:14.512Z"
+   "at": "2026-11-14T13:36:46.637Z",
+   "weight": {
+    "verse": 1885,
+    "rival": 1233
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "track list",
+      "verse": false,
+      "rival": false
+     },
+     {
+      "name": "start times",
+      "verse": false,
+      "rival": false
+     }
+    ],
+    "extra": []
+   }
   },
   "letters": {
    "speed": {
     "verdict": "better",
-    "verse": 164,
-    "best": 223
+    "verse": 110,
+    "best": 226
    },
    "reliability": {
     "verdict": "equal",
@@ -82,7 +120,521 @@
     "verse": 0,
     "best": 0
    },
-   "at": "2026-11-13T14:39:41.294Z"
+   "at": "2026-11-14T13:37:13.199Z",
+   "weight": {
+    "verse": 1886,
+    "rival": 1501
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "letter shift",
+      "verse": false,
+      "rival": false
+     }
+    ],
+    "extra": [
+     {
+      "name": "share link",
+      "verse": true
+     },
+     {
+      "name": "read it back",
+      "verse": true
+     },
+     {
+      "name": "scripts off",
+      "verse": true
+     }
+    ]
+   }
+  },
+  "scores": {
+   "speed": {
+    "verdict": "better",
+    "verse": 120,
+    "best": 341
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 5
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:37:54.972Z",
+   "weight": {
+    "verse": 1878,
+    "rival": 20995
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "score",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "board",
+      "verse": false,
+      "rival": false
+     },
+     {
+      "name": "standings",
+      "verse": false,
+      "rival": true
+     }
+    ],
+    "extra": []
+   }
+  },
+  "units": {
+   "speed": {
+    "verdict": "better",
+    "verse": 112,
+    "best": 550
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:38:23.794Z",
+   "weight": {
+    "verse": 1879,
+    "rival": 5594
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "convert",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "unit",
+      "verse": false,
+      "rival": true
+     }
+    ],
+    "extra": []
+   }
+  },
+  "patterns": {
+   "speed": {
+    "verdict": "better",
+    "verse": 109,
+    "best": 362
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:38:52.547Z",
+   "weight": {
+    "verse": 1867,
+    "rival": 7709
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "code",
+      "verse": false,
+      "rival": false
+     },
+     {
+      "name": "regex",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "pattern",
+      "verse": false,
+      "rival": false
+     }
+    ],
+    "extra": [
+     {
+      "name": "plain reading",
+      "verse": true
+     },
+     {
+      "name": "replace",
+      "verse": true
+     },
+     {
+      "name": "share link",
+      "verse": true
+     }
+    ]
+   }
+  },
+  "schedules": {
+   "speed": {
+    "verdict": "worse",
+    "verse": 104,
+    "best": 80
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 3
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:39:16.777Z",
+   "weight": {
+    "verse": 1880,
+    "rival": 6370
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "cron",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "schedule",
+      "verse": false,
+      "rival": true
+     }
+    ],
+    "extra": []
+   }
+  },
+  "meanings": {
+   "speed": {
+    "verdict": "better",
+    "verse": 116,
+    "best": 291
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 11
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:39:42.173Z",
+   "weight": {
+    "verse": 1881,
+    "rival": 31526
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "define",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "dictionary",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "meaning",
+      "verse": false,
+      "rival": false
+     }
+    ],
+    "extra": []
+   }
+  },
+  "qr": {
+   "speed": {
+    "verdict": "better",
+    "verse": 100,
+    "best": 449
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 2
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:40:12.049Z",
+   "weight": {
+    "verse": 1866,
+    "rival": 89329
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "qr",
+      "verse": false,
+      "rival": false
+     },
+     {
+      "name": "code",
+      "verse": false,
+      "rival": true
+     }
+    ],
+    "extra": [
+     {
+      "name": "svg download",
+      "verse": true
+     },
+     {
+      "name": "wifi text",
+      "verse": true
+     },
+     {
+      "name": "contact card",
+      "verse": true
+     }
+    ]
+   }
+  },
+  "text-diff": {
+   "speed": {
+    "verdict": "better",
+    "verse": 100,
+    "best": 475
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:40:38.564Z",
+   "weight": {
+    "verse": 1871,
+    "rival": 36577
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "diff",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "compare",
+      "verse": false,
+      "rival": true
+     }
+    ],
+    "extra": [
+     {
+      "name": "share link",
+      "verse": true
+     },
+     {
+      "name": "set case aside",
+      "verse": true
+     },
+     {
+      "name": "set spaces aside",
+      "verse": true
+     }
+    ]
+   }
+  },
+  "songs": {
+   "speed": {
+    "verdict": "better",
+    "verse": 133,
+    "best": 590
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:41:06.662Z",
+   "weight": {
+    "verse": 1867,
+    "rival": 45573
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "song",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "play",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "audio",
+      "verse": false,
+      "rival": true
+     }
+    ],
+    "extra": []
+   }
+  },
+  "clips": {
+   "speed": {
+    "verdict": "better",
+    "verse": 110,
+    "best": 460
+   },
+   "reliability": {
+    "verdict": "equal",
+    "verse": 3,
+    "best": 3
+   },
+   "mobile": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "accessibility": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0
+   },
+   "at": "2026-11-14T13:41:33.839Z",
+   "weight": {
+    "verse": 1876,
+    "rival": 71617
+   },
+   "checklist": {
+    "rows": [
+     {
+      "name": "video",
+      "verse": false,
+      "rival": true
+     },
+     {
+      "name": "play",
+      "verse": false,
+      "rival": false
+     },
+     {
+      "name": "trailer",
+      "verse": false,
+      "rival": false
+     }
+    ],
+    "extra": []
+   }
   }
  }
 }
