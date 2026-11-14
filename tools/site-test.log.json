@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-05T09:06:35Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 812,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 15860 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T09:20:27Z",
   "passed": 76,
   "of": 89,
@@ -7557,5 +7539,23 @@
    "failed": []
   },
   "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-14T02:26:04Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 985,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11264 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
