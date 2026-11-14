@@ -63,6 +63,7 @@ export function drive(card, game, opt = {}) {
   const bag = {};
   const friend = linked && /^\d+$/.test(q.get('score') || '') ? Number(q.get('score')) : null;
   const stick = opt.stick === 'x'; // a game that slides on one axis: no directional pad, the pointer is the control
+  if (opt.canvasHud) { if (card.status) card.status.remove(); if (card.why) card.why.remove(); card.status = card.why = null; }
   let heldFire = false;
   const tools = document.createElement('div');
   tools.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:6px';
@@ -118,18 +119,21 @@ export function drive(card, game, opt = {}) {
   }
   card.again.addEventListener('click', (e) => { e.stopPropagation(); restart((Date.now() & 65535) || 1); });
   card.start(() => {
-    if (!paused && !s.over) {
-      const dir = edge.dir || (held.left ? 'left' : held.right ? 'right' : held.up ? 'up' : held.down ? 'down' : '');
-      const firing = edge.fire || edge.dir === 'up' || (stick && heldFire);
+    const dir = edge.dir || (held.left ? 'left' : held.right ? 'right' : held.up ? 'up' : held.down ? 'down' : '');
+    const firing = edge.fire || edge.dir === 'up' || (stick && heldFire);
+    if (!paused && s.over && stick && firing && (s.anim || 0) > 50) restart(seed);
+    else if (!paused && !s.over) {
       game.tick(s, { flap: edge.flap || (stick && heldFire), fire: firing, step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', dir, x: stick ? (heldFire ? edge.x : undefined) : edge.x });
       if (s.sfx && sound) beep(bag);
       edge = { flap: false, fire: false, dir: '', x: edge.x };
     }
     game.draw(card.ctx, s);
     const best = s.over ? writeBest(game.id, s.score.you) : (readBest()[game.id] || 0);
-    const end = s.over === 'you' ? 'You win' : s.over === 'void' ? 'Verse wins' : s.over === 'draw' ? 'A draw' : '';
-    card.status.textContent = (end ? end + ' · ' : paused ? 'Paused · ' : '') + 'you ' + s.score.you + ' · Verse ' + s.score.void + (best ? ' · best ' + best : '') + (friend != null ? ' · a friend scored ' + friend + ' on this seed' : '') + (stick || s.over || paused ? '' : ' · step ' + s.tick);
-    card.why.textContent = s.why ? 'Verse: ' + s.why : '';
+    if (card.status && !opt.canvasHud) {
+      const end = s.over === 'you' ? 'You win' : s.over === 'void' ? 'Verse wins' : s.over === 'draw' ? 'A draw' : '';
+      card.status.textContent = (end ? end + ' · ' : paused ? 'Paused · ' : '') + 'you ' + s.score.you + ' · Verse ' + s.score.void + (best ? ' · best ' + best : '') + (friend != null ? ' · a friend scored ' + friend + ' on this seed' : '') + (stick || s.over || paused ? '' : ' · step ' + s.tick);
+    }
+    if (card.why && !opt.canvasHud) card.why.textContent = s.why ? 'Verse: ' + s.why : '';
     share.href = roundLink(game.id, seed, s.score.you, daily);
     if (s.over && !done) { done = true; if (opt.onDone) opt.onDone(s.over); }
   });

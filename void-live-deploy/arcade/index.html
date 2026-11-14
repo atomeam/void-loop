@@ -18,7 +18,7 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <style>
   body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #241a48, #07060f 62%); color: #f2eeff; font: 17px/1.5 system-ui, sans-serif; }
-  main { max-width: 880px; margin: 0 auto; padding: 28px 16px 64px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 20px 16px 48px; }
   h1 { font-size: clamp(36px, 7vw, 64px); line-height: 1.05; margin: 12px 0 8px; letter-spacing: -0.03em; }
   h2 { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #b79bff; margin: 28px 0 8px; }
   .lead { font-size: 1.15rem; max-width: 40rem; }
@@ -27,8 +27,12 @@
   button, .chip { font: inherit; color: #f2eeff; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 10px 16px; min-height: 44px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
   button:focus-visible, a:focus-visible { outline: 2px solid #4fe3e3; outline-offset: 2px; }
   button[aria-pressed="true"] { border-color: #4fe3e3; background: rgba(79,227,227,.14); }
-  #play { margin-top: 16px; }
-  #play canvas { display: block; width: min(100%, 420px); height: auto; margin: 0 auto; border-radius: 12px; touch-action: none; }
+  #play { width: 100vw; margin: 8px 0 0 calc(50% - 50vw); }
+  #play .stage { position: relative; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #07060f; }
+  #play .stage:fullscreen { width: 100vw; height: 100vh; }
+  #play canvas { display: block; width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); border-radius: 0; touch-action: none; }
+  #play .full { position: absolute; right: 12px; bottom: 12px; z-index: 2; background: rgba(7,6,15,.55); }
+  #play button[hidden] { display: none !important; }
   #how { min-height: 3.2em; }
   .g-btn { border-radius: 10px; }
 </style>

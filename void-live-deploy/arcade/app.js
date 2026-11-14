@@ -46,22 +46,25 @@ function paint(id) {
   const mine = ++round;
   const el = document.createElement('div');
   el.tabIndex = 0;
+  const stage = document.createElement('div'); stage.className = 'stage';
   const cv = document.createElement('canvas');
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = game.W * dpr; cv.height = game.H * dpr;
   const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
-  const status = document.createElement('p'); status.id = 'status';
-  const why = document.createElement('p');
-  const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
-  el.append(cv, status, why, again);
+  const full = document.createElement('button'); full.type = 'button'; full.className = 'g-btn full'; full.textContent = 'Full screen';
+  full.addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else stage.requestFullscreen(); });
+  stage.append(cv, full);
+  const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game'; again.hidden = true;
+  el.append(stage, again);
   play.append(el);
   let raf = 0;
   const card = {
-    el, cv, ctx, status, why, again,
+    el, cv, ctx, status: null, why: null, again,
     start(fn) { const loop = () => { if (mine !== round) return; raf = requestAnimationFrame(loop); fn(); }; raf = requestAnimationFrame(loop); },
     local(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * game.W / Math.max(1, r.width), y: (e.clientY - r.top) * game.H / Math.max(1, r.height) }; },
   };
-  drive(card, game, game.stick ? { stick: game.stick } : {});
+  drive(card, game, { stick: 'x', canvasHud: true });
+  stage.scrollIntoView({ block: 'start' });
   el.focus({ preventScroll: true });
 }
 

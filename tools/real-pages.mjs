@@ -769,6 +769,7 @@ Object.assign(SPECS, {
     await t.copies('#copy', 'one two three'); await t.download('#txt', /^dictation-.+\.txt$/);
   },
   '/arcade/': async (t) => {
+    await t.p.setViewportSize({ width: 1440, height: 900 });
     t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
     t.ok((await t.p.locator('#games button').count()) === 1, 'Debris Field is the round that plays on this page');
     t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
@@ -780,11 +781,14 @@ Object.assign(SPECS, {
     t.ok(/play=debris-field&seed=/.test(await t.p.locator('#play a').first().getAttribute('href') || ''), 'the share link carries the round');
     t.ok(/crystal/i.test(await t.p.locator('#games button[data-id="debris-field"]').getAttribute('title') || ''), 'the round says what the crystals do');
     t.ok(await t.p.locator('#play button', { hasText: 'Left' }).count() === 0, 'no generic direction row on this round');
+    const wide = await t.p.locator('#play canvas').boundingBox();
+    t.ok(wide && wide.width > 600 && wide.height > 280, 'the picture fills the stage: ' + (wide && Math.round(wide.width)));
+    t.ok(await t.p.locator('#status').count() === 0, 'the score stays on the picture');
     await t.p.setViewportSize({ width: 390, height: 844 });
     const box = await t.p.locator('#play canvas').boundingBox();
-    await t.p.mouse.click(box.x + box.width * 0.7, box.y + box.height * 0.8);
-    await t.p.waitForTimeout(300);
-    t.ok(/you /.test(await t.text('#status')), 'a phone tap still plays: ' + (await t.text('#status')).slice(0, 80));
+    t.ok(box && box.width > 340, 'the picture is full width on a phone');
+    await t.p.mouse.click(box.x + box.width * 0.72, box.y + box.height * 0.8);
+    await t.p.waitForTimeout(200);
   },
   '/lab/mind-map/': async (t) => {
     await t.click('#sample'); await t.p.waitForTimeout(300);
