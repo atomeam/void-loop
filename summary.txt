@@ -1,0 +1,24 @@
+fox | sdxl-lightning | 65 | 3708ms | 1024x1024 | fox is standing, not sitting
+fox | schnell | 98 | 2330ms | 1024x1024 | none
+fox | klein-4b | 88.5 | 9768ms | 1024x1024 | unnatural black coloring on the front paws
+hands | sdxl-lightning | 33 | 3646ms | 1024x1024 | extra limbs and deformed fingers
+hands | schnell | 50.5 | 2007ms | 1024x1024 | extra finger and lack of steam
+hands | klein-4b | 61.5 | 6546ms | 1024x1024 | extra and deformed fingers
+sign | sdxl-lightning | 46.5 | 4022ms | 1024x1024 | garbled and misspelled text
+sign | schnell | 68.5 | 2226ms | 1024x1024 | garbled text spelling OOPEN
+sign | klein-4b | 100 | 4916ms | 1024x1024 | none
+astronaut | sdxl-lightning | 89 | 6395ms | 1024x1024 | slightly unnatural horse leg anatomy
+astronaut | schnell | 98 | 2064ms | 1024x1024 | none
+astronaut | klein-4b | 93.5 | 7336ms | 1024x1024 | slight anatomical stiffness in the horse's leg positioning
+anime | sdxl-lightning | 86.5 | 3881ms | 1024x1024 | anatomical error in hand and leg connection
+anime | schnell | 91 | 2013ms | 1024x1024 | slight anatomical distortion in the hands/fingers
+anime | klein-4b | 88.5 | 7037ms | 1024x1024 | slightly unnatural hand/finger structure
+still | sdxl-lightning | 84.5 | 3824ms | 1024x1024 | distorted fruit textures and unnatural cracks
+still | schnell | 89 | 2102ms | 1024x1024 | the citrus fruit textures are slightly waxy and unnatural
+still | klein-4b | 98 | 7991ms | 1024x1024 | none
+market | sdxl-lightning | 84.5 | 7086ms | 1024x1024 | distorted/melted faces and limbs on silhouettes
+market | schnell | 88.5 | 2092ms | 1024x1024 | garbled text on signs
+market | klein-4b | 91 | 9139ms | 1024x1024 | slight blurring in distant background figures
+robot | sdxl-lightning | 69 | 3977ms | 1024x1024 | missing watering can and broken limb anatomy
+robot | schnell | 93.5 | 2055ms | 1024x1024 | slight blur on the plant leaves
+robot | klein-4b | 98 | 9160ms | 1024x1024 | none
