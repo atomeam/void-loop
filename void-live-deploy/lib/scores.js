@@ -357,10 +357,18 @@ export function teamScoreAsk(text) {
   return { team, day: /last night|yesterday/.test(day) ? 'yesterday' : day ? 'today' : '' };
 }
 /** the game a team played on a set of scoreboards ([{ league, games }]): the first whose home or away name, short name or abbreviation holds the team as whole words. Pure. */
+// common nicknames that the feed may spell differently (or that collide with other sports): resolve to the canonical side name.
+export const TEAM_ALIASES = { yankees: 'new york yankees', chiefs: 'kansas city chiefs', packers: 'green bay packers' };
 export function teamGame(boards, team) {
-  const want = String(team || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').trim(); if (!want) return null;
+  const raw = String(team || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').trim(); if (!raw) return null;
+  const want = TEAM_ALIASES[raw] || raw;
   const has = (side) => side && [side.name, side.short, side.abbr].some((n) => (' ' + String(n || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ') + ' ').includes(' ' + want + ' '));
   for (const b of Array.isArray(boards) ? boards : []) for (const g of Array.isArray(b && b.games) ? b.games : []) if (g && g.kind !== 'race' && (has(g.home) || has(g.away))) return { league: b.league, game: g };
+  // fallback: try the raw nickname in case the feed uses it directly
+  if (want !== raw) {
+    const has2 = (side) => side && [side.name, side.short, side.abbr].some((n) => (' ' + String(n || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ') + ' ').includes(' ' + raw + ' '));
+    for (const b of Array.isArray(boards) ? boards : []) for (const g of Array.isArray(b && b.games) ? b.games : []) if (g && g.kind !== 'race' && (has2(g.home) || has2(g.away))) return { league: b.league, game: g };
+  }
   return null;
 }
 

@@ -1,0 +1,132 @@
+{
+ "at": "2026-11-14T22:41:08Z",
+ "sha": "fea6838864bb8a57b886a242a1d981d95dc2904e",
+ "runId": 43649009815,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43649009815",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 132613061904,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613061904",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (3)",
+   "id": 132613062070,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062070",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (4)",
+   "id": 132613062072,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062072",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (5)",
+   "id": 132613062086,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062086",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (2)",
+   "id": 132613062109,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062109",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (1)",
+   "id": 132613062139,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062139",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 132613062199,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062199",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (7)",
+   "id": 132613062244,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43649009815/job/132613062244",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): scope-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

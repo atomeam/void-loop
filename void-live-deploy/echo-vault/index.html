@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Echo Vault: Internet History Archive · Verse</title>
+<meta name="description" content="Stories of sites that were only something to read. Each entry says what the site was, when, where the dates come from, and what a visitor could do there.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/echo-vault/">
+<meta property="og:title" content="Echo Vault: Internet History Archive · Verse">
+<meta property="og:description" content="Stories of sites that were only something to read, with the dates the sources give.">
+<meta property="og:url" content="https://a-to-mind.com/echo-vault/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="verse-handoff" content="in: text; out: text">
+<style>
+  main { max-width: 42rem; }
+  .vault { position: relative; border: 1px solid #2a2a2a; border-radius: 16px; padding: 1rem 1rem .4rem; background: radial-gradient(120% 80% at 10% 0%, rgb(var(--d-key) / .16), transparent 42%), #0c0e14; }
+  @media (prefers-reduced-motion: no-preference) {
+    .vault { box-shadow: 0 0 24px rgb(var(--d-key) / .12); }
+  }
+  article { border-top: 1px solid #2a2a2a; padding: 1rem 0 1.1rem; }
+  article h2 { margin-top: 0; }
+  article[hidden] { display: none; }
+  .when { color: var(--d-ink-3, #9a9a9a); font-variant-numeric: tabular-nums; }
+  #find { max-width: 100%; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Echo Vault: Internet History Archive</h1>
+  <p>This page is for anyone who wants the story of a site that was only something to read, with the dates the sources actually give.</p>
+  <div class="vault">
+    <label for="find">Find an entry</label>
+    <input id="find" type="search" placeholder="brochure, papers, 2013" autocomplete="off" enterkeyhint="search">
+    <p id="none" hidden>No entry matches those words.</p>
+    <article id="paper-notes" data-words="papers reports translations chinese anthropic openai google 2025 2026">
+      <h2>A collection of translated AI research reports</h2>
+      <p class="when">Read 13 November 2026. Earliest note on that page: 17 December 2025. Newest note on that page: 26 October 2026.</p>
+      <h3>What it was</h3>
+      <p>A public reading list. The page title, in Chinese, means a collection of Chinese translations of AI research reports. The line under the title says it gathers translations of reports published by Anthropic, OpenAI, Google, OpenRouter, and others.</p>
+      <h3>When</h3>
+      <p>Who started the page is not named on the home page, and no earlier saved copy was used for this entry. On 13 November 2026 the notes were grouped by year. The newest note was dated 26 October 2026 and was an Anthropic registration statement. Notes still on that same page go back at least to 17 December 2025.</p>
+      <h3>What it did</h3>
+      <p>A visitor could read a translated report. One control switched the page between a light ground and a dark ground. There was no search box, no editor, and no account. The page did not change a number, a file, or a route.</p>
+    </article>
+    <article id="hosting-brochure" data-words="hosting brochure exclusive lianudom 2013 icons chat">
+      <h2>An exclusive-hosting brochure</h2>
+      <p class="when">First saved home page: 5 April 2013. Read again 13 November 2026.</p>
+      <h3>What it was</h3>
+      <p>A one-page brochure for exclusive web hosting. The page called itself a Lianudom company. It used a stock site template: a logo, a headline, a laptop picture, and a row of icons.</p>
+      <h3>When</h3>
+      <p>The Internet Archive's earliest saved copy of the home page is dated 5 April 2013. Later saved copies exist for 2014, 2016, 2017, 2019, 2022, 2023, 2024, 2025, and 2026. Who founded the company, and whether the page has changed hands, is not in the sources read for this entry.</p>
+      <h3>What it did</h3>
+      <p>On 13 November 2026 the headline offered exclusive hosting. Six icons (approval, a comment, wifi, mail, share, and an announcement) each pointed at the same page. A "Chat now" link opened a Messenger thread. There was no price table, no signup form, and no calculator. A reading on 27 October 2026 had already described the page as about seventy words with those unnamed icon links and nothing a visitor could operate.</p>
+      <p>The arithmetic for bandwidth, workers, and allowed downtime is a separate Verse page, the <a href="/hosting/">traffic and uptime calculator</a>. That calculator is not this brochure.</p>
+    </article>
+  </div>
+  <nav class="with" aria-label="Use this with"><span>Use this with</span>
+    <a href="/news/?q=papers" data-base="/news/" data-param="q" data-from="#find" data-fallback="papers">News</a>
+    <a href="/obituaries/">Obituaries and lineage</a>
+  </nav>
+</main>
+<script type="module" src="/echo-vault/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+<script type="module" src="/versus/handoff.js"></script>
+</body>
+</html>

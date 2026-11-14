@@ -190,7 +190,7 @@ async function rivalFor(domain, ask, obs) {
     return Number.isFinite(n) ? { near: n, pct: 0.02 } : null;
   }
   if (domain === 'code' && obs) {
-    if (/factorial/i.test(ask.ask)) return { ok: codeRan(obs.text, 'print("ok" if factorial(5)==120 else "no")') };
+    if (/factorial/i.test(ask.ask)) return { ok: codeRan(obs.text, 'print("ok" if factorial(0)==1 and factorial(5)==120 else "no")') };
     if (/reverse/i.test(ask.ask)) return { ok: codeRan(obs.text, 'print("ok" if reverse("ab")=="ba" else "no")') };
     if (ask.fact) return { text: ask.fact };
   }

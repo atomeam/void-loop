@@ -8,6 +8,7 @@ export const NAV = Object.freeze([
   { href: '/bots/', label: 'Drones' },
   { href: '/agent/', label: 'Envoy' },
   { href: '/films/', label: 'Holovids' },
+  { href: '/arcade/', label: 'Arcade' },
   { href: '/podcast/', label: 'Out Loud' }, // Verse Out Loud, a new episode every day (owner, 2026-11-06: "where is my daily verse podcast")
   { href: '/treasury/', label: 'Hoard' }, { href: '/starboard/', label: 'Starboard' },
   { href: '/scoreboard/', label: 'Star Chart' },

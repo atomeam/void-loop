@@ -523,7 +523,7 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Client lift summary: package \"we own the heavy lifting\" for a business idea",
+   "ask": "Client lift summary: package what Verse takes off the client's plate for a business idea",
    "from": "growth, 2026-11-10"
   },
   {
@@ -732,6 +732,26 @@
  },
  "commits": [
   {
+   "at": "2026-11-14T00:15:51Z",
+   "subject": "Site test: visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-14T00:13:49Z",
+   "subject": "Echo Vault keeps the stories of reading-only sites (#2813)"
+  },
+  {
+   "at": "2026-11-14T00:13:05Z",
+   "subject": "Put the new arcade skills on a book page."
+  },
+  {
+   "at": "2026-11-14T00:12:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-14T00:05:23Z",
+   "subject": "Opt the arcade page into the same page fade as the other tools."
+  },
+  {
    "at": "2026-11-14T00:03:05Z",
    "subject": "Verse's will: today's three wants (domains/void.will.md)"
   },
@@ -756,6 +776,10 @@
    "subject": "Failed jobs read: run 43527533768 (void-live-deploy/incidents/actions/)"
   },
   {
+   "at": "2026-11-14T00:00:11Z",
+   "subject": "Let the arcade page through the visit and handoff checks."
+  },
+  {
    "at": "2026-11-13T23:58:01Z",
    "subject": "Floor live: pages that passed the production browser run"
   },
@@ -768,6 +792,14 @@
    "subject": "Floor live: pages that passed the production browser run"
   },
   {
+   "at": "2026-11-13T23:53:13Z",
+   "subject": "Refresh the known-ask table after the merge."
+  },
+  {
+   "at": "2026-11-13T23:51:49Z",
+   "subject": "Add ten catalogue games to the arcade page."
+  },
+  {
    "at": "2026-11-13T23:49:10Z",
    "subject": "Fold the four kanban pages into the one board. (#2810)"
   },
@@ -778,45 +810,13 @@
   {
    "at": "2026-11-13T23:48:19Z",
    "subject": "Floor live: pages that passed the production browser run"
-  },
-  {
-   "at": "2026-11-13T23:47:35Z",
-   "subject": "Outcome exam: podcasts 91.3"
-  },
-  {
-   "at": "2026-11-13T23:43:21Z",
-   "subject": "Stop public pages from naming the rival (#2807)"
-  },
-  {
-   "at": "2026-11-13T23:27:30Z",
-   "subject": "Record the baggage check on the handoff board."
-  },
-  {
-   "at": "2026-11-13T23:27:14Z",
-   "subject": "A source that answers 403 leaves baggage figures unchecked and does not fail the run."
-  },
-  {
-   "at": "2026-11-13T23:20:02Z",
-   "subject": "Site test: visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-13T23:15:10Z",
-   "subject": "Outcome exam: sports 90.7"
-  },
-  {
-   "at": "2026-11-13T23:09:36Z",
-   "subject": "Flake: 1 check(s) passed on a rerun of 10ca3bc (tools/flakes.json)"
-  },
-  {
-   "at": "2026-11-13T22:56:44Z",
-   "subject": "Tower gate: versus measured"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Baggage check",
-    "line": "a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806"
+    "name": "Verse Arcade",
+    "line": "twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token…"
    },
    {
     "name": "Dictionary and QR",
@@ -991,8 +991,8 @@
   }
  ],
  "visible": {
-  "day": 1,
-  "week": 199
+  "day": 4,
+  "week": 204
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

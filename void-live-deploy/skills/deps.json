@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1309,
+ "counted": 1334,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -18,9 +18,9 @@
   },
   {
    "file": "lib/state.js",
-   "skills": 32,
+   "skills": 44,
    "direct": 4,
-   "dependants": 80,
+   "dependants": 92,
    "tests": 5
   },
   {
@@ -29,6 +29,13 @@
    "direct": 2,
    "dependants": 78,
    "tests": 12
+  },
+  {
+   "file": "lib/ladder.js",
+   "skills": 32,
+   "direct": 22,
+   "dependants": 74,
+   "tests": 4
   },
   {
    "file": "lib/keeper.js",
@@ -113,13 +120,6 @@
    "direct": 2,
    "dependants": 22,
    "tests": 3
-  },
-  {
-   "file": "lib/ladder.js",
-   "skills": 20,
-   "direct": 10,
-   "dependants": 62,
-   "tests": 2
   },
   {
    "file": "lib/mind-field-modes.js",
@@ -211,6 +211,13 @@
    "direct": 2,
    "dependants": 15,
    "tests": 2
+  },
+  {
+   "file": "lib/studio-play.js",
+   "skills": 12,
+   "direct": 12,
+   "dependants": 12,
+   "tests": 1
   },
   {
    "file": "lib/better.js",
@@ -805,7 +812,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 5,
-   "tests": 33
+   "tests": 34
   },
   {
    "file": "lib/field-cards.js",
@@ -10622,14 +10629,26 @@
    "importedBy": [
     "lib/game-health.js",
     "skills/arcade.js",
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
     "skills/dim-void.js",
     "skills/family-health.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
     "skills/growth.js",
+    "skills/jump-stack.js",
     "skills/merge-void.js",
+    "skills/nine-grid.js",
     "skills/null-sweep.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
     "skills/pong.js",
+    "skills/push-packets.js",
     "skills/rack.js",
     "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js",
     "skills/void-breaker.js"
    ],
    "reachedBy": [
@@ -15004,26 +15023,38 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/codex.js",
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
     "skills/dim-void.js",
     "skills/echo-chamber.js",
     "skills/family-health.js",
     "skills/games.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
+    "skills/jump-stack.js",
     "skills/merge-void.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
+    "skills/nine-grid.js",
     "skills/null-sweep.js",
+    "skills/null-waves.js",
     "skills/othello.js",
     "skills/own-parts.js",
+    "skills/packet-maze.js",
     "skills/pong.js",
+    "skills/push-packets.js",
     "skills/rack.js",
     "skills/rebuild-map.js",
     "skills/showcase.js",
     "skills/skill-eclipse.js",
     "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
     "skills/time-capsule.js",
+    "skills/token-stand.js",
     "skills/void-breaker.js",
     "skills/walker.js",
     "skills/whisper-network.js"
@@ -15257,6 +15288,23 @@
     "skills/dim-void.js",
     "skills/merge-void.js",
     "skills/null-sweep.js"
+   ]
+  },
+  "lib/studio-play.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
+    "skills/jump-stack.js",
+    "skills/nine-grid.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
+    "skills/push-packets.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js"
    ]
   },
   "lib/studio.js": {
@@ -17078,8 +17126,20 @@
   "skills/arcade-card.js": {
    "imports": [],
    "importedBy": [
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
+    "skills/jump-stack.js",
+    "skills/nine-grid.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
     "skills/pong.js",
+    "skills/push-packets.js",
     "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js",
     "skills/void-breaker.js",
     "skills/zorbleflux.js"
    ]
@@ -17660,6 +17720,21 @@
     "lib/team-mcp.js"
    ]
   },
+  "skills/cross-bus-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/cross-bus.js"
+   ]
+  },
+  "skills/cross-bus.js": {
+   "imports": [
+    "skills/cross-bus-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/crowd.js": {
    "imports": [
     "lib/field-kit.js"
@@ -17731,6 +17806,21 @@
   "skills/deadlines.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/debris-field-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/debris-field.js"
+   ]
+  },
+  "skills/debris-field.js": {
+   "imports": [
+    "skills/debris-field-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -18344,6 +18434,21 @@
    ],
    "importedBy": []
   },
+  "skills/gap-glide-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gap-glide.js"
+   ]
+  },
+  "skills/gap-glide.js": {
+   "imports": [
+    "skills/gap-glide-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/gauge-feedback.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -18390,6 +18495,21 @@
   "skills/gh-file.js": {
    "imports": [
     "lib/gist.js"
+   ],
+   "importedBy": []
+  },
+  "skills/glyph-verse-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/glyph-verse.js"
+   ]
+  },
+  "skills/glyph-verse.js": {
+   "imports": [
+    "skills/glyph-verse-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -18903,6 +19023,21 @@
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
+  },
+  "skills/jump-stack-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/jump-stack.js"
+   ]
+  },
+  "skills/jump-stack.js": {
+   "imports": [
+    "skills/jump-stack-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
   },
   "skills/kanban-board.js": {
    "imports": [
@@ -19718,6 +19853,21 @@
     "skills/where-is.js"
    ]
   },
+  "skills/nine-grid-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/nine-grid.js"
+   ]
+  },
+  "skills/nine-grid.js": {
+   "imports": [
+    "skills/nine-grid-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/noise.js": {
    "imports": [],
    "importedBy": []
@@ -19779,6 +19929,21 @@
     "skills/null-sweep-rules.js",
     "lib/studio-card.js",
     "lib/ladder.js"
+   ],
+   "importedBy": []
+  },
+  "skills/null-waves-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/null-waves.js"
+   ]
+  },
+  "skills/null-waves.js": {
+   "imports": [
+    "skills/null-waves-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -19868,6 +20033,21 @@
     "skills/heavy-lift-map.js",
     "skills/ownership-map.js",
     "skills/ownership-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/packet-maze-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/packet-maze.js"
+   ]
+  },
+  "skills/packet-maze.js": {
+   "imports": [
+    "skills/packet-maze-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -20115,6 +20295,21 @@
    "imports": [
     "lib/pulse.js",
     "skills/incident.js"
+   ],
+   "importedBy": []
+  },
+  "skills/push-packets-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/push-packets.js"
+   ]
+  },
+  "skills/push-packets.js": {
+   "imports": [
+    "skills/push-packets-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
@@ -20847,6 +21042,21 @@
    ],
    "importedBy": []
   },
+  "skills/stackwell-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/stackwell.js"
+   ]
+  },
+  "skills/stackwell.js": {
+   "imports": [
+    "skills/stackwell-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-arrange.js": {
    "imports": [
     "lib/stage-tools.js",
@@ -21272,6 +21482,21 @@
     "skills/riddle-gen.js"
    ]
   },
+  "skills/three-alike-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/three-alike.js"
+   ]
+  },
+  "skills/three-alike.js": {
+   "imports": [
+    "skills/three-alike-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
+   ],
+   "importedBy": []
+  },
   "skills/throw-off.js": {
    "imports": [],
    "importedBy": []
@@ -21394,6 +21619,21 @@
     "skills/notepad.js",
     "lib/bridges.js",
     "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/token-stand-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/token-stand.js"
+   ]
+  },
+  "skills/token-stand.js": {
+   "imports": [
+    "skills/token-stand-rules.js",
+    "skills/arcade-card.js",
+    "lib/ladder.js",
+    "lib/studio-play.js"
    ],
    "importedBy": []
   },
