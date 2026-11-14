@@ -10,8 +10,8 @@ import { asked, drive } from '../lib/studio-play.js';
 export function gapGlideOf(text) { return asked(text, ['gap glide', 'glide the gaps']); }
 
 function mount(th, stageApi) {
-  const c = arcadeCard(th, stageApi, { cls: 'gglide', title: 'Gap Glide', sub: 'you are cyan · Verse is violet', w: G.W, h: G.H });
-  drive(c, G, { onDone: (over) => { try { finish(G.id, over); } catch (_) {} } });
+  const c = arcadeCard(th, stageApi, { cls: 'gglide', title: 'Gap Glide', sub: 'Update 1 · one glider, tightening gates, a storm gate', w: G.W, h: G.H });
+  drive(c, G, { tap: true, canvasHud: true, onDone: (over) => { try { finish(G.id, over); } catch (_) {} } });
 }
 
 function run(text, api) {
@@ -19,7 +19,7 @@ function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'gap-glide');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'gap-glide'; }
   api.summon('gap-glide', { x: Math.max(10, Math.round(innerWidth / 2 - 160)), y: 40 });
-  api.say('Gap Glide · tap to lift · Verse flies the other glider');
+  api.say('Gap Glide. Tap to lift.');
   return 'gap-glide';
 }
 

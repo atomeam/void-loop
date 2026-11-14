@@ -105,6 +105,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Gap Glide Update 1**: one glider, three lives, gates that tighten, and a storm gate. Verse is the ghost score. The update book is data/game-updates.json (Debris Field Update 1 is already recorded, so the loop should not redo it). https://github.com/atomeam/void-loop/pull/2821
 - **Debris Field Update 1**: the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges. https://github.com/atomeam/void-loop/pull/2820
 - **Debris Field boss**: a large crystal with a health bar, a shard ring, a charge and cracks, a second and a half of clear air after a hit, a dash, a labeled sound button, and full screen that keeps the nav. https://github.com/atomeam/void-loop/pull/2819
 - **Debris Field**: one ship in open space. Chasers, darts, splitters and a heavy crystal come from every edge. Three lives, a shield that spends a hit, and a multiplier that drops when a life does. Verse is the ghost score. The picture fills the viewport. https://github.com/atomeam/void-loop/pull/2818
