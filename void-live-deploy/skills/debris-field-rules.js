@@ -1,5 +1,5 @@
 /** Debris Field: one ship, free movement, everything on the field comes for you. Verse is a ghost score. */
-export const id = 'debris-field', W = 1280, H = 720, fly = true, stick = 'fly';
+export const id = 'debris-field', W = 1280, H = 720, fly = true, stick = 'fly', update = 1;
 const rng = (s) => { s.n = (Math.imul(s.n, 1664525) + 1013904223) >>> 0; return s.n / 4294967296; };
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const hypot = (x, y) => Math.hypot(x, y) || 1;
@@ -346,7 +346,7 @@ export function draw(g, s) {
     g.globalAlpha = Math.min(1, s.banner / 22); g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 40px ui-sans-serif, system-ui, sans-serif';
     g.fillText(s.boss ? 'HEAVY CRYSTAL' : 'WAVE ' + s.wave, W / 2, 120); g.textAlign = 'left'; g.globalAlpha = 1;
   }
-  if (s.phase === 'title') plate(g, 'DEBRIS FIELD', 'Arrows move. Hold the button to fire. Shift or space dashes.', 1);
+  if (s.phase === 'title') titleCard(g);
   if (s.phase === 'over') endCard(g, s, Math.min(1, s.anim / 16));
   g.restore();
 }
@@ -367,6 +367,19 @@ function hud(g, s) {
   g.fillStyle = s.you.dash > 0 ? 'rgba(79,227,227,.45)' : '#7ef6ff';
   g.fillRect(W - 230, H - 40, 70 * (s.you.dash > 0 ? Math.max(0.08, 1 - s.you.dash / 48) : 1), 7);
   g.fillStyle = '#d8fff8'; g.font = '14px ui-sans-serif, system-ui, sans-serif'; g.fillText(s.you.dash > 0 ? 'DASH' : 'DASH READY', W - 230, H - 48);
+}
+function titleCard(g) {
+  g.globalAlpha = 0.78; g.fillStyle = '#07060f'; g.fillRect(0, H / 2 - 210, W, 420);
+  g.globalAlpha = 1; g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 64px ui-sans-serif, system-ui, sans-serif';
+  g.fillText('DEBRIS FIELD', W / 2, H / 2 - 120);
+  g.fillStyle = '#4fe3e3'; g.font = '700 28px ui-sans-serif, system-ui, sans-serif'; g.fillText('Update 1', W / 2, H / 2 - 68);
+  g.fillStyle = '#f4f1ea'; g.font = '22px ui-sans-serif, system-ui, sans-serif';
+  g.fillText("What's new", W / 2, H / 2 - 22);
+  g.fillText('The ending lists your score, Verse, and your best.', W / 2, H / 2 + 16);
+  g.fillText('The dash meter moved off the stick. The stars drift.', W / 2, H / 2 + 48);
+  g.fillText('The crystal glows before it charges.', W / 2, H / 2 + 80);
+  g.fillStyle = '#7ef6ff'; g.fillText('Arrows move. Hold the button to fire. Shift or space dashes.', W / 2, H / 2 + 132);
+  g.textAlign = 'left';
 }
 function deviceBest() {
   try { const b = JSON.parse(localStorage.getItem('a2m.void.arcade.best.v1') || '{}'); return b['debris-field'] || 0; } catch (_) { return 0; }
@@ -399,4 +412,4 @@ function hear(kind) {
     o.start(); o.stop(hear.ac.currentTime + (kind === 'boom' ? 0.2 : 0.03));
   } catch (_) { /* silent */ }
 }
-export const how = 'One ship. Arrows or WASD move it. On a desktop the pointer aims and holding the button fires. A touch stick moves and the guns stay hot. Shift or space dashes, then it has to cool. Chasers, darts and splitters come in from every edge. A heavy crystal is the wave boss. Three lives, and a hit leaves you clear for a moment. A shield takes the hit that would have cost one. The multiplier climbs with kills and drops when you are hit. Verse is the ghost score for this field, not another ship.';
+export const how = 'Update 1. The ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges. One ship. Arrows or WASD move it. On a desktop the pointer aims and holding the button fires. A touch stick moves and the guns stay hot. Shift or space dashes, then it has to cool. Chasers, darts and splitters come in from every edge. A heavy crystal is the wave boss. Three lives, and a hit leaves you clear for a moment. A shield takes the hit that would have cost one. The multiplier climbs with kills and drops when you are hit. Verse is the ghost score for this field, not another ship.';

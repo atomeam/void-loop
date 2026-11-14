@@ -10,7 +10,7 @@ import { asked, drive } from '../lib/studio-play.js';
 export function debrisFieldOf(text) { return asked(text, ['debris field']); }
 
 function mount(th, stageApi) {
-  const c = arcadeCard(th, stageApi, { cls: 'debris-field', title: 'Debris Field', sub: 'one ship · Verse is the ghost score', w: G.W, h: G.H });
+  const c = arcadeCard(th, stageApi, { cls: 'debris-field', title: 'Debris Field', sub: 'Update 1 · a clearer ending, and a warning before the charge', w: G.W, h: G.H });
   drive(c, G, { fly: true, canvasHud: true, onDone: (over) => { try { finish(G.id, over); } catch (_) {} } });
 }
 
