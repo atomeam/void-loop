@@ -303,6 +303,54 @@
   },
   {
    "state": "shipped",
+   "date": "2026-11-03",
+   "ask": "delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations, Verse…",
+   "from": "new idea by growth agent; helper/delivery-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-05",
+   "ask": "Numbers and money family: savings growth at 0% is the money put in, a 20% tip on 45 is 9, and 96 px at 96 dpi is 2.54…",
+   "from": "tools/numbers-proof.test.mjs"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-04",
+   "ask": "system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff)",
+   "from": "new idea by growth agent; helper/system-status"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-05",
+   "ask": "system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors…",
+   "from": "new idea by growth agent; helper/system-handoff"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
+   "from": "new idea by growth agent; helper/heavy-lift-map"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not…",
+   "from": "new idea by growth agent; helper/monitor-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "verify-pack skill: propose the tests, checks and verification Verse will own for a process so the client does not do…",
+   "from": "new idea by growth agent; helper/verify-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-09",
+   "ask": "ownership-pack skill: clarify what Verse owns versus what the client owns so handoffs reduce client work and package…",
+   "from": "new idea by growth agent; helper/ownership-pack"
+  },
+  {
+   "state": "shipped",
    "date": "2026-11-09",
    "ask": "reuse-pack skill: map a business process to existing tools Verse can own/connect so the client does less inventing",
    "from": "new idea by growth agent; helper/reuse-pack"
@@ -370,6 +418,12 @@
   {
    "state": "shipped",
    "date": "2026-11-12",
+   "ask": "system-plan skill: capture a business idea and turn it into a structured plan of systems, automations, tests, monitors…",
+   "from": "new idea by growth agent; helper/system-plan"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
    "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
    "from": "new idea by growth agent; helper/time-saved"
   },
@@ -402,6 +456,48 @@
    "date": "2026-11-12",
    "ask": "systems-owned skill: list the systems, monitors, tests and handoffs Verse owns for a business idea so the client sees…",
    "from": "new idea by growth agent; helper/systems-owned"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "delivery-ready skill: confirm a business idea is ready for client handoff (ownership, monitors, tests, status, docs)…",
+   "from": "new idea by growth agent; helper/delivery-ready"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "system-plan skill: capture a business idea and turn it into a structured plan of systems, automations, tests, monitors…",
+   "from": "new idea by growth agent; helper/system-plan"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-13",
+   "ask": "client-weekly skill: client-visible weekly summary of systems Verse owns (progress, monitors, time saved estimate…",
+   "from": "new idea by growth agent; helper/client-weekly"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-13",
+   "ask": "incident-pack skill: package the incident path Verse owns (detect, respond, communicate) for a system so the client…",
+   "from": "new idea by growth agent; helper/incident-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "status-digest skill: client-visible digest of systems Verse owns (status, monitors, next handoff, time saved) so the…",
+   "from": "new idea by growth agent; helper/status-digest"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "full-handoff skill: complete client handoff package (ownership, status, docs, monitors, automations) for systems Verse…",
+   "from": "new idea by growth agent; helper/full-handoff"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-12",
+   "ask": "time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the…",
+   "from": "new idea by growth agent; helper/time-saved"
   }
  ],
  "open": [
@@ -523,7 +619,7 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Client lift summary: package what Verse takes off the client's plate for a business idea",
+   "ask": "Client lift summary: package what Verse takes off the client's plate",
    "from": "growth, 2026-11-10"
   },
   {
@@ -732,111 +828,111 @@
  },
  "commits": [
   {
-   "at": "2026-11-14T00:15:51Z",
-   "subject": "Site test: visitor pass 15/15"
+   "at": "2026-11-14T23:06:47Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
   },
   {
-   "at": "2026-11-14T00:13:49Z",
-   "subject": "Echo Vault keeps the stories of reading-only sites (#2813)"
+   "at": "2026-11-14T23:01:04Z",
+   "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-14T00:13:05Z",
-   "subject": "Put the new arcade skills on a book page."
-  },
-  {
-   "at": "2026-11-14T00:12:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-14T00:05:23Z",
-   "subject": "Opt the arcade page into the same page fade as the other tools."
-  },
-  {
-   "at": "2026-11-14T00:03:05Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
-  },
-  {
-   "at": "2026-11-14T00:02:57Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-11-14T00:02:47Z",
-   "subject": "Floor live: pages that passed the production browser run"
-  },
-  {
-   "at": "2026-11-14T00:01:36Z",
-   "subject": "Add sales-pack skill to package sellable offers for hard work (#2804)"
-  },
-  {
-   "at": "2026-11-14T00:01:33Z",
-   "subject": "Add a feature to the page that already does the job (#2803)"
-  },
-  {
-   "at": "2026-11-14T00:00:52Z",
-   "subject": "Failed jobs read: run 43527533768 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-14T00:00:11Z",
-   "subject": "Let the arcade page through the visit and handoff checks."
-  },
-  {
-   "at": "2026-11-13T23:58:01Z",
-   "subject": "Floor live: pages that passed the production browser run"
-  },
-  {
-   "at": "2026-11-13T23:56:25Z",
-   "subject": "Skip an unrebuilt floor so it cannot fail the live job. (#2812)"
-  },
-  {
-   "at": "2026-11-13T23:53:17Z",
-   "subject": "Floor live: pages that passed the production browser run"
-  },
-  {
-   "at": "2026-11-13T23:53:13Z",
-   "subject": "Refresh the known-ask table after the merge."
-  },
-  {
-   "at": "2026-11-13T23:51:49Z",
-   "subject": "Add ten catalogue games to the arcade page."
-  },
-  {
-   "at": "2026-11-13T23:49:10Z",
-   "subject": "Fold the four kanban pages into the one board. (#2810)"
-  },
-  {
-   "at": "2026-11-13T23:48:26Z",
+   "at": "2026-11-14T22:59:15Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-13T23:48:19Z",
-   "subject": "Floor live: pages that passed the production browser run"
+   "at": "2026-11-14T22:55:38Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-11-14T22:53:18Z",
+   "subject": "Outcome exam: weather 78.7"
+  },
+  {
+   "at": "2026-11-14T22:53:11Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-14T22:52:09Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-14T22:49:51Z",
+   "subject": "Failed jobs read: run 43649805949 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-14T22:46:03Z",
+   "subject": "fix scores: resolve Yankees/Chiefs/Packers team names with aliases and feed fallback"
+  },
+  {
+   "at": "2026-11-14T22:45:43Z",
+   "subject": "Failed jobs read: run 43649157154 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-14T22:43:40Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-14T22:41:33Z",
+   "subject": "Failed jobs read: run 43649009815 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-14T22:38:29Z",
+   "subject": "fix films guard: match actual 'Verse Films' casing on /films/"
+  },
+  {
+   "at": "2026-11-14T22:36:43Z",
+   "subject": "filter built wants out of self-context what-is-next feed"
+  },
+  {
+   "at": "2026-11-14T22:35:00Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-14T22:34:19Z",
+   "subject": "Failed jobs read: run 43648213658 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-14T22:33:05Z",
+   "subject": "Site test: visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-14T22:31:11Z",
+   "subject": "Failed jobs read: run 43648167750 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-14T22:27:41Z",
+   "subject": "mark card-share ellipsis as ellipsis-ok"
+  },
+  {
+   "at": "2026-11-14T22:27:06Z",
+   "subject": "fix factorial(0) exam and add card export overflow ledger entry"
   }
  ],
  "builders": {
   "finished": [
    {
+    "name": "Baggage check",
+    "line": "a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806"
+   },
+   {
+    "name": "Gap Glide Update 1",
+    "line": "one glider, three lives, gates that tighten, and a storm gate. Verse is the ghost score. The update book is data/game-updates.json (Debris Field Update 1 is already recorded, so the loop should not redo it).…"
+   },
+   {
+    "name": "Debris Field Update 1",
+    "line": "the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges. https://github.com/atomeam/void-loop/pull/2820"
+   },
+   {
+    "name": "Debris Field boss",
+    "line": "a large crystal with a health bar, a shard ring, a charge and cracks, a second and a half of clear air after a hit, a dash, a labeled sound button, and full screen that keeps the nav. https://github.com/atomeam/void-loop/pull/2819"
+   },
+   {
+    "name": "Debris Field",
+    "line": "one ship in open space. Chasers, darts, splitters and a heavy crystal come from every edge. Three lives, a shield that spends a hit, and a multiplier that drops when a life does. Verse is the ghost score. The picture fills the viewport.…"
+   },
+   {
     "name": "Verse Arcade",
     "line": "twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token…"
-   },
-   {
-    "name": "Dictionary and QR",
-    "line": "Dictionary opts out of the page transition, and QR loads its code from a new address. https://github.com/atomeam/void-loop/pull/2801"
-   },
-   {
-    "name": "Owner pass on the beacon",
-    "line": "the live floor check sends the owner pass only to this site, and the Uni gate allows the analytics beacon. https://github.com/atomeam/void-loop/pull/2800"
-   },
-   {
-    "name": "Text Compare",
-    "line": "one pass on /text-diff/ with a share link, case and spaces that can be set aside, a text file on each side, and a sourced history of diffchecker.com. https://github.com/atomeam/void-loop/pull/2799"
-   },
-   {
-    "name": "QR Code Maker",
-    "line": "one pass on /qr/ with downloads, two colours, a Wi-Fi line, a contact card, and a sourced history of myqrcode.com. https://github.com/atomeam/void-loop/pull/2797"
-   },
-   {
-    "name": "Regex Tester",
-    "line": "one pass on /patterns/ with a plain reading of the pattern, a replacement, and a sourced history of regex101. https://github.com/atomeam/void-loop/pull/2796"
    }
   ],
   "ladders": [
@@ -991,8 +1087,8 @@
   }
  ],
  "visible": {
-  "day": 4,
-  "week": 204
+  "day": 14,
+  "week": 212
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -1045,8 +1141,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 74 (311 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-13T13:08Z",
+  "line": "People this week: 83 (316 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-14T12:13Z",
   "source": "verse"
  },
  "tower": {
@@ -1058,6 +1154,6 @@
    "emojicombos.com"
   ],
   "beaten": 2,
-  "total": 1279
+  "total": 1287
  }
 }
