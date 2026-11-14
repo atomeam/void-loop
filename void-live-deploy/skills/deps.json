@@ -812,7 +812,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 5,
-   "tests": 33
+   "tests": 34
   },
   {
    "file": "lib/field-cards.js",

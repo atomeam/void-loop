@@ -732,6 +732,22 @@
  },
  "commits": [
   {
+   "at": "2026-11-14T00:15:51Z",
+   "subject": "Site test: visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-14T00:13:49Z",
+   "subject": "Echo Vault keeps the stories of reading-only sites (#2813)"
+  },
+  {
+   "at": "2026-11-14T00:13:05Z",
+   "subject": "Put the new arcade skills on a book page."
+  },
+  {
+   "at": "2026-11-14T00:12:09Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-14T00:05:23Z",
    "subject": "Opt the arcade page into the same page fade as the other tools."
   },
@@ -794,22 +810,6 @@
   {
    "at": "2026-11-13T23:48:19Z",
    "subject": "Floor live: pages that passed the production browser run"
-  },
-  {
-   "at": "2026-11-13T23:47:35Z",
-   "subject": "Outcome exam: podcasts 91.3"
-  },
-  {
-   "at": "2026-11-13T23:43:21Z",
-   "subject": "Stop public pages from naming the rival (#2807)"
-  },
-  {
-   "at": "2026-11-13T23:38:36Z",
-   "subject": "Record the arcade page on the handoff."
-  },
-  {
-   "at": "2026-11-13T23:38:05Z",
-   "subject": "Say which two games play on the arcade page."
   }
  ],
  "builders": {
@@ -991,8 +991,8 @@
   }
  ],
  "visible": {
-  "day": 3,
-  "week": 203
+  "day": 4,
+  "week": 204
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

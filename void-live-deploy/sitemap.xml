@@ -326,7 +326,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/tools/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -686,7 +686,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/obituaries/</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -777,12 +777,6 @@
   <url>
     <loc>https://a-to-mind.com/books/</loc>
     <lastmod>2026-11-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://a-to-mind.com/research/</loc>
-    <lastmod>2026-11-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
