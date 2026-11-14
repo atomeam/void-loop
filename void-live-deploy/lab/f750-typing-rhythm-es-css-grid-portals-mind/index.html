@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root { --bg: #0a0c10; --fg: #e0e6ef; --accent: #6cf; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+#status { position: fixed; top: 8px; left: 8px; right: 8px; z-index: 10; font-size: 12px; opacity: 0.85; pointer-events: none; }
+#status button { pointer-events: auto; margin-left: 8px; background: #222; color: var(--accent); border: 1px solid #444; padding: 2px 8px; border-radius: 4px; cursor: pointer; }
+#grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+  height: 100vh;
+  padding: 40px 12px 12px;
+}
+.portal {
+  background: hsl(var(--hue), 70%, 18%);
+  border: 2px solid hsl(var(--hue), 80%, 55%);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(0.8rem + var(--scale) * 0.4rem);
+  text-align: center;
+  padding: 8px;
+  transform: scale(calc(0.85 + var(--scale) * 0.3)) translate(var(--jx), var(--jy));
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+  overflow: hidden;
+  color: hsl(var(--hue), 90%, 80%);
+}
+.portal:hover { filter: brightness(1.2); }
+.portal .label { font-weight: 600; margin-bottom: 4px; }
+.portal .content { font-size: 0.75em; opacity: 0.9; word-break: break-all; }
+#hist { position: fixed; bottom: 8px; left: 8px; width: 200px; height: 40px; background: #111; border: 1px solid #333; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>typing-rhythm-es-css-grid-portals-mind · Verse lab</title>
+<meta name="description" content="Ledger ID: F-750 (frontier series)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="typing-rhythm-es-css-grid-portals-mind · Verse lab">
+<meta property="og:description" content="Ledger ID: F-750 (frontier series)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f750-typing-rhythm-es-css-grid-portals-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f750-typing-rhythm-es-css-grid-portals-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">F750 Typing-Rhythm ES Grid Portals · Verse · type to evolve <button id="seal">Seal Best</button> <button id="reset">Reset</button> · fitness: <span id="fit">0</span> · agents: 12 · <span id="msg"></span></div>
+<div id="grid"></div>
+<canvas id="hist" width="200" height="40"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">typing-rhythm-es-css-grid-portals-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
