@@ -782,7 +782,12 @@ Object.assign(SPECS, {
     t.ok(/crystal/i.test(await t.p.locator('#games button[data-id="debris-field"]').getAttribute('title') || ''), 'the round says what the crystals do');
     t.ok(await t.p.locator('#play button', { hasText: 'Left' }).count() === 0, 'no generic direction row on this round');
     const wide = await t.p.locator('#play canvas').boundingBox();
-    t.ok(wide && wide.width > 600 && wide.height > 280, 'the picture fills the stage: ' + (wide && Math.round(wide.width)));
+    const view = t.p.viewportSize();
+    t.ok(wide && wide.width > view.width - 40 && wide.height > view.height - 120, 'the picture fills the viewport: ' + (wide && Math.round(wide.width) + 'x' + Math.round(wide.height)));
+    const hud = await t.p.locator('#play .hud').boundingBox();
+    t.ok(hud && wide && hud.y >= wide.y && hud.y < wide.y + wide.height, 'pause and sound sit on the picture');
+    const more = await t.p.locator('h2', { hasText: 'Also on the stage' }).boundingBox();
+    t.ok(more && wide && more.y > wide.y + wide.height - 4, 'the other games sit below the picture');
     t.ok(await t.p.locator('#status').count() === 0, 'the score stays on the picture');
     await t.p.setViewportSize({ width: 390, height: 844 });
     const box = await t.p.locator('#play canvas').boundingBox();

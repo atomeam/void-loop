@@ -63,31 +63,37 @@ export function drive(card, game, opt = {}) {
   const bag = {};
   const friend = linked && /^\d+$/.test(q.get('score') || '') ? Number(q.get('score')) : null;
   const stick = opt.stick === 'x'; // a game that slides on one axis: no directional pad, the pointer is the control
+  const fly = opt.fly === true; // free movement: keys or a left stick, shots aim themselves or follow the pointer
+  const named = /^(reckless|careful|verse|show)$/.test(q.get('bot') || '') ? q.get('bot') : '';
   if (opt.canvasHud) { if (card.status) card.status.remove(); if (card.why) card.why.remove(); card.status = card.why = null; }
-  let heldFire = false;
+  let heldFire = false, stickPtr = null, aimPt = null;
   const tools = document.createElement('div');
   tools.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:6px';
-  const pause = btn('Pause', () => { paused = !paused; pause.textContent = paused ? 'Resume' : 'Pause'; pause.setAttribute('aria-pressed', paused ? 'true' : 'false'); });
-  const snd = btn(sound ? 'Sound off' : 'Sound on', () => {
-    sound = !sound; snd.textContent = sound ? 'Sound off' : 'Sound on'; snd.setAttribute('aria-pressed', sound ? 'true' : 'false');
+  const pause = btn(fly ? '❚❚' : 'Pause', () => {
+    paused = !paused; pause.textContent = fly ? '❚❚' : (paused ? 'Resume' : 'Pause');
+    pause.setAttribute('aria-label', paused ? 'Resume' : 'Pause'); pause.setAttribute('aria-pressed', paused ? 'true' : 'false');
+  });
+  const snd = btn(fly ? '♪' : (sound ? 'Sound off' : 'Sound on'), () => {
+    sound = !sound; snd.textContent = fly ? '♪' : (sound ? 'Sound off' : 'Sound on');
+    snd.setAttribute('aria-label', sound ? 'Sound off' : 'Sound on'); snd.setAttribute('aria-pressed', sound ? 'true' : 'false');
     try { localStorage.setItem(SOUND, sound ? '1' : '0'); } catch (_) {}
   });
-  snd.setAttribute('aria-pressed', sound ? 'true' : 'false');
+  pause.setAttribute('aria-label', 'Pause'); snd.setAttribute('aria-label', sound ? 'Sound off' : 'Sound on'); snd.setAttribute('aria-pressed', sound ? 'true' : 'false');
   const same = btn('Same round', () => restart(seed));
   const day = btn('Daily', () => { daily = true; restart(daySeed()); });
   const share = document.createElement('a');
   share.href = roundLink(game.id, seed, 0, daily); share.textContent = 'Share this round';
   share.style.cssText = 'font-size:13px;align-self:center';
-  if (!stick) for (const dir of [['Left', 'left'], ['Right', 'right'], ['Up', 'up'], ['Down', 'down']]) {
+  if (!stick && !fly) for (const dir of [['Left', 'left'], ['Right', 'right'], ['Up', 'up'], ['Down', 'down']]) {
     const b = btn(dir[0], () => {});
     b.addEventListener('pointerdown', () => { edge.dir = dir[1]; if (dir[1] === 'left' || dir[1] === 'right') edge.fire = true; edge.flap = true; });
     tools.append(b);
   }
   const act = btn('Act', () => { edge.flap = true; edge.fire = true; });
-  tools.append(pause, snd, same, day);
-  if (!stick) tools.append(act);
-  tools.append(share);
-  card.el.append(tools);
+  if (fly && card.stage) {
+    tools.className = 'hud'; tools.style.cssText = ''; tools.append(pause, snd); card.stage.append(tools);
+    const row = document.createElement('div'); row.className = 'round'; row.append(same, day, share); card.el.append(row);
+  } else { tools.append(pause, snd, same, day); if (!stick && !fly) tools.append(act); tools.append(share); card.el.append(tools); }
   const onKey = (e) => {
     const k = e.key.toLowerCase();
     if (['arrowleft', 'a', 'arrowright', 'd', 'arrowup', 'w', 'arrowdown', 's', ' '].includes(k)) e.preventDefault();
@@ -108,22 +114,45 @@ export function drive(card, game, opt = {}) {
   card.el.addEventListener('keydown', onKey);
   card.el.addEventListener('keyup', onKey);
   const point = (e) => {
-    const p = card.local(e); edge.x = p.x; card.el.focus({ preventScroll: true });
-    if (stick) heldFire = true; else { edge.flap = true; edge.fire = true; }
+    const p = card.local(e); edge.x = p.x; edge.y = p.y; card.el.focus({ preventScroll: true });
+    if (fly) {
+      if (p.x < game.W * 0.38) { if (!stickPtr) stickPtr = { ox: p.x, oy: p.y }; stickPtr.x = p.x; stickPtr.y = p.y; }
+      else aimPt = { x: p.x, y: p.y };
+      edge.fire = true;
+    } else if (stick) heldFire = true; else { edge.flap = true; edge.fire = true; }
   };
   card.cv.addEventListener('pointerdown', point);
-  card.cv.addEventListener('pointermove', (e) => { if (stick ? heldFire : e.buttons) edge.x = card.local(e).x; });
-  if (stick) { const up = () => { heldFire = false; }; card.cv.addEventListener('pointerup', up); card.cv.addEventListener('pointercancel', up); card.cv.addEventListener('pointerleave', up); }
+  card.cv.addEventListener('pointermove', (e) => {
+    const p = card.local(e);
+    if (fly && stickPtr) { stickPtr.x = p.x; stickPtr.y = p.y; }
+    else if (fly && p.x >= game.W * 0.38 && (e.buttons || aimPt)) aimPt = { x: p.x, y: p.y };
+    else if (stick ? heldFire : e.buttons) edge.x = p.x;
+  });
+  const release = () => { if (fly) stickPtr = null; else heldFire = false; };
+  if (stick || fly) { card.cv.addEventListener('pointerup', release); card.cv.addEventListener('pointercancel', release); card.cv.addEventListener('pointerleave', release); }
   function restart(next) {
-    seed = next >>> 0; s = game.create(seed); done = false; paused = false; pause.textContent = 'Pause'; daily = seed === daySeed();
+    seed = next >>> 0; s = game.create(seed); done = false; paused = false; pause.textContent = fly ? '❚❚' : 'Pause'; pause.setAttribute('aria-label', 'Pause'); daily = seed === daySeed();
   }
   card.again.addEventListener('click', (e) => { e.stopPropagation(); restart((Date.now() & 65535) || 1); });
   card.start(() => {
     const dir = edge.dir || (held.left ? 'left' : held.right ? 'right' : held.up ? 'up' : held.down ? 'down' : '');
     const firing = edge.fire || edge.dir === 'up' || (stick && heldFire);
-    if (!paused && s.over && stick && firing && (s.anim || 0) > 50) restart(seed);
+    let sx = 0, sy = 0, ax, ay;
+    if (fly && stickPtr) { sx = Math.max(-1, Math.min(1, (stickPtr.x - stickPtr.ox) / 90)); sy = Math.max(-1, Math.min(1, (stickPtr.y - stickPtr.oy) / 90)); }
+    if (fly && aimPt) { ax = aimPt.x; ay = aimPt.y; }
+    if (fly && typeof navigator !== 'undefined' && navigator.getGamepads) {
+      try {
+        const pad = [...navigator.getGamepads()].find(Boolean);
+        if (pad) {
+          const dx = pad.axes[0] || 0, dy = pad.axes[1] || 0, rx = pad.axes[2] || 0, ry = pad.axes[3] || 0;
+          if (Math.hypot(dx, dy) > 0.25) { sx = dx; sy = dy; }
+          if (Math.hypot(rx, ry) > 0.35) { ax = s.you.x + rx * 480; ay = s.you.y + ry * 480; }
+        }
+      } catch (_) { /* a browser with no gamepad keeps the keys */ }
+    }
+    if (!paused && s.over && (stick || fly) && firing && (s.anim || 0) > 50) restart(seed);
     else if (!paused && !s.over) {
-      game.tick(s, { flap: edge.flap || (stick && heldFire), fire: firing, step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', dir, x: stick ? (heldFire ? edge.x : undefined) : edge.x });
+      game.tick(s, { flap: edge.flap || (stick && heldFire), fire: firing, step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', up: held.up, down: held.down, dir, x: stick ? (heldFire ? edge.x : undefined) : edge.x, sx, sy, ax, ay, bot: named || undefined });
       if (s.sfx && sound) beep(bag);
       edge = { flap: false, fire: false, dir: '', x: edge.x };
     }

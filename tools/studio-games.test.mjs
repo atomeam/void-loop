@@ -62,6 +62,14 @@ test('each hosted round ends, and a careful player can beat Verse', () => {
   let ahead = 0;
   for (let seed = 1; seed <= 12; seed++) if (debris.selfPlay(seed).over === 'you') ahead++;
   assert.ok(ahead >= 8, 'a careful ship outscores Verse ' + ahead + ' of 12');
+  let died = 0, longer = 0;
+  for (let seed = 1; seed <= 12; seed++) {
+    const bad = debris.play(seed, 'reckless'), good = debris.play(seed, 'careful');
+    if (bad.lives === 0 && bad.over) died++;
+    if (good.tick > bad.tick) longer++;
+  }
+  assert.ok(died >= 8, 'a reckless ship dies ' + died + ' of 12');
+  assert.ok(longer >= 8, 'a careful ship lasts longer ' + longer + ' of 12');
   assert.equal(waves.selfPlay(1).over, 'you');
   assert.equal(maze.selfPlay(1).over, 'you');
   assert.equal(jump.selfPlay(1).over, 'you');

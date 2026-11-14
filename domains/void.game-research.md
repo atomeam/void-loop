@@ -45,11 +45,11 @@ Part of Verse Studio (`domains/void.game-studio.md`; catalogue `domains/void.gam
 - **Legal.** The mechanics are free; the Tiger name and product design are not Verse's to use. *Unresolved:* the mark's status. Title **Dim the Verse**.
 - **Sources.** [Solving Lights Out with linear algebra](https://raw.org/research/solving-lightsout-using-linear-algebra/), [Lights Out (cut-the-knot)](https://www.cut-the-knot.org/Curriculum/Games/Merlin5x5.shtml), [GF(2) write-up](https://dev.to/sendotltd/solving-lights-out-with-gf2-linear-algebra-the-whole-puzzle-is-one-matrix-equation-plus-the-1e4b).
 
-## Debris Field (two ships, square chunks)
+## Debris Field (one ship, crystals from every edge)
 
-- **Rules found.** A ship turns and thrusts, and fires at rocks that split into smaller rocks. Leaving the screen wraps around. Clearing a wave brings another.
-- **Build.** Two ships on one seeded field. Chunks are squares that bounce off the edges and never split. You slide and fire from the bottom. Verse slides more slowly along the top. The higher score when a life runs out, or when the round ends, wins.
-- **Legal.** The mechanic is free. The 1979 name, the vector look and the spinning ship are not used. Title **Debris Field**.
+- **Rules found.** A ship moves freely and fires. Rocks and hostile craft come in from the edges, and some break into smaller pieces. Clearing pressure brings a heavier one.
+- **Build.** One ship on an open field. Chasers home in, darts fly straight, splitters break into shards, and a heavy crystal is the wave boss. Three lives, a shield that spends one hit, and a multiplier that climbs with kills and drops when a life is lost. Verse is a ghost score for the same seed, not a second ship. The crystals are faceted, not vector rocks, and the ship is a blunt craft, not the 1979 needle.
+- **Legal.** The mechanic is free. The 1979 name, the vector look and the spinning ship are not used. A later twin-stick formula is the same: free movement and threats from every side, with none of that name or its grid. Title **Debris Field**.
 - **Sources.** [Asteroids (video game)](https://en.wikipedia.org/wiki/Asteroids_(video_game)).
 
 ## Null Waves (a block that steps down)
