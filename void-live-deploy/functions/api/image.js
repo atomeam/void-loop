@@ -32,7 +32,7 @@ import { imageOf } from '../../lib/art-rules.js';
 import { capOf, asImage } from './card-art.js';
 import { publicPainter, paintWith } from './studio.js';
 import { IMAGE_MODELS } from '../../lib/models.js';
-import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAPES, SAYS, aiShareOf, POLL_CAP, PER_CONN, PER_MINUTE, PROMPT_MAX, NEGATIVE_MAX, CHANGE_MAX, EDIT_BYTES, imageSizeOf, fitsEdit, changePromptOf, WORDS_PER_CONN, WORDS_DAY, wordsAskOf, wordsOutOf } from '../../lib/image-gen.js';
+import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAPES, SAYS, aiShareOf, POLL_CAP, PER_CONN, PER_MINUTE, PROMPT_MAX, NEGATIVE_MAX, CHANGE_MAX, CHANGE_BODY, EDIT_BYTES, imageSizeOf, fitsEdit, changePromptOf, WORDS_PER_CONN, WORDS_DAY, wordsAskOf, wordsOutOf } from '../../lib/image-gen.js';
 
 export const AI_MS = 25000, POLL_MS = 30000; // both inside the gate's 60 s wait for a first picture (2026-10-25: 40 + 40 s let a slow painter hold a picture past it)
 import { jsonNoStore as json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
@@ -58,7 +58,6 @@ const hex = (buf) => [...new Uint8Array(buf)].map((x) => x.toString(16).padStart
 export async function cacheReq(origin, parts) { return new Request(origin + '/__void-image/' + hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(parts.join('\u0001'))))); }
 /** a cached picture's reference: the hash its cache key ends with (the page sends it back to change that picture) */
 export const refOf = (key) => key.url.slice(key.url.lastIndexOf('/') + 1);
-const CHANGE_BODY = 240000; // a change carries the page's shrunk copy as base64 (EDIT_BYTES * 4 / 3) plus its fields
 
 // one picture from Workers AI's image model (klein takes multipart form data with the size and the seed, and reference pictures as input_image_N)
 export async function paintAi(env, prompt, [w, h], seed, withSeed = true, refs = []) {

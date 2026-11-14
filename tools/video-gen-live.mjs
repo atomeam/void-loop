@@ -37,18 +37,25 @@ export function apiProblem(a, now) {
   return '';
 }
 /** what the /video/ page served, checked for the parts the card links to. Pure. */
-export function pageProblem(p) {
+export function pageProblem(p, opened) {
   if (!p || p.status !== 200) return 'GET /video/ answered ' + ((p && p.status) || 'nothing');
+  if (opened) {
+    if (opened.status !== 200) return 'GET /video/ with the owner pass answered ' + (opened.status || 'nothing');
+    if (opened.gate) return '/video/ still shows the Uni gate with the owner pass';
+    const missing = ['state', 'make', 'handoff'].filter((k) => !opened[k]);
+    return missing.length ? '/video/ with the owner pass has no ' + missing.join(', ') : '';
+  }
   if (p.gate) return ''; // a stranger gets the Uni gate; the tool page is behind the pass
   const missing = ['state', 'make', 'handoff'].filter((k) => !p[k]);
   return missing.length ? '/video/ has no ' + missing.join(', ') : '';
 }
-export const pageOf = (status, html) => ({ status, state: html.includes('id="state"'), make: html.includes('id="make"'), handoff: /<meta name="verse-handoff"/.test(html), gate: /<meta name="verse-gate" content="uni"/.test(html), bytes: html.length });
+const headerOf = (headers, name) => !headers ? '' : (typeof headers.get === 'function' ? headers.get(name) : headers[name]) || '';
+export const pageOf = (status, html, headers) => ({ status, state: String(html || '').includes('id="state"'), make: String(html || '').includes('id="make"'), handoff: /<meta name="verse-handoff"/.test(String(html || '')), gate: headerOf(headers, 'x-verse-gate') === 'uni' || /<meta name="verse-gate" content="uni"/.test(String(html || '')), bytes: String(html || '').length });
 
 /** The record of one live check. Pure: the reads go in, the artifact comes out. first: the first GET; last: the read the result stands on. */
-export function recordOf({ first, last, page, ms = 0, error = '', at = new Date().toISOString(), occasion = 1 }) {
+export function recordOf({ first, last, page, opened = null, ms = 0, error = '', at = new Date().toISOString(), occasion = 1 }) {
   const now = Date.parse(at), read = last || first, b = (read && read.body) || {};
-  const problem = error || apiProblem(read, now) || pageProblem(page);
+  const problem = error || apiProblem(read, now) || pageProblem(page, opened);
   return {
     attempt: 'live', occasion, at, family: 'make', skill: 'video-gen', service: SERVICE,
     ask: 'is AI video on at a-to-mind.com right now, and does the video page serve',
@@ -57,6 +64,7 @@ export function recordOf({ first, last, page, ms = 0, error = '', at = new Date(
     lastTest: typeof b.checkedAt === 'string' ? b.checkedAt.slice(0, 24) : null, startedSelfCheck: !!(first && first.body && first.body.checking),
     clipsLeft: Number.isInteger(b.clipsLeft) ? b.clipsLeft : null, perConnection: Number.isInteger(b.perConnection) ? b.perConnection : PER_CONN,
     page: page ? { status: page.status, state: !!page.state, make: !!page.make, handoff: !!page.handoff, gate: !!page.gate } : null,
+    opened: opened ? { status: opened.status, state: !!opened.state, make: !!opened.make, handoff: !!opened.handoff, gate: !!opened.gate } : null,
     error: problem ? String(problem).replace(/\s+/g, ' ').slice(0, 200) : '',
   };
 }
@@ -82,21 +90,26 @@ export async function readApi(fetchFn = fetch, site = SITE) {
   return { status: res.status, body };
 }
 /** one live check: read /api/clip; if that read started the self-check, wait and read again; then read /video/ */
-export async function checkOnce(fetchFn = fetch, wait = (ms) => new Promise((r) => setTimeout(r, ms)), site = SITE) {
+export async function checkOnce(fetchFn = fetch, wait = (ms) => new Promise((r) => setTimeout(r, ms)), site = SITE, token = '') {
   const t0 = Date.now();
   try {
     const first = await readApi(fetchFn, site);
     let last = first;
     if (first.body && first.body.checking) { await wait(SETTLE_MS); last = await readApi(fetchFn, site); }
     const res = await fetchFn(site + '/video/', { headers: HEAD, cache: 'no-store', signal: AbortSignal.timeout(20000) });
-    const page = pageOf(res.status, await res.text());
-    return { first, last, page, ms: Date.now() - t0 };
+    const page = pageOf(res.status, await res.text(), res.headers);
+    let opened = null;
+    if (token) {
+      const o = await fetchFn(site + '/video/', { headers: { ...HEAD, authorization: 'Bearer ' + token }, cache: 'no-store', signal: AbortSignal.timeout(20000) });
+      opened = pageOf(o.status, await o.text(), o.headers);
+    }
+    return { first, last, page, opened, ms: Date.now() - t0 };
   } catch (e) { return { first: null, last: null, page: null, ms: Date.now() - t0, error: 'unreachable: ' + ((e && (e.cause && e.cause.code || e.name || e.message)) || 'error') }; }
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const dry = process.argv.includes('--dry');
-  const res = await checkOnce();
+  const res = await checkOnce(fetch, (ms) => new Promise((r) => setTimeout(r, ms)), SITE, process.env.VOID_OWNER_TOKEN || '');
   const rec = recordOf({ ...res, occasion: nextOccasion() });
   console.log(JSON.stringify(rec, null, 1));
   if (!dry && rec.status) {
