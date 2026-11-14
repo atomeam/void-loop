@@ -52,7 +52,7 @@ function paint(id) {
   cv.width = game.W * dpr; cv.height = game.H * dpr;
   const ctx = cv.getContext('2d'); ctx.scale(dpr, dpr);
   const full = document.createElement('button'); full.type = 'button'; full.className = 'g-btn full'; full.textContent = '⛶'; full.setAttribute('aria-label', 'Full screen');
-  full.addEventListener('click', () => { const go = document.fullscreenElement ? document.exitFullscreen() : stage.requestFullscreen(); if (go && go.catch) go.catch(() => {}); });
+  full.addEventListener('click', () => { const go = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (go && go.catch) go.catch(() => {}); });
   stage.append(cv, full);
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game'; again.hidden = true;
   el.append(stage, again);
