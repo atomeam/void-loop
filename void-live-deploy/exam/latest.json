@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-14T00:47:14.202Z",
+  "at": "2026-11-14T01:13:59.017Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,12 +34,19 @@
       }
     },
     "podcasts": {
-      "score": 90.5,
+      "score": 92.1,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of the daily",
+          "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
             "audio",
             "episode"
@@ -47,20 +54,11 @@
           "score": 71.4
         },
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of hidden brain",
           "failed": [
-            "audio",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of crime junkie",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the episode before that",
@@ -377,6 +375,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 90.5
+    "score": 92.1
   }
 }
