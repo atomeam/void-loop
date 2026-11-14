@@ -66,7 +66,11 @@ function renderGrid() {
     const seed = Math.floor(g[4] * 1000);
     const words = ['void', 'verse', 'mind', 'type', 'rhythm', 'evolve', 'portal', 'seal', 'agent', 'grid', 'local', 'cadence'];
     const content = words[seed % words.length] + '-' + (seed % 97);
-    el.innerHTML = `<div class="label">A${i}</div><div class="content">${content}</div><div style="font-size:0.65em;opacity:0.6">f:${a.fitness.toFixed(1)}</div>`;
+    el.innerHTML = '<div class="label">A</div><div class="content"></div><div style="font-size:0.65em;opacity:0.6">f:0</div>';
+    const divs = el.querySelectorAll('div');
+    divs[0].textContent = 'A' + i;
+    divs[1].textContent = content;
+    divs[2].textContent = 'f:' + a.fitness.toFixed(1);
     el.onclick = () => rewardAgent(i, 2.5);
     grid.appendChild(el);
   });

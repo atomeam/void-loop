@@ -172,7 +172,8 @@
       if (row.dateStr !== lastDate) {
         const trh = document.createElement('tr');
         trh.className = 'day-header';
-        trh.innerHTML = `<td colspan="3">${formatDate(row.date)}</td>`;
+        trh.innerHTML = '<td colspan="3"></td>';
+        trh.firstElementChild.textContent = formatDate(row.date);
         body.appendChild(trh);
         lastDate = row.dateStr;
       }

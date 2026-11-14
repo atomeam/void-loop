@@ -138,7 +138,9 @@ if (window.BroadcastChannel) {
 
 // load
 try {
-  const saved = JSON.parse(localStorage.getItem('verse-f747-genome') || 'null');
+  const raw = localStorage.getItem('verse-f747-genome') || 'null';
+  let saved;
+  try { saved = JSON.parse(raw); } catch (_) { saved = null; }
   if (saved && saved.Wh) {
     Wh.set(saved.Wh); Uh.set(saved.Uh); Wo.set(saved.Wo); fitness = saved.fitness || 0;
   }

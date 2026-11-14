@@ -27,7 +27,8 @@ class Agent {
   makeDOM() {
     const el = document.createElement('div');
     el.className = 'agent';
-    el.innerHTML = `<strong>V${this.id}</strong><br>fit:0<br>Γ:0`;
+    el.innerHTML = '<strong>V</strong><div class="fit">fit:0</div><div class="gamma">Γ:0</div>';
+    el.querySelector('strong').textContent = 'V' + this.id;
     document.getElementById('stage').appendChild(el);
     this.el = el;
   }
@@ -55,7 +56,9 @@ class Agent {
     this.el.style.left = this.x + 'px';
     this.el.style.top = this.y + 'px';
     this.el.style.background = `hsla(${this.genome.hue},70%,40%,0.8)`;
-    this.el.innerHTML = `<strong>V${this.id}</strong><br>fit:${this.fitness.toFixed(0)}<br>Γ:${this.strength.toFixed(1)}`;
+    this.el.querySelector('strong').textContent = 'V' + this.id;
+    this.el.querySelector('.fit').textContent = 'fit:' + this.fitness.toFixed(0);
+    this.el.querySelector('.gamma').textContent = 'Γ:' + this.strength.toFixed(1);
   }
 }
 

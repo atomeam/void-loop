@@ -83,7 +83,8 @@ runBtn.addEventListener('click', async () => {
     copyBtn.disabled = false;
     downloadBtn.disabled = false;
   } catch (err) {
-    resultEl.innerHTML = `<span class="error">${err.message}</span>`;
+    resultEl.innerHTML = '<span class="error"></span>';
+    resultEl.querySelector('.error').textContent = err.message;
   }
 });
 

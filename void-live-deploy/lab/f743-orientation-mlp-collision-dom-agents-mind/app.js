@@ -57,7 +57,8 @@ class MLP {
 function createAgent(i) {
   const el = document.createElement('div');
   el.className = 'agent';
-  el.innerHTML = `<div>A${i}</div><div class="fit">0</div>`;
+  el.innerHTML = '<div>A</div><div class="fit">0</div>';
+  el.firstElementChild.textContent = 'A' + i;
   stage.appendChild(el);
   return {
     el, i,
