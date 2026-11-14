@@ -26,30 +26,32 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 12 | /news/ | Reader comments | missing | rnz.co.nz, channelnewsasia.com, france24.com, euronews.com, theguardian.com, BBC News, npr.org |
 | 11 | /scores/ | Goal and score alerts | missing | 365scores.com, fotmob.com, livescore.com, onefootball.com, flashscore.com, ESPN |
 | 10 | /podcasts/ | Hosts, guests and credits | missing | podchaser.com, podbean.com, Apple Podcasts, podcastindex.org, listennotes.com |
+| 9 | /kanban/ | A public API | missing | abacktools.com, wekan.fi, kanbanflow.com, Trello |
 | 9 | /notes/ | A public API | missing | anotepad.com, simplenote.com, evernote.com, notion.so |
 | 9 | /markets/ | Discussion and ideas from other investors | missing | investing.com, tradingview.com, stockanalysis.com, Yahoo Finance |
 | 9 | /markets/ | Price alerts | missing | investing.com, tradingview.com, stockanalysis.com, Yahoo Finance |
 | 9 | /calendar/ | Shopping and to-do lists | missing | calendar.online, cozi.com, Google Calendar, any.do |
+| 8 | /kanban/ | Add-ons and integrations | missing | jasperbernaers.com, kanbanflow.com, Trello |
+| 8 | /kanban/ | An account that keeps your things on every device | partial | abacktools.com, kanbanflow.com, Trello |
 | 8 | /markets/ | An account that keeps your things on every device | partial | marketwatch.com, google.com, stockanalysis.com |
+| 8 | /kanban/ | Attachments | missing | wekan.fi, kanbanflow.com, Trello |
+| 8 | /kanban/ | Automation rules | missing | jasperbernaers.com, abacktools.com, Trello |
 | 7 | /translate/ | A spelling suggestion for what was typed (did you mean) | missing | translate.yandex.com, Google Translate |
 | 7 | /notes/ | Nested checklists | missing | simplenote.com, notion.so |
 | 7 | /translate/ | Translate offline with downloaded languages | missing | itranslate.com, Google Translate |
 | 7 | /translate/ | Type in Latin letters and get the other script | missing | translate.yandex.com, Google Translate |
 | 7 | /scores/ | Watch games live | missing | cbssports.com, ESPN |
 | 6 | /flights/ | A price calendar and graph | missing | Google Flights |
-| 6 | /kanban/ | A public API | missing | Trello |
 | 6 | /music/ | A yearly listening summary | missing | Spotify |
-| 6 | /kanban/ | Add-ons and integrations | missing | Trello |
+| 6 | /pdf/ | Add text, images and shapes | missing | 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com, ilovepdf.com |
 | 6 | /photos/ | Albums and sharing | missing | Google Photos |
-| 6 | /kanban/ | An account that keeps your things on every device | partial | Trello |
 | 6 | /news/ | An account that keeps your things on every device | partial | channelnewsasia.com, dw.com, euronews.com, theguardian.com, thelocal.com, npr.org |
 | 6 | /jobs/ | An account that keeps your things on every device | partial | LinkedIn Jobs |
-| 6 | /kanban/ | Attachments | missing | Trello |
-| 6 | /kanban/ | Automation rules | missing | Trello |
 | 6 | /photos/ | Back up photos from your phone | missing | Google Photos |
 | 6 | /markets/ | Dark mode | missing | google.com |
 | 6 | /notes/ | Databases (tables of pages with views) | missing | notion.so |
 | 6 | /music/ | Download for offline | missing | Spotify |
+| 6 | /pdf/ | Fill in forms | missing | 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com, ilovepdf.com |
 | 6 | /music/ | Follow friends and share | missing | Spotify |
 | 6 | /photos/ | Group photos by face | missing | Google Photos |
 | 6 | /music/ | Lyrics | missing | Spotify |
@@ -57,10 +59,13 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 6 | /music/ | Podcasts and audiobooks | missing | Spotify |
 | 6 | /jobs/ | Post a job | missing | LinkedIn Jobs |
 | 6 | /jobs/ | See who you know at a company | missing | LinkedIn Jobs |
+| 5 | /pdf/ | An account that keeps your things on every device | missing | 10015.io, pdfcandy.com, sejda.com, smallpdf.com, ilovepdf.com |
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
+| 5 | /pdf/ | Read scanned text (OCR) | missing | pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com, ilovepdf.com |
 | 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, barchart.com, investing.com, tradingview.com, stockanalysis.com |
 | 4 | /books/ | An account that keeps your things on every device | missing | squibler.io, inkfluenceai.com, sudowrite.com, novelcrafter.com |
 | 3 | /notes/ | A passcode lock on the notes | missing | standardnotes.com, simplenote.com, evernote.com |
+| 3 | /pdf/ | A public API | missing | sejda.com, smallpdf.com, ilovepdf.com |
 | 3 | /scores/ | An account that keeps your things on every device | partial | cbssports.com, onefootball.com, besoccer.com |
 | 3 | /books/ | Share a link to what you made or found | missing | squibler.io, inkfluenceai.com, novelcrafter.com |
 | 2 | /notes/ | A drawing in a note | missing | onenote.com, evernote.com |
@@ -68,17 +73,12 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 2 | /notes/ | A reminder on a note at a time or place | missing | onenote.com, evernote.com |
 | 2 | /generators/ | Dark mode | missing | behindthename.com, rangen.co.uk |
 | 2 | /notes/ | End-to-end encryption | missing | standardnotes.com, notepad.pw |
+| 2 | /pdf/ | The site in other languages | missing | sejda.com, smallpdf.com |
 | 2 | /translate/ | Verb conjugation tables | missing | linguee.com, reverso.net |
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
 | 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
-| 1 | /pdf/editor/ | A public API | missing | sejda.com |
-| 1 | /pdf/studio/ | A public API | missing | smallpdf.com |
-| 1 | /pdf/ | A public API | missing | ilovepdf.com |
-| 1 | /kanban/quick/ | A public API | missing | abacktools.com |
-| 1 | /kanban/teams/ | A public API | missing | wekan.fi |
-| 1 | /kanban/flow/ | A public API | missing | kanbanflow.com |
 | 1 | /bpm/ | A public API | missing | anotherproducer.com |
 | 1 | /flights/airports/ | A public API | missing | aruljohn.com |
 | 1 | /g/ | A public API | missing | codebasehq.com |
@@ -91,21 +91,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /markets/screener/ | A quote page for any stock | missing | finviz.com |
 | 1 | /markets/caps/ | A watchlist | missing | companiesmarketcap.com |
 | 1 | /markets/screener/ | A watchlist | missing | finviz.com |
-| 1 | /pdf/organize/ | Add text, images and shapes | missing | 10015.io |
-| 1 | /pdf/toolbox/ | Add text, images and shapes | missing | pdfcandy.com |
-| 1 | /pdf/suite/ | Add text, images and shapes | missing | tools.pdf24.org |
-| 1 | /pdf/studio/ | Add text, images and shapes | missing | smallpdf.com |
-| 1 | /pdf/ | Add text, images and shapes | missing | ilovepdf.com |
-| 1 | /kanban/simple/ | Add-ons and integrations | missing | jasperbernaers.com |
-| 1 | /kanban/flow/ | Add-ons and integrations | missing | kanbanflow.com |
 | 1 | /scores/sports/ | An account that keeps your things on every device | partial | thesportsdb.com |
-| 1 | /pdf/organize/ | An account that keeps your things on every device | missing | 10015.io |
-| 1 | /pdf/toolbox/ | An account that keeps your things on every device | missing | pdfcandy.com |
-| 1 | /pdf/editor/ | An account that keeps your things on every device | missing | sejda.com |
-| 1 | /pdf/studio/ | An account that keeps your things on every device | missing | smallpdf.com |
-| 1 | /pdf/ | An account that keeps your things on every device | missing | ilovepdf.com |
-| 1 | /kanban/quick/ | An account that keeps your things on every device | partial | abacktools.com |
-| 1 | /kanban/flow/ | An account that keeps your things on every device | partial | kanbanflow.com |
 | 1 | /jobs/regions/ | An account that keeps your things on every device | partial | jobicy.com |
 | 1 | /jobs/alerts/ | An account that keeps your things on every device | partial | workingnomads.com |
 | 1 | /jobs/europe/ | An account that keeps your things on every device | partial | arbeitnow.com |
@@ -120,7 +106,21 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
 | 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
 | 1 | /scores/sports/ | Anyone can add and correct data | missing | thesportsdb.com |
-| 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
-| 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
-| 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
-| 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
+| 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
+| 1 | /weather/ | Climate records | missing | weather.gov |
+| 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
+| 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
+| 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
+| 1 | /convert/ | Currency | missing | unitconverters.net |
+| 1 | /pdf/ | Dark mode | missing | tools.pdf24.org |
+| 1 | /kanban/ | Dark mode | missing | abacktools.com |
+| 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
+| 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
+| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |
+| 1 | /calendar/ | Dark mode | missing | calendar.online |
+| 1 | /markets/caps/ | Dark mode | missing | companiesmarketcap.com |
+| 1 | /markets/screener/ | Dark mode | missing | finviz.com |
+| 1 | /books/ | Dark mode | missing | sudowrite.com |
+| 1 | /markets/caps/ | Earnings and economic calendars | missing | companiesmarketcap.com |
+| 1 | /markets/screener/ | Earnings and economic calendars | missing | finviz.com |
+| 1 | /time/ | Eclipses | missing | timeanddate.com |

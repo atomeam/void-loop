@@ -1,13 +1,13 @@
 {
- "at": "2026-11-13T13:08Z",
+ "at": "2026-11-14T12:13Z",
  "source": "verse",
  "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
  "week": {
-  "since": "2026-11-07",
+  "since": "2026-11-08",
   "unique": true,
-  "people": 74,
-  "views": 311,
-  "ours": 18761,
+  "people": 83,
+  "views": 316,
+  "ours": 16472,
   "bots": 0
  },
  "days": [
@@ -157,25 +157,33 @@
   },
   {
    "day": "2026-11-13",
-   "all": 199,
-   "people": 3,
-   "ours": 196,
+   "all": 1024,
+   "people": 51,
+   "ours": 973,
    "bots": 0,
-   "uniquePeople": 3
+   "uniquePeople": 15
+  },
+  {
+   "day": "2026-11-14",
+   "all": 247,
+   "people": 14,
+   "ours": 233,
+   "bots": 0,
+   "uniquePeople": 2
   }
  ],
  "pages": [
   {
    "k": "/",
-   "n": 557
+   "n": 594
   },
   {
    "k": "/lab/",
-   "n": 231
+   "n": 232
   },
   {
    "k": "/team/",
-   "n": 102
+   "n": 104
   },
   {
    "k": "/films/",
@@ -183,11 +191,11 @@
   },
   {
    "k": "/brain/",
-   "n": 32
+   "n": 35
   },
   {
    "k": "/tools/",
-   "n": 31
+   "n": 32
   },
   {
    "k": "/conquered/",
@@ -198,12 +206,12 @@
    "n": 19
   },
   {
-   "k": "/bots/",
-   "n": 14
+   "k": "/podcasts/",
+   "n": 15
   },
   {
-   "k": "/podcasts/",
-   "n": 13
+   "k": "/bots/",
+   "n": 14
   }
  ],
  "referrers": [
@@ -213,17 +221,17 @@
   },
   {
    "k": "bing.com",
-   "n": 24
+   "n": 25
   },
   {
    "k": "github.com",
-   "n": 21
+   "n": 22
   }
  ],
  "countries": [
   {
    "k": "US",
-   "n": 1209
+   "n": 1270
   },
   {
    "k": "TR",
@@ -242,11 +250,11 @@
    "n": 5
   },
   {
-   "k": "DE",
-   "n": 3
+   "k": "GB",
+   "n": 4
   },
   {
-   "k": "GB",
+   "k": "DE",
    "n": 3
   },
   {
@@ -262,5 +270,5 @@
    "n": 2
   }
  ],
- "line": "People this week: 74 (311 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+ "line": "People this week: 83 (316 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }

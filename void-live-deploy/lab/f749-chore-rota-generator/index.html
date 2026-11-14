@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<style>
+  :root {
+    --bg: #0f1419;
+    --surface: #1a2332;
+    --surface2: #243044;
+    --text: #e7ecf3;
+    --muted: #8b9bb4;
+    --accent: #3d9cf0;
+    --accent2: #2dd4a8;
+    --danger: #f07178;
+    --border: #2d3a4f;
+    --radius: 12px;
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+    min-height: 100dvh;
+    padding: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 18px; }
+  section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  section h2 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--accent2);
+  }
+  label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 3px; }
+  input[type="text"], input[type="number"], input[type="date"], select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 11px;
+    color: var(--text);
+    font: inherit;
+    margin-bottom: 8px;
+  }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip button {
+    background: none; border: none; color: var(--danger);
+    cursor: pointer; font-size: 1rem; line-height: 1; padding: 0;
+  }
+  .item {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .item .remove {
+    position: absolute; top: 8px; right: 8px;
+    background: none; border: none; color: var(--danger);
+    cursor: pointer; font-size: 1.1rem; line-height: 1;
+  }
+  .row2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 8px; }
+  @media (max-width: 520px) { .row2 { grid-template-columns: 1fr; } }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  button {
+    background: var(--accent); color: #fff; border: none;
+    border-radius: 8px; padding: 10px 15px; font-weight: 600;
+    cursor: pointer; font: inherit; font-size: 0.9rem;
+  }
+  button:hover { filter: brightness(1.07); }
+  button.secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); }
+  button.ghost { background: transparent; border: 1px dashed var(--border); color: var(--muted); }
+  .hint { font-size: 0.76rem; color: var(--muted); margin-top: 6px; }
+  .schedule-wrap {
+    max-height: 380px; overflow: auto;
+    border: 1px solid var(--border); border-radius: 8px; margin-top: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 500; position: sticky; top: 0; background: var(--surface); }
+  .day-header { background: var(--surface2); font-weight: 600; color: var(--accent2); }
+  .hidden { display: none; }
+  footer { margin-top: 20px; font-size: 0.72rem; color: var(--muted); text-align: center; }
+  .summary-bar {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;
+  }
+  .stat {
+    background: var(--surface2); border-radius: 8px; padding: 10px 12px; flex: 1; min-width: 120px;
+  }
+  .stat .label { font-size: 0.72rem; color: var(--muted); }
+  .stat .value { font-size: 1.1rem; font-weight: 650; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Chore rota generator · Verse lab</title>
+<meta name="description" content="Job: Enter the people in the household and the chores (how often each needs doing).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Chore rota generator · Verse lab">
+<meta property="og:description" content="Job: Enter the people in the household and the chores (how often each needs doing).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f749-chore-rota-generator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f749-chore-rota-generator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+  <h1>Chore rota generator</h1>
+  <p class="sub">Add the people and the chores. Get a fair rotating schedule you can download as CSV or calendar (.ics). Nothing leaves this device.</p>
+
+  <section>
+    <h2>People</h2>
+    <div class="chip-row" id="peopleChips"></div>
+    <div class="row2">
+      <div>
+        <label for="personInput">Name</label>
+        <input type="text" id="personInput" placeholder="Alex" maxlength="40">
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:8px;">
+        <button type="button" id="addPerson" style="width:100%">Add person</button>
+      </div>
+    </div>
+    <p class="hint">At least two people recommended for a fair rotation.</p>
+  </section>
+
+  <section>
+    <h2>Chores</h2>
+    <div id="chores"></div>
+    <button type="button" class="ghost" id="addChore">+ Add chore</button>
+    <p class="hint">Frequency: daily, every N days, or weekly (same weekday).</p>
+  </section>
+
+  <section>
+    <h2>Options</h2>
+    <div class="row2">
+      <div>
+        <label for="startDate">Start date</label>
+        <input type="date" id="startDate">
+      </div>
+      <div>
+        <label for="weeks">Weeks to generate</label>
+        <input type="number" id="weeks" min="1" max="12" value="4">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button type="button" id="generate">Generate rota</button>
+      <button type="button" class="secondary" id="savePlan">Save on this device</button>
+    </div>
+  </section>
+
+  <section id="results" class="hidden">
+    <h2>Your rota</h2>
+    <div class="summary-bar" id="summary"></div>
+    <div class="btn-row">
+      <button type="button" id="downloadCsv">Download CSV</button>
+      <button type="button" id="downloadIcs">Download .ics calendar</button>
+      <button type="button" class="secondary" id="copyText">Copy text</button>
+    </div>
+    <div class="schedule-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Chore</th>
+            <th>Who</th>
+          </tr>
+        </thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Offline · local only · Verse lab F749<br>
+    Fair rotation is round-robin by chore; adjust names or frequencies and regenerate if needed.
+  </footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

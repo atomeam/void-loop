@@ -8456,8 +8456,9 @@ try {
     await B.p.click('.arcade-pick[data-arcade="null-sweep"]');
     const opened = await until(async () => B.p.$('.nsweep').catch(() => null), 6000);
     const gone = !(await B.p.$('.arcade-view'));
+    const { GAMES: arcadeGames } = await import('../void-live-deploy/lib/ladder.js');
     check('arcade: a card of the six arcade games with your record, and a pick opens that game (the 3D cabinet is in tools/test_3d.mjs)',
-      picks.length === 6 && /Verse Pong/.test(picks[0]) && !!opened && gone && !B.errors.length, JSON.stringify({ picks, opened: !!opened, gone, errors: B.errors }));
+      picks.length === arcadeGames.length && /Verse Pong/.test(picks[0]) && !!opened && gone && !B.errors.length, JSON.stringify({ picks, opened: !!opened, gone, errors: B.errors }));
     await B.ctx.close(); }
 
   // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
