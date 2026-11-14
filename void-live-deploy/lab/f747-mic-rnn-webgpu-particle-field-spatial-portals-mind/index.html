@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0c10; --fg: #e0e6f0; --accent: #5ce1e6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; }
+  .chrome { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(10,12,16,0.7); backdrop-filter: blur(8px); padding: 10px 14px; border-radius: 12px; font-size: 13px; max-width: 320px; }
+  .chrome button { background: var(--accent); color: #0a0c10; border: none; padding: 6px 12px; border-radius: 8px; margin: 4px 4px 0 0; cursor: pointer; font-weight: 600; }
+  .portal { position: absolute; z-index: 5; width: 72px; height: 72px; border-radius: 50%; background: radial-gradient(circle, rgba(92,225,230,0.8), rgba(92,225,230,0.1)); border: 2px solid var(--accent); cursor: pointer; transform: translate(-50%, -50%); transition: transform 0.1s; display: flex; align-items: center; justify-content: center; font-size: 11px; text-align: center; user-select: none; box-shadow: 0 0 20px rgba(92,225,230,0.4); }
+  .portal:hover { transform: translate(-50%, -50%) scale(1.15); }
+  .status { margin-top: 6px; opacity: 0.8; font-size: 11px; line-height: 1.4; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Mic-RNN Particle Field Spatial Portals Mind · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial interface for The Verse canvas: a continuous particle field (400 agents under simple forces) whose global force parameters (attraction">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Mic-RNN Particle Field Spatial Portals Mind · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial interface for The Verse canvas: a continuous particle field (400 agents under simple forces) whose global force parameters (attraction">
+<meta property="og:url" content="https://a-to-mind.com/lab/f747-mic-rnn-webgpu-particle-field-spatial-portals-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f747-mic-rnn-webgpu-particle-field-spatial-portals-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="chrome">
+  <div><strong>F747</strong> Mic-RNN Particle Field</div>
+  <button id="micBtn">Enable Mic</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="clearBtn">Reset</button>
+  <div class="status" id="status">Move pointer. Click portals to reward. Mic optional.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Mic-RNN Particle Field Spatial Portals Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

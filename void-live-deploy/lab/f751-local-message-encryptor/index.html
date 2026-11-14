@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; background: #f8f9fa; color: #212529; }
+  h1 { font-size: 1.5rem; }
+  label { display: block; margin: 1rem 0 0.25rem; font-weight: 600; }
+  textarea, input[type="password"], input[type="text"] { width: 100%; padding: 0.5rem; box-sizing: border-box; border: 1px solid #ced4da; border-radius: 0.25rem; font-family: inherit; }
+  textarea { min-height: 8rem; resize: vertical; }
+  button, .toggle { margin: 0.5rem 0.5rem 0.5rem 0; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; background: #0d6efd; color: white; cursor: pointer; }
+  button:hover { background: #0b5ed7; }
+  button.secondary { background: #6c757d; }
+  button.secondary:hover { background: #5c636a; }
+  #result { white-space: pre-wrap; word-break: break-all; background: #fff; border: 1px solid #dee2e6; padding: 0.75rem; border-radius: 0.25rem; margin-top: 1rem; min-height: 4rem; }
+  .error { color: #dc3545; }
+  .note { font-size: 0.875rem; color: #6c757d; margin-top: 1rem; }
+  .mode { display: flex; gap: 1rem; margin: 0.5rem 0; }
+  .mode label { font-weight: normal; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local message encryptor · Verse lab</title>
+<meta name="description" content="Job: Encrypt or decrypt a message with a passphrase entirely in the browser using AES-GCM; copy the ciphertext or plaintext, or download it as a file.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local message encryptor · Verse lab">
+<meta property="og:description" content="Job: Encrypt or decrypt a message with a passphrase entirely in the browser using AES-GCM; copy the ciphertext or plaintext, or download it as a file.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f751-local-message-encryptor/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f751-local-message-encryptor/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Local Message Encryptor</h1>
+<p>Encrypt or decrypt a message with a passphrase. Everything stays in your browser. Nothing is sent anywhere.</p>
+
+<div class="mode">
+  <label><input type="radio" name="mode" value="encrypt" checked> Encrypt</label>
+  <label><input type="radio" name="mode" value="decrypt"> Decrypt</label>
+</div>
+
+<label for="message">Message or ciphertext</label>
+<textarea id="message" placeholder="Type or paste your message here (or the base64 ciphertext to decrypt)"></textarea>
+
+<label for="pass">Passphrase</label>
+<input type="password" id="pass" placeholder="Enter a strong passphrase">
+
+<button id="run">Encrypt / Decrypt</button>
+<button id="copy" class="secondary" disabled>Copy result</button>
+<button id="download" class="secondary" disabled>Download .txt</button>
+
+<div id="result" aria-live="polite"></div>
+<p class="note">Security depends on a strong unique passphrase. This is AES-GCM with PBKDF2 (100k iterations). For local notes only — not a substitute for full disk encryption or professional tools. Output is salt + IV + ciphertext in base64.</p>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
