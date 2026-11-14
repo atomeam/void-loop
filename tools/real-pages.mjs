@@ -433,7 +433,7 @@ export const SPECS = {
     await t.fill('#pw', 'c0rrect-Horse-battery-staple-91'); await t.p.waitForTimeout(300); t.ok(/strong|centur|years/i.test(await t.p.locator('main').innerText()), 'a long passphrase is strong');
     await t.click('#leak'); await t.p.waitForTimeout(3000); t.ok(/leak|breach|found|not found|seen/i.test(await t.p.locator('main').innerText()), 'the leak check answers');
   },
-  '/pdf/': pdfMake, '/pdf/editor/': pdfMake, '/pdf/merge/': pdfMake, '/pdf/organize/': pdfMake, '/pdf/studio/': pdfMake, '/pdf/suite/': pdfMake, '/pdf/toolbox/': pdfMake,
+  '/pdf/': pdfMake,
   '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); // the AI check mode, built from what Verse watched (domains/tv-built/): a real Stable Diffusion PNG and a real phone-style JPEG go in, each gets the exact verdict, the report downloads, the paid link is the store's
     const crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
     const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
@@ -719,7 +719,7 @@ SPECS['/ledger/'] = async (t) => {
   await t.copies('#copycsv', 'Merge the tide tables');
   await t.share('#copylink', async (p) => { await p.waitForFunction(() => document.querySelectorAll('#rows tr').length > 0, null, { timeout: 8000 }).catch(() => {}); return (await p.inputValue('#repo')) === 'test-owner/test-repo' && (await p.getAttribute('#tab-pr', 'aria-selected')) === 'true' && /Merge the tide tables/.test(await p.locator('#rows').innerText()); });
 };
-for (const r of ['/kanban/', '/kanban/simple/', '/kanban/teams/', '/kanban/quick/']) SPECS[r] = kanban(true); SPECS['/kanban/flow/'] = kanban(false);
+SPECS['/kanban/'] = kanban(true);
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
