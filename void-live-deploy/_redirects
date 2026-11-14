@@ -1,3 +1,6 @@
+# a reading list with no tool opens its Echo Vault entry
+/research /echo-vault/?entry=paper-notes 301
+/research/ /echo-vault/?entry=paper-notes 301
 # Verse's redirects (Cloudflare Pages): a floor's own name never 404s - Versus's shopping floor is the store
 /shopping /store/ 301
 # the AI check is a mode of the photo details page (owner, 2026-11-03: one page per category, features fold in as modes)
