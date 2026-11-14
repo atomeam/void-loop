@@ -27,18 +27,21 @@
   button, .chip { font: inherit; color: #f2eeff; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 10px 16px; min-height: 44px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
   button:focus-visible, a:focus-visible { outline: 2px solid #4fe3e3; outline-offset: 2px; }
   button[aria-pressed="true"] { border-color: #4fe3e3; background: rgba(79,227,227,.14); }
-  #play { width: 100vw; margin: 8px 0 0 calc(50% - 50vw); }
-  #play .stage { position: relative; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #07060f; }
-  #play .stage:fullscreen { width: 100vw; height: 100vh; }
-  #play canvas { display: block; width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16)); border-radius: 0; touch-action: none; }
-  #play .full { position: absolute; right: 12px; bottom: 12px; z-index: 2; background: rgba(7,6,15,.55); }
+  #play:not(:empty) { width: 100vw; margin: -20px 0 0 calc(50% - 50vw); }
+  #play .stage { position: relative; width: 100vw; height: calc(100vh - var(--vs-bar, 48px)); display: block; background: #07060f; }
+  #play .stage:fullscreen, #play .stage:fullscreen canvas { width: 100%; height: 100%; }
+  #play canvas { display: block; width: 100%; height: 100%; border-radius: 0; touch-action: none; }
+  #play .hud { position: absolute; top: 12px; right: 12px; z-index: 4; display: flex; gap: 8px; }
+  #play .hud button, #play .full { min-width: 44px; min-height: 44px; background: rgba(7,6,15,.55); }
+  #play .full { position: absolute; right: 12px; bottom: 12px; z-index: 4; }
+  #play .round { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px 0; }
   #play button[hidden] { display: none !important; }
   #how { min-height: 3.2em; }
   .g-btn { border-radius: 10px; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/arcade/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse Arcade","url":"https://a-to-mind.com/arcade/","description":"Every game you play against Verse, in one cabinet. Debris Field plays on the page: slide, fire, and outscore Verse as the waves speed up. The games already on the stage open there, and a link carries the seed and the score of a round.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"verse arcade, play a game against verse, debris field, daily arcade game, play debris field","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/arcade/?play={play}"},"play-input":"required name=play"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Verse Arcade","item":"https://a-to-mind.com/arcade/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse Arcade","url":"https://a-to-mind.com/arcade/","description":"Every game you play against Verse, in one cabinet. Debris Field plays on the page: fly one ship, and outscore Verse before the run ends. The games already on the stage open there, and a link carries the seed and the score of a round.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"verse arcade, play a game against verse, debris field, daily arcade game, play debris field","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/arcade/?play={play}"},"play-input":"required name=play"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Verse Arcade","item":"https://a-to-mind.com/arcade/"}]}]}</script>
 <!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
@@ -56,13 +59,13 @@
 </head>
 <body>
 <main>
+  <div id="play"></div>
   <h1>Verse Arcade</h1>
   <p class="lead">This is every game you can play against Verse, gathered in one cabinet, with a round a friend can open from a link.</p>
   <p><a href="/?q=arcade%20games">Open the 3D cabinet on the stage</a>. The cabinet and the stage cards are the same games.</p>
   <h2>In the cabinet</h2>
   <div id="games"></div>
   <p id="how"></p>
-  <div id="play"></div>
   <h2>Also on the stage</h2>
   <div id="more"></div>
   <!-- asks -->
