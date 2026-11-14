@@ -1,26 +1,215 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-14T08:57:12.147Z",
+ "updated": "2026-11-14T18:28:41.662Z",
  "last24h": {
-  "ticks": 1,
-  "started": 0,
+  "ticks": 2,
+  "started": 3,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
   "errors": 1
  },
  "broken": [],
- "held": [],
- "coder": null,
- "handed": {},
- "sweptAt": 0,
- "blueprintsAt": 0,
- "visitorAt": null,
- "visitorFiled": [],
+ "held": [
+  {
+   "id": "mvvql4d9",
+   "why": "no executor for route"
+  },
+  {
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwav1pw9",
+   "why": "no executor for retest"
+  },
+  {
+   "id": "mwazktlm",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktnz",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktrq",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktv3",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktv9",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwditzd8",
+   "why": "no executor for route"
+  }
+ ],
+ "coder": {
+  "model": "@cf/google/gemma-4-26b-a4b-it",
+  "hour": {
+   "used": 3,
+   "cap": 90
+  },
+  "day": {
+   "used": 360,
+   "cap": 360
+  },
+  "room": false,
+  "until": "2026-11-15T00:00:00.000Z"
+ },
+ "handed": {
+  "mvbl52gd": 1794680921662,
+  "mveb8rsi": 1794680921662,
+  "mva30i2e": 1794680921662
+ },
+ "sweptAt": 1794680921662,
+ "blueprintsAt": 1794680921662,
+ "visitorAt": "2026-11-14T14:29:24Z",
+ "visitorFiled": [
+  "review:2706",
+  "heal:helper-delivery-board",
+  "review:2707",
+  "review:2708",
+  "heal:helper-status-digest",
+  "review:2713",
+  "tv:relationship-history-logger",
+  "review:2717",
+  "review:2723",
+  "visit:what-s-the-weather-in-lakeland-f",
+  "route:ownership-ownership-map-for-weekly",
+  "heal:helper-full-handoff",
+  "review:2725",
+  "review:2728",
+  "review:2729",
+  "review:2731",
+  "review:2732",
+  "probe:what-am-i-missing-in-this-plan",
+  "probe:draft-the-handoff-checklist",
+  "probe:show-me-the-ownership-map",
+  "review:2733",
+  "review:2736",
+  "gap:want-exam-code",
+  "review:2739",
+  "heal:helper-full-handoff-complete",
+  "heal:helper-system-plan",
+  "review:2743",
+  "heal:helper-reliability-pack",
+  "heal:helper-roi-pack",
+  "heal:helper-kickoff-pack",
+  "visit:tell-me-a-joke",
+  "review:2747",
+  "heal:helper-versus-owner-ad9e",
+  "review:2749",
+  "heal:helper-conflict-checks-d564",
+  "heal:helper-uni-pages-131a",
+  "heal:helper-register-delivery-skills",
+  "heal:helper-systems-owned",
+  "review:2758",
+  "probe:is-the-bot-running",
+  "probe:summarize-the-last-sprint",
+  "review:2761",
+  "heal:helper-delivery-ready",
+  "heal:want-guard-hourly-films-page",
+  "will:overhaul-site-social-persona-playtest-be",
+  "probe:how-do-i-use-you",
+  "review:2753",
+  "heal:helper-delivery-dashboard",
+  "review:2766",
+  "heal:helper-register-delivery-skills-",
+  "review:2777",
+  "heal:helper-client-weekly",
+  "review:2778",
+  "heal:helper-delivery-ready-register",
+  "review:2780",
+  "heal:helper-incident-pack",
+  "review:2783",
+  "heal:helper-track-times-11ee",
+  "heal:helper-sustain-pack",
+  "review:2787",
+  "review:2788",
+  "feature:flightconnections-co-16bb714c",
+  "feature:flightconnections-co-8e95a3b2",
+  "feature:flightconnections-co-a2eec86b",
+  "review:2792",
+  "heal:helper-handoff-next",
+  "review:2794",
+  "heal:helper-sales-pack",
+  "review:2804",
+  "review:2808",
+  "heal:helper-work-list-44cf",
+  "review:2805",
+  "review:2806",
+  "heal:helper-debris-field-bc88",
+  "heal:helper-scope-pack",
+  "review:2817",
+  "probe:poker-hand",
+  "probe:rps-best-of-3",
+  "review:2827",
+  "probe:game-me-rps"
+ ],
  "ticks": [
   {
    "at": "2026-11-14T08:57:12.147Z",
    "error": "tick: fetch failed",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-14T18:28:41.662Z",
+   "open": 434,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "verse-podcast.yml",
+    "shorts.yml"
+   ],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 12,
    "warnings": 1
   }
  ]
