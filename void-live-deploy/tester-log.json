@@ -1,15 +1,52 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 122,
+ "cases": 123,
  "runsTotal": 300,
  "kinds": {
-  "file": 39,
   "visitor": 220,
-  "grow": 37,
+  "file": 38,
+  "grow": 38,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-14T07:11:25Z",
+   "passed": 120,
+   "of": 125,
+   "kind": "grow",
+   "ms": 337,
+   "note": "new ground passed, kept as a regression case: \"cross the bus\" (skill:cross-bus)",
+   "failed": [
+    {
+     "ask": "swarm mind",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "echo this",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "style like mickey mouse pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-14T06:59:39Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-14T02:26:04Z",
    "passed": 0,
@@ -170,71 +207,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-13T14:22:25Z",
-   "passed": 110,
-   "of": 125,
-   "kind": "file",
-   "ms": 388,
-   "note": "quality upgrade: weakest answer was \"favorite this\" (17 chars)",
-   "failed": [
-    {
-     "ask": "turn the questions i missed into a five-minute challenge",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "attention field",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "flip this card",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film metadata for ikiru pls",
-     "why": "refused: don't know this yet"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo create a toon style bird",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "credits",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "client brief for Acme onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "lift summary for client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "bridge these inputs",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-13T14:08:05Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -301,19 +273,19 @@
   {
    "from": "2026-10-31",
    "runs": 92,
-   "passed": 2610,
-   "of": 2778,
-   "ms": 393
+   "passed": 2623,
+   "of": 2787,
+   "ms": 391
   },
   {
    "from": "2026-11-07",
    "runs": 208,
-   "passed": 3866,
-   "of": 5514,
+   "passed": 3897,
+   "of": 5541,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
-   "ms": 388
+   "ms": 387
   }
  ],
  "seen": {
@@ -733,6 +705,9 @@
   "skill:kickoff-pack": "2026-11-13T14:22:25Z",
   "skill:reliability-pack": "2026-11-13T14:22:25Z",
   "skill:client-weekly": "2026-11-13T22:01:05Z",
-  "skill:delivery-ready": "2026-11-13T22:01:05Z"
+  "skill:delivery-ready": "2026-11-13T22:01:05Z",
+  "skill:cross-bus": "2026-11-14T07:11:25Z",
+  "skill:debris-field": "2026-11-14T07:11:25Z",
+  "skill:delivery-board": "2026-11-14T07:11:25Z"
  }
 }
