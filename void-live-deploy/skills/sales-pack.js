@@ -7,7 +7,7 @@
  */
 export function isSalesPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:sales\s+pack|package\s+the\s+offer|sell\s+the\s+heavy\s+lifting)\b/i.test(t)
+  return /^(?:sales\s+pack|package\s+the\s+offer|sell\s+the\s+(?:heavy\s+lifting|hard\s+work))\b/i.test(t)
     || /^(?:make|generate|create|show)\s+(?:a\s+)?sales\s+pack\s+for\b/i.test(t)
     || /^sales\s+pack\s+for\b/i.test(t);
 }
