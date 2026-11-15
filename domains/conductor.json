@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T19:05:56.518Z",
+ "updated": "2026-11-15T19:15:16.534Z",
  "last24h": {
-  "ticks": 123,
-  "started": 114,
+  "ticks": 124,
+  "started": 116,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -12,90 +12,90 @@
  "broken": [],
  "held": [
   {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
+   "id": "want-page-tools-json",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
+   "id": "want-revenue-2026-11",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "want-exam-recipes",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwau0ded",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwau7dgo",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwavhzoe",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwaw4bg9",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwawomei",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwaxgnhr",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mway8e3z",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
+   "id": "mwb2rdef",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
+   "id": "mwb8vvz4",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
+   "id": "mwbfid91",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
+   "id": "mwcckvqs",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
+   "id": "mwcf54df",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mwav1pw9",
-   "why": "no executor for retest"
+   "id": "mwcg2h14",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mwazktlm",
-   "why": "no executor for bot"
+   "id": "mwcm4wyk",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mwazktnz",
-   "why": "no executor for bot"
+   "id": "mwcuue69",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mwazktrq",
-   "why": "no executor for bot"
+   "id": "mwdkp801",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mwazktv3",
-   "why": "no executor for bot"
+   "id": "mwe1dy24",
+   "why": "verse-job.yml reached its 40 runs today"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 2,
    "cap": 90
   },
   "day": {
@@ -122,7 +122,7 @@
   "mvpuqb4r": 1794703692286,
   "mwdsgi9n": 1794769556518,
   "mvvjzso8": 1794704250102,
-  "mwdsgj2z": 1794748184847,
+  "mwdsgj2z": 1794770116534,
   "mw5mm5fm": 1794704809424,
   "mweaagmp": 1794748747125,
   "mweaah6f": 1794749308805,
@@ -3589,6 +3589,40 @@
    "sweep": false,
    "blueprints": 0,
    "held": 22,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T19:15:16.534Z",
+   "open": 431,
+   "started": [
+    {
+     "id": "mw5blp33",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 80
+    },
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 46
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 328,
    "warnings": 1
   }
  ]
