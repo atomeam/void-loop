@@ -645,6 +645,12 @@
    "date": "",
    "ask": "Client offer pack",
    "from": "growth, 2026-11-10"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "A free lane with a million-token context for the jobs Workers AI cannot hold, with a public-content rule on it",
+   "from": "from a video the owner shared by Maitis, 2026-11-14"
   }
  ],
  "games": [
@@ -828,84 +834,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-15T01:19:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-15T01:14:51Z",
-   "subject": "Record the image change on the handoff board."
-  },
-  {
-   "at": "2026-11-15T01:14:51Z",
-   "subject": "A signed-out /image/ Uni gate is not a missing page, and a one-line change fits the route."
-  },
-  {
-   "at": "2026-11-15T01:14:28Z",
-   "subject": "Fix the red gates: the CSP hash budget counted a comment line as a rule, and the scope-pack skill had no family"
-  },
-  {
-   "at": "2026-11-15T00:54:25Z",
-   "subject": "Outcome exam: podcasts 84.8"
-  },
-  {
-   "at": "2026-11-15T00:53:03Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-15T00:41:23Z",
+   "at": "2026-11-15T02:14:06Z",
    "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-15T00:34:42Z",
-   "subject": "Failed jobs read: run 43658736425 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T02:13:53Z",
+   "subject": "Revert \"scaffold NPC simulation: seeded persona journeys with friction detection\" (#2841)"
   },
   {
-   "at": "2026-11-15T00:27:17Z",
-   "subject": "Revert \"Design loop: 1 page fixed, 38 -> 30 design defects\" (#2834)"
+   "at": "2026-11-15T02:11:38Z",
+   "subject": "Flake: 1 check(s) passed on a rerun of f39f32a (tools/flakes.json)"
   },
   {
-   "at": "2026-11-15T00:26:43Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-11-15T02:11:33Z",
+   "subject": "Site test: fix: \"is unwrap risky in rust\" refused: don't know this yet;"
   },
   {
-   "at": "2026-11-15T00:22:46Z",
+   "at": "2026-11-15T02:06:08Z",
+   "subject": "Failed jobs read: run 43665993687 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T02:05:12Z",
    "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-15T00:22:26Z",
-   "subject": "Outcome exam: sports 94.4"
+   "at": "2026-11-15T02:04:09Z",
+   "subject": "frontier: a free million-token lane for the jobs Workers AI cannot hold (#2839)"
   },
   {
-   "at": "2026-11-15T00:22:09Z",
-   "subject": "Grok bot/lists run 25 (#2835)"
+   "at": "2026-11-15T02:00:15Z",
+   "subject": "add sync-free-lanes: auto-discover \\ models from OpenRouter"
   },
   {
-   "at": "2026-11-15T00:15:43Z",
-   "subject": "Failed jobs read: run 43657156196 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T01:58:35Z",
+   "subject": "Failed jobs read: run 43665438915 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-15T00:15:12Z",
-   "subject": "Failed jobs read: run 43656850892 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T01:51:17Z",
+   "subject": "scaffold NPC simulation: seeded persona journeys with friction detection"
   },
   {
-   "at": "2026-11-15T00:14:20Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
+   "at": "2026-11-15T01:44:42Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-15T00:13:56Z",
-   "subject": "Design loop: 1 page fixed, 38 -> 30 design defects"
+   "at": "2026-11-15T01:40:10Z",
+   "subject": "A one-line picture change fits, and the Uni gate is not a missing page (#2805)"
   },
   {
-   "at": "2026-11-15T00:10:36Z",
-   "subject": "Board: helper/work-list-44cf shipped (https://github.com/atomeam/void-loop/pull/2809)"
+   "at": "2026-11-15T01:39:14Z",
+   "subject": "Flake: 1 check(s) passed on a rerun of 04b83d5 (tools/flakes.json)"
   },
   {
-   "at": "2026-11-15T00:10:24Z",
-   "subject": "Team wants: drop Tower aspect items and start the rest (#2809)"
+   "at": "2026-11-15T01:36:06Z",
+   "subject": "Revert \"regenerate skills index after merge (#2838)\" (#2840)"
   },
   {
-   "at": "2026-11-14T23:56:14Z",
+   "at": "2026-11-15T01:34:09Z",
    "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-15T01:28:25Z",
+   "subject": "Revert 8361889fae3446587b60384aa0b35f63d57852a0: two outcome-exam runs in a row each fell by 5 or more (exam.yml)"
+  },
+  {
+   "at": "2026-11-15T01:28:24Z",
+   "subject": "Outcome exam: weather 46.2"
+  },
+  {
+   "at": "2026-11-15T01:26:23Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-15T01:20:11Z",
+   "subject": "Failed jobs read: run 43662435685 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T01:17:20Z",
+   "subject": "regenerate skills index after merge (#2838)"
   }
  ],
  "builders": {
@@ -1087,8 +1093,8 @@
   }
  ],
  "visible": {
-  "day": 3,
-  "week": 188
+  "day": 5,
+  "week": 190
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
