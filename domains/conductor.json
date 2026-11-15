@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T08:47:12.643Z",
+ "updated": "2026-11-15T08:56:32.488Z",
  "last24h": {
-  "ticks": 59,
-  "started": 64,
+  "ticks": 60,
+  "started": 65,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 8,
+   "used": 9,
    "cap": 90
   },
   "day": {
@@ -138,8 +138,8 @@
   "mwhh80qv": 1794729612276,
   "mwhh81l6": 1794730174432
  },
- "sweptAt": 1794729049805,
- "blueprintsAt": 1794729049805,
+ "sweptAt": 1794732992488,
+ "blueprintsAt": 1794732992488,
  "visitorAt": "2026-11-15T03:28:16Z",
  "visitorFiled": [
   "review:2605",
@@ -1879,6 +1879,34 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 21,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T08:56:32.488Z",
+   "open": 431,
+   "started": [
+    {
+     "id": "want-idea-298bf37d16",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 84
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 21,
    "warnings": 1
