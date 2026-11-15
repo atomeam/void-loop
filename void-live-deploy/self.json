@@ -645,6 +645,12 @@
    "date": "",
    "ask": "Client offer pack",
    "from": "growth, 2026-11-10"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "A free lane with a million-token context for the jobs Workers AI cannot hold, with a public-content rule on it",
+   "from": "from a video the owner shared by Maitis, 2026-11-14"
   }
  ],
  "games": [
@@ -828,84 +834,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-15T01:19:43Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-15T03:26:50Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
   },
   {
-   "at": "2026-11-15T01:14:51Z",
-   "subject": "Record the image change on the handoff board."
+   "at": "2026-11-15T03:23:02Z",
+   "subject": "Fix growth-fold entry: lowercase by slug (Beam -> beam)"
   },
   {
-   "at": "2026-11-15T01:14:51Z",
-   "subject": "A signed-out /image/ Uni gate is not a missing page, and a one-line change fits the route."
+   "at": "2026-11-15T03:17:18Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"packet maze\""
   },
   {
-   "at": "2026-11-15T01:14:28Z",
-   "subject": "Fix the red gates: the CSP hash budget counted a comment line as a rule, and the scope-pack skill had no family"
+   "at": "2026-11-15T03:12:10Z",
+   "subject": "Failed jobs read: run 43669226481 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-15T00:54:25Z",
-   "subject": "Outcome exam: podcasts 84.8"
+   "at": "2026-11-15T03:00:57Z",
+   "subject": "Verse fixes its sales-pack skill: learn to handle \"sell the hard work for the support process\""
   },
   {
-   "at": "2026-11-15T00:53:03Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-11-15T03:00:47Z",
+   "subject": "Outcome exam: podcasts 94.4"
   },
   {
-   "at": "2026-11-15T00:41:23Z",
+   "at": "2026-11-15T02:58:22Z",
+   "subject": "Design loop: 1 page fixed, 2 -> 0 design defects"
+  },
+  {
+   "at": "2026-11-15T02:57:42Z",
+   "subject": "Failed jobs read: run 43669046356 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T02:51:30Z",
+   "subject": "Better at sales pack, packet maze, push packets and 2 more: 12 more ways of asking answered right — new phrases: “sales pack for client…"
+  },
+  {
+   "at": "2026-11-15T02:50:18Z",
+   "subject": "Failed jobs read: run 43668163777 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T02:46:49Z",
+   "subject": "Failed jobs read: run 43669226537 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T02:45:02Z",
+   "subject": "promote playable national news feeds (ABC, CBS, NBC) above the fold in world.js"
+  },
+  {
+   "at": "2026-11-15T02:44:42Z",
+   "subject": "Failed jobs read: run 43669046344 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T02:42:36Z",
+   "subject": "fix skills-check: tighten connect-pack, scope-pack, system-blueprint match"
+  },
+  {
+   "at": "2026-11-15T02:36:21Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"jump stack\" ("
+  },
+  {
+   "at": "2026-11-15T02:32:48Z",
+   "subject": "Failed jobs read: run 43668163785 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-15T02:31:47Z",
+   "subject": "Outcome exam: weather 73.2"
+  },
+  {
+   "at": "2026-11-15T02:31:02Z",
+   "subject": "fix skills-check: use part() for families, tighten connect-pack and system-blueprint match"
+  },
+  {
+   "at": "2026-11-15T02:31:02Z",
+   "subject": "add feature words to Lightweight Page for Versus gap check"
+  },
+  {
+   "at": "2026-11-15T02:14:06Z",
    "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-15T00:34:42Z",
-   "subject": "Failed jobs read: run 43658736425 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-15T00:27:17Z",
-   "subject": "Revert \"Design loop: 1 page fixed, 38 -> 30 design defects\" (#2834)"
-  },
-  {
-   "at": "2026-11-15T00:26:43Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-15T00:22:46Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-15T00:22:26Z",
-   "subject": "Outcome exam: sports 94.4"
-  },
-  {
-   "at": "2026-11-15T00:22:09Z",
-   "subject": "Grok bot/lists run 25 (#2835)"
-  },
-  {
-   "at": "2026-11-15T00:15:43Z",
-   "subject": "Failed jobs read: run 43657156196 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-15T00:15:12Z",
-   "subject": "Failed jobs read: run 43656850892 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-15T00:14:20Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
-  },
-  {
-   "at": "2026-11-15T00:13:56Z",
-   "subject": "Design loop: 1 page fixed, 38 -> 30 design defects"
-  },
-  {
-   "at": "2026-11-15T00:10:36Z",
-   "subject": "Board: helper/work-list-44cf shipped (https://github.com/atomeam/void-loop/pull/2809)"
-  },
-  {
-   "at": "2026-11-15T00:10:24Z",
-   "subject": "Team wants: drop Tower aspect items and start the rest (#2809)"
-  },
-  {
-   "at": "2026-11-14T23:56:14Z",
-   "subject": "Site test: visitor pass 14/15"
   }
  ],
  "builders": {
@@ -1087,8 +1093,8 @@
   }
  ],
  "visible": {
-  "day": 3,
-  "week": 188
+  "day": 9,
+  "week": 194
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

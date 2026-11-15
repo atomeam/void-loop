@@ -14,9 +14,9 @@
  "bench_at": "2026-11-12",
  "totals": {
   "experiment": 0,
-  "tested": 21,
-  "checked": 8,
-  "proven": 431
+  "tested": 10,
+  "checked": 15,
+  "proven": 435
  },
  "families": [
   {
@@ -595,8 +595,8 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 2,
+    "tested": 3,
+    "checked": 8,
     "proven": 44
    },
    "skills": [
@@ -874,26 +874,32 @@
     },
     {
      "name": "null-waves",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "packet-maze",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "jump-stack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -906,26 +912,32 @@
     },
     {
      "name": "push-packets",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "nine-grid",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "glyph-verse",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -3747,9 +3759,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 4,
-    "proven": 77
+    "tested": 7,
+    "checked": 5,
+    "proven": 81
    },
    "skills": [
     {
@@ -3997,10 +4009,12 @@
     },
     {
      "name": "sales-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -4552,10 +4566,12 @@
     },
     {
      "name": "kickoff-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 2
     },
     {
@@ -4570,10 +4586,12 @@
     },
     {
      "name": "roi-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 2
     },
     {
@@ -4606,18 +4624,22 @@
     },
     {
      "name": "incident-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "scope-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-15",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     }
    ]

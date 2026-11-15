@@ -29,8 +29,8 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 2,
+    "tested": 3,
+    "checked": 8,
     "proven": 44
    },
    "from": 68,
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 4,
-    "proven": 77
+    "tested": 7,
+    "checked": 5,
+    "proven": 81
    },
    "from": 374,
    "to": 467
@@ -2088,8 +2088,9 @@
     "null waves",
     "play null waves"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 100
   },
   {
@@ -2102,8 +2103,9 @@
     "packet maze",
     "play packet maze"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 101
   },
   {
@@ -2116,8 +2118,9 @@
     "jump stack",
     "play jump stack"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 102
   },
   {
@@ -2144,8 +2147,9 @@
     "push packets",
     "play push packets"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 104
   },
   {
@@ -2158,8 +2162,9 @@
     "nine grid",
     "play nine grid"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 105
   },
   {
@@ -2172,8 +2177,9 @@
     "glyph verse",
     "play glyph verse"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 106
   },
   {
@@ -7413,8 +7419,9 @@
     "package the offer for invoice automation",
     "sell the hard work for the support process"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 402
   },
   {
@@ -8029,9 +8036,7 @@
    "title": "Connect pack",
    "line": "Given a business process, list the existing tools to reuse first so Verse owns the connections and the client does less new building",
    "examples": [
-    "connect pack for client onboarding",
-    "what existing tools for invoice reminders",
-    "reuse tools for the support ticket router"
+    "connect pack for client onboarding"
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
@@ -8360,7 +8365,7 @@
    "line": "Capture a vague business idea and turn it into a structured plan of systems, automations, tests, monitors and handoff points so Verse runs the systems",
    "examples": [
     "system plan for client onboarding",
-    "plan the systems for invoice automation",
+    "system plan for invoice automation",
     "clarify and plan the support process"
    ],
    "tier": "tested",
@@ -8378,8 +8383,10 @@
     "first week ownership for onboarding",
     "start owning the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Asked 3 times in earnest, and never once left unanswered. This is the page of kickoff-pack.",
+   "glow": 100,
    "n": 460
   },
   {
@@ -8410,8 +8417,10 @@
     "return on investment for onboarding flow",
     "value of Verse owning the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. This is the page of roi-pack.",
+   "glow": 100,
    "n": 462
   },
   {
@@ -8474,8 +8483,10 @@
     "client incident path for invoice automation",
     "outage response for support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. This is the page of incident-pack.",
+   "glow": 100,
    "n": 466
   },
   {
@@ -8489,8 +8500,10 @@
     "what Verse owns for onboarding flow",
     "client scope for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. This is the page of scope-pack.",
+   "glow": 100,
    "n": 467
   },
   {
@@ -9820,7 +9833,6 @@
     "delivery-dashboard",
     "roi-pack",
     "client-weekly",
-    "heavy-lift-map",
     "delivery-ready",
     "systems-owned",
     "incident-pack"
@@ -12120,13 +12132,13 @@
     },
     {
      "rank": 383,
-     "name": "heavy-lift-map",
-     "catches": "map the systems for client onboarding"
+     "name": "delivery-ready",
+     "catches": "is the invoice automation delivery ready"
     },
     {
      "rank": 384,
-     "name": "delivery-ready",
-     "catches": "is the invoice automation delivery ready"
+     "name": "systems-owned",
+     "catches": "systems owned for the invoice automation"
     }
    ],
    "n": 577
@@ -12134,15 +12146,10 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCLXXXV–CCCLXXXVI",
+   "title": "Rules CCCLXXXV–CCCLXXXV",
    "rules": [
     {
      "rank": 385,
-     "name": "systems-owned",
-     "catches": "systems owned for the invoice automation"
-    },
-    {
-     "rank": 386,
      "name": "incident-pack",
      "catches": "incident pack for the onboarding flow"
     }
