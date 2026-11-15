@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T02:59:20.572Z",
+ "updated": "2026-11-15T03:08:41.219Z",
  "last24h": {
-  "ticks": 22,
-  "started": 27,
+  "ticks": 23,
+  "started": 28,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -12,15 +12,11 @@
  "broken": [
   {
    "wf": "deploy.yml",
-   "fails": 7,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/43669226537"
+   "fails": 9,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43670397264"
   }
  ],
  "held": [
-  {
-   "id": "want-idea-f167636764",
-   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
-  },
   {
    "id": "want-page-tools-json",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
@@ -31,6 +27,10 @@
   },
   {
    "id": "want-idea-298bf37d16",
+   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
+  },
+  {
+   "id": "want-idea-f167636764",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
   {
@@ -101,15 +101,15 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 90,
+   "used": 1,
    "cap": 90
   },
   "day": {
-   "used": 217,
+   "used": 218,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-15T03:00:00.000Z",
+  "room": true,
+  "until": null,
   "paid": false
  },
  "handed": {
@@ -135,7 +135,8 @@
   "mwey8iy6": 1794705937606,
   "mwgvpj5y": 1794706496321,
   "mwgvpk4e": 1794707059670,
-  "mwh8n2gs": 1794711560572
+  "mwh8n2gs": 1794711560572,
+  "mwh8n30u": 1794712121219
  },
  "sweptAt": 1794709307332,
  "blueprintsAt": 1794709307332,
@@ -856,6 +857,36 @@
    "sweep": false,
    "blueprints": 0,
    "held": 408,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T03:08:41.219Z",
+   "open": 433,
+   "started": [
+    {
+     "id": "mwh8n30u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 409,
    "warnings": 1
   }
  ]
