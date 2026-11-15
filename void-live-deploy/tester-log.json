@@ -3,13 +3,20 @@
  "cases": 123,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 221,
   "file": 37,
+  "visitor": 221,
   "grow": 38,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-14T23:41:36Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-14T23:12:28Z",
    "passed": 0,
@@ -196,13 +203,6 @@
   },
   {
    "at": "2026-11-13T21:11:16Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-13T20:42:01Z",
    "passed": 0,
    "of": 0,
    "kind": "visitor",

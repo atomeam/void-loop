@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-05T11:47:40Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2107,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T11:58:48Z",
   "passed": 83,
   "of": 89,
@@ -7478,6 +7460,24 @@
      "ask": "what can you do",
      "why": [
       "slow 9169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-14T23:41:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 864,
+   "failed": [
+    {
+     "ask": "translate hello to spanish",
+     "why": [
+      "answer misses /hola/i"
      ]
     }
    ]

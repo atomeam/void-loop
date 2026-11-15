@@ -18,7 +18,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC
 - Cursor cloud agent · cursor/skip-unrebuilt-floors-11ee · the live floor job skips a page that is not checked yet, so an unrebuilt page cannot fail the job · 2026-11-13 23:55 UTC
 - Cursor cloud agent · cursor/no-rival-credit-11ee · public pages no longer name or link the rival; the compare stays on the owner Tower · 2026-11-13 23:40 UTC
-- Cursor cloud agent · helper/work-list-44cf · the open /team/ wants: drop Tower aspect items, start the rest, and make the Films guard see the public page · 2026-11-13 23:40 UTC
 - Cursor cloud agent · cursor/dictionary-transition-11ee · Dictionary opts out of the page transition, and QR loads its code from a new address so a cached module cannot drop qrHex · 2026-11-13 22:26 UTC
 - Cursor cloud agent · cursor/meanings-live-11ee · dictionary lookup through our own server, shared page names, and the Versus checklist · 2026-11-13 20:20 UTC
 - Cursor cloud agent · helper/track-times-11ee · rebuild /track-times/ to the Versus page: the album list, a share link, and a sourced history · 2026-11-13 19:40 UTC
@@ -107,6 +106,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **the open /team/ wants: drop Tower aspect items, start the rest, and make the Films guard see the public page (Cursor cloud agent, 2026-11-15)**: shipped in https://github.com/atomeam/void-loop/pull/2809.
 - **Baggage check**: a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806
 - **Gap Glide Update 1**: one glider, three lives, gates that tighten, and a storm gate. Verse is the ghost score. The update book is data/game-updates.json (Debris Field Update 1 is already recorded, so the loop should not redo it). https://github.com/atomeam/void-loop/pull/2821
 - **Debris Field Update 1**: the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges. https://github.com/atomeam/void-loop/pull/2820
