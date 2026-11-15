@@ -405,6 +405,9 @@
     },
     {
       "ask": "jump stack"
+    },
+    {
+      "ask": "packet maze"
     }
   ],
   "candidates": [],
