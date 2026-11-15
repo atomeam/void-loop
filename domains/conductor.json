@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T09:52:59.242Z",
+ "updated": "2026-11-15T10:02:21.372Z",
  "last24h": {
-  "ticks": 65,
-  "started": 73,
+  "ticks": 66,
+  "started": 74,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 8,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -140,8 +140,8 @@
   "mwhlqjd1": 1794733555879,
   "mwhlqk8c": 1794734118889
  },
- "sweptAt": 1794732992488,
- "blueprintsAt": 1794732992488,
+ "sweptAt": 1794736941372,
+ "blueprintsAt": 1794736941372,
  "visitorAt": "2026-11-15T03:28:16Z",
  "visitorFiled": [
   "review:2605",
@@ -2086,6 +2086,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 21,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T10:02:21.372Z",
+   "open": 430,
+   "started": [
+    {
+     "id": "want-exam-recipes",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 61
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 20,
    "warnings": 1
   }
  ]
