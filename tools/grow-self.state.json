@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "43660008933",
-  "at": "2026-11-15T00:49:38Z",
-  "what": "Verse hardened itself: 14 benchmark ask(s) for glyph-verse, incident-pack, jump-stack, kickoff-pack, nine-grid, null-waves.  Why these: glyph-verse (no benchmark ask, evidence tier: tested); incident-pack (no benchmark ask, evidence tier: tested); jump-stack (no benchmark ask, evidence tier: tested); kickoff-pack (no benchmark ask, evidence tier: tested); nine-grid (no benchmark ask, evidence tier: tested); null-waves (no benchmark ask, evidence tier: tested). New phrases: “glyph verse” now opens glyph-verse; “play glyph verse” now opens glyph-verse; “incident pack for the onboarding flow” now opens incident-pack; “client incident path for invoice automation” now opens incident-pack; “outage response for support router” now opens incident-pack; “jump stack” now opens jump-stack; “play jump stack” now opens jump-stack; “kickoff pack for the invoice automation” now opens kickoff-pack; “first week ownership for onboarding” now opens kickoff-pack; “start owning the support router” now opens kickoff-pack; “nine grid” now opens nine-grid; “play nine grid” now opens nine-grid; “null waves” now opens null-waves; “play null waves” now opens null-waves.",
-  "try": "glyph verse",
+  "run": "43669612454",
+  "at": "2026-11-15T02:51:09Z",
+  "what": "Verse hardened itself: 12 benchmark ask(s) for sales-pack, packet-maze, push-packets, roi-pack, scope-pack.  Why these: sales-pack (no benchmark ask, evidence tier: tested); full-handoff (only 2 benchmark asks, evidence tier: checked); packet-maze (no benchmark ask, evidence tier: tested); push-packets (no benchmark ask, evidence tier: tested); roi-pack (no benchmark ask, evidence tier: tested); scope-pack (no benchmark ask, evidence tier: tested). New phrases: “sales pack for client onboarding” now opens sales-pack; “package the offer for invoice automation” now opens sales-pack; “packet maze” now opens packet-maze; “play packet maze” now opens packet-maze; “push packets” now opens push-packets; “play push packets” now opens push-packets; “roi pack for the invoice automation” now opens roi-pack; “return on investment for onboarding flow” now opens roi-pack; “value of Verse owning the support router” now opens roi-pack; “scope pack for the invoice automation” now opens scope-pack; “what Verse owns for onboarding flow” now opens scope-pack; “client scope for the support router” now opens scope-pack. Did not route: sell the hard work for the support process; client handoff pack on onboarding flow.",
+  "try": "sales pack for client onboarding",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-14T07:00:05Z",
-    "try": "weekly update for the onboarding flow",
-    "closedAt": "2026-11-15T00:49:16Z"
+    "at": "2026-11-15T00:49:38Z",
+    "try": "glyph verse",
+    "closedAt": "2026-11-15T02:50:47Z"
   }
 }

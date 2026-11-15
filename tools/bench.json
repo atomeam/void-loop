@@ -7249,5 +7249,17 @@
   {"ask": "nine grid", "want": "skill:nine-grid"},
   {"ask": "play nine grid", "want": "skill:nine-grid"},
   {"ask": "null waves", "want": "skill:null-waves"},
-  {"ask": "play null waves", "want": "skill:null-waves"}
+  {"ask": "play null waves", "want": "skill:null-waves"},
+  {"ask": "sales pack for client onboarding", "want": "skill:sales-pack"},
+  {"ask": "package the offer for invoice automation", "want": "skill:sales-pack"},
+  {"ask": "packet maze", "want": "skill:packet-maze"},
+  {"ask": "play packet maze", "want": "skill:packet-maze"},
+  {"ask": "push packets", "want": "skill:push-packets"},
+  {"ask": "play push packets", "want": "skill:push-packets"},
+  {"ask": "roi pack for the invoice automation", "want": "skill:roi-pack"},
+  {"ask": "return on investment for onboarding flow", "want": "skill:roi-pack"},
+  {"ask": "value of Verse owning the support router", "want": "skill:roi-pack"},
+  {"ask": "scope pack for the invoice automation", "want": "skill:scope-pack"},
+  {"ask": "what Verse owns for onboarding flow", "want": "skill:scope-pack"},
+  {"ask": "client scope for the support router", "want": "skill:scope-pack"}
 ]
