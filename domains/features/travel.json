@@ -3156,7 +3156,6 @@
        "section 請選擇一個套餐",
        "button 登入",
        "button 支付",
-       "button privacy manager",
        "button 取消",
        "button 保存",
        "button 是 刪除",
@@ -6580,7 +6579,6 @@
        "home",
        "page:/vn",
        "page:/cn",
-       "page:/tw",
        "page:/airports-by-country",
        "page:/airlines",
        "page:/airport-codes",
@@ -14213,9 +14211,9 @@
      "/flights/routes/",
      "/members/"
     ],
-    "crawled": "2026-11-14"
+    "crawled": "2026-11-15"
    }
   },
-  "updated": "2026-11-14"
+  "updated": "2026-11-15"
  }
 }

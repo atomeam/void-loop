@@ -7983,6 +7983,20 @@
    "weight": 844577,
    "at": "2026-10-30"
   },
+  "lohntastik.de": {
+   "bytes": 1219,
+   "controls": 153,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 12,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 16581,
+   "shell": "none",
+   "weight": 3339,
+   "at": "2026-11-15"
+  },
   "londondiceagency.uk": {
    "refused": true,
    "at": "2026-10-29"
