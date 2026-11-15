@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T15:39:34.438Z",
+ "updated": "2026-11-15T15:48:58.489Z",
  "last24h": {
-  "ticks": 102,
-  "started": 105,
+  "ticks": 103,
+  "started": 106,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 6,
+   "used": 7,
    "cap": 90
   },
   "day": {
@@ -138,7 +138,8 @@
   "mwhh80qv": 1794729612276,
   "mwhh81l6": 1794730174432,
   "mwhlqjd1": 1794733555879,
-  "mwhlqk8c": 1794734118889
+  "mwhlqk8c": 1794734118889,
+  "mwi09fi8": 1794757738489
  },
  "sweptAt": 1794756613228,
  "blueprintsAt": 1794756613228,
@@ -3071,6 +3072,34 @@
    "at": "2026-11-15T15:39:34.438Z",
    "open": 431,
    "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 411,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T15:48:58.489Z",
+   "open": 433,
+   "started": [
+    {
+     "id": "mwi09fi8",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
