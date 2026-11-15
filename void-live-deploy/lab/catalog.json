@@ -1,5 +1,126 @@
 [
  {
+  "slug": "f752-local-ssh-key-generator",
+  "num": 752,
+  "title": "Local SSH key generator",
+  "blurb": "Job: Generate an Ed25519 SSH key pair entirely in the browser.",
+  "status": "works",
+  "source": "F752-local-ssh-key-generator",
+  "hash": "d2521b7b24fe",
+  "grade": "tool"
+ },
+ {
+  "slug": "f751-local-message-encryptor",
+  "num": 751,
+  "title": "Local message encryptor",
+  "blurb": "Job: Encrypt or decrypt a message with a passphrase entirely in the browser using AES-GCM; copy the ciphertext or plaintext, or download it as a file.",
+  "status": "works",
+  "source": "F751-local-message-encryptor",
+  "hash": "fbbad4c59218",
+  "grade": "tool"
+ },
+ {
+  "slug": "f750-typing-rhythm-es-css-grid-portals-mind",
+  "num": 750,
+  "title": "typing-rhythm-es-css-grid-portals-mind",
+  "blurb": "Ledger ID: F-750 (frontier series)",
+  "status": "works",
+  "source": "F750-typing-rhythm-es-css-grid-portals-mind",
+  "hash": "2286217c60a3",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f749-chore-rota-generator",
+  "num": 749,
+  "title": "Chore rota generator",
+  "blurb": "Job: Enter the people in the household and the chores (how often each needs doing).",
+  "status": "works",
+  "source": "F749-chore-rota-generator",
+  "hash": "149c3c4951e2",
+  "grade": "tool"
+ },
+ {
+  "slug": "f748-debt-snowball-planner",
+  "num": 748,
+  "title": "Debt snowball planner",
+  "blurb": "Job: Enter your debts with balances, interest rates and minimum payments plus any extra monthly amount you can put toward debt; choose snowball or avalanche order.",
+  "status": "works",
+  "source": "F748-debt-snowball-planner",
+  "hash": "27f969349d9f",
+  "grade": "tool"
+ },
+ {
+  "slug": "f748-webxr-hand-mlp-sealed-pbd-tournament",
+  "num": 748,
+  "title": "WebXR Hand MLP Sealed PBD Tournament",
+  "blurb": "True WebXR hand-tracking (with mouse fallback) drives a local tiny MLP that predicts per-agent constraint stiffness and mutation bias for a Position-Based Dynamics",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F748-webxr-hand-mlp-sealed-pbd-tournament",
+  "hash": "9a15ae280e83",
+  "grade": "toy",
+  "idea": "checksum"
+ },
+ {
+  "slug": "f747-mic-rnn-webgpu-particle-field-spatial-portals-mind",
+  "num": 747,
+  "title": "Mic-RNN Particle Field Spatial Portals Mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a continuous particle field (400 agents under simple forces) whose global force parameters (attraction",
+  "status": "works",
+  "source": "F747-mic-rnn-webgpu-particle-field-spatial-portals-mind",
+  "hash": "d6c0eb00c597",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f746-pointer-attention-svg-morph-portals-mind",
+  "num": 746,
+  "title": "Pointer-Attention SVG Morph Portals Mind",
+  "blurb": "Ledger ID: F-746 (frontier series)",
+  "status": "works",
+  "source": "F746-pointer-attention-svg-morph-portals-mind",
+  "hash": "1fc011ffdfec",
+  "grade": "toy",
+  "idea": "mindmap"
+ },
+ {
+  "slug": "f745-webaudio-spatial-oscillator-css3d-swarm-mind",
+  "num": 745,
+  "title": "webaudio-spatial-oscillator-css3d-swarm-mind",
+  "blurb": "Ledger ID: F-745 (frontier series)",
+  "status": "broken",
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F745-webaudio-spatial-oscillator-css3d-swarm-mind",
+  "hash": "02c04e3e1067",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f744-webgpu-vortex-es-genome-dom-agents-mind",
+  "num": 744,
+  "title": "WebGPU Vortex ES Genome DOM Agents Mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a population of discrete vortex particles whose mutual induction is computed by the Biot-Savart law (WebGPU",
+  "status": "works",
+  "source": "F744-webgpu-vortex-es-genome-dom-agents-mind",
+  "hash": "bfe4499ced52",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f743-orientation-mlp-collision-dom-agents-mind",
+  "num": 743,
+  "title": "Orientation MLP Collision DOM Agents Mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a population of 10 living DOM agent cards, each controlled by its own tiny pure-JS local MLP policy.",
+  "status": "works",
+  "source": "F743-orientation-mlp-collision-dom-agents-mind",
+  "hash": "aa5ebc74d11e",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
   "slug": "f742-pointer-fourier-kmeans-css3d-constellation-mind",
   "num": 742,
   "title": "Pointer Fourier k-Means CSS 3D Constellation Mind",

@@ -2190,5 +2190,80 @@
    "benchTotal": 3467,
    "probeFixes": 10
   }
+ },
+ {
+  "at": "2026-11-15T14:20:52.799Z",
+  "score": 92,
+  "parts": {
+   "self": 99,
+   "asks": 64,
+   "friction": 96,
+   "bench": 99,
+   "probes": 100
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 93
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 96
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 98
+   },
+   {
+    "id": "numbers",
+    "health": 83
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 97
+   },
+   {
+    "id": "sky",
+    "health": 100
+   },
+   {
+    "id": "stage",
+    "health": 97
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 98
+   }
+  ],
+  "facts": {
+   "week": 137,
+   "owner": 1,
+   "askedBuilt": 35,
+   "medianLagDays": 2.1,
+   "open": 3,
+   "oldestOpenDays": 0.6,
+   "skills": 460,
+   "failing": 16,
+   "unsure": 5,
+   "benchScore": 3430,
+   "benchTotal": 3467,
+   "probeFixes": 11
+  }
  }
 ]

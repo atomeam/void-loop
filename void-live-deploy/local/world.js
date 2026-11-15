@@ -31,8 +31,18 @@ export function mountWorld({ el, getJson, host, playTv, playRadio, markPlaying, 
     const note = el('p', { className: 'note' }), list = el('ul', { className: 'list' }), more = el('button', { type: 'button', textContent: 'Show more', hidden: true });
     const head = el('h2', { textContent: kind === 'tv' ? 'More TV channels' : 'More radio stations' });
     const form = el('form', { className: 'box world-filters', role: 'search' }, country, topic, q, el('button', { type: 'submit', textContent: 'Show' }));
-    $(kind + '-world').replaceChildren(head, el('p', { className: 'hint', textContent: kind === 'tv' ? 'Free channels from your country first, then any country or topic, from the open iptv-org list. Only channels with a stream that plays here are listed.' : 'Stations from your country first, then any country or topic, from Radio Browser. Only stations that play here are listed.' }), form, note, list, more);
-    return { head, country, topic, q, note, list, more, form };
+    const kids = [head, el('p', { className: 'hint', textContent: kind === 'tv' ? 'Free channels from your country first, then any country or topic, from the open iptv-org list. Only channels with a stream that plays here are listed.' : 'Stations from your country first, then any country or topic, from Radio Browser. Only stations that play here are listed.' }), form, note, list, more];
+    let featured = null, featuredList = null;
+    if (kind === 'tv') {
+      featuredList = el('ul', { className: 'list' });
+      featured = el('section', { className: 'world-featured', hidden: true },
+        el('h2', { textContent: 'Playable live news & national feeds' }),
+        el('p', { className: 'hint', textContent: 'Verified free streams that play here, shown first.' }),
+        featuredList);
+      kids.unshift(featured);
+    }
+    $(kind + '-world').replaceChildren(...kids);
+    return { head, country, topic, q, note, list, more, form, featured, featuredList };
   }
   const tvf = frame('tv'), rf = frame('radio');
   const fill = (sel, opts) => { const keep = sel.value; sel.replaceChildren(...opts.map(([v, t]) => el('option', { value: v, textContent: t }))); if (opts.some(([v]) => v === keep)) sel.value = keep; };
@@ -113,6 +123,29 @@ export function mountWorld({ el, getJson, host, playTv, playRadio, markPlaying, 
 
   // ---- the start: the small index, then the visitor's own country in both lists
   const ready = getJson('/local/tv/world/index.json').then((j) => { index = j; }).catch(() => { tvf.note.className = 'note bad'; tvf.note.textContent = 'The channel list did not load just now. Try again in a minute.'; });
+  const FEATURED_NAMES = /\b(ABC News Live|CBS News|NBC News NOW|Fox Weather|NewsNation|Scripps News|Bloomberg|Reuters|DW News|France 24|Al Jazeera|Sky News|PBS NewsHour)\b/i;
+  function featuredTv(rows, cc) {
+    const playable = rows.filter((r) => (r.s || []).length);
+    const news = playable.filter((r) => (r.c || []).includes('news') || FEATURED_NAMES.test(r.t || '') || FEATURED_NAMES.test(r.n || ''));
+    const score = (r) => (FEATURED_NAMES.test(r.t || '') || FEATURED_NAMES.test(r.n || '') ? 2 : 0) + ((r.c || []).includes('news') ? 1 : 0) + (/^ABC News Live\b|^CBS News\b|^NBC News NOW\b|^Fox Weather\b/i.test(r.t || '') ? 2 : 0);
+    const picked = news.sort((a, b) => score(b) - score(a) || String(a.t || '').localeCompare(String(b.t || '')));
+    const seen = new Set(); const out = [];
+    for (const r of picked) { const k = /^ABC News Live\b/i.test(r.t || '') ? 'abc-news-live' : /^CBS News\b/i.test(r.t || '') ? 'cbs-news' : String(r.t || '').toLowerCase(); if (seen.has(k)) continue; seen.add(k); out.push({ ...r, cc }); if (out.length >= 18) break; }
+    return out;
+  }
+  async function loadFeaturedTv(cc) {
+    if (!tvf.featured || !tvf.featuredList) return;
+    tvf.featured.hidden = true; tvf.featuredList.replaceChildren();
+    const tryCc = [cc, cc !== 'US' ? 'US' : ''].filter((v, i, a) => v && a.indexOf(v) === i);
+    try {
+      let rows = [];
+      for (const c of tryCc) { try { const f = await file(c + '.json'); rows = rows.concat(featuredTv(f.channels || [], c)); } catch (_) {} }
+      const seen = new Set(); rows = rows.filter((r) => { if (seen.has(r.id)) return false; seen.add(r.id); return true; }).slice(0, 18);
+      if (!rows.length) return;
+      tvf.featuredList.replaceChildren(...rows.map(tvRow));
+      tvf.featured.hidden = false; markPlaying();
+    } catch (_) { tvf.featured.hidden = true; }
+  }
   async function setCountry(cc) {
     own = /^[A-Z]{2}$/.test(String(cc || '').toUpperCase()) ? String(cc).toUpperCase() : '';
     await ready;
@@ -121,6 +154,7 @@ export function mountWorld({ el, getJson, host, playTv, playRadio, markPlaying, 
     tvf.country.value = index && index.countries[own] ? own : ''; rf.country.value = own && [...rf.country.options].some((o) => o.value === own) ? own : '';
     tvf.head.textContent = own && index && index.countries[own] ? 'More TV channels, starting with ' + regionName(own) : 'More TV channels';
     rf.head.textContent = own ? 'More radio stations, starting with ' + regionName(own) : 'More radio stations';
+    loadFeaturedTv(own);
     loadTv(); loadRadio();
   }
   return { setCountry };

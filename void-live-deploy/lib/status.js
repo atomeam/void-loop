@@ -5,7 +5,7 @@
 export const GUARDS = Object.freeze([
   { id: 'hourly-site-up', name: 'a-to-mind.com', what: 'the home page answers and says Verse', page: true },
   { id: 'hourly-mcp-tools', name: 'MCP tools', what: 'other AIs can still find ask_void in /tools.json', page: true },
-  { id: 'hourly-films-page', name: 'Films', what: 'VERSE FILMS is live', page: true },
+  { id: 'hourly-films-page', name: 'Films', what: 'Verse Holovids is live', page: true },
   { id: 'hourly-main-green', name: 'Main CI', what: 'the full suite on main passes (GitHub badge)', page: false },
   { id: 'hourly-deploy-green', name: 'Deploys', what: 'deploys of main pass (GitHub badge)', page: false },
 ]);

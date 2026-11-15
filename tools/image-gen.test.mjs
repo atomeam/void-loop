@@ -7,7 +7,7 @@ import * as I from '../void-live-deploy/lib/image-gen.js';
 import * as route from '../void-live-deploy/functions/api/image.js';
 import { ART_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { FREE_CAP } from '../void-live-deploy/functions/api/card-art.js';
-import { resetGuard } from '../void-live-deploy/lib/guard.js';
+import { resetGuard, LIMITS, guard } from '../void-live-deploy/lib/guard.js';
 
 const store = new Map();
 globalThis.caches = { default: { match: async (req) => (store.has(req.url) ? new Response(store.get(req.url)) : undefined), put: async (req, res) => { store.set(req.url, await res.text()); } } };
@@ -167,6 +167,29 @@ test('the route: a change needs a picture still kept here, a readable small copy
   const cap = await (await post(env, { act: 'change', ref: first.ref, change: 'add a hat', src: sq })).json();
   assert.equal(cap.why, 'cap', 'no free-painter fallback for a change'); assert.equal(calls.length, 1);
   assert.equal((await post(env, { prompt: 'a fox ' + ' '.repeat(2100) })).status, 400, 'only a change carries a big body');
+});
+
+test('the guard lets a shrunk change through and refuses a body over the change cap', async () => {
+  assert.equal(LIMITS.image.body, I.CHANGE_BODY);
+  assert.ok(LIMITS.image.body >= Math.ceil(I.EDIT_BYTES * 4 / 3) + 512, 'a shrunk JPEG as base64, plus the JSON, fits');
+  const { env } = world();
+  const first = await (await post(env, { prompt: 'a red lighthouse', shape: 'square', seed: 7 })).json();
+  assert.equal(first.state, 'art');
+  const jpeg = jpegOf(504, 504), padded = new Uint8Array(70000); padded.set(jpeg);
+  let raw = '';
+  for (let i = 0; i < padded.length; i += 0x8000) raw += String.fromCharCode(...padded.subarray(i, i + 0x8000));
+  const body = JSON.stringify({ act: 'change', ref: first.ref, change: 'make the sky purple', src: 'data:image/jpeg;base64,' + btoa(raw), lang: 'en' });
+  assert.ok(body.length > 2000 && body.length <= LIMITS.image.body, 'bigger than the old cap that answered 413');
+  resetGuard();
+  const res = await guard({ env, request: new Request('https://x/api/image', { method: 'POST', headers: { 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.44' }, body }), next: (req) => route.onRequestPost({ env, request: req }) });
+  assert.notEqual(res.status, 413);
+  const j = await res.json();
+  assert.equal(j.state, 'art'); assert.equal(j.change, 'make the sky purple');
+  resetGuard();
+  let seen = false;
+  const huge = 'x'.repeat(LIMITS.image.body + 1);
+  const blocked = await guard({ env, request: new Request('https://x/api/image', { method: 'POST', headers: { 'content-type': 'application/json', 'content-length': String(huge.length) }, body: huge }), next: () => { seen = true; return new Response('no'); } });
+  assert.equal(blocked.status, 413); assert.equal(seen, false);
 });
 
 test('"Fill in my words": the ask names the idea, the style and the language; the answer comes back as one clean prompt line', () => {

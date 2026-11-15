@@ -402,6 +402,12 @@
     },
     {
       "ask": "cross the bus"
+    },
+    {
+      "ask": "jump stack"
+    },
+    {
+      "ask": "packet maze"
     }
   ],
   "candidates": [],

@@ -1,0 +1,80 @@
+{
+ "site": "uboachan.net",
+ "url": "https://uboachan.net/",
+ "scanned": "2026-11-15",
+ "status": 200,
+ "assets": [
+  {
+   "f": "frontpage.css",
+   "t": "css",
+   "b": 2987
+  },
+  {
+   "f": "style.css",
+   "t": "css",
+   "b": 17973
+  },
+  {
+   "f": "uboachan-gray.css",
+   "t": "css",
+   "b": 1811
+  },
+  {
+   "f": "styleswitch-sidebar.js",
+   "t": "js",
+   "b": 1101
+  },
+  {
+   "f": "styleswitch-sidebar.js",
+   "t": "js",
+   "b": 1101
+  }
+ ],
+ "assetCount": 5,
+ "bytes": 24973,
+ "html": {
+  "mobile": {
+   "title": "Uboachan",
+   "lang": "",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "uboachan.net",
+    "uboachan.net"
+   ]
+  },
+  "desktop": {}
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "hosts": [
+  {
+   "host": "uboachan.net",
+   "file": "frontpage.css",
+   "at": 133
+  }
+ ],
+ "storage": {
+  "local": [
+   "stylesheet"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Remembers a setting in the browser: stylesheet",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  }
+ ]
+}

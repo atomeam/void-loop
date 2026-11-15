@@ -1,0 +1,955 @@
+{
+ "site": "kissu.moe",
+ "url": "https://kissu.moe/",
+ "scanned": "2026-11-15",
+ "status": 200,
+ "assets": [
+  {
+   "f": "",
+   "t": "js",
+   "b": 1239
+  },
+  {
+   "f": "ui-bundle(5.2.60).js",
+   "t": "js",
+   "b": 908233
+  },
+  {
+   "f": "ruffle.js",
+   "t": "js",
+   "b": 351788,
+   "map": true
+  },
+  {
+   "f": "kissu-react-notifications.css",
+   "t": "css",
+   "b": 2738
+  },
+  {
+   "f": "swipe-to-delete.css",
+   "t": "css",
+   "b": 1596
+  },
+  {
+   "f": "basics(5.2.60).css",
+   "t": "css",
+   "b": 51635
+  },
+  {
+   "f": "index(5.2.60).css",
+   "t": "css",
+   "b": 8398
+  },
+  {
+   "f": "luna(5.2.60).css",
+   "t": "css",
+   "b": 8645
+  },
+  {
+   "f": "tegaki.css",
+   "t": "css",
+   "b": 16028
+  },
+  {
+   "f": "dev-menu.js",
+   "t": "js",
+   "b": 55120
+  },
+  {
+   "f": "special-styler.js",
+   "t": "js",
+   "b": 66240
+  },
+  {
+   "f": "tegaki.min.js",
+   "t": "js",
+   "b": 110858
+  }
+ ],
+ "assetCount": 12,
+ "bytes": 1582518,
+ "html": {
+  "mobile": {
+   "title": "Home | Kissu.moe",
+   "lang": "en",
+   "manifest": null,
+   "share": {
+    "og": 5,
+    "twitter": false,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "accepts": [
+    "image/*, .webm,.mp4,.ogv, .mp3,.ogg,.opus,.flac, .swf,.html,.html5, .txt,.c,.cpp,.scm,.php,.ts,.glsl"
+   ],
+   "inputTypes": {
+    "color": 13,
+    "file": 1,
+    "text": 9
+   },
+   "selects": 2,
+   "textareas": 2,
+   "forms": 2,
+   "roles": {
+    "alert": 1
+   },
+   "noscript": true
+  },
+  "desktop": {
+   "inputTypes": {
+    "color": 13,
+    "file": 1,
+    "text": 8
+   },
+   "forms": 1,
+   "roles": {
+    "alert": 2
+   }
+  }
+ },
+ "controls": [
+  {
+   "l": "/all/ - Overboard",
+   "w": "d"
+  },
+  {
+   "l": "/amv/ - Anime, Manga, Vidya",
+   "w": "d"
+  },
+  {
+   "l": "/aut/ - Seasonal Activities",
+   "w": "d"
+  },
+  {
+   "l": "/b/ - Site Meta",
+   "w": "d"
+  },
+  {
+   "l": "/ec/ - Ecchi/Cute",
+   "w": "d"
+  },
+  {
+   "l": "/f/ - Files/Flash",
+   "w": "d"
+  },
+  {
+   "l": "/jp/ - 2D/Random",
+   "w": "d"
+  },
+  {
+   "l": "/maho/ - Computer Tech",
+   "w": "d"
+  },
+  {
+   "l": "/poll/ - Polling & Honesty",
+   "w": "d"
+  },
+  {
+   "l": "/qa/ - Questions & Answers",
+   "w": "d"
+  },
+  {
+   "l": "Banners",
+   "w": "d"
+  },
+  {
+   "l": "Bottom",
+   "w": "m"
+  },
+  {
+   "l": "Developer",
+   "w": "d"
+  },
+  {
+   "l": "Donate",
+   "w": "d"
+  },
+  {
+   "l": "FAQ",
+   "w": "d"
+  },
+  {
+   "l": "Friends",
+   "w": "d"
+  },
+  {
+   "l": "Global-Search:",
+   "w": "d"
+  },
+  {
+   "l": "Kissu",
+   "w": "md"
+  },
+  {
+   "l": "Kissu Hazuki Luna Nekomimi Lala",
+   "w": "md"
+  },
+  {
+   "l": "Legal",
+   "w": "md"
+  },
+  {
+   "l": "NPFchan",
+   "w": "md"
+  },
+  {
+   "l": "Options",
+   "w": "d"
+  },
+  {
+   "l": "Rules",
+   "w": "md"
+  },
+  {
+   "l": "Steam",
+   "w": "d"
+  },
+  {
+   "l": "Theatre",
+   "w": "d"
+  },
+  {
+   "l": "Top",
+   "w": "m"
+  },
+  {
+   "l": "Vichan",
+   "w": "md"
+  },
+  {
+   "l": "[ All ]",
+   "w": "m"
+  },
+  {
+   "l": "[ Home ]",
+   "w": "m"
+  },
+  {
+   "l": "[Close Sidebar]",
+   "w": "d"
+  },
+  {
+   "l": "[Toggle-UI]",
+   "w": "d"
+  },
+  {
+   "l": "amv",
+   "w": "m"
+  },
+  {
+   "l": "aut",
+   "w": "m"
+  },
+  {
+   "l": "b",
+   "w": "m"
+  },
+  {
+   "l": "ec",
+   "w": "m"
+  },
+  {
+   "l": "f",
+   "w": "m"
+  },
+  {
+   "l": "jp",
+   "w": "m"
+  },
+  {
+   "l": "maho",
+   "w": "m"
+  },
+  {
+   "l": "poll",
+   "w": "m"
+  },
+  {
+   "l": "qa",
+   "w": "m"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 2249,
+  "index": false,
+  "sections": [
+   {
+    "s": "qa",
+    "n": 379
+   },
+   {
+    "s": "b",
+    "n": 328
+   },
+   {
+    "s": "f",
+    "n": 247
+   },
+   {
+    "s": "aut",
+    "n": 151
+   },
+   {
+    "s": "cry",
+    "n": 151
+   },
+   {
+    "s": "jp",
+    "n": 151
+   },
+   {
+    "s": "poll",
+    "n": 151
+   },
+   {
+    "s": "spg",
+    "n": 151
+   },
+   {
+    "s": "sum",
+    "n": 151
+   },
+   {
+    "s": "win",
+    "n": 151
+   },
+   {
+    "s": "xmas",
+    "n": 134
+   },
+   {
+    "s": "ec",
+    "n": 91
+   },
+   {
+    "s": "test",
+    "n": 9
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "donations",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "ui-bundle(5.2.60).js",
+   "own": true,
+   "params": [
+    "v@736876"
+   ],
+   "chords": [
+    "alt+shift+space@591757",
+    "alt+\\\\@846319",
+    "alt+d@847290",
+    "alt+-@847552",
+    "alt+b@847793",
+    "alt+i@847941",
+    "alt+h@848404",
+    "alt+8@848863",
+    "alt+u@849017",
+    "alt+c@849197",
+    "alt+j@849377",
+    "alt+l@849564",
+    "alt+g@849751",
+    "alt+e@849929",
+    "alt+p@850116",
+    "alt+s@850301",
+    "alt+a@850471",
+    "alt+m@850684"
+   ],
+   "apiPaths": [
+    "/api/threads@803643",
+    "/api/properties@828867",
+    "/api/properties/site.json@832653",
+    "/api/properties/banners.json@865612",
+    "/api/threads/${a}/${s}/0.json@867319",
+    "/api/threads/${a}/${u}/full.json@874749",
+    "/api/threads/${this.page_listener.props.pageJson.board}/cata@876891",
+    "/api/threads/summary/info.json@902980",
+    "/api/threads/summary/summary.json@903049"
+   ],
+   "flags": [
+    "allowAnyClick@181918",
+    "enableUserSelectHack@181947",
+    "allowFullScreen@649204"
+   ],
+   "storage": [
+    "test-localStorage@262247",
+    "kissu-first-load@262470",
+    "hotkey_disable_functions@297658",
+    "submit_key@297790",
+    "qr_menu_key@299888",
+    "scroll_down_key@300224",
+    "recent_feed_key@300906",
+    "watcher_feed_key@301128",
+    "options_menu_key@301752",
+    "remove_views_key@302063",
+    "hiddenblotter_@368382",
+    "rej-notice@836959",
+    "news@838332",
+    "top@838852",
+    "side@839571",
+    "float@840105",
+    "custom-css@841021",
+    "mascot-obj@841714",
+    "preview-setting@842502",
+    "hidden-posts-2.0@843486",
+    "filter@844661"
+   ],
+   "idb": [
+    "KISSU-FFMPEG-THUMBNAILER@266298"
+   ],
+   "routes": [
+    "/all@317475",
+    "/legacy@362322",
+    "/all/@435088",
+    "/styles/fa/svgs/@471454",
+    "/home@497289",
+    "/b/@515987"
+   ],
+   "apis": [
+    "Notifications",
+    "Picture in picture",
+    "Syncs between tabs"
+   ],
+   "mimes": [
+    "image/jpeg",
+    "image/png"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 3,
+   "registersWorker": "/js-ui/ui-bundle(5.2.60).js"
+  },
+  {
+   "file": "ruffle.js",
+   "own": true,
+   "flags": [
+    "allowScriptAccess@12528",
+    "showSwfDownload@12746",
+    "allowFullscreen@12853"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard",
+    "Full screen mode"
+   ],
+   "langs": 15,
+   "mimes": [
+    "application/x-shockwave-flash",
+    "application/futuresplash",
+    "application/x-shockwave-flash2-preview",
+    "application/vnd.adobe.flash.movie",
+    "application/zip"
+   ],
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "special-styler.js",
+   "own": true,
+   "storage": [
+    "activeAdvancedStyle@54864",
+    "advancedStyles-@54956"
+   ]
+  },
+  {
+   "file": "tegaki.min.js",
+   "own": true,
+   "chords": [
+    "ctrl+z@36509",
+    "ctrl+y@36576"
+   ],
+   "mimes": [
+    "image/png"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "art.kissu.moe",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 313838
+  },
+  {
+   "host": "codepen.io",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 553736
+  },
+  {
+   "host": "embed.nicovideo.jp",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 640223
+  },
+  {
+   "host": "files.catbox.moe",
+   "file": "basics(5.2.60).css",
+   "at": 37812
+  },
+  {
+   "host": "haiji.kissu.moe",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 354761
+  },
+  {
+   "host": "i3.ytimg.com",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 385800
+  },
+  {
+   "host": "iqdb.org",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 686130
+  },
+  {
+   "host": "kissu.moe",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 587431
+  },
+  {
+   "host": "luna.kissu.moe",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 503222
+  },
+  {
+   "host": "ruffle.rs",
+   "file": "ruffle.js",
+   "at": 300521
+  },
+  {
+   "host": "svelte.dev",
+   "file": "dev-menu.js",
+   "at": 2732
+  },
+  {
+   "host": "trace.moe",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 686323
+  },
+  {
+   "host": "www.google.com",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 685661
+  },
+  {
+   "host": "www.googleapis.com",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 702255
+  },
+  {
+   "host": "www.youtube.com",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 640102
+  },
+  {
+   "host": "yandex.com",
+   "file": "ui-bundle(5.2.60).js",
+   "at": 685905
+  }
+ ],
+ "thirdParty": [
+  "codepen.io",
+  "embed.nicovideo.jp",
+  "files.catbox.moe",
+  "i3.ytimg.com",
+  "iqdb.org",
+  "ruffle.rs",
+  "svelte.dev",
+  "trace.moe",
+  "www.google.com",
+  "www.googleapis.com",
+  "www.youtube.com",
+  "yandex.com"
+ ],
+ "services": [
+  "YouTube"
+ ],
+ "requests": [
+  "https://kissu.moe/api/threads/summary/info.json?_t",
+  "https://kissu.moe/api/threads/summary/summary.json?t_"
+ ],
+ "storage": {
+  "local": [
+   "filter",
+   "kissu-first-load",
+   "news",
+   "notice-ignore",
+   "quote-settings",
+   "test-localStorage"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?v",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@736876"
+  },
+  {
+   "name": "Keyboard shortcut alt+-",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@847552"
+  },
+  {
+   "name": "Keyboard shortcut alt+8",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@848863"
+  },
+  {
+   "name": "Keyboard shortcut alt+\\\\",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@846319"
+  },
+  {
+   "name": "Keyboard shortcut alt+a",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@850471"
+  },
+  {
+   "name": "Keyboard shortcut alt+b",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@847793"
+  },
+  {
+   "name": "Keyboard shortcut alt+c",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@849197"
+  },
+  {
+   "name": "Keyboard shortcut alt+d",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@847290"
+  },
+  {
+   "name": "Keyboard shortcut alt+e",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@849929"
+  },
+  {
+   "name": "Keyboard shortcut alt+g",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@849751"
+  },
+  {
+   "name": "Keyboard shortcut alt+h",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@848404"
+  },
+  {
+   "name": "Keyboard shortcut alt+i",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@847941"
+  },
+  {
+   "name": "Keyboard shortcut alt+j",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@849377"
+  },
+  {
+   "name": "Keyboard shortcut alt+l",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@849564"
+  },
+  {
+   "name": "Keyboard shortcut alt+m",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@850684"
+  },
+  {
+   "name": "Keyboard shortcut alt+p",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@850116"
+  },
+  {
+   "name": "Keyboard shortcut alt+s",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@850301"
+  },
+  {
+   "name": "Keyboard shortcut alt+shift+space",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@591757"
+  },
+  {
+   "name": "Keyboard shortcut alt+u",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@849017"
+  },
+  {
+   "name": "Keyboard shortcut ctrl+y",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "tegaki.min.js@36576"
+  },
+  {
+   "name": "Keyboard shortcut ctrl+z",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "tegaki.min.js@36509"
+  },
+  {
+   "name": "Opens files: image/*, .webm,.mp4,.ogv, .mp3,.ogg,.opus,.flac, .swf,.html,",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "API call kissu.moe/api/threads/summary/info.json?_t",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call kissu.moe/api/threads/summary/summary.json?t_",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /api/properties",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@828867"
+  },
+  {
+   "name": "API path /api/properties/banners.json",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@865612"
+  },
+  {
+   "name": "API path /api/properties/site.json",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@832653"
+  },
+  {
+   "name": "API path /api/threads",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@803643"
+  },
+  {
+   "name": "API path /api/threads/${a}/${s}/0.json",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@867319"
+  },
+  {
+   "name": "API path /api/threads/${a}/${u}/full.json",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@874749"
+  },
+  {
+   "name": "API path /api/threads/${this.page_listener.props.pageJson.board}/cata",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@876891"
+  },
+  {
+   "name": "API path /api/threads/summary/info.json",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@902980"
+  },
+  {
+   "name": "API path /api/threads/summary/summary.json",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@903049"
+  },
+  {
+   "name": "Feature flag allowAnyClick",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "ui-bundle(5.2.60).js@181918"
+  },
+  {
+   "name": "Feature flag allowFullScreen",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "ui-bundle(5.2.60).js@649204"
+  },
+  {
+   "name": "Feature flag allowScriptAccess",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "ruffle.js@12528"
+  },
+  {
+   "name": "Feature flag enableUserSelectHack",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "ui-bundle(5.2.60).js@181947"
+  },
+  {
+   "name": "Feature flag showSwfDownload",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "ruffle.js@12746"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "ruffle.js@326974"
+  },
+  {
+   "name": "Full screen mode",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "ruffle.js@322515"
+  },
+  {
+   "name": "Picture in picture",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@44494"
+  },
+  {
+   "name": "Input of type color",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=color] x13"
+  },
+  {
+   "name": "Keeps a database in the browser: KISSU-FFMPEG-THUMBNAILER",
+   "kind": "storage",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@266298"
+  },
+  {
+   "name": "Remembers a setting in the browser: filter",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: kissu-first-load",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: news",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: notice-ignore",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: quote-settings",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: test-localStorage",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Interface languages: 15 (az, bg, cs, de, es, fi)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "ruffle.js@25123"
+  },
+  {
+   "name": "Notifications",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@255851"
+  },
+  {
+   "name": "Syncs between tabs",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@339275"
+  },
+  {
+   "name": "Uses YouTube",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "ruffle.js"
+  },
+  {
+   "name": "Route /all",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@317475"
+  },
+  {
+   "name": "Route /all/",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@435088"
+  },
+  {
+   "name": "Route /b/",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@515987"
+  },
+  {
+   "name": "Route /home",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@497289"
+  },
+  {
+   "name": "Route /legacy",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@362322"
+  },
+  {
+   "name": "Route /styles/fa/svgs/",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "ui-bundle(5.2.60).js@471454"
+  }
+ ]
+}

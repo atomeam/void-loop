@@ -16,9 +16,9 @@ const LEADS = [
   /^(?:please\s+)?system\s+blueprint\s+for\s+(.{8,280})$/i,
   /^turn\s+(?:this|that|it)\s+into\s+a\s+system\s*[:\-]?\s*(.{8,280})$/i,
   /^idea\s+to\s+system\s*[:\-]?\s*(.{8,280})$/i,
-  /^(?:make|build|design|generate|create)\s+(?:me\s+)?(?:a\s+)?(?:system\s+)?(?:blueprint|plan)\s+(?:for|of|:)\s*(.{8,280})$/i,
+  /^(?:make|build|design|generate|create)\s+(?:me\s+)?(?:a\s+)?(?:system\s+)?(?:blueprint|plan)\s+(?:for|of|:)\s*:\s*(.{8,280})$/i,
   /^(?:sketch|outline)\s+(?:the\s+)?system\s+(?:for|of|:)\s*(.{8,280})$/i,
-  /^system\s+(?:plan|sketch|design)\s+(?:for|of|:)\s*(.{8,280})$/i,
+  /^system\s+(?:plan|sketch|design)\s+(?:for|of|:)\s*:\s*(.{8,280})$/i,
 ];
 
 /** Strip lead-in; return the raw idea text or null. Pure. */
@@ -164,7 +164,7 @@ export default {
     'system blueprint for weekly ops metrics without copy-paste',
     'system plan for: automate client onboarding',
     'sketch the system for: automate invoices',
-    'system design for the client portal',
+    'system design for: the client portal',
   ],
   nearMisses: [
     'what is a blueprint',

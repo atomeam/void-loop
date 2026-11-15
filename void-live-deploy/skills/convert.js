@@ -66,6 +66,14 @@ const cards = (api) => Object.values(api.stage.things()).filter((t) => t && t.ki
 function run(text, api) {
   const q = askOf(text);
   if (!q) return 'none';
+  if (q.bare != null) {
+    const { showPage, esc } = api;
+    showPage((el) => {
+      el.dataset.cardKind = 'Convert';
+      el.innerHTML = '<h2>Convert</h2><p>' + esc('Which one do you mean? ' + q.bare + ' on its own could be miles, kilograms, cups, or several other units. Name both, like 2 miles in km.') + '</p>';
+    });
+    return 'convert';
+  }
   if (q.close) {
     const c = cards(api);
     if (!c.length) { api.say('There is no converter on the stage · ask "unit converter" to open one'); return 'convert'; }

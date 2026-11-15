@@ -1,0 +1,151 @@
+{
+ "site": "sushigirl.cafe",
+ "url": "https://sushigirl.cafe/",
+ "scanned": "2026-11-15",
+ "status": 301,
+ "assets": [
+  {
+   "f": "static.doubleclick.net/ad_status.js",
+   "t": "js",
+   "b": 29,
+   "ext": true
+  },
+  {
+   "f": "veranda.css",
+   "t": "css",
+   "b": 1388
+  },
+  {
+   "f": "www.google.[token].js",
+   "t": "js",
+   "b": 64028,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=root,base",
+   "t": "js",
+   "b": 475501,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=n7eo2",
+   "t": "js",
+   "b": 21778,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=r78Drb",
+   "t": "js",
+   "b": 946989,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=root,base",
+   "t": "css",
+   "b": 13706,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/base.js",
+   "t": "js",
+   "b": 1682517,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/www-player.css",
+   "t": "css",
+   "b": 558966,
+   "ext": true
+  }
+ ],
+ "assetCount": 9,
+ "bytes": 3764902,
+ "html": {
+  "mobile": {
+   "title": "Moshi Moshi!~ Welcome to SushiChan!",
+   "lang": "",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "www.youtube.com",
+    "www.youtube.com",
+    "www.youtube.com"
+   ]
+  },
+  "desktop": {}
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "thirdParty": [
+  "googleads.g.doubleclick.net",
+  "jnn-pa.googleapis.com",
+  "static.doubleclick.net",
+  "www.google.com",
+  "www.youtube.com"
+ ],
+ "services": [
+  "Ads",
+  "YouTube"
+ ],
+ "requests": [
+  "https://googleads.g.doubleclick.net/pagead/id",
+  "https://googleads.g.doubleclick.net/pagead/id?slf_rd",
+  "https://jnn-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/GenerateIT",
+  "https://www.youtube.[token]?prettyPrint",
+  "https://www.youtube.com/api/stats/qoe?bat&bh&c&cat&cbr&cbrand&cbrver&cl",
+  "https://www.youtube.com/api/stats/qoe?bat&bh&c&cat&cbr&cbrver&cl&cmt",
+  "https://www.youtube.com/youtubei/v1/next?prettyPrint",
+  "https://www.youtube.com/youtubei/v1/player?prettyPrint"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Embeds www.youtube.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call www.youtube.com/api/stats/qoe?bat&bh&c&cat&cbr&cbrand&cbrver&cl",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call www.youtube.com/api/stats/qoe?bat&bh&c&cat&cbr&cbrver&cl&cmt",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call www.youtube.com/youtubei/v1/next?prettyPrint",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call www.youtube.com/youtubei/v1/player?prettyPrint",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "Uses YouTube",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  }
+ ]
+}

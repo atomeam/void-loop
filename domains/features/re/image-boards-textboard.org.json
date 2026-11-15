@@ -1,0 +1,21 @@
+{
+ "site": "textboard.org",
+ "url": "https://textboard.org/",
+ "scanned": "2026-11-15",
+ "blocked": {
+  "kind": "unreachable",
+  "why": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://textboard.org/ Call log: - navigating to \"https://t"
+ },
+ "assetCount": 0,
+ "bytes": 0,
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}
