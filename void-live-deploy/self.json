@@ -828,88 +828,92 @@
  },
  "commits": [
   {
-   "at": "2026-11-14T23:06:47Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+   "at": "2026-11-15T00:54:25Z",
+   "subject": "Outcome exam: podcasts 84.8"
   },
   {
-   "at": "2026-11-14T23:01:04Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-14T22:59:15Z",
+   "at": "2026-11-15T00:53:03Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-14T22:55:38Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-14T22:53:18Z",
-   "subject": "Outcome exam: weather 78.7"
-  },
-  {
-   "at": "2026-11-14T22:53:11Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-14T22:52:09Z",
+   "at": "2026-11-15T00:41:23Z",
    "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-14T22:49:51Z",
-   "subject": "Failed jobs read: run 43649805949 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T00:34:42Z",
+   "subject": "Failed jobs read: run 43658736425 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-14T22:46:03Z",
-   "subject": "fix scores: resolve Yankees/Chiefs/Packers team names with aliases and feed fallback"
+   "at": "2026-11-15T00:27:17Z",
+   "subject": "Revert \"Design loop: 1 page fixed, 38 -> 30 design defects\" (#2834)"
   },
   {
-   "at": "2026-11-14T22:45:43Z",
-   "subject": "Failed jobs read: run 43649157154 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T00:26:43Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-14T22:43:40Z",
+   "at": "2026-11-15T00:22:46Z",
    "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-14T22:41:33Z",
-   "subject": "Failed jobs read: run 43649009815 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T00:22:26Z",
+   "subject": "Outcome exam: sports 94.4"
   },
   {
-   "at": "2026-11-14T22:38:29Z",
-   "subject": "fix films guard: match actual 'Verse Films' casing on /films/"
+   "at": "2026-11-15T00:22:09Z",
+   "subject": "Grok bot/lists run 25 (#2835)"
   },
   {
-   "at": "2026-11-14T22:36:43Z",
-   "subject": "filter built wants out of self-context what-is-next feed"
+   "at": "2026-11-15T00:16:57Z",
+   "subject": "regenerate skills index after merge"
   },
   {
-   "at": "2026-11-14T22:35:00Z",
-   "subject": "Tower gate: versus measured"
+   "at": "2026-11-15T00:15:43Z",
+   "subject": "Failed jobs read: run 43657156196 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-14T22:34:19Z",
-   "subject": "Failed jobs read: run 43648213658 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T00:15:12Z",
+   "subject": "Failed jobs read: run 43656850892 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-14T22:33:05Z",
-   "subject": "Site test: visitor pass 15/15"
+   "at": "2026-11-15T00:14:20Z",
+   "subject": "Verse's will: today's three wants (domains/void.will.md)"
   },
   {
-   "at": "2026-11-14T22:31:11Z",
-   "subject": "Failed jobs read: run 43648167750 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-15T00:13:56Z",
+   "subject": "Design loop: 1 page fixed, 38 -> 30 design defects"
   },
   {
-   "at": "2026-11-14T22:27:41Z",
-   "subject": "mark card-share ellipsis as ellipsis-ok"
+   "at": "2026-11-15T00:10:36Z",
+   "subject": "Board: helper/work-list-44cf shipped (https://github.com/atomeam/void-loop/pull/2809)"
   },
   {
-   "at": "2026-11-14T22:27:06Z",
-   "subject": "fix factorial(0) exam and add card export overflow ledger entry"
+   "at": "2026-11-15T00:10:24Z",
+   "subject": "Team wants: drop Tower aspect items and start the rest (#2809)"
+  },
+  {
+   "at": "2026-11-14T23:56:14Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-14T23:54:47Z",
+   "subject": "fix beacon (trim visit.js), remove stale order files for client-status family"
+  },
+  {
+   "at": "2026-11-14T23:51:35Z",
+   "subject": "Outcome exam: code 93.3"
+  },
+  {
+   "at": "2026-11-14T23:37:37Z",
+   "subject": "Fold the PDF editor, suite and studio into the one PDF page. (#2811)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "the open /team/ wants: drop Tower aspect items, start the rest, and make the…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2809."
+   },
    {
     "name": "Baggage check",
     "line": "a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806"
@@ -929,10 +933,6 @@
    {
     "name": "Debris Field",
     "line": "one ship in open space. Chasers, darts, splitters and a heavy crystal come from every edge. Three lives, a shield that spends a hit, and a multiplier that drops when a life does. Verse is the ghost score. The picture fills the viewport.…"
-   },
-   {
-    "name": "Verse Arcade",
-    "line": "twelve rounds play against Verse on /arcade/ (Gap Glide, Cross the Bus, and ten catalogue rows that were still wishes: Debris Field, Null Waves, Packet Maze, Jump Stack, Stackwell, Push Packets, Nine Grid, Glyph Verse, Three Alike, Token…"
    }
   ],
   "ladders": [
@@ -1087,8 +1087,8 @@
   }
  ],
  "visible": {
-  "day": 14,
-  "week": 212
+  "day": 3,
+  "week": 190
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
