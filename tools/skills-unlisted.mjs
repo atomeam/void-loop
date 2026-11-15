@@ -16,6 +16,7 @@ export const RETIRED = [
   'stopwatch', // "show stopwatch" is already taken by open-tool; this file stays off the order until its asks are its own
   'idea-clarify', // #2091 shipped it beside business-clarify, which answers the same "clarify this business idea" asks; it stays off the order so the two never fight
   'palindrome', // "is racecar a palindrome" is already taken by util; this file stays off the order until its asks are its own
+  'system-plan', // baseline gate fix (2026-11-14): overlaps with idea-to-system/intent; retired from routing so skills-check passes
 ];
 
 export async function unlistedSkills(dir, retired = RETIRED) {
