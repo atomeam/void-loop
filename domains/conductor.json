@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T22:50:59.383Z",
+ "updated": "2026-11-15T23:00:22.280Z",
  "last24h": {
-  "ticks": 146,
+  "ticks": 147,
   "started": 121,
   "requeued": 0,
   "setAside": 1,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 1,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -4106,6 +4106,27 @@
   },
   {
    "at": "2026-11-15T22:50:59.383Z",
+   "open": 431,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 418,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T23:00:22.280Z",
    "open": 431,
    "started": [],
    "requeued": 0,
