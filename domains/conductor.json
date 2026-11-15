@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T05:11:09.529Z",
+ "updated": "2026-11-15T05:20:33.121Z",
  "last24h": {
-  "ticks": 36,
+  "ticks": 37,
   "started": 33,
   "requeued": 0,
   "setAside": 1,
@@ -29,10 +29,6 @@
   },
   {
    "id": "want-idea-ac2885447b",
-   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
-  },
-  {
-   "id": "want-exam-sports",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
   {
@@ -89,6 +85,10 @@
   },
   {
    "id": "mwcf54df",
+   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
+  },
+  {
+   "id": "mwcg2h14",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   }
  ],
@@ -1191,6 +1191,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 418,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T05:20:33.121Z",
+   "open": 432,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 417,
    "warnings": 1
   }
  ]
