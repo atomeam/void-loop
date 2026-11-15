@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T06:35:40.942Z",
+ "updated": "2026-11-15T06:45:02.425Z",
  "last24h": {
-  "ticks": 45,
-  "started": 40,
+  "ticks": 46,
+  "started": 42,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -95,11 +95,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 10,
+   "used": 48,
    "cap": 90
   },
   "day": {
-   "used": 295,
+   "used": 333,
    "cap": 360
   },
   "room": true,
@@ -118,7 +118,7 @@
   "mvpuq9g6": 1794702001094,
   "mwa0ah54": 1794723974356,
   "mvpuqaee": 1794703132775,
-  "mwdsggtv": 1794703132775,
+  "mwdsggtv": 1794725102425,
   "mvpuqb4r": 1794703692286,
   "mwdsgi9n": 1794703692286,
   "mvvjzso8": 1794704250102,
@@ -134,8 +134,8 @@
   "mwhd08tw": 1794718896509,
   "mwhd09q1": 1794719469529
  },
- "sweptAt": 1794721156693,
- "blueprintsAt": 1794721156693,
+ "sweptAt": 1794725102425,
+ "blueprintsAt": 1794725102425,
  "visitorAt": "2026-11-15T03:28:16Z",
  "visitorFiled": [
   "review:2605",
@@ -1423,6 +1423,40 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 22,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T06:45:02.425Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "want-idea-298bf37d16",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 84
+    },
+    {
+     "id": "mwdsggtv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 45
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 22,
    "warnings": 1
