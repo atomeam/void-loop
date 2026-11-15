@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 1,
-    "proven": 42
+    "tested": 9,
+    "checked": 2,
+    "proven": 44
    },
    "from": 68,
    "to": 124
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 18,
-    "checked": 3,
-    "proven": 71
+    "tested": 12,
+    "checked": 4,
+    "proven": 77
    },
    "from": 374,
    "to": 466
@@ -190,14 +190,14 @@
    "for": "every active router rule, in the order an ask meets them: the first that catches it answers",
    "kind": "rules",
    "from": 528,
-   "to": 577
+   "to": 576
   },
   {
    "id": "index",
    "name": "Index",
    "kind": "index",
-   "from": 578,
-   "to": 592
+   "from": 577,
+   "to": 591
   }
  ],
  "pages": [
@@ -1027,7 +1027,7 @@
     "show me the adaptive flow canvas"
    ],
    "tier": "proven",
-   "why": "3 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Not a boast but a record: 3 askings, each one answered. Ask, and see.",
    "glow": 100,
    "n": 46
@@ -2040,8 +2040,10 @@
     "play gap glide",
     "let's play gap glide"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the games. Let the stage be the proof.",
+   "glow": 100,
    "n": 97
   },
   {
@@ -2055,8 +2057,10 @@
     "play cross the bus",
     "let's play cross the bus"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the games, this one is trusted enough to be taught. It has not failed a reader yet.",
+   "glow": 100,
    "n": 98
   },
   {
@@ -2069,8 +2073,9 @@
     "debris field",
     "play debris field"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 99
   },
   {
@@ -2229,7 +2234,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the games. Let the stage be the proof.",
+   "flavor": "Keep this page; the games are built on it. Let the stage be the proof.",
    "glow": 100,
    "n": 110
   },
@@ -4901,7 +4906,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 30 live findings, 2026-11-13",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 31 live findings, 2026-11-14",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 263
@@ -5614,7 +5619,7 @@
     "filter the stage by type"
    ],
    "tier": "proven",
-   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 3 real askings.",
    "glow": 100,
    "n": 300
@@ -6932,7 +6937,8 @@
     "client-weekly",
     "delivery-ready",
     "systems-owned",
-    "incident-pack"
+    "incident-pack",
+    "scope-pack"
    ],
    "n": 374
   },
@@ -7271,8 +7277,9 @@
     "system status"
    ],
    "examplesFrom": "header",
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it. The void remembers each asking.",
    "glow": 100,
    "n": 394
   },
@@ -7374,7 +7381,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 11 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it. The void remembers each asking.",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
    "n": 400
   },
@@ -7389,8 +7396,9 @@
     "handoff pack for my SaaS idea",
     "delivery package: invoice reminders that run themselves"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught.",
    "glow": 100,
    "n": 401
   },
@@ -7439,7 +7447,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. The void remembers each asking.",
    "glow": 100,
    "n": 404
   },
@@ -7456,7 +7464,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. The void remembers each asking.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
    "n": 405
   },
@@ -7505,8 +7513,9 @@
     "make a system handoff for invoice reminders",
     "handoff the system: support ticket router"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. So it is written.",
    "glow": 100,
    "n": 408
   },
@@ -7521,8 +7530,8 @@
     "client handoff pack on onboarding flow",
     "package the handoff for the support router"
    ],
-   "tier": "tested",
-   "why": "2 real asks in the benchmark",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
    "glow": 100,
    "n": 409
   },
@@ -7623,7 +7632,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
    "n": 415
   },
@@ -8055,7 +8064,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "An old art of the verse itself, tested each day before the sun is up. Say the words below and it answers.",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
    "n": 441
   },
@@ -8104,7 +8113,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Say the words below and it answers.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up.",
    "glow": 100,
    "n": 444
   },
@@ -8188,7 +8197,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the verse itself, this one is trusted enough to be taught.",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. This is the page of client-offer.",
    "glow": 100,
    "n": 449
   },
@@ -8205,7 +8214,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "An old art of the verse itself, tested each day before the sun is up.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. This is the page of automation-pack.",
    "glow": 100,
    "n": 450
   },
@@ -8238,7 +8247,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "An old art of the verse itself, tested each day before the sun is up. So it is written.",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. This is the page of lift-summary.",
    "glow": 100,
    "n": 452
   },
@@ -8346,21 +8355,6 @@
   {
    "kind": "skill",
    "chapter": "self",
-   "name": "system-plan",
-   "title": "System plan",
-   "line": "Capture a vague business idea and turn it into a structured plan of systems, automations, tests, monitors and handoff points so Verse runs the systems",
-   "examples": [
-    "system plan for client onboarding",
-    "plan the systems for invoice automation",
-    "clarify and plan the support process"
-   ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
-   "n": 459
-  },
-  {
-   "kind": "skill",
-   "chapter": "self",
    "name": "kickoff-pack",
    "title": "Kickoff pack",
    "line": "Package the first week Verse runs for a business idea so the client starts with less work",
@@ -8371,7 +8365,7 @@
    ],
    "tier": "tested",
    "why": "a self-test",
-   "n": 460
+   "n": 459
   },
   {
    "kind": "skill",
@@ -8384,9 +8378,11 @@
     "show the dashboard for onboarding",
     "client dashboard for weekly reports"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 461
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. This is the page of delivery-dashboard.",
+   "glow": 100,
+   "n": 460
   },
   {
    "kind": "skill",
@@ -8401,7 +8397,7 @@
    ],
    "tier": "tested",
    "why": "a self-test",
-   "n": 462
+   "n": 461
   },
   {
    "kind": "skill",
@@ -8414,9 +8410,11 @@
     "client weekly for invoice automation",
     "this week's summary for support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 463
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. This is the page of client-weekly.",
+   "glow": 100,
+   "n": 462
   },
   {
    "kind": "skill",
@@ -8429,9 +8427,11 @@
     "handoff ready for onboarding flow",
     "ready to handoff the weekly reports"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 464
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. This is the page of delivery-ready.",
+   "glow": 100,
+   "n": 463
   },
   {
    "kind": "skill",
@@ -8446,7 +8446,7 @@
    ],
    "tier": "tested",
    "why": "a self-test",
-   "n": 465
+   "n": 464
   },
   {
    "kind": "skill",
@@ -8458,6 +8458,21 @@
     "incident pack for the onboarding flow",
     "client incident path for invoice automation",
     "outage response for support router"
+   ],
+   "tier": "tested",
+   "why": "a self-test",
+   "n": 465
+  },
+  {
+   "kind": "skill",
+   "chapter": "self",
+   "name": "scope-pack",
+   "title": "Scope pack",
+   "line": "Clarify the scope of what Verse owns versus what the client owns for a business idea or process",
+   "examples": [
+    "scope pack for the invoice automation",
+    "what Verse owns for onboarding flow",
+    "client scope for the support router"
    ],
    "tier": "tested",
    "why": "a self-test",
@@ -9785,16 +9800,13 @@
     "system-slice",
     "time-saved",
     "reliability-pack",
-    "system-plan",
     "delivery-dashboard",
     "roi-pack",
-    "status-digest",
     "client-weekly",
-    "delivery-board",
-    "heavy-lift-map",
     "delivery-ready",
     "systems-owned",
-    "incident-pack"
+    "incident-pack",
+    "scope-pack"
    ],
    "n": 528
   },
@@ -12066,64 +12078,41 @@
     },
     {
      "rank": 378,
-     "name": "system-plan",
-     "catches": "system plan for client onboarding"
-    },
-    {
-     "rank": 379,
      "name": "delivery-dashboard",
      "catches": "delivery dashboard for the invoice automation"
     },
     {
-     "rank": 380,
+     "rank": 379,
      "name": "roi-pack",
      "catches": "roi pack for the invoice automation"
     },
     {
-     "rank": 381,
-     "name": "status-digest",
-     "catches": "status digest for the invoice automation"
-    },
-    {
-     "rank": 382,
+     "rank": 380,
      "name": "client-weekly",
      "catches": "weekly update for the onboarding flow"
     },
     {
-     "rank": 383,
-     "name": "delivery-board",
-     "catches": "delivery board for the onboarding flow"
-    },
-    {
-     "rank": 384,
-     "name": "heavy-lift-map",
-     "catches": "map the systems for client onboarding"
-    }
-   ],
-   "n": 576
-  },
-  {
-   "kind": "rules",
-   "chapter": "rules",
-   "title": "Rules CCCLXXXV–CCCLXXXVII",
-   "rules": [
-    {
-     "rank": 385,
+     "rank": 381,
      "name": "delivery-ready",
      "catches": "is the invoice automation delivery ready"
     },
     {
-     "rank": 386,
+     "rank": 382,
      "name": "systems-owned",
      "catches": "systems owned for the invoice automation"
     },
     {
-     "rank": 387,
+     "rank": 383,
      "name": "incident-pack",
      "catches": "incident pack for the onboarding flow"
+    },
+    {
+     "rank": 384,
+     "name": "scope-pack",
+     "catches": "scope pack for the invoice automation"
     }
    ],
-   "n": 577
+   "n": 576
   },
   {
    "kind": "index",
@@ -12275,7 +12264,7 @@
      "page": 368
     }
    ],
-   "n": 578
+   "n": 577
   },
   {
    "kind": "index",
@@ -12388,7 +12377,7 @@
     },
     {
      "name": "Client weekly",
-     "page": 463
+     "page": 462
     },
     {
      "name": "Clock",
@@ -12427,7 +12416,7 @@
      "page": 439
     }
    ],
-   "n": 579
+   "n": 578
   },
   {
    "kind": "index",
@@ -12556,7 +12545,7 @@
     },
     {
      "name": "Delivery dashboard",
-     "page": 461
+     "page": 460
     },
     {
      "name": "Delivery pack",
@@ -12564,7 +12553,7 @@
     },
     {
      "name": "Delivery ready",
-     "page": 464
+     "page": 463
     },
     {
      "name": "Dependency health",
@@ -12579,7 +12568,7 @@
      "page": 194
     }
    ],
-   "n": 580
+   "n": 579
   },
   {
    "kind": "index",
@@ -12731,7 +12720,7 @@
      "page": 308
     }
    ],
-   "n": 581
+   "n": 580
   },
   {
    "kind": "index",
@@ -12883,7 +12872,7 @@
      "page": 61
     }
    ],
-   "n": 582
+   "n": 581
   },
   {
    "kind": "index",
@@ -12996,7 +12985,7 @@
     },
     {
      "name": "Incident pack",
-     "page": 466
+     "page": 465
     },
     {
      "name": "Intent",
@@ -13035,7 +13024,7 @@
      "page": 288
     }
    ],
-   "n": 583
+   "n": 582
   },
   {
    "kind": "index",
@@ -13044,7 +13033,7 @@
    "entries": [
     {
      "name": "Kickoff pack",
-     "page": 460
+     "page": 459
     },
     {
      "name": "Know",
@@ -13187,7 +13176,7 @@
      "page": 94
     }
    ],
-   "n": 584
+   "n": 583
   },
   {
    "kind": "index",
@@ -13339,7 +13328,7 @@
      "page": 171
     }
    ],
-   "n": 585
+   "n": 584
   },
   {
    "kind": "index",
@@ -13491,7 +13480,7 @@
      "page": 38
     }
    ],
-   "n": 586
+   "n": 585
   },
   {
    "kind": "index",
@@ -13643,7 +13632,7 @@
      "page": 76
     }
    ],
-   "n": 587
+   "n": 586
   },
   {
    "kind": "index",
@@ -13676,7 +13665,7 @@
     },
     {
      "name": "Roi pack",
-     "page": 462
+     "page": 461
     },
     {
      "name": "Room",
@@ -13709,6 +13698,10 @@
     {
      "name": "Savings (3D)",
      "page": 516
+    },
+    {
+     "name": "Scope pack",
+     "page": 466
     },
     {
      "name": "Scores",
@@ -13789,19 +13782,19 @@
     {
      "name": "Snippet",
      "page": 195
-    },
-    {
-     "name": "Social",
-     "page": 265
     }
    ],
-   "n": 588
+   "n": 587
   },
   {
    "kind": "index",
    "chapter": "index",
    "title": "Index S–S",
    "entries": [
+    {
+     "name": "Social",
+     "page": 265
+    },
     {
      "name": "Sorry",
      "page": 73
@@ -13941,19 +13934,19 @@
     {
      "name": "Sudden death",
      "page": 305
-    },
-    {
-     "name": "Sums",
-     "page": 196
     }
    ],
-   "n": 589
+   "n": 588
   },
   {
    "kind": "index",
    "chapter": "index",
    "title": "Index S–T",
    "entries": [
+    {
+     "name": "Sums",
+     "page": 196
+    },
     {
      "name": "Suntimes",
      "page": 140
@@ -13987,10 +13980,6 @@
      "page": 408
     },
     {
-     "name": "System plan",
-     "page": 459
-    },
-    {
      "name": "System slice",
      "page": 457
     },
@@ -14004,7 +13993,7 @@
     },
     {
      "name": "Systems owned",
-     "page": 465
+     "page": 464
     },
     {
      "name": "Tab",
@@ -14099,7 +14088,7 @@
      "page": 453
     }
    ],
-   "n": 590
+   "n": 589
   },
   {
    "kind": "index",
@@ -14251,7 +14240,7 @@
      "page": 526
     }
    ],
-   "n": 591
+   "n": 590
   },
   {
    "kind": "index",
@@ -14311,7 +14300,7 @@
      "page": 113
     }
    ],
-   "n": 592
+   "n": 591
   }
  ],
  "index": [
@@ -14565,7 +14554,7 @@
   },
   {
    "name": "Client weekly",
-   "page": 463
+   "page": 462
   },
   {
    "name": "Clock",
@@ -14725,7 +14714,7 @@
   },
   {
    "name": "Delivery dashboard",
-   "page": 461
+   "page": 460
   },
   {
    "name": "Delivery pack",
@@ -14733,7 +14722,7 @@
   },
   {
    "name": "Delivery ready",
-   "page": 464
+   "page": 463
   },
   {
    "name": "Dependency health",
@@ -15141,7 +15130,7 @@
   },
   {
    "name": "Incident pack",
-   "page": 466
+   "page": 465
   },
   {
    "name": "Intent",
@@ -15181,7 +15170,7 @@
   },
   {
    "name": "Kickoff pack",
-   "page": 460
+   "page": 459
   },
   {
    "name": "Know",
@@ -15781,7 +15770,7 @@
   },
   {
    "name": "Roi pack",
-   "page": 462
+   "page": 461
   },
   {
    "name": "Room",
@@ -15814,6 +15803,10 @@
   {
    "name": "Savings (3D)",
    "page": 516
+  },
+  {
+   "name": "Scope pack",
+   "page": 466
   },
   {
    "name": "Scores",
@@ -16076,10 +16069,6 @@
    "page": 408
   },
   {
-   "name": "System plan",
-   "page": 459
-  },
-  {
    "name": "System slice",
    "page": 457
   },
@@ -16093,7 +16082,7 @@
   },
   {
    "name": "Systems owned",
-   "page": 465
+   "page": 464
   },
   {
    "name": "Tab",
@@ -16385,7 +16374,7 @@
   }
  ],
  "totals": {
-  "pages": 592,
+  "pages": 591,
   "chapters": 16,
   "skills": 459,
   "games": 16,
