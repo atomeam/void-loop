@@ -7273,5 +7273,6 @@
   {"ask": "three alike", "want": "skill:three-alike"},
   {"ask": "play three alike", "want": "skill:three-alike"},
   {"ask": "token stand", "want": "skill:token-stand"},
-  {"ask": "play token stand", "want": "skill:token-stand"}
+  {"ask": "play token stand", "want": "skill:token-stand"},
+  {"ask": "sell the hard work for the support process", "want": "skill:sales-pack"}
 ]

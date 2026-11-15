@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "43678640533",
-  "at": "2026-11-15T04:53:21Z",
-  "what": "Verse hardened itself: 12 benchmark ask(s) for stackwell, system-plan, systems-owned, three-alike, token-stand.  Why these: stackwell (no benchmark ask, evidence tier: tested); system-plan (no benchmark ask, evidence tier: tested); systems-owned (no benchmark ask, evidence tier: tested); three-alike (no benchmark ask, evidence tier: tested); token-stand (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked). New phrases: “stackwell” now opens stackwell; “play stackwell” now opens stackwell; “system plan for client onboarding” now opens system-plan; “system plan for invoice automation” now opens system-plan; “clarify and plan the support process” now opens system-plan; “systems owned for the invoice automation” now opens systems-owned; “systems owned for the onboarding flow” now opens systems-owned; “owned systems pack for weekly reports” now opens systems-owned; “three alike” now opens three-alike; “play three alike” now opens three-alike; “token stand” now opens token-stand; “play token stand” now opens token-stand. Did not route: automation status for invoice reminders; status of the automations Verse owns for support.",
-  "try": "stackwell",
+  "run": "43687569222",
+  "at": "2026-11-15T06:55:48Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for sales-pack.  Why these: automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: checked); sales-pack (only 2 benchmark asks, evidence tier: checked). New phrases: “sell the hard work for the support process” now opens sales-pack. Did not route: automation status for invoice reminders; status of the automations Verse owns for support; client handoff pack on onboarding flow; what does Verse own for the onboarding flow.",
+  "try": "sell the hard work for the support process",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-15T02:51:09Z",
-    "try": "sales pack for client onboarding",
-    "closedAt": "2026-11-15T04:53:06Z"
+    "at": "2026-11-15T04:53:21Z",
+    "try": "stackwell",
+    "closedAt": "2026-11-15T06:55:34Z"
   }
 }
