@@ -14,9 +14,9 @@
  "bench_at": "2026-11-12",
  "totals": {
   "experiment": 0,
-  "tested": 10,
-  "checked": 15,
-  "proven": 435
+  "tested": 5,
+  "checked": 17,
+  "proven": 438
  },
  "families": [
   {
@@ -595,8 +595,8 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 8,
+    "tested": 0,
+    "checked": 11,
     "proven": 44
    },
    "skills": [
@@ -904,10 +904,12 @@
     },
     {
      "name": "stackwell",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -942,18 +944,22 @@
     },
     {
      "name": "three-alike",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "token-stand",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -3759,9 +3765,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 7,
-    "checked": 5,
-    "proven": 81
+    "tested": 5,
+    "checked": 4,
+    "proven": 84
    },
    "skills": [
     {
@@ -4009,8 +4015,8 @@
     },
     {
      "name": "sales-pack",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -4553,8 +4559,8 @@
     },
     {
      "name": "system-plan",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "smoke": [
       "\"system plan for client onboarding\" -> idea-to-system",
       "\"plan the systems for invoice automation\" -> intent",
@@ -4562,6 +4568,8 @@
      ],
      "last_tested": "2026-11-13",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 0
     },
     {
@@ -4616,10 +4624,12 @@
     },
     {
      "name": "systems-owned",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {

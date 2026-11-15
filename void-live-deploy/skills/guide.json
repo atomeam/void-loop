@@ -29,8 +29,8 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 8,
+    "tested": 0,
+    "checked": 11,
     "proven": 44
    },
    "from": 68,
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 7,
-    "checked": 5,
-    "proven": 81
+    "tested": 5,
+    "checked": 4,
+    "proven": 84
    },
    "from": 374,
    "to": 467
@@ -2133,8 +2133,9 @@
     "stackwell",
     "play stackwell"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 103
   },
   {
@@ -2192,8 +2193,9 @@
     "three alike",
     "play three alike"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 107
   },
   {
@@ -2206,8 +2208,9 @@
     "token stand",
     "play token stand"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 108
   },
   {
@@ -7419,8 +7422,9 @@
     "package the offer for invoice automation",
     "sell the hard work for the support process"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Let the stage be the proof.",
    "glow": 100,
    "n": 402
   },
@@ -7690,7 +7694,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Let the stage be the proof.",
+   "flavor": "Not a boast but a record: 4 askings, each one answered. Let the stage be the proof.",
    "glow": 100,
    "n": 418
   },
@@ -8368,8 +8372,10 @@
     "system plan for invoice automation",
     "clarify and plan the support process"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. This is the page of system-plan.",
+   "glow": 100,
    "n": 459
   },
   {
@@ -8468,8 +8474,10 @@
     "systems owned for the onboarding flow",
     "owned systems pack for weekly reports"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. This is the page of systems-owned.",
+   "glow": 100,
    "n": 465
   },
   {
