@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T00:29:25.645Z",
+ "updated": "2026-11-15T00:38:52.775Z",
  "last24h": {
-  "ticks": 6,
-  "started": 14,
+  "ticks": 7,
+  "started": 16,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -11,6 +11,10 @@
  },
  "broken": [],
  "held": [
+  {
+   "id": "want-exam-sports",
+   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
+  },
   {
    "id": "want-page-tools-json",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
@@ -28,10 +32,6 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
   {
-   "id": "want-exam-units",
-   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
-  },
-  {
    "id": "want-idea-f167636764",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
@@ -40,7 +40,7 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
   {
-   "id": "want-exam-code",
+   "id": "want-exam-recipes",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
   {
@@ -116,7 +116,9 @@
   "mvfu4evy": 1794701432484,
   "mwa0agd2": 1794701432484,
   "mvpuq9g6": 1794702001094,
-  "mwa0ah54": 1794702001094
+  "mwa0ah54": 1794702001094,
+  "mvpuqaee": 1794703132775,
+  "mwdsggtv": 1794703132775
  },
  "sweptAt": 1794701432484,
  "blueprintsAt": 1794701432484,
@@ -387,6 +389,40 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 407,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T00:38:52.775Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mvpuqaee",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mwdsggtv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 45
     }
    ],
    "requeued": 0,
