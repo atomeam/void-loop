@@ -7261,5 +7261,17 @@
   {"ask": "value of Verse owning the support router", "want": "skill:roi-pack"},
   {"ask": "scope pack for the invoice automation", "want": "skill:scope-pack"},
   {"ask": "what Verse owns for onboarding flow", "want": "skill:scope-pack"},
-  {"ask": "client scope for the support router", "want": "skill:scope-pack"}
+  {"ask": "client scope for the support router", "want": "skill:scope-pack"},
+  {"ask": "stackwell", "want": "skill:stackwell"},
+  {"ask": "play stackwell", "want": "skill:stackwell"},
+  {"ask": "system plan for client onboarding", "want": "skill:system-plan"},
+  {"ask": "system plan for invoice automation", "want": "skill:system-plan"},
+  {"ask": "clarify and plan the support process", "want": "skill:system-plan"},
+  {"ask": "systems owned for the invoice automation", "want": "skill:systems-owned"},
+  {"ask": "systems owned for the onboarding flow", "want": "skill:systems-owned"},
+  {"ask": "owned systems pack for weekly reports", "want": "skill:systems-owned"},
+  {"ask": "three alike", "want": "skill:three-alike"},
+  {"ask": "play three alike", "want": "skill:three-alike"},
+  {"ask": "token stand", "want": "skill:token-stand"},
+  {"ask": "play token stand", "want": "skill:token-stand"}
 ]
