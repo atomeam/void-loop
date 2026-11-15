@@ -24,7 +24,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Watermarks and page numbers | Edit | have | its live page (2026-10-28): "t pages Extract text Extract images Add page numbers Edit PDF text PDF Viewer Add watermark Add text Add image" | void-live-deploy/pdf/index.html:60 `images</a><a href="/pdf/?tool=watermark">Watermark</a><a href="/pdf/?tool=numbers">Page nu` |
 | Read scanned text (OCR) | Convert | missing | its live page (2026-10-28): "s Convert from PDF Convert from PDF PDF OCR PDF OCR PDF to Word PDF to Word PDF to JPG PDF to JPG PDF to PNG P" | no sign of it in the source of /pdf/ |
 | Many files at once | Files | have | studied by hand: pdfcandy.com offers this (https://www.pdfcandy.com/) | void-live-deploy/lib/pdf-ui.js:24 `delete and combine pages from several files, then save.'],` |
-| Open from cloud drives | Files | have | studied by hand: pdfcandy.com offers this (https://www.pdfcandy.com/) | void-live-deploy/visit.js:17 `thname, r: r, w: navigator.webdriver ? 1 : 0 }));` |
+| Open from cloud drives | Files | have | studied by hand: pdfcandy.com offers this (https://www.pdfcandy.com/) | void-live-deploy/visit.js:20 `thname, r: r, w: navigator.webdriver ? 1 : 0 }));` |
 | An account that keeps your things on every device | Accounts | missing | its live page (2026-10-28): "90+ Free PDF Tools Online – PDF Candy Sign in to continue Sign in with Google Sign in with Apple or Sign in u" | no sign of it in the source of /pdf/ |
 | Deutsch | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Français | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
