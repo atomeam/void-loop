@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T06:26:14.356Z",
+ "updated": "2026-11-15T06:35:40.942Z",
  "last24h": {
-  "ticks": 44,
-  "started": 37,
+  "ticks": 45,
+  "started": 40,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -107,9 +107,9 @@
   "paid": false
  },
  "handed": {
-  "mvbl52gd": 1794702565645,
+  "mvbl52gd": 1794724540942,
   "mveb8rsi": 1794702565645,
-  "mva30i2e": 1794702565645,
+  "mva30i2e": 1794724540942,
   "mvu167w7": 1794718327515,
   "mveb8svc": 1794718327515,
   "mva30j4u": 1794718327515,
@@ -1368,6 +1368,46 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 50
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 22,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T06:35:40.942Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "want-idea-f50546a338",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 93
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
     }
    ],
    "requeued": 0,
