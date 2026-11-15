@@ -7235,5 +7235,19 @@
   {"ask": "ready to handoff the weekly reports", "want": "skill:delivery-ready"},
   {"ask": "gap glide", "want": "skill:gap-glide"},
   {"ask": "play gap glide", "want": "skill:gap-glide"},
-  {"ask": "let's play gap glide", "want": "skill:gap-glide"}
+  {"ask": "let's play gap glide", "want": "skill:gap-glide"},
+  {"ask": "glyph verse", "want": "skill:glyph-verse"},
+  {"ask": "play glyph verse", "want": "skill:glyph-verse"},
+  {"ask": "incident pack for the onboarding flow", "want": "skill:incident-pack"},
+  {"ask": "client incident path for invoice automation", "want": "skill:incident-pack"},
+  {"ask": "outage response for support router", "want": "skill:incident-pack"},
+  {"ask": "jump stack", "want": "skill:jump-stack"},
+  {"ask": "play jump stack", "want": "skill:jump-stack"},
+  {"ask": "kickoff pack for the invoice automation", "want": "skill:kickoff-pack"},
+  {"ask": "first week ownership for onboarding", "want": "skill:kickoff-pack"},
+  {"ask": "start owning the support router", "want": "skill:kickoff-pack"},
+  {"ask": "nine grid", "want": "skill:nine-grid"},
+  {"ask": "play nine grid", "want": "skill:nine-grid"},
+  {"ask": "null waves", "want": "skill:null-waves"},
+  {"ask": "play null waves", "want": "skill:null-waves"}
 ]

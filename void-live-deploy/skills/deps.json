@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1335,
+ "counted": 1336,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -524,7 +524,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 112,
+   "dependants": 113,
    "tests": 2
   },
   {
@@ -650,21 +650,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 112,
+   "dependants": 113,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 111,
+   "dependants": 112,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 109,
+   "dependants": 110,
    "tests": 9
   },
   {
@@ -2519,7 +2519,7 @@
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 56,
+   "dependants": 57,
    "tests": 0
   },
   {
@@ -2565,18 +2565,18 @@
    "tests": 9
   },
   {
+   "file": "lib/router.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 36,
+   "tests": 6
+  },
+  {
    "file": "lib/free-router.js",
    "skills": 0,
    "direct": 0,
    "dependants": 35,
    "tests": 1
-  },
-  {
-   "file": "lib/router.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 35,
-   "tests": 6
   },
   {
    "file": "lib/memory-core.js",
@@ -3090,6 +3090,13 @@
    "tests": 0
   },
   {
+   "file": "lib/treasury.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/used.js",
    "skills": 0,
    "direct": 0,
@@ -3417,13 +3424,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 0
-  },
-  {
-   "file": "lib/treasury.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
   },
   {
    "file": "lib/unbidden.js",
@@ -4091,6 +4091,13 @@
    "tests": 1
   },
   {
+   "file": "lib/watched-modes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/will-schema.js",
    "skills": 0,
    "direct": 0,
@@ -4427,7 +4434,9 @@
     "lib/models.js",
     "lib/ai-gateway.js",
     "lib/daily-cap.js",
-    "lib/shortfall.js"
+    "lib/shortfall.js",
+    "lib/treasury.js",
+    "lib/router.js"
    ],
    "importedBy": []
   },
@@ -6457,6 +6466,7 @@
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/coder.js",
     "functions/api/crew.js",
     "functions/api/feed.js",
     "functions/api/film-review.js",
@@ -8879,6 +8889,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/coder.js",
     "functions/api/credits/claim.js",
     "functions/api/credits/latest.js",
     "functions/api/crew.js",
@@ -11909,6 +11920,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/coder.js",
     "functions/api/comments.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
@@ -13866,6 +13878,7 @@
     "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
+    "functions/api/coder.js",
     "functions/api/routes.js",
     "lib/clef.js"
    ],
@@ -15600,6 +15613,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/coder.js",
     "functions/api/comments.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
@@ -16141,6 +16155,7 @@
   "lib/treasury.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/coder.js",
     "functions/api/treasury.js"
    ]
   },
@@ -16220,6 +16235,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/coder.js",
     "functions/api/comments.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
@@ -16672,6 +16688,10 @@
     "lib/team-crew-run.js",
     "skills/approve-card.js"
    ]
+  },
+  "lib/watched-modes.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/weakest.js": {
    "imports": [],
