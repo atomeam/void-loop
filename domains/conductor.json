@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T10:58:38.541Z",
+ "updated": "2026-11-15T11:07:59.648Z",
  "last24h": {
-  "ticks": 72,
-  "started": 82,
+  "ticks": 73,
+  "started": 83,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -14,6 +14,14 @@
   {
    "id": "mveb8svc",
    "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvbl52gd",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mvu167w7",
+   "why": "store-gap.yml reached its 6 runs today"
   },
   {
    "id": "mveb8rsi",
@@ -82,20 +90,12 @@
   {
    "id": "mwazktv3",
    "why": "no executor for bot"
-  },
-  {
-   "id": "mwazktv9",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mwditzd8",
-   "why": "no executor for route"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 9,
+   "used": 4,
    "cap": 90
   },
   "day": {
@@ -140,8 +140,8 @@
   "mwhlqjd1": 1794733555879,
   "mwhlqk8c": 1794734118889
  },
- "sweptAt": 1794736941372,
- "blueprintsAt": 1794736941372,
+ "sweptAt": 1794740879648,
+ "blueprintsAt": 1794740879648,
  "visitorAt": "2026-11-15T03:28:16Z",
  "visitorFiled": [
   "review:2605",
@@ -2294,6 +2294,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T11:07:59.648Z",
+   "open": 430,
+   "started": [
+    {
+     "id": "want-exam-recipes",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 61
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 22,
    "warnings": 1
   }
  ]
