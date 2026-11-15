@@ -18,7 +18,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { playableStream, stationTitle } from '../void-live-deploy/lib/local-media.js';
-import { csvObjects, m3uEntries } from './local-tv.mjs';
+import { csvObjects, m3uEntries, probeEntries } from './local-tv.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(root, 'void-live-deploy/local/tv/world');
@@ -91,7 +91,17 @@ function sources() {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const src = sources(), read = (f) => fs.readFileSync(path.join(src.db, 'data', f), 'utf8');
-  const entries = fs.readdirSync(path.join(src.iptv, 'streams')).filter((f) => f.endsWith('.m3u')).sort().flatMap((f) => m3uEntries(fs.readFileSync(path.join(src.iptv, 'streams', f), 'utf8')));
+  let entries = fs.readdirSync(path.join(src.iptv, 'streams')).filter((f) => f.endsWith('.m3u')).sort().flatMap((f) => m3uEntries(fs.readFileSync(path.join(src.iptv, 'streams', f), 'utf8')));
+  for (const extra of (process.argv.includes('--extra-m3u') ? [arg('--extra-m3u')] : [])) {
+    if (!extra) continue;
+    const add = fs.statSync(extra).isDirectory() ? fs.readdirSync(extra).filter((f) => /\.m3u8?$/i.test(f)).flatMap((f) => m3uEntries(fs.readFileSync(path.join(extra, f), 'utf8'))) : m3uEntries(fs.readFileSync(extra, 'utf8'));
+    entries = entries.concat(add);
+  }
+  if (process.argv.includes('--probe')) {
+    const before = entries.length;
+    entries = await probeEntries(entries);
+    console.log('world-tv: probe kept ' + entries.length + '/' + before + ' stream URLs');
+  }
   const built = buildWorld({ channels: csvObjects(read('channels.csv')), feeds: csvObjects(read('feeds.csv')), blocklist: csvObjects(read('blocklist.csv')),
     categories: csvObjects(read('categories.csv')), countries: csvObjects(read('countries.csv')), entries, commits: src.commits });
   const files = worldFiles(built);
