@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T18:28:30.622Z",
+ "updated": "2026-11-15T18:37:53.758Z",
  "last24h": {
   "ticks": 120,
-  "started": 112,
+  "started": 110,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -116,7 +116,7 @@
   "mvfu4evy": 1794701432484,
   "mwa0agd2": 1794767310622,
   "mvpuq9g6": 1794702001094,
-  "mwa0ah54": 1794745936446,
+  "mwa0ah54": 1794767873758,
   "mvpuqaee": 1794703132775,
   "mwdsggtv": 1794747057492,
   "mvpuqb4r": 1794703692286,
@@ -228,49 +228,6 @@
   "review:2852"
  ],
  "ticks": [
-  {
-   "at": "2026-11-14T18:28:41.662Z",
-   "open": 434,
-   "started": [
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": true,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [
-    "verse-podcast.yml",
-    "shorts.yml"
-   ],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 12,
-   "warnings": 1
-  },
   {
    "at": "2026-11-14T22:43:34.499Z",
    "open": 434,
@@ -3494,6 +3451,34 @@
    "started": [
     {
      "id": "mwa0agd2",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 51
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 411,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T18:37:53.758Z",
+   "open": 431,
+   "started": [
+    {
+     "id": "mwa0ah54",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 51
