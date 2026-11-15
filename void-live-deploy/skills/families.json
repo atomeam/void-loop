@@ -14,9 +14,9 @@
  "bench_at": "2026-11-12",
  "totals": {
   "experiment": 0,
-  "tested": 21,
-  "checked": 8,
-  "proven": 431
+  "tested": 14,
+  "checked": 12,
+  "proven": 433
  },
  "families": [
   {
@@ -394,9 +394,9 @@
     {
      "name": "flow-canvas",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 26
     },
@@ -595,8 +595,8 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 2,
+    "tested": 5,
+    "checked": 6,
     "proven": 44
    },
    "skills": [
@@ -874,10 +874,12 @@
     },
     {
      "name": "null-waves",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -890,10 +892,12 @@
     },
     {
      "name": "jump-stack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -914,18 +918,22 @@
     },
     {
      "name": "nine-grid",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
      "name": "glyph-verse",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -3074,9 +3082,9 @@
     {
      "name": "type-filter",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 26
     },
@@ -3747,9 +3755,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 12,
+    "tested": 9,
     "checked": 4,
-    "proven": 77
+    "proven": 79
    },
    "skills": [
     {
@@ -4538,24 +4546,13 @@
      "streak": 0
     },
     {
-     "name": "system-plan",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
-     "smoke": [
-      "\"system plan for client onboarding\" -> idea-to-system",
-      "\"plan the systems for invoice automation\" -> intent",
-      "\"make a system plan for weekly reports\" -> idea-to-system"
-     ],
-     "last_tested": "2026-11-13",
-     "last_tested_by": "its tests",
-     "streak": 0
-    },
-    {
      "name": "kickoff-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 2
     },
     {
@@ -4606,10 +4603,12 @@
     },
     {
      "name": "incident-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {

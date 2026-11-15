@@ -1,111 +1,83 @@
 {
- "at": "2026-11-12T20:51:51.345Z",
+ "at": "2026-11-15T02:30:54.344Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 123
+   "changes": 109
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 122
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 119
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 115
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
-   "changes": 60
+   "changes": 108
   },
   {
    "file": "domains/handoff.md",
-   "changes": 58
+   "changes": 69
   },
   {
-   "file": "domains/conductor.json",
-   "changes": 48
+   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
+   "changes": 63
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 60
+  },
+  {
+   "file": "void-live-deploy/design-loop.json",
+   "changes": 42
   },
   {
    "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
    "changes": 41
   },
   {
-   "file": "domains/tower-self.json",
-   "changes": 40
-  },
-  {
-   "file": "void-live-deploy/design-loop.json",
-   "changes": 40
-  },
-  {
-   "file": "tools/site-test.json",
-   "changes": 39
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
-   "changes": 29
+   "file": "domains/conductor.json",
+   "changes": 38
   },
   {
    "file": "domains/growth-inbox.md",
-   "changes": 28
+   "changes": 37
   },
   {
-   "file": "void-live-deploy/color/colour-picker-tool/index.html",
-   "changes": 28
+   "file": "tools/real-pages.mjs",
+   "changes": 34
   },
   {
-   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
-   "changes": 28
+   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
+   "changes": 29
   },
   {
-   "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 28
+   "file": "void-live-deploy/lib/versus-floor.js",
+   "changes": 26
   },
   {
-   "file": "void-live-deploy/news/global-headlines/index.html",
-   "changes": 28
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 27
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 27
-  },
-  {
-   "file": "void-live-deploy/tower.target.json",
+   "file": "tools/site-test.json",
    "changes": 23
   },
   {
    "file": "void-live-deploy/tower.gone.json",
-   "changes": 22
+   "changes": 20
+  },
+  {
+   "file": "domains/tower-self.json",
+   "changes": 19
   },
   {
    "file": "tools/families.mjs",
-   "changes": 20
+   "changes": 19
   },
   {
    "file": "void-live-deploy/tower.size.json",
-   "changes": 20
+   "changes": 19
   },
   {
    "file": "docs/TAGTEAM.md",
    "changes": 18
   },
   {
-   "file": "tools/real-pages.mjs",
-   "changes": 18
-  },
-  {
-   "file": "void-live-deploy/assimilated.json",
+   "file": "docs/HANDOFF-GAPS.md",
    "changes": 17
   },
   {
@@ -114,26 +86,54 @@
   },
   {
    "file": "void-live-deploy/tower.sweep.json",
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/tower.features.json",
    "changes": 16
   },
   {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 14
+   "file": "domains/features/travel.json",
+   "changes": 15
   },
   {
-   "file": "docs/PARITY/github.md",
-   "changes": 13
-  },
-  {
-   "file": "docs/PARITY/hugging-face.md",
-   "changes": 13
+   "file": "tools/versus-floor.test.mjs",
+   "changes": 15
   },
   {
    "file": "tools/bench.json",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/tower.features.json",
+   "file": "tools/card-cycle.json",
+   "changes": 13
+  },
+  {
+   "file": "tools/grow-self.state.json",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/color/colour-picker-tool/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/markets/currency-converter/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/news/global-headlines/index.html",
    "changes": 13
   }
  ]
