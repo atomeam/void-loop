@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T07:03:52.090Z",
+ "updated": "2026-11-15T07:13:15.387Z",
  "last24h": {
-  "ticks": 48,
-  "started": 46,
+  "ticks": 49,
+  "started": 48,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 1,
+   "used": 5,
    "cap": 90
   },
   "day": {
@@ -124,7 +124,7 @@
   "mvvjzso8": 1794704250102,
   "mwdsgj2z": 1794726232090,
   "mw5mm5fm": 1794704809424,
-  "mweaagmp": 1794704809424,
+  "mweaagmp": 1794726795387,
   "mweaah6f": 1794705374428,
   "mwey8iy6": 1794705937606,
   "mwgvpj5y": 1794706496321,
@@ -1527,6 +1527,40 @@
    "sweep": false,
    "blueprints": 0,
    "held": 22,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T07:13:15.387Z",
+   "open": 435,
+   "started": [
+    {
+     "id": "want-exam-recipes",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 61
+    },
+    {
+     "id": "mweaagmp",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 44
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 21,
    "warnings": 1
   }
  ]
