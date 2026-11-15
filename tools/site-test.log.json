@@ -1,218 +1,5 @@
 [
  {
-  "at": "2026-11-05T11:25:52Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1871,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 9640 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-05T11:35:10Z",
-  "passed": 84,
-  "of": 89,
-  "ms": 318,
-  "kind": "file",
-  "key": "weave a constellation called night ops | only \"waking up\" appeared, never the answer",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 3 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "dyslexia friendly font",
-    "why": "only \"waking up\" appeared, never the answer"
-   },
-   {
-    "ask": "weave a constellation called night ops",
-    "why": "only \"waking up\" appeared, never the answer"
-   },
-   {
-    "ask": "film meatdata for ikiru",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1871,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 9640 ms"
-     ]
-    }
-   ]
-  },
-  "note": "fix: \"weave a constellation called night ops\" only \"waking up\" appeared, never the answer"
- },
- {
-  "at": "2026-11-05T11:47:40Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2107,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-05T11:58:48Z",
-  "passed": 83,
-  "of": 89,
-  "ms": 336,
-  "kind": "file",
-  "key": "what are the figures doing | only \"waking up\" appeared, never the answer",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 4 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "what are the figures doing",
-    "why": "only \"waking up\" appeared, never the answer"
-   },
-   {
-    "ask": "send it away",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "favorite this",
-    "why": "only \"waking up\" appeared, never the answer"
-   },
-   {
-    "ask": "order food from lovebird in lakeland",
-    "why": "refused: couldn't find"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2107,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "fix: \"what are the figures doing\" only \"waking up\" appeared, never the answer"
- },
- {
-  "at": "2026-11-05T12:21:56Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2096,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-05T12:32:47Z",
-  "passed": 87,
-  "of": 89,
-  "ms": 284,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2096,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "new ground passed, kept as a regression case: \"yo draw a cartoon cat\" (skill:cartoon)"
- },
- {
-  "at": "2026-11-05T12:45:18Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 3092,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 11453 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-05T13:12:35Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2317,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 17758 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-05T13:23:33Z",
   "passed": 85,
   "of": 90,
@@ -7509,5 +7296,157 @@
    "failed": []
   },
   "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-14T22:43:59Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1354,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9152 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-14T23:12:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 686,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-14T23:41:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 864,
+   "failed": [
+    {
+     "ask": "translate hello to spanish",
+     "why": [
+      "answer misses /hola/i"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-15T00:11:37Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1236,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8557 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-15T00:38:21Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1406,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9418 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-15T01:19:09Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 983,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10587 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-15T01:57:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 860,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-15T02:09:42Z",
+  "passed": 122,
+  "of": 126,
+  "ms": 364,
+  "kind": "file",
+  "key": "is unwrap risky in rust | refused: don't know this yet",
+  "failed": [
+   {
+    "ask": "is unwrap risky in rust",
+    "why": "refused: don't know this yet"
+   },
+   {
+    "ask": "films by kurosawa pls",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film metadata for ikiru pls",
+    "why": "refused: don't know this yet"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 860,
+   "failed": []
+  },
+  "note": "fix: \"is unwrap risky in rust\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]

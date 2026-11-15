@@ -188,6 +188,8 @@ export const CODER_RUN_CALLS = 30;
 export function coderShort(budget, now, need = CODER_RUN_CALLS, spare = false) {
   if (spare) return null;
   if (!budget || typeof budget !== 'object') return null;
+  // past the free ceiling the treasury pays for the call. The free count is not a stop.
+  if (budget.paid === true) return null;
   if (budget.room === false) return { until: budget.until || null };
   const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);
   const d = new Date(now);
@@ -227,7 +229,9 @@ export function plan({ jobs = [], wf = {}, handed = {}, now, exam }) {
   }
   // the most valuable queued job each executor can take; one start per executor a tick, none while it runs, under its daily cap
   const taken = new Set();
-  const first = (j) => FIRST[kindOf(j.target)] || 0;
+  // an open team want (id or target want-*, or the note fileWants writes) starts before an old repair: those repairs were taking every coder run
+  const teamWant = (j) => /^want-/.test(String(j.id || '')) || /(?:^|:)want-/.test(String(j.target || '')) || /wanted by Verse/.test(String(j.note || ''));
+  const first = (j) => (teamWant(j) ? 3 : 0) || (FIRST[kindOf(j.target)] || 0);
   const queued = jobs.filter((j) => j.state === 'queued').sort((a, b) => first(b) - first(a) || score(b, now, exam) - score(a, now, exam) || ms(a.at) - ms(b.at));
   for (const j of queued) {
     // a repair of a loop that is green again (its newest finished run passed) has nothing left to repair: it is set aside, not handed to

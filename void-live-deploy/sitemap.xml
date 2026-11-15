@@ -572,13 +572,13 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/assimilated/</loc>
-    <lastmod>2026-11-14</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/compare/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -626,7 +626,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/llms.txt</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -668,7 +668,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/progress/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -896,7 +896,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/</loc>
-    <lastmod>2026-11-13</lastmod>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1407,6 +1407,30 @@
   <url>
     <loc>https://a-to-mind.com/lab/f736-teleprompter/</loc>
     <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f748-debt-snowball-planner/</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f749-chore-rota-generator/</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f751-local-message-encryptor/</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f752-local-ssh-key-generator/</loc>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>

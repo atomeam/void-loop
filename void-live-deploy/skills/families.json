@@ -394,7 +394,7 @@
     {
      "name": "flow-canvas",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -849,7 +849,7 @@
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14",
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -859,7 +859,7 @@
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14",
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -869,7 +869,7 @@
      "last_tested": "2026-11-14",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14",
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -3074,7 +3074,7 @@
     {
      "name": "type-filter",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3928,10 +3928,10 @@
      "name": "system-status",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14"
+     "promoted": "2026-11-15"
     },
     {
      "name": "systems-monitor",
@@ -3990,10 +3990,10 @@
      "name": "delivery-pack",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14"
+     "promoted": "2026-11-15"
     },
     {
      "name": "sales-pack",
@@ -4054,19 +4054,19 @@
      "name": "system-handoff",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14"
+     "promoted": "2026-11-15"
     },
     {
      "name": "full-handoff",
      "tier": "checked",
      "why": "a self-test, 2 real asks in the benchmark",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-11-14"
+     "promoted": "2026-11-15"
     },
     {
      "name": "proposal-pack",
@@ -4565,7 +4565,7 @@
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-14",
+     "promoted": "2026-11-15",
      "streak": 2
     },
     {
@@ -4583,7 +4583,7 @@
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-14",
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -4593,7 +4593,7 @@
      "last_tested": "2026-11-14",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-14",
+     "promoted": "2026-11-15",
      "streak": 1
     },
     {
@@ -4616,8 +4616,8 @@
      "name": "scope-pack",
      "tier": "tested",
      "why": "a self-test",
-     "last_tested": "2026-11-14",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-15",
+     "last_tested_by": "its tests",
      "streak": 1
     }
    ]

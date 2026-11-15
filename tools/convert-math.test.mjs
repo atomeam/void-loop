@@ -25,6 +25,7 @@ assert.equal(pairOf('miles', 'kg'), null);
 assert.equal(pairOf('km', 'km'), null);
 
 // asks that open the card (the old ones still do)
+assert.deepEqual(askOf('convert 2'), { open: true, bare: 2 });
 assert.deepEqual(askOf('unit converter'), { open: true });
 assert.deepEqual(askOf('temperature converter'), { open: true, kind: 'temperature' });
 assert.deepEqual(askOf('give me a converter for 5 miles to km'), { open: true, kind: 'length', value: 5, from: 4, to: 1 });

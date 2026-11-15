@@ -63,7 +63,9 @@ export function matchPage(n, pages = []) {
 // existing page for that category as a mode; create a new page only when nothing fits"). First match wins; a route counts only when the
 // site has it. A fake-photo check is a mode of the photo details page, a livestock price tracker a mode of /markets/.
 export const CATEGORIES = Object.freeze([
-  { re: /\b(deepfake|synthetic|authentic|ai[- ]generated|altered|exif|metadata|photo|image|picture)/, route: '/photos/exif/' },
+  { re: /\b(relationship|devotion)\b/, route: '/notes/' },
+  { re: /\b(hvac|thermostat)\b/, route: '/weather/' },
+  { re: /\b(deepfake|synthetic|authentic|ai[- ]generated|altered|exif|metadata|photo|image|picture|provenance|artwork)/, route: '/photos/exif/' },
   { re: /\b(price|market|stock|inflation|invest|livestock|commodit|crypto|currency|exchange rate)/, route: '/markets/' },
   { re: /\b(recipe|snack|meal|cook|food|diet|nutrition)/, route: '/recipes/' },
   { re: /\b(weather|storm|hurricane|forecast|rain|snow|heat)/, route: '/weather/' },

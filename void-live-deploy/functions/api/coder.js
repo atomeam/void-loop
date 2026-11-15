@@ -6,10 +6,12 @@
 // 401 for anyone but the owner; 400 for a malformed conversation; 429 when the day's or the hour's calls are used up (lib/daily-cap.js,
 // so a runaway lap cannot spend the free allowance the public answers need); 503 when no model is bound or it did not answer.
 import { ownerOk } from '../../lib/guard.js';
-import { models } from '../../lib/models.js';
+import { models, PAID_MODEL } from '../../lib/models.js';
 import { runFree } from '../../lib/ai-gateway.js';
 import { capAll, peek, uncap } from '../../lib/daily-cap.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
+import { balances } from '../../lib/treasury.js';
+import { costCents } from '../../lib/router.js';
 
 export const CODER_LIMITS = Object.freeze({ messages: 100, chars: 380000, maxOut: 8192, perHour: 90, perDay: 360 });
 const ROLES = new Set(['system', 'user', 'assistant']);
@@ -51,10 +53,28 @@ export function budgetOf(hourUsed, dayUsed, now = Date.now()) {
 
 // GET: how many of today's and this hour's calls the coder has used (counts only, no asks, no keys), so the conductor starts the coder only
 // when a model will answer (2026-10-30: 40 runs a day went to "no model answered" once the day's calls were used up) and /autopilot/ shows it
+const TREASURY = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
+/** cents in the infrastructure pot, or 0 when the ledger cannot be read. */
+export async function infraCents(env) {
+  try {
+    if (!env || !env.DB) return 0;
+    await env.DB.prepare(TREASURY).run();
+    const rows = (await env.DB.prepare('SELECT kind, bucket, cents FROM void_treasury').all()).results || [];
+    return balances(rows).pots.infrastructure || 0;
+  } catch (_) { return 0; }
+}
+/** one paid coder call, already made, taken from the infrastructure pot. The smallest charge is one cent. */
+export async function billCoder(env, cents, model) {
+  const n = Math.max(1, Math.ceil(Number(cents) || 0));
+  const id = 'coder-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  await env.DB.prepare('INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, new Date().toISOString(), 'spend', 'infrastructure', n, 'coder past the free allowance (' + String(model).slice(0, 80) + ')', 'executed').run();
+  return n;
+}
+
 export async function onRequestGet({ env }) {
   const now = Date.now();
-  const [h, d] = await Promise.all([peek(env, hourKey(now), now), peek(env, DAY_KEY, now)]);
-  return Response.json({ model: models('coder'), ...budgetOf(h, d, now) }, { headers: { 'cache-control': 'no-store' } });
+  const [h, d, pot] = await Promise.all([peek(env, hourKey(now), now), peek(env, DAY_KEY, now), infraCents(env)]);
+  return Response.json({ model: models('coder'), ...budgetOf(h, d, now), paid: pot >= 1 }, { headers: { 'cache-control': 'no-store' } });
 }
 
 const clip = (s) => String(s || '').replace(/[A-Za-z0-9_-]{24,}/g, '[masked]').replace(/\s+/g, ' ').trim().slice(0, 80);
@@ -80,10 +100,25 @@ export async function onRequestPost({ request, env }) {
   if (!messages) return new Response('messages: 1 to ' + CODER_LIMITS.messages + ' of { role, content }, ' + CODER_LIMITS.chars + ' characters in all', { status: 400 });
   if (!env.AI) return new Response('no model bound', { status: 503 });
   const now = Date.now(), keys = [[hourKey(now), CODER_LIMITS.perHour], [DAY_KEY, CODER_LIMITS.perDay]];
-  const room = await capAll(env, keys, now);
-  if (!room.ok) return new Response('the coder\'s calls for this ' + (room.key === DAY_KEY ? 'day' : 'hour') + ' are used up', { status: 429 });
-  const giveBack = async () => { for (const [key] of keys) await uncap(env, key, now); };
   const max = Math.min(CODER_LIMITS.maxOut, Math.max(1, Math.floor(Number(b.max_tokens) || 4096)));
+  const room = await capAll(env, keys, now);
+  const giveBack = async () => { for (const [key] of keys) await uncap(env, key, now); };
+  if (!room.ok) {
+    const have = await infraCents(env);
+    if (have < 1) return new Response('the coder\'s calls for this ' + (room.key === DAY_KEY ? 'day' : 'hour') + ' are used up', { status: 429 });
+    try {
+      const paid = await env.AI.run(PAID_MODEL, { messages, max_tokens: max, ...RUN });
+      const text = saidText(paid);
+      if (!text) return new Response('the model answered nothing', { status: 503 });
+      const chars = messages.reduce((n, m) => n + m.content.length, 0);
+      const cents = Math.min(have, Math.max(1, Math.ceil(costCents(PAID_MODEL, paid, chars, text.length))));
+      await billCoder(env, cents, PAID_MODEL);
+      return Response.json({ result: { response: text, usage: (paid && paid.usage) || {} }, model: PAID_MODEL, paid: true, cents });
+    } catch (e) {
+      try { await recordShortfall(env, 'coder', reasonOf(e)); } catch (_) { /* the count is best effort */ }
+      return new Response('the model did not answer: ' + reasonOf(e) + (clip(e && e.message) ? ' (' + clip(e && e.message) + ')' : ''), { status: 503 });
+    }
+  }
   const model = models('coder');
   const ask = (extra) => runFree(env, model, { messages, max_tokens: max, ...RUN, ...extra });
   try {
