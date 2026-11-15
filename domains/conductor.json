@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-15T03:55:58.007Z",
+ "updated": "2026-11-15T04:05:15.758Z",
  "last24h": {
-  "ticks": 28,
+  "ticks": 29,
   "started": 28,
   "requeued": 0,
   "setAside": 1,
@@ -11,6 +11,10 @@
  },
  "broken": [],
  "held": [
+  {
+   "id": "want-idea-f167636764",
+   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
+  },
   {
    "id": "want-page-tools-json",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
@@ -21,10 +25,6 @@
   },
   {
    "id": "want-idea-298bf37d16",
-   "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
-  },
-  {
-   "id": "want-idea-f167636764",
    "why": "verse-job.yml is paused (the coder's back-off, #2833, until 06:15 UTC)"
   },
   {
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 23,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -971,6 +971,27 @@
   },
   {
    "at": "2026-11-15T03:55:58.007Z",
+   "open": 432,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 409,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-15T04:05:15.758Z",
    "open": 432,
    "started": [],
    "requeued": 0,
