@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4a9eff; --text:#e8eaed; --muted:#9aa0a6; --ok:#6f8f62; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, sans-serif; line-height:1.5; padding:1rem; }
+h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+.card { background:var(--card); border-radius:12px; padding:1rem; margin:0.75rem 0; }
+label { display:block; margin:0.5rem 0 0.2rem; color:var(--muted); font-size:0.9rem; }
+input, select, button { font:inherit; padding:0.5rem; border-radius:8px; border:1px solid #333; background:#111; color:var(--text); }
+button { background:var(--accent); color:#000; border:none; cursor:pointer; font-weight:600; margin:0.25rem 0.25rem 0.25rem 0; }
+button:hover { opacity:0.9; }
+.times { list-style:none; padding:0; }
+.times li { background:#111; margin:0.3rem 0; padding:0.6rem; border-radius:8px; display:flex; justify-content:space-between; }
+.badge { background:var(--ok); color:#000; padding:0.1rem 0.4rem; border-radius:4px; font-size:0.75rem; }
+footer { margin-top:2rem; color:var(--muted); font-size:0.8rem; }
+.status { color:var(--muted); font-size:0.85rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sleep cycle calculator · Verse lab</title>
+<meta name="description" content="Job: Enter the time you need to wake up or the time you plan to go to bed.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sleep cycle calculator · Verse lab">
+<meta property="og:description" content="Job: Enter the time you need to wake up or the time you plan to go to bed.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f757-sleep-cycle-calculator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f757-sleep-cycle-calculator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Sleep cycle calculator</h1>
+<p class="status">Based on average 90-minute sleep cycles. Individual variation applies. Offline after load. Nothing sent.</p>
+
+<div class="card">
+  <label>Mode</label>
+  <label><input type="radio" name="mode" value="wake" checked> I need to wake at</label>
+  <label><input type="radio" name="mode" value="bed"> I plan to go to bed at</label>
+  <label for="time">Time</label>
+  <input type="time" id="time" value="07:00">
+  <label for="latency">Minutes to fall asleep</label>
+  <input type="number" id="latency" value="15" min="0" max="60" step="5">
+  <label for="cycles">How many suggestions</label>
+  <input type="number" id="cycles" value="6" min="1" max="10">
+  <button id="calc">Calculate</button>
+  <button id="copy">Copy list</button>
+  <button id="ics">Download .ics</button>
+  <button id="share">Copy share link</button>
+</div>
+
+<div class="card">
+  <h2>Suggested times</h2>
+  <ul class="times" id="results"></ul>
+</div>
+
+<footer>Verse tool · local only · F757</footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
