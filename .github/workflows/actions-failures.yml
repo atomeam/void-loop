@@ -9,7 +9,7 @@ name: Actions failure reader
 
 on:
   workflow_run:
-    workflows: [Verse verify, Verse deploy, Verse self-check, Site test, Team gate, Tower gate, MCP live, deploy workers, workflow-lint]
+    workflows: [Verse verify, Verse deploy, Verse self-check, Site test, Team gate, Tower gate, MCP live, Pages guard, deploy workers, workflow-lint]
     types: [completed]
     branches: [main]
   workflow_dispatch:
@@ -64,4 +64,5 @@ jobs:
             git add void-live-deploy/incidents/actions
             git diff --cached --quiet && exit 0
           done
-          echo "::warning title=Failed jobs not recorded::could not push the record to main"
+          echo "::error title=Failed jobs not recorded::could not push the record to main"
+          exit 1
