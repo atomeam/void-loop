@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T01:11:53.730Z",
+ "updated": "2026-11-16T01:21:15.665Z",
  "last24h": {
   "ticks": 154,
   "started": 121,
@@ -117,7 +117,7 @@
   "mwa0ah54": 1794789820725,
   "mwdsggtv": 1794790949344,
   "mwdsgi9n": 1794791513730,
-  "mwdsgj2z": 1794770116534,
+  "mwdsgj2z": 1794792075665,
   "mweaagmp": 1794770679544,
   "mweaah6f": 1794771239620,
   "mwey8iy6": 1794771800369,
@@ -145,8 +145,8 @@
   "mvvjzso8": 1794790949344,
   "mw5mm5fm": 1794791513730
  },
- "sweptAt": 1794788134721,
- "blueprintsAt": 1794788134721,
+ "sweptAt": 1794792075665,
+ "blueprintsAt": 1794792075665,
  "visitorAt": "2026-11-15T23:09:52Z",
  "visitorFiled": [
   "review:2605",
@@ -231,34 +231,6 @@
   "review:2842"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T01:16:14.428Z",
-   "open": 432,
-   "started": [
-    {
-     "id": "mweaah6f",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 44
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 407,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T01:25:37.606Z",
    "open": 432,
@@ -4293,6 +4265,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 409,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T01:21:15.665Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 47
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 417,
    "warnings": 1
   }
  ]
