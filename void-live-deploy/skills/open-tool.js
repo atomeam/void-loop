@@ -31,7 +31,7 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'mind map': '/lab/mind-map/', 'mind map maker': '/lab/mind-map/', 'mindmap': '/lab/mind-map/', 'make a mind map': '/lab/mind-map/' };
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
-const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/random/wheel/', '/vat/']);
+const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/random/wheel/', '/vat/', '/arcade/']);
 const OPEN = /^(?:open|show(?: me)?|go to|take me to|launch|bring up)\s+(?:the |my |a |an )?/i;
 
 /** the tool an ask names, as { href, label }, or null. Pure. */

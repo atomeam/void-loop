@@ -1,18 +1,7 @@
 {
-  "at": "2026-11-15T14:20:52.889Z",
+  "at": "2026-11-16T16:29:39.472Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [
-    {
-      "id": "ask-20261114-2255-2",
-      "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
-      "target": "voice:ask-20261114-2255-2"
-    },
-    {
-      "id": "ask-20261114-2247-3",
-      "ask": "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores.",
-      "target": "voice:ask-20261114-2247-3"
-    }
-  ],
+  "selected": [],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }

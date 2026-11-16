@@ -43,6 +43,7 @@
   "/notes/": "in: text, items; out: text, items",
   "/password/": "in: number; out: text",
   "/pdf/": "in: image, text; out: image, text",
+
   "/photos/": "in: image; out: image, color",
   "/photos/exif/": "in: image; out: image, color",
   "/photos/exifeditor/": "in: image; out: image, color",

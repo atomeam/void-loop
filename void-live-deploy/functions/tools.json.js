@@ -18,22 +18,28 @@ export async function onRequestGet({ request, env }) {
   const get = async (p) => { const r = await env.ASSETS.fetch(new Request(origin + p)); return r.ok ? r.text() : ''; };
   const tools = CORE.map((t) => ({ ...t }));
   try {
-    const index = JSON.parse(await get('/skills/index.json'));
+    const indexStr = await get('/skills/index.json');
+    if (!indexStr) throw new Error('No index');
+    const index = JSON.parse(indexStr);
     const names = [];
     for (const name of index) {
-      // a family skill (lib/skill-family.js) names its members on a `parts:` line; agents still see each member as its own tool
-      const fam = (await get('/skills/' + name + '.js')).match(/^\s*\*\s*parts:\s*\[([^\]]*)\]/m);
+      const src = await get('/skills/' + name + '.js');
+      if (!src) continue;
+      const fam = src.match(/^\s*\*\s*parts:\s*\[([^\]]*)\]/m);
       if (fam) names.push(...Array.from(fam[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1])); else names.push(name);
     }
     for (const name of names) {
       if (HIDDEN.has(name)) continue;
       const src = await get('/skills/' + name + '.js');
+      if (!src) continue;
       const m = src.match(/examples\s*:\s*\[([^\]]*)\]/);
       const examples = m ? Array.from(m[1].matchAll(/'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"/g)).map((x) => (x[1] ?? x[2]).replace(/\\'/g, "'")) : [];
       const d = src.match(/^\s*\*\s*\w[\w-]*\s+skill\s+[—-]\s+(.+)$/m);
       tools.push({ name: name === 'place' ? 'map' : name, description: d ? d[1].trim() : name, examples });
     }
-  } catch (_) {}
+  } catch (e) {
+    console.error('Failed to build tools.json:', e);
+  }
   const out = {
     name: 'Verse by A-to-Mind',
     call: { method: 'GET', url: origin + '/?q={ask}', note: 'Opens Verse in a browser and runs the ask in plain words. Results render in the page.' },

@@ -1,15 +1,105 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 125,
+ "cases": 126,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 222,
-  "file": 35,
-  "grow": 39,
+  "visitor": 224,
+  "file": 32,
+  "grow": 40,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-16T16:17:31Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-16T15:20:44Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-16T14:54:24Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-16T14:24:28Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-16T12:00:53Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-16T03:16:21Z",
+   "passed": 121,
+   "of": 127,
+   "kind": "grow",
+   "ms": 354,
+   "note": "new ground passed, kept as a regression case: \"scope pack for the invoice automation\" (skill:scope-pack)",
+   "failed": [
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "attention field",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo films by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "style like mickey mouse pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "how do i magnetize this?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "sales pack for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-16T03:04:29Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-15T23:09:52Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-15T17:58:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-15T11:28:19Z",
    "passed": 0,
@@ -151,174 +241,85 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T23:41:36Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T23:12:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T22:43:59Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T22:18:44Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-14T19:28:21Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T14:29:24Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T07:11:25Z",
-   "passed": 120,
-   "of": 125,
-   "kind": "grow",
-   "ms": 337,
-   "note": "new ground passed, kept as a regression case: \"cross the bus\" (skill:cross-bus)",
-   "failed": [
-    {
-     "ask": "swarm mind",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "echo this",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "style like mickey mouse pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-14T06:59:39Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-14T02:26:04Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-23",
+   "from": "2026-08-24",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-30",
+   "from": "2026-08-31",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-06",
+   "from": "2026-09-07",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-13",
+   "from": "2026-09-14",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-20",
+   "from": "2026-09-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-27",
+   "from": "2026-09-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-04",
+   "from": "2026-10-05",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-11",
+   "from": "2026-10-12",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-18",
+   "from": "2026-10-19",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-25",
+   "from": "2026-10-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-01",
-   "runs": 121,
-   "passed": 3298,
-   "of": 4201,
-   "broken": 7,
-   "brokenOf": 735,
-   "brokenPassed": 74,
+   "from": "2026-11-02",
+   "runs": 152,
+   "passed": 3798,
+   "of": 5454,
+   "broken": 14,
+   "brokenOf": 1491,
+   "brokenPassed": 135,
    "ms": 391
   },
   {
-   "from": "2026-11-08",
-   "runs": 179,
-   "passed": 3164,
-   "of": 4059,
-   "broken": 7,
-   "brokenOf": 756,
-   "brokenPassed": 61,
-   "ms": 388
+   "from": "2026-11-09",
+   "runs": 148,
+   "passed": 2538,
+   "of": 2663,
+   "ms": 391
   }
  ],
  "seen": {
@@ -750,6 +751,8 @@
   "skill:null-waves": "2026-11-15T02:35:49Z",
   "skill:packet-maze": "2026-11-15T03:16:29Z",
   "skill:push-packets": "2026-11-15T03:16:29Z",
-  "skill:roi-pack": "2026-11-15T03:16:29Z"
+  "skill:roi-pack": "2026-11-15T03:16:29Z",
+  "skill:sales-pack": "2026-11-16T03:16:21Z",
+  "skill:scope-pack": "2026-11-16T03:16:21Z"
  }
 }

@@ -163,12 +163,16 @@ export function undatedOf(text) {
 const OPEN_NOT = /\b(?:day|days|week|weekend|morning|evening|night|today|tomorrow|weight|diet|meal|meals|eat|eating|calories|workout|exercise|fitness|gym|run|running|jog|jogging|marathon|sleep|health|medical|medicine|medication|pain|therapy|money|budget|debt|loan|invest|investing|investment|savings|retirement|tax|taxes|stocks?|crypto)\b/;
 export function openPlanOf(text) {
   if (planOf(text)) return null; // a kind with its own steps, dated or not
-  const t = planWords(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'"));
+  const t = planWords(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[']/g, "'"));
+  // system-plan/idea-to-system own explicit system-planning asks ("plan the systems for X", "system plan for X")
+  if (/^(?:plan\s+the\s+systems|system\s+plan|clarify\s+and\s+plan)\b/.test(t) || /\bsystems?\s+(?:plan|map|blueprint)\b/.test(t)) return null;
   if (new RegExp('\\b(?:by|before|until|till|on|in)\\s+' + DATE_RE + '\\b').test(t)) return null;
   const m = PLAN_VERB_RE.exec(t) || PLAN_NOUN_RE.exec(t);
   if (!m) return null;
   const goal = listSafe(m[1].trim());
   if (goal.length < 3 || OPEN_NOT.test(goal)) return null;
+  // don't steal system-planning goals
+  if (/^(?:the\s+)?systems?\s+(?:for|of)\b/.test(goal)) return null;
   return { goal, who: m[2] && !NOT_A_PERSON.test(m[2]) ? m[2] : null };
 }
 

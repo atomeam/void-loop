@@ -755,6 +755,15 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /lab/f750-typing-rhythm-es-css-grid-portals-mind/ | - | - | no | its tag |
 | /lab/f751-local-message-encryptor/ | - | - | no | its tag |
 | /lab/f752-local-ssh-key-generator/ | - | - | no | its tag |
+| /lab/f753-local-business-card-maker/ | - | - | no | its tag |
+| /lab/f754-local-camera-contrast-palette-maker/ | - | - | no | its tag |
+| /lab/f755-webgpu-sph-orientation-mlp-buoyancy-mind/ | - | - | no | its tag |
+| /lab/f756-opfs-genetic-terrain-mind/ | - | - | no | its tag |
+| /lab/f757-sleep-cycle-calculator/ | - | - | no | its tag |
+| /lab/f759-webgpu-device-motion-trajectory-logger/ | - | - | no | its tag |
+| /lab/f760-webxr-hand-lbm-portal-mind/ | - | - | no | its tag |
+| /lab/f761-webgpu-nbody-webrtc-dom-agents-mind/ | - | - | no | its tag |
+| /lab/f762-webgpu-sdf-gaze-rnn-portal-mind/ | - | - | no | its tag |
 | /lab/frontier-orientation-swarm/ | - | - | no | its tag |
 | /lab/frontier-webgpu-attention-field/ | - | - | no | its tag |
 | /lab/level/ | number | text | yes | its tag |

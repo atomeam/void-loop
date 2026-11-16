@@ -1,0 +1,190 @@
+{
+ "at": "2026-11-16T14:58:19Z",
+ "sha": "9555245ee16cc2627faa9c39d65ec82b8483f2e6",
+ "runId": 43888903465,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43888903465",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 133374451793,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374451793",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)"
+   },
+   "fails": [],
+   "tail": [
+    "family members that are not skills (remove or rename): system-plan",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (4)",
+   "id": 133374451891,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374451891",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [
+    "Error: 9555245ee16cc2627faa9c39d65ec82b8483f2e6 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: the full suite never ran: a step before it failed (see this run's log), so there is no failed check to revert by. Look at the failed checks and revert "
+   ],
+   "tail": [
+    "  exit 1",
+    "fi",
+    "if git diff --cached --quiet; then",
+    "  git revert --abort || true",
+    "  echo \"::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now.\"",
+    "  echo \"### $sha broke the suite ($why); its revert is empty on main now: look by hand\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  exit 1",
+    "fi",
+    "# the ledger says what was taken back, so \"growth\" never shows a change the site no longer has without saying so",
+    "node tools/grow.mjs retire \"Taken back off the site: \\\"$subject\\\" ($sha) failed the browser suite on main ($why).\" --by void-verify --ref \"https://github.com/atomeam/void-loop/actions/runs/43888903465\" && git add void-live-deploy/void.growth.json || true",
+    "git commit -q -m \"Revert \\\"$subject\\\"\" -m \"It shipped and the browser suite failed on main (job browser-suite in Verse verify, run 43888903465, testing $tested): $why. So it is taken back off the site.\" -m \"Verse-auto-revert: $sha\"",
+    "git push origin main",
+    "node tools/suite-gate.mjs queue \"$sha\" \"$why\" || echo \"::warning title=Fix job not filed::the revert is on main; the heal job was not queued\"",
+    "gh workflow run deploy.yml --repo \"atomeam/void-loop\" --ref main -f after_merge=true",
+    "echo \"::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again.\"",
+    "echo \"### $sha broke the suite after shipping ($why): reverted on main and redeployed\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "exit 1 # the test step no longer fails the job by itself (it continues so a flake can be rerun)",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig",
+    "  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib",
+    "  VOID_TEST_BROWSER: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "  GH_TOKEN: ***",
+    "  VOID_OWNER_TOKEN: ***",
+    "Error: 9555245ee16cc2627faa9c39d65ec82b8483f2e6 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: the full suite never ran: a step before it failed (see this run's log), so there is no failed check to revert by. Look at the failed checks and revert ",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (1)",
+   "id": 133374452018,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374452018",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "family members that are not skills (remove or rename): system-plan",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (7)",
+   "id": 133374452103,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374452103",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "family members that are not skills (remove or rename): system-plan",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (8)",
+   "id": 133374452118,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374452118",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "family members that are not skills (remove or rename): system-plan",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (5)",
+   "id": 133374452198,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374452198",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "family members that are not skills (remove or rename): system-plan",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (2)",
+   "id": 133374452228,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133374452228",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "family members that are not skills (remove or rename): system-plan",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "incident",
+   "id": 133382908779,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43888903465/job/133382908779",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Record or close"
+   },
+   "fails": [],
+   "tail": [
+    "    cat suite-output/*/test-output.txt > /tmp/all-output.txt 2>/dev/null || true",
+    "    node tools/incident-log.mjs record \"$tested\" \"$run\" /tmp/all-output.txt \"$failed\" || true",
+    "  fi",
+    "  [ -n \"$passed\" ] && { node tools/incident-log.mjs pass \"$tested\" \"$run\" \"$passed\" || true; }",
+    "}",
+    "apply",
+    "if [ -n \"$failed\" ]; then",
+    "  msg=\"Incident: the browser suite failed on ${tested:0:8} (void-live-deploy/incidents.json)\"",
+    "else",
+    "  msg=\"Incidents closed: shard(s) $passed passed on ${tested:0:8} (void-live-deploy/incidents.json)\"",
+    "fi",
+    "if [ -d void-live-deploy/incidents/entries ]; then git add void-live-deploy/incidents/entries; fi",
+    "git diff --cached --quiet && { echo \"nothing to write\"; exit 0; }",
+    "git config user.name \"github-actions[bot]\"",
+    "git config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"",
+    "for i in 1 2 3 4; do",
+    "  git add void-live-deploy/incidents/entries && git commit -q -m \"$msg\" && git push -q origin HEAD:main && exit 0",
+    "  sleep $((2 ** i)); git fetch -q origin main && git reset -q --hard origin/main",
+    "  # re-apply on the newer main (one file per suite run, so another run's file stays)",
+    "  apply",
+    "  if [ -d void-live-deploy/incidents/entries ]; then git add void-live-deploy/incidents/entries; fi",
+    "  git diff --cached --quiet && exit 0",
+    "done",
+    "echo \"::warning title=Incident not recorded::could not push the incident entry to main\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  GH_TOKEN: ***",
+    "shards passed: none; failed: 1,2,4,5,7,8",
+    "incident-log: no FAIL line, nothing recorded",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -1315,6 +1315,20 @@
    "weight": 709287,
    "at": "2026-10-30"
   },
+  "businessesusa.com": {
+   "bytes": 1351631,
+   "controls": 74,
+   "scripts": 6,
+   "styles": 1,
+   "nodes": 39,
+   "routes": 19,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3205,
+   "shell": "none",
+   "weight": 1373521,
+   "at": "2026-11-16"
+  },
   "businessnamegenerator.com": {
    "bytes": 567587,
    "controls": 77,
@@ -1916,6 +1930,20 @@
    "shell": "none",
    "weight": 379704,
    "at": "2026-10-30"
+  },
+  "chatjimmy.ai": {
+   "bytes": 3895236,
+   "controls": 13,
+   "scripts": 20,
+   "styles": 1,
+   "nodes": 37,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 169,
+   "shell": "none",
+   "weight": 3935606,
+   "at": "2026-11-16"
   },
   "checkeremail.com": {
    "bytes": 865257,
@@ -5626,7 +5654,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-15"
+   "at": "2026-11-16"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -5991,6 +6019,20 @@
    "shell": "none",
    "weight": 1639103,
    "at": "2026-10-30"
+  },
+  "gamevn.vip": {
+   "bytes": 4530,
+   "controls": 3,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 2,
+   "htmlControls": 2,
+   "counted": "rendered",
+   "text": 200,
+   "shell": "none",
+   "weight": 7690,
+   "at": "2026-11-15"
   },
   "gcmap.com": {
    "refused": true,
@@ -6896,7 +6938,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 14,
+   "bytes": 13,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6905,9 +6947,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 13,
-   "weight": 14,
-   "at": "2026-11-15"
+   "text": 12,
+   "weight": 13,
+   "at": "2026-11-16"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -9463,6 +9505,20 @@
    "weight": 2500878,
    "at": "2026-10-30"
   },
+  "paitolottohk.life": {
+   "bytes": 4581,
+   "controls": 3,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 2,
+   "htmlControls": 2,
+   "counted": "rendered",
+   "text": 222,
+   "shell": "none",
+   "weight": 7741,
+   "at": "2026-11-16"
+  },
   "pancardresizer.com": {
    "bytes": 602495,
    "controls": 23,
@@ -10021,7 +10077,7 @@
    "shell": "none",
    "text": 37,
    "weight": 70,
-   "at": "2026-11-15"
+   "at": "2026-11-16"
   },
   "proton.me": {
    "bytes": 835896,
@@ -14192,6 +14248,20 @@
    "shell": "none",
    "weight": 2482,
    "at": "2026-11-06"
+  },
+  "vokagalaxy.com": {
+   "bytes": 1245358,
+   "controls": 17,
+   "scripts": 14,
+   "styles": 1,
+   "nodes": 50,
+   "routes": 5,
+   "htmlControls": 5,
+   "counted": "rendered",
+   "text": 1216,
+   "shell": "none",
+   "weight": 1276358,
+   "at": "2026-11-16"
   },
   "vtuner.com": {
    "bytes": 65115,

@@ -529,6 +529,96 @@
    "listed": 4,
    "defectsBefore": 13,
    "defectsAfter": 2
+  },
+  {
+   "at": "2026-11-15T15:31:09.752Z",
+   "run": 73,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 3,
+   "listed": 3,
+   "defectsBefore": 12,
+   "defectsAfter": 1
+  },
+  {
+   "at": "2026-11-15T17:32:54.203Z",
+   "run": 74,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 2,
+   "listed": 4,
+   "defectsBefore": 12,
+   "defectsAfter": 6
+  },
+  {
+   "at": "2026-11-15T17:54:25.267Z",
+   "run": 75,
+   "measured": 30,
+   "clean": 26,
+   "fixed": 1,
+   "listed": 3,
+   "defectsBefore": 2,
+   "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-15T20:02:56.819Z",
+   "run": 76,
+   "measured": 30,
+   "clean": 22,
+   "fixed": 3,
+   "listed": 5,
+   "defectsBefore": 5,
+   "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-15T22:04:50.961Z",
+   "run": 77,
+   "measured": 30,
+   "clean": 23,
+   "fixed": 4,
+   "listed": 3,
+   "defectsBefore": 7,
+   "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-15T23:27:19.659Z",
+   "run": 78,
+   "measured": 30,
+   "clean": 18,
+   "fixed": 6,
+   "listed": 6,
+   "defectsBefore": 13,
+   "defectsAfter": 1
+  },
+  {
+   "at": "2026-11-16T01:31:29.199Z",
+   "run": 79,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 2,
+   "listed": 4,
+   "defectsBefore": 5,
+   "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-16T02:57:04.218Z",
+   "run": 80,
+   "measured": 30,
+   "clean": 25,
+   "fixed": 1,
+   "listed": 4,
+   "defectsBefore": 1,
+   "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-16T07:14:43.467Z",
+   "run": 82,
+   "measured": 30,
+   "clean": 28,
+   "fixed": 1,
+   "listed": 1,
+   "defectsBefore": 12,
+   "defectsAfter": 1
   }
  ],
  "pages": {
@@ -4615,7 +4705,7 @@
    "state": "clean"
   },
   "/progress/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5138,15 +5228,15 @@
    "state": "clean"
   },
   "/lab/f584-webgpu-voice-driven-nca-ui-sculptor/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 3,
     "contrast": 0,
     "targets": 3,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.001,
-    "overflow": 1207
+    "cls": 0,
+    "overflow": 1205
    },
    "state": "listed",
    "why": "the defects did not go down (3 -> 3)"
@@ -5335,7 +5425,7 @@
    "state": "clean"
   },
   "/lab/f0482-webgpu-softbody-policy-mind/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5374,14 +5464,14 @@
    "state": "clean"
   },
   "/lab/151-local-proxy-not-sense/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.001,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
@@ -5414,28 +5504,28 @@
    "state": "clean"
   },
   "/lab/f489-mic-spectral-reservoir-css3d-crystal-mind/": {
-   "at": "2026-11-15T13:29:12.888Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
-    "defects": 4,
-    "contrast": 4,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 13
-   },
-   "state": "fixed",
-   "after": {
     "defects": 2,
     "contrast": 2,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 1
+    "overflow": 23
    },
-   "rules": 4,
-   "moved": 0.026
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 20
+   },
+   "rules": 2,
+   "moved": 0.036
   },
   "/lab/f218-orientation-rnn-softbody-dom-competition/": {
    "at": "2026-11-15T13:29:12.888Z",
@@ -5490,7 +5580,7 @@
    "state": "clean"
   },
   "/lab/147-local-quiet-not-boost/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5503,7 +5593,7 @@
    "state": "clean"
   },
   "/lab/f461-webxr-gaze-online-mlp-dom-physics/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5529,20 +5619,20 @@
    "state": "clean"
   },
   "/lab/f466-webgpu-spectral-cloth-dom-weaver/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.029,
-    "overflow": 71
+    "cls": 0.022,
+    "overflow": 65
    },
    "state": "clean"
   },
   "/lab/f246-webgpu-causal-entanglement-lattice-mind/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5555,20 +5645,20 @@
    "state": "clean"
   },
   "/lab/f616-gpa-calculator/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.021,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/limits/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5581,7 +5671,7 @@
    "state": "clean"
   },
   "/lab/f197-webgpu-predictive-spectral-constellation/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5594,7 +5684,7 @@
    "state": "clean"
   },
   "/lab/f421-webgpu-predictive-spectral-constellation/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5607,21 +5697,21 @@
    "state": "clean"
   },
   "/lab/f488-orient-reservoir-dom-auction-mind/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 1,
     "contrast": 1,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
-    "overflow": 0
+    "cls": 0.001,
+    "overflow": 4
    },
    "state": "listed",
-   "why": "it made the page scroll sideways"
+   "why": "the defects did not go down (1 -> 2)"
   },
   "/lab/f307-webgpu-mlp-physics-dom-pushers/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5634,7 +5724,7 @@
    "state": "clean"
   },
   "/lab/f308-lbm-wing-forge/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5647,21 +5737,21 @@
    "state": "clean"
   },
   "/lab/f227-hypervector-dreamer/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 1,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.031,
+    "cls": 0,
     "overflow": 0
    },
    "state": "listed",
    "why": "the defects did not go down (1 -> 1)"
   },
   "/podcast/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5674,7 +5764,7 @@
    "state": "clean"
   },
   "/lab/156-local-cooccur-not-imply/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5687,57 +5777,46 @@
    "state": "clean"
   },
   "/lab/f501-pressure-tilt-mlp-card-sculptor/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
-    "overflow": 7
+    "cls": 0.014,
+    "overflow": 17
    },
    "state": "clean"
   },
   "/lab/f306-slime-rail-planner/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
-    "defects": 3,
+    "defects": 0,
     "contrast": 0,
-    "targets": 3,
+    "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0.005,
     "overflow": 0
    },
-   "state": "fixed",
-   "after": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.004,
-    "overflow": 0
-   },
-   "rules": 3,
-   "moved": 0.111
+   "state": "clean"
   },
   "/lab/f207-spoken-sdf-program-synthesis/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.027,
+    "cls": 0.02,
     "overflow": 0
    },
    "state": "clean"
   },
   "/obituaries/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5750,21 +5829,20 @@
    "state": "clean"
   },
   "/weather/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
-    "defects": 1,
+    "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.116,
+    "cls": 0.05,
     "overflow": 0
    },
-   "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.116 that no rule fixes: listed for a builder)"
+   "state": "clean"
   },
   "/lab/f324-deviceorient-idb-webrtc-mlp-orb-arena/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5777,18 +5855,8 @@
    "state": "clean"
   },
   "/lab/f582-webgpu-spectral-voice-sdf-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
-    "defects": 9,
-    "contrast": 0,
-    "targets": 5,
-    "unstyled": 4,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 4,
     "contrast": 0,
     "targets": 4,
@@ -5797,25 +5865,25 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 5,
-   "moved": 0
+   "state": "listed",
+   "why": "the defects did not go down (4 -> 4)"
   },
   "/lab/f314-webgpu-multi-mlp-swarm-arena/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 4,
     "contrast": 0,
     "targets": 4,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.003,
+    "cls": 0.006,
     "overflow": 0
    },
    "state": "listed",
    "why": "the defects did not go down (4 -> 4)"
   },
   "/lab/f505-webgpu-implicit-mind-surface/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5828,7 +5896,7 @@
    "state": "clean"
   },
   "/lab/f452-orient-mlp-canvas-agent-persistence/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5841,21 +5909,21 @@
    "state": "clean"
   },
   "/lab/f0486-spectral-vortex-policy-mind/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.486,
+    "cls": 0.662,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.486 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.662 that no rule fixes: listed for a builder)"
   },
   "/lab/f567-multiagent-rnn-dom-competition-mind/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 12,
     "contrast": 12,
@@ -5863,13 +5931,13 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 261
+    "overflow": 218
    },
    "state": "listed",
    "why": "no rule fixes it"
   },
   "/lab/f474-webgpu-sdf-recurrent-reasoner-morph-mind/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5882,7 +5950,7 @@
    "state": "clean"
   },
   "/lab/f197-webgpu-neural-kernel-competition-field/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5895,20 +5963,20 @@
    "state": "clean"
   },
   "/lab/f276-webgpu-spatial-concept-graph-mind/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.017,
-    "overflow": 0
+    "cls": 0.023,
+    "overflow": 33
    },
    "state": "clean"
   },
   "/lab/f518-webgpu-wave-membrane-rnn-pin-dom-mind/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5921,7 +5989,7 @@
    "state": "clean"
   },
   "/lab/f504-webgpu-stable-fluids-mlp-advection-mind/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 4,
     "contrast": 0,
@@ -5935,20 +6003,20 @@
    "why": "the defects did not go down (4 -> 4)"
   },
   "/lab/150-local-interval-not-measure/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.003,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f245-webgpu-acoustic-softbody-webxr-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5961,7 +6029,7 @@
    "state": "clean"
   },
   "/lab/f523-speech-causal-rnn-absorb-dom-agents-mind/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5974,7 +6042,7 @@
    "state": "clean"
   },
   "/lab/f201-webgpu-multiagent-sealed-genome-competition/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -5988,7 +6056,20 @@
    "why": "no rule fixes it (a layout shift of 0.312 that no rule fixes: listed for a builder)"
   },
   "/lab/f507-webrtc-rnn-spatial-dom-auction-mind/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.06,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f247-webgpu-causal-token-swarm-mind/": {
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6000,21 +6081,8 @@
    },
    "state": "clean"
   },
-  "/lab/f247-webgpu-causal-token-swarm-mind/": {
-   "at": "2026-11-11T07:04:43.189Z",
-   "before": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.003,
-    "overflow": 0
-   },
-   "state": "clean"
-  },
   "/lab/f429-webgpu-causal-token-swarm-mind/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6027,7 +6095,7 @@
    "state": "clean"
   },
   "/security/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6040,7 +6108,7 @@
    "state": "clean"
   },
   "/lab/144-local-weak-not-attest/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6053,7 +6121,7 @@
    "state": "clean"
   },
   "/contribute/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6066,20 +6134,20 @@
    "state": "clean"
   },
   "/lab/145-local-gaze-not-command/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.001,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f309-webxr-gaze-rnn-idb-orb-field/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6092,7 +6160,7 @@
    "state": "clean"
   },
   "/lab/f236-scene-blocker/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6105,7 +6173,7 @@
    "state": "clean"
   },
   "/fix/zapier-401-unauthorized/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6118,7 +6186,7 @@
    "state": "clean"
   },
   "/fix/zapier-403-forbidden/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6131,7 +6199,7 @@
    "state": "clean"
   },
   "/members/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -6145,7 +6213,7 @@
    "why": "no rule fixes it (a layout shift of 0.14 that no rule fixes: listed for a builder)"
   },
   "/fix/n8n-econnrefused-http-request/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6158,7 +6226,7 @@
    "state": "clean"
   },
   "/fix/n8n-json-parameter-needs-valid-json/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6171,7 +6239,7 @@
    "state": "clean"
   },
   "/fix/zapier-422-unprocessable-entity/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6184,7 +6252,7 @@
    "state": "clean"
   },
   "/fix/github-actions-npm-ci-lockfile-out-of-sync/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6197,7 +6265,7 @@
    "state": "clean"
   },
   "/fix/power-automate-invalid-template-expression/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6210,7 +6278,7 @@
    "state": "clean"
   },
   "/fix/power-automate-connection-needs-fixing/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6223,7 +6291,7 @@
    "state": "clean"
   },
   "/fix/github-actions-permission-denied-publickey/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6275,28 +6343,17 @@
    "state": "clean"
   },
   "/agent/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.007,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.007,
+    "cls": 0.015,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/kanban/teams/": {
    "at": "2026-11-11T07:59:25.977Z",
@@ -6312,7 +6369,7 @@
    "state": "clean"
   },
   "/lab/f317-webxr-hand-rd-dom-field/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6325,7 +6382,7 @@
    "state": "clean"
   },
   "/lab/f234-loop-grid/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6338,7 +6395,7 @@
    "state": "clean"
   },
   "/lab/f501-ambient-light-metabolic-swarm-mind/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 5,
     "contrast": 0,
@@ -6352,7 +6409,7 @@
    "why": "the defects did not go down (5 -> 5)"
   },
   "/lab/f192-webxr-hand-force-cloth-kernel/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6365,7 +6422,7 @@
    "state": "clean"
   },
   "/lab/f175-webrtc-shared-device-field/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6378,7 +6435,7 @@
    "state": "clean"
   },
   "/lab/f503-lennard-jones-mlp-dom-swarm-mind/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6386,12 +6443,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 2726867
+    "overflow": 203
    },
    "state": "clean"
   },
   "/lab/f468-webrtc-expression-agent-field/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6404,7 +6461,7 @@
    "state": "clean"
   },
   "/lab/f504-webgpu-poisson-potential-mlp-dom-mind/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6417,56 +6474,36 @@
    "state": "clean"
   },
   "/lab/f502-webgpu-kuramoto-phase-dom-orchestra-mind/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
-    "defects": 7,
-    "contrast": 7,
+    "defects": 6,
+    "contrast": 6,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
     "overflow": 21
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 4,
-    "contrast": 4,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 21
-   },
-   "rules": 7,
-   "moved": 0.188
-  },
-  "/lab/f320-orient-rnn-webgpu-softbody-dom-arena/": {
-   "at": "2026-11-11T07:59:25.977Z",
-   "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.907,
-    "overflow": 97
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.907 that no rule fixes: listed for a builder)"
+   "why": "the defects did not go down (6 -> 9)"
   },
-  "/lab/f313-webgpu-causal-motion-rnn-hybrid-sculpt/": {
-   "at": "2026-11-11T07:59:25.977Z",
+  "/lab/f320-orient-rnn-webgpu-softbody-dom-arena/": {
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 1,
     "contrast": 0,
-    "targets": 1,
+    "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.002,
-    "overflow": 9
+    "cls": 0.277,
+    "overflow": 64
    },
-   "state": "fixed",
-   "after": {
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.277 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f313-webgpu-causal-motion-rnn-hybrid-sculpt/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6475,11 +6512,10 @@
     "cls": 0.002,
     "overflow": 4
    },
-   "rules": 1,
-   "moved": 0.046
+   "state": "clean"
   },
   "/lab/f199-local-rnn-webgpu-causal-particle-field/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6492,7 +6528,7 @@
    "state": "clean"
   },
   "/lab/f233-panel-play/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6505,7 +6541,7 @@
    "state": "clean"
   },
   "/lab/f222-screen-grazing-lichen/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6518,7 +6554,7 @@
    "state": "clean"
   },
   "/lab/f267-sealed-mlp-dom-resource-arena/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6531,7 +6567,7 @@
    "state": "clean"
   },
   "/lab/f585-webrtc-evo-mlp-forcegraph-mind/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6544,7 +6580,7 @@
    "state": "clean"
   },
   "/lab/f316-webxr-hand-sealed-genome-dom-arena/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6557,7 +6593,7 @@
    "state": "clean"
   },
   "/lab/f617-recipe-scaler/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6570,7 +6606,7 @@
    "state": "clean"
   },
   "/lab/f624-text-diff/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6596,7 +6632,7 @@
    "state": "clean"
   },
   "/lab/f217-audible-synapse-forager/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6609,7 +6645,7 @@
    "state": "clean"
   },
   "/treasury/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -6623,7 +6659,7 @@
    "why": "no rule fixes it (a layout shift of 0.474 that no rule fixes: listed for a builder)"
   },
   "/cheat-codes/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6636,7 +6672,7 @@
    "state": "clean"
   },
   "/fix/make-data-error/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6649,7 +6685,7 @@
    "state": "clean"
   },
   "/fix/make-rate-limit-error/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6662,7 +6698,7 @@
    "state": "clean"
   },
   "/fix/n8n-google-credential-401/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6675,7 +6711,7 @@
    "state": "clean"
   },
   "/fix/zapier-throttled-429/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6688,7 +6724,7 @@
    "state": "clean"
   },
   "/fix/power-automate-429-rate-limit-exceeded/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6701,7 +6737,7 @@
    "state": "clean"
   },
   "/fix/github-actions-resource-not-accessible-by-integration/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6714,7 +6750,7 @@
    "state": "clean"
   },
   "/under-the-hood/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -6728,7 +6764,7 @@
    "why": "no rule fixes it (a layout shift of 0.195 that no rule fixes: listed for a builder)"
   },
   "/jobs/europe/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6741,7 +6777,7 @@
    "state": "clean"
   },
   "/jobs/alerts/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6754,7 +6790,7 @@
    "state": "clean"
   },
   "/flights/map/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6767,7 +6803,7 @@
    "state": "clean"
   },
   "/flights/routes/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6780,7 +6816,7 @@
    "state": "clean"
   },
   "/flights/co2/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6793,7 +6829,7 @@
    "state": "clean"
   },
   "/kanban/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6806,7 +6842,7 @@
    "state": "clean"
   },
   "/films/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6832,31 +6868,20 @@
    "state": "clean"
   },
   "/lab/f231-taste-oracle/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
-    "defects": 2,
-    "contrast": 0,
-    "targets": 2,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.068,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.072,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.148
+   "state": "clean"
   },
   "/lab/f243-sealed-genome-webrtc-dom-arena/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6869,34 +6894,34 @@
    "state": "clean"
   },
   "/lab/f286-webrtc-sealed-rnn-orientation-shared-arena/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.028,
+    "cls": 0.021,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f198-orientation-mlp-dom-gravity-swarm/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
-    "defects": 11,
-    "contrast": 5,
+    "defects": 14,
+    "contrast": 8,
     "targets": 6,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.011,
-    "overflow": 0
+    "cls": 0.006,
+    "overflow": 2
    },
    "state": "listed",
-   "why": "the defects did not go down (11 -> 11)"
+   "why": "the defects did not go down (14 -> 14)"
   },
   "/lab/f189-sealed-mlp-dom-agents/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6909,18 +6934,8 @@
    "state": "clean"
   },
   "/lab/f616-loan-mortgage-payment/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
-    "defects": 2,
-    "contrast": 2,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 31
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6929,11 +6944,10 @@
     "cls": 0,
     "overflow": 31
    },
-   "rules": 2,
-   "moved": 0.004
+   "state": "clean"
   },
   "/first-automation-setup/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6946,7 +6960,7 @@
    "state": "clean"
   },
   "/keep-it-running/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6959,7 +6973,7 @@
    "state": "clean"
   },
   "/fix/make-connection-error/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6972,7 +6986,7 @@
    "state": "clean"
   },
   "/fix/zapier-zap-turned-off-or-held/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6985,7 +6999,7 @@
    "state": "clean"
   },
   "/fix/n8n-webhook-404-not-registered/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6998,7 +7012,7 @@
    "state": "clean"
   },
   "/random/coin/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7012,7 +7026,7 @@
    "why": "no rule fixes it (a layout shift of 0.147 that no rule fixes: listed for a builder)"
   },
   "/books/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7025,7 +7039,7 @@
    "state": "clean"
   },
   "/generators/forum/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7038,7 +7052,7 @@
    "state": "clean"
   },
   "/jobs/salary/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7051,7 +7065,7 @@
    "state": "clean"
   },
   "/jobs/regions/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7064,7 +7078,7 @@
    "state": "clean"
   },
   "/password/strength/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7077,7 +7091,7 @@
    "state": "clean"
   },
   "/flights/airports/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7090,7 +7104,7 @@
    "state": "clean"
   },
   "/flights/distance/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7103,7 +7117,7 @@
    "state": "clean"
   },
   "/scoreboard/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7117,20 +7131,21 @@
    "why": "no rule fixes it (a layout shift of 0.339 that no rule fixes: listed for a builder)"
   },
   "/lab/f626-flooring-tile-estimator/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.165,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.165 that no rule fixes: listed for a builder)"
   },
   "/lab/f613-tip-calculator/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7143,7 +7158,7 @@
    "state": "clean"
   },
   "/jobs/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-15T23:27:19.659Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7156,7 +7171,7 @@
    "state": "clean"
   },
   "/flights/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7169,33 +7184,33 @@
    "state": "clean"
   },
   "/lab/f193-webrtc-indexeddb-sealed-genome-swarm/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.021,
-    "overflow": 3
+    "cls": 0.001,
+    "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f615-packing-list-maker/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.032,
     "overflow": 0
    },
    "state": "clean"
   },
   "/generators/story/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7209,7 +7224,7 @@
    "why": "no rule fixes it (a layout shift of 0.101 that no rule fixes: listed for a builder)"
   },
   "/pdf/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7222,33 +7237,33 @@
    "state": "clean"
   },
   "/autopilot/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.057,
-    "overflow": 13
+    "cls": 0.054,
+    "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f612-bill-splitter/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.053,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/fix/audit/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7261,7 +7276,7 @@
    "state": "clean"
   },
   "/privacy/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7274,21 +7289,20 @@
    "state": "clean"
   },
   "/lab/f235-forge-duel/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
-    "defects": 1,
+    "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.601,
+    "cls": 0,
     "overflow": 0
    },
-   "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.601 that no rule fixes: listed for a builder)"
+   "state": "clean"
   },
   "/video/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7302,7 +7316,7 @@
    "why": "no rule fixes it (a layout shift of 0.259 that no rule fixes: listed for a builder)"
   },
   "/lab/mind-map/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7315,7 +7329,7 @@
    "state": "clean"
   },
   "/generators/chat/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7328,7 +7342,7 @@
    "state": "clean"
   },
   "/fix/one-time/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7341,7 +7355,7 @@
    "state": "clean"
   },
   "/creed/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7354,7 +7368,7 @@
    "state": "clean"
   },
   "/markets/screener/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7378,7 +7392,7 @@
    "moved": 0
   },
   "/markets/caps/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7391,7 +7405,7 @@
    "state": "clean"
   },
   "/lab/dictation/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7405,7 +7419,7 @@
    "why": "no rule fixes it (a layout shift of 0.27 that no rule fixes: listed for a builder)"
   },
   "/lab/f625-regex-tester/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7418,7 +7432,7 @@
    "state": "clean"
   },
   "/lab/f620-pomodoro-task-timer/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7431,7 +7445,7 @@
    "state": "clean"
   },
   "/trading-bots/arbitrage/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7444,7 +7458,7 @@
    "state": "clean"
   },
   "/lab/checksum/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7457,7 +7471,7 @@
    "state": "clean"
   },
   "/lab/photo-palette/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7470,7 +7484,7 @@
    "state": "clean"
   },
   "/assimilated/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7483,7 +7497,7 @@
    "state": "clean"
   },
   "/creed/give/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7496,7 +7510,7 @@
    "state": "clean"
   },
   "/generators/make/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7509,7 +7523,7 @@
    "state": "clean"
   },
   "/cpan/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7522,7 +7536,7 @@
    "state": "clean"
   },
   "/lab/f619-spatial-memory-palace-flashcards/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7535,7 +7549,7 @@
    "state": "clean"
   },
   "/lab/pattern/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7548,7 +7562,7 @@
    "state": "clean"
   },
   "/trading-bots/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7561,7 +7575,7 @@
    "state": "clean"
   },
   "/vat/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7574,7 +7588,7 @@
    "state": "clean"
   },
   "/fantasy/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7587,7 +7601,7 @@
    "state": "clean"
   },
   "/code-review/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7600,7 +7614,7 @@
    "state": "clean"
   },
   "/lab/level/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7613,18 +7627,8 @@
    "state": "clean"
   },
   "/image/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.011,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7633,11 +7637,10 @@
     "cls": 0.011,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.002
+   "state": "clean"
   },
   "/word-count/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7650,7 +7653,7 @@
    "state": "clean"
   },
   "/journal/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7664,20 +7667,21 @@
    "why": "no rule fixes it (a layout shift of 0.561 that no rule fixes: listed for a builder)"
   },
   "/learn-to-draw/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.094,
+    "cls": 0.116,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.116 that no rule fixes: listed for a builder)"
   },
   "/emojis/everywhere/": {
-   "at": "2026-11-11T21:42:14.589Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7691,7 +7695,7 @@
    "why": "no rule fixes it (a layout shift of 0.191 that no rule fixes: listed for a builder)"
   },
   "/identity/": {
-   "at": "2026-11-11T21:42:14.589Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8073,7 +8077,7 @@
    "why": "no rule fixes it"
   },
   "/prizes/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8086,7 +8090,7 @@
    "state": "clean"
   },
   "/piano/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8099,7 +8103,7 @@
    "state": "clean"
   },
   "/bpm/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8112,7 +8116,7 @@
    "state": "clean"
   },
   "/password/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8125,7 +8129,7 @@
    "state": "clean"
   },
   "/base64/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8151,7 +8155,7 @@
    "state": "clean"
   },
   "/hosting/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8164,7 +8168,7 @@
    "state": "clean"
   },
   "/tournaments/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8177,20 +8181,20 @@
    "state": "clean"
   },
   "/podcasts/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.001,
     "overflow": 0
    },
    "state": "clean"
   },
   "/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8203,7 +8207,7 @@
    "state": "clean"
   },
   "/emoji-combos/emoji-dictionary/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8216,7 +8220,7 @@
    "state": "clean"
   },
   "/news/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8229,11 +8233,11 @@
    "state": "clean"
   },
   "/team/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
-    "defects": 4,
+    "defects": 12,
     "contrast": 0,
-    "targets": 3,
+    "targets": 11,
     "unstyled": 0,
     "empty": 0,
     "cls": 1.234,
@@ -8249,12 +8253,12 @@
     "cls": 1.234,
     "overflow": 0
    },
-   "rules": 3,
+   "rules": 11,
    "moved": 0,
    "why": "(a layout shift of 1.234 that no rule fixes: listed for a builder)"
   },
   "/markets/currency-converter/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8267,7 +8271,7 @@
    "state": "clean"
   },
   "/ledger/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8280,20 +8284,21 @@
    "state": "clean"
   },
   "/photos/exifeditor/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.051,
+    "cls": 0.11,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.11 that no rule fixes: listed for a builder)"
   },
   "/photos/photopea/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8306,7 +8311,7 @@
    "state": "clean"
   },
   "/photos/squoosh/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8319,7 +8324,7 @@
    "state": "clean"
   },
   "/photos/iloveimg/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8332,7 +8337,7 @@
    "state": "clean"
   },
   "/photos/tinypng/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8345,7 +8350,7 @@
    "state": "clean"
   },
   "/emoji-combos/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8358,7 +8363,7 @@
    "state": "clean"
   },
   "/scores/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8371,20 +8376,20 @@
    "state": "clean"
   },
   "/photos/exif/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.06,
     "overflow": 0
    },
    "state": "clean"
   },
   "/random/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8397,7 +8402,7 @@
    "state": "clean"
   },
   "/markets/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8410,7 +8415,7 @@
    "state": "clean"
   },
   "/chords/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8423,7 +8428,7 @@
    "state": "clean"
   },
   "/translate/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8436,7 +8441,7 @@
    "state": "clean"
   },
   "/photos/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8449,7 +8454,7 @@
    "state": "clean"
   },
   "/stopwatch/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8462,7 +8467,7 @@
    "state": "clean"
   },
   "/boards/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8488,7 +8493,7 @@
    "state": "clean"
   },
   "/metronome/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9283,28 +9288,17 @@
    "state": "clean"
   },
   "/lab/f530-webrtc-reservoir-genome-competition-mind/": {
-   "at": "2026-11-10T21:22:48.495Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 3,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.027,
-    "overflow": 2
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.002,
+    "cls": 0.021,
     "overflow": 2
    },
-   "rules": 3,
-   "moved": 0.047
+   "state": "clean"
   },
   "/lab/f486-orient-rnn-dom-physical-auction-mind/": {
    "at": "2026-11-15T13:29:12.888Z",
@@ -9346,32 +9340,20 @@
    "state": "clean"
   },
   "/lab/f628-concrete-mulch-volume/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
-    "defects": 2,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.204,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 1,
+    "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.204,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.002,
-   "why": "(a layout shift of 0.204 that no rule fixes: listed for a builder)"
+   "state": "clean"
   },
   "/lab/f622-sound-level-meter/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9384,7 +9366,7 @@
    "state": "clean"
   },
   "/lab/f647-spatial-budget-allocator/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T15:31:09.752Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9397,18 +9379,8 @@
    "state": "clean"
   },
   "/lab/f650-image-contrast-checker/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
-    "defects": 8,
-    "contrast": 7,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -9417,11 +9389,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 5,
-   "moved": 0.06
+   "state": "clean"
   },
   "/our-motherfucking-version/": {
-   "at": "2026-11-11T01:21:22.059Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9434,7 +9405,7 @@
    "state": "clean"
   },
   "/lab/f646-weighted-decision-matrix/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:32:54.203Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9442,12 +9413,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 8
+    "overflow": 13
    },
    "state": "clean"
   },
   "/lab/f646-habit-tracker/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
     "defects": 2,
     "contrast": 2,
@@ -9467,32 +9438,21 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
+   "rules": 2,
    "moved": 0.002
   },
   "/lab/f621-signature-pad/": {
-   "at": "2026-11-11T07:04:43.189Z",
+   "at": "2026-11-15T17:54:25.267Z",
    "before": {
-    "defects": 2,
-    "contrast": 1,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.008,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.008,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.002
+   "state": "clean"
   },
   "/track-times/": {
    "at": "2026-11-11T07:59:25.977Z",
@@ -9508,31 +9468,20 @@
    "state": "clean"
   },
   "/lab/f639-label-name-tag-sheet/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
-    "defects": 3,
-    "contrast": 2,
-    "targets": 0,
-    "unstyled": 1,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.003,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.061
+   "state": "clean"
   },
   "/lab/f649-qr-code-generator/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
     "defects": 1,
     "contrast": 1,
@@ -9556,20 +9505,21 @@
    "moved": 0.001
   },
   "/lab/f630-time-card/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.113,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.113 that no rule fixes: listed for a builder)"
   },
   "/lab/f633-raffle-name-draw/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9582,7 +9532,7 @@
    "state": "clean"
   },
   "/lab/f634-scoreboard/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T22:04:50.961Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9595,32 +9545,20 @@
    "state": "clean"
   },
   "/lab/f631-chore-rota/": {
-   "at": "2026-11-11T07:59:25.977Z",
+   "at": "2026-11-15T20:02:56.819Z",
    "before": {
-    "defects": 3,
-    "contrast": 2,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.35,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 1,
+    "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.35,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.002,
-   "why": "(a layout shift of 0.35 that no rule fixes: listed for a builder)"
+   "state": "clean"
   },
   "/rotate-letters/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9633,42 +9571,21 @@
    "state": "clean"
   },
   "/lab/f635-teleprompter/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
-    "defects": 7,
-    "contrast": 4,
-    "targets": 3,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.002,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.011,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 7,
-   "moved": 0.132
+   "state": "clean"
   },
   "/lab/f641-subscription-tracker/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
-    "defects": 1,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -9677,11 +9594,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.003
+   "state": "clean"
   },
   "/lab/f632-seating-chart/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9694,7 +9610,7 @@
    "state": "clean"
   },
   "/lab/f643-receipt-to-expense/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9707,18 +9623,8 @@
    "state": "clean"
   },
   "/lab/f638-meme-maker/": {
-   "at": "2026-11-11T17:20:25.711Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 3,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -9727,22 +9633,11 @@
     "cls": 0.01,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0.14
+   "state": "clean"
   },
   "/lab/f629-trip-fuel-cost/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-16T01:31:29.199Z",
    "before": {
-    "defects": 1,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -9751,8 +9646,7 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/self/": {
    "at": "2026-11-13T00:38:35.644Z",
@@ -10696,10 +10590,99 @@
    "state": "clean"
   },
   "/lab/f666-spatial-kanban-board/": {
+   "at": "2026-11-15T15:31:09.752Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f651-unit-converter/": {
    "at": "2026-11-15T13:29:12.888Z",
    "before": {
-    "defects": 8,
-    "contrast": 8,
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f709-sound-level-meter/": {
+   "at": "2026-11-15T15:31:09.752Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f665-spatial-dependency-planner/": {
+   "at": "2026-11-15T15:31:09.752Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f720-webgpu-user-sdf-sculptor/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 7,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 6,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 6,
+    "contrast": 0,
+    "targets": 6,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
+    "overflow": 0
+   },
+   "rules": 7,
+   "moved": 0.012
+  },
+  "/lab/f708-webrtc-peer-mlp-orientation-canvas/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f694-spatial-force-packing-list/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 5,
+    "contrast": 5,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
@@ -10716,11 +10699,735 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 6,
+   "rules": 5,
+   "moved": 0.005
+  },
+  "/lab/f734-webgpu-attention-particle-dom-mind/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 95
+   },
+   "state": "clean"
+  },
+  "/lab/f676-webgpu-lbm-orientation-mlp-fluid-notes/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.033,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f716-device-motion-kalman-advection-portal-mind/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
+    "overflow": 222
+   },
+   "state": "clean"
+  },
+  "/lab/f729-webxr-gaze-bayesian-portal-competition-mind/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 50
+   },
+   "state": "clean"
+  },
+  "/lab/f759-webgpu-device-motion-trajectory-logger/": {
+   "at": "2026-11-15T17:32:54.203Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f752-local-ssh-key-generator/": {
+   "at": "2026-11-15T17:54:25.267Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f721-webxr-hand-decision-tree-spatial-notes/": {
+   "at": "2026-11-15T17:54:25.267Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 8
+   },
+   "state": "clean"
+  },
+  "/lab/f683-inertial-particle-filter-spatial-mind/": {
+   "at": "2026-11-15T17:54:25.267Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f673-webgpu-spatial-bin-packer/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 5,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 5,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "it added a layout shift"
+  },
+  "/lab/f689-webgpu-semantic-embedding-force-mind/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f728-webgpu-discrete-ca-audio-spatial-rule-cards-mind/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 21,
+    "contrast": 0,
+    "targets": 15,
+    "unstyled": 6,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 370
+   },
+   "state": "listed",
+   "why": "it changed 41% of the first screen"
+  },
+  "/lab/f695-spatial-constrained-char-rnn-garden/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 43
+   },
+   "state": "clean"
+  },
+  "/lab/f660-voice-note-transcriber/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 2
+   },
+   "state": "clean"
+  },
+  "/lab/f656-spatial-note-clusterer/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f662-orientation-mlp-note-layout/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f751-local-message-encryptor/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.141,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.141 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f651-image-ascii-art/": {
+   "at": "2026-11-15T20:02:56.819Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 130
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
+    "overflow": 130
+   },
+   "rules": 1,
+   "moved": 0.039
+  },
+  "/lab/f670-barcode-spatial-inventory/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f658-spatial-seating-chart/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.001
+  },
+  "/lab/f663-chore-rota-spatial/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.004
+  },
+  "/lab/f724-genetic-lsystem-spatial-note-grower/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f637-morse-code/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f301-sonar-bat-cartographer/": {
+   "at": "2026-11-15T22:04:50.961Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.006,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.006,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.069
+  },
+  "/lab/f627-paint-estimator/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f736-teleprompter/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 4,
+    "contrast": 0,
+    "targets": 4,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.092,
+    "overflow": 0
+   },
+   "rules": 4,
+   "moved": 0.062
+  },
+  "/lab/f753-local-business-card-maker/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.004
+  },
+  "/lab/f654-tip-calculator-suggest-spatial/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f699-meeting-cost-calculator/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.004
+  },
+  "/lab/f718-subscription-tracker/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.003
+  },
+  "/lab/f757-sleep-cycle-calculator/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.027,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.141
+  },
+  "/lab/f661-label-name-tag-sheet/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 355
+   },
+   "state": "clean"
+  },
+  "/arcade/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.38,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.38,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0,
+   "why": "(a layout shift of 0.38 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f748-debt-snowball-planner/": {
+   "at": "2026-11-15T23:27:19.659Z",
+   "before": {
+    "defects": 6,
+    "contrast": 3,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "it added a layout shift"
+  },
+  "/lab/f684-devicemotion-step-counter/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f671-spatial-packing-list/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.001
+  },
+  "/lab/f730-bill-splitter/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.009,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f652-bill-splitter/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f679-bill-splitter/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.082,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "the defects did not go down (2 -> 2)"
+  },
+  "/lab/f749-chore-rota-generator/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 4,
+    "contrast": 2,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "it added a layout shift"
+  },
+  "/lab/f718-spatial-room-material-estimator/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f731-tip-calculator/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.026,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f667-spatial-room-layout-planner/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f754-local-camera-contrast-palette-maker/": {
+   "at": "2026-11-16T01:31:29.199Z",
+   "before": {
+    "defects": 4,
+    "contrast": 4,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 4,
    "moved": 0.007
   },
-  "/lab/f651-unit-converter/": {
-   "at": "2026-11-15T13:29:12.888Z",
+  "/text-diff/": {
+   "at": "2026-11-16T02:57:04.218Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/qr/": {
+   "at": "2026-11-16T02:57:04.218Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/patterns/": {
+   "at": "2026-11-16T02:57:04.218Z",
    "before": {
     "defects": 0,
     "contrast": 0,
