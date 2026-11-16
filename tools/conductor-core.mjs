@@ -105,17 +105,22 @@ export function routeOf(job) {
   return r;
 }
 
-/** the health of a loop from its newest runs (newest first, as GitHub lists them): the failed ones in a row before any success,
- *  cancelled and skipped runs left out (a newer run superseding an older one is not a failure). Pure. */
-export function streakOf(runs) {
-  let n = 0, url = '';
-  for (const r of runs || []) {
-    if (r.status !== 'completed' || r.conclusion === 'cancelled' || r.conclusion === 'skipped') continue;
-    if (r.conclusion === 'success' || r.conclusion === 'neutral') break;
-    if (!n) url = r.html_url || '';
-    n++;
-  }
-  return { fails: n, url };
+/** Failed runs before a success, ignoring unfinished, cancelled and skipped runs. When events names
+ *  distinct coverage streams, only a success in that same stream clears its failures; never sum streams. */
+export function streakOf(runs, { events } = {}) {
+  const count = (list) => {
+    let n = 0, url = '';
+    for (const r of list || []) {
+      if (r.status !== 'completed' || r.conclusion === 'cancelled' || r.conclusion === 'skipped') continue;
+      if (r.conclusion === 'success' || r.conclusion === 'neutral') break;
+      if (!n) url = r.html_url || '';
+      n++;
+    }
+    return { fails: n, url };
+  };
+  if (!events) return count(runs);
+  return events.map((event) => count((runs || []).filter((r) => r.event === event)))
+    .reduce((worst, stream) => stream.fails > worst.fails ? stream : worst, { fails: 0, url: '' });
 }
 
 /** should Verse write new probe asks this tick: only when few probes wait, and at most once in 6 hours while its fixes pass under 1 in

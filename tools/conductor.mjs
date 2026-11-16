@@ -19,7 +19,7 @@ const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
 export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-gate.yml', 'deploy.yml',
-  'grow-self.yml', 'design-loop.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
+  'pages-guard.yml', 'actions-failures.yml', 'grow-self.yml', 'design-loop.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
 const warn = (m) => { warnings.push(m); console.log('::warning title=Conductor::' + m); };
@@ -33,9 +33,19 @@ async function queue(method, body, query = '') {
   return { status: res.status, json, text };
 }
 const gh = (...a) => execFileSync('gh', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000 });
-function runsOf(wf) {
-  try { return JSON.parse(gh('api', `repos/${REPO}/actions/workflows/${wf}/runs?branch=main&per_page=10`)).workflow_runs || []; }
+export function runsOf(wf, event = '', read = gh) {
+  try { return JSON.parse(read('api', `repos/${REPO}/actions/workflows/${wf}/runs?branch=main&per_page=10${event ? '&event=' + encodeURIComponent(event) : ''}`)).workflow_runs || []; }
   catch (e) { if (/HTTP 404|Not Found/i.test(String(e.stderr || e.message))) return null; warn(wf + ': runs unreadable (' + String(e.message).slice(0, 80) + ')'); return []; }
+}
+// Tower's scheduled naming audit and deploy-triggered gate exercise different jobs. A hand run
+// varies by inputs, so it cannot prove either stream fixed without inspecting its job coverage.
+export const HEALTH_EVENTS = Object.freeze({ 'tower-gate.yml': ['schedule', 'workflow_run'] });
+export function healthRunsOf(wf, recent, read = runsOf) {
+  const events = HEALTH_EVENTS[wf];
+  if (!events) return recent;
+  const all = [...recent, ...events.flatMap((event) => read(wf, event) || [])];
+  return [...new Map(all.map((r) => [r.id ?? r, r])).values()]
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
 }
 function todayOf(wf, day) {
   try { return JSON.parse(gh('api', `repos/${REPO}/actions/workflows/${wf}/runs?created=>=${day}&per_page=1`)).total_count || 0; } catch (_) { return 0; }
@@ -82,7 +92,7 @@ async function tick() {
     const r = runsOf(f);
     if (r === null) { wf[f] = { exists: false }; continue; }
     runs[f] = r;
-    const s = streakOf(r);
+    const s = streakOf(healthRunsOf(f, r), { events: HEALTH_EVENTS[f] });
     wf[f] = { exists: true, busy: r.some((x) => BUSY.has(x.status)), today: 0, fails: s.fails, url: s.url, last: r[0] ? Date.parse(r[0].created_at) : 0 };
   }
   for (const r of Object.values(ROUTES)) if (wf[r.wf] && wf[r.wf].exists && !('counted' in wf[r.wf])) { wf[r.wf].today = todayOf(r.wf, day); wf[r.wf].counted = true; }
