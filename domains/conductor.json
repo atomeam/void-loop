@@ -1,11 +1,11 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T03:23:25.461Z",
+ "updated": "2026-11-16T03:32:45.374Z",
  "last24h": {
   "ticks": 154,
-  "started": 120,
+  "started": 121,
   "requeued": 0,
-  "setAside": 1,
+  "setAside": 0,
   "probes": 0,
   "errors": 0
  },
@@ -95,11 +95,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 29,
    "cap": 90
   },
   "day": {
-   "used": 61,
+   "used": 90,
    "cap": 360
   },
   "room": true,
@@ -141,8 +141,8 @@
   "mvvjzso8": 1794790949344,
   "mw5mm5fm": 1794791513730
  },
- "sweptAt": 1794796022884,
- "blueprintsAt": 1794796022884,
+ "sweptAt": 1794799965374,
+ "blueprintsAt": 1794799965374,
  "visitorAt": "2026-11-16T03:16:21Z",
  "visitorFiled": [
   "heal:helper-loop-carry-e6be",
@@ -227,27 +227,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T03:27:42.539Z",
-   "open": 433,
-   "started": [],
-   "requeued": 0,
-   "setAside": 1,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 409,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T03:37:13.196Z",
    "open": 432,
@@ -4266,6 +4245,34 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T03:32:45.374Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "want-idea-5e6497554d",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 87
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 20,
    "warnings": 1
