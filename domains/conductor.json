@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T00:43:40.725Z",
+ "updated": "2026-11-16T00:53:02.721Z",
  "last24h": {
   "ticks": 154,
   "started": 121,
@@ -109,14 +109,13 @@
  "handed": {
   "mvbl52gd": 1794787574490,
   "mveb8rsi": 1794787574490,
-  "mva30i2e": 1794768430676,
+  "mva30i2e": 1794790382721,
   "mvu167w7": 1794788134721,
   "mveb8svc": 1794788134721,
   "mva30j4u": 1794784187304,
   "mwa0agd2": 1794789258800,
   "mwa0ah54": 1794789820725,
   "mwdsggtv": 1794768989218,
-  "mvpuqb4r": 1794703692286,
   "mwdsgi9n": 1794769556518,
   "mvvjzso8": 1794704250102,
   "mwdsgj2z": 1794770116534,
@@ -143,7 +142,8 @@
   "mwibsvp5": 1794777989758,
   "mvfu4evy": 1794788696314,
   "mvpuq9g6": 1794789258800,
-  "mvpuqaee": 1794789820725
+  "mvpuqaee": 1794789820725,
+  "mvpuqb4r": 1794790382721
  },
  "sweptAt": 1794788134721,
  "blueprintsAt": 1794788134721,
@@ -231,40 +231,6 @@
   "review:2842"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T00:48:12.286Z",
-   "open": 432,
-   "started": [
-    {
-     "id": "mvpuqb4r",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mwdsgi9n",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 45
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 407,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T00:57:30.102Z",
    "open": 432,
@@ -4276,6 +4242,40 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 52
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 409,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T00:53:02.721Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mvpuqb4r",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
     }
    ],
    "requeued": 0,
