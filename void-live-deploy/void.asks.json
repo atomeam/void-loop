@@ -2492,6 +2492,11 @@
       "words": "Complete the 15 open journeys for flightconnections.com.",
       "ledgerAt": "2026-11-12T05:31:14Z",
       "why": "built: flightconnections.com's two journeys on /flights/routes/ are scripted: pick Lisbon, set 3 hours, see the nonstop airports with Madrid and without New York; share the link, pick another airport, open the link and get the  (linked by tools/asks-link.mjs, shared words: open, journey, flightconnection, com)"
+    },
+    {
+      "words": "Repair the sports exam logic to correctly identify the NBA Celtics.",
+      "ledgerAt": "2026-11-11T17:36:49Z",
+      "why": "built: the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2503,29 +2508,29 @@
     }
   ],
   "totals": {
-    "asked": 271,
-    "built": 267,
-    "through": "2026-11-14T22:55:00Z",
+    "asked": 273,
+    "built": 268,
+    "through": "2026-11-15T23:21:00Z",
     "open": [
       {
         "ask": "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores.",
-        "at": "2026-11-14T22:47:00Z",
-        "kind": "build",
+        "at": "2026-11-15T23:21:00Z",
+        "kind": "daily",
         "small": true,
         "times": 3,
         "ids": [
-          "ask-20261112-2322-2",
-          "ask-20261113-0009-2",
-          "ask-20261114-2217-3",
-          "ask-20261114-2232-3",
-          "ask-20261114-2237-3",
-          "ask-20261114-2241-3",
-          "ask-20261114-2244-3",
-          "ask-20261114-2247-3",
-          "ask-20261112-2243-1",
-          "ask-20261112-2251-1",
-          "ask-20261112-2335-2",
-          "ask-20261112-2341-2"
+          "ask-20261112-2341-2",
+          "ask-20261115-0719-2",
+          "ask-20261115-0804-2",
+          "ask-20261115-1113-2",
+          "ask-20261115-1126-2",
+          "ask-20261115-1213-2",
+          "ask-20261115-1334-2",
+          "ask-20261115-1409-2",
+          "ask-20261115-1501-2",
+          "ask-20261115-1534-2",
+          "ask-20261115-1737-2",
+          "ask-20261115-1946-3"
         ]
       },
       {
@@ -2551,37 +2556,59 @@
       },
       {
         "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
-        "at": "2026-11-14T22:55:00Z",
-        "kind": "build",
+        "at": "2026-11-15T23:21:00Z",
+        "kind": "daily",
         "small": true,
         "times": 2,
         "ids": [
-          "ask-20261114-2217-2",
-          "ask-20261114-2220-2",
-          "ask-20261114-2229-2",
-          "ask-20261114-2232-2",
-          "ask-20261114-2237-2",
-          "ask-20261114-2241-2",
-          "ask-20261114-2244-2",
-          "ask-20261114-2247-2",
-          "ask-20261114-2250-2",
-          "ask-20261114-2255-2",
+          "ask-20261115-2321-2",
           "ask-20261114-1052-2",
-          "ask-20261114-1148-2"
+          "ask-20261114-1148-2",
+          "ask-20261115-1534-3",
+          "ask-20261115-1537-3",
+          "ask-20261115-1708-1",
+          "ask-20261115-1737-1",
+          "ask-20261115-1758-2",
+          "ask-20261115-1946-2",
+          "ask-20261115-1946-1",
+          "ask-20261115-2008-1",
+          "ask-20261115-2210-1"
         ]
       },
       {
         "ask": "Fix the weather exam failures for speed, skill, and temperature accuracy.",
-        "at": "2026-11-14T22:55:00Z",
+        "at": "2026-11-15T13:34:00Z",
+        "kind": "build",
+        "small": false,
+        "times": 4,
+        "ids": [
+          "ask-20261113-2142-3",
+          "ask-20261113-2259-3",
+          "ask-20261113-2348-3",
+          "ask-20261115-1534-1",
+          "ask-20261114-2250-3",
+          "ask-20261114-2255-3",
+          "ask-20261115-0719-1",
+          "ask-20261115-0804-1",
+          "ask-20261115-1113-1",
+          "ask-20261115-1126-1",
+          "ask-20261115-1213-1",
+          "ask-20261115-1334-1"
+        ]
+      },
+      {
+        "ask": "Update the weather skill to fix accuracy failures for Paris, London, and Tokyo.",
+        "at": "2026-11-15T17:37:00Z",
         "kind": "build",
         "small": false,
         "times": 3,
         "ids": [
-          "ask-20261113-2142-3",
-          "ask-20261114-2255-3",
-          "ask-20261113-2259-3",
-          "ask-20261113-2348-3",
-          "ask-20261114-2250-3"
+          "ask-20261115-1409-1",
+          "ask-20261115-1501-1",
+          "ask-20261115-1534-1",
+          "ask-20261115-1537-1",
+          "ask-20261115-1737-3",
+          "ask-20261115-1708-3"
         ]
       }
     ]
