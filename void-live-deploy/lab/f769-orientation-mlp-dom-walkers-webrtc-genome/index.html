@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { position:absolute; top:0; left:0; z-index:0; }
+#agents { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+.agent { position:absolute; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#000; box-shadow:0 0 8px rgba(255,255,255,0.4); transition:background 0.3s; pointer-events:auto; cursor:grab; }
+.agent.transfer { box-shadow:0 0 16px #fff, 0 0 32px gold; }
+#ui { position:absolute; bottom:12px; left:12px; z-index:2; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #445; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#status { font-size:11px; opacity:0.8; margin-top:4px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-MLP DOM Walkers WebRTC Genome · Verse lab</title>
+<meta name="description" content="Multi-agent competition of hybrid DOM &quot;walker&quot; agents. Each agent is a living physical UI element (div) whose motion (velocity, heading) is controlled by a local">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-MLP DOM Walkers WebRTC Genome · Verse lab">
+<meta property="og:description" content="Multi-agent competition of hybrid DOM &quot;walker&quot; agents. Each agent is a living physical UI element (div) whose motion (velocity, heading) is controlled by a local">
+<meta property="og:url" content="https://a-to-mind.com/lab/f769-orientation-mlp-dom-walkers-webrtc-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f769-orientation-mlp-dom-walkers-webrtc-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="agents"></div>
+<div id="ui">
+  <button id="seal">Seal Top Genomes</button>
+  <button id="reset">Reset Agents</button>
+  <button id="perm">Request Orientation</button>
+  <div id="status">Tilt device or drag agents. Offline-capable.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-MLP DOM Walkers WebRTC Genome</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
