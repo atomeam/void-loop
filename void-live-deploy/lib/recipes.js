@@ -150,7 +150,7 @@ export const BUILT_IN = Object.freeze([
 const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 const STOP = /\b(?:recipe|recipes|for|a|an|the|how|to|make|do|i|cook|easy|simple|best|homemade|quick)\b/g;
 /** the dish a search means: "recipe for pancakes", "how do I make pancakes", "easy pancake recipe" are all "pancake". Pure. */
-export const dishOf = (q) => norm(q).replace(STOP, ' ').replace(/\s+/g, ' ').trim();
+export const dishOf = (q) => norm(q).replace(STOP, '').replace(/\s+/g, ' ').trim();
 const single = (w) => (w.length > 4 && /ies$/.test(w) ? w.slice(0, -3) + 'y' : w.length > 4 && /(?:oes|ches|shes|sses)$/.test(w) ? w.slice(0, -2) : w.length > 3 && /s$/.test(w) && !/ss$/.test(w) ? w.slice(0, -1) : w);
 /** the built-in recipes a name search means, best first; [] when none fits. Pure. */
 export function find(q, list = BUILT_IN) {
