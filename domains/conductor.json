@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T05:06:59.434Z",
+ "updated": "2026-11-16T05:17:05.050Z",
  "last24h": {
   "ticks": 153,
-  "started": 126,
+  "started": 127,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -95,11 +95,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 57,
    "cap": 90
   },
   "day": {
-   "used": 241,
+   "used": 298,
    "cap": 360
   },
   "room": true,
@@ -112,7 +112,7 @@
   "mva30i2e": 1794790382721,
   "mvu167w7": 1794788134721,
   "mveb8svc": 1794788134721,
-  "mva30j4u": 1794784187304,
+  "mva30j4u": 1794806225050,
   "mwa0agd2": 1794789258800,
   "mwa0ah54": 1794789820725,
   "mwdsggtv": 1794790949344,
@@ -121,7 +121,6 @@
   "mweaagmp": 1794792640984,
   "mweaah6f": 1794793206018,
   "mwey8iy6": 1794793767314,
-  "mwhd09q1": 1794719469529,
   "mwhh7ytq": 1794728487460,
   "mwhh7zqm": 1794729049805,
   "mwhh80qv": 1794729612276,
@@ -226,34 +225,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T05:11:09.529Z",
-   "open": 434,
-   "started": [
-    {
-     "id": "mwhd09q1",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 418,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T05:20:33.121Z",
    "open": 432,
@@ -4280,6 +4251,40 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T05:17:05.050Z",
+   "open": 429,
+   "started": [
+    {
+     "id": "want-exam-recipes",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 62
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
    "design": false,
    "will": false,
    "lap": false,
