@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T13:42:32.554Z",
+ "updated": "2026-11-16T15:43:22.832Z",
  "last24h": {
-  "ticks": 105,
-  "started": 72,
+  "ticks": 93,
+  "started": 71,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -12,11 +12,19 @@
  "broken": [],
  "held": [
   {
-   "id": "mveb8rsi",
+   "id": "mveb8svc",
    "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mveb8svc",
+   "id": "mvbl52gd",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mvu167w7",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mveb8rsi",
    "why": "build-miss.yml reached its 8 runs today"
   },
   {
@@ -82,20 +90,12 @@
   {
    "id": "mwazktv3",
    "why": "no executor for bot"
-  },
-  {
-   "id": "mwazktv9",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mwditzd8",
-   "why": "no executor for route"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 7,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -113,7 +113,7 @@
   "mvu167w7": 1794820481666,
   "mveb8svc": 1794788134721,
   "mva30j4u": 1794828314298,
-  "mwa0agd2": 1794820481666,
+  "mwa0agd2": 1794843802832,
   "mwa0ah54": 1794827754719,
   "mwdsggtv": 1794828877538,
   "mwdsgi9n": 1794791513730,
@@ -133,388 +133,92 @@
   "mvvjzso8": 1794790949344,
   "mw5mm5fm": 1794791513730
  },
- "sweptAt": 1794836552554,
- "blueprintsAt": 1794836552554,
- "visitorAt": "2026-11-16T12:00:53Z",
+ "sweptAt": 1794843802832,
+ "blueprintsAt": 1794843802832,
+ "visitorAt": "2026-11-16T15:20:44Z",
  "visitorFiled": [
-  "tv:relationship-history-logger",
-  "review:2717",
-  "review:2723",
-  "visit:what-s-the-weather-in-lakeland-f",
-  "route:ownership-ownership-map-for-weekly",
-  "heal:helper-full-handoff",
-  "review:2725",
-  "review:2728",
-  "review:2729",
-  "review:2731",
-  "review:2732",
-  "probe:what-am-i-missing-in-this-plan",
-  "probe:draft-the-handoff-checklist",
-  "probe:show-me-the-ownership-map",
-  "review:2733",
-  "review:2736",
-  "review:2739",
-  "heal:helper-full-handoff-complete",
-  "heal:helper-system-plan",
-  "review:2743",
-  "heal:helper-reliability-pack",
-  "heal:helper-roi-pack",
-  "heal:helper-kickoff-pack",
-  "visit:tell-me-a-joke",
-  "review:2747",
-  "heal:helper-versus-owner-ad9e",
-  "review:2749",
-  "heal:helper-conflict-checks-d564",
-  "heal:helper-uni-pages-131a",
-  "heal:helper-register-delivery-skills",
-  "heal:helper-systems-owned",
-  "review:2758",
-  "probe:is-the-bot-running",
-  "probe:summarize-the-last-sprint",
-  "review:2761",
-  "heal:helper-delivery-ready",
-  "probe:how-do-i-use-you",
-  "review:2753",
-  "heal:helper-delivery-dashboard",
-  "review:2766",
-  "heal:helper-register-delivery-skills-",
-  "review:2777",
-  "heal:helper-client-weekly",
-  "review:2778",
-  "heal:helper-delivery-ready-register",
-  "review:2780",
-  "heal:helper-incident-pack",
-  "review:2783",
-  "heal:helper-track-times-11ee",
-  "heal:helper-sustain-pack",
-  "review:2787",
-  "review:2788",
-  "feature:flightconnections-co-16bb714c",
-  "feature:flightconnections-co-8e95a3b2",
-  "feature:flightconnections-co-a2eec86b",
-  "review:2792",
-  "heal:helper-handoff-next",
-  "review:2794",
-  "heal:helper-sales-pack",
-  "review:2804",
-  "review:2808",
-  "heal:helper-work-list-44cf",
-  "review:2805",
-  "review:2806",
-  "heal:helper-debris-field-bc88",
-  "heal:helper-scope-pack",
-  "review:2817",
-  "review:2827",
-  "review:2832",
-  "review:2831",
-  "feature:team-3565",
-  "review:2842",
-  "probe:poker-hand-simulator",
-  "probe:wordladder-from-cold-to-hot",
-  "will:overhaul-site-email-persona-playtest-bes",
-  "probe:automation-status-for-invoice-remi",
-  "probe:status-of-the-automations-verse-ow",
-  "feature:flightconnections-co-d3bf4719",
-  "feature:flightconnections-co-77245665",
-  "feature:flightconnections-co-68e29fa9"
+  "versus:steamcommunity.com",
+  "versus:united-hoster.de",
+  "heal:helper-connect-pack",
+  "review:2614",
+  "heal:helper-reuse-pack",
+  "review:2616",
+  "heal:helper-credits-faucet-e39c",
+  "review:2622",
+  "gap:se-3123",
+  "review:2620",
+  "review:2619",
+  "review:2621",
+  "probe:ownership-map-for-client-onboardin",
+  "probe:map-ownership-for-invoice-reminder",
+  "review:2627",
+  "review:2628",
+  "review:2629",
+  "heal:helper-least-tower-0b57",
+  "review:2630",
+  "review:2631",
+  "review:2636",
+  "review:2639",
+  "review:2641",
+  "heal:helper-color-by-number-238b",
+  "heal:helper-delete-tower-48f9",
+  "review:2645",
+  "heal:helper-fix-main-suite-log-showca",
+  "review:2647",
+  "versus:rightarion.ru",
+  "versus:cavea.plus",
+  "versus:whatismyip.org",
+  "versus:w3counter.com",
+  "review:2655",
+  "heal:helper-system-slice",
+  "review:2656",
+  "heal:helper-team-chat-card",
+  "review:2661",
+  "heal:helper-lift-summary",
+  "review:2660",
+  "review:2664",
+  "feature:team-2886",
+  "retest:ownership-pack",
+  "review:2671",
+  "heal:helper-recruit-clock-07d1",
+  "heal:helper-feedback-loop",
+  "review:2677",
+  "heal:helper-shows-live-6fca",
+  "heal:helper-brain-ask",
+  "review:2683",
+  "heal:helper-docs-pack",
+  "review:2685",
+  "bot:headline-slug",
+  "bot:summary-keywords",
+  "bot:frame-ratio",
+  "bot:readable-summary",
+  "bot:loud-headline",
+  "heal:helper-client-brief",
+  "heal:helper-client-offer",
+  "heal:helper-automation-pack",
+  "review:2694",
+  "heal:helper-book-green-main",
+  "review:2699",
+  "review:2701",
+  "heal:helper-shows-live-clean",
+  "review:2702",
+  "heal:helper-shows-craft-6fca",
+  "review:2667",
+  "review:2705",
+  "review:2706",
+  "heal:helper-delivery-board",
+  "review:2707",
+  "review:2708",
+  "heal:helper-status-digest",
+  "review:2713",
+  "heal:helper-image-change-f60f",
+  "review:2843",
+  "review:2852",
+  "review:2845",
+  "review:2802",
+  "heal:helper-combine-pdf"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T13:47:04.551Z",
-   "open": 430,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 410,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T13:56:26.326Z",
-   "open": 430,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": true,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 410,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T14:05:47.965Z",
-   "open": 430,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 410,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T14:15:06.391Z",
-   "open": 430,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 410,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T14:24:28.300Z",
-   "open": 430,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 410,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T14:33:53.312Z",
-   "open": 430,
-   "started": [
-    {
-     "id": "mw21cj6l",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 84
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 294,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T14:43:21.695Z",
-   "open": 430,
-   "started": [
-    {
-     "id": "mw5blp33",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 80
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 335,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T14:52:43.189Z",
-   "open": 430,
-   "started": [
-    {
-     "id": "mw5blphr",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 80
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 335,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T15:02:05.994Z",
-   "open": 431,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": true,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [
-    "shorts.yml"
-   ],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 411,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T15:11:26.825Z",
-   "open": 431,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 411,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T15:20:47.590Z",
-   "open": 431,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 411,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T15:30:13.228Z",
-   "open": 431,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 411,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-15T15:39:34.438Z",
-   "open": 431,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 411,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T15:48:58.489Z",
    "open": 433,
@@ -2905,6 +2609,42 @@
    "sweep": true,
    "blueprints": 0,
    "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T15:43:22.832Z",
+   "open": 438,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 122
+    },
+    {
+     "id": "mwa0agd2",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 53
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "shorts.yml"
+   ],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 22,
    "warnings": 1
   }
  ]
