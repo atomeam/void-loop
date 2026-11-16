@@ -13,24 +13,26 @@ const PROJECT = 'a-to-mind', LIVE = 'https://a-to-mind.com', MIN_TOOLS = 100;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...a) => console.log('pages-guard:', ...a);
 
-export async function probe(base, fetcher = fetch) {
+// Bound fetch and body reads alike; a stalled response must not hold the recovery job forever.
+export async function probe(base, fetcher = fetch, { timeoutMs = 60000 } = {}) {
+  const request = (url, init = {}) => fetcher(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
   base = String(base).replace(/\/+$/, '');
   const bust = 'guard=' + Date.now(), fails = [];
   try {
-    const r = await fetcher(base + '/?' + bust, { redirect: 'follow' });
+    const r = await request(base + '/?' + bust, { redirect: 'follow' });
     const t = await r.text();
     if (r.status !== 200 || !/<title>[^<]+<\/title>/i.test(t)) fails.push('/ HTTP ' + r.status + ', ' + t.length + ' bytes');
   } catch (e) { fails.push('/ ' + e.message); }
   try {
-    const r = await fetcher(base + '/tools.json?' + bust);
+    const r = await request(base + '/tools.json?' + bust);
     const t = await r.text();
-    let n = -1; try { n = (JSON.parse(t).tools || []).length; } catch (_) {}
+    let n = -1; try { const list = JSON.parse(t).tools; n = Array.isArray(list) ? list.length : -1; } catch (_) {}
     if (r.status !== 200 || n < MIN_TOOLS) fails.push('/tools.json HTTP ' + r.status + ', ' + t.length + ' bytes, ' + Math.max(n, 0) + ' tools');
   } catch (e) { fails.push('/tools.json ' + e.message); }
   try {
-    const r = await fetcher(base + '/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: 'what is 2 plus 2' }) });
+    const r = await request(base + '/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: 'what is 2 plus 2' }) });
     const t = await r.text();
-    let ok = false; try { ok = typeof JSON.parse(t).answer === 'string'; } catch (_) {}
+    let ok = false; try { const answer = JSON.parse(t).answer; ok = typeof answer === 'string' && answer.trim().length > 0; } catch (_) {}
     if (r.status !== 200 || !ok) fails.push('/api/answer HTTP ' + r.status + ', ' + t.length + ' bytes');
   } catch (e) { fails.push('/api/answer ' + e.message); }
   return fails;

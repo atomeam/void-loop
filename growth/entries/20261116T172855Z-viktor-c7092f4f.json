@@ -1,0 +1,1 @@
+{"at":"2026-11-16T17:28:55Z","by":"viktor","kind":"fix","what":"Verse health checks reject empty answers and invalid tool lists, and stop stalled requests after a minute"}
