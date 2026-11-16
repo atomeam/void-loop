@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T04:38:32.922Z",
+ "updated": "2026-11-16T04:48:00.695Z",
  "last24h": {
   "ticks": 153,
-  "started": 127,
+  "started": 128,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -95,15 +95,15 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 64,
+   "used": 90,
    "cap": 90
   },
   "day": {
-   "used": 215,
+   "used": 241,
    "cap": 360
   },
-  "room": true,
-  "until": null,
+  "room": false,
+  "until": "2026-11-16T05:00:00.000Z",
   "paid": false
  },
  "handed": {
@@ -227,27 +227,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T04:42:43.313Z",
-   "open": 432,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": true,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 409,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T04:52:07.515Z",
    "open": 432,
@@ -4294,6 +4273,34 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T04:48:00.695Z",
+   "open": 430,
+   "started": [
+    {
+     "id": "want-idea-5e6497554d",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 87
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 20,
    "warnings": 1
