@@ -2122,6 +2122,27 @@
     "host": "flightconnections.com",
     "at": "2026-11-13",
     "id": "mwffycn6"
+   },
+   {
+    "target": "feature:flightconnections-co-d3bf4719",
+    "feature": "Widget slider",
+    "host": "flightconnections.com",
+    "at": "2026-11-16",
+    "id": "mwja5uja"
+   },
+   {
+    "target": "feature:flightconnections-co-77245665",
+    "feature": "Input of type email",
+    "host": "flightconnections.com",
+    "at": "2026-11-16",
+    "id": "mwja5vab"
+   },
+   {
+    "target": "feature:flightconnections-co-68e29fa9",
+    "feature": "Uses the location",
+    "host": "flightconnections.com",
+    "at": "2026-11-16",
+    "id": "mwja5vst"
    }
   ]
  },
@@ -14213,9 +14234,9 @@
      "/flights/routes/",
      "/members/"
     ],
-    "crawled": "2026-11-15"
+    "crawled": "2026-11-16"
    }
   },
-  "updated": "2026-11-15"
+  "updated": "2026-11-16"
  }
 }

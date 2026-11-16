@@ -65,7 +65,7 @@ export function matchPage(n, pages = []) {
 export const CATEGORIES = Object.freeze([
   { re: /\b(relationship|devotion)\b/, route: '/notes/' },
   { re: /\b(hvac|thermostat)\b/, route: '/weather/' },
-  { re: /\b(deepfake|synthetic|authentic|ai[- ]generated|altered|exif|metadata|photo|image|picture|provenance|artwork)/, route: '/photos/exif/' },
+  { re: /\b(deepfake|synthetic|authentic|ai[- ]generated|altered|exif|metadata|photo|image|picture|provenance|artwork|contactless|delivery|doorstep|package|timestamp|verification|verific)/, route: '/photos/exif/' },
   { re: /\b(price|market|stock|inflation|invest|livestock|commodit|crypto|currency|exchange rate)/, route: '/markets/' },
   { re: /\b(recipe|snack|meal|cook|food|diet|nutrition)/, route: '/recipes/' },
   { re: /\b(weather|storm|hurricane|forecast|rain|snow|heat)/, route: '/weather/' },

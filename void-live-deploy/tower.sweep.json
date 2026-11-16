@@ -1,10 +1,10 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 960000,
- "swept": 933984,
- "lap": 0,
- "at": "2026-11-15",
+ "cursor": 0,
+ "swept": 971346,
+ "lap": 1,
+ "at": "2026-11-16",
  "smallest": [
   {
    "rank": 400033,
@@ -421,6 +421,15 @@
    "plain": false
   },
   {
+   "rank": 960004,
+   "host": "businessesusa.com",
+   "controls": 0,
+   "bytes": 4765,
+   "words": 8,
+   "title": "BusinessesUSA.com — Find Trusted Local Businesses Across America",
+   "plain": false
+  },
+  {
    "rank": 841259,
    "host": "xn--53-grizbya9cwfqfwe.online",
    "controls": 0,
@@ -535,6 +544,15 @@
    "bytes": 7198,
    "words": 1,
    "title": "Kahoot!",
+   "plain": false
+  },
+  {
+   "rank": 960193,
+   "host": "chatjimmy.ai",
+   "controls": 0,
+   "bytes": 7324,
+   "words": 5,
+   "title": "chat jimmy",
    "plain": false
   },
   {
@@ -1030,6 +1048,15 @@
    "bytes": 9015,
    "words": 188,
    "title": "MBM Group | Apparel Manufacturing &amp; Sustainability",
+   "plain": false
+  },
+  {
+   "rank": 960006,
+   "host": "vokagalaxy.com",
+   "controls": 5,
+   "bytes": 12600,
+   "words": 20,
+   "title": "VokaGalaxy - Space MMORPG",
    "plain": false
   },
   {
