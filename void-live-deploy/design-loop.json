@@ -609,6 +609,16 @@
    "listed": 4,
    "defectsBefore": 1,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-16T07:14:43.467Z",
+   "run": 82,
+   "measured": 30,
+   "clean": 28,
+   "fixed": 1,
+   "listed": 1,
+   "defectsBefore": 12,
+   "defectsAfter": 1
   }
  ],
  "pages": {
@@ -8067,7 +8077,7 @@
    "why": "no rule fixes it"
   },
   "/prizes/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8080,7 +8090,7 @@
    "state": "clean"
   },
   "/piano/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8093,7 +8103,7 @@
    "state": "clean"
   },
   "/bpm/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8106,7 +8116,7 @@
    "state": "clean"
   },
   "/password/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8119,7 +8129,7 @@
    "state": "clean"
   },
   "/base64/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8145,7 +8155,7 @@
    "state": "clean"
   },
   "/hosting/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8158,7 +8168,7 @@
    "state": "clean"
   },
   "/tournaments/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8171,20 +8181,20 @@
    "state": "clean"
   },
   "/podcasts/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.001,
     "overflow": 0
    },
    "state": "clean"
   },
   "/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8197,7 +8207,7 @@
    "state": "clean"
   },
   "/emoji-combos/emoji-dictionary/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8210,7 +8220,7 @@
    "state": "clean"
   },
   "/news/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8223,11 +8233,11 @@
    "state": "clean"
   },
   "/team/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
-    "defects": 4,
+    "defects": 12,
     "contrast": 0,
-    "targets": 3,
+    "targets": 11,
     "unstyled": 0,
     "empty": 0,
     "cls": 1.234,
@@ -8243,12 +8253,12 @@
     "cls": 1.234,
     "overflow": 0
    },
-   "rules": 3,
+   "rules": 11,
    "moved": 0,
    "why": "(a layout shift of 1.234 that no rule fixes: listed for a builder)"
   },
   "/markets/currency-converter/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8261,7 +8271,7 @@
    "state": "clean"
   },
   "/ledger/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8274,20 +8284,21 @@
    "state": "clean"
   },
   "/photos/exifeditor/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.051,
+    "cls": 0.11,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.11 that no rule fixes: listed for a builder)"
   },
   "/photos/photopea/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8300,7 +8311,7 @@
    "state": "clean"
   },
   "/photos/squoosh/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8313,7 +8324,7 @@
    "state": "clean"
   },
   "/photos/iloveimg/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8326,7 +8337,7 @@
    "state": "clean"
   },
   "/photos/tinypng/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8339,7 +8350,7 @@
    "state": "clean"
   },
   "/emoji-combos/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8352,7 +8363,7 @@
    "state": "clean"
   },
   "/scores/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8365,20 +8376,20 @@
    "state": "clean"
   },
   "/photos/exif/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.06,
     "overflow": 0
    },
    "state": "clean"
   },
   "/random/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8391,7 +8402,7 @@
    "state": "clean"
   },
   "/markets/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8404,7 +8415,7 @@
    "state": "clean"
   },
   "/chords/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8417,7 +8428,7 @@
    "state": "clean"
   },
   "/translate/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8430,7 +8441,7 @@
    "state": "clean"
   },
   "/photos/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8443,7 +8454,7 @@
    "state": "clean"
   },
   "/stopwatch/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8456,7 +8467,7 @@
    "state": "clean"
   },
   "/boards/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8482,7 +8493,7 @@
    "state": "clean"
   },
   "/metronome/": {
-   "at": "2026-11-11T23:36:29.066Z",
+   "at": "2026-11-16T07:14:43.467Z",
    "before": {
     "defects": 0,
     "contrast": 0,
