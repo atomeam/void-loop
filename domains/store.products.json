@@ -14,6 +14,26 @@
    "published": "2026-10-15"
   },
   {
+   "id": "one-time-fix",
+   "name": "One-Time Fix",
+   "cents": 9900,
+   "kind": "service",
+   "blurb": "I'll fix one annoying bug or setup one feature.",
+   "status": "live",
+   "origin": "v01d",
+   "published": "2026-11-10"
+  },
+  {
+   "id": "full-stack-audit",
+   "name": "Full-Stack Audit",
+   "cents": 49900,
+   "kind": "service",
+   "blurb": "Deep dive into your stack, architecture, and code.",
+   "status": "live",
+   "origin": "v01d",
+   "published": "2026-11-10"
+  },
+  {
    "id": "code-review-pro",
    "name": "Verse Code Review Pro",
    "cents": 1000,

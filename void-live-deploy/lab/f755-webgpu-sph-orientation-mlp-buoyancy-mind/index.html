@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#portals { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.portal { position:absolute; width:80px; height:60px; background:rgba(80,200,255,0.25); border:1px solid #50c8ff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; backdrop-filter:blur(4px); transition:transform 0.1s; pointer-events:auto; cursor:grab; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; z-index:10; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#203040; color:#fff; border:1px solid #50c8ff; border-radius:4px; cursor:pointer; }
+button:hover { background:#305060; }
+#status { font-size:12px; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU SPH Orientation MLP Buoyancy Mind · Verse lab</title>
+<meta name="description" content="DeviceOrientation and pointer as causal inputs to a local tiny MLP that modulates gravity and forces in a simplified SPH (Smoothed Particle Hydrodynamics) particle">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU SPH Orientation MLP Buoyancy Mind · Verse lab">
+<meta property="og:description" content="DeviceOrientation and pointer as causal inputs to a local tiny MLP that modulates gravity and forces in a simplified SPH (Smoothed Particle Hydrodynamics) particle">
+<meta property="og:url" content="https://a-to-mind.com/lab/f755-webgpu-sph-orientation-mlp-buoyancy-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f755-webgpu-sph-orientation-mlp-buoyancy-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<div id="ui">
+  <h3>F755 SPH Buoyancy Mind</h3>
+  <p>Tilt device or move mouse. Portals seek dense fluid regions. Seal to evolve MLP.</p>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Particles: 0 | Fitness: 0 | Gen: 0</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU SPH Orientation MLP Buoyancy Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

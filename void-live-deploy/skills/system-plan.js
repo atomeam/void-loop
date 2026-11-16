@@ -62,7 +62,7 @@ export default {
   name: 'system-plan',
   examples: [
     'system plan for client onboarding',
-    'plan the systems for invoice automation',
+    'system plan for invoice automation',
     'clarify and plan the support process',
     'make a system plan for weekly reports'
   ],

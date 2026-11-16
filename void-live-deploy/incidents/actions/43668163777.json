@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-15T02:50:03Z",
+ "sha": "f887d3040c96742489422766ca7cbd2fda6f67c4",
+ "runId": 43668163777,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43668163777",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 132672079954,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43668163777/job/132672079954",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)"
+   },
+   "fails": [],
+   "tail": [
+    "pass random",
+    "pass reliability-pack",
+    "pass reuse-pack",
+    "pass riddle",
+    "pass roi-pack",
+    "pass rps",
+    "pass sales-pack",
+    "pass scope-pack",
+    "pass shop",
+    "pass show-countdown",
+    "pass shuffle",
+    "pass stage-marks",
+    "pass status-board",
+    "pass status-digest",
+    "pass stopwatch",
+    "pass store",
+    "pass system-plan",
+    "pass system-slice",
+    "pass system-status",
+    "pass systems-owned",
+    "pass terminal",
+    "pass time-saved",
+    "pass triangulate",
+    "pass uuid",
+    "pass video-gen",
+    "pass walker",
+    "pass wordladder",
+    "pass yesno",
+    "pass zoom-figure",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

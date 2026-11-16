@@ -44,7 +44,7 @@ async function run(text, api) {
 export default {
   name: 'different',
   examples: ['what makes you different', 'how are you different from chatgpt', 'is there anything else like you', 'why should i use you'],
-  nearMisses: ['what is different about these two words', 'how are these different', 'what makes a good password'],
+  nearMisses: ['what is different about these two words', 'how are these different', 'what makes a good password', 'why is verse better than chatgpt'],
   match(lower, text) { return differentOf(text || lower); },
   run,
 };

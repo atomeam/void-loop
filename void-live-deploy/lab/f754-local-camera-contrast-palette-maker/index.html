@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0f1419; --fg: #e7e9ea; --accent: #1d9bf0; --card: #1a2332; --ok: #00ba7c; --bad: #f4212e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.4; }
+  header { padding: 1rem; text-align: center; border-bottom: 1px solid #2f3336; }
+  h1 { margin: 0 0 0.5rem; font-size: 1.4rem; }
+  .container { max-width: 900px; margin: 0 auto; padding: 1rem; display: grid; gap: 1rem; }
+  .video-wrap { position: relative; background: #000; border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; }
+  video, canvas { width: 100%; height: 100%; object-fit: cover; }
+  canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  button, select { background: var(--accent); color: #fff; border: 0; padding: 0.6rem 1rem; border-radius: 999px; font-weight: 600; cursor: pointer; }
+  button.secondary { background: #2f3336; }
+  button:disabled { opacity: 0.5; }
+  .palette { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .swatch { width: 100px; border-radius: 8px; overflow: hidden; background: var(--card); cursor: pointer; border: 2px solid transparent; }
+  .swatch.selected { border-color: var(--accent); }
+  .swatch .color { height: 60px; }
+  .swatch .meta { padding: 0.4rem; font-size: 0.75rem; text-align: center; }
+  .results { background: var(--card); padding: 1rem; border-radius: 12px; }
+  .ratio { font-size: 1.5rem; font-weight: 700; }
+  .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-left: 0.5rem; }
+  .aa { background: var(--ok); color: #000; }
+  .fail { background: var(--bad); }
+  .status { font-size: 0.9rem; opacity: 0.8; }
+  .fallback { display: none; }
+  .fallback.show { display: block; }
+  input[type="color"] { width: 48px; height: 48px; border: 0; background: none; }
+  .row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local camera contrast palette maker · Verse lab</title>
+<meta name="description" content="Job: Point your camera at colors or objects, tap to sample hues, the page checks WCAG contrast ratios against black/white or paired colors, suggests accessible">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local camera contrast palette maker · Verse lab">
+<meta property="og:description" content="Job: Point your camera at colors or objects, tap to sample hues, the page checks WCAG contrast ratios against black/white or paired colors, suggests accessible">
+<meta property="og:url" content="https://a-to-mind.com/lab/f754-local-camera-contrast-palette-maker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f754-local-camera-contrast-palette-maker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Camera Contrast Palette Maker</h1>
+  <p>Point camera, tap to sample colors, check WCAG contrast, download CSS/JSON. Offline. Nothing leaves your device.</p>
+</header>
+<div class="container">
+  <div class="video-wrap" id="wrap">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="overlay"></canvas>
+  </div>
+  <div class="controls">
+    <button id="startCam">Start Camera</button>
+    <button id="sample" disabled>Sample Center</button>
+    <select id="facing">
+      <option value="environment">Rear</option>
+      <option value="user">Front</option>
+    </select>
+    <button id="clear" class="secondary">Clear Palette</button>
+  </div>
+  <div class="fallback" id="fallback">
+    <p>Camera unavailable. Use color pickers:</p>
+    <div class="row">
+      <input type="color" id="picker1" value="#1d9bf0">
+      <input type="color" id="picker2" value="#e7e9ea">
+      <button id="addPicker">Add Selected</button>
+    </div>
+  </div>
+  <div class="palette" id="palette"></div>
+  <div class="results" id="results">
+    <div class="status">Sample colors to see contrast ratios.</div>
+  </div>
+  <div class="controls">
+    <button id="downloadCss">Download CSS</button>
+    <button id="downloadJson">Download JSON</button>
+    <button id="copy" class="secondary">Copy Hexes</button>
+    <button id="seal" class="secondary">Save Palette</button>
+  </div>
+  <div class="status" id="status">Ready. Camera optional.</div>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#startCam { color:#292929 }
+#sample { color:#292929 }
+#downloadCss { color:#292929 }
+#downloadJson { color:#292929 }
+/* end verse design loop */
+</style>
+</body>
+</html>

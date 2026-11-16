@@ -6,10 +6,9 @@
  */
 export function isScopePack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  // "ownership pack ..." is owned by the ownership family (ownership-pack member).
   return /^scope\s+pack\b/i.test(t)
     || /^(?:make|generate|show|package)\s+(?:a\s+|the\s+)?scope\s+pack\b/i.test(t)
-    || /\b(?:client\s+)?scope\s+(?:for|of|on)\b/i.test(t)
+    || /\bscope\s+(?:for|of|on)\b/i.test(t)
     || /^(?:what\s+Verse\s+owns|client\s+scope)\s+(?:for|of)\b/i.test(t);
 }
 
@@ -65,7 +64,8 @@ export default {
     'scope pack for the invoice automation',
     'what Verse owns for onboarding flow',
     'client scope for the support router',
-    'make a scope pack for weekly reports'
+    'make a scope pack for weekly reports',
+    'scope pack for the email automation'
   ],
   nearMisses: [
     'what is scope',

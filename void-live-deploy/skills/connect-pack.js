@@ -7,9 +7,9 @@
  */
 export function isConnectPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:connect|reuse|existing)\s+(?:pack|tools|map)\b/i.test(t)
-    || /^what\s+(?:existing|platform)\s+tools\s+(?:for|to)\b/i.test(t)
-    || /^prefer\s+existing\s+tools\s+for\b/i.test(t);
+  return /^(?:connect)\s+(?:pack|tools|map)\b/i.test(t)
+    || /^what\s+(?:platform|existing)\s+tools\s+(?:for|to)\b/i.test(t)
+    || /^(?:reuse|prefer)\s+(?:existing\s+)?tools\s+(?:for|to)\b/i.test(t);
 }
 
 /** the process named after for/of/to, not a "map" or "to" sitting inside another word. */
@@ -77,10 +77,7 @@ async function run(text, api) {
 export default {
   name: 'connect-pack',
   examples: [
-    'connect pack for client onboarding',
-    'what existing tools for invoice reminders',
-    'reuse tools for the support ticket router',
-    'prefer existing tools for weekly status reports'
+    'connect pack for client onboarding'
   ],
   nearMisses: ['connect the dots', 'pack a suitcase', 'existing inventory'],
   match(lower, text) { return isConnectPack(text || lower); },

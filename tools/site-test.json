@@ -402,6 +402,15 @@
     },
     {
       "ask": "cross the bus"
+    },
+    {
+      "ask": "jump stack"
+    },
+    {
+      "ask": "packet maze"
+    },
+    {
+      "ask": "scope pack for the invoice automation"
     }
   ],
   "candidates": [],

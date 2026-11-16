@@ -1,0 +1,242 @@
+{
+ "site": "www.colorbook.io",
+ "url": "https://www.colorbook.io/",
+ "scanned": "2026-11-15",
+ "status": 301,
+ "assets": [
+  {
+   "f": "analytics.ahrefs.com/analytics.js",
+   "t": "js",
+   "b": 6947,
+   "ext": true
+  },
+  {
+   "f": "cdn.jsdelivr.net/cdn.min.js",
+   "t": "js",
+   "b": 55935,
+   "ext": true
+  },
+  {
+   "f": "app.css",
+   "t": "css",
+   "b": 61767
+  },
+  {
+   "f": "zuletzt-angesehen.js",
+   "t": "js",
+   "b": 3929
+  }
+ ],
+ "assetCount": 4,
+ "bytes": 128578,
+ "html": {
+  "mobile": {
+   "title": "Colorbook.io - Professional Color Manage",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "share": {
+    "og": 5,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "inputTypes": {
+    "range": 1,
+    "text": 1
+   },
+   "ariaLabels": [
+    "Colorbook",
+    "Main"
+   ]
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Browse colours",
+   "w": "md"
+  },
+  {
+   "l": "Colorbook",
+   "w": "md"
+  },
+  {
+   "l": "Colors",
+   "w": "d"
+  },
+  {
+   "l": "Colour palettes",
+   "w": "md"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Cookie policy",
+   "w": "md"
+  },
+  {
+   "l": "Create account",
+   "w": "md"
+  },
+  {
+   "l": "Generator",
+   "w": "d"
+  },
+  {
+   "l": "Go",
+   "w": "d"
+  },
+  {
+   "l": "Home",
+   "w": "d"
+  },
+  {
+   "l": "Open main menu",
+   "w": "m"
+  },
+  {
+   "l": "Palette generator",
+   "w": "md"
+  },
+  {
+   "l": "Privacy policy",
+   "w": "md"
+  },
+  {
+   "l": "Schemes",
+   "w": "d"
+  },
+  {
+   "l": "Sign in",
+   "w": "md"
+  },
+  {
+   "l": "Sign up",
+   "w": "md"
+  },
+  {
+   "l": "Terms of service",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/users/",
+   "/colorschemes/add",
+   "/colorschemes/edit/",
+   "/colorschemes/delete/",
+   "/colorschemes/export/",
+   "/hexcolors/save",
+   "/*?base="
+  ],
+  "sitemaps": [
+   "https://www.colorbook.io/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 8375,
+  "index": false,
+  "sections": [
+   {
+    "s": "colorschemes",
+    "n": 5002
+   },
+   {
+    "s": "hexcolors",
+    "n": 3369
+   },
+   {
+    "s": "pages",
+    "n": 3
+   },
+   {
+    "s": "/",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "hosts": [
+  {
+   "host": "tailwindcss.com*",
+   "file": "app.css",
+   "at": 2268
+  }
+ ],
+ "thirdParty": [
+  "analytics.ahrefs.com",
+  "cdn.jsdelivr.net",
+  "tailwindcss.com*"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Input of type range",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=range] x1"
+  },
+  {
+   "name": "Path kept from crawlers /colorschemes/add",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /colorschemes/delete/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /colorschemes/edit/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /colorschemes/export/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /hexcolors/save",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /users/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /colorschemes/ (5002 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /hexcolors/ (3369 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /pages/ (3 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

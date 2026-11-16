@@ -1,5 +1,118 @@
 [
  {
+  "slug": "f762-webgpu-sdf-gaze-rnn-portal-mind",
+  "num": 762,
+  "title": "WebGPU SDF Gaze RNN Portal Mind",
+  "blurb": "A novel volumetric spatial interface for The Verse: a WebGPU raymarched Signed Distance Field (SDF) portal whose parameters (radius, offset, color bias) are",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F762-webgpu-sdf-gaze-rnn-portal-mind",
+  "hash": "7c7afacda5c4",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f761-webgpu-nbody-webrtc-dom-agents-mind",
+  "num": 761,
+  "title": "WebGPU N-Body WebRTC DOM Agents Mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a population of gravitational N-body particles whose mutual forces are accumulated by a WebGPU compute kernel",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F761-webgpu-nbody-webrtc-dom-agents-mind",
+  "hash": "d69eec2bbede",
+  "grade": "toy",
+  "idea": "webrtc"
+ },
+ {
+  "slug": "f760-webxr-hand-lbm-portal-mind",
+  "num": 760,
+  "title": "WebXR Hand LBM Portal Mind",
+  "blurb": "A true WebXR hand-tracked (with pointer/orientation fallback) spatial mind where tracked hand joints inject localized forces and parameter modulations into a",
+  "status": "works",
+  "source": "F760-webxr-hand-lbm-portal-mind",
+  "hash": "cb5c2aee03cf",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f759-webgpu-device-motion-trajectory-logger",
+  "num": 759,
+  "title": "Device motion trajectory logger",
+  "blurb": "Job: Tap Start, then move or tilt your phone (or move the mouse on desktop).",
+  "status": "works",
+  "source": "F759-webgpu-device-motion-trajectory-logger",
+  "hash": "dfca7b1b45b7",
+  "grade": "tool"
+ },
+ {
+  "slug": "f758-webgpu-camera-optical-flow-boids-mind",
+  "num": 758,
+  "title": "WebGPU Camera Optical Flow Boids Portal Mind",
+  "blurb": "The live camera feed is downsampled and processed by a WebGPU compute shader (Canvas2D fallback) to extract a dense optical-flow vector field via multi-scale frame",
+  "status": "broken",
+  "error": "console: Permissions policy violation: camera is not allowed in this document.",
+  "source": "F758-webgpu-camera-optical-flow-boids-mind",
+  "hash": "934b8e2af25f",
+  "grade": "toy",
+  "idea": "palette"
+ },
+ {
+  "slug": "f757-sleep-cycle-calculator",
+  "num": 757,
+  "title": "Sleep cycle calculator",
+  "blurb": "Job: Enter the time you need to wake up or the time you plan to go to bed.",
+  "status": "works",
+  "source": "F757-sleep-cycle-calculator",
+  "hash": "2602b8dcd172",
+  "grade": "tool"
+ },
+ {
+  "slug": "f756-opfs-genetic-terrain-mind",
+  "num": 756,
+  "title": "OPFS Genetic Terrain Portal Mind",
+  "blurb": "A local genetic algorithm maintains a population of procedural terrain genomes (heightmap seeds + noise params).",
+  "status": "works",
+  "source": "F756-opfs-genetic-terrain-mind",
+  "hash": "bacb7bbad4d9",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f755-webgpu-sph-orientation-mlp-buoyancy-mind",
+  "num": 755,
+  "title": "WebGPU SPH Orientation MLP Buoyancy Mind",
+  "blurb": "DeviceOrientation and pointer as causal inputs to a local tiny MLP that modulates gravity and forces in a simplified SPH (Smoothed Particle Hydrodynamics) particle",
+  "status": "works",
+  "source": "F755-webgpu-sph-orientation-mlp-buoyancy-mind",
+  "hash": "7a2810151d44",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f754-local-camera-contrast-palette-maker",
+  "num": 754,
+  "title": "Local camera contrast palette maker",
+  "blurb": "Job: Point your camera at colors or objects, tap to sample hues, the page checks WCAG contrast ratios against black/white or paired colors, suggests accessible",
+  "status": "works",
+  "source": "F754-local-camera-contrast-palette-maker",
+  "hash": "3075270834a3",
+  "grade": "tool"
+ },
+ {
+  "slug": "f753-local-business-card-maker",
+  "num": 753,
+  "title": "Local business card maker",
+  "blurb": "Job: Type your name, role, phone, email and website; see a live preview of a standard business card and download it as a clean PNG ready to print or share.",
+  "status": "works",
+  "source": "F753-local-business-card-maker",
+  "hash": "36973eaf7595",
+  "grade": "tool"
+ },
+ {
   "slug": "f752-local-ssh-key-generator",
   "num": 752,
   "title": "Local SSH key generator",

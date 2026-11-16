@@ -19,6 +19,36 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { playableStream, stationTitle } from '../void-live-deploy/lib/local-media.js';
 
+const PROBE_TIMEOUT = 7000, PROBE_CONCURRENCY = 12;
+/** lightweight browser-playability probe for build-time filtering: https manifest reachable and CORS-open enough for cross-origin fetch/play attempts. */
+export async function probeStreamUrl(raw, fetchFn = globalThis.fetch) {
+  const url = typeof raw === 'string' ? raw.trim() : '';
+  if (!playableStream(url)) return false;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), PROBE_TIMEOUT);
+  try {
+    let r = await fetchFn(url, { method: 'HEAD', redirect: 'follow', signal: ctrl.signal, headers: { accept: 'application/vnd.apple.mpegurl,application/x-mpegURL,*/*' } });
+    if (r && (r.status === 405 || r.status === 501)) r = await fetchFn(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal, headers: { accept: 'application/vnd.apple.mpegurl,application/x-mpegURL,*/*', range: 'bytes=0-2047' } });
+    if (!r || r.status < 200 || r.status >= 400) return false;
+    const aco = String(r.headers && r.headers.get('access-control-allow-origin') || '').trim();
+    if (!aco) return false;
+    try { r.body?.cancel?.(); } catch (_) {}
+    return true;
+  } catch (_) { return false; }
+  finally { clearTimeout(t); }
+}
+
+export async function probeEntries(entries, fetchFn = globalThis.fetch) {
+  const urls = [...new Set(entries.map((e) => e && e.url).filter(Boolean))];
+  const ok = new Set();
+  for (let i = 0; i < urls.length; i += PROBE_CONCURRENCY) {
+    const chunk = urls.slice(i, i + PROBE_CONCURRENCY);
+    const res = await Promise.all(chunk.map(async (u) => [u, await probeStreamUrl(u, fetchFn)]));
+    for (const [u, good] of res) if (good) ok.add(u);
+  }
+  return entries.filter((e) => ok.has(e.url));
+}
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(root, 'void-live-deploy/local/tv');
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
@@ -108,7 +138,17 @@ export function build({ channels, feeds, cities, subdivisions, blocklist, entrie
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const src = sources(), read = (f) => fs.readFileSync(path.join(src.db, 'data', f), 'utf8');
-  const entries = fs.readdirSync(path.join(src.iptv, 'streams')).filter((f) => f.endsWith('.m3u')).flatMap((f) => m3uEntries(fs.readFileSync(path.join(src.iptv, 'streams', f), 'utf8')));
+  let entries = fs.readdirSync(path.join(src.iptv, 'streams')).filter((f) => f.endsWith('.m3u')).flatMap((f) => m3uEntries(fs.readFileSync(path.join(src.iptv, 'streams', f), 'utf8')));
+  for (const extra of (process.argv.includes('--extra-m3u') ? [arg('--extra-m3u')] : [])) {
+    if (!extra) continue;
+    const add = fs.statSync(extra).isDirectory() ? fs.readdirSync(extra).filter((f) => /\.m3u8?$/i.test(f)).flatMap((f) => m3uEntries(fs.readFileSync(path.join(extra, f), 'utf8'))) : m3uEntries(fs.readFileSync(extra, 'utf8'));
+    entries = entries.concat(add);
+  }
+  if (process.argv.includes('--probe')) {
+    const before = entries.length;
+    entries = await probeEntries(entries);
+    console.log('local-tv: probe kept ' + entries.length + '/' + before + ' stream URLs');
+  }
   const { countries, index } = build({ channels: csvObjects(read('channels.csv')), feeds: csvObjects(read('feeds.csv')), cities: csvObjects(read('cities.csv')),
     subdivisions: csvObjects(read('subdivisions.csv')), blocklist: csvObjects(read('blocklist.csv')), entries, geo: JSON.parse(fs.readFileSync(src.cities, 'utf8')), commits: src.commits });
   const files = { 'index.json': JSON.stringify(index, null, 1) + '\n', ...Object.fromEntries(Object.entries(countries).map(([cc, f]) => [cc + '.json', JSON.stringify(f) + '\n'])) };
