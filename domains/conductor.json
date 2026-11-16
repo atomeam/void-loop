@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T01:21:15.665Z",
+ "updated": "2026-11-16T01:30:40.984Z",
  "last24h": {
   "ticks": 154,
   "started": 121,
@@ -95,11 +95,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 18,
    "cap": 90
   },
   "day": {
-   "used": 19,
+   "used": 37,
    "cap": 360
   },
   "room": true,
@@ -118,7 +118,7 @@
   "mwdsggtv": 1794790949344,
   "mwdsgi9n": 1794791513730,
   "mwdsgj2z": 1794792075665,
-  "mweaagmp": 1794770679544,
+  "mweaagmp": 1794792640984,
   "mweaah6f": 1794771239620,
   "mwey8iy6": 1794771800369,
   "mwgvpj5y": 1794706496321,
@@ -231,34 +231,6 @@
   "review:2842"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T01:25:37.606Z",
-   "open": 432,
-   "started": [
-    {
-     "id": "mwey8iy6",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 43
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 407,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T01:34:56.321Z",
    "open": 432,
@@ -4291,6 +4263,34 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 417,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T01:30:40.984Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mweaagmp",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 46
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 417,
    "warnings": 1
