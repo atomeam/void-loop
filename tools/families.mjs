@@ -56,7 +56,7 @@ export const FAMILIES = [
   { id: 'decide', name: 'Deciding', for: 'ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards', skills: ['decide-cards', 'decision-matrix', 'triangulate'] },
   { id: 'safety-play', name: 'Safety and small delights', for: 'privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)', skills: ['advice', 'pwcheck', 'safety-kit', 'photo-scrub', 'stage-fx', 'card-play'] },
 ];
-import { readOrder } from './skills-index.mjs';
+import { readOrder, OFF } from './skills-index.mjs';
 import { promote, streaksOf } from './streaks.mjs';
 import { SOURCE_FAMILIES, scanSkill, reliabilityOf, familySources } from './source-reliability.mjs';
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
@@ -239,7 +239,9 @@ export function build(names, ev, meta = {}) {
     return { id: f.id, name: f.name, ...(f.formerly ? { formerly: f.formerly } : {}), for: f.for, count, ...(sources ? { sources } : {}), skills };
   });
   const totals = Object.fromEntries(TIERS.map((t) => [t, families.reduce((n, f) => n + f.count[t], 0)]));
-  return { families, totals, unplaced: names.filter((n) => !placed.has(n)), missing: [...placed].filter((n) => !names.includes(n)) };
+  // A retired standalone draft can keep its family assignment for salvage; if a family
+  // still loads that member it is included above, otherwise its absence is intentional.
+  return { families, totals, unplaced: names.filter((n) => !placed.has(n)), missing: [...placed].filter((n) => !names.includes(n) && !(n in OFF)) };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

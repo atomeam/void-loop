@@ -82,7 +82,10 @@ export function ranksOf(dir = ORDER_DIR) {
  * one gets a rank between its neighbours' (a skill added to the index by hand, or by a branch from before the order files).
  * Returns the files it made. Pure apart from the files.
  */
-export function adoptOrder(names, dir = ORDER_DIR) {
+export function adoptOrder(names, dir = ORDER_DIR, off = OFF) {
+  // A stale deployment index may still list a deliberately retired skill. It is not
+  // a new skill to adopt; filter it before assigning ranks between the survivors.
+  names = names.filter((n) => !(n in off));
   const ranks = ranksOf(dir), made = [];
   for (let i = 0; i < names.length; i++) {
     const n = names[i];
@@ -110,7 +113,8 @@ export const OFF = {
   vat: 'the VAT calculator page is another worker\'s (Versus /vat/). Off the routing order until that work lists the skill itself.',
   stopwatch: 'RETIRED: "show stopwatch" stays off the order until its asks are its own (tools/skills-unlisted.mjs). The order file was a leftover the index never listed.',
   palindrome: 'RETIRED: "is racecar a palindrome" is util\'s (tools/skills-unlisted.mjs). The order file was a leftover the index never listed.',
-  'idea-clarify': 'the shipped card is business-clarify; this file is the earlier draft and stays off the routing order',
+  hosting: 'retired: its regex match is not a router function and its broad server/domain asks collide; rebuild the skill contract before registering it',
+  'system-plan': 'retired from routing on 2026-11-14: overlaps with idea-to-system/intent; keep the draft for salvage, not automatic adoption',
 };
 const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
 /** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */

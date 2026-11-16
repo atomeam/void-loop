@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Viktor · fix/verse-skill-self-registration · share deliberate skill retirement across adoption, routing checks and generated families; preserve system-plan retirement; no workflow or live-call changes · 2026-11-16
+
 - Viktor · fix/verse-health-validation · harden existing site checks; incident-workflow extension blocked by GitHub App permissions · 2026-11-16
 
 - Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC

@@ -11,7 +11,9 @@ Written for the simplest agent that can run a shell. `AGENTS.md` has the full ru
 4. `node tools/merge-main.mjs`, then `VOID_SKIP_BENCH=1 node tools/checks.mjs`. Fix what it prints; it names the file.
 5. `node tools/grow.mjs grow "what Verse can do now"`, one line in `docs/MAP.md`, `node tools/push.mjs`, open the PR, `node tools/automerge.mjs <pr> --label`. Then move on.
 
-A skill file that lands in `skills/` without its order file is registered at the end of the routing order by `node tools/skills-index.mjs --adopt` (finish.mjs runs it before it commits), and the fast checks then run the router test on it; a skill kept out on purpose is named in `OFF` in `tools/skills-index.mjs` with why.
+A **new** skill file that lands in `skills/` without its order file is registered at the end of the routing order by `node tools/skills-index.mjs --adopt` (finish.mjs runs it before it commits), and the fast checks then run the router test on it; a skill kept out on purpose is named in `OFF` in `tools/skills-index.mjs` with why. This is the single retirement policy used by adoption, unlisted-skill checks and family validation: do not maintain another retirement list. A retired file stays available for salvage, but `--adopt` must not bring it back. Existing family members still count when their family loads them.
+
+After adding or retiring a skill, run `node tools/skills-index.mjs --check` and `node tools/skills-check.mjs`. Routing and overlap checks read `skills/order/`, not the deployment copy of `index.json`. Run `node tools/refresh.mjs --only index,first,deps,families,guide,what` to rebuild the dependent cards in order, then `node tools/refresh.mjs --check --only index,first,deps,families,guide,what`. Refresh only rebuilds registered skills; it does not adopt an unreviewed new file. If the index check finds a genuinely new file, adopt it first and settle any router collisions rather than just refreshing or widening the overlap allowance.
 
 Never hand-edit `skills/index.json`, the agent log's old lines or the growth ledger's old lines.
 
