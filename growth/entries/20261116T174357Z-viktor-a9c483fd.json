@@ -1,0 +1,1 @@
+{"at":"2026-11-16T17:43:57Z","by":"viktor","kind":"fix","what":"Failed recovery jobs enter Verse's incident record, and a record that cannot be saved no longer reports success"}

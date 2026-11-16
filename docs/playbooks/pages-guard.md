@@ -12,7 +12,7 @@ The existing Pages guard runs after pushes and on its existing schedule. The dep
 
 A successful check exits zero. Each site request has a 60-second deadline that also covers the body. A tools list must be an array with at least 100 entries; an answer must be nonempty text. Malformed JSON, empty answers, HTTP errors and timeouts produce failures, not healthy results. The existing retry and rollback selection rules are unchanged.
 
-Follow-up, not wired yet: add Pages guard to Actions failure reader so failed recovery jobs enter the existing incident record. This needs permission to update GitHub workflows. Do not claim these failures are recorded until that change is merged.
+When Pages guard fails or times out on main, Actions failure reader records its failed job and masked log in `void-live-deploy/incidents/actions/`. The next deploy assembles that record for the incident view. If all four attempts to push the record fail, the reader exits nonzero instead of reporting success. A recovery that succeeds does not create a failed-workflow record.
 
 ## Mistakes to avoid
 

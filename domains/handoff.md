@@ -15,7 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Viktor · fix/verse-health-validation · harden existing site checks; incident-workflow extension blocked by GitHub App permissions · 2026-11-16
+- Viktor · fix/verse-recovery-incident-intake · failed recovery jobs reach incident records and failed record writes stay red · 2026-11-16
+
 
 - Cursor cloud agent · helper/echo-vault-11ee · Echo Vault holds the stories of sites that were only something to read · 2026-11-14 00:10 UTC
 - Cursor cloud agent · cursor/skip-unrebuilt-floors-11ee · the live floor job skips a page that is not checked yet, so an unrebuilt page cannot fail the job · 2026-11-13 23:55 UTC
@@ -108,6 +109,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - parallel agent · store-phase1 · Verse's own store: docs/store.md, /store page, /api/store (checkout handoff, Stripe webhook, signed downloads, license keys, receipt, order lookup), Gumroad fallback · 2026-10-15 05:10 UTC
 
 ## Just finished
+
+- **Viktor health checks**: blank answers, invalid tool lists and stalled requests no longer pass the existing guard; https://github.com/atomeam/void-loop/pull/2869 · 2026-11-16
 
 - **the open /team/ wants: drop Tower aspect items, start the rest, and make the Films guard see the public page (Cursor cloud agent, 2026-11-15)**: shipped in https://github.com/atomeam/void-loop/pull/2809.
 - **Baggage check**: a page that answers 403 leaves its figures unchecked and does not fail the run. https://github.com/atomeam/void-loop/pull/2806
