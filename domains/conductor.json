@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T04:29:11.168Z",
+ "updated": "2026-11-16T04:38:32.922Z",
  "last24h": {
   "ticks": 153,
-  "started": 126,
+  "started": 127,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -141,8 +141,8 @@
   "mvvjzso8": 1794790949344,
   "mw5mm5fm": 1794791513730
  },
- "sweptAt": 1794799965374,
- "blueprintsAt": 1794799965374,
+ "sweptAt": 1794803912922,
+ "blueprintsAt": 1794803912922,
  "visitorAt": "2026-11-16T03:16:21Z",
  "visitorFiled": [
   "heal:helper-loop-carry-e6be",
@@ -227,27 +227,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T04:33:24.667Z",
-   "open": 432,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 409,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T04:42:43.313Z",
    "open": 432,
@@ -4287,6 +4266,34 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T04:38:32.922Z",
+   "open": 430,
+   "started": [
+    {
+     "id": "want-idea-5e6497554d",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 87
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 20,
    "warnings": 1
