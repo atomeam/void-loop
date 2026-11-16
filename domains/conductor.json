@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T00:15:34.721Z",
+ "updated": "2026-11-16T00:24:56.314Z",
  "last24h": {
   "ticks": 154,
-  "started": 123,
+  "started": 122,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -95,11 +95,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 19,
    "cap": 90
   },
   "day": {
-   "used": 0,
+   "used": 19,
    "cap": 360
   },
   "room": true,
@@ -114,7 +114,6 @@
   "mveb8svc": 1794788134721,
   "mva30j4u": 1794784187304,
   "mwa0agd2": 1794767310622,
-  "mvpuq9g6": 1794702001094,
   "mwa0ah54": 1794767873758,
   "mvpuqaee": 1794703132775,
   "mwdsggtv": 1794768989218,
@@ -142,7 +141,8 @@
   "mwi09g3m": 1794758298285,
   "mwibstjd": 1794776865057,
   "mwibsu8f": 1794777427318,
-  "mwibsvp5": 1794777989758
+  "mwibsvp5": 1794777989758,
+  "mvfu4evy": 1794788696314
  },
  "sweptAt": 1794788134721,
  "blueprintsAt": 1794788134721,
@@ -230,40 +230,6 @@
   "review:2842"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T00:20:01.094Z",
-   "open": 437,
-   "started": [
-    {
-     "id": "mvpuq9g6",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mwa0ah54",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 50
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 412,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T00:29:25.645Z",
    "open": 432,
@@ -4302,6 +4268,34 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 409,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T00:24:56.314Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 409,
    "warnings": 1
