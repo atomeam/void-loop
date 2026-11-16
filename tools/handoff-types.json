@@ -43,12 +43,7 @@
   "/notes/": "in: text, items; out: text, items",
   "/password/": "in: number; out: text",
   "/pdf/": "in: image, text; out: image, text",
-<<<<<<< HEAD
-  "/pdf/editor/": "in: image, text; out: image, text",
-  "/pdf/studio/": "in: image, text; out: image, text",
-  "/pdf/suite/": "in: image, text; out: image, text",
-=======
->>>>>>> origin/main
+
   "/photos/": "in: image; out: image, color",
   "/photos/exif/": "in: image; out: image, color",
   "/photos/exifeditor/": "in: image; out: image, color",
