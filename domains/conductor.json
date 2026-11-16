@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T11:15:54.719Z",
+ "updated": "2026-11-16T11:25:14.298Z",
  "last24h": {
   "ticks": 118,
-  "started": 84,
+  "started": 85,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 1,
    "cap": 90
   },
   "day": {
@@ -112,7 +112,7 @@
   "mva30i2e": 1794813231398,
   "mvu167w7": 1794820481666,
   "mveb8svc": 1794788134721,
-  "mva30j4u": 1794806225050,
+  "mva30j4u": 1794828314298,
   "mwa0agd2": 1794820481666,
   "mwa0ah54": 1794827754719,
   "mwdsggtv": 1794790949344,
@@ -219,34 +219,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T11:17:21.940Z",
-   "open": 430,
-   "started": [
-    {
-     "id": "want-exam-recipes",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 61
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T11:26:43.984Z",
    "open": 430,
@@ -3265,6 +3237,38 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T11:25:14.298Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "want-idea-298bf37d16",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 87
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 20,
    "warnings": 1
