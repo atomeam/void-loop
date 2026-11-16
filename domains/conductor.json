@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T00:06:14.490Z",
+ "updated": "2026-11-16T00:15:34.721Z",
  "last24h": {
   "ticks": 154,
-  "started": 124,
+  "started": 123,
   "requeued": 0,
   "setAside": 1,
   "probes": 0,
@@ -37,6 +37,10 @@
   },
   {
    "id": "want-exam-recipes",
+   "why": "verse-job.yml is paused (the coder's back-off, #2856, until 03:21 UTC)"
+  },
+  {
+   "id": "want-misses-2026-w47",
    "why": "verse-job.yml is paused (the coder's back-off, #2856, until 03:21 UTC)"
   },
   {
@@ -86,10 +90,6 @@
   {
    "id": "mwcf54df",
    "why": "verse-job.yml is paused (the coder's back-off, #2856, until 03:21 UTC)"
-  },
-  {
-   "id": "mwcg2h14",
-   "why": "verse-job.yml is paused (the coder's back-off, #2856, until 03:21 UTC)"
   }
  ],
  "coder": {
@@ -110,10 +110,9 @@
   "mvbl52gd": 1794787574490,
   "mveb8rsi": 1794787574490,
   "mva30i2e": 1794768430676,
-  "mvu167w7": 1794740318541,
-  "mveb8svc": 1794718327515,
+  "mvu167w7": 1794788134721,
+  "mveb8svc": 1794788134721,
   "mva30j4u": 1794784187304,
-  "mvfu4evy": 1794701432484,
   "mwa0agd2": 1794767310622,
   "mvpuq9g6": 1794702001094,
   "mwa0ah54": 1794767873758,
@@ -145,8 +144,8 @@
   "mwibsu8f": 1794777427318,
   "mwibsvp5": 1794777989758
  },
- "sweptAt": 1794784187304,
- "blueprintsAt": 1794784187304,
+ "sweptAt": 1794788134721,
+ "blueprintsAt": 1794788134721,
  "visitorAt": "2026-11-15T23:09:52Z",
  "visitorFiled": [
   "review:2605",
@@ -231,46 +230,6 @@
   "review:2842"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T00:10:32.484Z",
-   "open": 436,
-   "started": [
-    {
-     "id": "want-exam-code",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 129
-    },
-    {
-     "id": "mvfu4evy",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mwa0agd2",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 50
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 12,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T00:20:01.094Z",
    "open": 437,
@@ -4311,6 +4270,40 @@
    "sweep": false,
    "blueprints": 0,
    "held": 408,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T00:15:34.721Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 409,
    "warnings": 1
   }
  ]
