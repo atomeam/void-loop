@@ -114,3 +114,5 @@ Open work:
 - 2026-11-16T03:29Z verse-loop (verse): task, Queue job want-page-tools-json (heal: want-page-tools-json):; all checks green; branch loop/20261116-032909
 
 - 2026-11-16T03:37Z verse-loop (verse): task, Queue job want-idea-5e6497554d (tv: contactless-delivery-ver; all checks green; branch loop/20261116-033742
+
+- 2026-11-16T04:06Z verse-loop (verse): task, Queue job want-exam-recipes (gap: want-exam-recipes): Raise ; all checks green; branch loop/20261116-040634
