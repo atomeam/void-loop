@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T04:57:24.901Z",
+ "updated": "2026-11-16T05:06:59.434Z",
  "last24h": {
   "ticks": 153,
   "started": 126,
@@ -95,15 +95,15 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 90,
+   "used": 0,
    "cap": 90
   },
   "day": {
    "used": 241,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-16T05:00:00.000Z",
+  "room": true,
+  "until": null,
   "paid": false
  },
  "handed": {
@@ -121,7 +121,6 @@
   "mweaagmp": 1794792640984,
   "mweaah6f": 1794793206018,
   "mwey8iy6": 1794793767314,
-  "mwhd08tw": 1794718896509,
   "mwhd09q1": 1794719469529,
   "mwhh7ytq": 1794728487460,
   "mwhh7zqm": 1794729049805,
@@ -227,34 +226,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T05:01:36.509Z",
-   "open": 434,
-   "started": [
-    {
-     "id": "mwhd08tw",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 417,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T05:11:09.529Z",
    "open": 434,
@@ -4282,6 +4253,34 @@
    "probe": false,
    "grow": false,
    "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T05:06:59.434Z",
+   "open": 430,
+   "started": [
+    {
+     "id": "want-idea-5e6497554d",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 87
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
    "will": false,
    "lap": false,
    "revived": [
