@@ -56,3 +56,24 @@ test('Verse\'s ask: a new skill file in skills/ registers itself at the end of t
   assert.deepEqual(ls(order).sort(), ['0010-tide', '1090-draw', '1100-kettle']);
   assert.deepEqual(registerNew(order, root), [], 'twice is the same as once');
 });
+
+
+test('adoption and discovery share retirement policy: retired drafts stay out while a genuinely new skill registers', async () => {
+  const { OFF, registerNew } = await import('./skills-index.mjs');
+  const { RETIRED, unlistedSkills } = await import('./skills-unlisted.mjs');
+  assert.deepEqual(RETIRED.slice().sort(), Object.keys(OFF).sort(), 'one policy, not two lists that can drift');
+  const root = mkdtempSync(join(tmpdir(), 'skills-retired-')), order = join(root, 'order');
+  mkdirSync(order);
+  writeFileSync(join(root, 'package.json'), '{"type":"module"}');
+  const skill = (n) => `export default { name: '${n}', match() { return false; }, run() {} };\n`;
+  // A stale deployment index must neither re-adopt a retired draft nor hide a new skill.
+  writeFileSync(join(root, 'index.json'), '["system-plan"]');
+  for (const n of [...RETIRED, 'new-skill']) writeFileSync(join(root, n + '.js'), skill(n));
+  assert.deepEqual(await unlistedSkills(root), ['new-skill']);
+  assert.deepEqual(adoptOrder(JSON.parse(readFileSync(join(root, 'index.json'), 'utf8')), order), [], 'a stale index cannot re-adopt a retired draft');
+  assert.deepEqual(registerNew(order, root), ['0010-new-skill']);
+  assert.deepEqual(registerNew(order, root), [], 'adoption is idempotent');
+  assert.deepEqual(await unlistedSkills(root), []);
+  assert.deepEqual(writeIndex(order, join(root, 'index.json')), ['new-skill']);
+  assert.ok(OFF['system-plan'], 'the deliberately retired overlapping draft is not resurrected');
+});

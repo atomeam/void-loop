@@ -16,6 +16,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Viktor · fix/verse-conductor-event-health · successes from a different trigger cannot hide a broken scheduled audit; watch recovery infrastructure too · 2026-11-16
+- Viktor · fix/verse-skill-self-registration · share deliberate skill retirement across adoption, routing checks and generated families; preserve system-plan retirement; no workflow or live-call changes · 2026-11-16
 
 - Viktor · fix/verse-health-validation · harden existing site checks; incident-workflow extension blocked by GitHub App permissions · 2026-11-16
 - Viktor · fix/verse-recovery-incident-intake · failed recovery jobs reach incident records and failed record writes stay red · 2026-11-16

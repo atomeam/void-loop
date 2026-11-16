@@ -8,16 +8,19 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { readOrder } from './skills-index.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = resolve(root, 'void-live-deploy/skills');
 const ALLOW = resolve(root, 'tools/skill-overlap.json');
 
 /** every skill at member level (a family's members, each on its own), in routing order */
-export async function memberSkills() {
+export async function memberSkills(skillsDir = dir) {
   const out = [];
-  for (const n of JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8'))) {
-    const d = (await import(pathToFileURL(resolve(dir, n + '.js')).href)).default;
+  // Like skills-check, use the source order, not yesterday's deployment copy: a retired
+  // skill may still be in index.json, and a newly registered one may not be there yet.
+  for (const n of readOrder(resolve(skillsDir, 'order'))) {
+    const d = (await import(pathToFileURL(resolve(skillsDir, n + '.js')).href)).default;
     for (const m of d.family ? d.members : [d]) out.push({ skill: m, family: d.family ? d.name : null });
   }
   return out;
