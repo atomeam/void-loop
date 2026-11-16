@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T01:02:29.344Z",
+ "updated": "2026-11-16T01:11:53.730Z",
  "last24h": {
   "ticks": 154,
   "started": 121,
@@ -116,9 +116,8 @@
   "mwa0agd2": 1794789258800,
   "mwa0ah54": 1794789820725,
   "mwdsggtv": 1794790949344,
-  "mwdsgi9n": 1794769556518,
+  "mwdsgi9n": 1794791513730,
   "mwdsgj2z": 1794770116534,
-  "mw5mm5fm": 1794704809424,
   "mweaagmp": 1794770679544,
   "mweaah6f": 1794771239620,
   "mwey8iy6": 1794771800369,
@@ -143,7 +142,8 @@
   "mvpuq9g6": 1794789258800,
   "mvpuqaee": 1794789820725,
   "mvpuqb4r": 1794790382721,
-  "mvvjzso8": 1794790949344
+  "mvvjzso8": 1794790949344,
+  "mw5mm5fm": 1794791513730
  },
  "sweptAt": 1794788134721,
  "blueprintsAt": 1794788134721,
@@ -231,40 +231,6 @@
   "review:2842"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T01:06:49.424Z",
-   "open": 432,
-   "started": [
-    {
-     "id": "mw5mm5fm",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 76
-    },
-    {
-     "id": "mweaagmp",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 44
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 407,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T01:16:14.428Z",
    "open": 432,
@@ -4283,6 +4249,40 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 409,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T01:11:53.730Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "mw5mm5fm",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 78
+    },
+    {
+     "id": "mwdsgi9n",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 47
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
    "design": false,
    "will": false,
    "lap": false,
