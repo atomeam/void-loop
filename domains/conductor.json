@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T11:25:14.298Z",
+ "updated": "2026-11-16T11:34:37.538Z",
  "last24h": {
   "ticks": 118,
-  "started": 85,
+  "started": 86,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 1,
+   "used": 7,
    "cap": 90
   },
   "day": {
@@ -115,7 +115,7 @@
   "mva30j4u": 1794828314298,
   "mwa0agd2": 1794820481666,
   "mwa0ah54": 1794827754719,
-  "mwdsggtv": 1794790949344,
+  "mwdsggtv": 1794828877538,
   "mwdsgi9n": 1794791513730,
   "mwdsgj2z": 1794792075665,
   "mweaagmp": 1794792640984,
@@ -219,34 +219,6 @@
   "tv:contactless-delivery-verificatio"
  ],
  "ticks": [
-  {
-   "at": "2026-11-15T11:26:43.984Z",
-   "open": 430,
-   "started": [
-    {
-     "id": "want-revenue-2026-11",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 73
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 1
-  },
   {
    "at": "2026-11-15T11:36:05.850Z",
    "open": 430,
@@ -3256,6 +3228,38 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-16T11:34:37.538Z",
+   "open": 432,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 82
+    },
+    {
+     "id": "mwdsggtv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 48
     }
    ],
    "requeued": 0,
