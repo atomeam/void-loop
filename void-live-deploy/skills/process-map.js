@@ -42,7 +42,7 @@ async function run(text, api) {
   const rows = pack.steps.map(s => '<tr><td>' + esc(s.step) + '</td><td>' + esc(s.owns) + '</td><td>' + esc(s.client) + '</td></tr>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Process map: ' + esc(name) + '</h2>'
-      + '<p class="sub">End-to-end map. Verse takes the heavy lifting so the client does less.</p>'
+      + '<p class="sub">End-to-end map. Verse takes the hard work so the client does less.</p>'
       + '<table><thead><tr><th>Step</th><th>Verse owns</th><th>Client does</th></tr></thead><tbody>' + rows + '</tbody></table>'
       + '<h3>How the client does less</h3><p>' + esc(pack.lift) + '</p>'
       + '<p class="sub">Ask for the ownership pack or system slice next. Nothing is built yet.</p>'
