@@ -3,7 +3,7 @@
 # `finding` line to the growth ledger pointing at it. Both files are committed to main by the bot, as rides-live.yml does. The read spends
 # nothing itself; when video is off and the last test is over 6 hours old, it starts the route's own self-check, one 1 second draft clip inside
 # PROBE_DAILY_USD ($0.02 a day, lib/video-gen.js). Success is the site answering a known state, a test under 7 hours old and /video/ served,
-# AND the finding landing on main; the job is red otherwise. No key is used and nothing a person typed is sent.
+# AND the finding landing on main; the job is red otherwise. The owner token, when set, opens /video/ and is not written down. Nothing a person typed is sent.
 name: Video-gen live
 
 on:
@@ -46,6 +46,8 @@ jobs:
           echo "probe: $code $(jq -c '{state, model}' probe.json 2>/dev/null)" >> "$GITHUB_STEP_SUMMARY"
       - name: Read the live video route and page once and write the finding
         id: check
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           set +e
           node tools/video-gen-live.mjs > video-gen-live.out; code=$?

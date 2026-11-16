@@ -26,6 +26,7 @@ export const TOOLS = Object.freeze({
   '/lab/level/': 'Spirit level', '/lab/checksum/': 'File checksum checker', '/lab/pattern/': 'Seamless pattern maker', '/lab/photo-palette/': 'Palette from a photo', '/lab/dictation/': 'Dictation', '/lab/mind-map/': 'Mind map maker',
   // the deck built to take on dalyfeds.com (2026-11-06): a live benchmark of both sites, then weather, news, games and Lab tools on one page
   '/starboard/': 'Starboard',
+  '/arcade/': 'Verse Arcade',
   // the research journal (the Versus floor for ajsonline.org, 2026-11-07): the papers, and the length of a paper an author is writing
   '/journal/': 'Research journal',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
@@ -88,6 +89,7 @@ const HAND_RELATED = Object.freeze({
   '/journal/': ['/news/', '/translate/', '/notes/', '/tools/'],
   // Starboard (dalyfeds.com's counterpart): the pages its panels come from
   '/starboard/': ['/weather/', '/news/', '/random/wheel/', '/pdf/'],
+  '/arcade/': ['/learn-to-draw/', '/random/', '/music/', '/fantasy/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
   '/rap/': ['/music/', '/metronome/', '/word-count/', '/translate/'],
   '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/', '/rap/'],
@@ -146,7 +148,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/base64/bases/': 'convert 255 to binary', '/password/strength/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/scores/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/journal/': 'latest earth science papers', '/starboard/': 'open starboard', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/journal/': 'latest earth science papers', '/starboard/': 'open starboard', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', '/arcade/': 'arcade games', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
   '/lab/level/': 'spirit level', '/lab/checksum/': 'sha256 checksum', '/lab/pattern/': 'seamless pattern maker', '/lab/photo-palette/': 'color palette from a photo', '/lab/dictation/': 'speech to text', '/lab/mind-map/': 'mind map maker',
   // the research journal (the Versus floor for ajsonline.org, 2026-11-07): the open-tool card that links the page which reads the papers
   '/journal/': 'open research journal',

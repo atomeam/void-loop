@@ -2,11 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { cleanWord, sensesFrom } from '../void-live-deploy/lib/meanings.js';
 import { UA, defineWord, answer } from '../void-live-deploy/functions/api/meanings.js';
-import { failedFloors, markWorks, pagesToRun, withOwner } from './floor-live.mjs';
+import { failedFloors, floorKind, markWorks, pagesToRun, withOwner } from './floor-live.mjs';
 
 test('a counted page that failed does not stay a floor', () => {
-  assert.deepEqual(failedFloors([{ id: 'meanings', works: true }, { id: 'qr', works: false }], [{ id: 'meanings', ok: false }]), ['meanings']);
-  assert.deepEqual(failedFloors([{ id: 'qr', works: false }], []), []);
+  const counted = { id: 'meanings', kind: 'page', works: true, checked: true };
+  assert.deepEqual(failedFloors([counted, { id: 'qr', kind: 'page', works: false, checked: true }, { id: 'podcasts', kind: 'page', works: true }], [{ id: 'meanings', ok: false }]), ['meanings']);
+  assert.deepEqual(failedFloors([{ id: 'podcasts', kind: 'page', works: false }], []), []);
+  assert.deepEqual(failedFloors([{ id: 'songs', kind: 'page', works: true }], [{ id: 'songs', ok: false }]), []);
+});
+
+test('an unchecked miss is pending, and a checked miss fails the run', () => {
+  assert.equal(floorKind({ kind: 'page', works: true, checked: true }, true), 'pass');
+  assert.equal(floorKind({ kind: 'page', works: true, checked: true }, false), 'fail');
+  assert.equal(floorKind({ kind: 'page', works: true }, false), 'pending');
+  assert.equal(floorKind({ kind: 'page', checked: true, works: false }, false), 'pending');
+  assert.equal(floorKind({ kind: 'page', checked: false, works: true }, false), 'pending');
 });
 
 test('a clean pass is the only thing that marks a page, and a miss is left false', () => {
@@ -16,9 +26,17 @@ test('a clean pass is the only thing that marks a page, and a miss is left false
   assert.match(marked, /id: 'letters', works: false/);
   assert.equal(markWorks(src, ['missing']), null);
   assert.equal(markWorks("{ id: 'meanings', works: true }\n", ['meanings']), null);
-  const sites = [{ id: 'meanings', kind: 'page', checked: true, works: false }, { id: 'qr', kind: 'page', works: false }, { id: 'letters', kind: 'page', works: true }];
+  const cleared = markWorks("{ id: 'podcasts', works: true }\n", [], ['podcasts']);
+  assert.match(cleared, /id: 'podcasts', works: false/);
+  const sites = [
+    { id: 'meanings', kind: 'page', checked: true, works: true },
+    { id: 'podcasts', kind: 'page', works: false },
+    { id: 'units', kind: 'page', works: false, checked: true },
+    { id: 'songs', kind: 'page', works: true },
+    { id: 'letters', kind: 'page', works: true, checked: true },
+  ];
   assert.deepEqual(pagesToRun(sites, []).map((s) => s.id), ['meanings', 'letters']);
-  assert.deepEqual(pagesToRun(sites, ['qr']).map((s) => s.id), ['qr']);
+  assert.deepEqual(pagesToRun(sites, ['podcasts', 'songs', 'meanings']).map((s) => s.id), ['meanings']);
 });
 
 test('the owner pass stays on this site, so the analytics beacon is not sent it', () => {

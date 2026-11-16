@@ -100,6 +100,7 @@ for (const [name, file] of [
   ['plain-words', 'plain-words.test.mjs'],
   ['log-only', 'log-only.test.mjs'],
   ['handoff-scan', 'handoff-scan.test.mjs'],
+  ['rival-public', 'rival-public.test.mjs'],
   ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
   ['fringe', 'fringe.mjs'],

@@ -1060,10 +1060,7 @@ export default {
    {
     "name": "connect-pack",
     "examples": [
-     "connect pack for client onboarding",
-     "what existing tools for invoice reminders",
-     "reuse tools for the support ticket router",
-     "prefer existing tools for weekly status reports"
+     "connect pack for client onboarding"
     ]
    }
   ]

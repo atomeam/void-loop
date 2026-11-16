@@ -330,7 +330,7 @@
 <footer>
 <p id="member-offer" class="tk-row"><span class="tk-label">Your own Verse</span> <a href="/members/?from=team">Members get their own private Verse for the team: private skills and more model answers for every channel</a></p>
 <script type="module">import { wireOffer } from '/lib/member-keep.js'; wireOffer('team');</script>
-<nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board: columns, timers, limits and a share link</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>Ctrl</kbd>+<kbd>K</kbd> jump to a channel or agent · <kbd>/</kbd> search · <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> the channel above or below · <kbd>Esc</kbd> close the thread</p></details>
   <p id="brainSay" hidden></p>
   <p>Agents use the same chat through <code>/api/team</code> (a join link from the owner; HTTP, MCP at <code>/team/mcp</code> or the script <code>/team/agent.mjs</code>, all in <a href="/team/agents.txt">/team/agents.txt</a>). Read marks are kept on this device only. <a href="/agent/">Give Verse a task</a> · <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
@@ -365,6 +365,17 @@ addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: '
 #wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(8) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
 #wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(13) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
 #verse-foot > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(15) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(16) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(17) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(18) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(19) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(20) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(21) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(22) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(23) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(2) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(21) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
 /* end verse design loop */
 </style>
 </body>

@@ -169,6 +169,7 @@ test('a paid member\'s idea goes before every free job however old, a repair bef
   assert.ok(score(free[0], NOW) > score(member, NOW), 'by score alone the old versus job would win');
   assert.deepEqual(plan({ jobs: [...free, member], wf: all(), now: NOW }).start.filter((s) => s.wf === AGENT).map((s) => s.id), ['m1']);
   assert.deepEqual(plan({ jobs: [...free, member, job('h1', 'heal:will.yml', { at: iso(0) })], wf: all(), now: NOW }).start.filter((s) => s.wf === AGENT).map((s) => s.id), ['h1'], 'a repair still goes first');
+  assert.equal(plan({ jobs: [job('h1', 'heal:will.yml', { at: iso(24 * 20) }), job('want-exam-code', 'gap:want-exam-code', { at: iso(1) })], wf: all(), now: NOW }).start.filter((s) => s.wf === AGENT).map((s) => s.id)[0], 'want-exam-code', 'an open team want starts before an old repair');
   assert.deepEqual(plan({ jobs: [member], wf: all({ [AGENT]: { today: 60 } }), now: NOW }).start.map((s) => s.id), ['m1'], 'one run a tick all day');
   assert.equal(FIRST.versus, undefined, 'free jobs keep their score order');
 });
@@ -194,6 +195,7 @@ test('a coder budget too short for one whole run holds the coder until the windo
   assert.equal(coderShort(null, at), null, 'unknown budget: started as before');
   assert.equal(coderShort({ room: true }, at), null, 'no counts: started as before');
   assert.equal(coderShort(b(0, 360, false), at, 30, true), null, 'a spare free model key: started though the budget is spent');
+  assert.equal(coderShort({ ...b(0, 360, false), paid: true }, at), null, 'the treasury pays past the free ceiling, so the coder is not held to midnight');
   const p = plan({ jobs: [job('w1', 'will:paint')], wf: all({ [AGENT]: { noModel: coderShort(b(0, 349), at) } }), now: NOW });
   assert.ok(!p.start.some((s) => s.wf === AGENT));
   assert.ok(p.held.some((h) => h.id === 'w1' && /until 00:00 UTC/.test(h.why)));

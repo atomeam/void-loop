@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { onRequestPost, onRequestGet, cleanMessages, CODER_LIMITS, saidText, budgetOf } from '../void-live-deploy/functions/api/coder.js';
-import { models } from '../void-live-deploy/lib/models.js';
+import { models, PAID_MODEL } from '../void-live-deploy/lib/models.js';
 import { LIMITS } from '../void-live-deploy/lib/guard.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
@@ -73,4 +73,20 @@ test('GET is the coder\'s budget as counts: it takes no place, and says when roo
   assert.equal(budgetOf(CODER_LIMITS.perHour, 10, now).until, '2026-10-30T08:00:00.000Z', 'a full hour comes back at the next hour');
   assert.equal(budgetOf(null, 10, now).room, null, 'no database: unknown, not empty');
   assert.equal((await (await onRequestGet({ env: {} })).json()).room, null);
+});
+
+test('past the free ceiling a call is billed to the infrastructure pot and the coder still answers', async () => {
+  const calls = [];
+  const env = { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async (model) => { calls.push(model); return { response: '{"tool":"finish"}', usage: { prompt_tokens: 1000, completion_tokens: 100 } }; } } };
+  await env.DB.prepare('CREATE TABLE void_treasury (id TEXT PRIMARY KEY, at TEXT, kind TEXT, bucket TEXT, cents INTEGER, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)').run();
+  await env.DB.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', '2026-11-01', 'alloc', 'infrastructure', 500, 'test', 'ok')").run();
+  for (let i = 0; i < CODER_LIMITS.perHour; i++) assert.equal((await onRequestPost({ request: req({ messages: MSG }), env })).status, 200);
+  const paid = await onRequestPost({ request: req({ messages: MSG }), env });
+  assert.equal(paid.status, 200);
+  const body = await paid.json();
+  assert.equal(body.model, PAID_MODEL); assert.equal(body.paid, true); assert.ok(body.cents >= 1);
+  assert.equal(calls.at(-1), PAID_MODEL);
+  const left = await env.DB.prepare("SELECT SUM(CASE WHEN kind = 'alloc' THEN cents WHEN kind = 'spend' THEN -cents ELSE 0 END) AS n FROM void_treasury WHERE bucket = 'infrastructure'").first();
+  assert.ok(left.n < 500 && left.n >= 500 - body.cents);
+  assert.equal((await (await onRequestGet({ env })).json()).paid, true);
 });

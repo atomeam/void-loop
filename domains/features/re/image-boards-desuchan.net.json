@@ -1,0 +1,21 @@
+{
+ "site": "desuchan.net",
+ "url": "https://desuchan.net/",
+ "scanned": "2026-11-15",
+ "blocked": {
+  "kind": "unreachable",
+  "why": "page.goto: net::ERR_CONNECTION_REFUSED at https://desuchan.net/ Call log: - navigating to \"https://d"
+ },
+ "assetCount": 0,
+ "bytes": 0,
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

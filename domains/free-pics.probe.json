@@ -1,5 +1,5 @@
 {
- "at": "2026-11-09T13:51:05.903Z",
+ "at": "2026-11-16T13:35:53.159Z",
  "note": "one polite request per source; no keys, no picture bytes",
  "sources": {
   "commons": {
@@ -8,7 +8,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 602,
+   "ms": 659,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -57,11 +57,91 @@
   },
   "openverse": {
    "name": "Openverse",
-   "state": "blocked or failed",
+   "state": "works",
    "why": "",
-   "status": 0,
+   "query": "football",
+   "status": 200,
+   "ms": 579,
+   "via": "primary",
    "rate": {},
-   "error": "timed out"
+   "topKeys": [
+    "result_count",
+    "page_count",
+    "page_size",
+    "page",
+    "results"
+   ],
+   "resultShape": {
+    "path": "$.results",
+    "n": 10,
+    "keys": [
+     "id",
+     "title",
+     "indexed_on",
+     "foreign_landing_url",
+     "url",
+     "creator",
+     "creator_url",
+     "license",
+     "license_version",
+     "license_url",
+     "provider",
+     "source",
+     "category",
+     "filesize",
+     "filetype",
+     "tags",
+     "attribution",
+     "fields_matched",
+     "mature",
+     "height",
+     "width",
+     "thumbnail",
+     "detail_url",
+     "related_url",
+     "unstable__sensitivity"
+    ],
+    "rights": {
+     "license": "\"by\"",
+     "license_version": "\"2.0\"",
+     "license_url": "\"https://creativecommons.org/licenses/by/2.0/\""
+    }
+   },
+   "found": 10,
+   "accepted": 10,
+   "refused": {},
+   "licenceShapes": [
+    {
+     "licRaw": "CC BY",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC BY",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    },
+    {
+     "licRaw": "CC BY-SA",
+     "licVersion": "2.0",
+     "licUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "api.openverse.org",
+     "taken": ""
+    }
+   ]
   },
   "nasa": {
    "name": "NASA Image and Video Library",
@@ -69,7 +149,7 @@
    "why": "",
    "query": "moon",
    "status": 200,
-   "ms": 355,
+   "ms": 250,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -123,11 +203,140 @@
   },
   "loc": {
    "name": "Library of Congress",
-   "state": "rate limited (429)",
+   "state": "works",
    "why": "",
-   "status": 403,
+   "query": "baseball",
+   "status": 200,
+   "ms": 2715,
+   "via": "primary",
    "rate": {},
-   "error": "loc answered 429"
+   "topKeys": [
+    "breadcrumbs",
+    "content",
+    "context",
+    "description",
+    "expert_resources",
+    "facet_trail",
+    "facet_views",
+    "facets",
+    "featured_items",
+    "form_facets",
+    "image_url",
+    "manifest",
+    "next",
+    "next_sibling",
+    "options",
+    "pages",
+    "pagination",
+    "portal",
+    "portal_label",
+    "previous",
+    "previous_sibling",
+    "results",
+    "search",
+    "shards",
+    "site_type",
+    "timestamp",
+    "title",
+    "type",
+    "views"
+   ],
+   "resultShape": {
+    "path": "$.breadcrumbs",
+    "n": 3,
+    "keys": [
+     "Library of Congress"
+    ],
+    "rights": {}
+   },
+   "found": 7,
+   "accepted": 4,
+   "refused": {
+    "a logo, sponsor or advertising category": 1,
+    "no \"no known restrictions\" statement": 1,
+    "its words suggest children, a school or something unsuitable": 1
+   },
+   "licenceShapes": [
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1911-01-01"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1915-01-01"
+    },
+    {
+     "licRaw": "PUBLIC DOMAIN",
+     "licVersion": "",
+     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
+     "own": false,
+     "hasAuthor": false,
+     "hasSourcePage": true,
+     "thumbHost": "tile.loc.gov",
+     "taken": "1913-01-01"
+    }
+   ],
+   "rightsFields": {
+    "access_restricted": "false",
+    "unrestricted": "true",
+    "item.rights_advisory": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\"",
+    "item.rights_information": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\""
+   },
+   "itemKeys": [
+    "call_number",
+    "contributors",
+    "control_number",
+    "created",
+    "created_published",
+    "created_published_date",
+    "creators",
+    "date",
+    "digital_id",
+    "display_offsite",
+    "format",
+    "formats",
+    "genre",
+    "id",
+    "language",
+    "link",
+    "marc",
+    "medium",
+    "medium_brief",
+    "mediums",
+    "modified",
+    "notes",
+    "number_former_id",
+    "other_control_numbers",
+    "part_of",
+    "repository",
+    "reproduction_number",
+    "resource_links",
+    "rights_advisory",
+    "rights_information",
+    "service_low",
+    "service_medium",
+    "sort_date",
+    "source_collection",
+    "source_created",
+    "source_modified",
+    "subject_headings",
+    "subjects",
+    "summary",
+    "thumb_gallery",
+    "title"
+   ]
   },
   "met": {
    "name": "The Met Collection",
@@ -135,7 +344,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 159,
+   "ms": 238,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -185,7 +394,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 326,
+   "ms": 258,
    "via": "primary",
    "rate": {
     "x-ratelimit-limit": "60",
@@ -259,7 +468,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 875,
+   "ms": 1276,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -400,7 +609,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 626,
+   "ms": 969,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -411,7 +620,6 @@
     "path": "$.response.docs",
     "n": 10,
     "keys": [
-     "creator",
      "date",
      "identifier",
      "licenseurl",
@@ -419,25 +627,25 @@
      "title"
     ],
     "rights": {
-     "date": "\"1994-01-01T00:00:00Z\"",
-     "licenseurl": "\"http://creativecommons.org/licenses/by-nc-nd/4.0/\""
+     "date": "\"2009-09-16T00:00:00Z\"",
+     "licenseurl": "\"https://creativecommons.org/publicdomain/zero/1.0/\""
     }
    },
    "found": 10,
-   "accepted": 8,
+   "accepted": 9,
    "refused": {
-    "a non-commercial or no-derivatives licence": 2
+    "a logo, sponsor or advertising category": 1
    },
    "licenceShapes": [
     {
      "licRaw": "",
      "licVersion": "",
-     "licUrl": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
      "own": false,
-     "hasAuthor": true,
+     "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "1994-01-01"
+     "taken": "2009-09-16"
     },
     {
      "licRaw": "",
@@ -447,7 +655,7 @@
      "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "2010-12-04"
+     "taken": "2009-08-19"
     },
     {
      "licRaw": "",
@@ -457,7 +665,7 @@
      "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "2009-09-19"
+     "taken": "2009-09-22"
     }
    ]
   }

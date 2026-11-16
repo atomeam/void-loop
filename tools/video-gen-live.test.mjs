@@ -53,6 +53,28 @@ test('video-gen-live: the page must be served with its state line, its Make butt
   assert.equal(recordOf({ first: api(OFF), page: gated, at: AT }).checksPass, true);
   assert.match(ledgerWhat(recordOf({ first: api(OFF), page: gated, at: AT, occasion: 1 })), /Uni gate/);
   assert.equal(recordOf({ first: api(OFF), page: { ...PAGE, state: false }, at: AT }).checksPass, false);
+  const opened = { status: 200, state: true, make: true, handoff: true, gate: false };
+  assert.equal(pageProblem(gated, opened), '');
+  assert.equal(pageProblem(gated, { ...opened, state: false }), '/video/ with the owner pass has no state');
+  assert.equal(pageProblem(gated, { status: 200, state: false, make: false, handoff: false, gate: true }), '/video/ still shows the Uni gate with the owner pass');
+  assert.equal(recordOf({ first: api(OFF), page: gated, opened, at: AT }).checksPass, true);
+});
+
+test('video-gen-live: with an owner pass, checkOnce reads /video/ again and judges that page', async () => {
+  const calls = [];
+  const fake = async (u, o = {}) => {
+    calls.push([u, !!(o.headers && o.headers.authorization)]);
+    if (u.endsWith('/video/')) {
+      const owner = !!(o.headers && o.headers.authorization);
+      const html = owner ? '<p id="state"></p><button id="make"></button><meta name="verse-handoff" content="x">' : '<meta name="verse-gate" content="uni"><h1>Uni</h1>';
+      return { status: 200, headers: { get: (n) => (n === 'x-verse-gate' ? (owner ? 'open' : 'uni') : '') }, text: async () => html };
+    }
+    return { status: 200, json: async () => OFF };
+  };
+  const res = await checkOnce(fake, async () => assert.fail('no wait'), 'https://example.test', 'owner-pass');
+  assert.equal(res.page.gate, true); assert.equal(res.opened.state, true); assert.equal(res.opened.gate, false);
+  assert.deepEqual(calls.filter((c) => c[0].endsWith('/video/')), [['https://example.test/video/', false], ['https://example.test/video/', true]]);
+  assert.equal(recordOf({ ...res, at: AT }).checksPass, true);
 });
 
 test('video-gen-live: checkOnce waits for a self-check it started and stands on the second read; an unreachable site has no status', async () => {

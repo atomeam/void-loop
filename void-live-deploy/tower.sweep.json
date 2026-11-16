@@ -1,10 +1,10 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 760000,
- "swept": 741015,
- "lap": 0,
- "at": "2026-11-13",
+ "cursor": 0,
+ "swept": 971346,
+ "lap": 1,
+ "at": "2026-11-16",
  "smallest": [
   {
    "rank": 400033,
@@ -41,6 +41,24 @@
    "words": 1,
    "title": "48.217.180.210",
    "plain": true
+  },
+  {
+   "rank": 841239,
+   "host": "xn--3mry9k0onggk.com",
+   "controls": 0,
+   "bytes": 53,
+   "words": 1,
+   "title": "�����p�ꏊ����̃A�N�Z�X�́A���Ă��������܂���B(2.2)",
+   "plain": false
+  },
+  {
+   "rank": 841204,
+   "host": "xn--1lqq6xnrtyv2a.com",
+   "controls": 0,
+   "bytes": 53,
+   "words": 1,
+   "title": "�����p�ꏊ����̃A�N�Z�X�́A���Ă��������܂���B(2.2)",
+   "plain": false
   },
   {
    "rank": 640024,
@@ -97,12 +115,30 @@
    "plain": false
   },
   {
+   "rank": 840129,
+   "host": "woofy.ph",
+   "controls": 0,
+   "bytes": 643,
+   "words": 2,
+   "title": "Woofy PH",
+   "plain": false
+  },
+  {
    "rank": 2905,
    "host": "uisp.com",
    "controls": 0,
    "bytes": 705,
    "words": 3,
    "title": "UISP - Ubiquiti",
+   "plain": false
+  },
+  {
+   "rank": 760001,
+   "host": "bolaogalera.com",
+   "controls": 0,
+   "bytes": 729,
+   "words": 11,
+   "title": "Palpite agora mesmo e concorra a prêmios em dinheiro toda rodada!",
    "plain": false
   },
   {
@@ -133,12 +169,30 @@
    "plain": false
   },
   {
+   "rank": 840915,
+   "host": "xerotic.blog",
+   "controls": 0,
+   "bytes": 1008,
+   "words": 1,
+   "title": "XEROTIC",
+   "plain": false
+  },
+  {
    "rank": 444,
    "host": "netcraze.io",
    "controls": 0,
    "bytes": 1016,
    "words": 1,
    "title": "CrazeDNS",
+   "plain": false
+  },
+  {
+   "rank": 760017,
+   "host": "bold666.com",
+   "controls": 0,
+   "bytes": 1067,
+   "words": 1,
+   "title": "Bold666",
    "plain": false
   },
   {
@@ -160,12 +214,39 @@
    "plain": false
   },
   {
+   "rank": 880023,
+   "host": "lohntastik.de",
+   "controls": 0,
+   "bytes": 1219,
+   "words": 12,
+   "title": "Sicherheitsüberprüfung | LohnTastik",
+   "plain": false
+  },
+  {
    "rank": 320058,
    "host": "tsundere.pw",
    "controls": 0,
    "bytes": 1497,
    "words": 73,
    "title": "Fripp Don't Interact",
+   "plain": false
+  },
+  {
+   "rank": 841891,
+   "host": "y2k168.net",
+   "controls": 0,
+   "bytes": 1576,
+   "words": 1,
+   "title": "Y2K168",
+   "plain": false
+  },
+  {
+   "rank": 841200,
+   "host": "xn--168-vmlaqb6qse.com",
+   "controls": 0,
+   "bytes": 1651,
+   "words": 1,
+   "title": "เบทบาท168",
    "plain": false
   },
   {
@@ -187,6 +268,15 @@
    "plain": false
   },
   {
+   "rank": 760029,
+   "host": "bolivar.academy",
+   "controls": 0,
+   "bytes": 1762,
+   "words": 73,
+   "title": "Bolivar Academy",
+   "plain": false
+  },
+  {
    "rank": 240020,
    "host": "zpecloud.com",
    "controls": 0,
@@ -205,6 +295,60 @@
    "plain": false
   },
   {
+   "rank": 840071,
+   "host": "wolfcrm.com.br",
+   "controls": 0,
+   "bytes": 2577,
+   "words": 3,
+   "title": "CRM - WOLF",
+   "plain": false
+  },
+  {
+   "rank": 840139,
+   "host": "woordle.nl",
+   "controls": 0,
+   "bytes": 2679,
+   "words": 5,
+   "title": "Woordle - Een dagelijks woordspelletje",
+   "plain": false
+  },
+  {
+   "rank": 840884,
+   "host": "xebtour.com",
+   "controls": 0,
+   "bytes": 2782,
+   "words": 6,
+   "title": "XEB Tour — Skill-Based Esports Tournaments",
+   "plain": false
+  },
+  {
+   "rank": 841748,
+   "host": "xx6.game",
+   "controls": 0,
+   "bytes": 2954,
+   "words": 7,
+   "title": "XX6.COM | Official Site & APK Download",
+   "plain": false
+  },
+  {
+   "rank": 840093,
+   "host": "womenworld.com.pk",
+   "controls": 0,
+   "bytes": 3012,
+   "words": 6,
+   "title": "Women World | Safety & Fitness",
+   "plain": false
+  },
+  {
+   "rank": 841749,
+   "host": "xx7.win",
+   "controls": 0,
+   "bytes": 3017,
+   "words": 7,
+   "title": "XX7.COM | Official Site & APK Download",
+   "plain": false
+  },
+  {
    "rank": 557,
    "host": "slideshare.net",
    "controls": 0,
@@ -214,12 +358,102 @@
    "plain": false
   },
   {
+   "rank": 841743,
+   "host": "xx5.game",
+   "controls": 0,
+   "bytes": 3050,
+   "words": 7,
+   "title": "XX5.COM | Official Site & APK Download",
+   "plain": false
+  },
+  {
    "rank": 2875,
    "host": "dalyfeds.com",
    "controls": 0,
    "bytes": 3109,
    "words": 2,
    "title": "H5 Center",
+   "plain": false
+  },
+  {
+   "rank": 840840,
+   "host": "xcelviewpoint.com",
+   "controls": 0,
+   "bytes": 3262,
+   "words": 10,
+   "title": "Paid online surveys in India: Share opinions & earn rewards",
+   "plain": false
+  },
+  {
+   "rank": 840023,
+   "host": "wm98th.cc",
+   "controls": 0,
+   "bytes": 3268,
+   "words": 6,
+   "title": "WM98 แพลตฟอร์มคาสิโนออนไลน์อันดับ 1 ในไทย ครบวงจร ฝากถอนออโต้",
+   "plain": false
+  },
+  {
+   "rank": 840022,
+   "host": "wm98.biz",
+   "controls": 0,
+   "bytes": 3268,
+   "words": 6,
+   "title": "WM98 แพลตฟอร์มคาสิโนออนไลน์อันดับ 1 ในไทย ครบวงจร ฝากถอนออโต้",
+   "plain": false
+  },
+  {
+   "rank": 840810,
+   "host": "xbot.com.vn",
+   "controls": 0,
+   "bytes": 3548,
+   "words": 1,
+   "title": "XBOT",
+   "plain": false
+  },
+  {
+   "rank": 841238,
+   "host": "xn--3e0b75uzwb18k.kr",
+   "controls": 0,
+   "bytes": 3882,
+   "words": 8,
+   "title": "국민리스",
+   "plain": false
+  },
+  {
+   "rank": 960004,
+   "host": "businessesusa.com",
+   "controls": 0,
+   "bytes": 4765,
+   "words": 8,
+   "title": "BusinessesUSA.com — Find Trusted Local Businesses Across America",
+   "plain": false
+  },
+  {
+   "rank": 841259,
+   "host": "xn--53-grizbya9cwfqfwe.online",
+   "controls": 0,
+   "bytes": 5177,
+   "words": 2,
+   "title": "SYNDAY53",
+   "plain": false
+  },
+  {
+   "rank": 841258,
+   "host": "xn--53-grizbya9cwfqfwe.life",
+   "controls": 0,
+   "bytes": 5177,
+   "words": 2,
+   "title": "SYNDAY53",
+   "plain": false
+  },
+  {
+   "rank": 841214,
+   "host": "xn--24-oqizgj5g1b4c.today",
+   "controls": 0,
+   "bytes": 5205,
+   "words": 2,
+   "title": "ปันสุข24.com",
    "plain": false
   },
   {
@@ -238,6 +472,15 @@
    "bytes": 5356,
    "words": 34,
    "title": "Rightarion | Personal Website",
+   "plain": false
+  },
+  {
+   "rank": 841319,
+   "host": "xn--88-ctiy8c2f.com",
+   "controls": 0,
+   "bytes": 5728,
+   "words": 9,
+   "title": ":: LOTTO88WIN :: หวยออนไลน์จ่ายจริงไม่โกง, แทงหวยจ่ายค่าคอมสูง, แทงหวยออนไลน์, แทงหวยออนไล",
    "plain": false
   },
   {
@@ -268,6 +511,15 @@
    "plain": false
   },
   {
+   "rank": 841702,
+   "host": "xuxlvkqfyj.com",
+   "controls": 0,
+   "bytes": 6544,
+   "words": 2,
+   "title": "Online Consultant",
+   "plain": false
+  },
+  {
    "rank": 440080,
    "host": "breitband.ch",
    "controls": 0,
@@ -295,12 +547,57 @@
    "plain": false
   },
   {
+   "rank": 960193,
+   "host": "chatjimmy.ai",
+   "controls": 0,
+   "bytes": 7324,
+   "words": 5,
+   "title": "chat jimmy",
+   "plain": false
+  },
+  {
+   "rank": 841567,
+   "host": "xplatform.com.br",
+   "controls": 0,
+   "bytes": 9050,
+   "words": 1,
+   "title": "XPlatform",
+   "plain": false
+  },
+  {
    "rank": 662,
    "host": "gosuslugi.ru",
    "controls": 0,
    "bytes": 9376,
    "words": 16,
    "title": "Портал государственных услуг Российской Федерации",
+   "plain": false
+  },
+  {
+   "rank": 841933,
+   "host": "y568.zone",
+   "controls": 0,
+   "bytes": 9543,
+   "words": 2,
+   "title": "Y568 คาสิโนออนไลน์",
+   "plain": false
+  },
+  {
+   "rank": 841934,
+   "host": "y568ad.vip",
+   "controls": 0,
+   "bytes": 9544,
+   "words": 2,
+   "title": "Y568 คาสิโนออนไลน์",
+   "plain": false
+  },
+  {
+   "rank": 840021,
+   "host": "wm787play.io",
+   "controls": 0,
+   "bytes": 9986,
+   "words": 8,
+   "title": "wm787 รวมสล็อต คาสิโน กีฬา และอื่นๆมากมาย เว็บตรงจากUSA เล่นง่ายจ่ายจริง ไม่มีประวัติโกง",
    "plain": false
   },
   {
@@ -313,12 +610,57 @@
    "plain": false
   },
   {
+   "rank": 800054,
+   "host": "mcd999new.com",
+   "controls": 0,
+   "bytes": 10478,
+   "words": 6,
+   "title": "MCD999 เว็บตรงอันดับ 1 สำหรับการเล่นสล็อต PG ที่ดีที่สุด",
+   "plain": false
+  },
+  {
+   "rank": 840142,
+   "host": "woori09.kr",
+   "controls": 0,
+   "bytes": 10485,
+   "words": 1,
+   "title": "우리동네주문서",
+   "plain": false
+  },
+  {
+   "rank": 840894,
+   "host": "xelon.network",
+   "controls": 0,
+   "bytes": 11313,
+   "words": 2,
+   "title": "Xelon Network",
+   "plain": false
+  },
+  {
+   "rank": 840934,
+   "host": "xfinity88.com",
+   "controls": 0,
+   "bytes": 11523,
+   "words": 16,
+   "title": "XFINITY PLAY | คาสิโนเว็บตรง 100% เกมสล็อตแตกง่าย คาสิโนออนไลน์ ที่ดีที่สุด สมัคร ฝาก-ถอน ",
+   "plain": false
+  },
+  {
    "rank": 141,
    "host": "skybridge.click",
    "controls": 0,
    "bytes": 13100,
    "words": 2,
    "title": "ООО&nbsp;\"СМП-74\"",
+   "plain": false
+  },
+  {
+   "rank": 841222,
+   "host": "xn--2o2b17hp4igtm.com",
+   "controls": 0,
+   "bytes": 13785,
+   "words": 6,
+   "title": "브로페이 | 배달비 선정산 · 즉시정산",
    "plain": false
   },
   {
@@ -346,6 +688,51 @@
    "bytes": 15207,
    "words": 8,
    "title": "Акції та знижки ✔️ Pokupon - Маркетплейс послуг",
+   "plain": false
+  },
+  {
+   "rank": 800038,
+   "host": "mc818.vip",
+   "controls": 0,
+   "bytes": 16536,
+   "words": 11,
+   "title": "MC777 Platform Hiburan Indonesia | 100% Hadiah Eksklusif untuk Member Baru",
+   "plain": false
+  },
+  {
+   "rank": 800037,
+   "host": "mc777apk.com",
+   "controls": 0,
+   "bytes": 16536,
+   "words": 11,
+   "title": "MC777 Platform Hiburan Indonesia | 100% Hadiah Eksklusif untuk Member Baru",
+   "plain": false
+  },
+  {
+   "rank": 800031,
+   "host": "mc282.com",
+   "controls": 0,
+   "bytes": 16536,
+   "words": 11,
+   "title": "MC777 Platform Hiburan Indonesia | 100% Hadiah Eksklusif untuk Member Baru",
+   "plain": false
+  },
+  {
+   "rank": 800030,
+   "host": "mc239.com",
+   "controls": 0,
+   "bytes": 16536,
+   "words": 11,
+   "title": "MC777 Platform Hiburan Indonesia | 100% Hadiah Eksklusif untuk Member Baru",
+   "plain": false
+  },
+  {
+   "rank": 800029,
+   "host": "mc187.com",
+   "controls": 0,
+   "bytes": 16536,
+   "words": 11,
+   "title": "MC777 Platform Hiburan Indonesia | 100% Hadiah Eksklusif untuk Member Baru",
    "plain": false
   },
   {
@@ -412,6 +799,15 @@
    "plain": false
   },
   {
+   "rank": 841513,
+   "host": "xonados.net",
+   "controls": 1,
+   "bytes": 3084,
+   "words": 9,
+   "title": "[xonados.net]! XONADOS POR TV + xonados.com & xonados.net",
+   "plain": false
+  },
+  {
    "rank": 320043,
    "host": "man.fyi",
    "controls": 1,
@@ -436,6 +832,15 @@
    "bytes": 923,
    "words": 21,
    "title": "OneTag Advertising System",
+   "plain": false
+  },
+  {
+   "rank": 920180,
+   "host": "gamevn.vip",
+   "controls": 2,
+   "bytes": 985,
+   "words": 22,
+   "title": "gamevn.vip",
    "plain": false
   },
   {
@@ -466,12 +871,39 @@
    "plain": false
   },
   {
+   "rank": 920132,
+   "host": "paitolottohk.life",
+   "controls": 2,
+   "bytes": 1020,
+   "words": 22,
+   "title": "paitolottohk.life",
+   "plain": false
+  },
+  {
    "rank": 377,
    "host": "google.cn",
    "controls": 2,
    "bytes": 1408,
    "words": 4,
    "title": "Google",
+   "plain": false
+  },
+  {
+   "rank": 842028,
+   "host": "yadongkorea.store",
+   "controls": 2,
+   "bytes": 3648,
+   "words": 29,
+   "title": "야동코리아 최신주소 | 한국야동 무료감상",
+   "plain": false
+  },
+  {
+   "rank": 841973,
+   "host": "y7tv.com",
+   "controls": 2,
+   "bytes": 8183,
+   "words": 557,
+   "title": "Privacy Policy & Opt-Out Service",
    "plain": false
   },
   {
@@ -520,12 +952,48 @@
    "plain": false
   },
   {
+   "rank": 841219,
+   "host": "xn--2h3ba00db.com",
+   "controls": 3,
+   "bytes": 4140,
+   "words": 64,
+   "title": "보배링크 공식 최신 주소",
+   "plain": false
+  },
+  {
+   "rank": 800044,
+   "host": "mcau-dw.online",
+   "controls": 3,
+   "bytes": 13555,
+   "words": 11,
+   "title": "Macaudewa Situs Judi Slot Online Tepercaya dan Terbaik di Tahun 2023",
+   "plain": false
+  },
+  {
    "rank": 401,
    "host": "live-video.net",
    "controls": 4,
    "bytes": 2180,
    "words": 32,
    "title": "Amazon.com Property",
+   "plain": false
+  },
+  {
+   "rank": 841870,
+   "host": "y-suibi.jp",
+   "controls": 4,
+   "bytes": 2575,
+   "words": 8,
+   "title": "吉原高級ソープランド【粋美-すいび-】",
+   "plain": false
+  },
+  {
+   "rank": 842033,
+   "host": "yafalo.com",
+   "controls": 5,
+   "bytes": 1248,
+   "words": 10,
+   "title": "Accueil",
    "plain": false
   },
   {
@@ -547,12 +1015,57 @@
    "plain": false
   },
   {
+   "rank": 841867,
+   "host": "y-exe.jp",
+   "controls": 5,
+   "bytes": 2127,
+   "words": 4,
+   "title": "吉原高級ソープランド【ＥＸＥ】オフィシャルサイト",
+   "plain": false
+  },
+  {
    "rank": 887,
    "host": "vivoglobal.com",
    "controls": 5,
    "bytes": 2252,
    "words": 10,
    "title": "维沃移动通信有限公司",
+   "plain": false
+  },
+  {
+   "rank": 840787,
+   "host": "xarteta.shop",
+   "controls": 5,
+   "bytes": 5510,
+   "words": 75,
+   "title": "files",
+   "plain": false
+  },
+  {
+   "rank": 800001,
+   "host": "mbm.group",
+   "controls": 5,
+   "bytes": 9015,
+   "words": 188,
+   "title": "MBM Group | Apparel Manufacturing &amp; Sustainability",
+   "plain": false
+  },
+  {
+   "rank": 960006,
+   "host": "vokagalaxy.com",
+   "controls": 5,
+   "bytes": 12600,
+   "words": 20,
+   "title": "VokaGalaxy - Space MMORPG",
+   "plain": false
+  },
+  {
+   "rank": 760016,
+   "host": "bolboljan.co",
+   "controls": 5,
+   "bytes": 15135,
+   "words": 84,
+   "title": "بلبل جان | دانلود رایگان فیلم و سریال با زیرنویس چسبیده",
    "plain": false
   }
  ]

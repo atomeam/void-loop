@@ -93,7 +93,10 @@ export function selfFacts({ self, skills, will, voice, replies, families } = {},
   if (self && Array.isArray(self.open)) parts.push('Growth inbox, still open: ' + (self.open.length ? self.open.map((r) => `"${r.ask}" (${r.from}, ${r.date})`).join('; ') : '(none open)'));
   if (self && Array.isArray(self.shipped) && self.shipped.length) parts.push('Growth inbox, recently shipped: ' + self.shipped.slice().sort((x, y) => (x.date < y.date ? 1 : -1)).slice(0, 12).map((r) => `"${r.ask}" (${r.date})`).join('; '));
   const wants = will && Array.isArray(will.wants) ? will.wants : [];
-  if (wants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + wants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
+  const got = will && Array.isArray(will.got) ? will.got : [];
+  const gotTitles = new Set(got.map((g) => String(g.i_want || g.title || '').toLowerCase().trim()));
+  const openWants = wants.filter((w) => !gotTitles.has(String(w.i_want || w.title || '').toLowerCase().trim()));
+  if (openWants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + openWants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
   const b = builderFacts(self);
   if (b) parts.push(b);
   if (!card || asksModelDate(note)) parts.push(modelFacts(self)); // a card note that does not name the model gets no model date to restate (live card 3)

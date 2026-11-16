@@ -79,7 +79,7 @@ export function byDay(photos) {
   const days = new Map();
   for (const p of photos || []) { const w = whenOf(p), k = w.slice(0, 10); if (!days.has(k)) days.set(k, []); days.get(k).push(p); }
   return [...days.entries()].sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : b[0].localeCompare(a[0])))
-    .map(([key, list]) => ({ key, label: key ? dayLabel(key) : 'Date unknown', month: key ? monthLabel(key) : 'Date unknown', photos: list.slice().sort((x, y) => whenOf(x).localeCompare(whenOf(y))) }));
+    .map(([key, list]) => ({ key, label: key ? dayLabel(key) : 'Date unknown', month: key ? monthLabel(key) : 'Date unknown', photos: list.slice().sort((x, y) => whenOf(x).localeCompare(whenOf(y))), verified: false }));
 }
 
 /** a place as a grid cell about a kilometre across, so photos taken in the same spot fall together; '' without a location. Pure. */

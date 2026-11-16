@@ -433,7 +433,11 @@ export const SPECS = {
     await t.fill('#pw', 'c0rrect-Horse-battery-staple-91'); await t.p.waitForTimeout(300); t.ok(/strong|centur|years/i.test(await t.p.locator('main').innerText()), 'a long passphrase is strong');
     await t.click('#leak'); await t.p.waitForTimeout(3000); t.ok(/leak|breach|found|not found|seen/i.test(await t.p.locator('main').innerText()), 'the leak check answers');
   },
+<<<<<<< HEAD
   '/pdf/': pdfMake, '/pdf/editor/': pdfMake, '/pdf/studio/': pdfMake, '/pdf/suite/': pdfMake,
+=======
+  '/pdf/': pdfMake,
+>>>>>>> origin/main
   '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); // the AI check mode, built from what Verse watched (domains/tv-built/): a real Stable Diffusion PNG and a real phone-style JPEG go in, each gets the exact verdict, the report downloads, the paid link is the store's
     const crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
     const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
@@ -511,6 +515,17 @@ export const SPECS = {
   '/directions/': async (t) => { await t.fill('#from', 'Madrid'); await t.fill('#to', 'Museo del Prado'); await t.clickText('Show'); await t.waitText('#out, #err', /minute|not on the map|No driving route|did not answer/i, 15000); t.ok(/minute|not on the map|No driving route|did not answer/i.test((await t.text('#out')) + (await t.text('#err'))), 'two places get a driving time or an honest miss'); },
   '/factorials/': async (t) => { await t.fill('#n', '0'); await t.clickText('Compute'); await t.p.waitForTimeout(100); t.ok(/0! = 1/.test(await t.text('#out')), '0! is 1'); },
   '/text-diff/': async (t) => { await t.fill('#original', 'one\ntwo'); await t.fill('#changed', 'one\nthree'); await t.p.waitForTimeout(100); t.ok(/1 line removed, 1 line added/.test(await t.text('#say')), 'one line removed and one added'); t.ok((await t.p.locator('#diff [data-t="del"]').count()) === 1, 'the old line is marked'); t.ok((await t.p.locator('#diff [data-t="add"]').count()) === 1, 'the new line is marked'); t.ok(/changed=one/.test(await t.p.locator('#share').getAttribute('href') || ''), 'the share link keeps the changed text'); await t.p.locator('#fold-case').check(); await t.fill('#original', 'Cat'); await t.fill('#changed', 'cat'); await t.p.waitForTimeout(100); t.ok(/same/.test(await t.text('#say')), 'case can be set aside'); },
+  '/echo-vault/': async (t) => {
+    t.ok(/Echo Vault: Internet History Archive/.test(await t.text('h1')), 'the archive is named');
+    t.ok(/translated AI research reports/.test(await t.text('#paper-notes')), 'the reading collection is an entry');
+    t.ok(/exclusive-hosting brochure/.test(await t.text('#hosting-brochure')), 'the brochure is an entry');
+    t.ok((await t.p.locator('a[href*="thunit"], a[href*="randomarea"]').count()) === 0, 'no link to either site');
+    await t.fill('#find', 'brochure');
+    await t.p.waitForTimeout(50);
+    t.ok(await t.p.locator('#paper-notes').isHidden(), 'the other entry is hidden');
+    t.ok(await t.p.locator('#hosting-brochure').isVisible(), 'the brochure stays');
+    t.ok(/q=brochure/.test(await t.p.locator('nav.with a').first().getAttribute('href') || ''), 'News opens on the same words');
+  },
   '/studio/': async (t) => { await t.fill('#script', 'Verse: One line.\nCritic: Two lines.'); await t.click('#play'); await t.p.waitForTimeout(300); t.ok(/Playing 2 lines/.test(await t.text('#status')), 'two typed lines play one after another'); await t.click('#stop'); await t.p.waitForTimeout(200); t.ok(/Stopped/.test(await t.text('#status')), 'Stop stops'); },
   '/track-times/': async (t) => { t.ok(/43:53/.test(await t.text('#total')), 'the album list runs 43:53'); t.ok(/Schizoid Man/.test(await t.text('#out')), 'the album list is on the page'); t.ok(/list=/.test(await t.p.locator('#share').getAttribute('href') || ''), 'a share link keeps the list'); t.ok((await t.p.locator('a[href="/versus/"]').count()) === 0, 'no link to the owner page'); t.ok((await t.p.locator('audio, video').count()) === 0, 'nothing plays music'); await t.fill('#list', 'Song one 1:00\nSong two 2:00'); await t.p.waitForTimeout(100); t.ok(/3:00/.test(await t.text('#total')), 'two lengths add to 3:00'); t.ok(/Song(?:\+|%20)one/.test(await t.p.locator('#share').getAttribute('href') || ''), 'the share link follows the typed list'); },
   '/our-motherfucking-version/': async (t) => {
@@ -719,7 +734,7 @@ SPECS['/ledger/'] = async (t) => {
   await t.copies('#copycsv', 'Merge the tide tables');
   await t.share('#copylink', async (p) => { await p.waitForFunction(() => document.querySelectorAll('#rows tr').length > 0, null, { timeout: 8000 }).catch(() => {}); return (await p.inputValue('#repo')) === 'test-owner/test-repo' && (await p.getAttribute('#tab-pr', 'aria-selected')) === 'true' && /Merge the tide tables/.test(await p.locator('#rows').innerText()); });
 };
-for (const r of ['/kanban/', '/kanban/simple/', '/kanban/teams/', '/kanban/quick/']) SPECS[r] = kanban(true); SPECS['/kanban/flow/'] = kanban(false);
+SPECS['/kanban/'] = kanban(true);
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
@@ -756,6 +771,33 @@ Object.assign(SPECS, {
     await t.fill('#text', 'one two three'); await t.p.waitForTimeout(200);
     t.ok(/^3 words/.test(await t.text('#count')), 'three typed words count as 3 words');
     await t.copies('#copy', 'one two three'); await t.download('#txt', /^dictation-.+\.txt$/);
+  },
+  '/arcade/': async (t) => {
+    await t.p.setViewportSize({ width: 1440, height: 900 });
+    t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
+    t.ok((await t.p.locator('#games button').count()) === 2, 'Debris Field and Gap Glide play on this page');
+    t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
+    await t.click('#games button[data-id="debris-field"]');
+    await t.p.waitForTimeout(200);
+    await t.p.keyboard.press('Space');
+    await t.p.waitForTimeout(400);
+    t.ok(await t.p.locator('#play canvas').count() === 1, 'Debris Field draws on the page');
+    t.ok(/play=debris-field&seed=/.test(await t.p.locator('#play a').first().getAttribute('href') || ''), 'the share link carries the round');
+    t.ok(/crystal/i.test(await t.p.locator('#games button[data-id="debris-field"]').getAttribute('title') || ''), 'the round says what the crystals do');
+    t.ok(await t.p.locator('#play button', { hasText: 'Left' }).count() === 0, 'no generic direction row on this round');
+    const wide = await t.p.locator('#play canvas').boundingBox();
+    const view = t.p.viewportSize();
+    t.ok(wide && wide.width > view.width - 40 && wide.height > view.height - 120, 'the picture fills the viewport: ' + (wide && Math.round(wide.width) + 'x' + Math.round(wide.height)));
+    const hud = await t.p.locator('#play .hud').boundingBox();
+    t.ok(hud && wide && hud.y >= wide.y && hud.y < wide.y + wide.height, 'pause and sound sit on the picture');
+    const more = await t.p.locator('h2', { hasText: 'Also on the stage' }).boundingBox();
+    t.ok(more && wide && more.y > wide.y + wide.height - 4, 'the other games sit below the picture');
+    t.ok(await t.p.locator('#status').count() === 0, 'the score stays on the picture');
+    await t.p.setViewportSize({ width: 390, height: 844 });
+    const box = await t.p.locator('#play canvas').boundingBox();
+    t.ok(box && box.width > 340, 'the picture is full width on a phone');
+    await t.p.mouse.click(box.x + box.width * 0.72, box.y + box.height * 0.8);
+    await t.p.waitForTimeout(200);
   },
   '/lab/mind-map/': async (t) => {
     await t.click('#sample'); await t.p.waitForTimeout(300);

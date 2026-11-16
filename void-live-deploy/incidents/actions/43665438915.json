@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-15T01:58:23Z",
+ "sha": "f8f4da512d5c013aa357aee45d0754486ac8f244",
+ "runId": 43665438915,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43665438915",
+ "workflow": "MCP live",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "probe",
+   "id": 132663642601,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43665438915/job/132663642601",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Keep the run as a finding (the request and the response of each call)"
+   },
+   "fails": [],
+   "tail": [
+    "mkdir -p /tmp/mcp && cp -r findings/mcp/. /tmp/mcp/ && cp void-live-deploy/void.growth.json /tmp/mcp-ledger.json",
+    "git config user.name \"github-actions[bot]\"",
+    "git config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"",
+    "for i in 1 2 3; do",
+    "  git fetch -q origin main && git checkout -q -f -B main origin/main",
+    "  # the ledger line goes on top of whatever main has now: the newest entry from this run, appended again",
+    "  line=$(node -e 'const l=require(\"/tmp/mcp-ledger.json\"); console.log(JSON.stringify(l[l.length-1]))')",
+    "  mkdir -p findings/mcp && cp -n /tmp/mcp/*.json findings/mcp/",
+    "  node --input-type=module -e 'import fs from \"node:fs\"; import { appendTo, LEDGER } from \"./tools/grow.mjs\"; const e = JSON.parse(process.argv[1]), s = fs.readFileSync(LEDGER, \"utf8\"); if (!s.includes(JSON.stringify(e))) fs.writeFileSync(LEDGER, appendTo(s, e));' \"$line\"",
+    "  node tools/grow.mjs --check",
+    "  git add findings/mcp void-live-deploy/void.growth.json",
+    "  git commit -q -m \"Finding: a real MCP client called Verse's live tools (findings/mcp)\" || { echo \"nothing new to commit\"; exit 0; }",
+    "  if git push -q origin main; then echo \"pushed the finding to main\"; exit 0; fi",
+    "  sleep $((i * 5))",
+    "done",
+    "echo \"::error title=Finding not recorded::could not push the MCP finding to main\"; exit 1",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  FORCE: ",
+    "### MCP, live finding",
+    "",
+    "| What | |",
+    "|:--|:--|",
+    "| server | void 1.4.0 |",
+    "| tools listed | 30 |",
+    "| calls answered | 12 |",
+    "| occasion | 20 |",
+    "| artifact | findings/mcp/2026-11-15T0158.json |",
+    "entry 1564: \"by\" must be a lowercase slug",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

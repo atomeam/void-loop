@@ -19,7 +19,7 @@ export const STORES = {
   away:     { key: 'a2m.void.away.v1',     what: 'when you last left, so the stage can live on meanwhile' },
   entered:  { key: 'a2m.void.entered.v1',  what: 'that you have been here before' },
   used:     { key: 'a2m.void.used.v1',     what: 'which parts of Verse you have used' },
-  ladder:   { key: 'a2m.void.ladder.v1',   what: 'your wins and losses against Verse in Pong and Snake' },
+  ladder:   { key: 'a2m.void.ladder.v1',   what: 'your wins and losses against Verse in the arcade games' },
   games:    { key: 'a2m.void.games.v1',    what: 'the chess, checkers and reversi games you finished against Verse (when, result, moves, minutes), the last 100' },
   corrections: { key: 'a2m.void.corrections.v1', what: 'what you told Verse it got wrong (kept apart from how your Verse looks)' },
   friction: { key: 'a2m.void.friction.v1', what: 'how slippery things are when you throw them' },

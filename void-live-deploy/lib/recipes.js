@@ -121,7 +121,7 @@ export const BUILT_IN = Object.freeze([
   { id: 'chicken-soup', name: 'Chicken noodle soup', aliases: ['chicken soup', 'chicken noodle', 'soup'], servings: 6, time: 60, tags: ['dinner', 'soup'],
     ingredients: ['1 tablespoon olive oil', '1 onion, diced', '2 carrots, diced', '2 celery stalks, diced', '2 cloves garlic, minced', '8 cups chicken stock (2 l)', '2 chicken breasts (about 1 lb, 450 g)', '1 bay leaf', '1 cup egg noodles (100 g)', '1 teaspoon salt', '½ teaspoon black pepper', '2 tablespoons chopped parsley'],
     steps: ['Warm the oil in a large pot over medium heat and cook the onion, carrots and celery for 5 minutes, until soft.', 'Add the garlic and cook for 1 minute.', 'Pour in the stock, add the chicken and bay leaf, bring to a simmer and cook for 20 minutes, until the chicken is cooked through.', 'Lift out the chicken, shred it with two forks and return it to the pot.', 'Add the noodles and simmer for 8 minutes, until tender.', 'Season with the salt and pepper, discard the bay leaf and stir in the parsley.'] },
-  { id: 'guacamole', name: 'Guacamole', aliases: ['avocado dip', 'guac'], servings: 4, time: 10, tags: ['snack', 'vegan'],
+  { id: 'guacamole', name: 'Guacamole', aliases: ['avocado dip', 'guac', 'receta de guacamole'], servings: 4, time: 10, tags: ['snack', 'vegan'],
     ingredients: ['3 ripe avocados', '1 lime, juiced', '½ small red onion, finely diced', '1 small tomato, diced', '1 jalapeño, minced (optional)', '2 tablespoons chopped coriander (cilantro)', '½ teaspoon salt'],
     steps: ['Halve the avocados, scoop the flesh into a bowl and mash it roughly with the lime juice.', 'Fold in the onion, tomato, jalapeño and coriander.', 'Season with the salt, taste, and add more lime or salt as you like.', 'Serve within 30 minutes, before it browns; a layer of lime juice on top keeps it green a little longer.'] },
   { id: 'rice', name: 'Steamed rice', aliases: ['rice', 'white rice', 'how to cook rice', 'boiled rice'], servings: 4, time: 30, tags: ['side', 'vegan'],
@@ -150,7 +150,7 @@ export const BUILT_IN = Object.freeze([
 const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 const STOP = /\b(?:recipe|recipes|for|a|an|the|how|to|make|do|i|cook|easy|simple|best|homemade|quick)\b/g;
 /** the dish a search means: "recipe for pancakes", "how do I make pancakes", "easy pancake recipe" are all "pancake". Pure. */
-export const dishOf = (q) => norm(q).replace(STOP, ' ').replace(/\s+/g, ' ').trim();
+export const dishOf = (q) => norm(q).replace(STOP, '').replace(/\s+/g, ' ').trim();
 const single = (w) => (w.length > 4 && /ies$/.test(w) ? w.slice(0, -3) + 'y' : w.length > 4 && /(?:oes|ches|shes|sses)$/.test(w) ? w.slice(0, -2) : w.length > 3 && /s$/.test(w) && !/ss$/.test(w) ? w.slice(0, -1) : w);
 /** the built-in recipes a name search means, best first; [] when none fits. Pure. */
 export function find(q, list = BUILT_IN) {

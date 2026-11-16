@@ -32,7 +32,7 @@ for (const m of mods) {
   for (const e of m.nearMisses || []) if (first(e) === m.name) fail(m.name, `near miss "${e}" taken`);
   if (typeof m.suite === 'function') {
     let r;
-    try { r = m.suite(); } catch (e) { r = { ok: false, got: e.message }; }
+    try { r = await m.suite(); } catch (e) { r = { ok: false, got: e.message }; }
     if (!r || !r.ok) fail(m.name, `suite ${r && r.got}`);
   }
 }

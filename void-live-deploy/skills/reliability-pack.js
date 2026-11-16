@@ -122,7 +122,7 @@ export default {
       && html.includes(p.status.headline)
       && html.includes(p.subject)
       && /Nothing is sent/.test(html)
-      && !/heavy lifting/i.test(html)
+      && !/heavy\slifting/i.test(html)
       && !/Verse will own/i.test(html)
       && !/Verse owns the reliability/i.test(html)
       && !/99(?:\.9+)?\s*%/.test(html);
