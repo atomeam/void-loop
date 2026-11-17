@@ -69,7 +69,7 @@ function save() { try { localStorage.setItem(slotKey(), JSON.stringify({ book: S
 function say(t) { meta.textContent = t; }
 async function load(slotData) {
   try {
-    const j = slotData || JSON.parse(localStorage.getItem(slotKey()) || 'null');
+    const j = slotData || JSON.parse(localStorage.getItem(slotKey()) || 'null'); // void-review: ok: load() wraps everything in try/catch, so a bad save says so instead of stopping the page
     const mark = !j && localStorage.getItem(markKey(currentId()));
     const use = j || (mark ? { book: currentId(), code: mark } : null);
     if (!use) { say('No save in slot S' + slot + '.'); return; }
