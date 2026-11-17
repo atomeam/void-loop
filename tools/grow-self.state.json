@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "43687569222",
-  "at": "2026-11-15T06:55:48Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for sales-pack.  Why these: automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: checked); sales-pack (only 2 benchmark asks, evidence tier: checked). New phrases: “sell the hard work for the support process” now opens sales-pack. Did not route: automation status for invoice reminders; status of the automations Verse owns for support; client handoff pack on onboarding flow; what does Verse own for the onboarding flow.",
-  "try": "sell the hard work for the support process",
+  "run": "44009823302",
+  "at": "2026-11-17T03:23:57Z",
+  "what": "Verse hardened itself: 5 benchmark ask(s) for automation-proposal, process-map.  Why these: automation-proposal (no benchmark ask, evidence tier: tested); process-map (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: checked). New phrases: “what automations for invoice reminders” now opens automation-proposal; “automation proposal for support tickets” now opens automation-proposal; “process map for client onboarding” now opens process-map; “map the process for invoice reminders” now opens process-map; “show the process map for support tickets” now opens process-map. Did not route: propose automations for a new client; automation status for invoice reminders; status of the automations Verse owns for support; client handoff pack on onboarding flow.",
+  "try": "what automations for invoice reminders",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-15T04:53:21Z",
-    "try": "stackwell",
-    "closedAt": "2026-11-15T06:55:34Z"
+    "at": "2026-11-15T06:55:48Z",
+    "try": "sell the hard work for the support process",
+    "closedAt": "2026-11-17T03:23:40Z"
   }
 }
