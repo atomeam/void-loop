@@ -44,7 +44,7 @@ async function run(text, api) {
   ).join('');
   showPage((el) => {
     el.innerHTML = '<h2>Handoff readiness: ' + esc(name) + '</h2>'
-      + '<p class="sub">What must be true before the client takes the outcome and Verse keeps the heavy lifting.</p>'
+      + '<p class="sub">What must be true before the client takes the outcome and Verse keeps the hard work.</p>'
       + '<ul>' + rows + '</ul>'
       + '<h3>Next step</h3><p>' + esc(r.next) + '</p>'
       + '<p class="sub">Ask for the full-handoff when the open items close. Nothing is sent.</p>'
