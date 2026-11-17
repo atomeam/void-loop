@@ -42,7 +42,7 @@ async function run(text, api) {
     const comps = pack.components.map(i => '<li>' + esc(i) + '</li>').join('');
     const autos = pack.automations.map(i => '<li>' + esc(i) + '</li>').join('');
     el.innerHTML = '<h2>System design: ' + esc(name) + '</h2>'
-      + '<p class="sub">This designs the systems Verse will own so the client does less.</p>'
+      + '<p class="sub">This designs the systems Verse handles so the client does less.</p>'
       + '<h3>Components</h3><ul>' + comps + '</ul>'
       + '<h3>Automations</h3><ul>' + autos + '</ul>'
       + '<h3>Handoff</h3><p>' + esc(pack.handoff) + '</p>'
