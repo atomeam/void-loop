@@ -10,3 +10,6 @@ void-live-deploy/tower-evidence/*.json merge=union
 drafts/fringe/** -text
 void-live-deploy/fringe/** -text
 .github/workflows/*.yml text eol=lf
+void.html text eol=lf
+void-live-deploy/void.html text eol=lf
+void-live-deploy/index.html text eol=lf
