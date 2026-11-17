@@ -1,6 +1,6 @@
 {
   "games": {
-    "pong": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },
+    "pong": { "version": 2, "visuals": "integer pixel canvas", "audio": "WebAudio SFX", "progression": "first to 7, device best rally", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + pointer + touch" },
     "snake": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "keyboard" },
     "null-sweep": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },
     "merge-void": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },

@@ -682,6 +682,15 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
+// /games/pong/: a full-screen canvas, a rally against Verse, a device best and working controls
+SPECS['/games/pong/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#score', /Verse/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowUp'); await t.p.keyboard.press('ArrowDown'); await t.p.click('#pause'); await t.p.click('#pause');
+  t.ok(true, 'paddle, pause and resume do not throw');
+};
 // /games/jrpg/: a full-screen pixel canvas, a chapter loaded from its own data file, and working controls
 SPECS['/games/jrpg/'] = async (t) => {
   await t.p.reload();
