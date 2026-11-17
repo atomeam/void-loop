@@ -1,5 +1,5 @@
 {
- "at": "2026-11-17T02:44:44.604Z",
+ "at": "2026-11-17T03:11:27.688Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -38,30 +38,34 @@
   },
   {
    "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
-   "changes": 26
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 24
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 24
+   "changes": 25
   },
   {
    "file": "void-live-deploy/versus/verdicts.json",
-   "changes": 22
+   "changes": 25
   },
   {
    "file": "void-live-deploy/versus/shots/qr-rival.jpg",
-   "changes": 21
+   "changes": 24
   },
   {
    "file": "void-live-deploy/versus/shots/tracks-rival.jpg",
-   "changes": 21
+   "changes": 24
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 23
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
+   "changes": 23
   },
   {
    "file": "void-live-deploy/versus/shots/directions-rival.jpg",
+   "changes": 23
+  },
+  {
+   "file": "void-live-deploy/versus/shots/patterns-rival.jpg",
    "changes": 20
   },
   {
@@ -77,15 +81,15 @@
    "changes": 19
   },
   {
-   "file": "void-live-deploy/versus/shots/patterns-rival.jpg",
+   "file": "void-live-deploy/skills/first.json",
    "changes": 17
   },
   {
-   "file": "void-live-deploy/skills/first.json",
+   "file": "void-live-deploy/tower.sweep.json",
    "changes": 16
   },
   {
-   "file": "void-live-deploy/tower.sweep.json",
+   "file": "void-live-deploy/versus/shots/units-rival.jpg",
    "changes": 16
   },
   {
@@ -93,7 +97,19 @@
    "changes": 15
   },
   {
+   "file": "tools/families.mjs",
+   "changes": 15
+  },
+  {
    "file": "tools/versus-floor.test.mjs",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/skills/lineage.json",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/versus/shots/text-diff-rival.jpg",
    "changes": 15
   },
   {
@@ -105,28 +121,12 @@
    "changes": 14
   },
   {
-   "file": "tools/families.mjs",
-   "changes": 14
-  },
-  {
    "file": "tools/grow-self.state.json",
    "changes": 14
   },
   {
    "file": "void-live-deploy/tower.features.json",
    "changes": 14
-  },
-  {
-   "file": "void-live-deploy/versus/shots/text-diff-rival.jpg",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/skills/lineage.json",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/versus/shots/units-rival.jpg",
-   "changes": 13
   }
  ]
 }
