@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1342,
+ "counted": 1344,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1270,6 +1270,13 @@
    "tests": 18
   },
   {
+   "file": "lib/adventure.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/arcade-ghost.js",
    "skills": 2,
    "direct": 2,
@@ -1999,13 +2006,6 @@
   },
   {
    "file": "lib/actions-failure.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/adventure.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -4112,6 +4112,13 @@
    "tests": 1
   },
   {
+   "file": "lib/void-shapes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/watched-modes.js",
    "skills": 0,
    "direct": 0,
@@ -5706,7 +5713,8 @@
   "lib/adventure.js": {
    "imports": [],
    "importedBy": [
-    "skills/adventure.js"
+    "skills/adventure.js",
+    "skills/video-play.js"
    ]
   },
   "lib/agenda.js": {
@@ -17007,6 +17015,10 @@
     "skills/merge.js"
    ]
   },
+  "lib/void-shapes.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/walker.js": {
    "imports": [],
    "importedBy": [
@@ -18839,6 +18851,10 @@
     "lib/table-tools.js",
     "lib/page-fit.js"
    ],
+   "importedBy": []
+  },
+  "skills/games-hub.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/games.js": {
@@ -22249,6 +22265,7 @@
    "imports": [
     "lib/video.js",
     "lib/music-tools.js",
+    "lib/adventure.js",
     "skills/video.js"
    ],
    "importedBy": []

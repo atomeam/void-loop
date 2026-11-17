@@ -14,7 +14,7 @@
  "bench_at": "2026-11-16",
  "totals": {
   "experiment": 0,
-  "tested": 2,
+  "tested": 3,
   "checked": 17,
   "proven": 443
  },
@@ -595,7 +595,7 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 11,
     "proven": 44
    },
@@ -1112,6 +1112,13 @@
     },
     {
      "name": "adventure",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-17",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "games-hub",
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-11-17",

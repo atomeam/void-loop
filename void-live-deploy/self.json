@@ -910,92 +910,92 @@
   }
  ],
  "building": {
-  "at": "2026-11-17T05:35:28Z",
+  "at": "2026-11-12T21:02:25Z",
   "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
+  "by": "builder",
+  "item": "Verse FILMS get better every day",
+  "what": "step 1 shipped; step 2 next. Lists run 24 (2026-11-12): step 2's scorecard shipped. Lists run 25 (2026-11-12): step 2 done (card check and re-shoot); step 3 is next, unclaimed."
  },
  "commits": [
   {
-   "at": "2026-11-17T08:25:00Z",
-   "subject": "Add an OpenHands skills pack: shipping, review hygiene, skills and 3D"
+   "at": "2026-11-17T09:03:12Z",
+   "subject": "re-run gates"
   },
   {
-   "at": "2026-11-17T08:24:41Z",
-   "subject": "Flake: 1 check(s) passed on a rerun of c29a8ad (tools/flakes.json)"
+   "at": "2026-11-17T09:02:58Z",
+   "subject": "Failed jobs read: run 44048176511 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-17T08:24:16Z",
-   "subject": "Add an OpenHands skills pack: shipping, review hygiene, skills and 3D"
+   "at": "2026-11-17T09:01:19Z",
+   "subject": "Bare adventure asks open the book: shelf matcher in lib, video-play yields (#2929)"
   },
   {
-   "at": "2026-11-17T08:17:52Z",
-   "subject": "A skill card draws its own subject when its name has a drawing: a Cat card draws a cat (#2922)"
-  },
-  {
-   "at": "2026-11-17T08:17:38Z",
-   "subject": "Stop the coder's read spiral: refuse a repeated read, stop a read-only run early (#2923)"
-  },
-  {
-   "at": "2026-11-17T08:16:20Z",
-   "subject": "Rebuild landing idle stage as a single WebGL2 particle canvas (#2921)"
-  },
-  {
-   "at": "2026-11-17T08:14:06Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-17T08:13:49Z",
-   "subject": "Outcome exam: sports 93.5"
-  },
-  {
-   "at": "2026-11-17T08:09:29Z",
+   "at": "2026-11-17T08:56:38Z",
    "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-17T08:02:04Z",
-   "subject": "Failed jobs read: run 44037611430 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-17T08:56:26Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"open folder r"
   },
   {
-   "at": "2026-11-17T08:01:37Z",
-   "subject": "Incident: the browser suite failed on 37be67de (void-live-deploy/incidents.json)"
+   "at": "2026-11-17T08:50:59Z",
+   "subject": "Add games hub launcher and routing checks"
   },
   {
-   "at": "2026-11-17T07:57:00Z",
-   "subject": "A 3D cat: its own model (body, head, ears, legs, tail), and solid boxes wound inward (#2920)"
+   "at": "2026-11-17T08:50:34Z",
+   "subject": "Outcome exam: weather 80.6"
   },
   {
-   "at": "2026-11-17T07:51:13Z",
-   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
-  },
-  {
-   "at": "2026-11-17T07:50:24Z",
-   "subject": "Adds to Verse shows only what a card filed, never a book page's one line (#2919)"
-  },
-  {
-   "at": "2026-11-17T07:50:10Z",
+   "at": "2026-11-17T08:48:15Z",
    "subject": "Tower gate: versus measured"
   },
   {
-   "at": "2026-11-17T07:49:32Z",
-   "subject": "Incidents closed: shard(s) 1 passed on b7c4815b (void-live-deploy/incidents.json)"
+   "at": "2026-11-17T08:44:46Z",
+   "subject": "Tower size: how heavy each Versus site really is"
   },
   {
-   "at": "2026-11-17T07:46:41Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-11-17T08:43:11Z",
+   "subject": "Failed jobs read: run 44045530245 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-17T07:45:48Z",
-   "subject": "Outcome exam: recipes 96.3"
+   "at": "2026-11-17T08:42:36Z",
+   "subject": "CYOA part 2: full-screen adventure book mode plus Obsidian Keep and Neon Harbour (#2927)"
   },
   {
-   "at": "2026-11-17T07:44:33Z",
-   "subject": "Short subject words with a drawing are read: cat, sun, sea (#2918)"
+   "at": "2026-11-17T08:42:25Z",
+   "subject": "Incident: the browser suite failed on c29a8ad5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-17T07:41:27Z",
-   "subject": "Custom card art, step 1: a style or words for a card's picture, kept on this device (#2917)"
+   "at": "2026-11-17T08:41:44Z",
+   "subject": "morph idle particles into typed shapes and keep a constellation (#2926)"
+  },
+  {
+   "at": "2026-11-17T08:37:43Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+  },
+  {
+   "at": "2026-11-17T08:36:20Z",
+   "subject": "lead README with the open-source engine and a 60-second start (#2924)"
+  },
+  {
+   "at": "2026-11-17T08:35:57Z",
+   "subject": "Failed jobs read: run 44042647458 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-17T08:35:35Z",
+   "subject": "Incident: the browser suite failed on f7ca8db3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-17T08:35:20Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"choose your o"
+  },
+  {
+   "at": "2026-11-17T08:32:19Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-17T08:30:54Z",
+   "subject": "Incident: the browser suite failed on bf0b6c2d (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
@@ -1177,8 +1177,8 @@
   }
  ],
  "visible": {
-  "day": 20,
-  "week": 20
+  "day": 41,
+  "week": 171
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
