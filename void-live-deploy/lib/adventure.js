@@ -44,28 +44,25 @@ export function createRun(bookId, seed) {
 
 export const getNode = (book, id) => (book && book.nodes ? book.nodes[id] || null : null);
 
-/** whether a choice's requirements are met by this run. Pure. */
-export function choiceOpen(choice, run) {
-  const need = (choice && choice.needs) || {};
-  for (const item of need.items || []) if (!run.pack.includes(item)) return false;
-  for (const [k, v] of Object.entries(need.flags || {})) if (!!run.flags[k] !== !!v) return false;
-  return true;
-}
+/** unmet requirements of a choice as item/flag names. Pure. */
+const missing = (choice, run) => {
+  const need = (choice && choice.needs) || {}, out = [];
+  for (const item of need.items || []) if (!run.pack.includes(item)) out.push(item);
+  for (const [k, v] of Object.entries(need.flags || {})) if (!!run.flags[k] !== !!v) out.push((v ? '' : 'not ') + k);
+  return out;
+};
 
-function needLine(choice, run) {
-  const need = (choice && choice.needs) || {}, missing = [];
-  for (const item of need.items || []) if (!run.pack.includes(item)) missing.push(item);
-  for (const [k, v] of Object.entries(need.flags || {})) if (!!run.flags[k] !== !!v) missing.push((v ? '' : 'not ') + k);
-  return missing.length ? 'needs ' + missing.join(', ') : '';
-}
+/** whether a choice's requirements are met by this run. Pure. */
+export const choiceOpen = (choice, run) => !missing(choice, run).length;
 
 /** the choices at this run's node, each { i, text, to, open, need }. Pure. */
 export function availableChoices(book, run) {
   const n = getNode(book, run.node || book.start);
   if (!n || n.ending) return [];
-  return (Array.isArray(n.choices) ? n.choices : []).map((c, i) => ({
-    i, text: c.text, to: c.to, open: choiceOpen(c, run), need: choiceOpen(c, run) ? '' : needLine(c, run),
-  }));
+  return (Array.isArray(n.choices) ? n.choices : []).map((c, i) => {
+    const miss = missing(c, run);
+    return { i, text: c.text, to: c.to, open: !miss.length, need: miss.length ? 'needs ' + miss.join(', ') : '' };
+  });
 }
 
 const OMENS = [

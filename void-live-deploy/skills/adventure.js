@@ -86,19 +86,18 @@ function mount(th, stageApi) {
       el.append(b);
     }
     const row = h('div', 'display:flex;gap:6px;margin-top:8px;flex-wrap:wrap');
+    const code = runCode(th.run);
     const again = button(stageApi, 'Restart', () => {
       th.run = { ...createRun(book.id), node: book.start };
       try { localStorage.removeItem(markKey(book.id)); } catch (_) { /* private mode */ }
       save(); render();
     });
-    again.style.background = 'transparent';
-    const code = runCode(th.run);
     const copy = button(stageApi, 'Copy run', () => {
       const path = th.run.path.map((id) => (getNode(book, id) || {}).title || id).join(' → ');
       const text = book.title + ' · ' + (node.title || '') + (node.ending ? ' · ' + node.ending.title : '') + '\nPath: ' + path + '\nRun code: ' + code;
       try { navigator.clipboard.writeText(text).then(() => stageApi.say('copied the run'), () => stageApi.say('copy did not work here')); } catch (_) { stageApi.say('copy did not work here'); }
     });
-    copy.style.background = 'transparent';
+    again.style.background = copy.style.background = 'transparent';
     row.append(again, copy);
     el.append(row);
     el.append(h('div', 'font-size:11px;opacity:.55;margin-top:6px', 'Step ' + (th.run.path.length + 1) + ' · run code ' + code.slice(0, 12) + '… · kept on this device', { class: 'ad-code' }));
