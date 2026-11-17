@@ -77,7 +77,7 @@ export function mount(opts = {}) {
     gl.useProgram(P); const ap = gl.getAttribLocation(P, 'aP'), ac = gl.getAttribLocation(P, 'aC');
     gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.enableVertexAttribArray(ac); gl.vertexAttribPointer(ac, 3, gl.FLOAT, false, 0, 0);
-    gl.uniform3f(uCam, cam.x, cam.y, cam.z); gl.uniform2f(uAng, cam.yaw, cam.pitch); gl.uniform2f(uR, W, H); gl.uniform1f(uZoom, zoomOf(cam.scaleLog)); gl.uniform1f(uFade, 1); gl.drawArrays(gl.POINTS, 0, uni.count);
+    gl.uniform3f(uCam, cam.x, cam.y, cam.z); gl.uniform2f(uAng, cam.yaw, cam.pitch); gl.uniform2f(uR, W, H); gl.uniform1f(uZoom, zoomOf(cam.scaleLog)); gl.uniform1f(uFade, clamp((cam.scaleLog - LOG_MIN) / 1.2, 0, 1)); gl.drawArrays(gl.POINTS, 0, uni.count);
     if (ln) { gl.bindBuffer(gl.ARRAY_BUFFER, lbuf); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0); gl.bindBuffer(gl.ARRAY_BUFFER, lcbuf); gl.enableVertexAttribArray(ac); gl.vertexAttribPointer(ac, 3, gl.FLOAT, false, 0, 0); gl.uniform1f(uFade, .5); gl.drawArrays(gl.LINES, 0, ln / 3); }
     tlm.textContent = telemetry(cam);
     if (Object.keys(keys).length && !reduce.matches && !document.hidden) raf = requestAnimationFrame(draw); };
