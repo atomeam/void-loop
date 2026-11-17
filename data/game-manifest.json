@@ -4,7 +4,7 @@
     "snake": { "version": 2, "visuals": "integer pixel canvas", "audio": "WebAudio SFX", "progression": "score, best on device", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" },
     "null-sweep": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },
     "merge-void": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },
-    "dim-void": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },
+    "dim-void": { "version": 2, "visuals": "integer pixel canvas", "audio": "WebAudio SFX", "progression": "levels, best moves on device", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "pointer + touch" },
     "void-breaker": { "version": 1, "visuals": "card frame", "audio": "none", "progression": "ladder", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": false, "controls": "pointer" },
     "debris-field": { "version": 2, "visuals": "canvas, DPR scaled", "audio": "WebAudio", "progression": "daily seed, device best", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" },
     "gap-glide": { "version": 2, "visuals": "canvas, DPR scaled", "audio": "WebAudio", "progression": "device best", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" },
