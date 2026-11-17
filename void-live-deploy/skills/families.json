@@ -14,9 +14,9 @@
  "bench_at": "2026-11-16",
  "totals": {
   "experiment": 0,
-  "tested": 3,
-  "checked": 17,
-  "proven": 441
+  "tested": 1,
+  "checked": 18,
+  "proven": 442
  },
  "families": [
   {
@@ -3772,9 +3772,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 4,
-    "proven": 87
+    "tested": 1,
+    "checked": 5,
+    "proven": 88
    },
    "skills": [
     {
@@ -4629,17 +4629,21 @@
     },
     {
      "name": "automation-proposal",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-17",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-17"
     },
     {
      "name": "process-map",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-17",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-17"
     }
    ]
   },

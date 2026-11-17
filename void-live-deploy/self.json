@@ -906,8 +906,48 @@
  },
  "commits": [
   {
-   "at": "2026-11-17T03:16:07Z",
-   "subject": "Note the podcast fix in the growth ledger and the agent log"
+   "at": "2026-11-17T03:35:57Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-17T03:35:49Z",
+   "subject": "Better at automation proposal and process map: 5 more ways of asking answered right — new phrases: “what automations for invoice…"
+  },
+  {
+   "at": "2026-11-17T03:33:24Z",
+   "subject": "Verse loop: task, Queue job want-idea-f167636764 (tv: hvac-remote-management): (#2883)"
+  },
+  {
+   "at": "2026-11-17T03:29:24Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-17T03:27:10Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-17T03:25:52Z",
+   "subject": "Design loop: 1 page fixed, 26 -> 22 design defects"
+  },
+  {
+   "at": "2026-11-17T03:25:23Z",
+   "subject": "Revert \"Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)\""
+  },
+  {
+   "at": "2026-11-17T03:25:08Z",
+   "subject": "Failed jobs read: run 44009762564 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-17T03:21:38Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-17T03:21:07Z",
+   "subject": "Play a podcast's own file first, and count it as the episode the feed lists (#2880)"
+  },
+  {
+   "at": "2026-11-17T03:18:42Z",
+   "subject": "Tower gate: versus measured"
   },
   {
    "at": "2026-11-17T03:14:01Z",
@@ -920,14 +960,6 @@
   {
    "at": "2026-11-17T03:13:35Z",
    "subject": "Outcome exam: weather 53.6"
-  },
-  {
-   "at": "2026-11-17T03:12:29Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-17T03:10:50Z",
-   "subject": "Play a podcast's own file first, and count it as the episode the feed lists"
   },
   {
    "at": "2026-11-17T03:07:43Z",
@@ -952,38 +984,6 @@
   {
    "at": "2026-11-17T02:46:47Z",
    "subject": "fix: update untested allowance for new skills"
-  },
-  {
-   "at": "2026-11-17T02:45:25Z",
-   "subject": "fix: register process-map skill, add to self family, regenerate index"
-  },
-  {
-   "at": "2026-11-17T02:43:22Z",
-   "subject": "Failed jobs read: run 44004493206 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-17T02:42:25Z",
-   "subject": "fix: add automation-proposal skill to self family"
-  },
-  {
-   "at": "2026-11-17T02:38:14Z",
-   "subject": "fix: add verse-handoff tag to /research/ page for handoff-scan"
-  },
-  {
-   "at": "2026-11-17T02:26:16Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-17T02:01:49Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-17T01:31:27Z",
-   "subject": "Verse loop: task, Queue job want-revenue-2026-11 (feature: want-revenue-2026-1 (#2878)"
-  },
-  {
-   "at": "2026-11-17T01:14:05Z",
-   "subject": "Design loop: 1 page fixed, 11 -> 7 design defects"
   }
  ],
  "builders": {
@@ -1165,8 +1165,8 @@
   }
  ],
  "visible": {
-  "day": 7,
-  "week": 137
+  "day": 8,
+  "week": 138
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
