@@ -38,13 +38,14 @@ export const DEFAULT_CHECKS = [
 
 /** Parse argv into options. Pure. */
 export function parseArgs(argv, env = {}) {
-  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null };
+  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = () => { const v = argv[++i]; if (v === undefined) throw new Error(a + ' needs a value'); return v; };
     if (a === '--once') o.once = true;
     else if (a === '--every') { o.every = Number(val()); if (!(o.every > 0)) throw new Error('--every needs minutes > 0'); }
     else if (a === '--dry-run') o.dryRun = true;
+    else if (a === '--stops') o.stops = true;
     else if (a === '--agent') o.agent = val();
     else if (a === '--checks') o.checks = val();
     else if (a === '--base') o.base = val();
@@ -236,6 +237,18 @@ export function recordOutcome(state, outcome, { pr = null, why = '', at = Date.n
   if (outcome === 'shipped' && pr) s.prs.push(pr);
   return s;
 }
+/** The stopped laps, ranked by the tool each one burned its turns on, so the miss board can see which read spirals remain: the
+ *  tool named most often first, then by turns spent. `stops` are the lines of `.git/verse-loop.stops.jsonl` (each { top, turns }). Pure. */
+export function rankStops(stops) {
+  const by = new Map();
+  for (const s of Array.isArray(stops) ? stops : []) {
+    const t = String((s && s.top) || '').trim(); if (!t) continue;
+    const cur = by.get(t) || { tool: t, laps: 0, turns: 0 };
+    by.set(t, { tool: t, laps: cur.laps + 1, turns: cur.turns + (Number(s.turns) || 0) });
+  }
+  return [...by.values()].sort((a, b) => b.laps - a.laps || b.turns - a.turns || a.tool.localeCompare(b.tool));
+}
+
 /** A PR another job closed as superseded (tools/automerge.mjs leaves the void-superseded marker: a newer PR carries the same work) was
  *  replaced, not refused. Issue #2438, 2026-11-06: #2329 was closed as superseded by #2436 and counted as "not merged", the third failure
  *  that paused the loop for 6 hours. stateOf(url) returns 'SUPERSEDED' for one (prStateOf below); it is dropped and counts for nothing. */
@@ -445,6 +458,13 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     // a coder's exit: 0 leaves its change in the tree; any other exit has put the tree back (4: no model key, 6: none answered)
     const coderStop = (ar) => {
       const c = said(ar), why = 'Verse\'s coder: ' + (c.why || 'exited ' + ar.code);
+      // which tool a stopped lap spent its turns on (frontier #43): a capped coder run (turn-cap, token-cap, read-cap) names the
+      // tool it burned the most turns on, logged so the miss board can rank the read spirals that remain. Never blocks the lap.
+      if (c.spent && (c.outcome === 'turn-cap' || c.outcome === 'token-cap' || c.outcome === 'read-cap')) {
+        const stop = { at: new Date(now).toISOString(), outcome: c.outcome, top: c.spent.top || '', turns: c.spent.turns || c.turns || 0, counts: c.spent.counts || {} };
+        try { appendFileSync(join(gitDir, 'verse-loop.stops.jsonl'), JSON.stringify(stop) + '\n'); } catch (_) { /* the report still says it */ }
+        step('stopped at ' + c.outcome + ': spent ' + stop.turns + ' turns, most on ' + (stop.top || 'nothing'));
+      }
       if (git('status', '--porcelain').out.trim()) return done('refused', why + '; it left changes in the tree, which stay for a look');
       return done(ar.code === 4 || ar.code === 6 ? 'idle' : 'no-change', why);
     };
@@ -658,6 +678,7 @@ const HELP = `verse-loop: Verse works on itself, one item per lap (docs/VERSE-LO
   --once             one lap, then exit (the default)
   --every <minutes>  a lap now, then one every N minutes
   --dry-run          checks and the brain run; nothing is committed, pushed or opened
+  --stops            print the stopped laps ranked by the tool each spent its turns on (a read spiral shows here), then exit
   --agent <name>     verse (default: tools/verse-coder.mjs on the free model stack for red checks and NEXT items, and
                      tools/propose-fix.mjs for probe jobs), opencode, aider, or cmd (VERSE_LOOP_AGENT_CMD)
   --checks <file>    JSON list of {name, cmd, timeoutMin}; default tools/verse-loop.checks.json
@@ -673,6 +694,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   let opts;
   try { opts = parseArgs(process.argv.slice(2), process.env); } catch (e) { console.error(e.message + '\n\n' + HELP); process.exit(2); }
   if (opts.help) { console.log(HELP); process.exit(0); }
+  if (opts.stops) {
+    // rank the stopped laps by the tool each burned its turns on (frontier #43): a reader can see which read spirals remain
+    const dir = spawnSync('git', ['rev-parse', '--absolute-git-dir'], { encoding: 'utf8' }).stdout.trim();
+    const f = join(dir || '.', 'verse-loop.stops.jsonl');
+    const stops = existsSync(f) ? readFileSync(f, 'utf8').trim().split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch (_) { return null; } }).filter(Boolean) : [];
+    console.log(JSON.stringify({ stops: stops.length, ranked: rankStops(stops) }));
+    process.exit(0);
+  }
   const once = async () => { const r = await lap(opts); console.log(JSON.stringify({ outcome: r.outcome, why: r.why, task: r.task, branch: r.branch, pr: r.pr })); return r; };
   if (opts.every) {
     const tick = async () => { try { await once(); } catch (e) { console.error('lap failed: ' + (e && e.message)); } setTimeout(tick, opts.every * 60e3); };

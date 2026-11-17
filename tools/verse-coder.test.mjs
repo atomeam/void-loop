@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, symlin
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE, nearMiss, searchShape, nameTokens } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, toolTally, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE, nearMiss, searchShape, nameTokens } from './verse-coder.mjs';
 import { scanDiff, buildPrompt } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -144,6 +144,12 @@ test('each turn sends the task and the newest results whole, and older results c
   assert.deepEqual(windowOf(msgs.slice(0, 6)), msgs.slice(0, 6), 'a short run is sent as it is');
   assert.equal(trailOf([{ tool: 'read', path: 'a.js', result: '1\tx' }, { tool: 'edit', path: '', result: 'the diff does not apply: error: patch failed\nmore' }, { tool: 'check', path: 'add', result: 'FAIL add\nlog' }]),
     'read a.js, edit: the diff does not apply: error: patch failed, check add: FAIL add');
+  // how many turns each tool took, and the one it took most (frontier #43): a stopped lap says which tool it burned its turns on
+  assert.deepEqual(toolTally([{ tool: 'read' }, { tool: 'read' }, { tool: 'search' }, { tool: 'edit' }, { tool: 'read' }]),
+    { counts: { read: 3, search: 1, edit: 1 }, top: 'read', turns: 5 });
+  assert.deepEqual(toolTally([]), { counts: {}, top: '', turns: 0 });
+  assert.equal(toolTally([{ tool: 'read' }, { tool: 'search' }]).top, 'read', 'a tie breaks by name, deterministically');
+  assert.equal(toolTally([{ tool: 'search' }, { tool: 'read' }]).top, 'read', 'a tie breaks by name, not order');
   // the worst case, the same full read every turn (the 2026-11-17 spiral: watch-build.js, photos.js, recipe.js): the same range is
   // refused after the first read and the run stops at the read cap, well before the turn cap, with nothing changed
   const s = repo(); writeFileSync(join(s.work, 'src/big.mjs'), Array.from({ length: 400 }, (_, i) => '// line ' + i + ' ' + 'y'.repeat(30)).join('\n'));
@@ -151,6 +157,8 @@ test('each turn sends the task and the newest results whole, and older results c
   assert.equal(r.outcome, 'read-cap', r.why); assert.equal(r.turns, LIMITS.reads);
   assert.match(r.log[1].result, /already read: src\/big\.mjs lines 1-150/);
   assert.equal(sh(s.work, 'status', '--porcelain'), '?? src/big.mjs', 'the coder changed nothing (big.mjs is the test\'s own new file)');
+  // the stopped run says which tool it burned its turns on (frontier #43), so a reader can rank the read spirals that remain
+  assert.equal(r.spent.top, 'read'); assert.equal(r.spent.turns, r.turns); assert.equal(r.spent.counts.read, r.turns);
 });
 
 test('a lap with its whole brief, reading big files and checking, counting a token as 3 characters, lasts the 30 turns (#2234)', async () => {

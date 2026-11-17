@@ -6,7 +6,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap as lapRaw, groomNext, assimilationGaps, ease, pauseState, pauseIssueClosed, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap as lapRaw, groomNext, assimilationGaps, ease, pauseState, pauseIssueClosed, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, rankStops, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
 
 // these laps stub the judgment, which otherwise asks the free model and refuses to ship without one
 const lap = (opts, ctx = {}) => lapRaw(opts, { judge: async () => ({ pass: true, why: 'a person could use this' }), ...ctx });
@@ -55,12 +55,23 @@ const env = (s, agentCmd) => ({ ...process.env, VERSE_LOOP_GH: s.gh, VERSE_LOOP_
 
 test('flags', () => {
   assert.deepEqual([parseArgs([]).agent, parseArgs([]).once, parseArgs([]).every], ['verse', false, 0]);
+  assert.equal(parseArgs(['--stops']).stops, true, '--stops is a read mode, no lap');
   const o = parseArgs(['--every', '30', '--dry-run', '--agent', 'aider']);
   assert.deepEqual([o.every, o.dryRun, o.agent], [30, true, 'aider']);
   assert.equal(parseArgs(['--every', '5', '--once']).every, 0, '--once wins');
   assert.throws(() => parseArgs(['--agent', 'gpt']), /must be one of/);
   assert.throws(() => parseArgs(['--every', '0']), /minutes/);
   assert.throws(() => parseArgs(['--force']), /unknown flag/);
+});
+
+test('rankStops: the stopped laps ranked by the tool each spent its turns on, so a read spiral shows (frontier #43)', () => {
+  assert.deepEqual(rankStops([{ top: 'read', turns: 12 }, { top: 'read', turns: 12 }, { top: 'search', turns: 5 }]),
+    [{ tool: 'read', laps: 2, turns: 24 }, { tool: 'search', laps: 1, turns: 5 }]);
+  assert.deepEqual(rankStops([{ top: 'search', turns: 9 }, { top: 'read', turns: 12 }]),
+    [{ tool: 'read', laps: 1, turns: 12 }, { tool: 'search', laps: 1, turns: 9 }], 'one lap each: more turns ranks first');
+  assert.deepEqual(rankStops([{ top: '', turns: 3 }, { top: 'read', turns: 4 }, {}]), [{ tool: 'read', laps: 1, turns: 4 }], 'a lap with no top tool is skipped');
+  assert.deepEqual(rankStops([]), []);
+  assert.deepEqual(rankStops(null), []);
 });
 
 test('the top open NEXT item skips done ones', () => {
@@ -321,6 +332,12 @@ test('Verse\'s coder: a red check is fixed and ships with automerge; a refused o
   r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: { ...scripted(s, [{ tool: 'edit', diff: FIX_GAMMA }, { tool: 'list' }]), VERSE_LOOP_AGENT_TIMEOUT_MIN: '2' }, log: quiet });
   assert.equal(r.outcome, 'no-change'); assert.match(r.why, /read cap/); // one edit, then list after list: the read spiral stops it (2026-11-17)
   assert.equal(readFileSync(join(s.work, 'status.txt'), 'utf8'), 'broken\n', 'put back');
+  // the stopped lap logs which tool it spent its turns on, so the miss board can rank the read spirals that remain (frontier #43)
+  const stops = readFileSync(join(s.work, '.git', 'verse-loop.stops.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.deepEqual([stops.length, stops[0].outcome, stops[0].top], [1, 'read-cap', 'list']);
+  assert.ok(stops[0].counts.list > stops[0].counts.edit, 'the list turns outnumber the one edit: ' + JSON.stringify(stops[0].counts));
+  assert.equal(stops[0].turns, stops[0].counts.list + stops[0].counts.edit, 'every turn is counted');
+  assert.ok(r.steps.some((x) => /stopped at read-cap: spent \d+ turns, most on list/.test(x)), 'the lap says it: ' + JSON.stringify(r.steps));
 });
 
 test('Verse\'s coder on green takes the top of docs/NEXT.md (no probe without VOID_OWNER_TOKEN)', async () => {
