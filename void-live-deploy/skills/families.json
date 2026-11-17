@@ -16,7 +16,7 @@
   "experiment": 0,
   "tested": 1,
   "checked": 17,
-  "proven": 442
+  "proven": 441
  },
  "families": [
   {
@@ -203,9 +203,9 @@
     {
      "name": "image-gen",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark, 1 live finding, 2026-11-15",
-     "last_tested": "2026-11-15",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 real asks in the benchmark, 2 live findings, 2026-11-16",
+     "last_tested": "2026-11-16",
+     "last_tested_by": "a live call",
      "success_rate": 1,
      "promoted": "2026-11-06",
      "streak": 10
@@ -394,9 +394,9 @@
     {
      "name": "flow-canvas",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-11-15",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-11-16",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 27
     },
@@ -1136,7 +1136,7 @@
     {
      "name": "baggage",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 3 real asks in the benchmark, 1 live finding, 2026-11-15",
      "last_tested": "2026-11-15",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2741,7 +2741,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 31 live findings, 2026-11-14",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 32 live findings, 2026-11-15",
      "last_tested": "2026-11-15",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3098,9 +3098,9 @@
     {
      "name": "type-filter",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-11-15",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-11-16",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 27
     },
@@ -3773,7 +3773,7 @@
     "experiment": 0,
     "tested": 1,
     "checked": 4,
-    "proven": 88
+    "proven": 87
    },
    "skills": [
     {
@@ -4542,16 +4542,6 @@
      "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-15",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
-     "promoted": "2026-11-15",
-     "streak": 1
-    },
-    {
-     "name": "system-plan",
-     "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-11-15",
-     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-11-15",
      "streak": 1
