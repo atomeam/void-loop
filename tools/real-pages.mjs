@@ -690,6 +690,11 @@ SPECS['/games/jrpg/'] = async (t) => {
   t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
   await t.p.keyboard.press('ArrowRight'); await t.p.keyboard.press('Enter');
   t.ok(true, 'movement and interaction do not throw');
+  await t.p.evaluate(() => localStorage.setItem('a2m.jrpg.save.v1', JSON.stringify({ map: 'town', x: 2, y: 1, party: [{ name: 'Kite', hp: 30, mhp: 30, mp: 10, mmp: 10, atk: 6, def: 2, spd: 8, lvl: 1, xp: 0 }], flags: { ch1done: true } })));
+  await t.p.reload();
+  await t.p.click('#load');
+  await t.waitText('#msg', /Chapter 2/, 10000);
+  t.ok((await t.text('#place')) === 'town2', 'a Chapter 1 save carries the party into the Chapter 2 town');
 };
 // /starboard/: sponsor tiles, the visitor faucet, the weather panel for a typed place, and the news wire's top story
 SPECS['/starboard/'] = async (t) => {

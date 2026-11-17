@@ -11,14 +11,16 @@ let audio = null, muted = false;
 const beep = (f = 440, d = 0.08) => { if (muted) return; try { audio ||= new (window.AudioContext || window.webkitAudioContext)(); const o = audio.createOscillator(), v = audio.createGain(); o.type = 'square'; o.frequency.value = f; v.gain.value = 0.05; o.connect(v).connect(audio.destination); o.start(); o.stop(audio.currentTime + d); } catch (_) {} };
 document.getElementById('mute').onclick = (e) => { muted = !muted; e.target.textContent = muted ? 'Sound off' : 'Sound on'; beep(660); };
 
-const S = { chapter: null, map: 'town', x: 2, y: 1, party: [], enemy: null, mode: 'world', lines: [], line: 0, pops: [], flags: {}, step: 0, menu: 0, holding: false };
+const S = { chapters: [], chapter: null, ci: 0, map: 'town', x: 2, y: 1, party: [], enemy: null, mode: 'world', lines: [], line: 0, pops: [], flags: {}, step: 0, menu: 0, holding: false };
+function loadChapter(i) { S.ci = i; S.chapter = S.chapters[i] || S.chapters[0]; const q = S.chapter.spawn; S.map = q.map; S.x = q.x; S.y = q.y; place.textContent = S.map; say('Chapter ' + S.chapter.id + ' — ' + S.chapter.title + '.'); }
 const fresh = () => S.party = [{ name: 'Kite', hp: 30, mhp: 30, mp: 10, mmp: 10, atk: 6, def: 2, spd: 8, lvl: 1, xp: 0 }, { name: 'Moth', hp: 24, mhp: 24, mp: 14, mmp: 14, atk: 5, def: 1, spd: 9, lvl: 1, xp: 0 }];
 const active = () => S.party.find((p) => p.hp > 0);
 const say = (t) => { msg.textContent = t; };
 const key = 'a2m.jrpg.save.v1';
 
-function save() { try { localStorage.setItem(key, JSON.stringify({ map: S.map, x: S.x, y: S.y, party: S.party, flags: S.flags, chapter: S.chapter && S.chapter.id })); beep(880); say('Saved on this device.'); } catch (_) { say('This browser did not allow saving.'); } }
-function load(d) { try { const j = d || JSON.parse(localStorage.getItem(key) || 'null'); if (!j || !j.party) { say('No save found.'); return; } Object.assign(S, { map: j.map, x: j.x, y: j.y, party: j.party, flags: j.flags || {} }); say('Save loaded — ' + S.map + '.'); beep(720); } catch (_) { say('That save could not be read.'); } }
+function save() { try { localStorage.setItem(key, JSON.stringify({ map: S.map, x: S.x, y: S.y, party: S.party, flags: S.flags, ci: S.ci })); beep(880); say('Saved on this device.'); } catch (_) { say('This browser did not allow saving.'); } }
+// A Chapter 1 save (which has no ci) carries the story into Chapter 2 once its boss is marked done.
+function load(d) { try { const j = d || JSON.parse(localStorage.getItem(key) || 'null'); if (!j || !j.party) { say('No save found.'); return; } Object.assign(S, { map: j.map, x: j.x, y: j.y, party: j.party, flags: j.flags || {} }); const i = j.ci != null ? j.ci : (j.flags && j.flags.ch1done ? 1 : 0); if (i !== j.ci) { S.chapter = S.chapters[i] || S.chapters[0]; S.ci = i; const q = S.chapter.spawn; S.map = q.map; S.x = q.x; S.y = q.y; place.textContent = S.map; } say('Save loaded — Chapter ' + S.chapter.id + ', ' + S.map + '.'); beep(720); } catch (_) { say('That save could not be read.'); } }
 document.getElementById('save').onclick = save;
 document.getElementById('load').onclick = () => load();
 document.getElementById('export').onclick = async () => { const s = btoa(JSON.stringify({ map: S.map, x: S.x, y: S.y, party: S.party, flags: S.flags })); try { await navigator.clipboard.writeText(s); say('Save string copied (' + s.length + ' chars).'); } catch (_) { say('Save string: ' + s.slice(0, 70) + '…'); } };
@@ -57,7 +59,7 @@ function pop(t, x = 200, y = 90) { S.pops.push({ t, x, y }); }
 
 function battle(e) { S.enemy = { ...e, hp: e.hp, max: e.hp, phase: 1 }; S.mode = 'battle'; S.menu = 0; say(e.name + ' blocks the way. Choose a command.'); beep(220); }
 function win() { const e = S.enemy, xp = e.xp || 20; for (const p of S.party) { if (p.hp <= 0) continue; p.xp += xp; if (p.xp >= p.lvl * 20) { p.xp -= p.lvl * 20; p.lvl++; p.mhp += 6; p.hp = p.mhp; p.atk++; say(p.name + ' reached level ' + p.lvl + '!'); } }
-  if (e.boss) { S.flags.ch1done = true; say('Chapter 1 complete — the signal stops. New chapters can be appended to the chapter file.'); }
+  if (e.boss) { if (S.chapter.id === 1) { S.flags.ch1done = true; loadChapter(1); } else { S.flags.ch2done = true; say('Chapter 2 complete — the choir is silent. The story can continue in the chapter file.'); } }
   S.enemy = null; S.mode = 'world'; beep(880); }
 function enemyTurn() { const p = active(), e = S.enemy; if (!p || !e) return; let d = Math.max(1, e.atk + (e.phase === 2 ? 3 : 0) - p.def + (S.defending ? 3 : 0)); p.hp = Math.max(0, p.hp - d); pop('-' + d, 40, 118); beep(140); S.defending = false; if (!active()) { say('Your party cannot continue. Load a save to try again.'); S.mode = 'world'; S.enemy = null; } }
 function command() {
@@ -74,15 +76,16 @@ function talk() {
   const rows = S.chapter.maps[S.map], at = (x, y) => (rows[y] || '')[x];
   for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) { const ch = at(S.x + dx, S.y + dy); if (ch === 'N') { S.lines = S.chapter.dialogue.N; S.line = 0; say(S.lines[0]); beep(520); return true; }
     if (ch === 'C') { rows[S.y + dy] = rows[S.y + dy].split('').map((v, i) => i === S.x + dx ? '.' : v).join(''); const p = active(); p.atk++; say('A small battery. ' + p.name + ' gained 1 ATK.'); beep(780); return true; }
-    if (ch === 'B') { if (S.flags.ch1done) { say('The tower is quiet now.'); return true; } battle({ ...S.chapter.boss, boss: true }); return true; } }
+    const R = S.chapter.recruit; if (R && ch === R.tile) { if (!S.party.some((p) => p.name === R.name)) { const { tile, ...mate } = R; S.party.push(mate); say(R.name + ' joined the party.'); beep(760); } else say(R.name + ' is already with you.'); return true; }
+    if (ch === 'B') { if (S.flags['ch' + S.chapter.id + 'done']) { say('This boss is already at rest.'); return true; } battle({ ...S.chapter.boss, boss: true }); return true; } }
   return false;
 }
 function step(dx, dy) {
   const rows = S.chapter.maps[S.map], nx = S.x + dx, ny = S.y + dy, ch = (rows[ny] || '')[nx];
   if (!ch || ch === '#' || ch === '~') return;
   S.x = nx; S.y = ny; place.textContent = S.map;
-  if (ch === '>') { S.map = S.map === 'town' ? 'road' : 'town'; S.x = S.map === 'town' ? 18 : 1; S.y = S.map === 'town' ? 5 : 1; place.textContent = S.map; say('Entered ' + S.map + '.'); return; }
-  if (S.map === 'road' && !S.flags.ch1done && Math.random() < 0.06) { const e = S.chapter.enemies[Math.floor(Math.random() * S.chapter.enemies.length)]; battle(e); }
+  if (ch === '>') { const to = S.chapter.link[S.map]; if (to) { S.map = to; const e = S.chapter.entry[to] || { x: 1, y: 1 }; S.x = e.x; S.y = e.y; place.textContent = S.map; say('Entered ' + S.map + '.'); } return; }
+  if (S.map !== S.chapter.spawn.map && Math.random() < 0.06) { const e = S.chapter.enemies[Math.floor(Math.random() * S.chapter.enemies.length)]; battle(e); }
 }
 addEventListener('keydown', (e) => {
   const k = e.key; if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(k)) e.preventDefault();
@@ -94,5 +97,5 @@ addEventListener('keydown', (e) => {
 for (const b of document.querySelectorAll('#pad button')) b.addEventListener('pointerdown', (e) => { e.preventDefault(); dispatchEvent(new KeyboardEvent('keydown', { key: b.dataset.k })); });
 
 fetch('/data/jrpg-chapters.json').then((r) => r.json()).then((d) => {
-  S.chapter = d.chapters[0]; fresh(); const q = S.chapter.spawn; S.map = q.map; S.x = q.x; S.y = q.y; place.textContent = S.map; frame(); say('Chapter 1 — ' + S.chapter.title + '. Arrows to move, Enter to talk.');
+  S.chapters = d.chapters; fresh(); loadChapter(0); frame(); say('Chapter 1 — ' + S.chapter.title + '. Arrows to move, Enter to talk. Load brings back a saved party and chapter.');
 }).catch(() => { say('The chapter file could not be read. Reload to try again.'); });
