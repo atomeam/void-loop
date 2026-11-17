@@ -173,7 +173,27 @@ test('dev tool asks: what each says, and the look-alikes left alone', () => {
   assert.equal(D.devOf('http 503').input, '503');
   assert.deepEqual(D.devOf('generate 12 rows of dummy data with name email').opts.n, 12);
   assert.equal(D.devOf('polish my commit message: fixed bug').mode, 'commit');
-  for (const no of ['what is json', 'json vs xml', 'what is base64', 'regex for email', 'what is a cron job', 'http status of google.com', 'how to write a good commit message', 'dummy data']) assert.equal(D.devOf(no), null, no);
+  for (const no of ['what is json', 'json vs xml', 'what is base64', 'regex for my feelings', 'what is a cron job', 'http status of google.com', 'how to write a good commit message', 'dummy data']) assert.equal(D.devOf(no), null, no);
+});
+
+test('natural-language regex generation: a kind from words, samples, and nothing invented', () => {
+  const iso = D.devOf('regex for matching ISO 8601 dates like 2026-11-17');
+  assert.equal(iso.mode, 'regex');
+  assert.equal(iso.opts.pattern, '\\d{4}-\\d{2}-\\d{2}');
+  assert.ok(iso.opts.generated && /ISO 8601/.test(iso.opts.about), 'marked generated with its kind');
+  assert.match(iso.input, /^2026-11-17/m, 'the ask\u2019s own example leads the test text');
+  const hits = D.regexTest(iso.opts.pattern, '', iso.input).matches.map((m) => m.text);
+  assert.ok(hits.includes('2026-11-17') && !hits.includes('17/11/2026'), 'matches ISO, leaves the rest');
+  const mail = D.devOf('regex for an email address');
+  assert.equal(mail.opts.pattern, '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}');
+  assert.ok(D.regexTest(mail.opts.pattern, '', mail.input).matches.some((m) => m.text === 'ana@example.com'));
+  assert.equal(D.devOf('give me a regular expression for UUIDs').opts.pattern, '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}');
+  assert.equal(D.regexFor('matching ISO 8601 dates like 2026-11-17').about, 'ISO 8601 dates (YYYY-MM-DD)');
+  assert.equal(D.regexFor('something I dreamed up'), null, 'unknown kinds stay null');
+  assert.equal(D.regexFor(''), null);
+  // the generated card says what it made and explains each token
+  const why = D.regexExplain(iso.opts.pattern, '').lines.join('\n');
+  assert.match(why, /exactly 4 digits/);
 });
 
 test('colour converter forms land on the existing colour card', () => {

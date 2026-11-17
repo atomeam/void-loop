@@ -639,6 +639,22 @@ const RULES = [
     'raising a new error inside except hides the original one\'s cause in the traceback. Chain them: raise Exception("failed") from e'],
   ['unawaited-body', 'bug', JS, (m, r) => /(?:const|let|var)\s+[\w$]+\s*=\s*(?!await\b)[\w$]+\.(?:json|text|arrayBuffer|blob|formData)\(\s*\)/.test(m) && /\bawait\s+fetch\b|\bfetch\s*\(|\bresponse\b|\bres\b|\bdata\b/i.test(r),
     'a fetch response\'s .json() / .text() returns a promise, so the variable holds a Promise, not the data. Put await in front: const json = await res.json()'],
+  ['fetch-url-concat', 'risk', JS, (m, r, x) => {
+    const st = x.rawStatement();
+    if (!/\bfetch\s*\(/.test(st)) return false;
+    if (/encodeURIComponent|URLSearchParams|\bnew\s+URL\s*\(/.test(st)) return false;
+    const tail = st.match(/['"`]\s*\+\s*([A-Za-z_$][\w$]*)/);
+    if (tail && /^(?:params|query|qs|search|querystring|searchparams)$/i.test(tail[1])) return false;
+    return /['"`][^'"`\n]*\?[^'"`\n]*['"`]\s*\+\s*(?!['"`\s])/.test(st) || /`[^`\n]*\?[^`\n]*\$\{(?![^}]*encodeURIComponent)/.test(st);
+  },
+    'a value is pasted into the fetch URL with string concatenation: a value holding & or # changes the query (parameter injection) or breaks the request. Pass it encoded: fetch(`/api/users?id=${encodeURIComponent(id)}`), or build the query with URLSearchParams.'],
+  ['fetch-no-ok', 'risk', JS, (m, r, x) => {
+    if (!/\bawait\s+fetch\s*\(/.test(m)) return false;
+    const near = x.rawStatement() + ' ' + [x.nextRaw(1), x.nextRaw(2), x.nextRaw(3)].join(' ');
+    if (/\.\s*ok\b/.test(near)) return false;
+    return /\.\s*(?:json|text|arrayBuffer|blob|formData)\s*\(\s*\)/.test(near);
+  },
+    'the fetch response is read without checking it first: on a 404 or 500 the body is an error page, not the data you asked for, and the code carries on with the wrong shape. Check it before reading: if (!res.ok) throw new Error(`HTTP ${res.status}`).'],
   ['callback-no-return', 'bug', JS, (m) => /\.(?:map|filter|find|findIndex|some|every|flatMap)\(\s*(?:\([^()]*\)|[\w$]+)\s*=>\s*\{(?![^{}]*\breturn\b)[^{}]*\}\s*\)/.test(m),
     'the arrow function has a { } body but no return, so every result is undefined (map gives [undefined, …], filter keeps nothing). Return the value, or drop the braces: x => x * 2'],
   ['open-redirect', 'risk', JS, (m) => /\bres\.redirect\(\s*(?:\d{3}\s*,\s*)?req\.(?:query|params|body)\b/.test(m),
