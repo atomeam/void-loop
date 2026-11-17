@@ -31,6 +31,7 @@ The will (`tools/will.py`) adds the three failing public asks of the lowest doma
 ## Mistakes made
 
 - An iTunes preview is `audio/x-m4p`, not `audio/mpeg`. The check accepts any `audio/*` type. Headless Chrome on this machine does advance `currentTime` on that file when playback is muted.
+- A podcast enclosure can sit behind a chain of trackers (This American Life: `pfx.vpixl.com` → `dts.podtrac.com/redirect.mp/` → `pdst.fm/e/` → `prefix.up.audio/s/`). A browser that refuses one hop fails `audio`, and an error handler that swaps in a partly stripped address then fails `episode` against the feed. The stage card plays the host's own file first (`untracked()` in `void-live-deploy/lib/podcasts.js`) and keeps the feed's address as its one retry; `sameMedia` compares tracker-stripped addresses on both sides, so either form counts as the feed's episode. Add a new hop to `TRACKERS` when a show's card fails this way.
 - An `audio` with `width:100%` plus the card frame's 18px side margins is 36px wider than the phone card, so the mobile check fails. `max-width:100%` and no forced width fits.
 - A bare "play despacito" is still a video search. The recording skill takes "play … by …" only, so the two do not overlap and the exam can check an artist.
 - Missing domains must not count as zero, or the lowest domain is whichever one the run did not measure.
