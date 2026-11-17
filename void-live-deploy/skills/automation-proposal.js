@@ -2,12 +2,13 @@
  * automation-proposal skill — propose concrete automations Verse will own for a process
  * so the client does less manual work, tracking and chasing.
  * Rules-based, offline. Nothing is sent.
- * "propose automations for client onboarding", "what automations for invoice reminders",
+ * "propose automations for a new client", "what automations for invoice reminders",
  * "automation proposal for support tickets".
  */
 export function isAutomationProposal(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:propose|suggest|what)\s+(?:automations?|automation)\b/i.test(t)
+  return /^(?:propose|suggest)\s+(?:automations?|automation)\b/i.test(t)
+    || /^what\s+automations?\s+(?:for|of|on|:)\b/i.test(t)
     || /^(?:automation)\s+(?:proposal|ideas|plan)\b/i.test(t);
 }
 
@@ -52,7 +53,7 @@ export const builtWith = ['client-intake', 'monitor-pack', 'verify-pack', 'deliv
 export default {
   name: 'automation-proposal',
   examples: [
-    'propose automations for client onboarding',
+    'propose automations for a new client',
     'what automations for invoice reminders',
     'automation proposal for support tickets',
     'suggest automations for weekly status reports'

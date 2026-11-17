@@ -61,6 +61,12 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 }, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+  '/research/': async (t) => {  // AI research papers and reports: the list loads, search narrows it
+    await t.waitText('#list', /./, 15000); t.ok((await t.p.locator('#list > *').count()) >= 1, 'research papers are listed');
+    await t.fill('#q', 'anthropic'); await t.p.waitForTimeout(400); t.ok((await t.p.locator('#list > *').count()) >= 1, 'search narrows the list');
+  },
+
+
   '/free/': async (t) => {  // the free-resource registry: every resource listed, the search narrows it
     await t.waitText('#count', /resources/, 15000); t.ok(Number((await t.text('#count')).match(/of (\d+)/)[1]) >= 30, 'the whole registry is listed: ' + (await t.text('#count')));
     await t.fill('#find', 'groq'); t.ok((await t.p.locator('tr.res').count()) === 1, 'a search for groq finds the one Groq row');

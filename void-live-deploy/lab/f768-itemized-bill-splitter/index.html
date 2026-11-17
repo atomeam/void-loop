@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 1rem; background: #f8f9fa; color: #212529; }
+h1 { font-size: 1.5rem; }
+section { background: white; border-radius: 8px; padding: 1rem; margin: 1rem 0; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 500; }
+input, select, button { padding: 0.4rem; font-size: 1rem; margin: 0.2rem 0; }
+button { background: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer; }
+button:hover { background: #0b5ed7; }
+button.secondary { background: #6c757d; }
+table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+th, td { border: 1px solid #dee2e6; padding: 0.4rem; text-align: left; }
+.item-row, .person-row { display: flex; gap: 0.5rem; align-items: center; margin: 0.3rem 0; flex-wrap: wrap; }
+.totals { font-weight: bold; }
+.summary { white-space: pre-wrap; background: #f1f3f5; padding: 0.5rem; border-radius: 4px; }
+.history { font-size: 0.9rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Itemized Bill Splitter · Verse lab</title>
+<meta name="description" content="A practical offline tool for splitting restaurant or shared bills fairly.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Itemized Bill Splitter · Verse lab">
+<meta property="og:description" content="A practical offline tool for splitting restaurant or shared bills fairly.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f768-itemized-bill-splitter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f768-itemized-bill-splitter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Bill Splitter</h1>
+<p>Add people and items, assign who ordered what, set tax and tip. Copy the totals or save for later.</p>
+
+<section id="people">
+<h2>People</h2>
+<div id="people-list"></div>
+<input id="new-person" placeholder="Name" />
+<button onclick="addPerson()">Add person</button>
+</section>
+
+<section id="items">
+<h2>Items</h2>
+<div id="items-list"></div>
+<input id="new-item-name" placeholder="Item name" />
+<input id="new-item-price" type="number" step="0.01" placeholder="Price" />
+<button onclick="addItem()">Add item</button>
+</section>
+
+<section>
+<h2>Tax &amp; Tip</h2>
+<label>Tax % <input id="tax-pct" type="number" step="0.1" value="8" oninput="calc()"></label>
+<label>Tip % <input id="tip-pct" type="number" step="0.1" value="18" oninput="calc()"></label>
+<label>Or tip fixed $ <input id="tip-fixed" type="number" step="0.01" value="0" oninput="calc()"></label>
+</section>
+
+<section>
+<h2>Breakdown</h2>
+<table id="breakdown">
+<thead><tr><th>Person</th><th>Items</th><th>Tax</th><th>Tip</th><th>Total</th></tr></thead>
+<tbody></tbody>
+</table>
+<p id="grand">Grand total: $0.00</p>
+<button onclick="copySummary()">Copy summary</button>
+<button onclick="saveBill()" class="secondary">Save this bill</button>
+<div id="summary" class="summary"></div>
+</section>
+
+<section class="history">
+<h2>Saved bills</h2>
+<div id="history"></div>
+</section>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

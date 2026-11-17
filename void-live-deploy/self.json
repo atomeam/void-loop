@@ -906,14 +906,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-17T03:10:50Z",
-   "subject": "Play a podcast's own file first, and count it as the episode the feed lists"
-  },
-  {
-   "at": "2026-11-17T03:07:43Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
    "at": "2026-11-17T03:06:26Z",
    "subject": "Repair the baseline gates: retire system-plan from routing and name sync-free-lanes in the map (#2879)"
   },
@@ -984,6 +976,14 @@
   {
    "at": "2026-11-16T23:22:53Z",
    "subject": "Finding: rides asked a live routing service (findings/rides)"
+  },
+  {
+   "at": "2026-11-16T23:01:47Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-16T23:00:17Z",
+   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
   }
  ],
  "builders": {
@@ -1165,7 +1165,7 @@
   }
  ],
  "visible": {
-  "day": 5,
+  "day": 4,
   "week": 135
  },
  "clips": {

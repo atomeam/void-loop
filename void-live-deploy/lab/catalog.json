@@ -1,5 +1,121 @@
 [
  {
+  "slug": "f771-webcrypto-css3d-devicemotion-mlp-agents",
+  "num": 771,
+  "title": "WebCrypto-Sealed Competitive CSS3D Card Agents with DeviceMotion Causal MLP",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: floating CSS 3D transformed card agents (true physical UI embodiments) whose velocity, rotation, and",
+  "status": "works",
+  "source": "F771-webcrypto-css3d-devicemotion-mlp-agents",
+  "hash": "1d5703d5383b",
+  "grade": "toy",
+  "idea": "checksum"
+ },
+ {
+  "slug": "f770-webgpu-kuramoto-phase-mlp-dom-agents-mind",
+  "num": 770,
+  "title": "WebGPU Kuramoto Phase Oscillator MLP DOM Agents Mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a 2D lattice of coupled phase oscillators governed by the Kuramoto synchronization model runs as the primary",
+  "status": "works",
+  "source": "F770-webgpu-kuramoto-phase-mlp-dom-agents-mind",
+  "hash": "f1223b49b306",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f769-orientation-mlp-dom-walkers-webrtc-genome",
+  "num": 769,
+  "title": "Orientation-MLP DOM Walkers WebRTC Genome",
+  "blurb": "Multi-agent competition of hybrid DOM \"walker\" agents. Each agent is a living physical UI element (div) whose motion (velocity, heading) is controlled by a local",
+  "status": "works",
+  "source": "F769-orientation-mlp-dom-walkers-webrtc-genome",
+  "hash": "80628f8f65d4",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f768-itemized-bill-splitter",
+  "num": 768,
+  "title": "Itemized Bill Splitter",
+  "blurb": "A practical offline tool for splitting restaurant or shared bills fairly.",
+  "status": "works",
+  "source": "F768-itemized-bill-splitter",
+  "hash": "178290514b50",
+  "grade": "tool"
+ },
+ {
+  "slug": "f768-packing-list-maker",
+  "num": 768,
+  "title": "Packing list maker",
+  "blurb": "Job: A traveler puts in trip length, weather and kind of trip.",
+  "status": "works",
+  "source": "F768-packing-list-maker",
+  "hash": "86fe0e544530",
+  "grade": "tool"
+ },
+ {
+  "slug": "f767-webgpu-cahn-hilliard-mlp-portal-sculptor-mind",
+  "num": 767,
+  "title": "WebGPU Cahn-Hilliard MLP Portal Sculptor Mind",
+  "blurb": "A previously unused Cahn-Hilliard phase-separation field evolves on a Canvas2D grid (WebGPU compute path reserved as the natural next kernel).",
+  "status": "works",
+  "source": "F767-webgpu-cahn-hilliard-mlp-portal-sculptor-mind",
+  "hash": "78a947c817fb",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f766-webgpu-wave-dampener-mlp-portal-mind",
+  "num": 766,
+  "title": "webgpu-wave-dampener-mlp-portal-mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a 2D finite-difference wave equation (linear acoustic wave with damping) runs as the primary substrate",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F766-webgpu-wave-dampener-mlp-portal-mind",
+  "hash": "5931345c2e49",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f765-webgpu-fft-spectral-portal-morph-mind",
+  "num": 765,
+  "title": "webgpu-fft-spectral-portal-morph-mind",
+  "blurb": "A novel hybrid spatial interface for The Verse canvas: a 2D interaction density field (pointer/hand deposits) is continuously diffused and then transformed via a",
+  "status": "broken",
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F765-webgpu-fft-spectral-portal-morph-mind",
+  "hash": "c805aaaa4fa9",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f764-webgpu-kdv-soliton-hand-mlp-rider-mind",
+  "num": 764,
+  "title": "WebGPU KdV Soliton Hand-MLP Rider Mind",
+  "blurb": "A true spatial mind for The Verse canvas: a 1D Korteweg–de Vries (KdV) soliton wave solver running as a previously unused WebGPU compute kernel (finite-difference",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F764-webgpu-kdv-soliton-hand-mlp-rider-mind",
+  "hash": "178de72d7c57",
+  "grade": "toy",
+  "idea": "palette"
+ },
+ {
+  "slug": "f763-webgpu-lif-spiking-haptic-field-portal-mind",
+  "num": 763,
+  "title": "webgpu-lif-spiking-haptic-field-portal-mind",
+  "blurb": "Ledger ID: F-763 (frontier series)",
+  "status": "works",
+  "source": "F763-webgpu-lif-spiking-haptic-field-portal-mind",
+  "hash": "4311cc8a1b52",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
   "slug": "f762-webgpu-sdf-gaze-rnn-portal-mind",
   "num": 762,
   "title": "WebGPU SDF Gaze RNN Portal Mind",
@@ -344,6 +460,17 @@
   "status": "works",
   "source": "F733-webgpu-lbm-fluid-dom-advect-mind",
   "hash": "22e72a749055",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f732-local-gp-spatial-portal-mind",
+  "num": 732,
+  "title": "Local Gaussian Process Spatial Portal Mind",
+  "blurb": "A Canvas2D particle field whose attraction strength is driven by a local online Gaussian-process proxy (linear feature kernel regression) trained on pointer clicks",
+  "status": "works",
+  "source": "F732-local-gp-spatial-portal-mind",
+  "hash": "caa488cc75b5",
   "grade": "toy",
   "idea": "pattern"
  },
