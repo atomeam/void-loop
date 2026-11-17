@@ -45,7 +45,7 @@ async function run(text, api) {
       + '<h3>Why this works</h3><p>' + esc(p.why) + '</p>'
       + '<h3>Next</h3><p>' + esc(p.next) + '</p>'
       + '<p class="sub">Nothing is sent. The pack stays on the stage for sharing. A reading that did not answer is named by the skill it summons.</p>'
-      + '<div class="src">Source: A-to-Mind summon-pack · Verse owns the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind summon-pack · Verse owns the hard work</div>';
   });
   return 'summon-pack';
 }
