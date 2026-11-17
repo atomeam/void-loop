@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1338,
+ "counted": 1340,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 63,
-   "direct": 51,
-   "dependants": 69,
+   "skills": 64,
+   "direct": 52,
+   "dependants": 70,
    "tests": 6
   },
   {
@@ -1214,6 +1214,13 @@
    "tests": 2
   },
   {
+   "file": "lib/music-tools.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/video.js",
    "skills": 2,
    "direct": 2,
@@ -1985,6 +1992,13 @@
   },
   {
    "file": "lib/actions-failure.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/adventure.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3056,13 +3070,6 @@
   },
   {
    "file": "lib/meanings.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -5680,6 +5687,12 @@
     "lib/refusal.js",
     "lib/team-crew-run.js",
     "skills/miss-jobs.js"
+   ]
+  },
+  "lib/adventure.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/adventure.js"
    ]
   },
   "lib/agenda.js": {
@@ -12025,7 +12038,9 @@
    "imports": [],
    "importedBy": [
     "lib/music-audio.js",
-    "lib/music-ui.js"
+    "lib/music-ui.js",
+    "skills/music-tools.js",
+    "skills/video-play.js"
    ]
   },
   "lib/music-ui.js": {
@@ -15149,6 +15164,7 @@
     "lib/stage-port.js",
     "lib/studio-card.js",
     "skills/accessibility-modes.js",
+    "skills/adventure.js",
     "skills/anneal-ambition.js",
     "skills/approve-card.js",
     "skills/ask-clipboard.js",
@@ -17410,6 +17426,13 @@
   "skills/actions.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/adventure.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/adventure.js"
    ],
    "importedBy": []
   },
@@ -20133,7 +20156,9 @@
    ]
   },
   "skills/music-tools.js": {
-   "imports": [],
+   "imports": [
+    "lib/music-tools.js"
+   ],
    "importedBy": []
   },
   "skills/music.js": {
@@ -22172,6 +22197,7 @@
   "skills/video-play.js": {
    "imports": [
     "lib/video.js",
+    "lib/music-tools.js",
     "skills/video.js"
    ],
    "importedBy": []
