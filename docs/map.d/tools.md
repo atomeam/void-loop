@@ -4,3 +4,4 @@
 - `tools/wishlist-rank.mjs` (lists run 21, `tools/wishlist-rank.test.mjs`): the daily wishlist re-rank in upkeep.yml; docs/wishlist.md's own rule as code (value, then free ahead of paid, then items the providers block last, then the old order); only the # column moves, and lib/reinvest.js still finds a row that moved by its opening word.
 
 - `tools/sync-free-lanes.mjs`: reads OpenRouter's model list and writes the free-model registry; `--dry` previews it and `--check` checks the saved registry age.
+- `tools/no-third-party-sites.mjs`: the site-wide guard that keeps a third party's host names off the public pages (the /starboard/ cleanup): every HTML file under `void-live-deploy/` is read, and one of the named hosts fails the check.

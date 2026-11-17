@@ -9865,9 +9865,7 @@
     "systems-owned",
     "incident-pack",
     "automation-proposal",
-    "process-map",
-    "weather",
-    "sky"
+    "process-map"
    ],
    "n": 530
   },
@@ -12178,7 +12176,7 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCLXXXV–CCCLXXXVIII",
+   "title": "Rules CCCLXXXV–CCCLXXXVI",
    "rules": [
     {
      "rank": 385,
@@ -12189,16 +12187,6 @@
      "rank": 386,
      "name": "process-map",
      "catches": "process map for client onboarding"
-    },
-    {
-     "rank": 387,
-     "name": "weather",
-     "catches": "weather in Tokyo"
-    },
-    {
-     "rank": 388,
-     "name": "sky",
-     "catches": "sky"
     }
    ],
    "n": 579
