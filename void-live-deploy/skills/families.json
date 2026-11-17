@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 2,
-  "checked": 18,
-  "proven": 443
+  "checked": 17,
+  "proven": 444
  },
  "families": [
   {
@@ -203,9 +203,9 @@
     {
      "name": "image-gen",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark, 2 live findings, 2026-11-16",
-     "last_tested": "2026-11-16",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 real asks in the benchmark, 3 live findings, 2026-11-17",
+     "last_tested": "2026-11-17",
+     "last_tested_by": "a live call",
      "success_rate": 1,
      "promoted": "2026-11-06",
      "streak": 11
@@ -596,8 +596,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 12,
-    "proven": 44
+    "checked": 11,
+    "proven": 45
    },
    "skills": [
     {
@@ -1112,8 +1112,8 @@
     },
     {
      "name": "adventure",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-17",
      "last_tested_by": "its tests",
      "success_rate": 1,
