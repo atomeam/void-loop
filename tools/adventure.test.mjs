@@ -9,7 +9,9 @@ import sk from '../void-live-deploy/skills/adventure.js';
 import * as A from '../void-live-deploy/lib/adventure.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const book = JSON.parse(readFileSync(join(root, 'void-live-deploy/data/adventures/chrono-signal.json'), 'utf8'));
+const BOOK_IDS = ['chrono-signal', 'obsidian-keep', 'neon-harbour'];
+const books = Object.fromEntries(BOOK_IDS.map((id) => [id, JSON.parse(readFileSync(join(root, 'void-live-deploy/data/adventures/' + id + '.json'), 'utf8'))]));
+const book = books['chrono-signal'];
 
 test('the shipped book is valid: every choice leads somewhere, every node ends or branches', () => {
   assert.deepEqual(A.validateBook(book), []);
@@ -35,6 +37,41 @@ test('gates hold and effects land: the torch opens the hatch, the keycard breaks
   assert.equal(A.choose(book, r2, breaking.i).ok, false);
 });
 
+test('every shipped book is valid, reachable, gated and properly ended', () => {
+  for (const [id, b] of Object.entries(books)) {
+    assert.deepEqual(A.validateBook(b), [], id + ' validates');
+    assert.ok(Object.keys(b.nodes).length >= 8, id + ' has a real arc');
+    // every node is reachable from the start and every ending is reachable, gates aside
+    const seen = new Set([b.start]), q = [b.start];
+    while (q.length) for (const c of (A.getNode(b, q.pop()).choices || [])) if (!seen.has(c.to)) { seen.add(c.to); q.push(c.to); }
+    assert.deepEqual([...seen].sort(), Object.keys(b.nodes).sort(), id + ': no orphan nodes');
+    const endings = Object.entries(b.nodes).filter(([, n]) => n.ending);
+    assert.ok(endings.length >= 2, id + ' has multiple endings');
+    assert.ok(endings.every(([, n]) => (n.choices || []).length === 0), id + ': endings end');
+    const gated = Object.values(b.nodes).flatMap((n) => n.choices || []).filter((c) => c.needs);
+    assert.ok(gated.length >= 2, id + ' gates choices on the pack or flags');
+  }
+});
+
+test('the new books play through to an ending on first-open choices', () => {
+  const walk = (b) => {
+    let run = { ...A.createRun(b.id, 11), node: b.start };
+    const seen = new Set([b.start]);
+    for (let i = 0; i < 40 && !A.getNode(b, run.node).ending; i++) {
+      const open = A.availableChoices(b, run).filter((c) => c.open);
+      assert.ok(open.length, b.id + ' never dead-ends at ' + run.node);
+      const next = open.find((c) => !seen.has(c.to)) || open[0];
+      seen.add(next.to);
+      run = A.choose(b, run, next.i).run;
+    }
+    return run;
+  };
+  for (const id of ['obsidian-keep', 'neon-harbour']) {
+    const run = walk(books[id]);
+    assert.ok(A.getNode(books[id], run.node).ending, id + ' reaches an ending');
+    assert.ok(A.runFromCode(books[id], A.runCode(run)), id + ' replays from its code');
+  }
+});
 test('endings end: three fates, the path remembered, codes replay and share', () => {
   let run = { ...A.createRun(book.id, 7), node: 'dock' };
   run = A.choose(book, run, 0).run; // signal
