@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "44028117520",
-  "at": "2026-11-17T06:02:15Z",
-  "what": "Verse hardened itself: 1 benchmark ask(s) for automation-proposal, and the card art floors rise to 99 and 74.  Why these: automation-proposal (only 2 benchmark asks, evidence tier: checked); automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: checked). New phrases: “propose automations for a new client” now opens automation-proposal. Did not route: automation status for invoice reminders; status of the automations Verse owns for support; client handoff pack on onboarding flow; what does Verse own for the onboarding flow.",
-  "try": "propose automations for a new client",
+  "run": "44067265774",
+  "at": "2026-11-17T10:42:51Z",
+  "what": "Verse hardened itself: 2 benchmark ask(s) for adventure.  Why these: adventure (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: checked). New phrases: “choose your own adventure” now opens adventure; “play adventure” now opens adventure. Did not route: adventure; automation status for invoice reminders; status of the automations Verse owns for support; client handoff pack on onboarding flow.",
+  "try": "choose your own adventure",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-17T03:23:57Z",
-    "try": "what automations for invoice reminders",
-    "closedAt": "2026-11-17T06:02:06Z"
+    "at": "2026-11-17T06:02:15Z",
+    "try": "propose automations for a new client",
+    "closedAt": "2026-11-17T10:42:42Z"
   }
 }
