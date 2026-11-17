@@ -45,6 +45,14 @@ test('a car loan card draws a car and a loan ledger, not the generic plate (owne
   for (const m of ['car', 'loan']) assert.ok(motifSvg([m], 100, 100, { P: '#fff', L: '#ccc', G: '#fc0', ink: '#000', sw: 1 }).includes('<path'), m);
 });
 
+test('a short noun with a motif is read: "Cat" draws a cat, "sun" and "sea" draw theirs; common short words (key, day) are not subjects (owner, 2026-11-17)', () => {
+  const cat = subjectOf('Cat', ''); assert.deepEqual(motifsFor(cat.nouns), ['cat'], cat.phrase);
+  assert.ok(artInner({ key: 'Cat', kind: 'Skill', nouns: cat.nouns }).includes('M16 44L20 6'), 'the cat drawing');
+  assert.deepEqual(motifsFor(subjectOf('', 'The sun rose over the sea, and the sun stayed up all day.').nouns), ['sun', 'wave']);
+  const prose = subjectOf('', 'a key point about the day and the key plan for the week');
+  assert.ok(!prose.nouns.includes('key') && !prose.nouns.includes('day'), prose.phrase);
+});
+
 test('the K-pop card draws music, not the search: "void" and "match" are not its subject, and music words draw a note (owner, 2026-10-17)', () => {
   const s = subjectOf('K-pop', 'South Korean popular music genre. K-pop is a form of popular music originating in South Korea, from idol acts, girl groups and boy bands.');
   assert.ok(!s.nouns.includes('void') && !s.nouns.includes('match')); assert.equal(s.nouns[0], 'music'); assert.deepEqual(motifsFor(s.nouns), ['note']);
