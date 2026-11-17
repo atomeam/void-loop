@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-17T03:24:31Z",
+ "sha": "31fec083c459771143056fba5f725683b96be702",
+ "runId": 44009762564,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44009762564",
+ "workflow": "MCP live",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "probe",
+   "id": 133793673598,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44009762564/job/133793673598",
+   "conclusion": "failure",
+   "step": {
+    "number": 5,
+    "name": "An MCP client lists and calls Verse's tools"
+   },
+   "fails": [],
+   "tail": [
+    "added 95 packages in 2s",
+    "Run set -o pipefail",
+    "set -o pipefail",
+    "sleep 45 # the Pages deploy is live a few seconds after the job ends; give the edge a moment",
+    "cd /tmp/probe && node mcp-probe.mjs \"${URL_IN:-https://a-to-mind.com/api/mcp}\" | tee -a \"$GITHUB_STEP_SUMMARY\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  URL_IN: ",
+    "  MCP_RECORD: /tmp/mcp-record.json",
+    "ok   initialize: void 1.4.0",
+    "ok   tools/list: ask_void, review_code, review_code_closer, moon_phase, meteor_showers, drive_time, skill_constellation, skill_country, skill_define, skill_distance, skill_eclipse, skill_joke, skill_swaps, skill_translate, skill_words, skill_worldtime, seo_audit, readability, colour_contrast, skill_",
+    "ok   review_code: line 1 · risk · eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anythi",
+    "ok   review_code_closer: line 1 · risk · eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anythi",
+    "node:internal/deps/undici/undici:15456",
+    "      Error.captureStackTrace(err);",
+    "            ^",
+    "",
+    "TypeError: fetch failed",
+    "    at node:internal/deps/undici/undici:15456:13",
+    "    at async StreamableHTTPClientTransport.send (file:///tmp/probe/node_modules/@modelcontextprotocol/sdk/dist/esm/client/streamableHttp.js:320:30) {",
+    "  [cause]: Error: read ECONNRESET",
+    "      at TLSWrap.onStreamRead (node:internal/stream_base_commons:216:20) {",
+    "    errno: -104,",
+    "    code: 'ECONNRESET',",
+    "    syscall: 'read'",
+    "  }",
+    "}",
+    "",
+    "Node.js v22.23.4",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

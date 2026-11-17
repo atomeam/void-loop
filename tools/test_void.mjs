@@ -16,6 +16,7 @@ import { checkAll, patchFor } from '../void-live-deploy/lib/sightline.js';
 import { parseShard, inShard } from './shard.mjs';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
+import { applyBuilderUni } from './uni-pass.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -471,6 +472,7 @@ async function fresh(...inits) {
   const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   OPEN.add(ctx); ctx.on('close', () => OPEN.delete(ctx));
   for (const init of inits) await ctx.addInitScript(init);
+  await applyBuilderUni(ctx); // VERSE_BUILDER_UNI_TOKEN, when set: see gated pages as a Uni member
   await ctx.addInitScript(() => { document.addEventListener('DOMContentLoaded', () => { const w = document.getElementById('whisper'); if (w) new MutationObserver(() => { if (w.textContent) window.__whisperN = (window.__whisperN || 0) + 1; }).observe(w, { childList: true, characterData: true, subtree: true }); }); }); // ask() below: a whispered answer counts
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the

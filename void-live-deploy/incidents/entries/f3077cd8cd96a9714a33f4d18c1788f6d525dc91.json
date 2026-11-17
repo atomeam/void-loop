@@ -1,0 +1,25 @@
+{
+ "at": "2026-11-17T09:08:23.655Z",
+ "sha": "f3077cd8cd96a9714a33f4d18c1788f6d525dc91",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44049057206",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look",
+  "card physics: the grabbed card comes to the front and stays there after the drop; nothing selects while dragging"
+ ],
+ "touched": [
+  "data/game-manifest.json",
+  "docs/MAP.md",
+  "tools/adventure.test.mjs",
+  "tools/real-pages.mjs",
+  "void-live-deploy/data/adventures/neon-harbour.json",
+  "void-live-deploy/data/adventures/obsidian-keep.json",
+  "void-live-deploy/games/adventure/app.js",
+  "void-live-deploy/games/adventure/index.html",
+  "void-live-deploy/skills/adventure.js"
+ ],
+ "shards": [
+  4
+ ]
+}

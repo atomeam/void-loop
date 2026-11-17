@@ -1,0 +1,27 @@
+{
+ "at": "2026-11-17T05:15:25Z",
+ "sha": "448132cf93983c2bddc89b6bfc9323a8b713cc93",
+ "runId": 44020896360,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44020896360",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 133829880708,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44020896360/job/133829880708",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)"
+   },
+   "fails": [],
+   "tail": [
+    "1 file(s) do not parse or were wiped",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

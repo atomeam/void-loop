@@ -122,8 +122,13 @@ async function run(text, api) {
       shown = search(all, query).sort((a, b) => whenOf(b).localeCompare(whenOf(a)));
       const days = byDay(shown), al = albums(all);
       shown = days.flatMap((d) => d.photos); // the viewer walks the photos in the order the grid shows them
-      el.innerHTML = '<style>' + CSS + '</style><h2>My photos</h2>'
+      const isProvenance = ask.mode === 'provenance';
+      el.innerHTML = '<style>' + CSS + '</style>' + (isProvenance ? '<h2>Art provenance tracker</h2>' : '<h2>My photos</h2>')
         + '<div class="sub" data-ph-summary>' + esc(all.length ? summary(all) + ' · kept on ' + st.where : 'Nothing here yet. Your photos stay on ' + st.where + ', full size, and are never uploaded.') + '</div>'
+      if (isProvenance) {
+        const sub = el.querySelector('.sub');
+        if (sub) sub.innerHTML += ' <a href="https://gumroad.com/l/provenance-tool" style="color: inherit; text-decoration: underline;">Get the full professional tool for cataloging and historical cross-referencing.</a>';
+      }
         + '<div class="ph-bar"><label class="tr-copy" style="cursor:pointer">Add photos<input type="file" accept="image/*" multiple data-ph-add hidden></label>'
         + '<input type="search" placeholder="june 2024, last year, an album…" value="' + esc(query) + '" data-ph-find aria-label="Find photos"></div>'
         + (al.length ? '<div class="ph-chips">' + al.map((a) => '<button type="button" class="ph-chip" data-ph-album="' + esc(a.name) + '">' + esc(a.name + ' · ' + a.count) + '</button>').join('') + '</div>' : '')

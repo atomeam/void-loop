@@ -65,6 +65,10 @@ test('withBlock inserts before the anchor once and rewrites between the markers 
   assert.equal(once, '<head>\n<title>x</title>\n<!-- seo -->\nA\n<!-- /seo -->\n</head>');
   assert.equal(withBlock(once, HEAD, 'B', '</head>'), '<head>\n<title>x</title>\n<!-- seo -->\nB\n<!-- /seo -->\n</head>');
   assert.equal(withBlock('<html>', HEAD, 'A', '</head>'), null);
+  // a page with CRLF line endings keeps them, in the inserted block and on the rewrite (a page read that way must not read as stale)
+  const crlf = withBlock('<head>\r\n<title>x</title>\r\n</head>', HEAD, 'A', '</head>');
+  assert.equal(crlf, '<head>\r\n<title>x</title>\r\n<!-- seo -->\r\nA\r\n<!-- /seo -->\r\n</head>');
+  assert.equal(withBlock(crlf, HEAD, 'B', '</head>'), '<head>\r\n<title>x</title>\r\n<!-- seo -->\r\nB\r\n<!-- /seo -->\r\n</head>');
   assert.ok(seoOf('<head></head>', '/base64/').includes('<link rel="canonical" href="' + SITE + '/base64/">'));
   const own = '<head><link rel="canonical" href="https://a-to-mind.com/base64/"></head>', kept = seoOf(own, '/base64/');
   assert.equal((kept.match(/rel="canonical"/g) || []).length, 1, 'a page with its own canonical keeps the one'); assert.ok(kept.includes('ld+json'));

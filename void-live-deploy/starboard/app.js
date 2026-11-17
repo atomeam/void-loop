@@ -1,4 +1,4 @@
-// Starboard (a-to-mind.com/starboard/): the race measured live, the weather, the news wire and the hand-offs. Same-origin only.
+// Starboard (a-to-mind.com/starboard/): sponsor tiles, USDC visitor faucet, and daily tools. Same-origin only.
   import { mountRelated } from '/lib/toolkit.js';
   import { both, words } from '/lib/weather.js';
   const $ = (id) => document.getElementById(id);
@@ -7,30 +7,6 @@
   const store = { get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* private window */ } } };
   let topStory = null, shownPlace = '';
 
-  // the race: both rows come from /api/sitebench, measured when the page asks; a number it did not measure shows as not measured
-  async function race(fresh) {
-    const body = $('bench').tBodies[0];
-    try {
-      const r = await fetch('/api/sitebench?site=dalyfeds.com' + (fresh ? '&fresh=' + Date.now() : ''), { cache: fresh ? 'no-store' : 'default' });
-      const j = await r.json();
-      const rows = (j && j.rows) || [];
-      const best = (k) => { const v = rows.filter((x) => x && x.ok && Number.isFinite(x[k])).map((x) => x[k]); return v.length > 1 ? Math.min(...v) : null; };
-      const lo = { ms: best('ms'), bytes: best('bytes'), requests: best('requests'), scripts: best('scripts'), tp: best('third_party_count') };
-      body.innerHTML = rows.map((x) => {
-        if (!x || !x.ok) return '<tr><td>' + esc(x && x.name) + '</td><td colspan="5" class="note">Could not be measured now' + (x && x.error ? ': ' + esc(x.error) : '') + '</td></tr>';
-        const cell = (v, k, txt) => '<td class="n' + (lo[k] != null && v === lo[k] ? ' win' : '') + '">' + txt + '</td>';
-        const tp = (x.third_party || []).length; x.third_party_count = tp;
-        return '<tr><td>' + esc(x.name) + '</td>' + cell(x.ms, 'ms', x.ms + ' ms') + cell(x.bytes, 'bytes', kb(x.bytes)) + cell(x.requests, 'requests', x.requests) + cell(x.scripts, 'scripts', x.scripts)
-          + '<td class="n">' + (tp ? tp + ': ' + esc(x.third_party.join(', ')) : '0') + '</td></tr>';
-      }).join('') || '<tr><td colspan="6" class="note">No rows came back.</td></tr>';
-      $('benchHow').textContent = j && j.at ? 'Measured ' + new Date(j.at).toLocaleString() + ', ' + (j.how || '') + (r.headers.get('x-bench') === 'cached' ? ' (the last 10 minutes\' result)' : '') + '.' : '';
-    } catch (_) { body.innerHTML = '<tr><td colspan="6" class="note">The benchmark did not answer. Try Load the latest.</td></tr>'; }
-  }
-  // the Tower's own rendered run of dalyfeds.com, with its date (tower.size.json, written by tools/tower-size.mjs on the runner)
-  fetch('/tower.size.json').then((r) => r.json()).then((d) => { const s = d && d.sites && d.sites['dalyfeds.com']; if (!s) return;
-    $('runner').hidden = false; $('runner').textContent = 'The Tower\'s browser run of dalyfeds.com on ' + s.at + ': ' + kb(s.bytes) + ', ' + s.scripts + ' scripts, ' + s.controls + ' controls on the page.'; }).catch(() => {});
-  $('rerun').addEventListener('click', () => race(true));
-  race(false);
 
   // weather: Verse's own /api/weather; the place is kept on this device only
   async function weather(place) {

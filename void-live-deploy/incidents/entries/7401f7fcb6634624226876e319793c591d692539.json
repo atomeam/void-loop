@@ -1,0 +1,33 @@
+{
+ "at": "2026-11-17T09:57:15.117Z",
+ "sha": "7401f7fcb6634624226876e319793c591d692539",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44052274004",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look",
+  "verse brain working memory: what it was thinking survives a full reload, kept through the shared field on this device: the same ideas come back as orbs, with its spotlight and its goals"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "tools/families.mjs",
+  "tools/games-hub.test.mjs",
+  "void-live-deploy/assimilated.json",
+  "void-live-deploy/brain/knows.json",
+  "void-live-deploy/churn.json",
+  "void-live-deploy/self.json",
+  "void-live-deploy/sitemap.xml",
+  "void-live-deploy/skills/deps.json",
+  "void-live-deploy/skills/families.json",
+  "void-live-deploy/skills/first.json",
+  "void-live-deploy/skills/gamebox.js",
+  "void-live-deploy/skills/games-hub.js",
+  "void-live-deploy/skills/guide.json",
+  "void-live-deploy/skills/index.json"
+ ],
+ "shards": [
+  4
+ ]
+}

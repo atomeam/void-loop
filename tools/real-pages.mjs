@@ -10,6 +10,7 @@ import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
+import { applyBuilderUni } from './uni-pass.mjs';
 const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
@@ -61,6 +62,12 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 }, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+  '/research/': async (t) => {  // AI research papers and reports: the list loads, search narrows it
+    await t.waitText('#list', /./, 15000); t.ok((await t.p.locator('#list > *').count()) >= 1, 'research papers are listed');
+    await t.fill('#q', 'anthropic'); await t.p.waitForTimeout(400); t.ok((await t.p.locator('#list > *').count()) >= 1, 'search narrows the list');
+  },
+
+
   '/free/': async (t) => {  // the free-resource registry: every resource listed, the search narrows it
     await t.waitText('#count', /resources/, 15000); t.ok(Number((await t.text('#count')).match(/of (\d+)/)[1]) >= 30, 'the whole registry is listed: ' + (await t.text('#count')));
     await t.fill('#find', 'groq'); t.ok((await t.p.locator('tr.res').count()) === 1, 'a search for groq finds the one Groq row');
@@ -675,25 +682,96 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
-// /starboard/: the deck that races dalyfeds.com live (#2479): both race rows from its own benchmark (stubbed, exact numbers), the weather panel for a typed place, and the news wire's top story
-const STARBENCH = { at: '2026-11-07T12:00:00Z', how: 'the test browser, stubbed', rows: [
-  { name: 'a-to-mind.com', ok: true, ms: 400, bytes: 60000, requests: 8, scripts: 4, third_party: [] },
-  { name: 'dalyfeds.com', ok: true, ms: 2600, bytes: 2400000, requests: 90, scripts: 30, third_party: ['googletagmanager.com', 'doubleclick.net'] } ] };
-SPECS['/starboard/'] = async (t) => {
-  await t.p.route((u) => u.pathname === '/api/sitebench', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(STARBENCH) }));
-  await t.p.route((u) => u.pathname === '/api/weather', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, loc: { name: 'Lisbon' }, w: { current: { temperature_2m: 18, apparent_temperature: 17, weather_code: 2 } } }) }));
-  await t.p.route((u) => u.pathname === '/api/news', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ stories: [{ title: 'A deck that races a rival site', link: 'https://example.com/deck', src: 'wire' }] }) }));
+// /games/void-breaker/: a full-screen brick breaker with combos and power bricks
+SPECS['/games/void-breaker/'] = async (t) => {
   await t.p.reload();
-  await t.waitText('#bench tbody', /a-to-mind\.com/, 10000);
-  const star = (await t.text('#bench tbody tr:first-child')).replace(/\s+/g, ' '), rival = (await t.text('#bench tbody tr:nth-child(2)')).replace(/\s+/g, ' ');
-  t.ok(/a-to-mind\.com/.test(star) && /400 ms/.test(star) && /59 KB/.test(star), "Verse's own row, measured: " + star.trim());
-  t.ok(/dalyfeds\.com/.test(rival) && /2\.29 MB/.test(rival) && /2: googletagmanager\.com, doubleclick\.net/.test(rival), "the rival's row, measured, its trackers named: " + rival.trim());
-  t.ok(/Measured/.test(await t.text('#benchHow')), 'the note says when the race was measured');
-  await t.clickText('Load the latest'); await t.waitText('#bench tbody', /dalyfeds\.com/, 10000);
+  await t.waitText('#score', /Score/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowLeft'); await t.p.keyboard.press('ArrowRight'); await t.p.click('#pause'); await t.p.click('#pause');
+  t.ok(true, 'paddle, pause and resume do not throw');
+};
+// /games/roguelike/: a full-screen turn-based run with seeded rooms, telegraphs and a relic draft
+SPECS['/games/roguelike/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#seed', /Seed/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowRight'); await t.p.keyboard.press('1'); await t.p.keyboard.press('2');
+  await t.p.click('#runcard');
+  await t.waitText('#msg', /Run card/, 10000);
+  await t.p.click('#new');
+  t.ok(true, 'movement, abilities, the run card and a new run do not throw');
+};
+// /games/merge-void/: a full-screen merge puzzle with combos, star tiles and undo
+SPECS['/games/merge-void/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#score', /Score/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowLeft'); await t.p.click('#undo'); await t.p.click('#new');
+  t.ok(true, 'sliding, undo and a new board do not throw');
+};
+// /games/snake/: a full-screen canvas, wrapping movement, fruit and a device best
+SPECS['/games/snake/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#score', /Score/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowUp'); await t.p.keyboard.press('ArrowRight'); await t.p.click('#pause'); await t.p.click('#pause');
+  t.ok(true, 'turning, pause and resume do not throw');
+};
+// /games/pong/: a full-screen canvas, a rally against Verse, a device best and working controls
+SPECS['/games/pong/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#score', /Verse/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowUp'); await t.p.keyboard.press('ArrowDown'); await t.p.click('#pause'); await t.p.click('#pause');
+  t.ok(true, 'paddle, pause and resume do not throw');
+};
+// /games/adventure/: a full-screen illustrated book, a story loaded from its own data file, and working controls
+SPECS['/games/adventure/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#title', /Chrono-Signal/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('1');
+  await t.waitText('#title', /Your Own Voice/, 10000);
+  t.ok(true, 'a numbered choice moves the story on');
+  await t.p.click('#save');
+  await t.waitText('#meta', /slot S1/, 10000);
+  t.ok(true, 'a slot save lands on this device');
+  await t.p.click('#load');
+  await t.waitText('#meta', /Save loaded/, 10000);
+  t.ok(true, 'a slot save round-trips');
+  await t.p.goto(t.p.url().split('?')[0] + '?book=neon-harbour');
+  await t.waitText('#title', /Neon Harbour/, 10000);
+  t.ok(true, 'the book picker opens another book');
+};
+// /games/jrpg/: a full-screen pixel canvas, a chapter loaded from its own data file, and working controls
+SPECS['/games/jrpg/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#msg', /Chapter 1/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowRight'); await t.p.keyboard.press('Enter');
+  t.ok(true, 'movement and interaction do not throw');
+  await t.p.evaluate(() => localStorage.setItem('a2m.jrpg.save.v1', JSON.stringify({ map: 'town', x: 2, y: 1, party: [{ name: 'Kite', hp: 30, mhp: 30, mp: 10, mmp: 10, atk: 6, def: 2, spd: 8, lvl: 1, xp: 0 }], flags: { ch1done: true } })));
+  await t.p.reload();
+  await t.p.click('#load');
+  await t.waitText('#msg', /Chapter 2/, 10000);
+  t.ok((await t.text('#place')) === 'town2', 'a Chapter 1 save carries the party into the Chapter 2 town');
+};
+// /starboard/: sponsor tiles, the visitor faucet, the weather panel for a typed place, and the news wire's top story
+SPECS['/starboard/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/weather', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, loc: { name: 'Lisbon' }, w: { current: { temperature_2m: 18, apparent_temperature: 17, weather_code: 2 } } }) }));
+  await t.p.route((u) => u.pathname === '/api/news', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ stories: [{ title: 'A story from the news wire', link: 'https://example.com/story', src: 'wire' }] }) }));
+  await t.p.reload();
   await t.fill('#place', 'Lisbon'); await t.click('.go');
   await t.waitText('#wxTemp', /64 °F \/ 18 °C/, 10000);
   t.ok(/Partly cloudy in Lisbon/.test(await t.text('#wxWords')) && /63 °F \/ 17 °C/.test(await t.text('#wxMore')), 'the weather panel fills from the place: ' + (await t.text('#wxWords')));
-  const top = await t.text('#wire'); t.ok(/A deck that races a rival site/.test(top) && /wire/.test(top), 'the news wire lists the top story');
+  const top = await t.text('#wire'); t.ok(/A story from the news wire/.test(top) && /wire/.test(top), 'the news wire lists the top story');
 };
 // /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
 SPECS['/creed/'] = async (t) => {
@@ -852,6 +930,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
   const one = async (r) => {
     const ctx = await browser.newContext({ acceptDownloads: true, viewport: { width: 1200, height: 900 }, serviceWorkers: 'block' });
     await ctx.addInitScript(INIT);
+    await applyBuilderUni(ctx); // VERSE_BUILDER_UNI_TOKEN, when set: see the real authenticated page
     const p = await ctx.newPage(); const errs = [], bad5 = [], fails = [], passes = []; let downloads = 0, choosers = 0, dialogs = 0, reqs = 0;
     p.on('pageerror', (e) => errs.push(e.message.slice(0, 160)));
     p.on('download', () => downloads++); p.on('filechooser', () => choosers++); p.on('dialog', (d) => { dialogs++; d.dismiss().catch(() => {}); });

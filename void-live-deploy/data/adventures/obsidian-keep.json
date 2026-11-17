@@ -1,0 +1,84 @@
+{
+  "id": "obsidian-keep",
+  "title": "The Obsidian Keep",
+  "genre": "dark fantasy",
+  "blurb": "A black keep on a cliff, a storm that never ends, and a crown nobody should wear.",
+  "start": "gate",
+  "nodes": {
+    "gate": {
+      "title": "The Black Gate",
+      "prose": "Rain hammers the black gate of the Keep. A beggar cowers in the arch, and above you the runes of the ward seethe faintly blue.",
+      "choices": [
+        { "text": "Give the beggar your cloak", "to": "beg", "gives": { "items": ["rune_stone"] } },
+        { "text": "Push through into the courtyard", "to": "court" },
+        { "text": "Read the ward runes first", "to": "court", "gives": { "flags": { "read_runes": true } } }
+      ]
+    },
+    "beg": {
+      "title": "The Beggar's Price",
+      "prose": "\"Keep it dry, ser,\" the beggar says, pressing a rune-stone into your hand. \"The Warden collects the crowned. Mind the crypt stairs.\"",
+      "choices": [
+        { "text": "Enter the courtyard", "to": "court" },
+        { "text": "Ask what the Warden is", "to": "beg", "gives": { "flags": { "lore": true } } }
+      ]
+    },
+    "court": {
+      "title": "The Drowned Court",
+      "prose": "The courtyard drowns an inch deep. Doors stand open to the chapel and the crypt stairs; a wall stair climbs into the murk.",
+      "choices": [
+        { "text": "Shelter in the chapel", "to": "chapel" },
+        { "text": "Descend to the crypt", "to": "crypt" },
+        { "text": "Climb the wall stair", "to": "wall" }
+      ]
+    },
+    "chapel": {
+      "title": "The Dry Chapel",
+      "prose": "Inside it is dry and impossibly quiet. A guttering candle refuses to go out. Kneeling a moment steadies you more than sleep would.",
+      "choices": [
+        { "text": "Take the blessing and return", "to": "court", "gives": { "flags": { "blessed": true } } }
+      ]
+    },
+    "crypt": {
+      "title": "The Crypt Stairs",
+      "prose": "The crypt breathes cold. An old watch-torch still burns in its bracket, oil and stubbornness. Something below shifts in the dark and decides you are not worth it.",
+      "choices": [
+        { "text": "Take the torch and go back up", "to": "court", "gives": { "items": ["torch"] } }
+      ]
+    },
+    "wall": {
+      "title": "Above the Storm",
+      "prose": "From the wall walk the storm is a sea and the Keep a ship. Far below, a second gate you never passed stands open on black water.",
+      "choices": [
+        { "text": "Descend to the courtyard", "to": "court" },
+        { "text": "Make for the throne room", "to": "throne", "needs": { "flags": { "blessed": true } } }
+      ]
+    },
+    "throne": {
+      "title": "The Warden's Offer",
+      "prose": "The throne room is empty except for the crown, floating, turning slowly. The Warden's voice comes from everywhere: take it, kneel, or burn it all.",
+      "choices": [
+        { "text": "Take the crown", "to": "crown", "needs": { "items": ["rune_stone"] } },
+        { "text": "Kneel to the Warden", "to": "warden" },
+        { "text": "Touch the torch to the tapestries", "to": "pyre", "needs": { "items": ["torch"] } }
+      ]
+    },
+    "crown": {
+      "title": "The Crowned",
+      "prose": "The crown fits like it was poured for you. The storm stops mid-rain, every drop hanging. Below, at the gate, a figure in your cloak looks up — and you remember to be kind to them.",
+      "choices": [],
+      "ending": { "kind": "triumph", "title": "Warden of the Keep" }
+    },
+    "warden": {
+      "title": "Collected",
+      "prose": "You kneel, and the kneeling does not stop. Centuries pass like weather. Sometimes the beggars at the gate look up at the walls and shiver, and one of them is you.",
+      "choices": [],
+      "ending": { "kind": "mystery", "title": "One of the collected" }
+    },
+    "pyre": {
+      "title": "The Burning",
+      "prose": "The tapestries catch with a sound like a held breath released. The Keep burns blue and then black, and the storm, robbed of its anchor, drowns the flames — and you — with great enthusiasm.",
+      "choices": [],
+      "ending": { "kind": "demise", "title": "Burned with the Keep" }
+    }
+  }
+}

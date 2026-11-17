@@ -7274,5 +7274,14 @@
   {"ask": "play three alike", "want": "skill:three-alike"},
   {"ask": "token stand", "want": "skill:token-stand"},
   {"ask": "play token stand", "want": "skill:token-stand"},
-  {"ask": "sell the hard work for the support process", "want": "skill:sales-pack"}
+  {"ask": "sell the hard work for the support process", "want": "skill:sales-pack"},
+  {"ask": "what automations for invoice reminders", "want": "skill:automation-proposal"},
+  {"ask": "automation proposal for support tickets", "want": "skill:automation-proposal"},
+  {"ask": "process map for client onboarding", "want": "skill:process-map"},
+  {"ask": "map the process for invoice reminders", "want": "skill:process-map"},
+  {"ask": "show the process map for support tickets", "want": "skill:process-map"},
+  {"ask": "propose automations for a new client", "want": "skill:automation-proposal"},
+  {"ask": "choose your own adventure", "want": "skill:adventure"},
+  {"ask": "play adventure", "want": "skill:adventure"},
+  {"ask": "adventure game", "want": "skill:adventure"}
 ]

@@ -35,7 +35,7 @@ export function graphFrom(specs, read = (p) => fs.readFileSync(path.join(site, p
   for (const spec of specs) visit(spec, '/');
   return seen;
 }
-const LIBS_RE = /(\/\/ [a-z]+-libs: tools\/preload\.mjs((?: \S+)+)\n\s*const [A-Z_]+_GRAPH = )\[[^\]\n]*\];/g;
+const LIBS_RE = /(\/\/ [a-z]+-libs: tools\/preload\.mjs((?: \S+)+)\r?\n\s*const [A-Z_]+_GRAPH = )\[[^\]\n]*\];/g; // \r?: void.html is CRLF on main (the marker line ends in \r)
 /** void.html with each of its lib lists (ASK_LIB_GRAPH, SHARE_LIB_GRAPH) written from the roots its marker line names; null when the page has
  *  no such line. Pure given read. */
 export function withAskLibs(html, read) {

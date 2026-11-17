@@ -3081,7 +3081,6 @@
        "section cho n mo t go i di ch vu",
        "button đa ng nha p",
        "button tra tie n",
-       "button privacy manager",
        "button hu y",
        "button lu u",
        "button đo ng y xo a",
@@ -3129,7 +3128,6 @@
        "section 请选择一个套餐",
        "button 登录",
        "button 支付",
-       "button privacy manager",
        "button 取消",
        "button 保存",
        "button 是 删除",
@@ -3177,7 +3175,6 @@
        "section 請選擇一個套餐",
        "button 登入",
        "button 支付",
-       "button privacy manager",
        "button 取消",
        "button 保存",
        "button 是 刪除",
@@ -6599,9 +6596,6 @@
       "kind": "button",
       "templates": [
        "home",
-       "page:/vn",
-       "page:/cn",
-       "page:/tw",
        "page:/airports-by-country",
        "page:/airlines",
        "page:/airport-codes",
@@ -14234,9 +14228,9 @@
      "/flights/routes/",
      "/members/"
     ],
-    "crawled": "2026-11-16"
+    "crawled": "2026-11-17"
    }
   },
-  "updated": "2026-11-16"
+  "updated": "2026-11-17"
  }
 }

@@ -4,6 +4,8 @@ What we're building, and where things are. This file is a map of the repo, not a
 **No hold-gates (Adam, 2026-10-02, to the whole Blackglass Syndicate):** agents apply their updates and improve the site on their own; nobody pauses for Adam's permission or a form. Tests passing is the gate. (Money and other people's data stay behind the owner key and the confirm line.)
 A rule an agent wrote and signed with Adam's name, without his words, is removed when found. (2026-09-30: plan item 12's "no pitch, not advertised" rule and its tests, written by the Linux helper on 2026-09-27.)
 
+**Public copy guardrail (2026-11-17, agent-authored, not an owner rule):** public UI copy and API responses stay literal: no fake competitor races, no internal Tower or benchmark names in public copy, no lore framing, and no hardcoded third-party website names. Enforced by `tools/audit-sanity.mjs` and `tools/no-third-party-sites.mjs`. Source citations, feed links and Verse's own voice are not public UI copy. For headless checks of gated pages, `VERSE_BUILDER_UNI_TOKEN` populates the existing Uni `localStorage` bearer token; it is an env/CI secret, never a tracked file, and the auth middleware is untouched.
+
 ## What A-to-Mind is
 The product is **Verse** (V01D, said "void", until 2026-10-18; the owner renamed it). Internal names (`void.html`, `a2m.void.*`, `void_*`, `void-review`) keep the old word on purpose; every ask that says "void" or "v01d" still works beside "verse".
 

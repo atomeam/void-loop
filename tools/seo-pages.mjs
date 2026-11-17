@@ -69,9 +69,11 @@ export const OFFER_PAGES = Object.freeze(PRODUCTS.map((p) => pathOf(p.page)));
  *  unchanged (and `null` returned) when `before` is missing too. Pure. */
 export function withBlock(html, [open, close], block, before) {
   const a = html.indexOf(open), b = html.indexOf(close, a + open.length);
-  if (a >= 0 && b >= 0) return html.slice(0, a) + open + '\n' + block + '\n' + close + html.slice(b + close.length);
+  // the block takes the page's own line ending, so a page checked out with CRLF keeps it and does not read as stale on every check
+  const nl = html.includes('\r\n') ? '\r\n' : '\n';
+  if (a >= 0 && b >= 0) return html.slice(0, a) + open + nl + block + nl + close + html.slice(b + close.length);
   const i = html.indexOf(before); if (i < 0) return null;
-  return html.slice(0, i) + open + '\n' + block + '\n' + close + '\n' + html.slice(i);
+  return html.slice(0, i) + open + nl + block + nl + close + nl + html.slice(i);
 }
 
 /** the html with the block between [open, close] taken out. Pure. */

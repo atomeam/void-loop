@@ -10,7 +10,7 @@
 // Pure, except measurePage, which takes the fetch to use.
 
 export const TARGETS = Object.freeze({
-  'dalyfeds.com': 'https://dalyfeds.com/',
+  'rival': 'https://example.com/',
 });
 export const SELF_PATH = '/starboard/';
 export const MAX_ASSETS = 40;

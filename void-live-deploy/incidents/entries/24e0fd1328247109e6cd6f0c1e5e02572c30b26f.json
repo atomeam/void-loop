@@ -1,0 +1,27 @@
+{
+ "at": "2026-11-17T11:20:02.199Z",
+ "sha": "24e0fd1328247109e6cd6f0c1e5e02572c30b26f",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44068058622",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "docs/VERSE-LOOP.md",
+  "domains/void.agents.log.md",
+  "domains/void.frontier.md",
+  "growth/entries/20261117T103851Z-claude-1b3c3bb2.json",
+  "tools/verse-coder.mjs",
+  "tools/verse-coder.test.mjs",
+  "tools/verse-loop.mjs",
+  "tools/verse-loop.test.mjs"
+ ],
+ "shards": [
+  4
+ ]
+}

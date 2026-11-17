@@ -698,6 +698,12 @@ export function devOf(text) {
     const r = parseRegexBody(m[1]);
     return { mode: 'regex', input: r.text, opts: { pattern: r.pattern, flags: r.flags } };
   }
+  // "regex for ISO 8601 dates", "give me a regular expression for email addresses": no /pattern/ literal, so one is
+  // generated from the words, with sample matching and non-matching lines already in the test box. Unknown kinds stay null.
+  if ((m = /^(?:please\s+)?(?:give\s+me\s+|make\s+|generate\s+|create\s+|write\s+|show\s+me\s+)?(?:a\s+|an\s+|the\s+)?(?:regex|regexp|regular\s+expression)\s+(?:for|to\s+match|that\s+matches?)\s+([\s\S]+)$/i.exec(t))) {
+    const gen = regexFor(m[1]);
+    if (gen) return { mode: 'regex', input: gen.text, opts: { pattern: gen.pattern, flags: gen.flags || '', generated: true, about: gen.about } };
+  }
   if ((m = /^(?:please\s+)?(?:explain|decode|translate|what\s+does|what\s+is)\s+(?:this\s+|the\s+|my\s+)?(?:cron(?:\s+(?:expression|schedule|line|job))?\s*:?\s*["']?|["'])([\d*@\/,\-a-z ]{3,60}?)["']?(?:\s+mean)?\??$/i.exec(t)) || (m = /^cron\s+(?:explain(?:er)?|decoder|translator)\s*:?\s*["']?([\d*@\/,\-a-z ]{0,60}?)["']?$/i.exec(t))) {
     return { mode: 'cron', input: tidy(m[1]) };
   }
@@ -731,4 +737,32 @@ export function parseRegexBody(body) {
   m = /^(\S+)\s+(?:on|against|::)\s+([\s\S]+)$/.exec(b);
   if (m) return { pattern: m[1], flags: '', text: m[2] };
   return { pattern: b.split('\n')[0].trim(), flags: '', text: b.includes('\n') ? b.split('\n').slice(1).join('\n') : '' };
+}
+
+// Natural-language regex generation: "regex for <kind>" without a /pattern/ literal. Each entry names the kind it
+// answers, the pattern, and sample text with a matching line first and non-matching lines after, so the test box shows
+// at a glance what matches and what does not. Anything not named here returns null: no invented patterns. Pure.
+const REGEX_KINDS = [
+  { about: 'ISO 8601 dates (YYYY-MM-DD)', re: /\biso\b|\b8601\b|yyyy-mm-dd|\bdates?\b/, pattern: '\\d{4}-\\d{2}-\\d{2}', text: '2026-11-17\n2026-1-5\n17/11/2026' },
+  { about: 'email addresses', re: /\bemails?\b|\be-mail\b/, pattern: '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}', text: 'ana@example.com\nnot-an-email\nbob@site' },
+  { about: 'web addresses (http/https URLs)', re: /\burls?\b|\blinks?\b|\bhttps?\b|\bweb\s+address/, pattern: 'https?://[^\\s/$.?#].[^\\s]*', text: 'https://a-to-mind.com/\nnotaurl\nhttp://x.io/y?q=1' },
+  { about: 'IPv4 addresses', re: /\bipv?4\b|\bip\b.*\baddress/, pattern: '(?:\\d{1,3}\\.){3}\\d{1,3}', text: '192.168.0.1\n999.1.1.1\n::1' },
+  { about: 'hex colours (#rrggbb)', re: /\bhex\b.*\bcolou?r|\bcolou?r\b.*\bhex|#rrggbb|#rgb/, pattern: '#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\\b', text: '#ff0099\n#xyz\nred' },
+  { about: 'UUIDs', re: /\buuids?\b|\bguids?\b/, pattern: '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', text: '123e4567-e89b-12d3-a456-426614174000\nnot-a-uuid\n12345' },
+  { about: 'times of day (24-hour HH:MM)', re: /\btime\b|HH:?MM|24.?hour|o.?clock/, pattern: '([01]\\d|2[0-3]):[0-5]\\d', text: '09:30\n23:59\n25:61' },
+  { about: 'phone numbers', re: /\bphones?\b|\bmobile\b|\btel\b|phone\s*number/, pattern: '(?:\\+\\d{1,3}[-. ]?)?\\(?\\d{3}\\)?[-. ]\\d{3}[-. ]\\d{4}', text: '+1 (555) 123-4567\n555-1234\ncall me' },
+];
+
+/** { pattern, flags, text, about } for a description like "matching ISO 8601 dates like 2026-11-17"; null when no kind fits. Pure. */
+export function regexFor(desc) {
+  const d = String(desc || '').toLowerCase().replace(/[?!.]+$/, '');
+  if (!d || d.length > 300) return null;
+  for (const k of REGEX_KINDS) {
+    if (!k.re.test(d)) continue;
+    let text = k.text;
+    const dated = /(\d{4}-\d{2}-\d{2})/.exec(d);
+    if (dated && !text.startsWith(dated[1])) text = dated[1] + '\n' + text;
+    return { pattern: k.pattern, flags: '', text, about: k.about };
+  }
+  return null;
 }

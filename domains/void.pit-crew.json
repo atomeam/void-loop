@@ -1,7 +1,13 @@
 {
-  "at": "2026-11-16T16:29:39.472Z",
+  "at": "2026-11-17T16:30:21.404Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261117-0226-2",
+      "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
+      "target": "voice:ask-20261117-0226-2"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }

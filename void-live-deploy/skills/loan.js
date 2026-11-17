@@ -46,7 +46,7 @@ function loanOf(text) {
   const apr = +m[1];
   if (!(apr > 0 && apr < 100)) return null;
 
-  let months = null;
+  let months = null, compareMonths = [];
   m = t.match(/(\d{1,3})\s*(?:year|yr)s?\b/i);
   if (m) months = +m[1] * 12;
   if (months == null) {
@@ -54,6 +54,12 @@ function loanOf(text) {
     if (m) months = +m[1];
   }
   if (!Number.isFinite(months) || months < 1 || months > 600) return null;
+  const vsMatch = t.match(/\bvs\.?\s+(\d{1,3})\s*(?:year|yr)s?\b/i) || t.match(/\bvs\.?\s+(\d{1,4})\s*(?:month|mo)s?\b/i);
+  if (vsMatch) {
+    let cm = +vsMatch[1];
+    if (/year|yr/i.test(vsMatch[0])) cm *= 12;
+    if (cm >= 1 && cm <= 600 && cm !== months) compareMonths.push(cm);
+  }
 
   let kind = 'loan';
   if (/\bmortgage|home\s+loan\b/.test(l)) kind = 'mortgage';
@@ -68,7 +74,7 @@ function loanOf(text) {
     if (!Number.isFinite(extra) || extra < 0) extra = 0;
   }
 
-  return { principal: amt, apr, months, kind, extra };
+  return { principal: amt, apr, months, kind, extra, compareMonths };
 }
 
 // "how long to pay off ...": the asking words, then a monthly payment. The payment comes off the text first, then the rate,
@@ -189,6 +195,7 @@ async function run(text, api) {
   if (!q) { const p = payoffOf(text); return p ? payoffCard(p, api) : 'none'; }
   const base = schedule(q.principal, q.apr, q.months, 0);
   const withX = q.extra > 0 ? schedule(q.principal, q.apr, q.months, q.extra) : null;
+  const compare = (q.compareMonths || []).map((cm) => ({ months: cm, sched: schedule(q.principal, q.apr, cm, 0) }));
   // When no extra is asked, still show a $100/mo illustration so visitors see the lever (2026 calculators lead with this).
   const demoExtra = q.extra > 0 ? q.extra : 100;
   const demo = q.extra > 0 ? withX : schedule(q.principal, q.apr, q.months, demoExtra);
@@ -199,9 +206,14 @@ async function run(text, api) {
   const payShown = withX ? withX.pay : base.base;
   showPage((el) => {
     let html = '<h2>' + esc(title) + ' payment</h2>'
-      + '<div class="sub">' + esc(moneyFmt(q.principal)) + ' at ' + esc(String(q.apr)) + '% for ' + esc(years)
+      + (compare.length ? '<div class="sub">' + esc(moneyFmt(q.principal)) + ' at ' + esc(String(q.apr)) + '% — comparing ' + esc(termLabel(q.months)) + ' vs ' + compare.map((c) => esc(termLabel(c.months))).join(' vs ') + '</div>'
+        + '<table style="width:100%;border-collapse:collapse;margin:8px 0"><thead><tr><th style="text-align:left;padding:4px">Term</th><th style="text-align:right;padding:4px">Monthly</th><th style="text-align:right;padding:4px">Total interest</th><th style="text-align:right;padding:4px">Total paid</th></tr></thead><tbody>'
+        + '<tr><td style="padding:4px">' + esc(termLabel(q.months)) + '</td><td style="text-align:right;padding:4px">' + esc(moneyFmt(base.base)) + '</td><td style="text-align:right;padding:4px">' + esc(moneyFmt(base.interest)) + '</td><td style="text-align:right;padding:4px">' + esc(moneyFmt(base.total)) + '</td></tr>'
+        + compare.map((c) => '<tr><td style="padding:4px">' + esc(termLabel(c.months)) + '</td><td style="text-align:right;padding:4px">' + esc(moneyFmt(c.sched.base)) + '</td><td style="text-align:right;padding:4px">' + esc(moneyFmt(c.sched.interest)) + '</td><td style="text-align:right;padding:4px">' + esc(moneyFmt(c.sched.total)) + '</td></tr>').join('')
+        + '</tbody></table>' : '')
+      + (compare.length ? '' : '<div class="sub">' + esc(moneyFmt(q.principal)) + ' at ' + esc(String(q.apr)) + '% for ' + esc(years)
       + (q.extra > 0 ? ' · ' + esc(moneyFmt(q.extra)) + ' extra / month' : '')
-      + '</div>'
+      + '</div>')
       + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(moneyFmt(payShown))
       + '<span style="font-size:18px;color:#8a8a8a"> / month</span></div>'
       + '<ul>'
@@ -209,7 +221,7 @@ async function run(text, api) {
       + '<li><b>Total interest</b> ' + esc(moneyFmt(withX ? withX.interest : base.interest)) + '</li>'
       + '<li><b>Payments</b> ' + esc(String(withX ? withX.months : base.months)) + '</li>'
       + '<li><b>First year</b> ' + esc(moneyFmt(base.y1I)) + ' interest · ' + esc(moneyFmt(base.y1P)) + ' principal</li>'
-      + '</ul>';
+      + (compare.length ? '' : '</ul>');
     if (demo.paidOff && savedInterest > 0) {
       const label = q.extra > 0
         ? ('With ' + moneyFmt(q.extra) + ' extra each month')

@@ -234,9 +234,9 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'wheelroot.com': '/learn-to-draw/',
   // onlineconverter.com (106 file and unit tools, each an upload to its server) is assimilated by /converter/, the same 106 tools listed with what Verse does on the device (domains/targets/onlineconverter.json)
   'onlineconverter.com': '/converter/',
-  // dalyfeds.com ("H5 Center", a game portal page with three ad scripts) is taken on by /starboard/, a live benchmark of both sites and Verse's own weather, news,
-  // games and tools on one tracker-free page (domains/targets/dalyfeds.json)
-  'dalyfeds.com': '/starboard/',
+  // a rival site is taken on by /starboard/, a live benchmark and Verse's own weather, news,
+  // games and tools on one tracker-free page
+  'starboard': '/starboard/',
   // ajsonline.org (a diamond open-access Earth science journal) is taken on by /journal/, its public RSS feed plus Crossref search read on the device (2026-11-07)
   'ajsonline.org': '/journal/',
   // ndscalc.ru (a Russian VAT calculator) is the calculator's VAT mode (lib/tower-topic.js gives the same page by topic)

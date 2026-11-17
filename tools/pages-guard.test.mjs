@@ -47,3 +47,33 @@ test('pages-guard.yml runs after every push to main and on a schedule, with no p
   assert.match(y, /branches: \[main\]/); assert.match(y, /cron:/); assert.match(y, /pages-guard\.mjs guard/);
   assert.doesNotMatch(y, /environment:|workflow_dispatch:\s*\n\s+inputs:\s*\n\s+approve/);
 });
+
+for (const answer of ['', '   ', null, 4]) {
+  test('an empty or non-text answer fails: ' + JSON.stringify(answer), async () => {
+    const f = site({ 'GET /': () => res(200, '<title>Verse</title>'), 'GET /tools.json': () => res(200, tools), 'POST /api/answer': () => res(200, JSON.stringify({answer})) });
+    assert.equal((await probe('https://x', f)).length, 1);
+  });
+}
+test('a tools string cannot pretend to be a tool list', async () => {
+  const f = site({ 'GET /': () => res(200, '<title>Verse</title>'), 'GET /tools.json': () => res(200, JSON.stringify({tools: 'x'.repeat(418)})), 'POST /api/answer': () => res(200, '{"answer":"4"}') });
+  assert.equal((await probe('https://x', f)).length, 1);
+});
+test('every request has a deadline, including reading its body', async () => {
+  const signals = [];
+  const keepAlive = setInterval(() => {}, 1000);
+  try {
+    const f = async (url, init = {}) => {
+      assert.ok(init.signal instanceof AbortSignal);
+      signals.push(init.signal);
+      return {status: 200, text: () => new Promise((resolve, reject) => {
+        const stop = () => reject(init.signal.reason);
+        if (init.signal.aborted) stop();
+        else init.signal.addEventListener('abort', stop, {once: true});
+      })};
+    };
+    const failures = await probe('https://x', f, {timeoutMs: 5});
+    assert.equal(failures.length, 3);
+    assert.equal(signals.length, 3);
+    assert.ok(signals.every((s) => s.aborted));
+  } finally { clearInterval(keepAlive); }
+});

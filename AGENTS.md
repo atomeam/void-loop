@@ -11,6 +11,10 @@
 
 **Keep secrets (owner, 2026-10-15: "make Verse the best at keeping secrets ever made").** No key, token, password or private key in any file, ever: `tools/secret-scan.mjs` blocks one in any added line (checks.mjs and the Verse review), in docs and logs too. A key that reached GitHub is public: rotate it, deleting it is not enough. A made-up key in a test says so with `secret-scan: ok`. Secrets live in GitHub and Cloudflare secrets only.
 
+**Public copy guardrail (2026-11-17):** Public pages and API responses state only what the product does. No fake competitor races, no internal Tower or benchmark names in public copy, no lore or roleplay framing, and no hardcoded third-party website names in UI copy or API output. `tools/audit-sanity.mjs` and `tools/no-third-party-sites.mjs` fail a PR that breaks this. Source citations, feed links and Verse's own words in `domains/void.voice.md` are not public UI copy and are unchanged.
+
+**Builder Uni pass:** headless verification can load the authenticated page by putting the existing Uni bearer token in `localStorage` from `VERSE_BUILDER_UNI_TOKEN` (an environment variable or CI secret). No token is written to a tracked file and the auth middleware is unchanged; with the variable unset, checks run as a normal visitor.
+
 **Automerge everything, always (owner, 2026-10-15):** every PR from this repository is merged by the bot as soon as Verse's review is clean; `tools/automerge.mjs` labels unlabelled PRs itself, so no PR waits on a person. A conflict with main is handled automatically (`pr-fix.yml`, Verse's coder). Nothing waits for a person.
 
 **Growth over upkeep (owner, 2026-10-15):** "cloudflare is not unlimited Verse should spend its actions on growth and not so much on testing old thing too much . try to make it ultra productive at improvements and not so much busy work . other ai can maintain that stuff have Verse be a specialist who is hellbent on being the best at all". A run ships something new or makes something measurably better. Test what you changed and nothing more: no re-probing old bench asks, no tests for behaviour you didn't touch, no new timed re-checks of things already live. Upkeep (flakes, renames, tidying, re-verifying) is for other agents unless it blocks a ship. Every Cloudflare call (deploys, Workers AI, live probes) should buy growth: a PR gets no preview deploy, and live checks run after a deploy, not on a timer.
@@ -53,6 +57,7 @@ Every run follows B.I.T.E. (owner, 2026-10-11: brief, implement the smallest use
 | Generated cards (never regenerate by hand) | `node tools/refresh.mjs`: skill index, dependency map, families, the book, Verse's facts about itself, bench alarms, in order; `deploy.yml` runs it before every deploy so the self card and the book follow every build, and `checks.mjs` fails a stale committed one |
 | CI | `.github/workflows/` (`deploy.yml`, `verify.yml`, `void-review.yml`, `automerge.yml`, `bench.yml`, ...) |
 | Agent skills (Claude Code loads them for any session in this repo) | `.claude/skills/<name>/SKILL.md`: `void-run` (this page's run, short), `steward` (driving a PR to merged), `learn-from-video` (when the owner shares a video), `paid-media` (big files for people who pay: R2 plus signed links) |
+| OpenHands skills (any OpenHands session in this repo) | `.agents/skills/<name>/SKILL.md` (the portable Agent Skills location; `.openhands/skills/` is its legacy alias): `void-loop-shipping` (claim to merged PR, and the checks already red on a bare checkout), `void-review-hygiene` (the exact patterns `void-review` flags, and how to mark a line that is right as written), `verse-skills-and-3d` (adding a routable skill, and building a 3D miniature) |
 | Old text | `archive/` |
 
 ## Never

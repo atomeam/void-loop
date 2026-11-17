@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-15T18:55:52.798Z",
+ "as_of": "2026-11-16T22:13:53.965Z",
  "rules": "Legitimate sources only, each cited. A value is a number its source publishes (a prize pool, a bounty, a program credit) and is not a forecast; null means unknown. Anything that needs Atom's identity, a login or a card is ready to claim; Verse claims nothing in anyone's name.",
  "probes": {
   "devpost": "read",
@@ -385,7 +385,7 @@
   {
    "id": "devpost:31024",
    "category": "hackathon prizes",
-   "title": "Meta VR Start Developer Competition 2026 (Sep 24 - Nov 18, 2026, 3 days left)",
+   "title": "Meta VR Start Developer Competition 2026 (Sep 24 - Nov 18, 2026, 2 days left)",
    "source": "https://start-developer-competition-26.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 100000000,
@@ -411,7 +411,7 @@
   {
    "id": "devpost:31667",
    "category": "hackathon prizes",
-   "title": "Kiroween 2026 (Oct 30 - Dec 04, 2026, 19 days left)",
+   "title": "Kiroween 2026 (Oct 30 - Dec 04, 2026, 18 days left)",
    "source": "https://kiroween.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 10000000,
@@ -424,7 +424,7 @@
   {
    "id": "devpost:31642",
    "category": "hackathon prizes",
-   "title": "AWS MSP AI Hackathon (Nov 02 - Dec 11, 2026, 26 days left)",
+   "title": "AWS MSP AI Hackathon (Nov 02 - Dec 11, 2026, 25 days left)",
    "source": "https://aws-agentic-msp.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 6400000,
@@ -437,7 +437,7 @@
   {
    "id": "devpost:31083",
    "category": "hackathon prizes",
-   "title": "QNX Global Hackathon (Nov 02 - Dec 15, 2026, about 1 month left)",
+   "title": "QNX Global Hackathon (Nov 02 - Dec 15, 2026, 29 days left)",
    "source": "https://qnx.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 5000000,
@@ -448,22 +448,9 @@
    "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
   },
   {
-   "id": "devpost:31552",
-   "category": "hackathon prizes",
-   "title": "UGREEN Hackathon 2026 on AI NAS (Oct 22 - Nov 16, 2026, about 13 hours left)",
-   "source": "https://ugreenhackathon.devpost.com/",
-   "value_cents": null,
-   "prize_pool_cents": 4600000,
-   "value_note": "prize pool $46,000 shared by the winners; not an estimate of what Verse would win",
-   "fit": "themes: Lifehacks, Machine Learning/AI, Productivity",
-   "status": "ready to claim",
-   "needs": "Atom registers and submits as the entrant (Devpost account)",
-   "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
-  },
-  {
    "id": "devpost:31644",
    "category": "hackathon prizes",
-   "title": "Reddit’s Game of the Day Hackathon (Nov 11 - Dec 08, 2026, 23 days left)",
+   "title": "Reddit’s Game of the Day Hackathon (Nov 11 - Dec 08, 2026, 22 days left)",
    "source": "https://redditgameofday2026.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 3500000,
@@ -476,12 +463,25 @@
   {
    "id": "devpost:31808",
    "category": "hackathon prizes",
-   "title": "#BuildHybridAI 2026 (Nov 11 - 30, 2026, 15 days left)",
+   "title": "#BuildHybridAI 2026 (Nov 11 - 30, 2026, 14 days left)",
    "source": "https://firebasehybridaihackathon.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 3000000,
    "value_note": "prize pool $30,000 shared by the winners; not an estimate of what Verse would win",
    "fit": "themes: Machine Learning/AI, Mobile, Web",
+   "status": "ready to claim",
+   "needs": "Atom registers and submits as the entrant (Devpost account)",
+   "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
+  },
+  {
+   "id": "devpost:31973",
+   "category": "hackathon prizes",
+   "title": "Deck the Pixels (Nov 10 - Dec 07, 2026, 21 days left)",
+   "source": "https://deckthepixels.devpost.com/",
+   "value_cents": null,
+   "prize_pool_cents": 2500000,
+   "value_note": "prize pool $25,000 shared by the winners; not an estimate of what Verse would win",
+   "fit": "themes: Design, Machine Learning/AI, Low/No Code",
    "status": "ready to claim",
    "needs": "Atom registers and submits as the entrant (Devpost account)",
    "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
@@ -525,7 +525,7 @@
   {
    "id": "upsell:/podcasts/",
    "category": "missed upsells",
-   "title": "People open /podcasts/ (10 views in 7 days) and it offers nothing to buy",
+   "title": "People open /podcasts/ (8 views in 7 days) and it offers nothing to buy",
    "source": "https://a-to-mind.com/podcasts/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",

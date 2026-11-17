@@ -1,0 +1,74 @@
+{
+  "chapters": [
+    {
+      "id": 1,
+      "title": "The Signal in the Rain",
+      "maps": {
+        "town": [
+          "####################",
+          "#..................#",
+          "#.###..............#",
+          "#.#N#....C.........#",
+          "#.###..............#",
+          "#.................>#",
+          "####################"
+        ],
+        "road": [
+          "####################",
+          "#>.................#",
+          "#....~~~~..........#",
+          "#....~~~~......B...#",
+          "#..................#",
+          "####################"
+        ]
+      },
+      "spawn": { "map": "town", "x": 2, "y": 1 },
+      "link": { "town": "road", "road": "town" },
+      "entry": { "town": { "x": 18, "y": 5 }, "road": { "x": 1, "y": 1 } },
+      "dialogue": {
+        "N": ["The rain has not stopped in nine days.", "The old tower under the hill is transmitting again.", "Will you go and look? Press Enter to answer yes."]
+      },
+      "enemies": [
+        { "name": "Rain Wisp", "hp": 18, "atk": 5, "def": 1, "spd": 8, "xp": 12 },
+        { "name": "Static Hound", "hp": 26, "atk": 7, "def": 2, "spd": 6, "xp": 18 }
+      ],
+      "boss": { "name": "The Bellkeeper", "hp": 60, "atk": 9, "def": 3, "spd": 5, "xp": 80, "phases": 2 }
+    },
+    {
+      "id": 2,
+      "title": "The Choir Under Stone",
+      "maps": {
+        "town2": [
+          "####################",
+          "#..................#",
+          "#..R....C..........#",
+          "#..................#",
+          "#..................#",
+          "#.................>#",
+          "####################"
+        ],
+        "dungeon": [
+          "####################",
+          "#>.................#",
+          "#..##.........B....#",
+          "#..##..............#",
+          "#..................#",
+          "####################"
+        ]
+      },
+      "spawn": { "map": "town2", "x": 2, "y": 1 },
+      "link": { "town2": "dungeon", "dungeon": "town2" },
+      "entry": { "town2": { "x": 18, "y": 5 }, "dungeon": { "x": 1, "y": 1 } },
+      "dialogue": {
+        "N": ["The tower was only a receiver.", "The choir under the old station is still singing.", "Wren knows the way down. Talk to Wren first."],
+        "R": ["I am Wren. I mapped these tunnels before the rain.", "Take me with you — press Enter to recruit Wren."]
+      },
+      "recruit": { "tile": "R", "name": "Wren", "hp": 28, "mhp": 28, "mp": 12, "mmp": 12, "atk": 7, "def": 3, "spd": 7, "lvl": 2, "xp": 0 },
+      "enemies": [
+        { "name": "Stone Echo", "hp": 34, "atk": 8, "def": 4, "spd": 4, "xp": 22 },
+        { "name": "Choir Wraith", "hp": 30, "atk": 10, "def": 2, "spd": 7, "xp": 26 }
+      ],
+      "boss": { "name": "The Deep Choir", "hp": 88, "atk": 12, "def": 5, "spd": 6, "xp": 140, "phases": 2 }
+    }
+  ]
+}

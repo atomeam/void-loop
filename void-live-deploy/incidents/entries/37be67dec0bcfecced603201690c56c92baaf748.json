@@ -1,0 +1,28 @@
+{
+ "at": "2026-11-17T08:01:36.844Z",
+ "sha": "37be67dec0bcfecced603201690c56c92baaf748",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44037611430",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\""
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "tools/real-pages.mjs",
+  "tools/verse-world-bridge.test.mjs",
+  "void-live-deploy/games/roguelike/app.js",
+  "void-live-deploy/games/roguelike/index.html",
+  "void-live-deploy/lib/verse-world-bridge.js"
+ ],
+ "shards": [
+  1
+ ],
+ "passed": [
+  1
+ ],
+ "closedAt": "2026-11-17T08:30:54.331Z",
+ "closedBy": "bf0b6c2d5edf0e3de51edf4c825cc48498c5bd38",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44045319490",
+ "minutes": 29
+}

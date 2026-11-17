@@ -1,5 +1,25 @@
 # void-loop
 
+`void-loop` is the open-source engine behind [Verse at a-to-mind.com](https://a-to-mind.com): a blank stage with one ask bar where anything someone asks for appears as a card.
+
+It is three runnable pieces, not a deployment diary: a self-healing autonomous pull-request loop with review gates and a read-spiral circuit breaker (`tools/verse-loop.mjs`, `tools/verse-coder.mjs`), a zero-build skill runtime where each capability is one file (`void-live-deploy/skills/`), and a deterministic check suite that gates every pull request before merge (`tools/checks.mjs`, `.github/workflows/`).
+
+## Try it in 60 seconds
+
+```sh
+git clone https://github.com/atomeam/void-loop.git
+cd void-loop && npm ci
+VOID_SKIP_BENCH=1 node tools/checks.mjs --changed
+```
+
+Fast checks only touch what changed; the full suite runs on `main`. One test file runs on its own with `node --test tools/<name>.test.mjs`. The live site is [a-to-mind.com](https://a-to-mind.com).
+
+## Where to start reading
+
+- `AGENTS.md` — the front door for every builder, person or agent.
+- `docs/MAP.md` — what exists and where, including every skill and tool.
+- `tools/verse-loop.mjs` — one autonomous lap from a terminal or a timer.
+
 This repository is Verse, the site at [a-to-mind.com](https://a-to-mind.com): a blank stage with one ask bar, where what someone asks for appears as a card. It also holds the tools, tests and automations that keep the site running and help it grow.
 
 ## Where things are

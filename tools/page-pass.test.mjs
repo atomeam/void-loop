@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/page-pass.js';
+import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, suiteOpen, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/page-pass.js';
 import { onRequest as gate } from '../void-live-deploy/functions/_middleware.js';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/page-pass.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
@@ -83,6 +83,20 @@ test('prices are reused, Multi can view, Uni is not Multi, and the webhook ignor
   assert.equal(pub.missing, 'STRIPE_SECRET_KEY'); assert.equal(JSON.stringify(pub).includes(KEY), false);
   const hop = await gate({ request: ask('/shopping/'), env: { ASSETS: { fetch: async () => new Response('/shopping/ /store/ 301\n') } }, next: html('STORE') });
   assert.equal(hop.status, 301); assert.equal(hop.headers.get('location'), 'https://a-to-mind.com/store/');
+});
+
+test('loopback builds see full pages with no token; production stays gated', async () => {
+  await withFetch(async () => {
+    for (const origin of ['http://localhost:8788', 'http://127.0.0.1:8788', 'http://[::1]:8788']) {
+      const request = new Request(origin + '/flights/');
+      assert.equal(suiteOpen(request, {}), true, origin);
+      const res = await gate({ request, env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
+      assert.equal(await res.text(), 'FLIGHTS', origin);
+      assert.equal(res.headers.get('x-verse-gate'), 'open', origin);
+    }
+    const res = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
+    assert.match(await res.text(), /<h1>Uni<\/h1>/, 'production stays gated');
+  }, stripe());
 });
 
 async function grantFirst(DB) {

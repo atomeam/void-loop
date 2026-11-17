@@ -4,7 +4,7 @@
 // the ask is capped and only ever becomes ?q= on Verse's own page. GET /c/_stats with the owner's token -> visits per clip and platform.
 import { ownerOk } from '../../lib/guard.js';
 
-export const CLIP_RE = /^[0-9]{8}-[a-z0-9-]{2,60}$/, PLATFORMS = ['youtube', 'tiktok', 'instagram', 'x', 'site', 'other'];
+export const CLIP_RE = /^[0-9]{8}-[a-z0-9-]{2,60}$/, PLATFORMS = ['youtube', 'tiktok', 'instagram', 'x', 'films', 'site', 'other']; // 'films': a Verse film deep-linked from its own words (a-to-mind.com/c/<film>?p=films&q=<ask>)
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_clip_visits (clip TEXT NOT NULL, platform TEXT NOT NULL, at TEXT NOT NULL)';
 
 /** where the visitor goes and what is counted. Pure. */

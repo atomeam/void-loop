@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verse Pong · Verse</title>
+<meta name="description" content="Play a full-screen Pong against Verse with rally speed-ups, a device high score and synthesized sound.">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  html,body{margin:0;background:#05050a;color:#e8e6f5;font:13px/1.4 ui-monospace,monospace;overflow:hidden}
+  #c{position:absolute;image-rendering:pixelated;background:#07060f;touch-action:none}
+  #hud{position:absolute;left:8px;top:8px;display:flex;gap:14px;background:#0b1020dd;border:2px solid #7aa7ff;padding:4px 10px;pointer-events:none}
+  #bar{position:absolute;right:8px;top:8px;display:flex;gap:6px}
+  button{font:inherit;background:#151a33;color:#e8e6f5;border:1px solid #7aa7ff;border-radius:6px;padding:6px 9px;min-height:36px;cursor:pointer}
+  #msg{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(92vw,520px);background:#0b1020ee;border:2px solid #a58bff;padding:6px 10px}
+</style>
+</head>
+<body>
+<canvas id="c" width="320" height="180"></canvas>
+<div id="hud"><span id="score">You 0 · Verse 0</span><span id="best">Best rally 0</span><span id="rally">Rally 0</span></div>
+<div id="bar"><button id="mute">Sound on</button><button id="pause">Pause</button><button id="again">New round</button></div>
+<div id="msg">Move with W/S or the arrow keys, or drag on the picture. First to 7 wins; the ball speeds up every rally.</div>
+<script type="module" src="/games/pong/app.js"></script>
+</body>
+</html>

@@ -88,7 +88,7 @@ function main() {
   const behind = behindCount();
   if (behind === null) { console.error('pre-pr: fetch origin main first (git fetch origin main)'); process.exit(2); }
   const files = branchFiles();
-  const numstat = git(['diff', '--numstat', 'origin/main...HEAD']);
+  const numstat = git(['diff', '--numstat', '--ignore-cr-at-eol', 'origin/main...HEAD']); // a line-ending-only change (CRLF to LF) is not a changed line, so the cap never blocks a normalisation
   if (!files || numstat.status !== 0) { console.error('pre-pr: could not read the diff against origin/main'); process.exit(2); }
   const prs = process.env.PRE_PR_OFFLINE === '1' ? null : openPrs();
   const branch = String(git(['rev-parse', '--abbrev-ref', 'HEAD']).stdout || '').trim();

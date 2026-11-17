@@ -199,3 +199,15 @@ test('a unit test that loads the skill from the skills folder it names counts as
   assert.equal(ev.moontonight.suite, false, 'a dir that is not the skills folder proves nothing about the skill');
   assert.equal(ev.meteors.suite, false, 'a skill no test names has no unit test');
 });
+
+
+test('retired drafts do not block family generation; missing active skills still do', async () => {
+  const { OFF } = await import('./skills-index.mjs');
+  const active = FAMILIES.flatMap((f) => f.skills).filter((n) => !(n in OFF));
+  const b = build(active.filter((n) => n !== 'go'), {});
+  assert.deepEqual(b.missing, ['go']);
+  assert.ok(!b.families.flatMap((f) => f.skills).some((s) => s.name === 'system-plan'));
+  // OFF prevents standalone adoption; a retained member loaded by a family still has evidence.
+  const member = build([...active, 'stopwatch'], {});
+  assert.ok(member.families.flatMap((f) => f.skills).some((s) => s.name === 'stopwatch'));
+});

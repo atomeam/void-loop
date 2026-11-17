@@ -59,3 +59,21 @@ test('the family files themselves: skills/time.js and skills/dates.js load as fa
     assert.ok(f.family && f.parts.length > 1, file); assert.equal(f.parts[0], first, file);
   }
 });
+
+
+test('overlap checks use source order, ignoring a retired draft in the stale deployment index and including a new skill', async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { memberSkills } = await import('./skill-overlap.mjs');
+  const dir = mkdtempSync(join(tmpdir(), 'overlap-order-'));
+  try {
+    mkdirSync(join(dir, 'order'));
+    writeFileSync(join(dir, 'package.json'), '{"type":"module"}');
+    writeFileSync(join(dir, 'index.json'), '["retired"]');
+    writeFileSync(join(dir, 'order', '0010-new-skill'), '');
+    // retired.js deliberately does not exist: the stale index must not even be loaded.
+    writeFileSync(join(dir, 'new-skill.js'), "export default { name: 'new-skill', examples: ['new ask'], match: () => true };");
+    assert.deepEqual((await memberSkills(dir)).map((x) => x.skill.name), ['new-skill']);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

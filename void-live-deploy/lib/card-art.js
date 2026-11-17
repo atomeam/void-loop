@@ -318,6 +318,18 @@ export function artInner(card = {}, { w = 520, h = 170 } = {}) {
     P: 'hsl(' + hue + ' 32% 88%)', L: 'hsl(' + hue + ' 46% 70%)', D: 'hsl(' + hue + ' 34% 30%)', V: 'hsl(' + hue + ' 40% 8%)', G: hot ? '#ffb347' : '#fff0a8',
   };
   const plateKind = kind === 'Skill' || kind === 'Miniature' || (kind === 'Game' && card.glyph) ? (kind === 'Miniature' ? 'Miniature' : 'Skill') : kind;
+  const weatherText = String(card.text || card.key || card.name || '').toLowerCase();
+  const isWeather = /\b(weather|sky|rain|drizzle|storm|snow|fog|cloudy|sunny|clear|overcast|thunder)\b/.test(weatherText) && (kind === 'Skill' || /sky|weather/i.test(String(card.kind || '') + ' ' + String(card.typeLine || '')));
+  let weatherCondition = '';
+  if (isWeather) {
+    if (/thunder|storm/i.test(weatherText)) weatherCondition = 'storm';
+    else if (/snow/i.test(weatherText)) weatherCondition = 'snow';
+    else if (/rain|drizzle|shower/i.test(weatherText)) weatherCondition = 'rain';
+    else if (/fog/i.test(weatherText)) weatherCondition = 'fog';
+    else if (/cloud|overcast/i.test(weatherText)) weatherCondition = 'cloudy';
+    else if (/clear|sunny/i.test(weatherText)) weatherCondition = 'clear';
+    else weatherCondition = 'cloudy';
+  }
   const s = Math.min(w / 320, h / 180) * 1.0, ox = (w - 320 * s) / 2, oy = (h - 200 * s) / 2 + h * 0.01;
   const flip = r() < 0.5 && plateKind !== 'Album' && plateKind !== 'Song' && plateKind !== 'Book';
   const unit = h / 170;
@@ -336,8 +348,30 @@ export function artInner(card = {}, { w = 520, h = 170 } = {}) {
     for (let i = 0; i < 4; i++) body += '<ellipse cx="' + F(r() * w) + '" cy="' + F(h * (0.72 + r() * 0.25)) + '" rx="' + F(w * (0.18 + r() * 0.2)) + '" ry="' + F(h * (0.07 + r() * 0.08)) + '" fill="#f3e9d8" opacity="' + F(0.2 + r() * 0.2) + '"/>';
   }
   defs += '<filter id="' + id + 'r" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="' + (seed % 50) + '" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="' + RL.wob + '" result="d"/><feDropShadow in="d" dx="3.5" dy="4.5" stdDeviation="0" flood-color="' + INK + '" flood-opacity=".55"/></filter>';
-  const plate = '<g filter="url(#' + id + 'r)" style="opacity:calc(0.3 + 0.7 * var(--ink-density,' + RL.dens + '))" stroke="' + RL.ink + '" stroke-width="' + F(2.4 * RL.w) + '" stroke-linejoin="round" stroke-linecap="round" fill="none">' + (PLATES[plateKind] || PLATES.Idea)(X) + '</g>';
-  if (mots.length) body += motifSvg(mots, w, h, { P: X.P, L: X.L, G: '#f3d77a', ink: RL.ink, sw: RL.w });
+  let weatherArt = '';
+  if (isWeather) {
+    const cx = w / 2;
+    if (weatherCondition === 'clear') {
+      weatherArt = '<circle cx="' + F(cx) + '" cy="' + F(h * 0.3) + '" r="' + F(h * 0.18) + '" fill="#ffd27a" opacity=".9"/><circle cx="' + F(cx) + '" cy="' + F(h * 0.3) + '" r="' + F(h * 0.28) + '" fill="#ffd27a" opacity=".15"/>';
+    } else if (weatherCondition === 'rain') {
+      for (let i = 0; i < 18; i++) weatherArt += '<line x1="' + F(Math.random() * w) + '" y1="' + F(Math.random() * h * 0.3) + '" x2="' + F(Math.random() * w - 4) + '" y2="' + F(Math.random() * h * 0.3 + 12) + '" stroke="#a8d8ff" stroke-width="1.5" opacity=".7"/>';
+      weatherArt += '<ellipse cx="' + F(cx) + '" cy="' + F(h * 0.25) + '" rx="' + F(w * 0.35) + '" ry="' + F(h * 0.12) + '" fill="#6b7280" opacity=".6"/>';
+    } else if (weatherCondition === 'snow') {
+      for (let i = 0; i < 20; i++) weatherArt += '<circle cx="' + F(Math.random() * w) + '" cy="' + F(Math.random() * h * 0.7) + '" r="' + F(2 + Math.random() * 3) + '" fill="#fff" opacity=".8"/>';
+      weatherArt += '<ellipse cx="' + F(cx) + '" cy="' + F(h * 0.2) + '" rx="' + F(w * 0.4) + '" ry="' + F(h * 0.1) + '" fill="#9ca3af" opacity=".5"/>';
+    } else if (weatherCondition === 'storm') {
+      weatherArt += '<ellipse cx="' + F(cx) + '" cy="' + F(h * 0.25) + '" rx="' + F(w * 0.4) + '" ry="' + F(h * 0.15) + '" fill="#4b5563" opacity=".7"/>';
+      weatherArt += '<path d="M' + F(cx) + ' ' + F(h * 0.3) + ' L' + F(cx - 8) + ' ' + F(h * 0.55) + ' L' + F(cx + 2) + ' ' + F(h * 0.5) + ' L' + F(cx - 4) + ' ' + F(h * 0.75) + '" stroke="#ffd27a" stroke-width="2.5" fill="none"/>';
+    } else if (weatherCondition === 'fog') {
+      for (let i = 0; i < 4; i++) weatherArt += '<rect x="0" y="' + F(h * (0.3 + i * 0.15)) + '" width="' + w + '" height="' + F(h * 0.08) + '" fill="#9ca3af" opacity="' + F(0.15 + i * 0.05) + '"/>';
+    } else {
+      weatherArt += '<ellipse cx="' + F(cx - w * 0.15) + '" cy="' + F(h * 0.3) + '" rx="' + F(w * 0.25) + '" ry="' + F(h * 0.1) + '" fill="#9ca3af" opacity=".6"/>';
+      weatherArt += '<ellipse cx="' + F(cx + w * 0.1) + '" cy="' + F(h * 0.25) + '" rx="' + F(w * 0.3) + '" ry="' + F(h * 0.12) + '" fill="#d1d5db" opacity=".5"/>';
+    }
+  }
+  const plate = isWeather && weatherArt ? '' : '<g filter="url(#' + id + 'r)" style="opacity:calc(0.3 + 0.7 * var(--ink-density,' + RL.dens + '))" stroke="' + RL.ink + '" stroke-width="' + F(2.4 * RL.w) + '" stroke-linejoin="round" stroke-linecap="round" fill="none">' + (PLATES[plateKind] || PLATES.Idea)(X) + '</g>';
+  if (isWeather && weatherArt) body += weatherArt;
+  else if (mots.length) body += motifSvg(mots, w, h, { P: X.P, L: X.L, G: '#f3d77a', ink: RL.ink, sw: RL.w });
   else body += '<g transform="translate(' + F(ox + (flip ? 320 * s : 0)) + ' ' + F(oy) + ')scale(' + F(flip ? -s : s) + ' ' + F(s) + ')">' + plate + '</g>';
   // glitch tears and scanlines
   for (let i = 0, n = hot ? 4 : 3; i < n; i++) {

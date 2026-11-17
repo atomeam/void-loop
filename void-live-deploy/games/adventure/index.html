@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verse Adventure · A-to-Mind</title>
+<meta name="description" content="Full-screen illustrated choose-your-own-adventure books. Branching stories with inventory, endings and save slots, on this device.">
+<meta name="verse-handoff" content="in: text; out: text">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  html,body{margin:0;background:#05050a;color:#e8e6f5;font:13px/1.5 ui-monospace,monospace;overflow:hidden}
+  #c{position:absolute;image-rendering:pixelated;background:#0b1020;touch-action:none}
+  #hud{position:absolute;left:8px;top:8px;background:#0b1020dd;border:2px solid #7aa7ff;padding:4px 8px;pointer-events:none;max-width:60vw}
+  #bar{position:absolute;right:8px;top:8px;display:flex;gap:6px;flex-wrap:wrap;max-width:46vw;align-items:center}
+  button,select{font:inherit;background:#151a33;color:#e8e6f5;border:1px solid #7aa7ff;border-radius:6px;padding:6px 9px;min-height:36px;cursor:pointer}
+  select{min-height:36px;max-width:30vw}
+  #book{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;width:min(94vw,600px);background:#0b1020f2;border:2px solid #a58bff;padding:10px 12px;max-height:46vh;overflow-y:auto}
+  #book h2{margin:0 0 4px;font-size:15px}
+  #book p{margin:6px 0}
+  #omen{opacity:.6;font-style:italic}
+  #ch{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  #ch button{text-align:left}
+  #ch button:disabled{opacity:.5;cursor:default}
+  #meta{opacity:.55;font-size:11px;margin-top:6px}
+  .hint{opacity:.65}
+</style>
+</head>
+<body>
+<canvas id="c" width="320" height="180"></canvas>
+<div id="hud">Verse Adventure · <span id="place">—</span></div>
+<div id="bar"><select id="books" aria-label="book"></select><button id="slot" type="button" title="save slot">S1</button><button id="mute" type="button">Sound on</button><button id="save" type="button">Save</button><button id="load" type="button">Load</button><button id="export" type="button">Export</button></div>
+<div id="book"><h2 id="title">—</h2><p id="prose"></p><p id="omen"></p><div id="ch"></div><div id="meta"></div></div>
+<script type="module" src="/games/adventure/app.js"></script>
+</body>
+</html>

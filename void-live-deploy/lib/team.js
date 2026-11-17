@@ -331,7 +331,7 @@ const TOOL_OF = [
   ['portchecker.co', 'port-check', 'a visitor types a host and a port and reads whether that port is open'],
   ['speedtest.sg', 'line-speed', 'a visitor starts a check and reads how fast the line is'],
   ['protopage.com', 'start-page', 'a visitor keeps a start page of their own links'],
-  ['dalyfeds.com', 'feed-reader', 'a visitor pastes a feed address and reads the latest items'],
+  ['starboard', 'feed-reader', 'a visitor pastes a feed address and reads the latest items'],
   ['everycom.store', 'shop-list', 'a visitor browses a short list of goods with a price on each'],
 ];
 /** a job whose only result is a score, a flake, or a page nobody can use */

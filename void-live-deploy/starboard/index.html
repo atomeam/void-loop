@@ -6,17 +6,16 @@
 <link rel="canonical" href="https://a-to-mind.com/starboard/">
 <title>Starboard · Verse</title>
 <meta name="verse-handoff" content="in: location; out: location, text">
-<meta name="description" content="Starboard: a live race against dalyfeds.com measured on load, then the weather, the news wire, games, PDF and Lab tools on one deck, with no trackers.">
+<meta name="description" content="Starboard: sponsor tiles and USDC visitor faucet, funded 50/50 with the treasury via x402 on Base, alongside daily tools: weather, news wire, random picks, and PDF tools. No trackers.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Starboard · Verse">
-<meta property="og:description" content="A live race against dalyfeds.com measured on load, then the weather, the news wire, games and tools on one deck, with no trackers.">
+<meta property="og:description" content="Sponsor tiles and USDC visitor faucet, funded 50/50 with the treasury via x402 on Base, alongside daily tools: weather, news wire, random picks, and PDF tools. No trackers.">
 <meta property="og:url" content="https://a-to-mind.com/starboard/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  /* a-to-mind.com/starboard/ (the tower's counterpart to dalyfeds.com, "H5 Center", 2026-11-06): a live benchmark of both sites from real fetches first,
-     then panels that reuse Verse's own weather, news, games, PDF and Lab tools. Every script and style is same-origin: the page loads no third-party tracker. */
+  /* a-to-mind.com/starboard/: sponsor tiles and USDC visitor faucet, funded 50/50 with the treasury via x402 on Base, alongside daily tools. Every script and style is same-origin: the page loads no third-party tracker. */
   :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --good: #5fd39a; --warn: #ff6b7e; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 22px 16px 40px; }
@@ -59,15 +58,7 @@
 <body>
 <main>
   <h1>Starboard</h1>
-  <p class="lede">The deck Verse built to take on dalyfeds.com: the race measured live, then the weather, the news wire, games and tools, with no trackers on board.</p>
-
-  <h2 id="race">The race, measured now</h2>
-  <div class="panel">
-    <div class="scroll"><table id="bench"><thead><tr><th>Site</th><th>Load</th><th>Page weight</th><th>Requests</th><th>Scripts</th><th>Hosts on other sites</th></tr></thead><tbody><tr><td colspan="6" class="note">Measuring both sites now…</td></tr></tbody></table></div>
-    <p class="note" id="benchHow"></p>
-    <p class="note" id="runner" hidden></p>
-    <div class="row"><button id="rerun" type="button">Load the latest</button></div>
-  </div>
+  <p class="lede">Sponsor tiles and USDC visitor faucet, funded 50/50 with the treasury via x402 on Base, alongside daily tools: weather, news wire, random picks, and PDF tools. No trackers on board.</p>
 
   <h2 id="weather">Weather</h2>
   <div class="panel">
@@ -111,7 +102,7 @@
   <h2 id="crew">Across Verse</h2>
   <div class="row"><a class="btn" href="/">Ask Verse</a><a class="btn" href="/treasury/">Treasury</a><a class="btn" href="/lab/">Lab</a><a class="btn" href="/tools/">All tools</a></div>
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/weather/">Weather</a> <a href="/news/">News</a> <a href="/random/wheel/">Wheel of names</a> <a href="/pdf/">PDF tools: merge, split, compress and edit pages</a> <a href="/tools/">All tools</a><!-- /related --></nav>
-  <footer>Starboard measures dalyfeds.com and itself from Verse's server each time you load it, with the scripts not run; the Tower's rendered row comes from a browser run and keeps its date. Weather from Open-Meteo through <a href="/weather/">Verse's weather page</a>, stories from <a href="/news/">Verse's news wire</a>. Every file on this page comes from a-to-mind.com. <a href="/">Ask Verse anything</a></footer>
+  <footer>Starboard measures itself from Verse's server each time you load it. Weather through <a href="/weather/">Verse's weather page</a>, stories from <a href="/news/">Verse's news wire</a>. Every file on this page comes from a-to-mind.com. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module" src="/starboard/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>

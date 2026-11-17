@@ -1,0 +1,33 @@
+{
+ "at": "2026-11-17T09:07:05.729Z",
+ "sha": "2a966f63e583e4705e79d5c13feba976eaebfca9",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44047186048",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look",
+  "card physics: the grabbed card comes to the front and stays there after the drop; nothing selects while dragging"
+ ],
+ "touched": [
+  ".agents/skills/verse-skills-and-3d/SKILL.md",
+  ".agents/skills/void-loop-shipping/SKILL.md",
+  ".agents/skills/void-review-hygiene/SKILL.md",
+  "AGENTS.md",
+  "docs/MAP.md",
+  "docs/PARITY/github.md",
+  "docs/PARITY/gmail.md",
+  "docs/PARITY/google-search.md",
+  "docs/PARITY/hugging-face.md",
+  "docs/PARITY/lichess.md",
+  "docs/PARITY/youtube.md",
+  "domains/void.agents.log.md",
+  "domains/void.frontier.md",
+  "growth/entries/20261117T082456Z-claude-0d5b3e8d.json",
+  "void-live-deploy/self.json"
+ ],
+ "shards": [
+  4
+ ]
+}

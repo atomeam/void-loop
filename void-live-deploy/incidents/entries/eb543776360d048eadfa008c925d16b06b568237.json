@@ -1,0 +1,28 @@
+{
+ "at": "2026-11-17T11:50:36.684Z",
+ "sha": "eb543776360d048eadfa008c925d16b06b568237",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44070946646",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look",
+  "card physics: the grabbed card comes to the front and stays there after the drop; nothing selects while dragging",
+  "verse brain: \"show me your brain\" opens one card (no figure), its twenty-nine organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
+ ],
+ "touched": [
+  "domains/void.agents.log.md",
+  "tools/bench.json",
+  "tools/card-cycle.json",
+  "tools/grow-self.state.json",
+  "void-live-deploy/self.json",
+  "void-live-deploy/skills/families.json",
+  "void-live-deploy/skills/guide.json",
+  "void-live-deploy/void.growth.json"
+ ],
+ "shards": [
+  4
+ ]
+}

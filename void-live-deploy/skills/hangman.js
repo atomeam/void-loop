@@ -6,7 +6,7 @@
 const WORDS = ['verse', 'void', 'stage', 'skill', 'timer', 'coin', 'figure', 'summon', 'blank', 'empty', 'roam', 'think', 'source', 'card', 'home'];
 
 export function isHangman(text) {
-  return /^(?:please\s+)?(?:(?:play|start|open)\s+(?:a\s+)?)?hangman(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:play|start|open)\s+(?:a\s+)?)?hangman(?:\s+(?:word|please))?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function run(text, api) {
@@ -41,7 +41,7 @@ function run(text, api) {
 
 export default {
   name: 'hangman',
-  examples: ['hangman', 'play hangman', 'start hangman'],
+  examples: ['hangman', 'play hangman', 'start hangman', 'hangman word'],
   nearMisses: ['what is hangman', 'hangman rules', 'draw hangman'],
   match(lower, text) { return isHangman(text); },
   run,

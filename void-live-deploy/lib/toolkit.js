@@ -24,7 +24,7 @@ export const TOOLS = Object.freeze({
   '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/scores/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'The Crew', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/journal/': 'Earth science journal', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
   // the Lab's tools: the one real job inside each cluster of hourly experiments (tools/lab-grade.mjs IDEAS), made into a page people come back to
   '/lab/level/': 'Spirit level', '/lab/checksum/': 'File checksum checker', '/lab/pattern/': 'Seamless pattern maker', '/lab/photo-palette/': 'Palette from a photo', '/lab/dictation/': 'Dictation', '/lab/mind-map/': 'Mind map maker',
-  // the deck built to take on dalyfeds.com (2026-11-06): a live benchmark of both sites, then weather, news, games and Lab tools on one page
+  // Starboard: a live benchmark, then weather, news, games and Lab tools on one page
   '/starboard/': 'Starboard',
   '/arcade/': 'Verse Arcade',
   // the research journal (the Versus floor for ajsonline.org, 2026-11-07): the papers, and the length of a paper an author is writing
@@ -87,7 +87,7 @@ const HAND_RELATED = Object.freeze({
   '/converter/': ['/photos/', '/pdf/', '/convert/', '/resize-image/'],
   '/news/': ['/translate/', '/notes/', '/weather/', '/local/', '/starboard/', '/journal/'],
   '/journal/': ['/news/', '/translate/', '/notes/', '/tools/'],
-  // Starboard (dalyfeds.com's counterpart): the pages its panels come from
+  // Starboard: the pages its panels come from
   '/starboard/': ['/weather/', '/news/', '/random/wheel/', '/pdf/'],
   '/arcade/': ['/learn-to-draw/', '/random/', '/music/', '/fantasy/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
@@ -221,7 +221,7 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
-  // Starboard, the deck that takes on dalyfeds.com (2026-11-06): 'starboard', 'h5 center', 'dalyfeds' open /starboard/
+  // Starboard: 'starboard', 'h5 center' open /starboard/
   [/^(?:open |show )?(?:the )?(?:starboard|h5 ?center|dalyfeds(?:\.com)?)(?: page)?$/i, () => '/starboard/'],
   // Verse Brain full screen (owner, 2026-10-30: "verse brain needs a full screen"): 'full screen brain', 'open verse brain' open /brain/ (lib/brain-ask.js)
   [{ exec: (t) => (brainFullAsk(t) ? [t] : null) }, () => '/brain/'],

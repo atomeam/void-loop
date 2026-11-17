@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-17T10:38:49.458Z",
+ "sha": "a0e66eb53020a1e4611bf9200e863f2953b98181",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44061775875",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "timesheet row: seven day boxes for Monday 12 to Sunday 18 Oct add to Total 15.5 h, and the 7x5 heatmap has 35 days where two taps raise today to level 2",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look"
+ ],
+ "touched": [
+  "tools/adventure.test.mjs",
+  "tools/words-family.test.mjs",
+  "void-live-deploy/lib/adventure.js",
+  "void-live-deploy/skills/adventure.js"
+ ],
+ "shards": [
+  4
+ ]
+}

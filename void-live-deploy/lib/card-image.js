@@ -57,7 +57,11 @@ export function fitAdds(text, w = 624) {
 export function fitLong(text, h, w = 624) {
   for (let fs = 23; fs >= LONG_MIN_FS; fs--) { const lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999); if (l.length * lh <= h) return { lines: l, fs, lh, extra: 0 }; }
   const fs = LONG_MIN_FS, lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999);
-  return { lines: l, fs, lh, extra: l.length * lh - h };
+  // clamp: never overflow; drop lines that do not fit so the card (and its PNG) never ends on a half line
+  const maxLines = Math.max(1, Math.floor(h / lh));
+  const lines = l.slice(0, maxLines);
+  if (lines.length < l.length && lines.length > 0) lines[lines.length - 1] = lines[lines.length - 1].replace(/.{0,3}$/, (m) => m.length >= 3 ? '…' : m);
+  return { lines, fs, lh, extra: 0 };
 }
 // The self card's picture (owner's redesign, 2026-10-18: the saved "What I think of myself" was a tall PNG holding every ask as raw lines, 16k
 // characters). It has the live card's shape instead: Verse's own words as a quotation with an accent bar, "How sure I am of my skills" as a bar per
@@ -135,6 +139,10 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   const aw = 664, ah = 440;
   // the card's own picture (a poster, a still), already drawn small onto a canvas by photoData(): true colour, the plate over it as a light texture
   const photo = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(String(d.photo || '')) ? d.photo : '';
+  const weatherText = String(d.text || d.title || d.name || d.typeLine || '').toLowerCase();
+  const kindLine = String(d.kind || d.typeLine || '');
+  // the same weather test artInner uses (lib/card-art.js): a condition-matched scene is drawn for these cards
+  const isWeather = /\b(weather|sky|rain|drizzle|storm|snow|fog|cloudy|sunny|clear|overcast|thunder)\b/.test(weatherText) && (/skill/i.test(kindLine) || /sky|weather/i.test(kindLine));
   const source = artSource({ photo, painting: d.painting && safeImg(d.art) }); // lib/art-source.js: the same rule as the page
   if (source === 'photo' && d.poster) {
     // a film's poster keeps its own portrait shape (owner, 2026-10-18), exactly as on the page: the poster at the left, drawn whole, with no plate, seal or texture over it, and the card's type words and new facts stacked to its right
@@ -144,10 +152,10 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
     tw.forEach((l, i) => { s += '<text x="' + tx + '" y="' + (160 + i * 34) + '" font-family="Georgia,serif" font-size="25" letter-spacing="2" fill="' + soft + '">' + esc(l) + '</text>'; });
     const y0 = 160 + tw.length * 34 + 14; if (sb.length) s += '<path d="M' + tx + ' ' + (y0 - 12) + 'h' + (704 - tx) + '" stroke="' + edge + '" stroke-width="1.5"/>';
     sb.forEach((l, i) => { s += '<text x="' + tx + '" y="' + (y0 + 20 + i * 28) + '" font-family="Georgia,serif" font-style="italic" font-size="22" fill="#e6e1d3">' + esc(l) + '</text>'; });
-  } else if (source === 'painting') s += '<image x="40" y="122" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice" href="' + safeImg(d.art) + '"/>'; // a painting is the one picture: no plate or seal under it (lib/art-source.js)
+  } else if (source === 'painting' && !isWeather) s += '<image x="40" y="122" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice" href="' + safeImg(d.art) + '"/>'; // a painting is the one picture: no plate or seal under it (lib/art-source.js)
   else if (source === 'photo') s += '<image x="40" y="122" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice" href="' + photo + '"/>'; // a real picture is the art: no plate, seal or texture over or under it (owner, 2026-10-18)
   else {
-  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '"' + '' + '>' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph, nouns: d.nouns }, { w: aw, h: ah }) + (safeImg(d.art) ? '<image href="' + safeImg(d.art) + '" x="0" y="0" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice"/>' : '') + '</svg>'; // the Art Forge's painted picture (lib/card-forge.js) over the plate when the card has one and no photo: a data URL only, so the canvas is never tainted
+  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '"' + '' + '>' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph, nouns: d.nouns, text: d.text || '' }, { w: aw, h: ah }) + (safeImg(d.art) && !isWeather ? '<image href="' + safeImg(d.art) + '" x="0" y="0" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice"/>' : '') + '</svg>'; // the Art Forge's painted picture (lib/card-forge.js) over the plate when the card has one and no photo: a data URL only, so the canvas is never tainted. A weather card keeps its condition-matched scene instead: the static painting covered the rain, snow or storm art.
   }
   s += '<rect x="40" y="122" width="' + aw + '" height="' + ah + '" fill="none" stroke="' + edge + '" stroke-width="4"/>';
   // type line

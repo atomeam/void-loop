@@ -81,16 +81,19 @@ async function playShow(text, api) {
     done();
     return true;
   }
+  // the host's own file first (untracked): the chain in front of it (This American Life: pfx.vpixl.com → dts.podtrac.com → pdst.fm →
+  // prefix.up.audio) is what a browser can refuse, and the file behind it plays. The feed's own address stays as the one retry.
+  const direct = untracked(ep.audio);
   el.innerHTML = '<h2>Podcast</h2>'
     + '<p class="hear-title" style="font-size:1.1em;margin:0 0 2px;overflow-wrap:anywhere"><b>' + escH(ep.title) + '</b></p>'
     + '<p class="hear-artist" style="margin:0 0 8px">' + escH(show.title) + (show.author ? ' · ' + escH(show.author) : '') + '</p>'
-    + '<audio class="hear-audio" controls preload="auto" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
+    + '<audio class="hear-audio" controls preload="auto" src="' + escH(direct) + '" style="display:block;max-width:100%"></audio>'
     + '<p><button type="button" class="hear-play">Play</button></p>'
     + '<div class="src">' + sourceLine(found && found.source) + '</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
   if (btn && audio) btn.addEventListener('click', () => { audio.play().catch(() => {}); });
-  // a tracking prefix the browser refuses (dts.podtrac.com, chrt.fm ...): try once more with the host's own file after it
-  if (audio) audio.addEventListener('error', () => { const plain = untracked(audio.currentSrc || audio.src); if (plain !== (audio.currentSrc || audio.src) && !audio.dataset.untracked) { audio.dataset.untracked = '1'; audio.src = plain; audio.play().catch(() => {}); } });
+  // the host's file did not play: try the feed's own address once, in case it is that host's only working door
+  if (audio && direct !== ep.audio) audio.addEventListener('error', () => { if (!audio.dataset.feedAddress) { audio.dataset.feedAddress = '1'; audio.src = ep.audio; audio.play().catch(() => {}); } });
   done();
   return true;
 }

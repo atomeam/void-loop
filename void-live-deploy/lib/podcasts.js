@@ -83,8 +83,8 @@ export function resumeAt(pos, duration) { const t = pos && +pos.t; if (!t || t <
  *  When one of them answers with an error (the browser's NotSupportedError on dts.podtrac.com and chrt.fm), the address after it is the
  *  host's own file. untracked(u) strips them (chained ones too) and returns https://<the rest>, or u unchanged when there is none. Pure. */
 const TRACKERS = [
-  /^(?:dts\.|www\.)?podtrac\.com\/(?:pts\/)?redirect\.(?:mp3|m4a|aac)\//i, /^chrt\.fm\/track\/[^/]+\//i, /^chtbl\.com\/track\/[^/]+\//i,
-  /^pdst\.fm\/e\//i, /^op3\.dev\/e(?:,[^/]*)?\//i, /^pfx\.vpixl\.com\/[^/]+\//i, /^mgln\.ai\/e\/[^/]+\//i, /^arttrk\.com\/p\/[^/]+\//i,
+  /^(?:dts\.|www\.)?podtrac\.com\/(?:pts\/)?redirect\.(?:mp3?|m4a|aac)\//i, /^chrt\.fm\/track\/[^/]+\//i, /^chtbl\.com\/track\/[^/]+\//i,
+  /^pdst\.fm\/e\//i, /^prefix\.up\.audio\/s\//i, /^op3\.dev\/e(?:,[^/]*)?\//i, /^pfx\.vpixl\.com\/[^/]+\//i, /^mgln\.ai\/e\/[^/]+\//i, /^arttrk\.com\/p\/[^/]+\//i,
   /^(?:verifi\.podscribe\.com|pscrb\.fm)\/rss\/p\//i, /^prfx\.byspotify\.com\/e\//i, /^(?:tracking\.)?swap\.fm\/track\/[^/]+\//i, /^claritaspod\.com\/measure\//i,
 ];
 export function untracked(u) {

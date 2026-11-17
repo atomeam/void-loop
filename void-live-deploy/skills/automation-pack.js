@@ -3,13 +3,13 @@
  * so the client does less building and monitoring. Reuses existing tools where possible.
  * Rules-based, offline. Nothing is sent. The card stays on the stage for the client to keep or share.
  * "automation pack for invoice reminders", "what automations will Verse own for onboarding",
- * "propose automations for the support router".
+ * "automation pack for support tickets".
  */
 export function isAutomationPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   if (!t) return false;
   return /^(?:automation|automations)\s+pack(?:\s+for)?\b/i.test(t)
-    || /^(?:propose|suggest|make|generate)\s+(?:an?\s+)?(?:automations?|jobs?)(?:\s+(?:pack|for|that))?\b/i.test(t)
+    || /^(?:propose|suggest|make|generate)\s+(?:an?\s+)?(?:automations?|jobs?)\s+pack\b/i.test(t)
     || /^(?:what|which)\s+automations?\s+(?:will|does)\s+verse\s+own\b/i.test(t);
 }
 
@@ -70,7 +70,6 @@ export default {
   examples: [
     'automation pack for invoice reminders',
     'what automations will Verse own for onboarding',
-    'propose automations for the support router',
     'make an automation pack for weekly reports',
     'automations pack for the client portal'
   ],

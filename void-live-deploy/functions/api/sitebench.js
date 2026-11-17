@@ -1,4 +1,4 @@
-// GET /api/sitebench?site=dalyfeds.com -> { at, how, rows: [the site, Verse's /starboard/ page] }, measured live (lib/sitebench.js).
+// GET /api/sitebench?site=rival -> { at, how, rows: [the rival site, Verse's /starboard/ page] }, measured live (lib/sitebench.js).
 // Only the sites in TARGETS can be measured, so this route fetches no address a caller makes up. A result is kept 10 minutes at the edge,
 // so a busy page does not refetch the other site on every visit; ?fresh=1 is ignored for that reason.
 import { TARGETS, CACHE_S, bench } from '../../lib/sitebench.js';
@@ -6,7 +6,7 @@ import { TARGETS, CACHE_S, bench } from '../../lib/sitebench.js';
 const J = (b, s = 200, h = {}) => Response.json(b, { status: s, headers: { 'cache-control': 'no-store', ...h } });
 
 export async function onRequestGet({ request }) {
-  const u = new URL(request.url), site = String(u.searchParams.get('site') || 'dalyfeds.com').toLowerCase();
+  const u = new URL(request.url), site = String(u.searchParams.get('site') || 'rival').toLowerCase();
   if (!TARGETS[site]) return J({ error: 'no such site to measure', sites: Object.keys(TARGETS) }, 404);
   const key = new Request(u.origin + '/api/sitebench?site=' + encodeURIComponent(site) + '&v=1');
   const cache = typeof caches !== 'undefined' ? caches.default : null;
