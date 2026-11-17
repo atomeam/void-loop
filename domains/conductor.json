@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-16T23:10:42.427Z",
+ "updated": "2026-11-17T01:11:30.710Z",
  "last24h": {
-  "ticks": 14,
-  "started": 25,
+  "ticks": 15,
+  "started": 28,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -17,46 +17,6 @@
   }
  ],
  "held": [
-  {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
   {
    "id": "mvvql4d9",
    "why": "no executor for route"
@@ -96,20 +56,32 @@
   {
    "id": "mwazktv3",
    "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktv9",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwditzd8",
+   "why": "no executor for route"
+  },
+  {
+   "id": "mwjmn1ay",
+   "why": "no executor for route"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 1,
+   "used": 0,
    "cap": 90
   },
   "day": {
-   "used": 360,
+   "used": 11,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-17T00:00:00.000Z",
+  "room": true,
+  "until": null,
   "paid": false
  },
  "handed": {
@@ -124,10 +96,12 @@
   "mweaah6f": 1794868396115,
   "mwey8iy6": 1794868956771,
   "mwj1to9z": 1794869520940,
-  "mwj1tox5": 1794870083131
+  "mwj1tox5": 1794870083131,
+  "mvbl52gd": 1794877890710,
+  "mveb8rsi": 1794877890710
  },
- "sweptAt": 1794867834122,
- "blueprintsAt": 1794867834122,
+ "sweptAt": 1794877890710,
+ "blueprintsAt": 1794877890710,
  "visitorAt": "2026-11-16T22:43:21Z",
  "visitorFiled": [
   "heal:helper-reuse-pack",
@@ -677,6 +651,48 @@
    "sweep": false,
    "blueprints": 0,
    "held": 23,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T01:11:30.710Z",
+   "open": 443,
+   "started": [
+    {
+     "id": "want-idea-298bf37d16",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 88
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 13,
    "warnings": 1
   }
  ]
