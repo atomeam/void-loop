@@ -151,10 +151,10 @@ export const bearer = (request) => { const m = /^Bearer (.+)$/.exec(request.head
 /** the browser suite on this machine. Production never sets PASSKEY_RP_ID, and the host must be local. */
 export function suiteOpen(request, env) {
   const host = new URL(request.url).hostname;
-  if (host === 'localhost' || host === '127.0.0.1') return true;
+  if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]') return true;
   if (host.endsWith('.pages.dev')) return true;
   if (env && env.VERSE_LOCAL_PREVIEW === '1') return true;
-  if (env && env.PASSKEY_RP_ID === 'localhost' && request.headers.get('x-verse-suite') === '1') return true;
+  if (env && env.PASSKEY_RP_ID === 'localhost' && host === 'localhost' && request.headers.get('x-verse-suite') === '1') return true;
   return false;
 }
 /** owner, Multi (paid tier), or a live Uni pass. '' for everyone else. */
