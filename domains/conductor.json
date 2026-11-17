@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T21:18:28.542Z",
+ "updated": "2026-11-17T22:06:44.458Z",
  "last24h": {
-  "ticks": 4,
-  "started": 5,
+  "ticks": 5,
+  "started": 7,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -115,7 +115,8 @@
  "handed": {
   "mva30i2e": 1794945215643,
   "mva30j4u": 1794945790941,
-  "mwa0agd2": 1794950308542
+  "mwa0agd2": 1794950308542,
+  "mwa0ah54": 1794953204458
  },
  "sweptAt": 1794950308542,
  "blueprintsAt": 1794950308542,
@@ -308,6 +309,42 @@
    "sweep": true,
    "blueprints": 0,
    "held": 26,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T22:06:44.458Z",
+   "open": 460,
+   "started": [
+    {
+     "id": "want-exam-recipes",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 41
+    },
+    {
+     "id": "mwa0ah54",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 56
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 25,
    "warnings": 1
   }
  ]
