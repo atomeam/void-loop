@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1338,
+ "counted": 1342,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 63,
-   "direct": 51,
-   "dependants": 69,
+   "skills": 64,
+   "direct": 52,
+   "dependants": 70,
    "tests": 6
   },
   {
@@ -27,7 +27,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 78,
+   "dependants": 79,
    "tests": 12
   },
   {
@@ -41,21 +41,21 @@
    "file": "lib/keeper.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 176,
+   "dependants": 177,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 31,
    "direct": 1,
-   "dependants": 176,
+   "dependants": 177,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 175,
+   "dependants": 176,
    "tests": 6
   },
   {
@@ -153,29 +153,29 @@
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 67,
+   "dependants": 68,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 66,
+   "dependants": 67,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 65,
+   "dependants": 66,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 63,
-   "tests": 4
+   "dependants": 64,
+   "tests": 5
   },
   {
    "file": "lib/sky-math.js",
@@ -188,7 +188,7 @@
    "file": "lib/qr.js",
    "skills": 14,
    "direct": 3,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 4
   },
   {
@@ -419,15 +419,22 @@
    "file": "lib/art-source.js",
    "skills": 7,
    "direct": 0,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
    "file": "lib/card-image.js",
    "skills": 7,
    "direct": 1,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 5
+  },
+  {
+   "file": "lib/card-custom-art.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/card-share.js",
@@ -1214,6 +1221,13 @@
    "tests": 2
   },
   {
+   "file": "lib/music-tools.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/video.js",
    "skills": 2,
    "direct": 2,
@@ -1985,6 +1999,13 @@
   },
   {
    "file": "lib/actions-failure.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/adventure.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3062,13 +3083,6 @@
    "tests": 1
   },
   {
-   "file": "lib/music-tools.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/page-pass.js",
    "skills": 0,
    "direct": 0,
@@ -4085,6 +4099,13 @@
   },
   {
    "file": "lib/verse-log.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/verse-world-bridge.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5682,6 +5703,12 @@
     "skills/miss-jobs.js"
    ]
   },
+  "lib/adventure.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/adventure.js"
+   ]
+  },
   "lib/agenda.js": {
    "imports": [
     "lib/calendar.js"
@@ -6211,6 +6238,7 @@
     "lib/team-crew-run.js",
     "lib/term-card.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/void-me.js",
@@ -6259,6 +6287,7 @@
     "lib/card-share.js",
     "lib/duel-rules.js",
     "lib/term-card.js",
+    "lib/verse-world-bridge.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
@@ -7807,6 +7836,7 @@
     "lib/self-context.js",
     "lib/term-card.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -7823,6 +7853,24 @@
     "skills/own-parts.js",
     "skills/showcase.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/card-custom-art.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-share.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "lib/term-card.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js",
+    "skills/rally.js"
    ]
   },
   "lib/card-deck.js": {
@@ -7902,6 +7950,7 @@
    ],
    "importedBy": [
     "lib/card-share.js",
+    "lib/verse-world-bridge.js",
     "skills/collectible.js"
    ],
    "reachedBy": [
@@ -8030,6 +8079,7 @@
   "lib/card-share.js": {
    "imports": [
     "lib/card-image.js",
+    "lib/card-custom-art.js",
     "lib/card-deck.js"
    ],
    "importedBy": [
@@ -8106,6 +8156,7 @@
     "lib/term-card.js",
     "lib/tome.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9221,6 +9272,7 @@
     "lib/stigmergy-law.js",
     "lib/term-orbits-law.js",
     "lib/tilt-arena.js",
+    "lib/verse-world-bridge.js",
     "lib/zorbleflux.js",
     "skills/crowd.js",
     "skills/feud.js"
@@ -9990,6 +10042,7 @@
     "lib/skill-confidence.js",
     "lib/term-card.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -10839,6 +10892,7 @@
     "lib/team-crew-run.js",
     "lib/term-card.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/void-me.js",
@@ -11750,6 +11804,7 @@
     "lib/team-crew-run.js",
     "lib/term-card.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/void-me.js",
@@ -12025,7 +12080,9 @@
    "imports": [],
    "importedBy": [
     "lib/music-audio.js",
-    "lib/music-ui.js"
+    "lib/music-ui.js",
+    "skills/music-tools.js",
+    "skills/video-play.js"
    ]
   },
   "lib/music-ui.js": {
@@ -13558,6 +13615,7 @@
     "lib/seo-audit.js",
     "lib/team-mcp.js",
     "lib/term-card.js",
+    "lib/verse-world-bridge.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/about-skill.js",
@@ -14344,6 +14402,7 @@
     "lib/skill-confidence.js",
     "lib/term-card.js",
     "lib/verse-log.js",
+    "lib/verse-world-bridge.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -15149,6 +15208,7 @@
     "lib/stage-port.js",
     "lib/studio-card.js",
     "skills/accessibility-modes.js",
+    "skills/adventure.js",
     "skills/anneal-ambition.js",
     "skills/approve-card.js",
     "skills/ask-clipboard.js",
@@ -16711,6 +16771,13 @@
     "functions/api/x402/index.js"
    ]
   },
+  "lib/verse-world-bridge.js": {
+   "imports": [
+    "lib/card-image.js",
+    "lib/field-kit.js"
+   ],
+   "importedBy": []
+  },
   "lib/versus-floor.js": {
    "imports": [],
    "importedBy": [
@@ -17410,6 +17477,13 @@
   "skills/actions.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/adventure.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/adventure.js"
    ],
    "importedBy": []
   },
@@ -20133,7 +20207,9 @@
    ]
   },
   "skills/music-tools.js": {
-   "imports": [],
+   "imports": [
+    "lib/music-tools.js"
+   ],
    "importedBy": []
   },
   "skills/music.js": {
@@ -22172,6 +22248,7 @@
   "skills/video-play.js": {
    "imports": [
     "lib/video.js",
+    "lib/music-tools.js",
     "skills/video.js"
    ],
    "importedBy": []

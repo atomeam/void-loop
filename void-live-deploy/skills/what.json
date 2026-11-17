@@ -2,6 +2,7 @@
  "about-skill": "\"tell me about the chess skill\", \"what is the forge skill\", \"how does your weather skill work\": a card about any skill of Verse's",
  "accessibility-modes": "Ten switches in one place, saved on this device and applied by classes and a stylesheet: spoken labels on objects, keyboard-only stage move",
  "actions": "The execution record as a card",
+ "adventure": "Choose-your-own-adventure books on the stage",
  "advice": "A random piece of advice from a public API",
  "agent-fluid-memory-orbs": "F-321, agent-fluid memory orbs: small agents run one evolved tiny MLP and push a fluid",
  "aggravation": "The classic marble race on a real star board, against 1–3 computer players",
