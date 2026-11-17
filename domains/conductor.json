@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T06:40:04.559Z",
+ "updated": "2026-11-17T06:49:24.394Z",
  "last24h": {
-  "ticks": 23,
-  "started": 51,
+  "ticks": 24,
+  "started": 53,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -120,7 +120,7 @@
   "mwdsggtv": 1794896394915,
   "mwdsgi9n": 1794896959372,
   "mwdsgj2z": 1794897604559,
-  "mweaagmp": 1794867834122,
+  "mweaagmp": 1794898164394,
   "mweaah6f": 1794868396115,
   "mwey8iy6": 1794868956771,
   "mwj1to9z": 1794869520940,
@@ -1040,6 +1040,42 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 49
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T06:49:24.394Z",
+   "open": 449,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 108
+    },
+    {
+     "id": "mweaagmp",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 48
     }
    ],
    "requeued": 0,
