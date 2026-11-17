@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T06:00:45.530Z",
+ "updated": "2026-11-17T06:10:15.961Z",
  "last24h": {
-  "ticks": 19,
-  "started": 40,
+  "ticks": 20,
+  "started": 43,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -69,11 +69,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 35,
    "cap": 90
   },
   "day": {
-   "used": 162,
+   "used": 197,
    "cap": 360
   },
   "room": true,
@@ -84,7 +84,7 @@
   "mva30i2e": 1794885767613,
   "mva30j4u": 1794887990353,
   "mwa0agd2": 1794895245530,
-  "mwa0ah54": 1794865580256,
+  "mwa0ah54": 1794895815961,
   "mwdsggtv": 1794866142231,
   "mwdsgi9n": 1794866705450,
   "mwdsgj2z": 1794867270519,
@@ -99,7 +99,8 @@
   "mveb8svc": 1794878463379,
   "mvfu4evy": 1794885767613,
   "mvpuq9g6": 1794887990353,
-  "mvpuqaee": 1794895245530
+  "mvpuqaee": 1794895245530,
+  "mvpuqb4r": 1794895815961
  },
  "sweptAt": 1794895245530,
  "blueprintsAt": 1794895245530,
@@ -860,6 +861,48 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 12,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T06:10:15.961Z",
+   "open": 447,
+   "started": [
+    {
+     "id": "want-idea-5e6497554d",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mvpuqb4r",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mwa0ah54",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 54
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 12,
    "warnings": 1
