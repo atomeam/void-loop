@@ -5714,7 +5714,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-16"
+   "at": "2026-11-17"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6306,6 +6306,20 @@
    "shell": "none",
    "weight": 124084,
    "at": "2026-10-30"
+  },
+  "goonbox.cr": {
+   "bytes": 808563,
+   "controls": 17,
+   "scripts": 2,
+   "styles": 1,
+   "nodes": 19,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3798,
+   "shell": "none",
+   "weight": 812753,
+   "at": "2026-11-17"
   },
   "gopickcolors.com": {
    "bytes": 775017,
@@ -7030,7 +7044,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 13,
+   "bytes": 15,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -7039,9 +7053,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 12,
-   "weight": 13,
-   "at": "2026-11-16"
+   "text": 14,
+   "weight": 15,
+   "at": "2026-11-17"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -10295,7 +10309,7 @@
    "shell": "none",
    "text": 37,
    "weight": 70,
-   "at": "2026-11-16"
+   "at": "2026-11-17"
   },
   "proton.me": {
    "bytes": 835896,
