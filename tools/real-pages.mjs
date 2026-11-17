@@ -682,6 +682,16 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
+// /games/roguelike/: a full-screen turn-based run with seeded rooms, telegraphs and a relic draft
+SPECS['/games/roguelike/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#seed', /Seed/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowRight'); await t.p.keyboard.press('1'); await t.p.keyboard.press('2');
+  await t.p.click('#new');
+  t.ok(true, 'movement, abilities and a new run do not throw');
+};
 // /games/merge-void/: a full-screen merge puzzle with combos, star tiles and undo
 SPECS['/games/merge-void/'] = async (t) => {
   await t.p.reload();
