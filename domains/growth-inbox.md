@@ -137,4 +137,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped a48602c72 | 2026-11-12 | time-saved skill: client-visible estimate of hours saved because Verse owns the systems, monitors and tests so the client does less chasing and we package Verse takes the hard work | new idea by growth agent; helper/time-saved |
 | shipped 876cdc9 | 2026-11-16 | process-map skill: map a business process end-to-end showing where Verse takes the hard work so the client does less | new idea by growth agent; helper/process-map (skill on main; status correction) |
 | building | 2026-11-16 | automation-proposal skill: propose concrete automations Verse handles for a process so the client does less manual work | new idea by growth agent; helper/automation-proposal |
-PLACEHOLDER_WILL_REPLACE
+| building | 2026-11-17 | handoff-ready skill: check if a system is ready for client handoff (ownership, status, docs, monitors, tests, automations) so Verse owns the final packaging and the client does less chasing | new idea by growth agent; helper/handoff-ready |
+| open | 2026-11-17 | next idea | |
