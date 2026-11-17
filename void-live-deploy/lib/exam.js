@@ -2,6 +2,7 @@
 // A domain's score is the share of objective checks a visitor's ask passed on the live page: a song's audio element advances
 // and its title matches the iTunes row, a sum on screen is the sum, a forecast is near the forecast. Nothing here is a count
 // of skills, pull requests or lesson sentences. Pure: the browser run lives in tools/exam.mjs and hands this what it saw.
+import { untracked } from './podcasts.js';
 
 export const DOMAINS = Object.freeze(['videos', 'podcasts', 'songs', 'weather', 'directions', 'recipes', 'calculator', 'news', 'sports', 'emoji', 'translate', 'units', 'maps', 'timers', 'images', 'prices', 'definitions', 'wordproblems', 'code']);
 // when two domains tie, work on the one the owner named first. The later names are the harder scale (2026-11-04).
@@ -72,16 +73,17 @@ export function askId(s) {
   return (h >>> 0).toString(16).padStart(8, '0');
 }
 
-/** the same file, whether one address is absolute and the other is a path. Pure. */
+const mediaPath = (s) => { try { return new URL(String(s || ''), 'https://a-to-mind.com').pathname; } catch (_) { return String(s || ''); } };
+
+/** the same file, whether one address is absolute and the other is a path, and whether one keeps a tracking prefix the other dropped
+ *  (the card plays the host's own file; the feed's enclosure goes through pfx.vpixl.com → dts.podtrac.com → pdst.fm → prefix.up.audio,
+ *  This American Life among them). Pure. */
 function sameMedia(src, list) {
   if (!src) return false;
-  let path = String(src);
-  try { path = new URL(src).pathname; } catch (_) { /* already a path */ }
+  const forms = new Set([String(src), untracked(src), mediaPath(src), mediaPath(untracked(src))]);
   return list.some((u) => {
     const s = String(u || '');
-    let p = s;
-    try { p = new URL(s, 'https://a-to-mind.com').pathname; } catch (_) {}
-    return s === src || (p && p === path);
+    return forms.has(s) || forms.has(mediaPath(s)) || forms.has(mediaPath(untracked(s)));
   });
 }
 const has = (text, words) => {
