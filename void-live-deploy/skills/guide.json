@@ -8223,7 +8223,7 @@
    "examples": [
     "automation pack for invoice reminders",
     "what automations will Verse own for onboarding",
-    "propose automations for the support router"
+    "make an automation pack for weekly reports"
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
@@ -8509,7 +8509,7 @@
    "title": "Automation proposal",
    "line": "Propose concrete automations Verse will own for a process so the client does less manual work, tracking and chasing",
    "examples": [
-    "propose automations for client onboarding",
+    "propose automations for a new client",
     "what automations for invoice reminders",
     "automation proposal for support tickets"
    ],
@@ -12178,7 +12178,7 @@
     {
      "rank": 385,
      "name": "automation-proposal",
-     "catches": "propose automations for client onboarding"
+     "catches": "propose automations for a new client"
     },
     {
      "rank": 386,
