@@ -11,6 +11,13 @@
  },
  "runs": [
   {
+   "at": "2026-11-17T07:31:13Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
    "at": "2026-11-17T07:05:14Z",
    "passed": 0,
    "of": 0,
@@ -165,40 +172,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-16T03:16:21Z",
-   "passed": 121,
-   "of": 127,
-   "kind": "grow",
-   "ms": 354,
-   "note": "new ground passed, kept as a regression case: \"scope pack for the invoice automation\" (skill:scope-pack)",
-   "failed": [
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "attention field",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo films by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "style like mickey mouse pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "how do i magnetize this?",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "sales pack for client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -264,7 +237,7 @@
   },
   {
    "from": "2026-11-03",
-   "runs": 170,
+   "runs": 169,
    "passed": 4224,
    "of": 5901,
    "broken": 14,
@@ -274,7 +247,7 @@
   },
   {
    "from": "2026-11-10",
-   "runs": 130,
+   "runs": 131,
    "passed": 1895,
    "of": 1984,
    "ms": 373

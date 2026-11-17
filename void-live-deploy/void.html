@@ -5181,7 +5181,7 @@ say('nothing selected to remove');
     // card-share and every module it reaches, all asked for at once at page start: imported level by level, its four levels queued behind the
     // skill files the lanes had in flight, and every ask waits for it before it is routed (watchdog #110: on a busy page it arrived 5 to 6 s in)
     // share-libs: tools/preload.mjs /lib/card-share.js
-    const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js'];
+    const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js', '/lib/card-custom-art.js'];
     for (const p of SHARE_LIB_GRAPH.slice(1)) import(p).catch(() => null);
     const shareReady = lazyImport(() => import('/lib/card-share.js').catch(() => null));
     const pasteReady = lazyImport(() => import('/lib/paste-kind.js').catch(() => null)); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)

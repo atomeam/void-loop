@@ -46,7 +46,7 @@ export function nounsOf(text, max = 6) {
   const seen = new Map(); let i = 0;
   // names (a Title Case run in mid-sentence, like a film's title) are not subjects to paint: cut them out first
   const bare = String(text || '').replace(/(?<=[a-z,;:("'] )[A-Z][a-z]+(?:(?: (?:of|the|to|and|in|a|for|at|on) | )[A-Z][a-z]+)*/g, ' ');
-  for (const w of bare.toLowerCase().replace(/https?:\/\/\S+/g, ' ').match(/[a-z]{4,16}|\b(?:car|cars|apr)\b/g) || []) { // car and apr are the short words the car and loan motifs need (the rest of the 3-letter words stay out)
+  for (const w of bare.toLowerCase().replace(/https?:\/\/\S+/g, ' ').match(/[a-z]{4,16}|\b(?:car|cars|apr|cat|sun|sea)\b/g) || []) { // the short words that have a motif (car, apr: finance; cat: the cat motif; sun, sea: the sun and wave motifs); the other 3-letter words stay out (key, day: too common in prose)
     if (STOP.has(w)) continue; const k = stem(w), e = seen.get(k) || { w, n: 0, at: i++ }; e.n++; seen.set(k, e);
   }
   // a word with a motif counts double: "hand" and "spirits" beat "teenagers" and "grief" as what to draw
