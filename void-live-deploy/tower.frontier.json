@@ -6435,12 +6435,12 @@
   },
   {
    "site": "firefox-portal-detection.com",
-   "rank": 204,
+   "rank": 179,
    "controls": 0,
    "bytes": 8,
    "hardness": null,
    "title": "success",
-   "small": "2026-11-06",
+   "small": "2026-11-16",
    "plain": true
   },
   {
@@ -6454,31 +6454,31 @@
   },
   {
    "site": "icanhazip.com",
-   "rank": 253,
+   "rank": 272,
    "controls": 0,
-   "bytes": 15,
+   "bytes": 13,
    "hardness": null,
-   "title": "48.217.180.210",
-   "small": "2026-11-06",
+   "title": "52.188.87.11",
+   "small": "2026-11-16",
    "plain": true
   },
   {
    "site": "mega.co.nz",
-   "rank": 572,
+   "rank": 539,
    "controls": 0,
    "bytes": 554,
    "hardness": null,
    "title": "MEGA",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "example.com",
-   "rank": 177,
+   "rank": 185,
    "controls": 0,
    "bytes": 577,
    "hardness": null,
    "title": "Example Domain",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "uisp.com",
@@ -6500,48 +6500,48 @@
   },
   {
    "site": "samsunghealth.com",
-   "rank": 3263,
+   "rank": 3235,
    "controls": 0,
    "bytes": 989,
    "hardness": null,
    "title": "Samsung Health",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "netcraze.io",
-   "rank": 444,
+   "rank": 458,
    "controls": 0,
    "bytes": 1016,
    "hardness": null,
    "title": "CrazeDNS",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "bttrack.com",
-   "rank": 3268,
+   "rank": 3274,
    "controls": 0,
-   "bytes": 1719,
+   "bytes": 1720,
    "hardness": null,
    "title": "Tracking API",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "archive.org",
-   "rank": 153,
+   "rank": 147,
    "controls": 0,
    "bytes": 2046,
    "hardness": null,
    "title": "Internet Archive: Digital Library of Free &amp; Borrowable Texts, Movies, Music ",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "slideshare.net",
-   "rank": 557,
+   "rank": 568,
    "controls": 0,
    "bytes": 3038,
    "hardness": null,
    "title": "Client Challenge",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "dalyfeds.com",
@@ -6554,30 +6554,30 @@
   },
   {
    "site": "disqus.com",
-   "rank": 922,
+   "rank": 924,
    "controls": 0,
    "bytes": 6034,
    "hardness": null,
    "title": "&num;1 in audience engagement and community growth &vert; Disqus",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "myfritz.net",
-   "rank": 59,
+   "rank": 62,
    "controls": 0,
    "bytes": 6885,
    "hardness": null,
    "title": "MyFRITZ!Net",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "kahoot.it",
-   "rank": 3202,
+   "rank": 2632,
    "controls": 0,
-   "bytes": 7198,
+   "bytes": 7195,
    "hardness": null,
    "title": "Kahoot!",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "gosuslugi.ru",
@@ -6590,21 +6590,21 @@
   },
   {
    "site": "skybridge.click",
-   "rank": 141,
+   "rank": 170,
    "controls": 0,
    "bytes": 13100,
    "hardness": null,
    "title": "ООО&nbsp;\"СМП-74\"",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "tinyurl.com",
-   "rank": 296,
+   "rank": 306,
    "controls": 0,
    "bytes": 13866,
    "hardness": null,
    "title": "URL Shortener, Branded Short Links & Analytics | TinyURL",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "adsco.re",
@@ -6617,12 +6617,12 @@
   },
   {
    "site": "cloudflareinsights.com",
-   "rank": 315,
+   "rank": 320,
    "controls": 1,
    "bytes": 498,
    "hardness": null,
    "title": "Learn more about Cloudflare Web Analytics",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "registrar-servers.com",
@@ -6631,97 +6631,97 @@
    "bytes": 2031,
    "hardness": null,
    "title": "Home - registrar-servers.com",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "onetag-sys.com",
-   "rank": 890,
+   "rank": 892,
    "controls": 2,
    "bytes": 923,
    "hardness": null,
    "title": "OneTag Advertising System",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "astrumu.io",
-   "rank": 179,
+   "rank": 187,
    "controls": 2,
    "bytes": 985,
    "hardness": null,
    "title": "astrumu.io",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "google.cn",
-   "rank": 377,
+   "rank": 383,
    "controls": 2,
    "bytes": 1408,
    "hardness": null,
    "title": "Google",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "share.google",
-   "rank": 523,
+   "rank": 513,
    "controls": 3,
    "bytes": 2016,
    "hardness": null,
    "title": "share.google",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "g.co",
-   "rank": 770,
+   "rank": 776,
    "controls": 3,
    "bytes": 2190,
    "hardness": null,
    "title": "g.co",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "amazon.co.uk",
-   "rank": 329,
+   "rank": 333,
    "controls": 3,
    "bytes": 3805,
    "hardness": null,
    "title": "Amazon.co.uk",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "amazon.de",
-   "rank": 379,
+   "rank": 386,
    "controls": 3,
    "bytes": 3817,
    "hardness": null,
    "title": "Amazon.de",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "live-video.net",
-   "rank": 401,
+   "rank": 391,
    "controls": 4,
    "bytes": 2180,
    "hardness": null,
    "title": "Amazon.com Property",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "dns.google",
-   "rank": 384,
+   "rank": 389,
    "controls": 5,
    "bytes": 1381,
    "hardness": null,
    "title": "Google Public DNS",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "vivoglobal.com",
-   "rank": 887,
+   "rank": 911,
    "controls": 5,
    "bytes": 2252,
    "hardness": null,
    "title": "维沃移动通信有限公司",
-   "small": "2026-11-06"
+   "small": "2026-11-16"
   },
   {
    "site": "everycom.store",
@@ -7496,6 +7496,177 @@
    "bytes": 12600,
    "hardness": null,
    "title": "VokaGalaxy - Space MMORPG",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "missena.io",
+   "rank": 3648,
+   "controls": 0,
+   "bytes": 65,
+   "hardness": null,
+   "title": "No Content",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "expressapisv2.net",
+   "rank": 2568,
+   "controls": 0,
+   "bytes": 319,
+   "hardness": null,
+   "title": "mylxkwjviuhtgsfreqdpcobnamylxkwjviuhtgsfreqdpcobnamylxkwjviu",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "zmaticoo.com",
+   "rank": 4309,
+   "controls": 0,
+   "bytes": 696,
+   "hardness": null,
+   "title": "zMaticoo",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "pananames.com",
+   "rank": 3638,
+   "controls": 0,
+   "bytes": 1884,
+   "hardness": null,
+   "title": "Domain Registration - Register domain name at Pananames",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "dataprivacyframework.gov",
+   "rank": 3254,
+   "controls": 0,
+   "bytes": 2116,
+   "hardness": null,
+   "title": "Data Privacy Framework",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "heytapimg.com",
+   "rank": 4277,
+   "controls": 0,
+   "bytes": 2596,
+   "hardness": null,
+   "title": "HeyTap",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "playrix.com",
+   "rank": 995,
+   "controls": 0,
+   "bytes": 3024,
+   "hardness": null,
+   "title": "Playrix",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "eye4.cn",
+   "rank": 459,
+   "controls": 0,
+   "bytes": 5451,
+   "hardness": null,
+   "title": "小鹰掌中视界",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "like.video",
+   "rank": 3051,
+   "controls": 0,
+   "bytes": 7139,
+   "hardness": null,
+   "title": "Likee - Short Video Community",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "fflivegame.com",
+   "rank": 1948,
+   "controls": 0,
+   "bytes": 11337,
+   "hardness": null,
+   "title": "FFLivegame",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "photofolio.com",
+   "rank": 3184,
+   "controls": 0,
+   "bytes": 14765,
+   "hardness": null,
+   "title": "PhotoFolio®: Design A Website",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "co.com",
+   "rank": 2757,
+   "controls": 1,
+   "bytes": 255,
+   "hardness": null,
+   "title": "co.com",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "haxx.se",
+   "rank": 3012,
+   "controls": 1,
+   "bytes": 1364,
+   "hardness": null,
+   "title": "Haxx",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "registry.in",
+   "rank": 4273,
+   "controls": 1,
+   "bytes": 2519,
+   "hardness": null,
+   "title": "Registry",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "mega.nz",
+   "rank": 1918,
+   "controls": 2,
+   "bytes": 2525,
+   "hardness": null,
+   "title": "MEGA",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "jftechws.com",
+   "rank": 3948,
+   "controls": 3,
+   "bytes": 3295,
+   "hardness": null,
+   "title": "浙江杰峰物联股份有限公司",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "heytapmobi.com",
+   "rank": 1009,
+   "controls": 3,
+   "bytes": 4449,
+   "hardness": null,
+   "title": "广东欢太科技有限公司",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "tns-counter.ru",
+   "rank": 3863,
+   "controls": 3,
+   "bytes": 4638,
+   "hardness": null,
+   "title": "Интернет-счетчик tns-counter.ru",
+   "small": "2026-11-16"
+  },
+  {
+   "site": "ts.net",
+   "rank": 3764,
+   "controls": 4,
+   "bytes": 7718,
+   "hardness": null,
+   "title": "What is ts.net?",
    "small": "2026-11-16"
   }
  ]

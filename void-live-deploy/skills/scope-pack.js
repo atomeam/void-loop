@@ -57,7 +57,7 @@ async function run(text, api) {
   return 'scope-pack';
 }
 
-export const builtWith = ['ownership-pack', 'system-plan', 'full-handoff', 'client-offer'];
+export const builtWith = ['ownership-pack', 'full-handoff', 'client-offer'];
 export default {
   name: 'scope-pack',
   examples: [

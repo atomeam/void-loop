@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 22,
+ "count": 23,
  "skills": {
   "experiments": [
    "toolkit"
@@ -17,7 +17,6 @@
   ],
   "scope-pack": [
    "ownership-pack",
-   "system-plan",
    "full-handoff",
    "client-offer"
   ],
@@ -91,15 +90,6 @@
    "verify-pack",
    "full-handoff"
   ],
-  "system-plan": [
-   "client-intake",
-   "system-slice",
-   "ownership-pack",
-   "reuse-pack",
-   "full-handoff",
-   "verify-pack",
-   "monitor-pack"
-  ],
   "roi-pack": [
    "time-saved",
    "status-digest",
@@ -134,6 +124,21 @@
    "reliability-pack",
    "status-digest",
    "system-status"
+  ],
+  "automation-proposal": [
+   "client-intake",
+   "monitor-pack",
+   "verify-pack",
+   "delivery-pack",
+   "full-handoff"
+  ],
+  "process-map": [
+   "client-intake",
+   "idea-to-system",
+   "connect-pack",
+   "verify-pack",
+   "monitor-pack",
+   "delivery-pack"
   ]
  }
 }
