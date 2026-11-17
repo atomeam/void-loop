@@ -1,15 +1,15 @@
 {
- "at": "2026-11-16T17:08:23.719Z",
+ "at": "2026-11-17T16:56:38.240Z",
  "share": {
-  "loop": 66,
-  "outside": 487,
-  "bot": 118,
-  "of": 553,
+  "loop": 73,
+  "outside": 538,
+  "bot": 125,
+  "of": 611,
   "share": 11.9
  },
  "pick": {
   "kind": "exam",
-  "id": "weather",
-  "why": "lowest exam domain weather at 82.4"
+  "id": "sports",
+  "why": "lowest exam domain sports at 91.7"
  }
 }
