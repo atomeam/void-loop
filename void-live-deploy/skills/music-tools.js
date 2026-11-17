@@ -7,19 +7,8 @@
  * "make me a song" stays with the music skill. Made with tools/new-skill.mjs (docs/UPGRADING.md).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { chordOf, chordMidi, freqOfMidi } from '../lib/music-tools.js';
+import { chordMidi, chordToken, freqOfMidi } from '../lib/music-tools.js';
 const NOTE = '[a-g][#b]?';
-// word forms ("D minor 9") collapse to suffixes ("Dm9") before the chord is looked up; the lookup itself validates, so junk never matches.
-const WORDS = { minor9: 'm9', major9: 'maj9', minor7: 'm7', major7: 'maj7', minor: 'm', major: '', diminished: 'dim', augmented: 'aug', min9: 'm9' };
-/** { root, type, symbol } for a token like "Dm9" or "D minor 9"; null when lib/music-tools.js knows no such chord. Pure. */
-export function chordToken(tok) {
-  const s = String(tok || '').toLowerCase().replace(/\s+/g, '');
-  const m = /^([a-g][#b]?)(.*)$/.exec(s);
-  if (!m) return null;
-  const type = Object.prototype.hasOwnProperty.call(WORDS, m[2]) ? WORDS[m[2]] : m[2];
-  const c = chordOf(m[1].toUpperCase(), type);
-  return c ? { root: m[1].toUpperCase(), type, symbol: c.symbol, name: c.name, notes: c.notes } : null;
-}
 const PAGES = [['/metronome/', 'Metronome', 'tap tempo, accents, subdivisions, 9 sounds, a timer and setlists'], ['/piano/', 'Piano', 'computer keys, touch and MIDI, 12 instruments, sustain, sheets'], ['/tuner/', 'Tuner', 'microphone, guitar, bass, ukulele, violin and more'], ['/bpm/', 'BPM counter', 'tap to the beat, note lengths, the tempo of a file'], ['/chords/', 'Chords and scales', 'finder, guitar shapes, keys and the circle of fifths'], ['/music/', 'Setlists and catalogue', 'saved tempos, tempo words, practice recommendations']];
 const RULES = [
   [new RegExp('^(?:an? |the |online |free )*metronome(?: (?:at|for))? ?(\\d{2,3}) ?(?:bpm)?(?: (\\d{1,2}/\\d{1,2}))?$|^(\\d{2,3}) ?bpm ?(?:(\\d{1,2}/\\d{1,2}) ?)?metronome$', 'i'), (m) => ['/metronome/?bpm=' + (m[1] || m[3]) + (m[2] || m[4] ? '&sig=' + encodeURIComponent(m[2] || m[4]) : ''), 'Metronome at ' + (m[1] || m[3]) + ' BPM' + (m[2] || m[4] ? ' in ' + (m[2] || m[4]) : '')]],

@@ -33,10 +33,11 @@ test('each ask opens its page on the thing asked', () => {
   assert.deepEqual(open('d minor 9 chord').slice(0, 2), ['/chords/?chord=Dm9', 'Dm9 chord']);
 });
 test('playing a chord at a custom pitch deals a synth card with its true frequencies', async () => {
+  const { chordToken } = await import('../void-live-deploy/lib/music-tools.js');
   const lib = await import('../void-live-deploy/skills/music-tools.js');
-  assert.deepEqual(lib.chordToken('D minor 9'), { root: 'D', type: 'm9', symbol: 'Dm9', name: 'D minor 9th', notes: ['D', 'F', 'A', 'C', 'E'] });
-  assert.equal(lib.chordToken('guitar'), null);
-  assert.equal(lib.chordToken('the'), null);
+  assert.deepEqual(chordToken('D minor 9'), { root: 'D', type: 'm9', symbol: 'Dm9', name: 'D minor 9th', notes: ['D', 'F', 'A', 'C', 'E'] });
+  assert.equal(chordToken('guitar'), null);
+  assert.equal(chordToken('the'), null);
   // D minor 9 at A4 = 432 Hz: A itself lands on 432, everything else scales by 432/440
   assert.deepEqual(lib.chordFreqs('D', 'm9', 432), [288.3, 342.9, 432, 513.7, 647.3]);
   assert.deepEqual(lib.chordFreqs('D', 'm9', 440), [293.7, 349.2, 440, 523.3, 659.3]);

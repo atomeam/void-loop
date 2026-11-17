@@ -4,16 +4,20 @@
  * video search that plays the first hit inline.
  */
 import { videoAskOf } from '../lib/video.js';
+import { chordToken } from '../lib/music-tools.js';
 import { runAsk } from './video.js';
 export default {
   name: 'video-play',
   examples: ['play despacito', 'watch the apollo 11 landing', 'put on lofi hip hop'],
   nearMisses: ['play chess', 'play a game', 'play music', 'play with me'],
   // "play my cards" / "play my deck" is the card table's (skills/rally.js), not a video. Specific game asks go to their own skills.
+  // a named chord Verse plays itself (skills/music-tools.js) is not a video search; tutorials ("play chord tutorial") stay video.
   match(lower, text) {
     const t = String(lower || text || '').toLowerCase().trim();
     if (/\bplay\s+(?:my|our|your)\s+(?:cards?|deck|hand)\b/.test(t)) return false;
     if (/^(?:play|let'?s play)\s+(?:gap glide|cross the bus|debris field|null waves|packet maze|jump stack|stackwell|push packets|nine grid|glyph verse|three alike|token stand)\b/.test(t)) return false;
+    const cm = /^play\s+(?:a\s+|an\s+|the\s+)?(.+?)\s+chords?(?:\s+at\s+(\d{2,4})\s*hz)?$/.exec(t);
+    if (cm && chordToken(cm[1])) return false;
     const q = videoAskOf(text || lower, { late: true });
     return !!q && q.kind === 'play' && !q.video;
   },
