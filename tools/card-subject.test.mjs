@@ -2,7 +2,7 @@
 // Run: node --test tools/card-subject.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { subjectOf, nounsOf, motifsFor, motifSvg } from '../void-live-deploy/lib/card-subject.js';
+import { subjectOf, nounsOf, motifsFor, motifSvg, skillSubjectOf } from '../void-live-deploy/lib/card-subject.js';
 import { artInner } from '../void-live-deploy/lib/card-art.js';
 
 const ANSWER = 'Try Talk to Me (2022), a horror film for teens where friends use an embalmed hand to speak with spirits. Each time the hand is held, a spirit takes over, and the hand becomes a danger. Teens, grief and the hand are the heart of the film.';
@@ -43,6 +43,13 @@ test('a car loan card draws a car and a loan ledger, not the generic plate (owne
   assert.deepEqual(motifsFor(['mortgage', 'rate']), ['loan']); assert.deepEqual(motifsFor(['savings', 'interest']), ['loan']);
   assert.deepEqual(motifsFor(['stock']), ['chart'], 'money words that were not car or loan keep their chart');
   for (const m of ['car', 'loan']) assert.ok(motifSvg([m], 100, 100, { P: '#fff', L: '#ccc', G: '#fc0', ink: '#000', sw: 1 }).includes('<path'), m);
+});
+
+test('a skill card draws its own subject only when its name has a drawing: a "Cat" card draws a cat, "Snake" keeps the skill glyph (2026-11-17)', () => {
+  const cat = skillSubjectOf('Cat'); assert.deepEqual(motifsFor(cat.nouns), ['cat']);
+  assert.ok(artInner({ key: 'Cat', kind: 'Skill', glyph: true, nouns: cat.nouns }).includes('M16 44L20 6'), 'the cat drawing, not the glyph');
+  assert.deepEqual(skillSubjectOf('Snake'), { nouns: [], phrase: '' }, 'no drawing: the glyph stays');
+  assert.deepEqual(skillSubjectOf(''), { nouns: [], phrase: '' });
 });
 
 test('a short noun with a motif is read: "Cat" draws a cat, "sun" and "sea" draw theirs; common short words (key, day) are not subjects (owner, 2026-11-17)', () => {

@@ -61,6 +61,11 @@ export function subjectOf(title, text) {
   if (isStatusCard(text)) n = n.filter((w) => (WORD_MOTIF[w] || WORD_MOTIF[stem(w)]) !== 'warning');
   return { nouns: n, phrase: n.join(' ') };
 }
+/** a skill card's subject: its own name's words, only when one of them has a drawing (a "Cat" card draws a cat); otherwise none, so the skill glyph stays. Pure. */
+export function skillSubjectOf(name) {
+  const ws = String(name || '').toLowerCase().match(/[a-z]{3,16}/g) || [];
+  return motifsFor(ws).length ? { nouns: ws, phrase: ws.join(' ') } : { nouns: [], phrase: '' };
+}
 /** the motif names (at most 3, no repeats) for a list of nouns, in order. Pure. */
 export function motifsFor(nouns) { const out = []; for (const w of nouns || []) { const m = WORD_MOTIF[w] || WORD_MOTIF[stem(w)]; if (m && !out.includes(m) && out.length < 3) out.push(m); } return out; }
 

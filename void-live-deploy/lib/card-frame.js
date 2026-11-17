@@ -18,7 +18,7 @@ import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
 import { sealArt, SEAL_CSS } from './void-seal.js';
-import { subjectOf, motifsFor } from './card-subject.js';
+import { subjectOf, motifsFor, skillSubjectOf } from './card-subject.js';
 import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Verse)
 import { artSource } from './art-source.js';
 import { sectionsOf } from './card-sections.js';
@@ -310,7 +310,7 @@ export function keep(el, esc, stats) {
   // (its source's thumbnail), the art box shows that picture in its true colour (owner, 2026-10-17: the ink filter stripped a poster's colour), under a light ink texture; with none, the plate of its kind
   const photoImg = [...el.querySelectorAll('img[src]')].find((i) => !i.closest('.vc-art') && /^https:\/\//.test(i.getAttribute('src') || '')), photo = photoImg ? photoImg.getAttribute('src') : '';
   // the card's subject is what its ANSWER is about (lib/card-subject.js), not the ask's words: the plate draws it, the Art Forge paints it
-  const subj = c.isSkill || own || notFound ? { nouns: [], phrase: '' } : subjectOf(c.key, answerText(el)); c.nouns = subj.nouns; el._vcSubject = subj.phrase;
+  const subj = own || notFound ? { nouns: [], phrase: '' } : c.isSkill ? skillSubjectOf(c.key) : subjectOf(c.key, answerText(el)); c.nouns = subj.nouns; el._vcSubject = subj.phrase;
   const key = JSON.stringify([c.key, c.nouns, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.artKind, c.artHue, c.artInk, c.rarity && c.rarity.name, c.hue, photo, c.badges, c.notice, c.theme]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
