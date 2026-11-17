@@ -49,7 +49,7 @@
    "published": "2026-10-15"
   },
   {
-   "id": "one-time-fix",
+   "id": "one-time-fix-automation",
    "name": "Automation Cleanup (One-Time Fix)",
    "cents": 2500,
    "kind": "service",
