@@ -26,6 +26,31 @@ const clock = (i, n) => i % 4 ? circle(i, n) : [Math.sin(i * .7) * .35, Math.cos
 const SHAPES = { sphere, torus, cube, star, heart, wave, sun, cat, brain, time: clock, fly: (i, n) => { const t = (i / n) * TAU; return [Math.sin(t * 6) * .7, Math.cos(t) * .5, Math.cos(t * 6) * .5]; } };
 const ALIAS = { sea: 'wave', ocean: 'wave', water: 'wave', dog: 'cat', animal: 'cat', love: 'heart', code: 'cube', build: 'cube', world: 'sphere', planet: 'sphere', orbit: 'torus', ring: 'torus', sun: 'sun', star: 'star', verse: 'star' };
 
+/** Consecutive searches keep their own slice of the field instead of replacing the last one. */
+export function createConstellation(total, per = 140, max = 6) {
+  var shapes = [], preview = null, cursor = 0;
+  var offset = (i) => { var a = i * 2.399963, r = .28 + .11 * Math.min(i, 5); return [Math.cos(a) * r, Math.sin(a) * r, ((i % 3) - 1) * .18]; };
+  var slice = (points, at, center) => { var k = 0, m = points.length / 3;
+    for (var i = at; i < at + per && i < total; i++, k++) { var j = (k % m) * 3, p = i * 3; atSlice[p] = points[j] + center[0]; atSlice[p + 1] = points[j + 1] + center[1]; atSlice[p + 2] = points[j + 2] + center[2]; } };
+  var atSlice = new Float32Array(total * 3);
+  return {
+    get shapes() { return shapes.slice(); },
+    get length() { return shapes.length; },
+    offset: offset,
+    preview: function (text, points) { preview = { label: wordOf(text), points: points, center: offset(shapes.length) }; },
+    lock: function () { if (preview) { shapes.push({ label: preview.label, points: preview.points, center: preview.center, createdAt: Date.now() }); preview = null; if (shapes.length > max) shapes.shift(); } },
+    dropPreview: function () { preview = null; },
+    clear: function () { shapes = []; preview = null; cursor = 0; },
+    assign: function (target, base) {
+      atSlice.set(base);
+      for (var s = 0; s < shapes.length; s++) slice(shapes[s].points, (s * per) % Math.max(1, total - per), shapes[s].center);
+      if (preview) slice(preview.points, (shapes.length * per) % Math.max(1, total - per), preview.center);
+      target.set(atSlice.subarray(0, target.length));
+      return target;
+    }
+  };
+}
+
 /** Resolve text to a normalized point cloud of exactly `count` points. Inject a canvas factory for glyph fallback. Pure apart from that injection. */
 export function pointsFor(text, count, makeCanvas) {
   const out = new Float32Array(Math.max(1, count) * 3);

@@ -7605,13 +7605,13 @@ say('nothing selected to remove');
     var N = Math.max(5000, Math.min(46000, Math.round(area / 27 * gpu))), data = new Float32Array(N * 3);
     for (var i = 0; i < N; i++) { var r = Math.sqrt(Math.random()), t = Math.random() * 6.283185; data[i * 3] = Math.cos(t) * r; data[i * 3 + 1] = Math.sin(t) * r; data[i * 3 + 2] = Math.random(); }
     var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
-    var base = data.slice(), vel = new Float32Array(N * 3), target = null, morphOn = false, debounce = 0, shapes = null;
-    import('/lib/void-shapes.js').then(function (m) { shapes = m; }).catch(function () {});
-    function setShape(text) { if (!shapes) return; var p = shapes.pointsFor(text, Math.min(800, N)), m = Math.max(1, p.length / 3);
-      if (!target) target = new Float32Array(N * 3);
-      for (var i = 0; i < N; i++) { var j = (i % m) * 3; target[i * 3] = p[j]; target[i * 3 + 1] = p[j + 1]; target[i * 3 + 2] = p[j + 2]; }
-      morphOn = true; kick(); }
-    function releaseShape() { if (!target) return; target.set(base); morphOn = true; kick(); }
+    var base = data.slice(), vel = new Float32Array(N * 3), target = null, morphOn = false, debounce = 0, shapes = null, con = null;
+    import('/lib/void-shapes.js').then(function (m) { shapes = m; con = m.createConstellation(N, 140, 6); }).catch(function () {});
+    function formTarget() { if (!con) return; if (!target) target = new Float32Array(N * 3); con.assign(target, base); morphOn = true; kick(); }
+    function previewShape(text) { if (!shapes || !con) return; con.preview(text, shapes.pointsFor(text, 140)); formTarget(); }
+    function lockShape() { if (!con) return; con.lock(); formTarget(); }
+    function releasePreview() { if (!con) return; con.dropPreview(); formTarget(); }
+    function calmField() { if (!con) return; con.clear(); formTarget(); }
     var loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
     var U = function (k) { return gl.getUniformLocation(pr, k); }, uR = U('uR'), uP = U('uP'), uW = U('uW'), uG = U('uG'), uD = U('uD');
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -7639,9 +7639,9 @@ say('nothing selected to remove');
     function wire() {
       var inp = document.getElementById('input'), row = document.getElementById('row'), go = document.getElementById('go');
       if (inp) inp.addEventListener('input', function () { tGlow = .6; if (!mobile) kick();
-        clearTimeout(debounce); debounce = setTimeout(function () { var v = inp.value.trim(); if (v) setShape(v); else releaseShape(); }, 80);
+        clearTimeout(debounce); debounce = setTimeout(function () { var v = inp.value.trim(); if (v) previewShape(v); else releasePreview(); }, 80);
       });
-      function submit() { if (reduce.matches) return; waveAt = performance.now(); tGlow = 1; kick(); }
+      function submit() { if (reduce.matches) return; waveAt = performance.now(); tGlow = 1; kick(); var v = inp && inp.value.trim(); if (v) lockShape(); else calmField(); }
       if (row) row.addEventListener('submit', submit);
       if (inp) inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
       if (go) go.addEventListener('click', submit);
