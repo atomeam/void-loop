@@ -608,8 +608,7 @@
     html.no-gl[data-fx="nebula"] body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
       background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 70%, #1a1030), transparent 70%),
                   radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 60%, #06202a), transparent 70%);
-      filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
-    @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
+      filter: blur(40px); opacity: .7; }
     #stage { perspective: 1400px; }
     #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
     .thing:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 3px; } /* a card the keyboard reached shows it */
@@ -666,8 +665,7 @@
         radial-gradient(38vmax 30vmax at var(--dx, 50%) var(--dy, 42%), color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 55%, #1a2350 45%) 0%, transparent 70%),
         radial-gradient(60vmax 45vmax at 50% 118%, rgba(40,52,110,.16), transparent 70%),
         radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
-      opacity: .55; animation: depthBreath 14s steps(70) infinite alternate; will-change: transform, opacity; } /* steps: ~5 redraws a second, too slow a drift to see the steps; a smooth 60 fps breath made every keystroke wait an extra frame (2026-10-10) */
-    @keyframes depthBreath { to { opacity: .8; transform: scale(1.04); } }
+      opacity: .55; will-change: opacity; }
     /* film grain dithers the dark gradient so it never bands into rings */
     #void-depth::after { content: ''; position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -1041,52 +1039,11 @@
       --d-lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42), 0 60px 120px rgba(0,0,0,.55);
       --d-ease-out: cubic-bezier(.16,1,.3,1); --d-spring: cubic-bezier(.34,1.56,.64,1);
     }
-    /* the default void (Adam 2026-10-15: "a beautiful Verse by default ... puts people in awe"; no grids, no synthwave floor ever):
-       deep space, a slowly breathing event-horizon glow at the centre, a soft oval pool of light where cards arrive, star dust from the
-       two star canvases. Transforms and opacity only (GPU-composited, no layout, no per-frame JS); CSS animations pause with the tab. */
-    /* celestial-sync: the nebula and ring tint follow the visitor's local hour (set on <html> by the script below, on the device only, no
-       network, nothing stored) and the real sky's glow when sky-rules has one (--sky-glow) */
-    :root { --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1; }
-    html[data-phase="dawn"] { --neb-a: 190 90 140; --neb-b: 230 150 90; }
-    html[data-phase="day"]  { --neb-a: 70 120 210; --neb-b: 60 170 200; --ring: .9; }
-    html[data-phase="dusk"] { --neb-a: 200 80 120; --neb-b: 120 70 200; }
-    html[data-phase="night"]{ --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1.08; }
-    #void-depth::before { content: ''; position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; pointer-events: none;
-      transform: translate(-50%, -50%); border-radius: 50%;
-      background:
-        radial-gradient(closest-side, #000 0 32.5%, rgba(255,255,255,.75) 34.2%, rgb(var(--d-key) / .85) 35%, rgb(var(--d-warm) / .32) 39%, rgb(var(--d-key) / .12) 47%, transparent 62%),
-        conic-gradient(from 210deg, rgb(var(--d-teal) / .30), rgb(var(--d-key) / .05) 15%, rgb(var(--d-key) / .45) 36%, rgb(255 236 210 / .40) 47%, transparent 60%, rgb(var(--d-warm) / .36) 78%, rgb(var(--d-teal) / .30));
-      -webkit-mask: radial-gradient(closest-side, #000 50%, transparent 100%); mask: radial-gradient(closest-side, #000 50%, transparent 100%);
-      opacity: calc(.9 * var(--ring)); animation: d-breathe 11s ease-in-out infinite, d-turn 160s linear infinite; }
-    /* the gravitational lens: a thin bright arc that shimmers just outside the horizon, and the event horizon's own shadow on top */
-    #void-lens { position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; z-index: 0; pointer-events: none; border-radius: 50%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(closest-side, transparent 35.2%, rgba(255,255,255,.16) 36%, transparent 38.4%);
-      animation: d-lens 7s ease-in-out infinite; }
-    @keyframes d-lens { 0%,100% { scale: 1; opacity: .75; } 50% { scale: 1.012; opacity: 1; } }
-    #void-depth::after { content: ''; position: absolute; inset: auto; opacity: 1; mix-blend-mode: screen; background-image: none; left: 50%; top: 44%; width: 160vmax; height: 90vmax; pointer-events: none; transform: translate(-50%, -50%) rotate(-14deg);
-      background: radial-gradient(28% 22% at 36% 46%, rgb(var(--neb-a) / .30), transparent 70%), radial-gradient(24% 18% at 66% 56%, rgb(var(--neb-b) / .24), transparent 70%),
-        radial-gradient(40% 12% at 50% 50%, rgb(var(--d-warm) / .10), transparent 70%), radial-gradient(18% 14% at 24% 62%, color-mix(in srgb, var(--sky-glow, #20306a) 60%, transparent), transparent 70%);
-      animation: d-drift 70s ease-in-out infinite alternate; }
-    @keyframes d-breathe { 0%,100% { opacity: calc(.78 * var(--ring)); scale: 1; } 50% { opacity: var(--ring); scale: 1.015; } }
-    @keyframes d-turn { to { rotate: 360deg; } }
-    @keyframes d-drift { to { translate: 2.5vmax -1.5vmax; scale: 1.06; } }
-    /* the light pool: a soft oval where answers stand, and a shadow under the active card (its light on the floor) */
-    #void-glow::after { content: ''; position: absolute; left: 50%; top: 74%; width: min(760px, 110vw); height: min(150px, 22vw); transform: translate(-50%, -50%);
-      border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--d-key) / .12), rgb(var(--d-key) / .04) 60%, transparent);
-      transition: opacity 1.2s var(--d-ease-out), scale 1.2s var(--d-ease-out); opacity: .85; }
-    #void-glow::before { content: ''; position: absolute; left: 50%; top: -30vh; width: 90vmax; height: 70vh; transform: translateX(-50%);
-      background: radial-gradient(closest-side, rgb(var(--d-key) / .08), transparent); }
-    /* the void wakes when you start to ask, leans in while a card is up, and spins up while Verse is thinking */
-    html:has(#input:focus) #void-depth::before { animation-duration: 6s, 160s; }
-    html:has(.vpage.on) #void-depth::before { animation-duration: 5s, 120s; }
-    html:has(.vpage.on) #void-glow::after { opacity: 1; scale: 1.08; background: radial-gradient(closest-side, rgb(var(--d-key) / .16), rgb(0 0 0 / .35) 55%, transparent); }
-    html.void-thinking #void-depth::before { animation-duration: 1.6s, 14s; --ring: 1.35; }
-    html.void-thinking #void-lens { animation-duration: 1.8s; }
-    /* light-reactive cards: the horizon light rims the card's top edge and blooms beneath it in the nebula's colour, stronger while thinking */
-    .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .35), 0 -24px 60px -30px rgb(var(--neb-a) / .55), 0 70px 140px -50px rgb(var(--neb-b) / .30); transition: box-shadow .9s var(--d-ease-out); }
-    html.void-thinking .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .6), 0 -30px 80px -26px rgb(var(--neb-a) / .8), 0 80px 160px -50px rgb(var(--neb-b) / .45); }
-    @media (prefers-reduced-motion: reduce) { #void-depth::before, #void-depth::after, #void-lens { animation: none; } }
+    /* the idle stage is one WebGL2 particle canvas on obsidian: no floating orb, blurred halo, spinning ring or bobbing drift */
+    html, body { background: #05060a; }
+    #void-stars, #void-stars-far, #void-aura, #void-swarm, body::after { display: none !important; }
+    #void-particles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+    .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .35), 0 -24px 60px -30px rgb(var(--d-key) / .45); transition: box-shadow .9s var(--d-ease-out); }
     /* the ask bar: deeper glass, a lit rim that wakes on focus, a bigger calmer type size, a send key that glows when there is text */
     #row { border-radius: 22px; background: var(--d-glass); box-shadow: var(--d-lift); position: relative; isolation: isolate; }
     #row::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; z-index: -1;
@@ -1197,7 +1154,7 @@
     <p>Verse by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-depth" aria-hidden="true"><div id="void-lens"></div></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
+  <canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
@@ -4625,9 +4582,9 @@ say('nothing selected to remove');
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
     const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
-    let voidLook = { ...LOOK_DEFAULT };
-    try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
-    if (PAGE && PAGE.look) voidLook = { ...LOOK_DEFAULT, ...PAGE.look };
+    let voidLook = { ...LOOK_DEFAULT, stars: 'off' };
+    try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}), stars: 'off' }; } catch (_) {}
+    if (PAGE && PAGE.look) voidLook = { ...LOOK_DEFAULT, ...PAGE.look, stars: 'off' };
     const starCv = document.getElementById('void-stars');
     const starFar = document.getElementById('void-stars-far');
     const starCtx = starCv.getContext('2d');
@@ -7630,6 +7587,53 @@ say('nothing selected to remove');
         else if (!e.buttons) el.classList.add('lift');
       }, { passive: true });
     }
+  })();
+  // Idle stage: one WebGL2 micro-particle field on obsidian. Still at rest; pointer, touch or typing gives a damped nudge; one submit ripple.
+  (function () {
+    var cv = document.createElement('canvas'); cv.id = 'void-particles'; cv.setAttribute('aria-hidden', 'true');
+    document.body.insertBefore(cv, document.body.firstChild);
+    var gl = cv.getContext('webgl2', { alpha: false, antialias: false, depth: false, powerPreference: 'high-performance' });
+    if (!gl) { document.documentElement.classList.add('no-gl'); return; }
+    var VS = '#version 300 es\nin vec3 a;uniform vec2 uR,uP;uniform float uW,uG,uD;out float vB,vC;void main(){float z=a.z;vec2 p=a.xy*(.5+.5*z)+uP*(.004+.026*z);float w=0.;if(uW>0.){float r=length(p),f=uW*1.7,q=(r-f)*24.;w=exp(-q*q);p+=normalize(p+1e-5)*w*.04;}gl_Position=vec4(p*vec2(uR.y/uR.x,1.),0.,1.);gl_PointSize=(1.+.5*z)*uD;vB=.10+.20*z+w*1.2+uG*.10;vC=clamp(w+uG,0.,1.);}';
+    var FS = '#version 300 es\nprecision mediump float;in float vB,vC;out vec4 o;void main(){vec2 q=gl_PointCoord-.5;float d=dot(q,q);if(d>.25)discard;float a=smoothstep(.25,.04,d);o=vec4(mix(vec3(.66,.73,.82),vec3(.60,.94,1.),vC),a*clamp(vB,0.,1.));}';
+    function sh(t, s) { var o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; }
+    var pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
+    gl.useProgram(pr);
+    var mobile = innerWidth < 700 || matchMedia('(pointer: coarse)').matches, reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    var area = innerWidth * innerHeight, gpu = gl.getParameter(gl.MAX_TEXTURE_SIZE) >= 8192 ? 1 : .6;
+    var N = Math.max(5000, Math.min(46000, Math.round(area / 27 * gpu))), data = new Float32Array(N * 3);
+    for (var i = 0; i < N; i++) { var r = Math.sqrt(Math.random()), t = Math.random() * 6.283185; data[i * 3] = Math.cos(t) * r; data[i * 3 + 1] = Math.sin(t) * r; data[i * 3 + 2] = Math.random(); }
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+    var U = function (k) { return gl.getUniformLocation(pr, k); }, uR = U('uR'), uP = U('uP'), uW = U('uW'), uG = U('uG'), uD = U('uD');
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    var size = function () { var d = Math.min(mobile ? 1.5 : 2, devicePixelRatio || 1); cv.width = Math.round(innerWidth * d); cv.height = Math.round(innerHeight * d); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uD, d); };
+    size(); addEventListener('resize', size);
+    var px = 0, py = 0, tx = 0, ty = 0, glow = 0, tGlow = 0, waveAt = 0, raf = 0;
+    function frame(now) {
+      raf = 0; px += (tx - px) * .06; py += (ty - py) * .06; glow += (tGlow - glow) * .05; tGlow *= .94;
+      var w = 0; if (waveAt) { var e = (now - waveAt) / 900; if (e >= 1) waveAt = 0; else w = e; }
+      gl.clearColor(.0196, .0235, .0392, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(uP, px, py); gl.uniform1f(uW, w); gl.uniform1f(uG, glow); gl.drawArrays(gl.POINTS, 0, N);
+      if ((Math.abs(tx - px) + Math.abs(ty - py) > .001 || glow > .01 || tGlow > .01 || waveAt) && !reduce.matches && !document.hidden) raf = requestAnimationFrame(frame);
+    }
+    function kick() { if (!raf && !reduce.matches && !document.hidden) raf = requestAnimationFrame(frame); }
+    function still() { if (raf) { cancelAnimationFrame(raf); raf = 0; } px = py = tx = ty = glow = tGlow = 0; waveAt = 0; frame(performance.now()); }
+    addEventListener('pointermove', function (e) { if (reduce.matches) return; tx = e.clientX / innerWidth * 2 - 1; ty = 1 - e.clientY / innerHeight * 2; tGlow = .8; kick(); }, { passive: true });
+    addEventListener('pointerleave', function () { tx = ty = 0; kick(); }, { passive: true });
+    function wire() {
+      var inp = document.getElementById('input'), row = document.getElementById('row'), go = document.getElementById('go');
+      if (inp) inp.addEventListener('input', function () { tGlow = .6; if (!mobile) kick(); });
+      function submit() { if (reduce.matches) return; waveAt = performance.now(); tGlow = 1; kick(); }
+      if (row) row.addEventListener('submit', submit);
+      if (inp) inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
+      if (go) go.addEventListener('click', submit);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
+    reduce.addEventListener('change', function () { if (reduce.matches) still(); else kick(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { if (raf) { cancelAnimationFrame(raf); raf = 0; } } else kick(); });
+    if (reduce.matches) still(); else requestAnimationFrame(frame);
   })();
   </script>
   <script>
