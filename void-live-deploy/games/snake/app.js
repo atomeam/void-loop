@@ -22,9 +22,10 @@ function step() {
   if (n[0] === S.food[0] && n[1] === S.food[1]) { const add = S.golden ? 3 : 1; S.score += add; beep(S.golden ? 900 : 560); if (S.score > S.best) { S.best = S.score; try { localStorage.setItem(KEY, String(S.best)); } catch (_) {} msg.textContent = 'New best: ' + S.best + '. Keep going.'; } place(); hud(); }
   else S.body.pop();
 }
+const bg = document.createElement('canvas'); bg.width = W; bg.height = H;
+{ const b = bg.getContext('2d'); b.fillStyle = '#0a0f22'; b.fillRect(0, 0, W, H); b.fillStyle = '#121a35'; for (let x = 0; x < GW; x++) for (let y = 0; y < GH; y++) if ((x + y) % 2 === 0) b.fillRect(x * T, y * T, T, T); }
 function draw() {
-  g.fillStyle = '#0a0f22'; g.fillRect(0, 0, W, H);
-  g.fillStyle = '#121a35'; for (let x = 0; x < GW; x++) for (let y = 0; y < GH; y++) if ((x + y) % 2 === 0) g.fillRect(x * T, y * T, T, T);
+  g.drawImage(bg, 0, 0);
   g.fillStyle = S.golden ? '#ffd27a' : '#a58bff'; g.fillRect(S.food[0] * T + 2, S.food[1] * T + 2, T - 4, T - 4);
   S.body.forEach((b, i) => { g.fillStyle = i === 0 ? '#f4d58d' : i % 2 ? '#7aa7ff' : '#5f8fe0'; g.fillRect(b[0] * T + 1, b[1] * T + 1, T - 2, T - 2); });
   if (S.paused) { g.fillStyle = '#e8e6f5'; g.font = '16px monospace'; g.fillText('PAUSED', 138, 90); }

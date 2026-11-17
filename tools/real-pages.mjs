@@ -682,14 +682,14 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
-// /games/null-sweep/: a full-screen sweep where the first reveal is safe and the streak is kept on this device
-SPECS['/games/null-sweep/'] = async (t) => {
+// /games/void-breaker/: a full-screen brick breaker with combos and power bricks
+SPECS['/games/void-breaker/'] = async (t) => {
   await t.p.reload();
-  await t.waitText('#mines', /Mines/, 10000);
+  await t.waitText('#score', /Score/, 10000);
   const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
   t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
-  await t.p.click('#flag'); await t.p.click('#flag'); await t.p.click('#new');
-  t.ok(true, 'flag toggle and a new board do not throw');
+  await t.p.keyboard.press('ArrowLeft'); await t.p.keyboard.press('ArrowRight'); await t.p.click('#pause'); await t.p.click('#pause');
+  t.ok(true, 'paddle, pause and resume do not throw');
 };
 // /games/roguelike/: a full-screen turn-based run with seeded rooms, telegraphs and a relic draft
 SPECS['/games/roguelike/'] = async (t) => {
