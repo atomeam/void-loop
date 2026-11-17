@@ -7279,5 +7279,6 @@
   {"ask": "automation proposal for support tickets", "want": "skill:automation-proposal"},
   {"ask": "process map for client onboarding", "want": "skill:process-map"},
   {"ask": "map the process for invoice reminders", "want": "skill:process-map"},
-  {"ask": "show the process map for support tickets", "want": "skill:process-map"}
+  {"ask": "show the process map for support tickets", "want": "skill:process-map"},
+  {"ask": "propose automations for a new client", "want": "skill:automation-proposal"}
 ]
