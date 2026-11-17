@@ -25,7 +25,7 @@ const markKey = (id) => 'a2m.adventure.' + id;
 export function adventureOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (adventureAsk(text)) return { book: BOOKS[0].id };
-  for (const b of BOOKS) if (t.includes(b.title.toLowerCase()) || t.includes(b.id.replace(/-/g, ' '))) return { book: b.id };
+  for (const b of BOOKS) if (t.includes(b.title.toLowerCase()) || t.includes(b.id) || t.includes(b.id.replace(/-/g, ' '))) return { book: b.id };
   return null;
 }
 
