@@ -1210,7 +1210,7 @@
    "file": "lib/podcasts.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 4,
+   "dependants": 5,
    "tests": 2
   },
   {
@@ -3633,7 +3633,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/fanfic-de.js",
@@ -9079,7 +9079,9 @@
    ]
   },
   "lib/exam.js": {
-   "imports": [],
+   "imports": [
+    "lib/podcasts.js"
+   ],
    "importedBy": []
   },
   "lib/factorials.js": {
@@ -13171,6 +13173,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/podcasts.js",
+    "lib/exam.js",
     "skills/podcast-search.js",
     "skills/podcast.js"
    ],
