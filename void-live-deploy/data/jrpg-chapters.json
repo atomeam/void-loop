@@ -1,0 +1,36 @@
+{
+  "chapters": [
+    {
+      "id": 1,
+      "title": "The Signal in the Rain",
+      "maps": {
+        "town": [
+          "####################",
+          "#..................#",
+          "#.###..............#",
+          "#.#N#....C.........#",
+          "#.###..............#",
+          "#.................>#",
+          "####################"
+        ],
+        "road": [
+          "####################",
+          "#>.................#",
+          "#....~~~~..........#",
+          "#....~~~~......B...#",
+          "#..................#",
+          "####################"
+        ]
+      },
+      "spawn": { "map": "town", "x": 2, "y": 1 },
+      "dialogue": {
+        "N": ["The rain has not stopped in nine days.", "The old tower under the hill is transmitting again.", "Will you go and look? Press Enter to answer yes."]
+      },
+      "enemies": [
+        { "name": "Rain Wisp", "hp": 18, "atk": 5, "def": 1, "spd": 8, "xp": 12 },
+        { "name": "Static Hound", "hp": 26, "atk": 7, "def": 2, "spd": 6, "xp": 18 }
+      ],
+      "boss": { "name": "The Bellkeeper", "hp": 60, "atk": 9, "def": 3, "spd": 5, "xp": 80, "phases": 2 }
+    }
+  ]
+}

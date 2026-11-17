@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verse JRPG · Verse</title>
+<meta name="description" content="A small full-screen 16-bit style role-playing game. Explore, talk, fight and save your party on this device.">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  html,body{margin:0;background:#05050a;color:#e8e6f5;font:13px/1.4 ui-monospace,monospace;overflow:hidden}
+  #c{position:absolute;image-rendering:pixelated;background:#0b1020;touch-action:none}
+  #hud{position:absolute;left:8px;top:8px;background:#0b1020dd;border:2px solid #7aa7ff;padding:4px 8px;pointer-events:none}
+  #msg{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(92vw,560px);background:#0b1020f2;border:2px solid #a58bff;padding:8px 12px;min-height:44px}
+  #bar{position:absolute;right:8px;top:8px;display:flex;gap:6px;flex-wrap:wrap;max-width:46vw}
+  button{font:inherit;background:#151a33;color:#e8e6f5;border:1px solid #7aa7ff;border-radius:6px;padding:6px 9px;min-height:36px;cursor:pointer}
+  #pad{position:absolute;left:10px;bottom:10px;display:none;grid-template-columns:repeat(3,46px);gap:4px}
+  #pad button{padding:0;min-height:46px;font-size:18px}
+  .hint{opacity:.65}
+</style>
+</head>
+<body>
+<canvas id="c" width="320" height="180"></canvas>
+<div id="hud">Verse JRPG · <span id="place">town</span></div>
+<div id="bar"><button id="mute" type="button">Sound on</button><button id="save" type="button">Save</button><button id="load" type="button">Load</button><button id="export" type="button">Export</button></div>
+<div id="msg">Arrows or WASD to move · Enter to talk · press Enter again to advance dialogue.</div>
+<div id="pad">
+  <span></span><button data-k="ArrowUp">▲</button><span></span>
+  <button data-k="ArrowLeft">◀</button><button data-k="Enter">•</button><button data-k="ArrowRight">▶</button>
+  <span></span><button data-k="ArrowDown">▼</button><span></span>
+</div>
+<script type="module" src="/games/jrpg/app.js"></script>
+</body>
+</html>

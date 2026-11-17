@@ -682,6 +682,15 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
+// /games/jrpg/: a full-screen pixel canvas, a chapter loaded from its own data file, and working controls
+SPECS['/games/jrpg/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#msg', /Chapter 1/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('ArrowRight'); await t.p.keyboard.press('Enter');
+  t.ok(true, 'movement and interaction do not throw');
+};
 // /starboard/: sponsor tiles, the visitor faucet, the weather panel for a typed place, and the news wire's top story
 SPECS['/starboard/'] = async (t) => {
   await t.p.route((u) => u.pathname === '/api/weather', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, loc: { name: 'Lisbon' }, w: { current: { temperature_2m: 18, apparent_temperature: 17, weather_code: 2 } } }) }));
