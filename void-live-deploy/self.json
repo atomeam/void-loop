@@ -729,6 +729,12 @@
    "date": "",
    "ask": "teach the loop to log which tool a stopped lap spent its turns on, so the miss board can rank the read spirals that remain",
    "from": "claude 2026-11-17"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "add a fourth skill for the lab/pattern family once two runs have used the pack",
+   "from": "claude 2026-11-17"
   }
  ],
  "games": [
@@ -912,8 +918,40 @@
  },
  "commits": [
   {
-   "at": "2026-11-17T08:04:22Z",
-   "subject": "Stop the coder's read spiral: refuse a repeated read, stop a read-only run early"
+   "at": "2026-11-17T08:25:00Z",
+   "subject": "Add an OpenHands skills pack: shipping, review hygiene, skills and 3D"
+  },
+  {
+   "at": "2026-11-17T08:24:41Z",
+   "subject": "Flake: 1 check(s) passed on a rerun of c29a8ad (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-17T08:24:16Z",
+   "subject": "Add an OpenHands skills pack: shipping, review hygiene, skills and 3D"
+  },
+  {
+   "at": "2026-11-17T08:17:52Z",
+   "subject": "A skill card draws its own subject when its name has a drawing: a Cat card draws a cat (#2922)"
+  },
+  {
+   "at": "2026-11-17T08:17:38Z",
+   "subject": "Stop the coder's read spiral: refuse a repeated read, stop a read-only run early (#2923)"
+  },
+  {
+   "at": "2026-11-17T08:16:20Z",
+   "subject": "Rebuild landing idle stage as a single WebGL2 particle canvas (#2921)"
+  },
+  {
+   "at": "2026-11-17T08:14:06Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-17T08:13:49Z",
+   "subject": "Outcome exam: sports 93.5"
+  },
+  {
+   "at": "2026-11-17T08:09:29Z",
+   "subject": "Tower gate: versus measured"
   },
   {
    "at": "2026-11-17T08:02:04Z",
@@ -958,38 +996,6 @@
   {
    "at": "2026-11-17T07:41:27Z",
    "subject": "Custom card art, step 1: a style or words for a card's picture, kept on this device (#2917)"
-  },
-  {
-   "at": "2026-11-17T07:39:32Z",
-   "subject": "Verse routes \"hangman word\" to its hangman skill the answer is not checked"
-  },
-  {
-   "at": "2026-11-17T07:35:54Z",
-   "subject": "Choose-your-own-adventure engine, stage card, and the first book (#2914)"
-  },
-  {
-   "at": "2026-11-17T07:35:33Z",
-   "subject": "Keep the landing page HTML files on LF line endings (#2916)"
-  },
-  {
-   "at": "2026-11-17T07:33:47Z",
-   "subject": "grow-self test expects the game-upgrade job added in #2911 (#2915)"
-  },
-  {
-   "at": "2026-11-17T07:31:12Z",
-   "subject": "Failed jobs read: run 44034590996 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-17T07:30:42Z",
-   "subject": "Incident: the browser suite failed on df8db273 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-17T07:30:25Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-17T07:29:09Z",
-   "subject": "Incident: the browser suite failed on 82182487 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
@@ -1171,8 +1177,8 @@
   }
  ],
  "visible": {
-  "day": 19,
-  "week": 19
+  "day": 20,
+  "week": 20
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
