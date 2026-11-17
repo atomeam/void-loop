@@ -5,9 +5,9 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), adventureOf, stageKinds }
  */
 import { addThing, cardEl, keepOut } from '../lib/stage-pack.js';
-import { validateBook, createRun, getNode, availableChoices, choose, omenFor, runCode, runFromCode, adventureAsk } from '../lib/adventure.js';
+import { validateBook, createRun, getNode, availableChoices, choose, omenFor, runCode, runFromCode, adventureAsk, ADVENTURE_BOOKS } from '../lib/adventure.js';
 
-const BOOKS = [{ id: 'chrono-signal', title: 'The Chrono-Signal' }, { id: 'obsidian-keep', title: 'The Obsidian Keep' }, { id: 'neon-harbour', title: 'Neon Harbour' }];
+const BOOKS = ADVENTURE_BOOKS;
 const bookUrl = (id) => '/data/adventures/' + id + '.json';
 const cache = {};
 async function loadBook(id, fetchFn) {
@@ -23,10 +23,8 @@ const markKey = (id) => 'a2m.adventure.' + id;
 
 /** { book } for an ask naming the shelf or one of its books; null otherwise. Pure. */
 export function adventureOf(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (adventureAsk(text)) return { book: BOOKS[0].id };
-  for (const b of BOOKS) if (t.includes(b.title.toLowerCase()) || t.includes(b.id.replace(/-/g, ' '))) return { book: b.id };
-  return null;
+  const b = adventureAsk(text, BOOKS);
+  return b ? { book: b.id } : null;
 }
 
 function h(tag, css, text, attrs) {
@@ -99,7 +97,8 @@ function mount(th, stageApi) {
     row.append(again, copy);
     el.append(row);
     el.append(h('div', 'font-size:11px;opacity:.55;margin-top:6px', 'Step ' + (th.run.path.length + 1) + ' · run code ' + code.slice(0, 12) + '… · kept on this device', { class: 'ad-code' }));
-    el.append(h('a', 'display:inline-block;margin-top:6px;font-size:12px', 'Read full screen →', { href: '/games/adventure/?book=' + th.book }));
+    // keepOut: without the pointerdown stop the card's drag eats the press and the link never fires (calc, convert)
+    el.append(keepOut(h('a', 'display:inline-block;margin-top:6px;font-size:12px', 'Read full screen →', { href: '/games/adventure/?book=' + th.book })));
   };
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
@@ -117,8 +116,8 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'adventure',
-  examples: ['choose your own adventure', 'adventure', 'play adventure', 'adventure game', 'interactive story', 'text adventure', 'start an adventure', 'start the chrono signal', 'start the obsidian keep'],
-  nearMisses: ['tell me a story', 'bedtime story', 'adventure time', 'what is an adventure'],
+  examples: ['choose your own adventure', 'play adventure', 'adventure game', 'interactive story', 'text adventure', 'interactive fiction', 'start an adventure', 'start the chrono signal', 'start the obsidian keep', 'chrono-signal'],
+  nearMisses: ['tell me a story', 'bedtime story', 'adventure time', 'what is an adventure', 'adventure trailer', 'watch adventure'],
   adventureOf,
   match(lower, text) { return !!adventureOf(text || lower); },
   async run(text, api) {

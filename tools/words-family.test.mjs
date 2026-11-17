@@ -103,6 +103,8 @@ test('video-play: the last-chance "play <anything>" leaves games and music to th
   for (const t of ['play chess', 'play a game', 'play music']) assert.ok(!videoPlay.match(t, t), t);
   for (const t of ['play am7 chord', 'play a d minor 9 chord at 432 hz']) assert.ok(!videoPlay.match(t, t), 'a chord Verse plays itself: ' + t);
   for (const t of ['adventure', 'play adventure', 'play the adventure game', 'choose your own adventure']) assert.ok(!videoPlay.match(t, t), 'an adventure Verse plays itself: ' + t);
+  for (const t of ['play the chrono signal', 'play the obsidian keep']) assert.ok(!videoPlay.match(t, t), 'a named book opens the book, not a video: ' + t);
+  assert.ok(videoPlay.match('play the chrono signal trailer', 'play the chrono signal trailer'), 'a book trailer stays a video search');
   assert.ok(videoPlay.match('play adventure time', 'play adventure time'), 'the cartoon stays a video search');
   assert.ok(videoPlay.match('play chord tutorial', 'play chord tutorial'), 'a chord tutorial stays a video search');
   assert.equal(names.indexOf('video-play') > names.indexOf('joke'), true, 'it routes after the everyday skills');

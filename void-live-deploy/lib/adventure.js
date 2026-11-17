@@ -44,12 +44,28 @@ export function createRun(bookId, seed) {
 
 export const getNode = (book, id) => (book && book.nodes ? book.nodes[id] || null : null);
 
-/** an ask for the shelf itself (not one named book): the phrases, a bare "adventure", "play adventure" and an "adventure game". Pure. */
-export function adventureAsk(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /\bchoose your own adventure\b|\binteractive stor(?:y|ies)\b|\btext adventure\b|\badventure books?\b|\bcyoa\b/.test(t)
-    || /^(?:play\s+(?:an?\s+|the\s+)?)?adventure(?:\s+games?)?$/.test(t)
-    || /^(?:start|open|begin|continue|resume)(?:\s+(?:my|the|this|that|an?))?\s+adventure$/.test(t);
+/** the books on the shelf: id and title, the only registry (the skill and the hub read this, never a copy). Pure data. */
+export const ADVENTURE_BOOKS = [
+  { id: 'chrono-signal', title: 'The Chrono-Signal' },
+  { id: 'obsidian-keep', title: 'The Obsidian Keep' },
+  { id: 'neon-harbour', title: 'Neon Harbour' },
+];
+
+/** the normalization every adventure ask goes through: lower case, one space, hyphens read as spaces. Pure. */
+export const adventureNorm = (text) => String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/-/g, ' ');
+
+/** an ask for the shelf itself: the phrases (now with "interactive fiction"), "play adventure" and "adventure game" forms. Pure. */
+export const adventureShelf = (t) => /\bchoose your own adventure\b|\binteractive stor(?:y|ies)\b|\btext adventure\b|\badventure books?\b|\bcyoa\b|\binteractive fiction\b/.test(t)
+  || /^play\s+(?:an?\s+|the\s+)?adventures?(?:\s+games?)?$/.test(t) || /^adventure\s+games?$/.test(t)
+  || /^(?:start|open|begin|continue|resume)(?:\s+(?:my|the|this|that|an?))?\s+adventure$/i.test(t);
+
+/** the ask's book, or null: a named title or hyphenated id wins; a shelf ask opens the first book. Pure. */
+export function adventureAsk(text, books = ADVENTURE_BOOKS) {
+  const t = adventureNorm(text);
+  const named = (Array.isArray(books) ? books : []).find((b) => b && (t.includes(String(b.title || '').toLowerCase()) || t.includes(String(b.id || '').replace(/-/g, ' '))));
+  if (named) return named;
+  if (adventureShelf(t)) return (Array.isArray(books) && books[0]) || null;
+  return null;
 }
 
 /** unmet requirements of a choice as item/flag names. Pure. */
