@@ -26,7 +26,7 @@ export function adventureOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/\bchoose your own adventure\b|\binteractive stor(?:y|ies)\b|\btext adventure\b|\badventure book\b|\bcyoa\b/.test(t)) return { book: BOOKS[0].id };
   if (/^(?:start|open|begin|continue|resume)(?:\s+(?:my|the|this|that|an?))?\s+adventure$/.test(t)) return { book: BOOKS[0].id };
-  for (const b of BOOKS) if (t.includes(b.title.toLowerCase()) || t.includes(b.id.replace(/-/g, ' '))) return { book: b.id };
+  for (const b of BOOKS) if (t.includes(b.title.toLowerCase()) || t.includes(b.id.replace(/-/g, ' ')) || t.includes(b.id)) return { book: b.id };
   return null;
 }
 
