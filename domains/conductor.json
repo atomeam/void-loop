@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T06:58:53.609Z",
+ "updated": "2026-11-17T07:08:18.184Z",
  "last24h": {
-  "ticks": 25,
-  "started": 55,
+  "ticks": 26,
+  "started": 57,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -101,15 +101,15 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 90,
+   "used": 5,
    "cap": 90
   },
   "day": {
-   "used": 252,
+   "used": 257,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-17T07:00:00.000Z",
+  "room": true,
+  "until": null,
   "paid": false
  },
  "handed": {
@@ -122,7 +122,7 @@
   "mwdsgj2z": 1794897604559,
   "mweaagmp": 1794898164394,
   "mweaah6f": 1794898733609,
-  "mwey8iy6": 1794868956771,
+  "mwey8iy6": 1794899298184,
   "mwj1to9z": 1794869520940,
   "mwj1tox5": 1794870083131,
   "mvbl52gd": 1794877890710,
@@ -136,8 +136,8 @@
   "mvvjzso8": 1794896394915,
   "mw5mm5fm": 1794896959372
  },
- "sweptAt": 1794895245530,
- "blueprintsAt": 1794895245530,
+ "sweptAt": 1794899298184,
+ "blueprintsAt": 1794899298184,
  "visitorAt": "2026-11-17T06:36:53Z",
  "visitorFiled": [
   "review:2733",
@@ -1129,6 +1129,42 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T07:08:18.184Z",
+   "open": 449,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 108
+    },
+    {
+     "id": "mwey8iy6",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 48
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 20,
    "warnings": 1
