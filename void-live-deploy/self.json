@@ -906,6 +906,34 @@
  },
  "commits": [
   {
+   "at": "2026-11-17T03:06:26Z",
+   "subject": "Repair the baseline gates: retire system-plan from routing and name sync-free-lanes in the map (#2879)"
+  },
+  {
+   "at": "2026-11-17T02:58:27Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-17T02:58:06Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-17T02:50:15Z",
+   "subject": "Tower gate: versus measured"
+  },
+  {
+   "at": "2026-11-17T02:46:47Z",
+   "subject": "fix: update untested allowance for new skills"
+  },
+  {
+   "at": "2026-11-17T02:45:25Z",
+   "subject": "fix: register process-map skill, add to self family, regenerate index"
+  },
+  {
+   "at": "2026-11-17T02:43:22Z",
+   "subject": "Failed jobs read: run 44004493206 (void-live-deploy/incidents/actions/)"
+  },
+  {
    "at": "2026-11-17T02:42:25Z",
    "subject": "fix: add automation-proposal skill to self family"
   },
@@ -956,34 +984,6 @@
   {
    "at": "2026-11-16T23:00:17Z",
    "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
-  },
-  {
-   "at": "2026-11-16T22:54:36Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-16T22:45:52Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
-  },
-  {
-   "at": "2026-11-16T22:44:10Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"stackwell\" (s"
-  },
-  {
-   "at": "2026-11-16T22:28:51Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-11-16T22:14:16Z",
-   "subject": "treasury: found money and the weekly review"
-  },
-  {
-   "at": "2026-11-16T22:05:58Z",
-   "subject": "Add process-map skill: map business process to Verse-owned hard work points (#2875)"
-  },
-  {
-   "at": "2026-11-16T21:58:18Z",
-   "subject": "Design loop: 1 page fixed, 4 -> 2 design defects"
   }
  ],
  "builders": {
@@ -1165,8 +1165,8 @@
   }
  ],
  "visible": {
-  "day": 3,
-  "week": 133
+  "day": 4,
+  "week": 135
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

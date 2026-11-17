@@ -572,7 +572,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/assimilated/</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -896,7 +896,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/</loc>
-    <lastmod>2026-11-15</lastmod>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1455,6 +1455,18 @@
   <url>
     <loc>https://a-to-mind.com/lab/f759-webgpu-device-motion-trajectory-logger/</loc>
     <lastmod>2026-11-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f768-itemized-bill-splitter/</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f768-packing-list-maker/</loc>
+    <lastmod>2026-11-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
