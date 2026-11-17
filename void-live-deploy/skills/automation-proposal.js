@@ -39,7 +39,7 @@ async function run(text, api) {
   const rows = pack.automations.map(a => '<tr><td>' + esc(a.name) + '</td><td>' + esc(a.owns) + '</td><td>' + esc(a.does) + '</td></tr>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Automation proposal: ' + esc(name) + '</h2>'
-      + '<p class="sub">Concrete automations Verse will own so the client does less manual work.</p>'
+      + '<p class="sub">Concrete automations Verse handles so the client does less manual work.</p>'
       + '<table><thead><tr><th>Automation</th><th>Verse owns</th><th>What it does</th></tr></thead><tbody>' + rows + '</tbody></table>'
       + '<h3>How the client does less</h3><p>' + esc(pack.lift) + '</p>'
       + '<p class="sub">Ask for the process map or system slice next. Nothing is built yet.</p>'
