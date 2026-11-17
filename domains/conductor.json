@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T06:29:19.372Z",
+ "updated": "2026-11-17T06:40:04.559Z",
  "last24h": {
-  "ticks": 22,
-  "started": 49,
+  "ticks": 23,
+  "started": 51,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -17,6 +17,38 @@
   }
  ],
  "held": [
+  {
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mw5mm5fm",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
   {
    "id": "mvvql4d9",
    "why": "no executor for route"
@@ -87,7 +119,7 @@
   "mwa0ah54": 1794895815961,
   "mwdsggtv": 1794896394915,
   "mwdsgi9n": 1794896959372,
-  "mwdsgj2z": 1794867270519,
+  "mwdsgj2z": 1794897604559,
   "mweaagmp": 1794867834122,
   "mweaah6f": 1794868396115,
   "mwey8iy6": 1794868956771,
@@ -991,6 +1023,42 @@
    "sweep": false,
    "blueprints": 0,
    "held": 12,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T06:40:04.559Z",
+   "open": 449,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 108
+    },
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 49
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 20,
    "warnings": 1
   }
  ]
