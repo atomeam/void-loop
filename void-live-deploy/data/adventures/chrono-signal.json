@@ -1,0 +1,93 @@
+{
+  "id": "chrono-signal",
+  "title": "The Chrono-Signal",
+  "genre": "sci-fi time-loop",
+  "blurb": "A dead relay station. A distress call in your own voice, fourteen years old.",
+  "start": "dock",
+  "nodes": {
+    "dock": {
+      "title": "Meridian Relay",
+      "prose": "The docking clamps catch with a shudder. Meridian Relay has been dark for fourteen years, but the board in front of you is warm — and it is playing a distress call in your own voice, begging you not to come.",
+      "choices": [
+        { "text": "Answer the signal", "to": "signal" },
+        { "text": "Trace the source through the maintenance shaft", "to": "trace" },
+        { "text": "Read the airlock log first", "to": "log" }
+      ]
+    },
+    "signal": {
+      "title": "Your Own Voice",
+      "prose": "\"Don't break the loop,\" you tell yourself, and the you on the recording sounds so tired that your hand shakes. The waveform matches your voiceprint to the decimal. It was recorded right here, on this board.",
+      "choices": [
+        { "text": "Ask the voice who is really speaking", "to": "voice", "gives": { "flags": { "heard_warning": true } } },
+        { "text": "Cut the transmission", "to": "cut" },
+        { "text": "Follow the signal coordinates", "to": "coords" }
+      ]
+    },
+    "trace": {
+      "title": "The Shaft",
+      "prose": "The maintenance shaft smells of ozone and old plastic. A plasma torch hangs on its hook, still charged, and the conduit beside it hums toward the observation blister.",
+      "choices": [
+        { "text": "Take the torch and follow the conduit", "to": "coords", "gives": { "items": ["plasma_torch"] } },
+        { "text": "Leave it and climb back to the dock", "to": "dock" }
+      ]
+    },
+    "log": {
+      "title": "Fourteen Years Ago",
+      "prose": "The airlock log is short. One line, fourteen years old: your name, your code, cycling the lock from the inside. Below it, in fresher print: a spare keycard was never collected.",
+      "choices": [
+        { "text": "Pocket the spare keycard and return", "to": "dock", "gives": { "items": ["signal_key"], "flags": { "read_log": true } } },
+        { "text": "Return to the dock empty-handed", "to": "dock", "gives": { "flags": { "read_log": true } } }
+      ]
+    },
+    "voice": {
+      "title": "The Older You",
+      "prose": "\"Every loop I warn you, and every loop you come anyway.\" The voice laughs like static. \"The master clock keeps us. The keycard opens it. You know what happens if you turn it.\"",
+      "choices": [
+        { "text": "Break the loop at the master clock", "to": "break", "needs": { "items": ["signal_key"] } },
+        { "text": "Keep the loop alive", "to": "keep" }
+      ]
+    },
+    "cut": {
+      "title": "Dark",
+      "prose": "You cut the feed. The board dies, the warmth dies with it — and in the new dark, something knocks from inside the walls. Twice. Patient.",
+      "choices": [
+        { "text": "Open the inner door", "to": "knock" },
+        { "text": "Back away toward the conduit", "to": "coords" }
+      ]
+    },
+    "coords": {
+      "title": "The Blister",
+      "prose": "The conduit ends at the observation blister. Through the glass: your own ship, docked where you left it, running lights on. The signal is coming from aboard her. The hatch between is fused shut.",
+      "choices": [
+        { "text": "Cut the hatch open and cross over", "to": "cross", "needs": { "items": ["plasma_torch"] } },
+        { "text": "Turn back to the dock", "to": "dock" }
+      ]
+    },
+    "cross": {
+      "title": "Aboard",
+      "prose": "The torch bites through. Your ship's cabin is exactly as you left it — except for the figure in your chair, older, turning, holding up a hand. \"Don't break the loop,\" it says, with your mouth.",
+      "choices": [
+        { "text": "Break the loop anyway", "to": "break", "needs": { "items": ["signal_key"] } },
+        { "text": "Sit down and listen", "to": "keep" }
+      ]
+    },
+    "break": {
+      "title": "Morning",
+      "prose": "The keycard turns. The master clock stops — and keeps stopping, the way a held breath keeps holding, and then releases. Dawn comes up over a station that was never dark. Nobody remembers the loop but you, and you are finally allowed to forget it too.",
+      "choices": [],
+      "ending": { "kind": "triumph", "title": "Loop broken" }
+    },
+    "keep": {
+      "title": "The Signal",
+      "prose": "You sit. You listen. Years pass like weather, and one day your hands move on their own and record the warning you once received. Somewhere below, a younger you is docking, and the board is warm.",
+      "choices": [],
+      "ending": { "kind": "mystery", "title": "You become the signal" }
+    },
+    "knock": {
+      "title": "Inside the Walls",
+      "prose": "You open the door. Whatever knocked has been waiting fourteen years to be let in, and it is so glad to see you that it wears your face while it does what it does.",
+      "choices": [],
+      "ending": { "kind": "demise", "title": "Let in" }
+    }
+  }
+}

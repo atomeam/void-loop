@@ -32,12 +32,19 @@ function mount(th, stageApi) {
     s.bricks.forEach((k, i) => { if (!k.alive) return; g.fillStyle = BK[Math.floor(i / V.COLS) % BK.length]; g.fillRect(k.x + 1, k.y + 1, V.BW - 2, V.BH - 2); });
     g.shadowBlur = 10; g.shadowColor = '#a070ff'; g.fillStyle = '#a070ff'; g.fillRect(s.p2 - V.PW / 2, V.P2Y, V.PW, V.PH);
     g.shadowColor = '#4fe3e3'; g.fillStyle = '#4fe3e3'; g.fillRect(s.p1 - V.PW / 2, V.P1Y, V.PW, V.PH);
-    g.shadowColor = '#fff'; g.fillStyle = '#fff'; g.beginPath(); g.arc(s.ball.x, s.ball.y, V.R, 0, 7); g.fill(); g.shadowBlur = 0;
+    const balls = s.balls && s.balls.length ? s.balls : (s.ball ? [s.ball] : []);
+    for (const b of balls) {
+      const home = b.home || b.last || 'you';
+      g.shadowColor = home === 'void' ? '#a070ff' : '#4fe3e3';
+      g.fillStyle = home === 'void' ? '#c9b6ff' : '#9ff7f7';
+      g.beginPath(); g.arc(b.x, b.y, V.R, 0, 7); g.fill();
+    }
+    g.shadowBlur = 0;
     g.fillStyle = 'rgba(255,255,255,.55)'; g.font = '11px system-ui'; g.textBaseline = 'middle';
     g.textAlign = 'left'; g.fillText('you ' + s.score.you + ' · ' + '♥'.repeat(Math.max(0, s.lives.you)), 6, V.H - 8);
     g.textAlign = 'right'; g.fillText('Verse ' + s.score.void + ' · ' + '♥'.repeat(Math.max(0, s.lives.void)), V.W - 6, 6);
-    c.status.textContent = s.over ? (s.over === 'you' ? 'You win' : s.over === 'void' ? 'Verse wins' : 'A draw') + ' · ' + s.score.you + ' to ' + s.score.void : !go ? 'Move the pointer, or press an arrow key, to serve' : V.bricksLeft(s) + ' bricks left';
-    c.why.textContent = go && s.why ? 'Verse: ' + s.why : '';
+    c.status.textContent = s.over ? (s.over === 'you' ? 'You win' : s.over === 'void' ? 'Verse wins' : 'Tie') + ' · ' + s.score.you + ' to ' + s.score.void : !go ? 'Move the pointer, or press an arrow key, to launch both balls' : V.bricksLeft(s) + ' bricks left';
+    c.why.textContent = s.over ? '' : (go && s.why ? 'Verse: ' + s.why : '');
     if (s.over && !done) { done = true; c.el.dataset.result = s.over; try { finish('void-breaker', s.over); } catch (_) { /* the ladder is a convenience */ } }
   });
 }
@@ -47,7 +54,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'void-breaker');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'void-breaker'; }
   api.summon('void-breaker', { x: Math.max(10, Math.round(innerWidth / 2 - 130)), y: 40 });
-  api.say('Verse Breaker · you are at the bottom, Verse at the top · move the pointer');
+  api.say('Verse Breaker · you are at the bottom, Verse at the top · two balls launch at once · move the pointer');
   return 'void-breaker';
 }
 

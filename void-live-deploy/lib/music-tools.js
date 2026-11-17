@@ -164,6 +164,17 @@ export const CHORD_TYPES = Object.freeze({
   '7b9': { name: 'dominant 7th flat 9', iv: [0, 4, 7, 10, 13] }, '7#9': { name: 'dominant 7th sharp 9', iv: [0, 4, 7, 10, 15] }, '7#5': { name: 'dominant 7th sharp 5', iv: [0, 4, 8, 10] }, '7b5': { name: 'dominant 7th flat 5', iv: [0, 4, 6, 10] },
   '6/9': { name: '6 add 9', iv: [0, 4, 7, 9, 14] },
 });
+// word forms ("D minor 9") collapse to suffixes ("Dm9") before the chord is looked up; the lookup itself validates, so junk never matches. Pure.
+const CHORD_WORDS = { minor9: 'm9', major9: 'maj9', minor7: 'm7', major7: 'maj7', minor: 'm', major: '', diminished: 'dim', augmented: 'aug', min9: 'm9' };
+/** { root, type, symbol, name, notes } for a token like "Dm9" or "D minor 9"; null when there is no such chord. Pure. */
+export function chordToken(tok) {
+  const s = String(tok || '').toLowerCase().replace(/\s+/g, '');
+  const m = /^([a-g][#b]?)(.*)$/.exec(s);
+  if (!m) return null;
+  const type = Object.prototype.hasOwnProperty.call(CHORD_WORDS, m[2]) ? CHORD_WORDS[m[2]] : m[2];
+  const c = chordOf(m[1].toUpperCase(), type);
+  return c ? { root: m[1].toUpperCase(), type, symbol: c.symbol, name: c.name, notes: c.notes } : null;
+}
 const spell = (pc, flats) => (flats && FLAT_OF[NOTE_NAMES[pc]] ? FLAT_OF[NOTE_NAMES[pc]] : NOTE_NAMES[pc]);
 const FLAT_KEYS = new Set(['F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Dm', 'Gm', 'Cm', 'Fm', 'Bbm', 'Ebm']);
 /** whether a root is spelt with flats ("Bb", "Eb", "F" and the minor keys that go with them). Pure. */

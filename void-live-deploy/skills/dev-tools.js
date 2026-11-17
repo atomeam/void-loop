@@ -86,7 +86,14 @@ function mount(th, stageApi) {
       for (const p of D.regexPieces(th.input || '', r.matches)) box.appendChild(p.hit ? h('mark', 'background:#ffd166;color:#111;border-radius:3px', p.text) : document.createTextNode(p.text));
       const list = h('div', 'margin-top:6px;opacity:.85', r.matches.length + ' match' + (r.matches.length === 1 ? '' : 'es') + (r.matches.length >= D.REGEX_LIMITS.matches ? ' (first ' + D.REGEX_LIMITS.matches + ')' : ''), { class: 'dt-count' });
       const groups = r.matches.filter((m) => m.groups.length).slice(0, 8).map((m) => '#' + m.index + ': ' + m.groups.map((g, i) => '$' + (i + 1) + '=' + JSON.stringify(g)).join(' '));
-      set(box, list, ...(groups.length ? [h('div', 'margin-top:4px;font-size:12px;opacity:.8;font-family:ui-monospace,monospace', groups.join('\n'))] : []));
+      const parts = [box, list, ...(groups.length ? [h('div', 'margin-top:4px;font-size:12px;opacity:.8;font-family:ui-monospace,monospace', groups.join('\n'))] : [])];
+      if (th.opts.generated) {
+        const ex = D.regexExplain(th.opts.pattern, th.opts.flags);
+        const note = h('div', 'font-size:12px;opacity:.75;margin-bottom:6px', (th.opts.about ? 'Generated from your words (' + th.opts.about + ') — ' : 'Generated from your words — ') + 'edit the pattern or the text and the matches update live.', { class: 'dt-gen' });
+        const lines = (ex.ok ? ex.lines : []).filter((l) => !/^Every match is listed/.test(l)).slice(0, 8);
+        parts.unshift(note, ...(lines.length ? [h('div', FIELD + ';margin-bottom:6px;font-size:12px;white-space:pre-wrap;max-height:140px;overflow:auto', lines.join('\n'), { class: 'dt-why' })] : []));
+      }
+      set(...parts);
     };
     for (const i of [pat, fl]) { i.addEventListener('input', paint); keepOut(i); }
     row.append(pat, fl);
@@ -191,9 +198,9 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'dev-tools',
-  examples: ['format json {"a":1,"b":[1,2]}', 'base64 encode hello world', 'regex tester /\\d+/g on call 555 or 911', 'explain cron 0 9 * * 1-5', 'http status 404',
+  examples: ['format json {"a":1,"b":[1,2]}', 'base64 encode hello world', 'regex tester /\\d+/g on call 555 or 911', 'regex for matching ISO 8601 dates like 2026-11-17', 'regex for an email address', 'explain cron 0 9 * * 1-5', 'http status 404',
     'generate 5 rows of dummy data with name email city', 'polish my commit message: fixed the login bug', 'jwt decoder', 'html escape <b>bold</b>', 'xml formatter'],
-  nearMisses: ['what is json', 'json vs xml', 'what is base64', 'what is a regex', 'regex for an email address', 'what is a cron job', 'http status of google.com', 'what is dummy data', 'how to write a good commit message', 'write a commit',
+  nearMisses: ['what is json', 'json vs xml', 'what is base64', 'what is a regex', 'regex for my feelings', 'what is a cron job', 'http status of google.com', 'what is dummy data', 'how to write a good commit message', 'write a commit',
     'what is a jwt', 'jwt vs session cookie', 'what is html', 'html tutorial', 'what is xml', 'xml vs json'],
   devOf: D.devOf,
   match(lower, text) { return !!D.devOf(text || lower); },

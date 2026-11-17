@@ -12,8 +12,8 @@ const open = (ask) => { const el = card(ask), a = /<p><a href="([^"]*)" style="f
 test('examples in, near misses out, and the asks the rules name', () => {
   for (const e of sk.examples) assert.ok(m(e), e);
   for (const n of sk.nearMisses) assert.ok(!m(n), n);
-  for (const a of ['metronome 90 bpm 3/4', '140 bpm metronome', 'metronome at 60', 'tune my ukulele', 'bass tuner', 'violin tuner online', 'C#m7 chord', 'f# minor scale', 'Bb blues scale', 'chord finder', 'my setlist', 'bpm finder', 'virtual keyboard', 'Online piano?']) assert.ok(m(a), a);
-  for (const a of ['h major scale', 'metronome 5 bpm', 'piano lessons', 'who invented the metronome', 'tuner car', 'chord progression ideas', 'c major']) assert.ok(!m(a), a);
+  for (const a of ['metronome 90 bpm 3/4', '140 bpm metronome', 'metronome at 60', 'tune my ukulele', 'bass tuner', 'violin tuner online', 'C#m7 chord', 'Dm9 chord', 'd minor 9 chord', 'play am7 chord', 'play a d minor 9 chord at 432 hz', 'f# minor scale', 'Bb blues scale', 'chord finder', 'my setlist', 'bpm finder', 'virtual keyboard', 'Online piano?']) assert.ok(m(a), a);
+  for (const a of ['h major scale', 'metronome 5 bpm', 'piano lessons', 'who invented the metronome', 'tuner car', 'chord progression ideas', 'c major', 'play the chord', 'guitar chord']) assert.ok(!m(a), a);
 });
 test('each ask opens its page on the thing asked', () => {
   assert.deepEqual(open('metronome 120 bpm'), ['/metronome/?bpm=120', 'Metronome at 120 BPM', 'Metronome at 120 BPM', '/metronome/']);
@@ -29,6 +29,28 @@ test('each ask opens its page on the thing asked', () => {
   assert.deepEqual(open('tap tempo').slice(0, 2), ['/bpm/', 'BPM counter']);
   assert.deepEqual(open('online piano').slice(0, 2), ['/piano/', 'Online piano']);
   assert.deepEqual(open('music tools?').slice(0, 2), ['/music/', 'Music tools']);
+  assert.deepEqual(open('dm9 chord').slice(0, 3), ['/chords/?chord=Dm9', 'Dm9 chord', 'Dm9 chord']);
+  assert.deepEqual(open('d minor 9 chord').slice(0, 2), ['/chords/?chord=Dm9', 'Dm9 chord']);
+});
+test('playing a chord at a custom pitch deals a synth card with its true frequencies', async () => {
+  const { chordToken } = await import('../void-live-deploy/lib/music-tools.js');
+  const lib = await import('../void-live-deploy/skills/music-tools.js');
+  assert.deepEqual(chordToken('D minor 9'), { root: 'D', type: 'm9', symbol: 'Dm9', name: 'D minor 9th', notes: ['D', 'F', 'A', 'C', 'E'] });
+  assert.equal(chordToken('guitar'), null);
+  assert.equal(chordToken('the'), null);
+  // D minor 9 at A4 = 432 Hz: A itself lands on 432, everything else scales by 432/440
+  assert.deepEqual(lib.chordFreqs('D', 'm9', 432), [288.3, 342.9, 432, 513.7, 647.3]);
+  assert.deepEqual(lib.chordFreqs('D', 'm9', 440), [293.7, 349.2, 440, 523.3, 659.3]);
+  const el = card('play a D minor 9 chord at 432 Hz');
+  assert.equal(el.dataset.page, '/chords/');
+  assert.match(el.innerHTML, /<h2>Dm9 chord at 432 Hz<\/h2>/);
+  assert.match(el.innerHTML, /D minor 9th · A4 = 432 Hz/);
+  assert.match(el.innerHTML, /D 288\.3 Hz · F 342\.9 Hz · A 432 Hz · C 513\.7 Hz · E 647\.3 Hz/);
+  assert.match(el.innerHTML, /<button type="button" class="ms-play"[^>]*>Play<\/button>/);
+  assert.match(el.innerHTML, /\/chords\/\?chord=Dm9/);
+  const plain = card('play am7 chord');
+  assert.match(plain.innerHTML, /<h2>Am7 chord<\/h2>/);
+  assert.match(plain.innerHTML, /A 440 Hz/);
 });
 test('the card lists the six pages, and an unknown ask falls back to /music/', () => {
   const el = card('tap tempo');

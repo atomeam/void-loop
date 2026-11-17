@@ -19,7 +19,7 @@ test('the build job, the pull request job and the git add allow exactly the same
 test('the build job holds no secret and no write token; only the pull request job writes; only the queue job holds the owner token', () => {
   const jobs = y.split(/\n  (?=[a-z-]+:\n    (?:needs|runs-on))/).slice(1);
   const by = Object.fromEntries(jobs.map((j) => [/^([a-z-]+):/.exec(j)[1], j]));
-  assert.deepEqual(Object.keys(by).sort(), ['build', 'pull-request', 'queue-gaps']);
+  assert.deepEqual(Object.keys(by).sort(), ['build', 'game-upgrade', 'pull-request', 'queue-gaps']);
   assert.doesNotMatch(by.build, /secrets\./); assert.doesNotMatch(by.build, /contents: write|pull-requests: write/);
   assert.match(by['pull-request'], /contents: write/); assert.doesNotMatch(by['pull-request'], /VOID_OWNER_TOKEN/);
   assert.match(by['queue-gaps'], /VOID_OWNER_TOKEN/); assert.doesNotMatch(by['queue-gaps'], /contents: write|pull-requests: write/);

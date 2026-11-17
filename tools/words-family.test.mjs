@@ -101,5 +101,7 @@ test('video-play: the last-chance "play <anything>" leaves games and music to th
   assert.ok(videoPlay.match('play despacito', 'play despacito'));
   for (const t of ['yo play despacito', 'can we play despacito', 'hey play despacito', 'pls play despacito', 'play despacito pls']) assert.ok(videoPlay.match(t, t), t); // site-test #2228: a greeting or pls in front
   for (const t of ['play chess', 'play a game', 'play music']) assert.ok(!videoPlay.match(t, t), t);
+  for (const t of ['play am7 chord', 'play a d minor 9 chord at 432 hz']) assert.ok(!videoPlay.match(t, t), 'a chord Verse plays itself: ' + t);
+  assert.ok(videoPlay.match('play chord tutorial', 'play chord tutorial'), 'a chord tutorial stays a video search');
   assert.equal(names.indexOf('video-play') > names.indexOf('joke'), true, 'it routes after the everyday skills');
 });

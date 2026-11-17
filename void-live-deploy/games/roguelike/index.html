@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Voidspire Descent · Verse</title>
+<meta name="description" content="A full-screen turn-based tactical roguelike: seeded dungeon rooms, telegraphed enemy intents, stackable relics and a relic codex kept on this device.">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  html,body{margin:0;background:#05050a;color:#e8e6f5;font:13px/1.4 ui-monospace,monospace;overflow:hidden}
+  #c{position:absolute;image-rendering:pixelated;background:#07060f;touch-action:none}
+  #hud{position:absolute;left:8px;top:8px;display:flex;gap:14px;background:#0b1020dd;border:2px solid #7aa7ff;padding:4px 10px;pointer-events:none}
+  #bar{position:absolute;right:8px;top:8px;display:flex;gap:6px}
+  button{font:inherit;background:#151a33;color:#e8e6f5;border:1px solid #7aa7ff;border-radius:6px;padding:6px 9px;min-height:36px;cursor:pointer}
+  #draft{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:none;gap:8px;background:#0b1020f5;border:2px solid #a58bff;padding:14px;max-width:92vw}
+  #draft button{max-width:180px;text-align:left;white-space:normal}
+  #msg{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(92vw,560px);background:#0b1020ee;border:2px solid #a58bff;padding:6px 10px}
+</style>
+</head>
+<body>
+<canvas id="c" width="320" height="180"></canvas>
+<div id="hud"><span id="hp">HP 20/20</span><span id="depth">Depth 1</span><span id="room">Combat</span><span id="seed">Seed —</span></div>
+<div id="bar"><button id="mute">Sound on</button><button id="runcard">Run card</button><button id="new">New run</button></div>
+<div id="draft"></div>
+<div id="msg">Arrows or WASD to move. Bump an enemy to strike; 1 = chain spark, 2 = frost, 3 = mend. Red outlines are incoming attacks — step aside.</div>
+<script type="module" src="/games/roguelike/app.js"></script>
+</body>
+</html>
