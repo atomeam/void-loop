@@ -15,10 +15,12 @@
 //   (watch-build.js, photos.js, recipe.js) never edits, reaches the turn cap with nothing, and three such laps pause the loop for
 //   6 hours. Two guards here: a file range already read in this run is not read again (like the same-miss search guard, #2610),
 //   and after LIMITS.reads turns in a row with no edit and no check the run stops early (read-cap) instead of spending the cap.
+//   A stopped lap's JSON also carries `spent` (turns per tool and the top one), so the miss board can rank the read spirals that
+//   remain (frontier #43).
 //   node tools/verse-coder.mjs (--prompt-file <f> | --task "<text>") [--repo <dir>] [--checks <file>] [--target <check>]
 //                              [--max-turns 30] [--max-tokens 250000]
 // Exit 0: done, the change is left in the tree. 3: nothing to change or gave up. 4: no model key. 5: a cap. 6: no model answered.
-// The last line printed is JSON: { outcome, why, turns, tokens, files, provider }.
+// The last line printed is JSON: { outcome, why, turns, tokens, files, provider, spent }.
 import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, unlinkSync, realpathSync, mkdtempSync, rmSync, mkdirSync } from 'node:fs';
 import { resolve, join, relative, sep, dirname, isAbsolute } from 'node:path';
@@ -269,6 +271,16 @@ export function trailOf(transcript, n = 12) {
   return t.map((x) => [x.tool, x.path].filter(Boolean).join(' ') + (/^(refused|the diff|no such|no tool|no match|FAIL)/.test(String(x.result || '')) ? ': ' + String(x.result).split('\n')[0].slice(0, 60) : '')).join(', ');
 }
 
+/** how many turns a run spent on each tool, and the one it spent most on. The free-text trail above is capped at 12 turns and
+ *  cannot be counted, so a stopped lap's note says the one tool it burned its turns on (the 2026-11-17 read spirals: watch-build.js,
+ *  photos.js, recipe.js) and a reader can rank the spirals that remain (frontier #43). Pure. */
+export function toolTally(transcript) {
+  const list = Array.isArray(transcript) ? transcript : [], counts = {};
+  for (const x of list) { const t = String((x && x.tool) || '?'); counts[t] = (counts[t] || 0) + 1; }
+  const top = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b))[0] || '';
+  return { counts, top, turns: list.length };
+}
+
 const MARK = /^(?:export\s+)?(?:async\s+)?function\s+\w+|^(?:export\s+)?class\s+\w+|^\s*<(?:h[12]|script|main)\b|^#{1,3} \S/;
 /** structural lines of a big file: functions, classes, headings, script tags. Pure. */
 export function outlineOf(text, limit = 60) {
@@ -409,7 +421,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   const end = (outcome, why) => {
     if (outcome !== 'done') restore();
     if ((outcome === 'turn-cap' || outcome === 'token-cap' || outcome === 'read-cap') && transcript.length) why += ' after ' + turns + ' turns: ' + trailOf(transcript);
-    return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], log: transcript };
+    return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], spent: toolTally(transcript), log: transcript };
   };
   const changedFiles = () => touched().filter((p) => readOr(join(root, p)) !== original.get(p));
 
@@ -685,7 +697,7 @@ function parseCli(argv) {
 
 async function main() {
   const o = parseCli(process.argv.slice(2)), env = process.env, root = resolve(o.repo);
-  const say = (r) => { console.log(JSON.stringify({ outcome: r.outcome, why: r.why, turns: r.turns || 0, tokens: r.tokens || 0, files: r.files || [], provider: r.provider || '' })); process.exit(EXIT[r.outcome] ?? 1); };
+  const say = (r) => { console.log(JSON.stringify({ outcome: r.outcome, why: r.why, turns: r.turns || 0, tokens: r.tokens || 0, files: r.files || [], provider: r.provider || '', spent: r.spent || null })); process.exit(EXIT[r.outcome] ?? 1); };
   const prompt = o.promptFile ? readFileSync(o.promptFile, 'utf8') : o.task;
   if (!prompt) return say({ outcome: 'error', why: 'give --prompt-file or --task' });
   const checks = o.checks ? JSON.parse(readFileSync(o.checks, 'utf8')) : existsSync(join(root, 'tools/verse-loop.checks.json')) ? JSON.parse(readFileSync(join(root, 'tools/verse-loop.checks.json'), 'utf8')) : DEFAULT_CHECKS;
