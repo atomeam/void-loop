@@ -52,6 +52,10 @@ assert.equal(dayMinus('20261106', 30), '20261007');
 assert.ok(overlap('chiefs vs bills', 'Chiefs Bills') === 1);
 assert.deepEqual(filmWordsCheck({ title: 'Splitting a $84 dinner bill 3 ways? #Shorts', description: 'x' }).kinds, ['math'], 'the dinner-bill films fail');
 assert.equal(filmWordsCheck({ title: 'Why is everyone talking about Diwali? #Shorts', description: 'Make one: https://a-to-mind.com/c/x?q=Election%202026%20news' }).ok, true, 'a link is not a percent');
+// the film's words: no false "make any video free" claim, always the ask that is Verse itself (the studio's own copy, never a sale)
+const studioSrc = fs.readFileSync(new URL('./film-studio.mjs', import.meta.url), 'utf8');
+assert.ok(!/make any|make a video|every video/i.test(studioSrc), 'the studio never writes a free-video or generator claim');
+assert.ok(studioSrc.includes('Ask Verse for anything'), 'the studio points the words at Verse asking for anything');
 
 // the formats: eight kinds of video, each with a hook a stranger cares about, lines that fit their cards, facts only from the summary
 assert.equal(ORDER.length, 8);
