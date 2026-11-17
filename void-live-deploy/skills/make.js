@@ -10,7 +10,7 @@
 const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
 ];
-const SHAPES = { cube: 'cube', box: 'cube', sphere: 'sphere', ball: 'sphere', orb: 'sphere', torus: 'torus', donut: 'torus', doughnut: 'torus', ring: 'torus', cat: 'cube',
+const SHAPES = { cube: 'cube', box: 'cube', sphere: 'sphere', ball: 'sphere', orb: 'sphere', torus: 'torus', donut: 'torus', doughnut: 'torus', ring: 'torus', cat: 'cat',
   pyramid: 'pyramid', cone: 'cone', cylinder: 'cylinder', diamond: 'diamond', gem: 'diamond', crystal: 'diamond', octahedron: 'diamond', tree: 'cylinder',
   planet: 'planet', icosahedron: 'ico', dice: 'cube', die: 'cube' };
 const COLORS = { red: [235, 70, 70], orange: [245, 150, 60], gold: [235, 190, 80], golden: [235, 190, 80], yellow: [240, 220, 90], green: [80, 200, 120],
@@ -143,8 +143,24 @@ pts.forEach(function(p){v(p[0]*rad+(off?off[0]:0),p[1]*rad+(off?off[1]:0),p[2]*r
 function torus(R,r,a,bn,col,tilt){var base=V.length;for(var i=0;i<a;i++)for(var j=0;j<bn;j++){var u=i/a*Math.PI*2,w=j/bn*Math.PI*2,px=(R+r*Math.cos(w))*Math.cos(u),py=r*Math.sin(w),pz=(R+r*Math.cos(w))*Math.sin(u);if(tilt){var cy=Math.cos(tilt),sy=Math.sin(tilt),ny=py*cy-pz*sy,nz=py*sy+pz*cy;py=ny;pz=nz}v(px,py,pz)}
 for(var i=0;i<a;i++)for(var j=0;j<bn;j++){var i2=(i+1)%a,j2=(j+1)%bn;quad(base+i*bn+j,base+i2*bn+j,base+i2*bn+j2,base+i*bn+j2,col)}}
 function lathe(prof,n,col){var base=V.length;prof.forEach(function(p){for(var i=0;i<n;i++){var u=i/n*Math.PI*2;v(p[0]*Math.cos(u),p[1],p[0]*Math.sin(u))}});for(var k=0;k<prof.length-1;k++)for(var i=0;i<n;i++){var i2=(i+1)%n,a=base+k*n+i,b2=base+k*n+i2,cc=base+(k+1)*n+i2,d=base+(k+1)*n+i;quad(a,d,cc,b2,col)}}
+// a part of a closed solid is wound inward (its face normals point into the solid, which is what this viewer draws): each face is turned
+// around when it points out from the part's centre (owner, 2026-11-17: the cube drew inside-out, a box with its far walls showing)
+function wind(s,cx,cy,cz){for(var i=s;i<F.length;i++){var fa=F[i],a=V[fa.i[0]],b=V[fa.i[1]],c=V[fa.i[2]];var ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];var nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;var mx=(a[0]+b[0]+c[0])/3-cx,my=(a[1]+b[1]+c[1])/3-cy,mz=(a[2]+b[2]+c[2])/3-cz;if(nx*mx+ny*my+nz*mz>0){var t=fa.i[1];fa.i[1]=fa.i[2];fa.i[2]=t}}}
+// a solid part at a place: an ellipsoid (sub 0-2), a lathed part (legs, ears) and a point of a tail; all moved to (cx,cy,cz)
+function ell(cx,cy,cz,rx,ry,rz,sub,col){var s=F.length,b=V.length;sphere(1,sub,col);for(var i=b;i<V.length;i++){V[i]=[cx+V[i][0]*rx,cy+V[i][1]*ry,cz+V[i][2]*rz]}wind(s,cx,cy,cz)}
+function part(cx,cy,cz,prof,n,col){var s=F.length,b=V.length;lathe(prof,n,col);for(var i=b;i<V.length;i++){V[i]=[cx+V[i][0],cy+V[i][1],cz+V[i][2]]}wind(s,cx,cy,cz)}
 var C2=COL.map(function(z){return Math.round(z*.55)});
-if(SH==='cube'){var s=1;[[-s,-s,-s],[s,-s,-s],[s,s,-s],[-s,s,-s],[-s,-s,s],[s,-s,s],[s,s,s],[-s,s,s]].forEach(function(p){v(p[0],p[1],p[2])});[[0,3,2,1],[4,5,6,7],[0,1,5,4],[2,3,7,6],[1,2,6,5],[0,4,7,3]].forEach(function(q){quad(q[0],q[1],q[2],q[3],COL)})}
+if(SH==='cube'){var s=1,s0=F.length;[[-s,-s,-s],[s,-s,-s],[s,s,-s],[-s,s,-s],[-s,-s,s],[s,-s,s],[s,s,s],[-s,s,s]].forEach(function(p){v(p[0],p[1],p[2])});[[0,3,2,1],[4,5,6,7],[0,1,5,4],[2,3,7,6],[1,2,6,5],[0,4,7,3]].forEach(function(q){quad(q[0],q[1],q[2],q[3],COL)});wind(s0,0,0,0)}
+else if(SH==='cat'){
+  // a cat sitting: a body, a head with two pointed ears, two eyes and a nose, four legs and a curled tail (every part solid, wound inward)
+  ell(0,-.05,0,.72,.6,.55,2,COL);
+  ell(0,.62,.28,.5,.46,.46,2,COL);
+  part(-.26,.9,.24,[[0,.42],[.2,0],[0,0]],10,COL); part(.26,.9,.24,[[0,.42],[.2,0],[0,0]],10,COL);
+  ell(-.2,.7,.72,.09,.09,.05,1,C2); ell(.2,.7,.72,.09,.09,.05,1,C2); ell(0,.58,.74,.05,.04,.04,1,C2);
+  part(-.36,-.5,.36,[[0,.3],[.12,.3],[.12,-.4],[0,-.4]],10,COL); part(.36,-.5,.36,[[0,.3],[.12,.3],[.12,-.4],[0,-.4]],10,COL);
+  part(-.36,-.5,-.36,[[0,.3],[.12,.3],[.12,-.4],[0,-.4]],10,COL); part(.36,-.5,-.36,[[0,.3],[.12,.3],[.12,-.4],[0,-.4]],10,COL);
+  for(var ti=0;ti<6;ti++){var tt=ti/5;ell(0,.05+.55*tt*tt,-.7-.6*tt,.16-.07*tt,.16-.07*tt,.16-.07*tt,1,COL)}
+}
 else if(SH==='sphere')sphere(1.3,3,COL);else if(SH==='ico')sphere(1.3,0,COL);
 else if(SH==='torus')torus(1.05,.42,40,18,COL,.5);
 else if(SH==='pyramid')lathe([[0,1.3],[1.3,-1],[0,-1]],4,COL);else if(SH==='cone')lathe([[0,1.4],[1.1,-1],[0,-1]],36,COL);
