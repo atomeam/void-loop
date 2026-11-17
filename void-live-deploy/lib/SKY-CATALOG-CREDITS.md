@@ -1,0 +1,8 @@
+# Cosmic map data credits (repository file only — never served in UI or API)
+
+- **Bright stars** — RA, Dec, distance (parsecs) and B–V index: HYG Database v3.8 (`hyg_v38.csv`), Astronexus / David Nash, licensed **CC BY-SA 2.5**. Distances converted to light-years with 1 pc = 3.26156 ly. `lib/sky-catalog.js` STARS is a curated subset of the 21 named rows used by the map; values are copied verbatim, not generated.
+- **Deep-sky positions** — RA and Dec: OpenNGC (`NGC.csv`, `addendum.csv`), Mattia Verga, licensed **CC BY-SA 4.0**. Rows used: NGC1976 (M42), NGC0224 (M31), NGC1952 (M1), Mel022 (M45), NGC5194 (M51), NGC4594 (M104), NGC6611. Details at the project repository `mattiaverga/OpenNGC`.
+- **Deep-sky distances** — published values read from the corresponding public encyclopedia infoboxes (Gaia DR3 / VLBI / HST / NED sources cited there). M42 1267 ly; M31 752 kpc = 2,452,693 ly; M1 6500 ly; M45 444 ly; M51 7.22 Mpc = 23,548,463 ly; M104 9.55 Mpc = 31,147,898 ly; NGC6611 5700 ly. These are rounded literature values, not astrometric measurements made here.
+- **Galactic geometry** — Sun–Sgr A* distance 26,000 ly, Orion–Cygnus Arm, galactic plane tilt 62.6° and disk inclination 60.2°: published Milky Way parameters. The four-arm spiral, bar, bulge and dust lanes are procedural geometry drawn from a fixed seed; they are an artistic rendering, not a survey map.
+- **Earth and atmosphere** — fully procedural in the fragment shader (ray/sphere, solar terminator, specular ocean, city-light clusters, Fresnel and Rayleigh rim). No imagery, textures or external assets.
+- No external domain or catalogue name appears in any page, label, heading, comment or API response; attribution lives only in this file.

@@ -1873,6 +1873,7 @@ Object.values(things).forEach((th) => {
       emit: (th, value) => emit(th, value), // a skill's own thing hands its output down its arrows (frontier #24) // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
       ask: (t, attach) => { quietAsk = !!(attach && attach.quiet); confirmAttach = attach && typeof attach === 'object' && !attach.quiet ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
+    try { window.__voidStageAsk = stageApi.ask; } catch (_) {} // the canvas map's landmark taps ask through this same stage path
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
@@ -7651,6 +7652,7 @@ say('nothing selected to remove');
     document.addEventListener('visibilitychange', function () { if (document.hidden) { if (raf) { cancelAnimationFrame(raf); raf = 0; } } else kick(); });
     if (reduce.matches) still(); else requestAnimationFrame(frame);
   })();
+  import('/lib/void-cosmos.js').then(function (m) { m.mount({ ask: function (t) { return window.__voidStageAsk && window.__voidStageAsk(t); } }); }).catch(function () {});
   </script>
   <script>
   // ---- Presence: pointer-near rim light on the pill, and the asked question sinks into the void (only with the nebula look) ----
