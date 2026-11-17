@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T07:08:18.184Z",
+ "updated": "2026-11-17T07:17:43.306Z",
  "last24h": {
-  "ticks": 26,
-  "started": 57,
+  "ticks": 27,
+  "started": 60,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -101,11 +101,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 5,
+   "used": 35,
    "cap": 90
   },
   "day": {
-   "used": 257,
+   "used": 287,
    "cap": 360
   },
   "room": true,
@@ -125,7 +125,7 @@
   "mwey8iy6": 1794899298184,
   "mwj1to9z": 1794869520940,
   "mwj1tox5": 1794870083131,
-  "mvbl52gd": 1794877890710,
+  "mvbl52gd": 1794899863306,
   "mveb8rsi": 1794877890710,
   "mvu167w7": 1794878463379,
   "mveb8svc": 1794878463379,
@@ -134,7 +134,8 @@
   "mvpuqaee": 1794895245530,
   "mvpuqb4r": 1794895815961,
   "mvvjzso8": 1794896394915,
-  "mw5mm5fm": 1794896959372
+  "mw5mm5fm": 1794896959372,
+  "mwk3udt5": 1794899863306
  },
  "sweptAt": 1794899298184,
  "blueprintsAt": 1794899298184,
@@ -1165,6 +1166,48 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 20,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T07:17:43.306Z",
+   "open": 449,
+   "started": [
+    {
+     "id": "want-exam-recipes",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 65
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mwk3udt5",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 20,
    "warnings": 1
