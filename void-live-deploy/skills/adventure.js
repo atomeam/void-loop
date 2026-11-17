@@ -1,8 +1,7 @@
 /**
- * adventure skill - choose-your-own-adventure books on the stage ("choose your own adventure", "interactive story",
- * "text adventure"). The rules live in lib/adventure.js, the books in void-live-deploy/data/adventures/*.json (PR 1
- * ships "The Chrono-Signal", a sci-fi time loop with 3 endings). The card shows the scene, open and locked choices,
- * the pack and flags, and the path so far; runs persist on the device and export as a shareable run code.
+ * adventure skill - choose-your-own-adventure books on the stage. Rules in lib/adventure.js, books in
+ * void-live-deploy/data/adventures/*.json (PR 1 ships "The Chrono-Signal", 3 endings). Card shows scene,
+ * choices, pack, flags, path; runs persist on the device and export as a shareable run code.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), adventureOf, stageKinds }
  */
 import { addThing, cardEl, keepOut } from '../lib/stage-pack.js';

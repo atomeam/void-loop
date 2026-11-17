@@ -65,11 +65,7 @@ export function availableChoices(book, run) {
   });
 }
 
-const OMENS = [
-  'Somewhere, a bulkhead ticks as it cools.',
-  'Dust hangs in the dark, lit green from a dead panel.',
-  'Your own breath is the loudest machine here.',
-];
+const OMENS = ['Somewhere, a bulkhead ticks as it cools.', 'Dust hangs in the dark, lit green from a dead panel.', 'Your own breath is the loudest machine here.'];
 
 /** one ambient line for a node, fixed by the run's seed. Pure. */
 export function omenFor(nodeId, seed) {
