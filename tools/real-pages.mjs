@@ -682,15 +682,14 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
-// /games/dim-void/: a full-screen puzzle, solvable boards and a device best
-SPECS['/games/dim-void/'] = async (t) => {
+// /games/snake/: a full-screen canvas, wrapping movement, fruit and a device best
+SPECS['/games/snake/'] = async (t) => {
   await t.p.reload();
-  await t.waitText('#level', /Level 1/, 10000);
+  await t.waitText('#score', /Score/, 10000);
   const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
   t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
-  const box = await t.p.locator('#c').boundingBox(); await t.p.mouse.click(box.x + box.width * 0.25, box.y + box.height * 0.3);
-  await t.p.click('#solve'); await t.p.click('#new');
-  t.ok(true, 'lamp, hint and new puzzle do not throw');
+  await t.p.keyboard.press('ArrowUp'); await t.p.keyboard.press('ArrowRight'); await t.p.click('#pause'); await t.p.click('#pause');
+  t.ok(true, 'turning, pause and resume do not throw');
 };
 // /games/pong/: a full-screen canvas, a rally against Verse, a device best and working controls
 SPECS['/games/pong/'] = async (t) => {
