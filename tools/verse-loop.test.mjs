@@ -319,7 +319,7 @@ test('Verse\'s coder: a red check is fixed and ships with automerge; a refused o
 
   s = sandbox(); redGamma(s);
   r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: { ...scripted(s, [{ tool: 'edit', diff: FIX_GAMMA }, { tool: 'list' }]), VERSE_LOOP_AGENT_TIMEOUT_MIN: '2' }, log: quiet });
-  assert.equal(r.outcome, 'no-change'); assert.match(r.why, /turn cap/);
+  assert.equal(r.outcome, 'no-change'); assert.match(r.why, /read cap/); // one edit, then list after list: the read spiral stops it (2026-11-17)
   assert.equal(readFileSync(join(s.work, 'status.txt'), 'utf8'), 'broken\n', 'put back');
 });
 

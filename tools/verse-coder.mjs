@@ -11,6 +11,10 @@
 //   the scripts the checks run (fewer assertions or cases, a skip, an early exit: refused, never deleted); and before finishing,
 //   Verse's review (tools/review-pr.mjs --gate) and the loop's key scan on its own diff. A refused or capped run puts every file
 //   it touched back the way it found it.
+//   The read spiral (2026-11-17, three laps paused the loop): a free model that re-reads the same file every turn
+//   (watch-build.js, photos.js, recipe.js) never edits, reaches the turn cap with nothing, and three such laps pause the loop for
+//   6 hours. Two guards here: a file range already read in this run is not read again (like the same-miss search guard, #2610),
+//   and after LIMITS.reads turns in a row with no edit and no check the run stops early (read-cap) instead of spending the cap.
 //   node tools/verse-coder.mjs (--prompt-file <f> | --task "<text>") [--repo <dir>] [--checks <file>] [--target <check>]
 //                              [--max-turns 30] [--max-tokens 250000]
 // Exit 0: done, the change is left in the tree. 3: nothing to change or gave up. 4: no model key. 5: a cap. 6: no model answered.
@@ -26,7 +30,7 @@ import { scanDiff, DEFAULT_CHECKS } from './verse-loop.mjs';
 import { BUILD_OUTPUTS } from './generated.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-export const LIMITS = { turns: 30, tokens: 250000, out: 6000, finishTries: 3 };
+export const LIMITS = { turns: 30, tokens: 250000, out: 6000, finishTries: 3, reads: 12 };
 /** where a lap should start (AGENTS.md "Where things live"). Sent every turn, because a free model that searches
  *  the whole repo first spends the turn cap on "no match" (#2610, the fifth pause since #2506). */
 export const WHERE_LIVE = 'Where things live (AGENTS.md): a skill is void-live-deploy/skills/<name>.js and void-live-deploy/skills/order/<rank>-<name> (void-live-deploy/skills/index.json is generated, never edit it); page logic is void-live-deploy/lib/<name>.js and void-live-deploy/<name>/index.html; a tool or test is tools/<name>.mjs; a workflow is .github/workflows/ (read, never edit). The map is docs/MAP.md. Read one of these before searching the whole repo.';
@@ -35,7 +39,10 @@ export const HUGE = 400;
 /** one read: this many lines from `from`, and at most this many characters (a read was 300 lines and 16,000 characters, which with two
  *  whole fresh results made each late turn cost about 15,000 tokens). */
 export const READ = Object.freeze({ lines: 150, chars: 6000 });
-export const EXIT = { done: 0, nothing: 3, 'no-model': 4, 'turn-cap': 5, 'token-cap': 5, 'model-down': 6, error: 1 };
+export const EXIT = { done: 0, nothing: 3, 'no-model': 4, 'turn-cap': 5, 'token-cap': 5, 'read-cap': 5, 'model-down': 6, error: 1 };
+/** the tools that change the tree. A turn that uses one is not a read-only turn, and it lets the model read a file again
+ *  (a failed diff says "read the file again"): the spiral is reads with no attempt to change anything (2026-11-17). */
+export const WRITERS = new Set(['edit', 'patch', 'replace', 'split']);
 
 // ---- the free model stack ----
 /** the providers the environment has keys for, in order. Pure: keys stay in the returned objects, never in a log line. */
@@ -378,7 +385,7 @@ Answer every turn with exactly one JSON object and nothing else (an edit may put
 {"tool":"check","name":"<check>"}                    run one check; or {"tool":"check","test":"path/to/x.test.mjs"} for one node test file
 {"tool":"finish","summary":"what changed and why"}   when the task is done
 Checks you can run: ${checks.map((c) => c.name).join(', ') || '(none)'}.${target ? '\nThe red check to make green: ' + target + '.' : ''}
-Rules: fix the code, never the test: an edit that removes assertions or test cases, skips a test or exits early is refused. Never touch .env files, secrets or anything outside the repo; a workflow can be read, never edited. On a big file, use region or outline, then patch or split a small range: do not read the file from the top. Keep changes small and in the style around them. Read before you edit, and run the check before you finish. Verse's review runs on your diff when you finish, and a bug or risk it finds sends you back.
+Rules: fix the code, never the test: an edit that removes assertions or test cases, skips a test or exits early is refused. Never touch .env files, secrets or anything outside the repo; a workflow can be read, never edited. On a big file, use region or outline, then patch or split a small range: do not read the file from the top. Do not read the same file range twice, and do not read turn after turn with no edit: a repeated read is refused and a run that only reads stops early. Keep changes small and in the style around them. Read before you edit, and run the check before you finish. Verse's review runs on your diff when you finish, and a bug or risk it finds sends you back.
 ${WHERE_LIVE}`;
 
 /**
@@ -392,15 +399,16 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   const touched = () => [...original.keys()];
   const transcript = [];
   const messages = [{ role: 'system', content: SYSTEM(checks, target) }, { role: 'user', content: String(prompt || 'No task given: finish.') }];
-  let turns = 0, tokens = 0, finishTries = 0, lastCheck = null, lastEdit = 0;
+  let turns = 0, tokens = 0, finishTries = 0, lastCheck = null, lastEdit = 0, readsOnly = 0;
   const missed = new Set(); // a search that matched nothing: the same pattern and path is not run again (#2610)
+  const readSeen = new Set(); // a file range already read this run: not read again (the read spiral, 2026-11-17). Cleared on a write.
 
   const restore = () => {
     for (const [p, c] of original) { const abs = join(root, p); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone already */ } } else writeFileSync(abs, c); }
   };
   const end = (outcome, why) => {
     if (outcome !== 'done') restore();
-    if ((outcome === 'turn-cap' || outcome === 'token-cap') && transcript.length) why += ' after ' + turns + ' turns: ' + trailOf(transcript);
+    if ((outcome === 'turn-cap' || outcome === 'token-cap' || outcome === 'read-cap') && transcript.length) why += ' after ' + turns + ' turns: ' + trailOf(transcript);
     return { outcome, why, turns, tokens, files: outcome === 'done' ? changedFiles() : [], log: transcript };
   };
   const changedFiles = () => touched().filter((p) => readOr(join(root, p)) !== original.get(p));
@@ -445,6 +453,10 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
         return gen + o.lines + ' lines, ' + o.chars + ' characters. Too big to read from the top: use region with a pattern, or read with from and to.\n' + o.marks.join('\n');
       }
       const a = Math.max(1, +from || 1), b = Math.min(ls.length, to == null ? a + READ.lines - 1 : +to);
+      // the same file range twice in one run is the spiral (2026-11-17): refuse it, like the same-miss search (#2610)
+      const key = rel + '\0' + a + '\0' + b;
+      if (readSeen.has(key)) return 'already read: ' + rel + ' lines ' + a + '-' + b + ' earlier in this run. Do not read it again. Edit a file, run a check, or finish. ' + WHERE_LIVE;
+      readSeen.add(key);
       return gen + head(ls.slice(a - 1, b).map((l, i) => (a + i) + '\t' + l).join('\n'), READ.chars) + (b < ls.length ? '\n[' + ls.length + ' lines; read on with "from":' + (b + 1) + ']' : '');
     },
     region({ path, pattern }) {
@@ -613,6 +625,9 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   while (true) {
     if (turns >= L.turns) return atCap('turn-cap', 'stopped at the turn cap (' + L.turns + ')');
     if (tokens >= L.tokens) return atCap('token-cap', 'stopped at the token cap (' + L.tokens + ')');
+    // the read spiral (2026-11-17): a model that only reads never ships, and three such laps paused the loop for 6 hours. Stop
+    // after L.reads turns in a row with no edit and no check, far short of the cap, so the lap fails fast and the next one starts.
+    if (readsOnly >= L.reads) return atCap('read-cap', 'stopped at the read cap (' + L.reads + '): ' + L.reads + ' turns in a row with no edit and no check (reading, not changing: edit a file or finish)');
     turns++;
     const recent = windowOf(messages);
     let reply;
@@ -634,6 +649,11 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
     const looked = [act.path, (act.tool === 'search' || act.tool === 'region') && act.pattern ? JSON.stringify(String(act.pattern).slice(0, 40)) : '', act.name, act.test].filter(Boolean).join(' ');
     transcript.push({ turn: turns, tool: act.tool || '?', path: looked, result: String(result).slice(0, 200) });
     log('  turn ' + turns + ': ' + (act.tool || 'bad reply') + ' ' + looked + ' -> ' + String(result).split('\n')[0].slice(0, 120));
+    // the read spiral (2026-11-17): a turn that tried to change the tree, ran a check, or tried to finish clears the count; any
+    // other turn adds to it. A write attempt also lets the same range be read again (a failed diff says "read the file again").
+    const acted = WRITERS.has(act.tool) || act.tool === 'check' || act.tool === 'finish';
+    if (WRITERS.has(act.tool)) readSeen.clear();
+    readsOnly = acted ? 0 : readsOnly + 1;
     messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) + budgetNote({ turns, tokens, limits: L, edited: changedFiles().length > 0 }) });
   }
 }

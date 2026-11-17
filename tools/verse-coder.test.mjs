@@ -105,6 +105,31 @@ test('it stops at the turn cap and at the token cap, and puts back what it chang
   assert.match(r.why, /token cap \(1000\) after 2 turns: list, list$/, 'a stop at a cap says where the turns went');
 });
 
+test('the read spiral is stopped: a range read twice is refused, and a run that only reads stops at the read cap, not the turn cap (2026-11-17)', async () => {
+  // three laps paused the loop for 6 hours: the coder re-read the same file every turn (watch-build.js, photos.js, recipe.js)
+  assert.equal(LIMITS.reads, 12); assert.ok(LIMITS.reads < LIMITS.turns, 'the read cap stops a run well before the turn cap');
+  const s = repo();
+  // different ranges of the same file are fine; the same range twice is refused
+  let r = await run(s, [call('read', { path: 'src/add.mjs', from: 1, to: 2 }), call('read', { path: 'src/add.mjs', from: 3, to: 4 }), call('read', { path: 'src/add.mjs', from: 1, to: 2 }), call('finish')]);
+  assert.doesNotMatch(r.log[0].result, /already read/); assert.doesNotMatch(r.log[1].result, /already read/);
+  assert.match(r.log[2].result, /already read: src\/add\.mjs lines 1-2/);
+  // a write attempt clears the memory: a failed diff tells the model to read again, so the re-read is allowed
+  const bad = '--- a/src/add.mjs\n+++ b/src/add.mjs\n@@ -1,4 +1,4 @@\n // adds two numbers\n export function add(a, b) {\n-  return a * b;\n+  return a + b;\n }\n';
+  r = await run(s, [call('read', { path: 'src/add.mjs' }), call('edit', { diff: bad }), call('read', { path: 'src/add.mjs' }), call('finish')]);
+  assert.match(r.log[1].result, /does not apply/);
+  assert.doesNotMatch(r.log[2].result, /already read/, 'after a failed edit the file may be read again');
+  // a run that only reads stops at the read cap (a change it checked green after its last edit is still kept)
+  const onlyReads = async () => ({ text: call('read', { path: 'src/add.mjs', from: 1, to: 2 }) });
+  const c = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: onlyReads, limits: { turns: 30 } });
+  assert.equal(c.outcome, 'read-cap', c.why); assert.equal(c.turns, LIMITS.reads);
+  assert.match(c.why, /no edit and no check/); assert.match(c.why, /after \d+ turns: read src\/add\.mjs/);
+  // a check resets the count: read, check, read, check ... never reaches the read cap before the turn cap
+  let i = 0;
+  const readCheck = async () => ({ text: ++i % 2 ? call('read', { path: 'src/add.mjs', from: 1, to: 2 }) : call('check', { name: 'add' }) });
+  const rc = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: readCheck, limits: { turns: 6 } });
+  assert.equal(rc.outcome, 'turn-cap', rc.why); assert.equal(rc.turns, 6);
+});
+
 test('each turn sends the task and the newest results whole, and older results cut short, so the token cap lasts the turns', async () => {
   const msgs = [{ role: 'system', content: 'sys' }, { role: 'user', content: 'T'.repeat(5000) }];
   for (let i = 0; i < 40; i++) msgs.push({ role: 'assistant', content: '{"tool":"read","path":"f' + i + '"}' }, { role: 'user', content: String(i).padEnd(16000, 'x') });
@@ -119,20 +144,24 @@ test('each turn sends the task and the newest results whole, and older results c
   assert.deepEqual(windowOf(msgs.slice(0, 6)), msgs.slice(0, 6), 'a short run is sent as it is');
   assert.equal(trailOf([{ tool: 'read', path: 'a.js', result: '1\tx' }, { tool: 'edit', path: '', result: 'the diff does not apply: error: patch failed\nmore' }, { tool: 'check', path: 'add', result: 'FAIL add\nlog' }]),
     'read a.js, edit: the diff does not apply: error: patch failed, check add: FAIL add');
-  // the worst case, a full read every turn: the old window ran out of tokens near turn 12; this one lasts 20 turns or more
+  // the worst case, the same full read every turn (the 2026-11-17 spiral: watch-build.js, photos.js, recipe.js): the same range is
+  // refused after the first read and the run stops at the read cap, well before the turn cap, with nothing changed
   const s = repo(); writeFileSync(join(s.work, 'src/big.mjs'), Array.from({ length: 400 }, (_, i) => '// line ' + i + ' ' + 'y'.repeat(30)).join('\n'));
   const r = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: async () => ({ text: call('read', { path: 'src/big.mjs' }) }), limits: { turns: 30, tokens: 250000 } });
-  assert.ok(r.turns >= 20, 'turns before the token cap: ' + r.turns + ' (' + r.tokens + ' tokens)');
+  assert.equal(r.outcome, 'read-cap', r.why); assert.equal(r.turns, LIMITS.reads);
+  assert.match(r.log[1].result, /already read: src\/big\.mjs lines 1-150/);
+  assert.equal(sh(s.work, 'status', '--porcelain'), '?? src/big.mjs', 'the coder changed nothing (big.mjs is the test\'s own new file)');
 });
 
-test('a lap with its whole brief, reading big files every turn and counting a token as 3 characters, lasts the 30 turns (#2234)', async () => {
+test('a lap with its whole brief, reading big files and checking, counting a token as 3 characters, lasts the 30 turns (#2234)', async () => {
   // three laps in a row stopped at the token cap after 20 to 28 turns of reading: the 11,000-character brief and two 16,000-character reads rode along every turn
   const prompt = buildPrompt({ task: { kind: 'next', n: 1, text: 'Make the tower lane pages answer.' }, tagteam: readFileSync('docs/TAGTEAM.md', 'utf8'), gates: readFileSync('docs/GATE-STANDARDS.md', 'utf8') });
   assert.ok(prompt.length > 8000, 'the real brief is long: ' + prompt.length);
   const s = repo();
   for (const f of ['a', 'b', 'c']) writeFileSync(join(s.work, 'src/' + f + '.mjs'), Array.from({ length: 900 }, (_, i) => '  const line' + i + ' = ' + JSON.stringify('z'.repeat(80)) + ';').join('\n'));
+  // a check every 4th turn: a check is progress, so it clears the read-only count and the run is not stopped at the read cap (2026-11-17)
   let i = 0;
-  const model = async (msgs) => { i++; return { text: call('read', { path: 'src/' + 'abc'[i % 3] + '.mjs', from: 1 + (i * 37) % 400 }), tokens: Math.ceil(msgs.reduce((n, x) => n + x.content.length, 0) / 3) + 60 }; };
+  const model = async (msgs) => { i++; const text = i % 4 === 0 ? call('check', { name: 'add' }) : call('read', { path: 'src/' + 'abc'[i % 3] + '.mjs', from: 1 + (i * 37) % 400 }); return { text, tokens: Math.ceil(msgs.reduce((n, x) => n + x.content.length, 0) / 3) + 60 }; };
   const r = await runCoder({ root: s.work, prompt, checks: CHECKS, model, limits: { turns: LIMITS.turns, tokens: LIMITS.tokens } });
   assert.equal(r.outcome, 'turn-cap', 'it ran out of tokens after ' + r.turns + ' turns (' + r.tokens + ' tokens)');
   const w = windowOf([{ role: 'system', content: 's' }, { role: 'user', content: prompt }, ...Array.from({ length: 4 }, () => [{ role: 'assistant', content: 'n'.repeat(9000) }, { role: 'user', content: 'r' }]).flat()]);

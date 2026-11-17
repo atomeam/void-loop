@@ -1,0 +1,1 @@
+{"at":"2026-11-17T08:04:18Z","by":"claude","kind":"fix","what":"the coder stops a read spiral: a file range read twice in a run is refused, and a run with no edit for 12 turns stops at a read cap instead of spending the 30-turn cap and pausing the loop"}

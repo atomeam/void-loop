@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- OpenHands · fix/coder-read-spiral · the coder stops a read spiral: a repeated read of the same file range is refused and a run with no edit for 12 turns stops at a read cap, so a stuck lap fails fast instead of spending the 30-turn cap and pausing the loop · 2026-11-17 07:55 UTC
 - Viktor · fix/verse-conductor-event-health · successes from a different trigger cannot hide a broken scheduled audit; watch recovery infrastructure too · 2026-11-16
 - Viktor · fix/verse-skill-self-registration · share deliberate skill retirement across adoption, routing checks and generated families; preserve system-plan retirement; no workflow or live-call changes · 2026-11-16
 
