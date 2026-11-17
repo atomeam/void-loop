@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T07:36:52.823Z",
+ "updated": "2026-11-17T07:46:13.352Z",
  "last24h": {
-  "ticks": 29,
-  "started": 63,
+  "ticks": 30,
+  "started": 64,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -17,6 +17,10 @@
   }
  ],
  "held": [
+  {
+   "id": "want-exam-recipes",
+   "why": "verse-job.yml is paused (the coder's back-off, #2913, until 13:25 UTC)"
+  },
   {
    "id": "want-idea-f167636764",
    "why": "verse-job.yml is paused (the coder's back-off, #2913, until 13:25 UTC)"
@@ -39,10 +43,6 @@
   },
   {
    "id": "want-idea-25e717d31f",
-   "why": "verse-job.yml is paused (the coder's back-off, #2913, until 13:25 UTC)"
-  },
-  {
-   "id": "want-exam-recipes",
    "why": "verse-job.yml is paused (the coder's back-off, #2913, until 13:25 UTC)"
   },
   {
@@ -137,7 +137,8 @@
   "mw5mm5fm": 1794896959372,
   "mwk3udt5": 1794899863306,
   "mwk3uefy": 1794900428085,
-  "mwk3uf2k": 1794901012823
+  "mwk3uf2k": 1794901012823,
+  "mwk3ufop": 1794901573352
  },
  "sweptAt": 1794899298184,
  "blueprintsAt": 1794899298184,
@@ -1256,6 +1257,36 @@
    "started": [
     {
      "id": "mwk3uf2k",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 432,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T07:46:13.352Z",
+   "open": 448,
+   "started": [
+    {
+     "id": "mwk3ufop",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
