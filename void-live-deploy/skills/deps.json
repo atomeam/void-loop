@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1338,
+ "counted": 1339,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -175,7 +175,7 @@
    "skills": 15,
    "direct": 1,
    "dependants": 63,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/sky-math.js",
@@ -420,6 +420,13 @@
    "skills": 7,
    "direct": 0,
    "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/card-custom-art.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 11,
    "tests": 1
   },
   {
@@ -7825,6 +7832,24 @@
     "skills/walker.js"
    ]
   },
+  "lib/card-custom-art.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-share.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "lib/term-card.js",
+    "skills/about-skill.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js",
+    "skills/rally.js"
+   ]
+  },
   "lib/card-deck.js": {
    "imports": [
     "lib/game-kit.js",
@@ -8030,6 +8055,7 @@
   "lib/card-share.js": {
    "imports": [
     "lib/card-image.js",
+    "lib/card-custom-art.js",
     "lib/card-deck.js"
    ],
    "importedBy": [
