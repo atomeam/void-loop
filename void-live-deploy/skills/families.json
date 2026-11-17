@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 1,
-  "checked": 18,
-  "proven": 442
+  "checked": 17,
+  "proven": 443
  },
  "families": [
   {
@@ -3773,8 +3773,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 5,
-    "proven": 88
+    "checked": 4,
+    "proven": 89
    },
    "skills": [
     {
@@ -4629,8 +4629,8 @@
     },
     {
      "name": "automation-proposal",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-17",
      "last_tested_by": "its tests",
      "success_rate": 1,

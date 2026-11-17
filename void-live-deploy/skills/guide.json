@@ -142,8 +142,8 @@
    "count": {
     "experiment": 0,
     "tested": 1,
-    "checked": 5,
-    "proven": 88
+    "checked": 4,
+    "proven": 89
    },
    "from": 374,
    "to": 468
@@ -8513,8 +8513,9 @@
     "what automations for invoice reminders",
     "automation proposal for support tickets"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. This is the page of automation-proposal.",
    "glow": 100,
    "n": 467
   },
