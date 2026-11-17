@@ -100,7 +100,7 @@
    "floor": "travel: flightconnections.com",
    "pages": 59,
    "templates": 22,
-   "features": 609,
+   "features": 611,
    "verse_pages": 2,
    "verse_features": 5,
    "missing": [
@@ -640,6 +640,8 @@
     "to Comoros",
     "to Mayotte",
     "What are the best international destinations in Africa for?",
+    "airlines_flying direction_",
+    "aircrafts_flying direction_",
     "Pages: Flights from Mexico, Flights from Dominican Republic",
     "to U.S. Virgin Islands with a stopover",
     "to Suriname",
@@ -709,7 +711,7 @@
     "to Yemen",
     "to Yemen with a stopover"
    ],
-   "crawled": "2026-11-16"
+   "crawled": "2026-11-17"
   },
   "tsundere.pw": {
    "floor": "tsundere.pw",

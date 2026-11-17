@@ -1,0 +1,83 @@
+{
+  "id": "neon-harbour",
+  "title": "Neon Harbour",
+  "genre": "noir mystery",
+  "blurb": "A missing courier, a waterfront of lies, and a club where everybody knows the password but you.",
+  "start": "office",
+  "nodes": {
+    "office": {
+      "title": "The Retainer",
+      "prose": "Rain on the office glass. The client's photograph shows a courier, a sealed case, and the harbour clock at eleven. \"Find the case,\" she says. \"Don't open it.\"",
+      "choices": [
+        { "text": "Take the retainer and the photograph", "to": "pier", "gives": { "items": ["coin", "photo"] } },
+        { "text": "Take only the photograph", "to": "pier", "gives": { "items": ["photo"] } }
+      ]
+    },
+    "pier": {
+      "title": "Pier Nine",
+      "prose": "Pier Nine stinks of diesel and low tide. A dockhand watches you from under a lamp, and a skiff knocks against the pilings below.",
+      "choices": [
+        { "text": "Climb down to the skiff", "to": "skiff" },
+        { "text": "Ask the dockhand about the courier", "to": "dockhand" },
+        { "text": "Walk the nightclub row", "to": "club", "needs": { "items": ["matchbook"] } }
+      ]
+    },
+    "skiff": {
+      "title": "The Skiff",
+      "prose": "The skiff is empty but for a crushed matchbook from The Glass Eel and a smell of expensive smoke. Someone left in a hurry.",
+      "choices": [
+        { "text": "Pocket the matchbook and climb back", "to": "pier", "gives": { "items": ["matchbook"] } }
+      ]
+    },
+    "dockhand": {
+      "title": "The Lamp",
+      "prose": "\"Courier? Tall, nervous, case chained to his wrist. They took him up to Marlow's warehouse, smiling.\" The dockhand holds out a hand, then shrugs and tells you anyway.",
+      "choices": [
+        { "text": "Head back along the pier", "to": "pier", "gives": { "flags": { "tip": true } } }
+      ]
+    },
+    "club": {
+      "title": "The Glass Eel",
+      "prose": "The Glass Eel glows green through the rain. The singer stops mid-song when she sees the matchbook, and leans close: \"Marlow's password is kingfisher. Spend your coin and I'll tell you which door.\"",
+      "choices": [
+        { "text": "Buy her a drink for the door", "to": "warehouse", "needs": { "items": ["coin"] }, "gives": { "flags": { "password": true } } },
+        { "text": "Follow the delivery truck instead", "to": "warehouse" }
+      ]
+    },
+    "warehouse": {
+      "title": "Marlow's Warehouse",
+      "prose": "Crates to the ceiling, one lamp, Marlow himself, and the courier tied to a chair — alive. \"Say kingfisher and we talk,\" Marlow says. \"Otherwise you're trespassing.\"",
+      "choices": [
+        { "text": "Say the password and demand the case", "to": "closed", "needs": { "flags": { "password": true } } },
+        { "text": "Take Marlow's payoff instead", "to": "joined" },
+        { "text": "Check the roof before deciding", "to": "roof" }
+      ]
+    },
+    "roof": {
+      "title": "The Watcher",
+      "prose": "Gravel, a ventilator, and a watcher with a rifle who was never part of anyone's plan — yours, Marlow's, or the client's.",
+      "choices": [
+        { "text": "Rush the watcher", "to": "setup" },
+        { "text": "Climb back down quietly", "to": "warehouse" }
+      ]
+    },
+    "closed": {
+      "title": "Case Closed",
+      "prose": "\"Kingfisher.\" Marlow laughs like a man outbid and hands over the case, still sealed. The courier walks out on his own feet. You never learn what was inside, and the cheque clears.",
+      "choices": [],
+      "ending": { "kind": "triumph", "title": "The sealed case" }
+    },
+    "joined": {
+      "title": "The Payoff",
+      "prose": "The money is real and heavy and wrong. You spend it all over town for a year and never once stop hearing the harbour clock strike eleven.",
+      "choices": [],
+      "ending": { "kind": "mystery", "title": "Bought" }
+    },
+    "setup": {
+      "title": "The Setup",
+      "prose": "The watcher was waiting for exactly that. The last thing you hear is the harbour clock striking eleven, right on schedule, like it was always going to.",
+      "choices": [],
+      "ending": { "kind": "demise", "title": "On schedule" }
+    }
+  }
+}

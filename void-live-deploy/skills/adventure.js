@@ -100,6 +100,7 @@ function mount(th, stageApi) {
     row.append(again, copy);
     el.append(row);
     el.append(h('div', 'font-size:11px;opacity:.55;margin-top:6px', 'Step ' + (th.run.path.length + 1) + ' · run code ' + code.slice(0, 12) + '… · kept on this device', { class: 'ad-code' }));
+    el.append(h('a', 'display:inline-block;margin-top:6px;font-size:12px', 'Read full screen →', { href: '/games/adventure/?book=' + th.book }));
   };
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

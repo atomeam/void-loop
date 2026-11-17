@@ -10,5 +10,9 @@
  "touched": [
   "tools/make-cat.test.mjs",
   "void-live-deploy/skills/make.js"
+ ],
+ "passed": [
+  1,
+  2
  ]
 }

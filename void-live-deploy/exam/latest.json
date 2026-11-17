@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-17T08:13:45.478Z",
+  "at": "2026-11-17T08:50:30.216Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -34,10 +34,17 @@
       }
     },
     "podcasts": {
-      "score": 96,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of the ted radio hour",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of hidden brain",
           "failed": [
@@ -108,10 +115,64 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 80.6,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "weather in paris",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "will it rain tomorrow in london",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "weather in tokyo this week",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "weather in seattle",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "what is the weather in paris",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "weather in london this weekend",
+          "failed": [
+            "skill",
+            "fast",
+            "temp"
+          ],
+          "score": 50
+        },
         {
           "ask": "weather",
           "failed": [
@@ -233,12 +294,12 @@
       }
     },
     "sports": {
-      "score": 93.5,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "yankees score",
+          "ask": "celtics score",
           "failed": [
             "board"
           ],
@@ -253,6 +314,13 @@
         },
         {
           "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
           "failed": [
             "board"
           ],
@@ -360,7 +428,7 @@
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 93.5
+    "domain": "weather",
+    "score": 80.6
   }
 }

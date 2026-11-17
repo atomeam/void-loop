@@ -9,6 +9,7 @@
     "debris-field": { "version": 2, "visuals": "canvas, DPR scaled", "audio": "WebAudio", "progression": "daily seed, device best", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" },
     "gap-glide": { "version": 2, "visuals": "canvas, DPR scaled", "audio": "WebAudio", "progression": "device best", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" },
     "jrpg": { "version": 1, "visuals": "integer pixel canvas", "audio": "WebAudio chiptune + SFX", "progression": "XP, chapters, save slots", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" },
-    "roguelike": { "version": 1, "visuals": "integer pixel canvas", "audio": "WebAudio SFX", "progression": "seeded depths, relics, codex", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + pointer" }
+    "roguelike": { "version": 1, "visuals": "integer pixel canvas", "audio": "WebAudio SFX", "progression": "seeded depths, relics, codex", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + pointer" },
+    "adventure": { "version": 1, "visuals": "seeded pixel scenes", "audio": "WebAudio page turns", "progression": "branches, endings, save slots", "fps_check": true, "last_upgraded_at": "2026-11-17", "fullscreen": true, "controls": "keyboard + touch" }
   }
 }

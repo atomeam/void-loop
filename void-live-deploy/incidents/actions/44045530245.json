@@ -1,0 +1,147 @@
+{
+ "at": "2026-11-17T08:42:30Z",
+ "sha": "c29a8ad5a86c259d72cc9c43457141c10a6143c4",
+ "runId": 44045530245,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44045530245",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (3)",
+   "id": 133910152464,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44045530245/job/133910152464",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [
+    "Error: c29a8ad5a86c259d72cc9c43457141c10a6143c4 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: \"the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on"
+   ],
+   "tail": [
+    "  exit 1",
+    "fi",
+    "if git diff --cached --quiet; then",
+    "  git revert --abort || true",
+    "  echo \"::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now.\"",
+    "  echo \"### $sha broke the suite ($why); its revert is empty on main now: look by hand\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  exit 1",
+    "fi",
+    "# the ledger says what was taken back, so \"growth\" never shows a change the site no longer has without saying so",
+    "node tools/grow.mjs retire \"Taken back off the site: \\\"$subject\\\" ($sha) failed the browser suite on main ($why).\" --by void-verify --ref \"https://github.com/atomeam/void-loop/actions/runs/44045530245\" && git add void-live-deploy/void.growth.json || true",
+    "git commit -q -m \"Revert \\\"$subject\\\"\" -m \"It shipped and the browser suite failed on main (job browser-suite in Verse verify, run 44045530245, testing $tested): $why. So it is taken back off the site.\" -m \"Verse-auto-revert: $sha\"",
+    "git push origin main",
+    "node tools/suite-gate.mjs queue \"$sha\" \"$why\" || echo \"::warning title=Fix job not filed::the revert is on main; the heal job was not queued\"",
+    "gh workflow run deploy.yml --repo \"atomeam/void-loop\" --ref main -f after_merge=true",
+    "echo \"::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again.\"",
+    "echo \"### $sha broke the suite after shipping ($why): reverted on main and redeployed\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "exit 1 # the test step no longer fails the job by itself (it continues so a flake can be rerun)",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig",
+    "  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib",
+    "  VOID_TEST_BROWSER: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "  GH_TOKEN: ***",
+    "  VOID_OWNER_TOKEN: ***",
+    "Error: c29a8ad5a86c259d72cc9c43457141c10a6143c4 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: \"the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (5)",
+   "id": 133910152873,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44045530245/job/133910152873",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [
+    "Error: c29a8ad5a86c259d72cc9c43457141c10a6143c4 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: \"suite ran to the end\": no verified commit on main before 418827e7eb5b54c14740b4adb8efbb9933cf9d1e. Look at the failed checks and revert by hand."
+   ],
+   "tail": [
+    "  exit 1",
+    "fi",
+    "if git diff --cached --quiet; then",
+    "  git revert --abort || true",
+    "  echo \"::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now.\"",
+    "  echo \"### $sha broke the suite ($why); its revert is empty on main now: look by hand\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  exit 1",
+    "fi",
+    "# the ledger says what was taken back, so \"growth\" never shows a change the site no longer has without saying so",
+    "node tools/grow.mjs retire \"Taken back off the site: \\\"$subject\\\" ($sha) failed the browser suite on main ($why).\" --by void-verify --ref \"https://github.com/atomeam/void-loop/actions/runs/44045530245\" && git add void-live-deploy/void.growth.json || true",
+    "git commit -q -m \"Revert \\\"$subject\\\"\" -m \"It shipped and the browser suite failed on main (job browser-suite in Verse verify, run 44045530245, testing $tested): $why. So it is taken back off the site.\" -m \"Verse-auto-revert: $sha\"",
+    "git push origin main",
+    "node tools/suite-gate.mjs queue \"$sha\" \"$why\" || echo \"::warning title=Fix job not filed::the revert is on main; the heal job was not queued\"",
+    "gh workflow run deploy.yml --repo \"atomeam/void-loop\" --ref main -f after_merge=true",
+    "echo \"::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again.\"",
+    "echo \"### $sha broke the suite after shipping ($why): reverted on main and redeployed\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "exit 1 # the test step no longer fails the job by itself (it continues so a flake can be rerun)",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig",
+    "  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib",
+    "  VOID_TEST_BROWSER: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "  GH_TOKEN: ***",
+    "  VOID_OWNER_TOKEN: ***",
+    "Error: c29a8ad5a86c259d72cc9c43457141c10a6143c4 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: \"suite ran to the end\": no verified commit on main before 418827e7eb5b54c14740b4adb8efbb9933cf9d1e. Look at the failed checks and revert by hand.",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (4)",
+   "id": 133910152957,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44045530245/job/133910152957",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [
+    "Error: c29a8ad5a86c259d72cc9c43457141c10a6143c4 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: \"suite ran to the end\": no verified commit on main before 418827e7eb5b54c14740b4adb8efbb9933cf9d1e. Look at the failed checks and revert by hand."
+   ],
+   "tail": [
+    "  exit 1",
+    "fi",
+    "if git diff --cached --quiet; then",
+    "  git revert --abort || true",
+    "  echo \"::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now.\"",
+    "  echo \"### $sha broke the suite ($why); its revert is empty on main now: look by hand\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  exit 1",
+    "fi",
+    "# the ledger says what was taken back, so \"growth\" never shows a change the site no longer has without saying so",
+    "node tools/grow.mjs retire \"Taken back off the site: \\\"$subject\\\" ($sha) failed the browser suite on main ($why).\" --by void-verify --ref \"https://github.com/atomeam/void-loop/actions/runs/44045530245\" && git add void-live-deploy/void.growth.json || true",
+    "git commit -q -m \"Revert \\\"$subject\\\"\" -m \"It shipped and the browser suite failed on main (job browser-suite in Verse verify, run 44045530245, testing $tested): $why. So it is taken back off the site.\" -m \"Verse-auto-revert: $sha\"",
+    "git push origin main",
+    "node tools/suite-gate.mjs queue \"$sha\" \"$why\" || echo \"::warning title=Fix job not filed::the revert is on main; the heal job was not queued\"",
+    "gh workflow run deploy.yml --repo \"atomeam/void-loop\" --ref main -f after_merge=true",
+    "echo \"::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again.\"",
+    "echo \"### $sha broke the suite after shipping ($why): reverted on main and redeployed\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "exit 1 # the test step no longer fails the job by itself (it continues so a flake can be rerun)",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig",
+    "  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib",
+    "  VOID_TEST_BROWSER: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "  GH_TOKEN: ***",
+    "  VOID_OWNER_TOKEN: ***",
+    "Error: c29a8ad5a86c259d72cc9c43457141c10a6143c4 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: \"suite ran to the end\": no verified commit on main before 418827e7eb5b54c14740b4adb8efbb9933cf9d1e. Look at the failed checks and revert by hand.",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

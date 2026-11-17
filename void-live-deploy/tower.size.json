@@ -7424,6 +7424,20 @@
    "weight": 138,
    "at": "2026-11-06"
   },
+  "itesm.mx": {
+   "bytes": 10,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 0,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 9,
+   "shell": "none",
+   "weight": 10,
+   "at": "2026-11-17"
+  },
   "itranslate.com": {
    "bytes": 832705,
    "controls": 58,
@@ -10158,6 +10172,20 @@
    "shell": "none",
    "weight": 2391610,
    "at": "2026-10-30"
+  },
+  "pretty-fly4.net": {
+   "bytes": 144,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 7,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 51,
+   "shell": "none",
+   "weight": 214,
+   "at": "2026-11-17"
   },
   "primediceagency.uk": {
    "refused": true,

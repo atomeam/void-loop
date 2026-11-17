@@ -7604,7 +7604,14 @@ say('nothing selected to remove');
     var area = innerWidth * innerHeight, gpu = gl.getParameter(gl.MAX_TEXTURE_SIZE) >= 8192 ? 1 : .6;
     var N = Math.max(5000, Math.min(46000, Math.round(area / 27 * gpu))), data = new Float32Array(N * 3);
     for (var i = 0; i < N; i++) { var r = Math.sqrt(Math.random()), t = Math.random() * 6.283185; data[i * 3] = Math.cos(t) * r; data[i * 3 + 1] = Math.sin(t) * r; data[i * 3 + 2] = Math.random(); }
-    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
+    var base = data.slice(), vel = new Float32Array(N * 3), target = null, morphOn = false, debounce = 0, shapes = null, con = null;
+    import('/lib/void-shapes.js').then(function (m) { shapes = m; con = m.createConstellation(N, 140, 6); }).catch(function () {});
+    function formTarget() { if (!con) return; if (!target) target = new Float32Array(N * 3); con.assign(target, base); morphOn = true; kick(); }
+    function previewShape(text) { if (!shapes || !con) return; con.preview(text, shapes.pointsFor(text, 140)); formTarget(); }
+    function lockShape() { if (!con) return; con.lock(); formTarget(); }
+    function releasePreview() { if (!con) return; con.dropPreview(); formTarget(); }
+    function calmField() { if (!con) return; con.clear(); formTarget(); }
     var loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
     var U = function (k) { return gl.getUniformLocation(pr, k); }, uR = U('uR'), uP = U('uP'), uW = U('uW'), uG = U('uG'), uD = U('uD');
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -7614,18 +7621,27 @@ say('nothing selected to remove');
     function frame(now) {
       raf = 0; px += (tx - px) * .06; py += (ty - py) * .06; glow += (tGlow - glow) * .05; tGlow *= .94;
       var w = 0; if (waveAt) { var e = (now - waveAt) / 900; if (e >= 1) waveAt = 0; else w = e; }
+      if (morphOn && target) { var d = 0;
+        for (var i = 0; i < N; i++) { var k = i * 3;
+          for (var a = 0; a < 3; a++) { vel[k + a] = (vel[k + a] + (target[k + a] - data[k + a]) * .05) * .86; data[k + a] += vel[k + a]; d += Math.abs(vel[k + a]); }
+        }
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferSubData(gl.ARRAY_BUFFER, 0, data);
+        if (d < N * .0009) { morphOn = false; if (target === base) target = null; }
+      }
       gl.clearColor(.0196, .0235, .0392, 1); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform2f(uP, px, py); gl.uniform1f(uW, w); gl.uniform1f(uG, glow); gl.drawArrays(gl.POINTS, 0, N);
-      if ((Math.abs(tx - px) + Math.abs(ty - py) > .001 || glow > .01 || tGlow > .01 || waveAt) && !reduce.matches && !document.hidden) raf = requestAnimationFrame(frame);
+      if ((Math.abs(tx - px) + Math.abs(ty - py) > .001 || glow > .01 || tGlow > .01 || waveAt || morphOn) && !reduce.matches && !document.hidden) raf = requestAnimationFrame(frame);
     }
     function kick() { if (!raf && !reduce.matches && !document.hidden) raf = requestAnimationFrame(frame); }
-    function still() { if (raf) { cancelAnimationFrame(raf); raf = 0; } px = py = tx = ty = glow = tGlow = 0; waveAt = 0; frame(performance.now()); }
+    function still() { if (raf) { cancelAnimationFrame(raf); raf = 0; } px = py = tx = ty = glow = tGlow = 0; waveAt = 0; morphOn = false; target = null; data.set(base); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferSubData(gl.ARRAY_BUFFER, 0, data); frame(performance.now()); }
     addEventListener('pointermove', function (e) { if (reduce.matches) return; tx = e.clientX / innerWidth * 2 - 1; ty = 1 - e.clientY / innerHeight * 2; tGlow = .8; kick(); }, { passive: true });
     addEventListener('pointerleave', function () { tx = ty = 0; kick(); }, { passive: true });
     function wire() {
       var inp = document.getElementById('input'), row = document.getElementById('row'), go = document.getElementById('go');
-      if (inp) inp.addEventListener('input', function () { tGlow = .6; if (!mobile) kick(); });
-      function submit() { if (reduce.matches) return; waveAt = performance.now(); tGlow = 1; kick(); }
+      if (inp) inp.addEventListener('input', function () { tGlow = .6; if (!mobile) kick();
+        clearTimeout(debounce); debounce = setTimeout(function () { var v = inp.value.trim(); if (v) previewShape(v); else releasePreview(); }, 80);
+      });
+      function submit() { if (reduce.matches) return; waveAt = performance.now(); tGlow = 1; kick(); var v = inp && inp.value.trim(); if (v) lockShape(); else calmField(); }
       if (row) row.addEventListener('submit', submit);
       if (inp) inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
       if (go) go.addEventListener('click', submit);

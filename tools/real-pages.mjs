@@ -730,6 +730,25 @@ SPECS['/games/pong/'] = async (t) => {
   await t.p.keyboard.press('ArrowUp'); await t.p.keyboard.press('ArrowDown'); await t.p.click('#pause'); await t.p.click('#pause');
   t.ok(true, 'paddle, pause and resume do not throw');
 };
+// /games/adventure/: a full-screen illustrated book, a story loaded from its own data file, and working controls
+SPECS['/games/adventure/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#title', /Chrono-Signal/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
+  t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
+  await t.p.keyboard.press('1');
+  await t.waitText('#title', /Your Own Voice/, 10000);
+  t.ok(true, 'a numbered choice moves the story on');
+  await t.p.click('#save');
+  await t.waitText('#meta', /slot S1/, 10000);
+  t.ok(true, 'a slot save lands on this device');
+  await t.p.click('#load');
+  await t.waitText('#meta', /Save loaded/, 10000);
+  t.ok(true, 'a slot save round-trips');
+  await t.p.goto(t.p.url().split('?')[0] + '?book=neon-harbour');
+  await t.waitText('#title', /Neon Harbour/, 10000);
+  t.ok(true, 'the book picker opens another book');
+};
 // /games/jrpg/: a full-screen pixel canvas, a chapter loaded from its own data file, and working controls
 SPECS['/games/jrpg/'] = async (t) => {
   await t.p.reload();

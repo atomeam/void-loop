@@ -1,0 +1,19 @@
+{
+ "at": "2026-11-17T08:42:24.996Z",
+ "sha": "c29a8ad5a86c259d72cc9c43457141c10a6143c4",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44045530245",
+ "suite": "browser suite on main",
+ "checks": [
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "tools/card-subject.test.mjs",
+  "void-live-deploy/lib/card-frame.js",
+  "void-live-deploy/lib/card-subject.js"
+ ],
+ "shards": [
+  3,
+  4
+ ]
+}
