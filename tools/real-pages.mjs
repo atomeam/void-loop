@@ -698,8 +698,10 @@ SPECS['/games/roguelike/'] = async (t) => {
   const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height, css: e.style.width }));
   t.ok(cv.w === 320 && cv.h === 180 && parseInt(cv.css, 10) > 0, 'integer-scaled pixel canvas fills the viewport: ' + JSON.stringify(cv));
   await t.p.keyboard.press('ArrowRight'); await t.p.keyboard.press('1'); await t.p.keyboard.press('2');
+  await t.p.click('#runcard');
+  await t.waitText('#msg', /Run card/, 10000);
   await t.p.click('#new');
-  t.ok(true, 'movement, abilities and a new run do not throw');
+  t.ok(true, 'movement, abilities, the run card and a new run do not throw');
 };
 // /games/merge-void/: a full-screen merge puzzle with combos, star tiles and undo
 SPECS['/games/merge-void/'] = async (t) => {

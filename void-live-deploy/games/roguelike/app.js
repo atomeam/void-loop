@@ -1,4 +1,5 @@
 // Voidspire Descent — Verse's own turn-based tactical roguelike. Seeded rooms, telegraphed intents, stackable relics.
+import { runSummary, summarySvg } from '/lib/verse-world-bridge.js';
 const c = document.getElementById('c'), g = c.getContext('2d'), W = 320, H = 180, GW = 16, GH = 9, T = 20;
 g.imageSmoothingEnabled = false;
 const hpEl = document.getElementById('hp'), depthEl = document.getElementById('depth'), roomEl = document.getElementById('room'), seedEl = document.getElementById('seed'), msg = document.getElementById('msg'), draftEl = document.getElementById('draft');
@@ -95,4 +96,10 @@ addEventListener('keydown', (e) => { const k = e.key.toLowerCase(); if (['arrowu
   if (k === '1' || k === '2' || k === '3') skill(Number(k)); });
 c.addEventListener('pointerdown', (e) => { if (S.phase !== 'play') return; const r = c.getBoundingClientRect(), x = Math.floor((e.clientX - r.left) / r.width * W / T), y = Math.floor((e.clientY - r.top) / r.height * H / T); const dx = x - S.p.x, dy = y - S.p.y; if (Math.abs(dx) + Math.abs(dy) === 1) move(dx, dy); });
 document.getElementById('new').onclick = () => { newRun(); };
+document.getElementById('runcard').onclick = async () => {
+  const svg = summarySvg(runSummary('Voidspire Descent', { depth: S.depth, relics: S.relics, seed: S.seed, note: 'Relics found: ' + S.codex.length + '/' + RELICS.length }));
+  try { await navigator.clipboard.writeText(svg); msg.textContent = 'Run card copied — ' + svg.length + ' chars of VERSE-CARD SVG.'; }
+  catch (_) { msg.textContent = 'Run card ready — ' + svg.length + ' chars: ' + svg.slice(0, 60) + '…'; }
+  beep(760);
+};
 newRun();
