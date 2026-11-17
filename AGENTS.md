@@ -57,6 +57,7 @@ Every run follows B.I.T.E. (owner, 2026-10-11: brief, implement the smallest use
 | Generated cards (never regenerate by hand) | `node tools/refresh.mjs`: skill index, dependency map, families, the book, Verse's facts about itself, bench alarms, in order; `deploy.yml` runs it before every deploy so the self card and the book follow every build, and `checks.mjs` fails a stale committed one |
 | CI | `.github/workflows/` (`deploy.yml`, `verify.yml`, `void-review.yml`, `automerge.yml`, `bench.yml`, ...) |
 | Agent skills (Claude Code loads them for any session in this repo) | `.claude/skills/<name>/SKILL.md`: `void-run` (this page's run, short), `steward` (driving a PR to merged), `learn-from-video` (when the owner shares a video), `paid-media` (big files for people who pay: R2 plus signed links) |
+| OpenHands skills (any OpenHands session in this repo) | `.agents/skills/<name>/SKILL.md` (the portable Agent Skills location; `.openhands/skills/` is its legacy alias): `void-loop-shipping` (claim to merged PR, and the checks already red on a bare checkout), `void-review-hygiene` (the exact patterns `void-review` flags, and how to mark a line that is right as written), `verse-skills-and-3d` (adding a routable skill, and building a 3D miniature) |
 | Old text | `archive/` |
 
 ## Never
