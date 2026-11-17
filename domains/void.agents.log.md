@@ -1282,3 +1282,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-17T08:04:19Z | claude | fix | the coder stops a read spiral: a file range read twice in a run is refused, and a run with no edit for 12 turns stops at a read cap instead of spending the 30-turn cap and pausing the loop
 2026-11-17T08:24:56Z | claude | build | an OpenHands skills pack: three skills under .agents/skills/ that carry this repo's conventions so a fresh OpenHands session ships without re-deriving them
 2026-11-17T10:38:51Z | claude | grow | a capped coder lap now says which tool it spent its turns on (verse-coder.mjs spent; verse-loop.mjs logs .git/verse-loop.stops.jsonl; verse-loop.mjs --stops ranks them), so the miss board can rank the read spirals that remain (frontier #43)
+2026-11-17T10:52:44Z | claude | grow | the frontier item for the stopped-lap tool log (verse-coder spent, verse-loop.mjs stops.jsonl, --stops) is marked shipped with its main SHA, so a later run does not rebuild it
