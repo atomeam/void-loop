@@ -555,14 +555,13 @@
     .vpage ul { margin: 0 0 10px; padding-left: 18px; color: #d6d6d6; }
     .vpage .src { clear: both; margin-top: 12px; font-size: 12px; color: var(--muted); }
     .vpage .src a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.15); }
-    html { background: var(--void-bg, var(--sky-bg, #050505)); transition: background-color 1.5s ease; }
-    html, body { background-color: transparent; }
-    html { background-color: var(--void-bg, var(--sky-bg, #050505)); }
+    html { background: radial-gradient(circle at 50% 45%, var(--void-glow, #05070d) 0%, var(--void-bg, #020307) 100%); transition: background 1.5s ease; }
+    body { background: transparent; }
     /* home stage: the empty void, in the first stylesheet */
     #dock {
       position: fixed; left: 0; right: 0; bottom: 0;
       padding: 12px 16px 18px;
-      background: linear-gradient(to top, #050505 60%, transparent);
+      background: linear-gradient(to top, var(--void-bg, #020307) 60%, transparent);
     }
     #row {
       max-width: 720px; margin: 0 auto;
@@ -591,7 +590,7 @@
     body.void-entered #void-glow, html.void-entered #void-glow { opacity: 1; }
     html.sky-on #void-glow { opacity: 1; } /* the real sky tints the empty stage too (skills/sky-rules.js); a look the visitor chose still wins */
     html.void-first, html.void-first #void-glow, html.void-first #void-stars { transition: none !important; }
-    html.void-first body { background: var(--void-bg, var(--sky-bg, #050505)); }
+    html.void-first, html.void-first body { background: radial-gradient(circle at 50% 45%, var(--void-glow, #05070d) 0%, var(--void-bg, #020307) 100%); }
     #void-stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
       opacity: 0; transition: opacity 1.5s ease; }
     #void-stars.on { opacity: 1; }
@@ -4622,7 +4621,7 @@ say('nothing selected to remove');
 
     // row 13: entering your own Verse (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
+    const LOOK_DEFAULT = { bg: '#05070d', glow: '#0b111c', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
     const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
@@ -4634,29 +4633,65 @@ say('nothing selected to remove');
     const starCtx = starCv.getContext('2d');
     const starFarCtx = starFar ? starFar.getContext('2d') : null;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let stars = [], farStars = [], starRAF = 0;
+    let dustStars = [], midStars = [], foreStars = [], starRAF = 0, nebulaCv = null, nebulaCtx = null;
+    let stars = [], farStars = []; // compat: kept populated for old checks/tests
     function isEntered() { try { return !!localStorage.getItem(ENTRY_KEY); } catch (_) { return false; } }
     function enterVoid() {
       if (!isEntered()) { try { localStorage.setItem(ENTRY_KEY, new Date().toISOString()); } catch (_) {} }
       document.body.classList.add('void-entered');
     }
+    function buildNebula(W, H, dpr) {
+      nebulaCv = document.createElement('canvas');
+      nebulaCv.width = Math.round(W * dpr); nebulaCv.height = Math.round(H * dpr);
+      nebulaCtx = nebulaCv.getContext('2d'); nebulaCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      nebulaCtx.clearRect(0, 0, W, H);
+      // pre-rendered ultra-subtle volumetric dust band (opacity <= 0.07 total contribution)
+      const blobs = [
+        { x: W * 0.52, y: H * 0.48, rx: W * 0.55, ry: H * 0.22, a: 0.045, c: '90,110,160' },
+        { x: W * 0.38, y: H * 0.56, rx: W * 0.38, ry: H * 0.18, a: 0.035, c: '120,100,150' },
+        { x: W * 0.66, y: H * 0.42, rx: W * 0.32, ry: H * 0.16, a: 0.03, c: '80,130,150' }
+      ];
+      for (const b of blobs) {
+        const g = nebulaCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, Math.max(b.rx, b.ry));
+        g.addColorStop(0, 'rgba(' + b.c + ',' + b.a + ')');
+        g.addColorStop(0.6, 'rgba(' + b.c + ',' + (b.a * 0.35) + ')');
+        g.addColorStop(1, 'rgba(' + b.c + ',0)');
+        nebulaCtx.fillStyle = g;
+        nebulaCtx.save(); nebulaCtx.translate(b.x, b.y); nebulaCtx.scale(1, b.ry / b.rx); nebulaCtx.translate(-b.x, -b.y);
+        nebulaCtx.beginPath(); nebulaCtx.arc(b.x, b.y, b.rx, 0, Math.PI * 2); nebulaCtx.fill(); nebulaCtx.restore();
+      }
+    }
     function seedStars() {
-      // the default Verse (2026-10-15): DPR capped at 2 (phones stay light), denser on big screens, a few stars twinkle
       const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight, area = Math.min(1.6, (W * H) / (1280 * 800));
       for (const c of [starCv, starFar]) { if (!c) continue; c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); }
-      const tint = () => ['255,255,255', '200,215,255', '255,228,205', '215,235,255'][Math.random() * 4 | 0];
-      stars = Array.from({ length: Math.round(110 * area) + 40 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() < .08 ? Math.random() * 1.1 + 1.3 : Math.random() * 1.1 + 0.4, vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.16, a: 0.55 + Math.random() * 0.45, c: tint(), tw: Math.random() < .14 ? 0.6 + Math.random() * 1.6 : 0, ph: Math.random() * 6.3 }));
-      farStars = Array.from({ length: Math.round(260 * area) + 60 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 0.75 + 0.2, vx: (Math.random() - 0.5) * 0.04, vy: (Math.random() - 0.5) * 0.04, a: 0.25 + Math.random() * 0.5 }));
+      buildNebula(W, H, dpr);
+      const R = () => Math.random();
+      // distant micro-dust
+      dustStars = Array.from({ length: Math.round(420 * area) + 120 }, () => ({
+        x: R() * W, y: R() * H, r: R() * 0.55 + 0.15, vx: (R() - 0.5) * 0.03, vy: (R() - 0.5) * 0.03,
+        a: 0.18 + R() * 0.35, c: R() < 0.7 ? '210,220,255' : '235,240,255', tw: 0, ph: R() * 6.3
+      }));
+      // mid-field cool blue-white stars
+      midStars = Array.from({ length: Math.round(140 * area) + 45 }, () => ({
+        x: R() * W, y: R() * H, r: R() < 0.1 ? R() * 1.0 + 1.1 : R() * 0.9 + 0.45, vx: (R() - 0.5) * 0.08, vy: (R() - 0.5) * 0.08,
+        a: 0.5 + R() * 0.45, c: R() < 0.85 ? (R() < 0.5 ? '220,232,255' : '245,248,255') : '200,220,255',
+        tw: R() < 0.16 ? 0.6 + R() * 1.4 : 0, ph: R() * 6.3
+      }));
+      // sparse warm gold/cyan foreground stars (brightest ~5% get halo in draw)
+      foreStars = Array.from({ length: Math.round(22 * area) + 8 }, () => {
+        const warm = R() < 0.55, gold = R() < 0.5;
+        return { x: R() * W, y: R() * H, r: R() * 1.1 + 1.2, vx: (R() - 0.5) * 0.14, vy: (R() - 0.5) * 0.14,
+          a: 0.72 + R() * 0.28, c: warm ? (gold ? '255,226,170' : '255,210,150') : (gold ? '170,240,255' : '150,255,235'),
+          tw: R() < 0.55 ? 0.5 + R() * 1.2 : 0, ph: R() * 6.3, halo: true };
+      });
+      // compat refs
+      stars = midStars.concat(foreStars); farStars = dustStars;
     }
-    // the starfield drifts a fraction of a pixel a frame: redrawing its two full-screen canvases every frame (60-120 a second,
-    // forever) competed with the 3D boards for the GPU (perf, 2026-10-15). It now redraws at about 24 fps, which looks the same.
     let starLast = 0;
-    // the stars follow the flying eye (asked by Owner, 2026-10-18: "you cant tell you are flying rhe stars dont move"): skills/fly.js
-    // tells every camera move ('void-camera'); each layer slides and swells a fraction of it (lib/star-parallax.js: the far layer
-    // 0.15, the near 0.4), wrapping like a tile so no edge is ever empty, and the near stars streak when the eye moves fast (a soft
-    // warp when zooming in fast). Reduced motion: a few pixels of drift, no streaks. At home the layers are exactly as they were.
-    // While the eye moves the layers redraw every frame (a few hundred dots: well under a millisecond), else at the usual ~24 fps.
+    // camera parallax (kept) + pointer parallax drift + prompt-bar pulse
     const SKY = { lib: null, cam: null, near: { ox: 0, oy: 0, s: 1 }, far: { ox: 0, oy: 0, s: 1 }, vx: 0, vy: 0, zr: 0, at: 0, fresh: false, drawAt: 0, streak: { dx: 0, dy: 0, warp: 0 } };
+    const PTR = { tx: 0, ty: 0, x: 0, y: 0 };
+    let pulse = 0, pulseUntil = 0;
     let skyLibP = null;
     function skyView() {
       const L = SKY.lib; if (!L || !SKY.cam) return;
@@ -4664,7 +4699,7 @@ say('nothing selected to remove');
       SKY.near = L.layerView(SKY.cam, L.NEAR, innerWidth, innerHeight, { still }); SKY.far = L.layerView(SKY.cam, L.FAR, innerWidth, innerHeight, { still });
     }
     const warmSky = () => { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); };
-    (window.requestIdleCallback || setTimeout)(() => setTimeout(warmSky, 1500)); // loaded before the first flight, so the first move already streaks (a first move used to wait on this file and, on a slow link, ended before it came)
+    (window.requestIdleCallback || setTimeout)(() => setTimeout(warmSky, 1500));
     const kickStars = () => { if (voidLook.stars !== 'off' && !starRAF && !document.hidden) starRAF = requestAnimationFrame(drawStars); };
     window.addEventListener('void-camera', (e) => {
       const d = e && e.detail; if (!d) return;
@@ -4672,66 +4707,103 @@ say('nothing selected to remove');
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
       if (!SKY.lib) { warmSky(); return; }
       skyView();
-      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed with a weight that grows with the frame's gap (lib/star-parallax.js smoothedSpeed: the fixed half-blend here let a starved estimate crawl back at half the speed while the eye flew flat out, so on a loaded machine the streak could stay under its floor the whole move); a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move
+      if (prev && dt > 0.004) {
         const t = Math.min(0.25, dt);
         SKY.vx = SKY.lib.smoothedSpeed(SKY.vx, (SKY.near.ox - was.ox) / t, dt); SKY.vy = SKY.lib.smoothedSpeed(SKY.vy, (SKY.near.oy - was.oy) / t, dt);
         SKY.zr = SKY.lib.smoothedSpeed(SKY.zr, Math.log(SKY.cam.z / (prev.z || 1)) / t, dt);
       }
       SKY.at = now; SKY.fresh = true; kickStars();
     });
-    try { window.__voidStars = () => ({ lib: !!SKY.lib, near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
-    function skyTick(now) { // the streak fades once the camera stops telling (a drag let go, the keys up): a frame with no move since the last one
+    try { window.__voidStars = () => ({ lib: !!SKY.lib, near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {}
+    function triggerPulse() { if (reduceMotion.matches) return; pulseUntil = performance.now() + 400; kickStars(); }
+    window.addEventListener('pointermove', (e) => {
+      if (reduceMotion.matches || e.pointerType === 'touch') return;
+      const cx = innerWidth / 2, cy = innerHeight / 2;
+      PTR.tx = ((e.clientX - cx) / cx) || 0; PTR.ty = ((e.clientY - cy) / cy) || 0; kickStars();
+    }, { passive: true });
+    window.addEventListener('pointerleave', () => { PTR.tx = 0; PTR.ty = 0; kickStars(); }, { passive: true });
+    // prompt-bar reactivity: focus and submit pulse (wired once elements exist)
+    const wirePromptPulse = () => {
+      const inp = document.getElementById('input'), go = document.getElementById('go'), row = document.getElementById('row');
+      if (inp) { inp.addEventListener('focus', triggerPulse); inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') triggerPulse(); }); }
+      if (go) go.addEventListener('click', triggerPulse);
+      if (row) row.addEventListener('submit', triggerPulse);
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wirePromptPulse); else wirePromptPulse();
+    function skyTick(now) {
       const dt = SKY.drawAt ? Math.min(0.25, (now - SKY.drawAt) / 1000) : 0; SKY.drawAt = now;
       if (SKY.fresh) SKY.fresh = false; else { const k = Math.exp(-9 * dt); SKY.vx *= k; SKY.vy *= k; SKY.zr *= k; if (Math.hypot(SKY.vx, SKY.vy) < 2) SKY.vx = SKY.vy = 0; if (Math.abs(SKY.zr) < 0.05) SKY.zr = 0; }
-      SKY.streak = SKY.lib.streakOf(SKY.vx, SKY.vy, SKY.zr, { still: reduceMotion.matches });
-      return now - SKY.at < 200 || !!(SKY.vx || SKY.vy || SKY.zr); // still moving: draw every frame
+      SKY.streak = SKY.lib ? SKY.lib.streakOf(SKY.vx, SKY.vy, SKY.zr, { still: reduceMotion.matches }) : { dx: 0, dy: 0, warp: 0 };
+      const movingCam = now - SKY.at < 200 || !!(SKY.vx || SKY.vy || SKY.zr);
+      pulse = pulseUntil > now ? (pulseUntil - now) / 400 : 0;
+      // ease pointer parallax
+      if (!reduceMotion.matches) { PTR.x += (PTR.tx - PTR.x) * (1 - Math.exp(-8 * dt || 0.2)); PTR.y += (PTR.ty - PTR.y) * (1 - Math.exp(-8 * dt || 0.2)); }
+      else { PTR.x = 0; PTR.y = 0; }
+      return movingCam || pulse > 0.01 || Math.abs(PTR.x - PTR.tx) > 0.001 || Math.abs(PTR.y - PTR.ty) > 0.001;
     }
     function drawStars(now) {
-      const live = SKY.lib ? skyTick(performance.now()) : false;
+      const live = SKY.lib ? skyTick(performance.now()) : (pulse = pulseUntil > performance.now() ? (pulseUntil - performance.now()) / 400 : 0, !reduceMotion.matches && (PTR.x += (PTR.tx - PTR.x) * 0.12, PTR.y += (PTR.ty - PTR.y) * 0.12), pulse > 0.01 || Math.abs(PTR.x - PTR.tx) > 0.001);
       if (typeof now === 'number' && !live && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
       if (typeof now === 'number') starLast = now;
       const W = innerWidth, H = innerHeight, t = performance.now() / 1000;
       starCtx.clearRect(0, 0, W, H);
       if (starFarCtx) starFarCtx.clearRect(0, 0, W, H);
-      const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
-      const fv = SKY.far, nv = SKY.near, fOff = !!(fv.ox || fv.oy || fv.s !== 1), nOff = !!(nv.ox || nv.oy || nv.s !== 1), sk = SKY.streak, streak = !!(sk.dx || sk.dy || sk.warp);
-      const each = (st, v, f) => { if (!(v.ox || v.oy || v.s !== 1)) return f(st.x, st.y, 1); const xs = SKY.lib.placeAxis(st.x, v.ox, v.s, W, 4); if (!xs.length) return; for (const py of SKY.lib.placeAxis(st.y, v.oy, v.s, H, 4)) for (const px of xs) f(px, py, v.s); };
-      if (starFarCtx) {
-        starFarCtx.fillStyle = 'rgb(210,220,255)';
-        for (const st of farStars) {
-          if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
-          starFarCtx.globalAlpha = st.a || .35;
-          if (!fOff) { starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill(); continue; }
-          each(st, fv, (x, y, s) => { starFarCtx.beginPath(); starFarCtx.arc(x, y, st.r * s, 0, Math.PI * 2); starFarCtx.fill(); });
+      const slowK = voidLook.stars === 'slow' ? 0.3 : 1;
+      const move = !reduceMotion.matches;
+      const accel = 1 + pulse * 1.4; // brief inward/accelerated feel via faster drift
+      // pointer parallax offsets per depth (gentle)
+      const pFar = { ox: -PTR.x * 4, oy: -PTR.y * 3 }, pMid = { ox: -PTR.x * 9, oy: -PTR.y * 7 }, pFore = { ox: -PTR.x * 16, oy: -PTR.y * 12 };
+      // draw pre-rendered nebula dust layer on far canvas (or near if no far ctx)
+      const dustTarget = starFarCtx || starCtx;
+      if (nebulaCv) { dustTarget.globalAlpha = 1; dustTarget.drawImage(nebulaCv, 0, 0, W, H); }
+      const sk = SKY.streak || { dx: 0, dy: 0, warp: 0 }, streak = !!(sk.dx || sk.dy || sk.warp);
+      const each = (st, v, f) => {
+        if (!(v.ox || v.oy || v.s !== 1)) return f(st.x, st.y, 1);
+        if (!SKY.lib) return f(st.x, st.y, 1);
+        const xs = SKY.lib.placeAxis(st.x, v.ox, v.s, W, 4); if (!xs.length) return;
+        for (const py of SKY.lib.placeAxis(st.y, v.oy, v.s, H, 4)) for (const px of xs) f(px, py, v.s);
+      };
+      const drawLayer = (ctx, list, baseV, ptrOff, opts = {}) => {
+        const v = { ox: (baseV.ox || 0) + ptrOff.ox, oy: (baseV.oy || 0) + ptrOff.oy, s: baseV.s || 1 };
+        const off = !!(v.ox || v.oy || v.s !== 1);
+        if (opts.lineCap) ctx.lineCap = 'round';
+        for (const st of list) {
+          if (move) { const k = slowK * accel; st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
+          const tw = st.tw && move ? 0.6 + 0.4 * Math.sin(t * st.tw + st.ph) : 1;
+          const a = (st.a || 0.6) * tw, col = 'rgb(' + st.c + ')';
+          ctx.fillStyle = col;
+          const one = (x, y, s) => {
+            const r = st.r * (1 + (s - 1) * 0.5);
+            ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+            if (streak && opts.streak) {
+              const ex = x + sk.dx - (x - W / 2) * sk.warp, ey = y + sk.dy - (y - H / 2) * sk.warp;
+              ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.7, r * 1.2); ctx.globalAlpha = a * 0.45;
+              ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
+            }
+            if (st.halo && tw > 0.75) { // subtle diffraction halo on brightest foreground stars
+              ctx.globalAlpha = a * 0.14; ctx.beginPath(); ctx.arc(x, y, r * 4.2, 0, Math.PI * 2); ctx.fill();
+              ctx.globalAlpha = a * 0.06; ctx.beginPath(); ctx.arc(x, y, r * 7.5, 0, Math.PI * 2); ctx.fill();
+            } else if (st.r > 1.25 && tw > 0.82) {
+              ctx.globalAlpha = a * 0.12; ctx.beginPath(); ctx.arc(x, y, r * 3.0, 0, Math.PI * 2); ctx.fill();
+            }
+          };
+          if (!off && !(opts.streak && streak)) one(st.x, st.y, 1); else each(st, v, one);
         }
-      }
+        ctx.globalAlpha = 1;
+      };
+      if (starFarCtx) drawLayer(starFarCtx, dustStars, SKY.far || { ox: 0, oy: 0, s: 1 }, pFar, {});
       if (starFarCtx) starFarCtx.globalAlpha = 1;
-      if (streak) starCtx.lineCap = 'round';
-      for (const st of stars) {
-        if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
-        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1, a = (st.a || .7) * tw, col = 'rgb(' + (st.c || '255,255,255') + ')';
-        starCtx.fillStyle = col;
-        const one = (x, y, s) => {
-          const r = st.r * (1 + (s - 1) * 0.6);
-          starCtx.globalAlpha = a; starCtx.beginPath(); starCtx.arc(x, y, r, 0, Math.PI * 2); starCtx.fill();
-          if (streak) { // a short line back to where the star was a moment ago, plus the warp's pull from the middle
-            const ex = x + sk.dx - (x - W / 2) * sk.warp, ey = y + sk.dy - (y - H / 2) * sk.warp;
-            starCtx.strokeStyle = col; starCtx.lineWidth = Math.max(0.8, r * 1.3); starCtx.globalAlpha = a * 0.55;
-            starCtx.beginPath(); starCtx.moveTo(x, y); starCtx.lineTo(ex, ey); starCtx.stroke();
-          }
-          if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha = a * .18; starCtx.beginPath(); starCtx.arc(x, y, r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
-        };
-        if (!nOff && !streak) one(st.x, st.y, 1); else each(st, nv, one);
-      }
+      drawLayer(starCtx, midStars, SKY.near || { ox: 0, oy: 0, s: 1 }, pMid, { streak: true, lineCap: streak });
+      drawLayer(starCtx, foreStars, SKY.near || { ox: 0, oy: 0, s: 1 }, pFore, { streak: true, lineCap: streak });
       starCtx.globalAlpha = 1;
-      if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
+      if ((move || live) && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
     }
     // celestial-sync + thinking state for the default Verse (coarse, on the device only: the local hour; nothing sent or stored)
     (function () {
       const d = document.documentElement;
       const phase = () => { const h = new Date().getHours(); d.dataset.phase = h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
       phase(); setInterval(phase, 10 * 60 * 1000);
-      let q = 0; const look = () => { q = 0; const on = document.querySelector('.vpage.on'); d.classList.toggle('void-thinking', !!on && /thinking…|looking up|reading the page/.test(on.textContent.slice(0, 2000))); };
+      let q = 0; const look = () => { q = 0; const on = document.querySelector('.vpage.on'); d.classList.toggle('void-thinking', !!on && /thinking.|looking up|reading the page/.test(on.textContent.slice(0, 2000))); };
       new MutationObserver(() => { if (!q) q = requestAnimationFrame(look); }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class'] });
       document.addEventListener('visibilitychange', () => { if (!document.hidden && !starRAF && starCv.classList.contains('on')) drawStars(); });
     })();
@@ -7654,4 +7726,5 @@ say('nothing selected to remove');
 <script src="/visit.js" defer></script><!-- who visits: a count per page load, no cookie (functions/api/visit.js) --><h1 style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0">Verse</h1>
 </body>
 </html>
+
 
