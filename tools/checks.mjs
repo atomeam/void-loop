@@ -791,6 +791,7 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('no-third-party-sites', 'no-third-party-sites.mjs');
 addScript('audit-sanity', 'audit-sanity.mjs');
+addScript('game-audit', 'game-audit.mjs');
 addScript('index', 'skills-index.mjs', ['--check']);
 // every module a direct page (/random/coin/, /g/, /conquered/) imports is preloaded in its head (tools/preload.mjs; owner, 2026-10-24: "speed fixes a
 // lot of our other issues and is worth fixing permanently"): an import added without its preload is a waterfall again
