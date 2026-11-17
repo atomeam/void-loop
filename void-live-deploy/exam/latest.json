@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-17T03:13:31.819Z",
+  "at": "2026-11-17T03:44:36.904Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -101,7 +101,7 @@
       }
     },
     "weather": {
-      "score": 53.6,
+      "score": 66.4,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -117,20 +117,22 @@
         {
           "ask": "will it rain tomorrow in london",
           "failed": [
+            "answered",
             "skill",
             "fast",
             "temp"
           ],
-          "score": 50
+          "score": 33.3
         },
         {
           "ask": "weather in tokyo this week",
           "failed": [
+            "answered",
             "skill",
             "fast",
             "temp"
           ],
-          "score": 50
+          "score": 33.3
         },
         {
           "ask": "weather in seattle",
@@ -163,12 +165,11 @@
         {
           "ask": "what's the weather in miami tomorrow",
           "failed": [
-            "answered",
             "skill",
             "fast",
             "temp"
           ],
-          "score": 33.3
+          "score": 50
         },
         {
           "ask": "whats teh weather in london",
@@ -182,60 +183,21 @@
         {
           "ask": "wheather in new york",
           "failed": [
-            "answered",
             "skill",
             "fast",
             "temp"
           ],
-          "score": 33.3
+          "score": 50
         },
         {
           "ask": "weather tomorrow in berlin",
           "failed": [
             "skill",
             "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "weather tomorrow in chicago",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 33.3
-        },
-        {
-          "ask": "weather tomorrow in boston",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "humidity in miami",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "wind speed in chicago",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
             "temp",
             "close"
           ],
-          "score": 28.6
+          "score": 42.9
         },
         {
           "ask": "weather",
@@ -358,10 +320,38 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -465,6 +455,6 @@
   },
   "lowest": {
     "domain": "weather",
-    "score": 53.6
+    "score": 66.4
   }
 }

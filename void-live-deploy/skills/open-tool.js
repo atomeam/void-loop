@@ -24,7 +24,7 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'seamless pattern': '/lab/pattern/', 'tileable texture': '/lab/pattern/', 'seamless texture': '/lab/pattern/', 'pattern generator': '/lab/pattern/',
   'color palette from a photo': '/lab/photo-palette/', 'colour palette from a photo': '/lab/photo-palette/', 'palette from photo': '/lab/photo-palette/', 'color palette from image': '/lab/photo-palette/', 'colors from a photo': '/lab/photo-palette/',
   'speech to text': '/lab/dictation/', 'dictation': '/lab/dictation/', 'voice typing': '/lab/dictation/', 'voice to text': '/lab/dictation/', 'talk to type': '/lab/dictation/',
-  'h5 center': '/starboard/', 'dalyfeds': '/starboard/', 'dalyfeds.com': '/starboard/',
+  'h5 center': '/starboard/', 'dalyfeds': '/starboard/', 'dalyfeds.com': '/starboard/', 'starboard': '/starboard/', 'open starboard': '/starboard/', 'show starboard': '/starboard/',
   // the menu's theme names (2026-11-06): each opens its page by the name the menu shows
   'drones': '/bots/', 'verse drones': '/bots/', 'envoy': '/agent/', 'verse envoy': '/agent/', 'holovids': '/films/', 'verse holovids': '/films/', 'out loud': '/podcast/',
   'hoard': '/treasury/', 'the hoard': '/treasury/', 'verse star chart': '/scoreboard/', 'shields': '/security/', 'verse shields': '/security/', 'verse event horizon': '/limits/', 'assimilate page': '/contribute/',

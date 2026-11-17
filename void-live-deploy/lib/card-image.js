@@ -57,7 +57,11 @@ export function fitAdds(text, w = 624) {
 export function fitLong(text, h, w = 624) {
   for (let fs = 23; fs >= LONG_MIN_FS; fs--) { const lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999); if (l.length * lh <= h) return { lines: l, fs, lh, extra: 0 }; }
   const fs = LONG_MIN_FS, lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999);
-  return { lines: l, fs, lh, extra: l.length * lh - h };
+  // clamp: never overflow; drop lines that do not fit so the card (and its PNG) never ends on a half line
+  const maxLines = Math.max(1, Math.floor(h / lh));
+  const lines = l.slice(0, maxLines);
+  if (lines.length < l.length && lines.length > 0) lines[lines.length - 1] = lines[lines.length - 1].replace(/.{0,3}$/, (m) => m.length >= 3 ? '…' : m);
+  return { lines, fs, lh, extra: 0 };
 }
 // The self card's picture (owner's redesign, 2026-10-18: the saved "What I think of myself" was a tall PNG holding every ask as raw lines, 16k
 // characters). It has the live card's shape instead: Verse's own words as a quotation with an accent bar, "How sure I am of my skills" as a bar per
