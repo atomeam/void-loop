@@ -2223,7 +2223,7 @@
    "crawl": {
     "pages": 59,
     "templates": 22,
-    "features": 609,
+    "features": 611,
     "missing": [
      "My Airline Lists",
      "All airlines",
@@ -2761,6 +2761,8 @@
      "to Comoros",
      "to Mayotte",
      "What are the best international destinations in Africa for?",
+     "airlines_flying direction_",
+     "aircrafts_flying direction_",
      "Pages: Flights from Mexico, Flights from Dominican Republic",
      "to U.S. Virgin Islands with a stopover",
      "to Suriname",
@@ -2830,7 +2832,7 @@
      "to Yemen",
      "to Yemen with a stopover"
     ],
-    "at": "2026-11-16"
+    "at": "2026-11-17"
    }
   },
   {

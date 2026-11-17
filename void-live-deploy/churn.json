@@ -1,27 +1,47 @@
 {
- "at": "2026-11-17T05:18:53.740Z",
+ "at": "2026-11-17T09:04:36.869Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 81
+   "changes": 86
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 80
+   "changes": 85
+  },
+  {
+   "file": "void-live-deploy/versus/verdicts.json",
+   "changes": 53
+  },
+  {
+   "file": "void-live-deploy/versus/shots/qr-rival.jpg",
+   "changes": 52
+  },
+  {
+   "file": "void-live-deploy/versus/shots/tracks-rival.jpg",
+   "changes": 52
+  },
+  {
+   "file": "void-live-deploy/versus/shots/directions-rival.jpg",
+   "changes": 50
   },
   {
    "file": "domains/handoff.md",
    "changes": 46
   },
   {
-   "file": "void-live-deploy/design-loop.json",
-   "changes": 43
+   "file": "void-live-deploy/versus/shots/patterns-rival.jpg",
+   "changes": 44
   },
   {
    "file": "domains/conductor.json",
+   "changes": 41
+  },
+  {
+   "file": "void-live-deploy/design-loop.json",
    "changes": 41
   },
   {
@@ -29,28 +49,16 @@
    "changes": 36
   },
   {
-   "file": "void-live-deploy/versus/verdicts.json",
-   "changes": 35
-  },
-  {
-   "file": "void-live-deploy/versus/shots/qr-rival.jpg",
-   "changes": 34
-  },
-  {
-   "file": "void-live-deploy/versus/shots/tracks-rival.jpg",
-   "changes": 34
-  },
-  {
-   "file": "void-live-deploy/versus/shots/directions-rival.jpg",
-   "changes": 33
-  },
-  {
-   "file": "void-live-deploy/versus/shots/patterns-rival.jpg",
-   "changes": 29
-  },
-  {
    "file": "tools/real-pages.mjs",
-   "changes": 27
+   "changes": 36
+  },
+  {
+   "file": "void-live-deploy/versus/shots/text-diff-rival.jpg",
+   "changes": 31
+  },
+  {
+   "file": "void-live-deploy/versus/shots/units-rival.jpg",
+   "changes": 28
   },
   {
    "file": "void-live-deploy/lib/versus-floor.js",
@@ -69,10 +77,6 @@
    "changes": 22
   },
   {
-   "file": "void-live-deploy/versus/shots/text-diff-rival.jpg",
-   "changes": 21
-  },
-  {
    "file": "domains/features/travel.json",
    "changes": 19
   },
@@ -89,8 +93,12 @@
    "changes": 18
   },
   {
-   "file": "void-live-deploy/versus/shots/units-rival.jpg",
-   "changes": 18
+   "file": "tools/families.mjs",
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/brain/knows.json",
+   "changes": 16
   },
   {
    "file": "void-live-deploy/tower.sweep.json",
@@ -101,15 +109,7 @@
    "changes": 15
   },
   {
-   "file": "tools/families.mjs",
-   "changes": 15
-  },
-  {
    "file": "tools/versus-floor.test.mjs",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/brain/knows.json",
    "changes": 15
   },
   {
@@ -125,6 +125,10 @@
    "changes": 14
   },
   {
+   "file": "tools/flakes.json",
+   "changes": 14
+  },
+  {
    "file": "tools/grow-self.state.json",
    "changes": 14
   },
@@ -134,6 +138,10 @@
   },
   {
    "file": "docs/TAGTEAM.md",
+   "changes": 13
+  },
+  {
+   "file": "tools/site-test.json",
    "changes": 13
   }
  ]

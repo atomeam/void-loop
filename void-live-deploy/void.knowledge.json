@@ -1,5 +1,14 @@
 [
   {
+    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
+    "from": "page",
+    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
+    "learned": "2026-11-17: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-17) did not work (credits)",
+    "at": "2026-11-17T08:25:32.494Z",
+    "seen": 1
+  },
+  {
     "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
     "from": "page",
     "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
@@ -24,15 +33,6 @@
     "learned": "2026-11-16: worked; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200",
     "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-16) worked",
     "at": "2026-11-16T23:00:17.028Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
-    "from": "page",
-    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-16: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-16) did not work (credits)",
-    "at": "2026-11-16T22:28:50.669Z",
     "seen": 1
   },
   {
