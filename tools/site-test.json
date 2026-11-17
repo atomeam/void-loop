@@ -417,6 +417,9 @@
     },
     {
       "ask": "choose your own adventure"
+    },
+    {
+      "ask": "open folder recipes"
     }
   ],
   "candidates": [],
