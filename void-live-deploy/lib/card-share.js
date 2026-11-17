@@ -3,6 +3,7 @@
 // into Verse reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
 import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
+import { customCard, choiceFor, saveChoice, parseChoice } from './card-custom-art.js';
 // a card's sources are the links in its .src boxes, never the product line (.src.vtail, void.html keepTail): the Gumroad page in that line
 // is not where the answer came from, so it never makes the card read "from a source" or earn "fetched, sourced and dated" (owner, 2026-10-29)
 export const SOURCE_BOX = '.src:not(.vtail)', SOURCE_LINKS = '.src:not(.vtail) a';
@@ -166,6 +167,8 @@ function fullMark(el, w) {
 export const selfLink = (origin) => String(origin || 'https://a-to-mind.com') + '/?q=' + encodeURIComponent('what do you think of yourself') + '&open=all';
 /** opens every block and folded item of a card (the shared link's view). */
 export function openAll(el) { el.querySelectorAll('details').forEach((d) => { d.open = true; }); el.querySelectorAll('li[data-more][hidden], li[hidden]').forEach((li) => { li.hidden = false; }); el.querySelectorAll('[data-v-more]').forEach((b) => b.setAttribute('aria-expanded', 'true')); }
+const store = () => (typeof localStorage !== 'undefined' ? localStorage : null);
+const choiceKey = (el, d) => (el._vcard || {}).key || d.t; // the same key imageData draws the card's seed from
 /** the buttons on a card: copy card (text and picture), save card (the picture), save text. Idempotent. */
 export function bar(el) {
   const had = el && el.querySelector && el.querySelector(':scope > .vc-share'); if (had) fullMark(el, had);
@@ -177,7 +180,8 @@ export function bar(el) {
   const mk = (g, label, run) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', async (e) => { e.stopPropagation(); const done = await run(); b.textContent = done; setTimeout(() => { b.textContent = label; }, 1600); }); g.appendChild(b); };
   const png = async (d) => {
     if (el.dataset && el.dataset.cardPlain !== undefined) return toPng(plainSvg({ title: d.t, text: d.b, qr: el._qr || null }), 1); // a utility card saves its plain picture (lib/card-image.js)
-    const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1);
+    const photo = (await artPicture(el)) || '', base = imageData(el, d), ch = choiceFor(store(), choiceKey(el, d));
+    return toPng(cardSvg({ ...(ch ? customCard(base, ch) : base), photo }, { bleed: false }), 1);
   };
   mk(gCard, 'copy card', async () => {
     const d = readCard(el), text = shareText(d);
@@ -185,6 +189,15 @@ export function bar(el) {
     try { await navigator.clipboard.writeText(text); return 'copied text'; } catch (_) { return 'select and copy'; }
   });
   mk(gCard, 'save card', async () => { const d = readCard(el); try { download(await png(d), fileName({ t: d.t }, 'png')); return 'saved'; } catch (_) { try { download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved text'; } catch (_2) { return 'could not save'; } } });
+  // custom art (PR 1): a style or a few words, or an empty answer to re-roll; the saved picture is what copy card and save card draw
+  mk(gCard, 'custom art', async () => {
+    const d = readCard(el), key = choiceKey(el, d), cur = choiceFor(store(), key) || { style: '', words: '', n: 0 };
+    const typed = window.prompt('Style: obsidian, ledger, grid, pixel or solar. Or a few words. Leave empty to re-roll.', [cur.style, cur.words].filter(Boolean).join(' '));
+    if (typed === null) return 'custom art';
+    const next = typed.trim() ? parseChoice(typed, cur.n + 1) : { ...cur, n: cur.n + 1 };
+    return saveChoice(store(), key, next) ? 'art saved: copy it' : 'could not save';
+  });
+  mk(gCard, 'reset art', async () => (saveChoice(store(), choiceKey(el, readCard(el)), null) ? 'art reset' : 'could not reset'));
   // share (asked 2026-10-22: every card has copy, save text, save picture and share): the system share sheet with the card's text and a link
   // that reopens it; with no share sheet the link is copied. The link carries what the card shows, never who made it.
   mk(gCard, 'share', async () => {
