@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T20:03:10.941Z",
+ "updated": "2026-11-17T21:18:28.542Z",
  "last24h": {
-  "ticks": 3,
-  "started": 4,
+  "ticks": 4,
+  "started": 5,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -114,10 +114,11 @@
  },
  "handed": {
   "mva30i2e": 1794945215643,
-  "mva30j4u": 1794945790941
+  "mva30j4u": 1794945790941,
+  "mwa0agd2": 1794950308542
  },
- "sweptAt": 1794945215643,
- "blueprintsAt": 1794945215643,
+ "sweptAt": 1794950308542,
+ "blueprintsAt": 1794950308542,
  "visitorAt": "2026-11-17T14:59:43Z",
  "visitorFiled": [
   "heal:helper-register-delivery-skills",
@@ -275,6 +276,36 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 26,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T21:18:28.542Z",
+   "open": 461,
+   "started": [
+    {
+     "id": "mwa0agd2",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 56
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 26,
    "warnings": 1
