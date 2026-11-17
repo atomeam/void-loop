@@ -7282,5 +7282,6 @@
   {"ask": "show the process map for support tickets", "want": "skill:process-map"},
   {"ask": "propose automations for a new client", "want": "skill:automation-proposal"},
   {"ask": "choose your own adventure", "want": "skill:adventure"},
-  {"ask": "play adventure", "want": "skill:adventure"}
+  {"ask": "play adventure", "want": "skill:adventure"},
+  {"ask": "adventure game", "want": "skill:adventure"}
 ]
