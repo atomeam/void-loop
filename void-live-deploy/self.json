@@ -906,6 +906,38 @@
  },
  "commits": [
   {
+   "at": "2026-11-17T03:55:00Z",
+   "subject": "fix: register weather and sky only inside the time family"
+  },
+  {
+   "at": "2026-11-17T03:52:31Z",
+   "subject": "fix: route starboard in open-tool, clamp card export text to prevent truncation"
+  },
+  {
+   "at": "2026-11-17T03:44:40Z",
+   "subject": "Outcome exam: weather 66.4"
+  },
+  {
+   "at": "2026-11-17T03:43:49Z",
+   "subject": "fix: the /films/ header spells one word, and a film deep link is a real platform (#2885)"
+  },
+  {
+   "at": "2026-11-17T03:41:59Z",
+   "subject": "fix: remove third-party site names from /starboard/, add no-third-party-sites check"
+  },
+  {
+   "at": "2026-11-17T03:40:09Z",
+   "subject": "Revert 31fec083: the live check failed after its deploy (#2882)"
+  },
+  {
+   "at": "2026-11-17T03:39:03Z",
+   "subject": "fix: treat first.json as deploy-regenerated so checks stop failing on main (#2884)"
+  },
+  {
+   "at": "2026-11-17T03:38:17Z",
+   "subject": "fix: register weather and sky skills in routing index (were missing, causing exam failure)"
+  },
+  {
    "at": "2026-11-17T03:35:57Z",
    "subject": "Tower gate: versus measured"
   },
@@ -930,10 +962,6 @@
    "subject": "Design loop: 1 page fixed, 26 -> 22 design defects"
   },
   {
-   "at": "2026-11-17T03:25:23Z",
-   "subject": "Revert \"Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)\""
-  },
-  {
    "at": "2026-11-17T03:25:08Z",
    "subject": "Failed jobs read: run 44009762564 (void-live-deploy/incidents/actions/)"
   },
@@ -956,34 +984,6 @@
   {
    "at": "2026-11-17T03:13:59Z",
    "subject": "Lab: 649 experiments live at /lab/, 34 waiting for a fix (#2868)"
-  },
-  {
-   "at": "2026-11-17T03:13:35Z",
-   "subject": "Outcome exam: weather 53.6"
-  },
-  {
-   "at": "2026-11-17T03:07:43Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-17T03:06:26Z",
-   "subject": "Repair the baseline gates: retire system-plan from routing and name sync-free-lanes in the map (#2879)"
-  },
-  {
-   "at": "2026-11-17T02:58:27Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-17T02:58:06Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-17T02:50:15Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-17T02:46:47Z",
-   "subject": "fix: update untested allowance for new skills"
   }
  ],
  "builders": {
@@ -1165,8 +1165,8 @@
   }
  ],
  "visible": {
-  "day": 8,
-  "week": 138
+  "day": 11,
+  "week": 141
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
