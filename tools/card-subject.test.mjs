@@ -34,6 +34,17 @@ test('the banner follows the topic (owner, 2026-10-18): code words draw a termin
   for (const m of ['code', 'landscape']) assert.ok(motifSvg([m], 100, 100, { P: '#fff', L: '#ccc', G: '#fc0', ink: '#000', sw: 1 }).includes('<path'), m);
 });
 
+test('a car loan card draws a car and a loan ledger, not the generic plate (owner, 2026-11-17); mortgages and savings draw the ledger too', () => {
+  const card = { key: 'Car loan payment', name: 'Car loan payment', kind: 'Skill', typeLine: 'SKILL — NUMBERS AND MONEY', hue: 150, rarity: 'Rare' };
+  const s = subjectOf(card.key, ''); assert.deepEqual(motifsFor(s.nouns), ['car', 'loan']);
+  const generic = artInner(card), drawn = artInner({ ...card, nouns: s.nouns });
+  assert.notEqual(drawn, generic, 'the car loan picture is its own'); assert.ok(drawn.includes('M6 68V56Q6 50'), 'the car'); assert.ok(drawn.includes('M18 78V66H30V78'), 'the ledger bars');
+  assert.ok(!/M6 68V56Q6 50/.test(generic), 'the plate draws no car');
+  assert.deepEqual(motifsFor(['mortgage', 'rate']), ['loan']); assert.deepEqual(motifsFor(['savings', 'interest']), ['loan']);
+  assert.deepEqual(motifsFor(['stock']), ['chart'], 'money words that were not car or loan keep their chart');
+  for (const m of ['car', 'loan']) assert.ok(motifSvg([m], 100, 100, { P: '#fff', L: '#ccc', G: '#fc0', ink: '#000', sw: 1 }).includes('<path'), m);
+});
+
 test('the K-pop card draws music, not the search: "void" and "match" are not its subject, and music words draw a note (owner, 2026-10-17)', () => {
   const s = subjectOf('K-pop', 'South Korean popular music genre. K-pop is a form of popular music originating in South Korea, from idol acts, girl groups and boy bands.');
   assert.ok(!s.nouns.includes('void') && !s.nouns.includes('match')); assert.equal(s.nouns[0], 'music'); assert.deepEqual(motifsFor(s.nouns), ['note']);

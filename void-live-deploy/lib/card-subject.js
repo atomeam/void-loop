@@ -30,12 +30,14 @@ const MOTIFS = {
   stopwatch: 'stopwatch stopwatches timer timers countdown laps lap', // the stopwatch card drew a key (its link names the keys; owner, 2026-10-24: the stopwatch card)
   wheel: 'wheel wheels spinner roulette raffle', // the wheel of names card drew a bare hexagon (owner, 2026-10-24: "shouldnt the card art be a wheel?")
   landscape: 'geography landscape country countries continent continents valley desert canyon terrain plains',
+  // finance art (owner, 2026-11-17: car loan and mortgage cards drew the generic plate): a car on a horizon, a ledger of bars under a falling balance
+  car: 'car cars auto autos vehicle vehicles automobile sedan', loan: 'loan loans mortgage mortgages apr interest savings payment payments amortization principal refinance',
 };
 // the hue each motif is drawn in, so a dragon burns red and the sea is blue whatever the family's hue (the family's hue still tints the rest of the plate)
-export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6, wheel: 330, stopwatch: 4, doll: 8 }; // person (the neutral portrait plate) takes the family hue
+export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6, wheel: 330, stopwatch: 4, doll: 8, car: 152, loan: 42 }; // person (the neutral portrait plate) takes the family hue
 export const motifHue = (m) => (Number.isFinite(MOTIF_HUE[m]) ? MOTIF_HUE[m] : null);
 // the motifs that stand on a horizon: the plate draws a far ridge and a floor under them, so they sit in a place instead of floating
-export const GROUNDED = new Set(['house', 'tree', 'mountain', 'wave', 'city', 'sword', 'dragon']);
+export const GROUNDED = new Set(['house', 'tree', 'mountain', 'wave', 'city', 'sword', 'dragon', 'car']);
 const WORD_MOTIF = {}; for (const [m, ws] of Object.entries(MOTIFS)) for (const w of ws.split(' ')) if (!WORD_MOTIF[w]) WORD_MOTIF[w] = m;
 const stem = (w) => (w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);
 
@@ -44,7 +46,7 @@ export function nounsOf(text, max = 6) {
   const seen = new Map(); let i = 0;
   // names (a Title Case run in mid-sentence, like a film's title) are not subjects to paint: cut them out first
   const bare = String(text || '').replace(/(?<=[a-z,;:("'] )[A-Z][a-z]+(?:(?: (?:of|the|to|and|in|a|for|at|on) | )[A-Z][a-z]+)*/g, ' ');
-  for (const w of bare.toLowerCase().replace(/https?:\/\/\S+/g, ' ').match(/[a-z]{4,16}/g) || []) {
+  for (const w of bare.toLowerCase().replace(/https?:\/\/\S+/g, ' ').match(/[a-z]{4,16}|\b(?:car|cars|apr)\b/g) || []) { // car and apr are the short words the car and loan motifs need (the rest of the 3-letter words stay out)
     if (STOP.has(w)) continue; const k = stem(w), e = seen.get(k) || { w, n: 0, at: i++ }; e.n++; seen.set(k, e);
   }
   // a word with a motif counts double: "hand" and "spirits" beat "teenagers" and "grief" as what to draw
@@ -98,6 +100,8 @@ const DRAW = {
   wheel: [[circ(50, 54, 40), 'P'], ['M50 14V94M10 54H90M22 26L78 82M78 26L22 82', 'N'], ['M50 54L50 14A40 40 0 0 1 78 26Z M50 54L90 54A40 40 0 0 1 78 82Z M50 54L50 94A40 40 0 0 1 22 82Z M50 54L10 54A40 40 0 0 1 22 26Z', 'L'], [circ(50, 54, 7), 'G'], ['M42 2H58L50 16Z', 'G']],
   // Verse's own small doll: a glum face with a receding hairline, boxer shorts and little red dancing shoes (drawn from the answer's own words, no show art)
   doll: [['M50 8a16 15 0 1 0 0.1 0Z', 'P'], ['M34 17Q38 8 46 9M66 17Q62 8 54 9', 'N'], [circ(44, 20, 1.8), 'I'], [circ(56, 20, 1.8), 'I'], ['M43 28Q50 23 57 28', 'N'], ['M37 38H63L61 62H39Z', 'L'], ['M37 40L26 58M63 40L74 58', 'N'], ['M39 60H61L65 76H53L50 70L47 76H35Z', 'G'], ['M42 76L40 84M58 76L60 84', 'N'], ['M22 96Q22 80 40 82L46 96Z', 'R'], ['M78 96Q78 80 60 82L54 96Z', 'R']],
+  car: [['M6 68V56Q6 50 12 48L26 44L38 28Q42 24 50 24H64Q70 24 76 30L86 42L92 46Q96 48 96 56V68Z', 'P'], ['M38 44L46 32H60L68 44Z', 'L'], ['M46 32V44M60 32V44', 'N'], [circ(26, 68, 11), 'I'], [circ(74, 68, 11), 'I'], [circ(26, 68, 4), 'G'], [circ(74, 68, 4), 'G']],
+  loan: [['M8 10H92V90H8Z', 'P'], ['M18 78V66H30V78ZM38 78V58H50V78ZM58 78V48H70V78ZM78 78V36H90V78Z', 'L'], ['M14 78H86', 'N'], ['M14 26Q40 28 56 48T86 74', 'N'], [circ(56, 48, 4), 'G'], [circ(86, 74, 4), 'G'], [circ(14, 26, 4), 'G']],
   person: [[circ(50, 32, 17), 'P'], ['M14 94Q14 56 50 56Q86 56 86 94Z', 'P']],
   mask: [['M10 28Q50 12 90 28Q92 64 70 80Q50 94 30 80Q8 64 10 28Z', 'P'], ['M24 42Q34 36 44 46Q34 54 24 42ZM56 46Q66 36 76 42Q66 54 56 46Z', 'I'], ['M38 70Q50 78 62 70', 'N']],
 };
