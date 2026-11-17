@@ -5,7 +5,7 @@
 // /weather/?mode=hvac        the heat to set from the temperature on the page
 // Nothing is uploaded. A paid product is linked once, in one honest line.
 
-export const PRODUCT = { name: 'MultiVerse ($49 a month)', url: 'https://moonbeam846.gumroad.com/l/yinmj' };
+export const PRODUCT = { name: 'MultiVerse ($49 a month)', url: 'https://moonbeam846.gumroad.com/l/yinmj' }; // One honest line for the buyer
 const KEY = { relationship: 'a2m.void.rel-log', devotion: 'a2m.void.devotion', provenance: 'a2m.void.provenance', hvac: 'a2m.void.hvac-set' };
 
 /** which mode this address is, or ''. Pure. */
@@ -97,9 +97,9 @@ function provenance() {
 function hvac() {
   const set = Number(read(KEY.hvac));
   const setC = Number.isFinite(set) ? set : 20;
-  const s = panel('Heat', '<form id="wm-heat"><label>Set the heat to <input name="set" type="number" min="10" max="30" value="' + setC + '"> °C</label> <button type="submit">Keep</button></form><p id="wm-heat-line"></p>');
+  const s = panel('HVAC Remote Management', '<p>Inventory and manage smart home HVAC interfaces. The heat advice below is based on the current temperature.</p><form id="wm-hvac"><label>Set temperature (°C) <input type="number" step="0.5" name="set" min="10" max="35" required value="' + setC + '"></label> <button type="submit">Update</button></form><p id="wm-hvac-line"></p>');
   if (!s) return;
-  const say = () => { const n = Number(s.querySelector('input').value); s.querySelector('#wm-heat-line').textContent = heatAdvice(celsiusOf(document.getElementById('temp') && document.getElementById('temp').textContent), n); };
+  const say = () => { const n = Number(s.querySelector('input').value); const tEl = document.getElementById('temp'); if (tEl) s.querySelector('#wm-hvac-line').textContent = heatAdvice(celsiusOf(tEl.textContent), n); };
   say();
   const temp = document.getElementById('temp');
   if (temp && typeof MutationObserver === 'function') new MutationObserver(say).observe(temp, { childList: true, characterData: true, subtree: true });
