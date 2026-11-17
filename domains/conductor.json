@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T11:28:40.207Z",
+ "updated": "2026-11-17T12:27:28.531Z",
  "last24h": {
-  "ticks": 38,
-  "started": 75,
+  "ticks": 39,
+  "started": 77,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -18,11 +18,11 @@
  ],
  "held": [
   {
-   "id": "mveb8svc",
+   "id": "mveb8rsi",
    "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mveb8rsi",
+   "id": "mveb8svc",
    "why": "build-miss.yml reached its 8 runs today"
   },
   {
@@ -115,7 +115,7 @@
  "handed": {
   "mva30i2e": 1794907543385,
   "mva30j4u": 1794912110077,
-  "mwa0agd2": 1794895245530,
+  "mwa0agd2": 1794918448531,
   "mwa0ah54": 1794895815961,
   "mwdsggtv": 1794896394915,
   "mwdsgi9n": 1794896959372,
@@ -144,8 +144,8 @@
   "mwkesh19": 1794904398316,
   "mwkkdffo": 1794914920207
  },
- "sweptAt": 1794912110077,
- "blueprintsAt": 1794912110077,
+ "sweptAt": 1794918448531,
+ "blueprintsAt": 1794918448531,
  "visitorAt": "2026-11-17T11:18:24Z",
  "visitorFiled": [
   "review:2631",
@@ -1567,6 +1567,42 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 25,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T12:27:28.531Z",
+   "open": 456,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 59
+    },
+    {
+     "id": "mwa0agd2",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 55
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 25,
    "warnings": 1
