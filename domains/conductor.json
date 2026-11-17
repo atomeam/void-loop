@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-17T15:42:50.150Z",
+ "updated": "2026-11-17T17:43:42.528Z",
  "last24h": {
-  "ticks": 42,
-  "started": 84,
+  "ticks": 43,
+  "started": 86,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -12,8 +12,8 @@
  "broken": [
   {
    "wf": "tower-gate.yml",
-   "fails": 5,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/43900977367"
+   "fails": 6,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44121494250"
   }
  ],
  "held": [
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 1,
+   "used": 3,
    "cap": 90
   },
   "day": {
@@ -114,7 +114,7 @@
  },
  "handed": {
   "mva30i2e": 1794929601569,
-  "mva30j4u": 1794912110077,
+  "mva30j4u": 1794937422528,
   "mwa0agd2": 1794918448531,
   "mwa0ah54": 1794922320372,
   "mwdsggtv": 1794930170150,
@@ -144,8 +144,8 @@
   "mwkesh19": 1794904398316,
   "mwkkdffo": 1794914920207
  },
- "sweptAt": 1794929601569,
- "blueprintsAt": 1794929601569,
+ "sweptAt": 1794937422528,
+ "blueprintsAt": 1794937422528,
  "visitorAt": "2026-11-17T14:59:43Z",
  "visitorFiled": [
   "review:2743",
@@ -1721,6 +1721,42 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 26,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-17T17:43:42.528Z",
+   "open": 460,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 84
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 26,
    "warnings": 1
