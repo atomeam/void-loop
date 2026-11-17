@@ -15,7 +15,7 @@ test('a proven skill is a mythic card: cost in words said, power from its succes
   assert.equal(c.rarity, RARITY.proven); assert.equal(c.rarity.name, 'Mythic');
   assert.equal(c.power, 9); assert.equal(c.toughness, 4, 'forge: "10 real asks in the benchmark" read on 0-9');
   assert.ok(c.cost >= 1 && c.cost <= 6); assert.match(c.typeLine, /^Skill — Making things$/);
-  assert.match(c.number, /^\d{3}\/221$|^\d{3}\/\d{3}$/); assert.ok(c.adds.length > 10 && c.adds.length <= 240);
+  assert.match(c.number, /^\d{3}\/221$|^\d{3}\/\d{3}$/); assert.equal(c.adds, '', 'a skill card says only what it filed, never its book line (2026-11-17)');
   assert.match(c.tested, /^2026-/);
 });
 
@@ -40,7 +40,8 @@ test('every skill in the book makes a card whose numbers stay in a card\'s range
 
 test('the chrome is a type bar with a gem, an adds line, and a footer with the plate; a source card has no plate', () => {
   const deps = JSON.parse(readFileSync(resolve(root, 'deps.json'), 'utf8')), c = cardOf({ ...lookup({ book, fam, deps }, 'forge') }), h = chromeHtml(c, esc);
-  assert.match(h.type, /class="vc-type"/); assert.match(h.type, /vc-gem/); assert.match(h.adds, /Adds to Verse/);
+  assert.match(h.type, /class="vc-type"/); assert.match(h.type, /vc-gem/); assert.doesNotMatch(h.adds, /Adds to Verse/, 'no filed line, no Adds to Verse');
+  assert.match(chromeHtml(cardOf({ ...lookup({ book, fam, deps }, 'forge'), filed: 'Filed: a forge card.' }), esc).adds, /Adds to Verse/, 'a filed line shows');
   assert.match(h.foot, /class="vc-pt"/); assert.match(h.foot, /P<b>9<\/b>/); assert.match(h.foot, /R<b>4<\/b>/); assert.match(h.foot, /Mythic/); assert.match(h.foot, /Verse/);
   const a = chromeHtml(cardOf({ kind: 'Answer' }), esc); assert.doesNotMatch(a.foot, /vc-pt/); assert.equal(a.adds, '');
 });
@@ -204,8 +205,9 @@ test('the Adds to Verse line ends at a whole sentence, clause or word, never in 
   assert.equal(addsLine('A short line'), 'A short line');
   assert.equal(addsLine('  two   spaces  '), 'two spaces');
   assert.equal(addsLine(null), '');
-  const card = cardOf({ page: { line: tel, chapter: 'world', n: 1 }, book: { pages: [{}] } });
-  assert.equal(card.adds, tel);
+  const page = cardOf({ page: { line: tel, chapter: 'world', n: 1 }, book: { pages: [{}] } });
+  assert.equal(page.adds, '', 'a book page line says what the page is, not what this card added (2026-11-17)');
+  assert.equal(cardOf({ page: { line: tel, chapter: 'world', n: 1 }, book: { pages: [{}] }, filed: tel }).adds, tel, 'what the card filed is its Adds line');
 });
 
 test('a holiday card opens its day on the Calendar (2026-10-30: live, "how many days until christmas" had no link to any page)', async () => {

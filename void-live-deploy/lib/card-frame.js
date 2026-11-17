@@ -72,7 +72,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
-    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : addsLine(filed)) : '', // filed: what this card itself added (lib/term-card.js addsFor, data-card-adds), never a generic line; none, no line (owner, 2026-11-06)
+    adds: fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : addsLine(filed)) : addsLine(filed), // filed: what this card itself added (lib/term-card.js addsFor, data-card-adds), never a generic line; none, no line (owner, 2026-11-06). A book page's one line says what the page is, not what the card added, so it is never shown here (2026-11-17: "Things that materialize" showed on unrelated cards)
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
     keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
