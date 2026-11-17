@@ -1,23 +1,5 @@
 [
  {
-  "at": "2026-11-06T03:14:53Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1814,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 12916 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-06T03:24:35Z",
   "passed": 82,
   "of": 90,
@@ -7319,5 +7301,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"stackwell\" (skill:stackwell)"
+ },
+ {
+  "at": "2026-11-17T02:42:50Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 752,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12743 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

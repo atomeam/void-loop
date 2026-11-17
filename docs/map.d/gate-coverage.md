@@ -25,4 +25,5 @@ Named here so `map covers everything` passes for skills/tools added on main.
 - `scope-pack` — void-live-deploy/skills/scope-pack.js
 
 ## Tools
-- `rival-public.mjs` — tools/rival-public.mjs
+- `rival-public.mjs` - tools/rival-public.mjs
+- `sync-free-lanes.mjs` - tools/sync-free-lanes.mjs
