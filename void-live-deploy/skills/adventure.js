@@ -1,13 +1,13 @@
 /**
  * adventure skill - choose-your-own-adventure books on the stage. Rules in lib/adventure.js, books in
- * void-live-deploy/data/adventures/*.json (PR 1 ships "The Chrono-Signal", 3 endings). Card shows scene,
+ * void-live-deploy/data/adventures/*.json (three books ship: time-loop, dark fantasy, noir). Card shows scene,
  * choices, pack, flags, path; runs persist on the device and export as a shareable run code.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), adventureOf, stageKinds }
  */
 import { addThing, cardEl, keepOut } from '../lib/stage-pack.js';
-import { validateBook, createRun, getNode, availableChoices, choose, omenFor, runCode, runFromCode } from '../lib/adventure.js';
+import { validateBook, createRun, getNode, availableChoices, choose, omenFor, runCode, runFromCode, adventureAsk } from '../lib/adventure.js';
 
-const BOOKS = [{ id: 'chrono-signal', title: 'The Chrono-Signal' }];
+const BOOKS = [{ id: 'chrono-signal', title: 'The Chrono-Signal' }, { id: 'obsidian-keep', title: 'The Obsidian Keep' }, { id: 'neon-harbour', title: 'Neon Harbour' }];
 const bookUrl = (id) => '/data/adventures/' + id + '.json';
 const cache = {};
 async function loadBook(id, fetchFn) {
@@ -24,8 +24,7 @@ const markKey = (id) => 'a2m.adventure.' + id;
 /** { book } for an ask naming the shelf or one of its books; null otherwise. Pure. */
 export function adventureOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/\bchoose your own adventure\b|\binteractive stor(?:y|ies)\b|\btext adventure\b|\badventure book\b|\bcyoa\b/.test(t)) return { book: BOOKS[0].id };
-  if (/^(?:start|open|begin|continue|resume)(?:\s+(?:my|the|this|that|an?))?\s+adventure$/.test(t)) return { book: BOOKS[0].id };
+  if (adventureAsk(text)) return { book: BOOKS[0].id };
   for (const b of BOOKS) if (t.includes(b.title.toLowerCase()) || t.includes(b.id.replace(/-/g, ' '))) return { book: b.id };
   return null;
 }
@@ -118,7 +117,7 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'adventure',
-  examples: ['choose your own adventure', 'interactive story', 'text adventure', 'start an adventure', 'start the chrono signal'],
+  examples: ['choose your own adventure', 'adventure', 'play adventure', 'adventure game', 'interactive story', 'text adventure', 'start an adventure', 'start the chrono signal', 'start the obsidian keep'],
   nearMisses: ['tell me a story', 'bedtime story', 'adventure time', 'what is an adventure'],
   adventureOf,
   match(lower, text) { return !!adventureOf(text || lower); },

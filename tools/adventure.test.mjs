@@ -91,6 +91,8 @@ test('endings end: three fates, the path remembered, codes replay and share', ()
 test('routing: the shelf and its book are taken, other stories are left', () => {
   for (const e of sk.examples) assert.ok(sk.match(e.toLowerCase(), e), e);
   for (const n of sk.nearMisses) assert.ok(!sk.match(n.toLowerCase(), n), n);
-  for (const a of ['cyoa', 'continue my adventure', 'adventure book', 'open the chrono signal']) assert.ok(sk.match(a, a), a);
-  for (const a of ['adventure time', 'the adventure of the hero', 'chess adventure']) assert.ok(!sk.match(a, a), a);
+  for (const a of ['cyoa', 'continue my adventure', 'adventure book', 'open the chrono signal', 'adventure', 'play adventure', 'play the adventure game', 'start the obsidian keep', 'start the neon harbour']) assert.ok(sk.match(a, a), a);
+  for (const a of ['adventure time', 'the adventure of the hero', 'chess adventure', 'what is an adventure', 'define adventure']) assert.ok(!sk.match(a, a), a);
+  assert.ok(A.adventureAsk('adventure') && A.adventureAsk('play adventure') && A.adventureAsk('adventure game'));
+  assert.ok(!A.adventureAsk('adventure time') && !A.adventureAsk('what is an adventure') && !A.adventureAsk('watch adventure'));
 });

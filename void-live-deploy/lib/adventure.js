@@ -44,6 +44,14 @@ export function createRun(bookId, seed) {
 
 export const getNode = (book, id) => (book && book.nodes ? book.nodes[id] || null : null);
 
+/** an ask for the shelf itself (not one named book): the phrases, a bare "adventure", "play adventure" and an "adventure game". Pure. */
+export function adventureAsk(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /\bchoose your own adventure\b|\binteractive stor(?:y|ies)\b|\btext adventure\b|\badventure books?\b|\bcyoa\b/.test(t)
+    || /^(?:play\s+(?:an?\s+|the\s+)?)?adventure(?:\s+games?)?$/.test(t)
+    || /^(?:start|open|begin|continue|resume)(?:\s+(?:my|the|this|that|an?))?\s+adventure$/.test(t);
+}
+
 /** unmet requirements of a choice as item/flag names. Pure. */
 const missing = (choice, run) => {
   const need = (choice && choice.needs) || {}, out = [];
