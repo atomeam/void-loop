@@ -4,8 +4,9 @@
 // workflow that runs it on every red run of main (actions-failures.yml), and the incident autopsy's view of it.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, mkdtempSync, writeFileSync, mkdirSync, chmodSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { failedJobs, failedStep, cleanLine, stepTail, stepLines, failLines, entryOf, parseActions, failuresFor, actionsHtml, TAIL } from '../void-live-deploy/lib/actions-failure.js';
@@ -147,10 +148,45 @@ test('actions-failures.yml: runs on every red run of the workflows that test mai
   const names = new Set(readdirSync(join(root, '.github/workflows')).filter((f) => /\.ya?ml$/.test(f)).map((f) => (/^name:\s*(.+)$/m.exec(readFileSync(join(root, '.github/workflows', f), 'utf8')) || [])[1]).filter(Boolean).map((n) => n.trim().replace(/^["']|["']$/g, '')));
   const listed = /workflows:\s*\[([^\]]+)\]/.exec(y)[1].split(',').map((x) => x.trim());
   for (const n of listed) assert.ok(names.has(n), 'no workflow is named ' + n);
+  assert.ok(listed.includes('Pages guard'), 'failed recovery jobs must enter the incident record');
   assert.ok(listed.includes('Verse verify') && listed.includes('Verse deploy') && !listed.includes('Actions failure reader'));
   assert.match(y, /actions: read/);
   assert.match(y, /branches: \[main\]/);
   const run = y.slice(y.indexOf('run: |'));
   assert.ok(!/\$\{\{/.test(run), 'no expression is pasted into the script');
   assert.match(y, /git add void-live-deploy\/incidents\/actions/);
+});
+
+// Run the actual workflow shell with local fakes: never call GitHub or wait for backoff.
+function recordWorkflow(pushWorks) {
+  const dir = mkdtempSync(join(tmpdir(), 'verse-record-workflow-'));
+  try {
+    const bin = join(dir, 'bin'), trace = join(dir, 'git-calls');
+    mkdirSync(bin);
+    mkdirSync(join(dir, 'void-live-deploy/incidents/actions'), {recursive: true});
+    const put = (name, text) => { const p = join(bin, name); writeFileSync(p, '#!/bin/sh\n' + text); chmodSync(p, 0o755); };
+    put('git', 'printf "%s\\n" "$1" >> "$TRACE"\ncase "$1" in diff) exit 1;; push) [ "$PUSH_WORKS" = yes ];; *) exit 0;; esac\n');
+    put('node', 'exit 0\n');
+    put('sleep', 'exit 0\n');
+    const y = readFileSync(join(root, '.github/workflows/actions-failures.yml'), 'utf8');
+    const script = y.slice(y.indexOf('run: |') + 'run: |'.length).split('\n').map((l) => l.startsWith('          ') ? l.slice(10) : l).join('\n');
+    const r = spawnSync('bash', ['--noprofile', '--norc', '-eo', 'pipefail', '-c', script], {
+      cwd: dir, encoding: 'utf8', timeout: 5000,
+      env: {...process.env, PATH: bin + ':' + process.env.PATH, TRACE: trace, PUSH_WORKS: pushWorks ? 'yes' : 'no', RUN_ID: '123', SHA: ''}
+    });
+    return {status: r.status, stdout: r.stdout, stderr: r.stderr, calls: readFileSync(trace, 'utf8').trim().split('\n')};
+  } finally { rmSync(dir, {recursive: true, force: true}); }
+}
+
+test('record workflow exits zero only after its incident commit is pushed', () => {
+  const r = recordWorkflow(true);
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.calls.filter((c) => c === 'push').length, 1);
+});
+
+test('record workflow fails after four refused writes instead of reporting success', () => {
+  const r = recordWorkflow(false);
+  assert.notEqual(r.status, 0);
+  assert.equal(r.calls.filter((c) => c === 'push').length, 4);
+  assert.match(r.stdout, /::error title=Failed jobs not recorded::/);
 });

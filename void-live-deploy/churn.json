@@ -1,40 +1,28 @@
 {
- "at": "2026-11-16T15:09:46.953Z",
+ "at": "2026-11-17T02:44:44.604Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 94
+   "changes": 80
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 93
+   "changes": 79
   },
   {
    "file": "domains/handoff.md",
-   "changes": 63
+   "changes": 47
   },
   {
    "file": "void-live-deploy/design-loop.json",
-   "changes": 43
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 41
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
-   "changes": 41
+   "changes": 42
   },
   {
    "file": "domains/conductor.json",
-   "changes": 40
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 40
+   "changes": 41
   },
   {
    "file": "domains/growth-inbox.md",
@@ -42,22 +30,42 @@
   },
   {
    "file": "tools/real-pages.mjs",
-   "changes": 31
+   "changes": 26
   },
   {
    "file": "void-live-deploy/lib/versus-floor.js",
    "changes": 26
   },
   {
-   "file": "domains/features/travel.json",
-   "changes": 20
+   "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
+   "changes": 26
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 24
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
+   "changes": 24
   },
   {
    "file": "void-live-deploy/versus/verdicts.json",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/versus/shots/qr-rival.jpg",
+   "changes": 21
+  },
+  {
+   "file": "void-live-deploy/versus/shots/tracks-rival.jpg",
+   "changes": 21
+  },
+  {
+   "file": "void-live-deploy/versus/shots/directions-rival.jpg",
    "changes": 20
   },
   {
-   "file": "tools/families.mjs",
+   "file": "domains/features/travel.json",
    "changes": 19
   },
   {
@@ -69,27 +77,11 @@
    "changes": 19
   },
   {
-   "file": "void-live-deploy/versus/shots/directions-rival.jpg",
-   "changes": 19
-  },
-  {
-   "file": "void-live-deploy/versus/shots/qr-rival.jpg",
-   "changes": 19
-  },
-  {
-   "file": "void-live-deploy/versus/shots/tracks-rival.jpg",
-   "changes": 19
-  },
-  {
-   "file": "docs/TAGTEAM.md",
-   "changes": 18
-  },
-  {
-   "file": "tools/site-test.json",
+   "file": "void-live-deploy/versus/shots/patterns-rival.jpg",
    "changes": 17
   },
   {
-   "file": "docs/HANDOFF-GAPS.md",
+   "file": "void-live-deploy/skills/first.json",
    "changes": 16
   },
   {
@@ -97,19 +89,11 @@
    "changes": 16
   },
   {
-   "file": "void-live-deploy/versus/shots/patterns-rival.jpg",
-   "changes": 16
+   "file": "docs/HANDOFF-GAPS.md",
+   "changes": 15
   },
   {
    "file": "tools/versus-floor.test.mjs",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/skills/first.json",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/tower.features.json",
    "changes": 15
   },
   {
@@ -121,11 +105,27 @@
    "changes": 14
   },
   {
+   "file": "tools/families.mjs",
+   "changes": 14
+  },
+  {
    "file": "tools/grow-self.state.json",
    "changes": 14
   },
   {
+   "file": "void-live-deploy/tower.features.json",
+   "changes": 14
+  },
+  {
    "file": "void-live-deploy/versus/shots/text-diff-rival.jpg",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/skills/lineage.json",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/versus/shots/units-rival.jpg",
    "changes": 13
   }
  ]

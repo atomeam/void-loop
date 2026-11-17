@@ -367,7 +367,7 @@
  "faucet": ["claim credits","credits","faucet"],
  "client-brief": ["brief for the weekly report automation","brief the client on the systems verse owns","client brief for acme onboarding","client brief for invoice reminders","client summary for the support process"],
  "client-offer": ["client offer for the email automation","make a client offer for invoice reminders","offer for the support router","offer for weekly reports","offer to own the heavy lifting for weekly reports","package this as an offer: client onboarding that runs itself"],
- "automation-pack": ["automation pack for invoice reminders","automations pack for the client portal","make an automation pack for weekly reports","propose automations for the support router","what automations will verse own for onboarding"],
+ "automation-pack": ["automation pack for invoice reminders","automations pack for the client portal","make an automation pack for weekly reports","propose automations for client onboarding","propose automations for the support router","suggest automations for weekly status reports","what automations will verse own for onboarding"],
  "lift-summary": ["lift summary for client onboarding","lift summary for invoice reminders","make a lift summary for weekly status reports","package a lift summary for the support flow","package the heavy lifting for the support flow","we own the heavy lifting for invoice reminders"],
  "docs-pack": ["client docs for the invoice reminders","docs for the weekly report automation","docs pack for acme onboarding","document the system verse owns for support","handoff docs for the client portal"],
  "feedback-loop": ["capture feedback from the status report","client feedback for invoice reminders","feedback on the onboarding slice","what next from the support flow feedback"],
@@ -381,5 +381,7 @@
  "client-weekly": ["client weekly for invoice automation","show the weekly update for weekly reports","this week's summary for support router","weekly update for the onboarding flow"],
  "delivery-ready": ["check delivery readiness for support router","handoff ready for onboarding flow","is the invoice automation delivery ready","ready to handoff the weekly reports"],
  "systems-owned": ["list the systems owned for the support router","owned systems pack for weekly reports","systems owned for the invoice automation","systems owned for the onboarding flow"],
- "incident-pack": ["client incident path for invoice automation","incident pack for the onboarding flow","outage response for support router","package the incident path for weekly reports"]
+ "incident-pack": ["client incident path for invoice automation","incident pack for the onboarding flow","outage response for support router","package the incident path for weekly reports"],
+ "automation-proposal": ["automation proposal for support tickets","what automations for invoice reminders"],
+ "process-map": ["map the process for invoice reminders","process chart of weekly status reports","process map for client onboarding","show the process map for support tickets"]
 }

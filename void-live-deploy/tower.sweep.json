@@ -1,8 +1,8 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 0,
- "swept": 971346,
+ "cursor": 40000,
+ "swept": 1010618,
  "lap": 1,
  "at": "2026-11-16",
  "smallest": [
@@ -16,7 +16,7 @@
    "plain": false
   },
   {
-   "rank": 204,
+   "rank": 179,
    "host": "firefox-portal-detection.com",
    "controls": 0,
    "bytes": 8,
@@ -34,12 +34,12 @@
    "plain": false
   },
   {
-   "rank": 253,
+   "rank": 272,
    "host": "icanhazip.com",
    "controls": 0,
-   "bytes": 15,
+   "bytes": 13,
    "words": 1,
-   "title": "48.217.180.210",
+   "title": "52.188.87.11",
    "plain": true
   },
   {
@@ -58,6 +58,15 @@
    "bytes": 53,
    "words": 1,
    "title": "�����p�ꏊ����̃A�N�Z�X�́A���Ă��������܂���B(2.2)",
+   "plain": false
+  },
+  {
+   "rank": 3648,
+   "host": "missena.io",
+   "controls": 0,
+   "bytes": 65,
+   "words": 2,
+   "title": "No Content",
    "plain": false
   },
   {
@@ -97,7 +106,16 @@
    "plain": false
   },
   {
-   "rank": 572,
+   "rank": 2568,
+   "host": "expressapisv2.net",
+   "controls": 0,
+   "bytes": 319,
+   "words": 2,
+   "title": "mylxkwjviuhtgsfreqdpcobnamylxkwjviuhtgsfreqdpcobnamylxkwjviu",
+   "plain": false
+  },
+  {
+   "rank": 539,
    "host": "mega.co.nz",
    "controls": 0,
    "bytes": 554,
@@ -106,7 +124,7 @@
    "plain": false
   },
   {
-   "rank": 177,
+   "rank": 185,
    "host": "example.com",
    "controls": 0,
    "bytes": 577,
@@ -121,6 +139,15 @@
    "bytes": 643,
    "words": 2,
    "title": "Woofy PH",
+   "plain": false
+  },
+  {
+   "rank": 4309,
+   "host": "zmaticoo.com",
+   "controls": 0,
+   "bytes": 696,
+   "words": 1,
+   "title": "zMaticoo",
    "plain": false
   },
   {
@@ -160,7 +187,7 @@
    "plain": false
   },
   {
-   "rank": 3263,
+   "rank": 3235,
    "host": "samsunghealth.com",
    "controls": 0,
    "bytes": 989,
@@ -178,7 +205,7 @@
    "plain": false
   },
   {
-   "rank": 444,
+   "rank": 458,
    "host": "netcraze.io",
    "controls": 0,
    "bytes": 1016,
@@ -250,10 +277,10 @@
    "plain": false
   },
   {
-   "rank": 3268,
+   "rank": 3274,
    "host": "bttrack.com",
    "controls": 0,
-   "bytes": 1719,
+   "bytes": 1720,
    "words": 121,
    "title": "Tracking API",
    "plain": false
@@ -277,6 +304,15 @@
    "plain": false
   },
   {
+   "rank": 3638,
+   "host": "pananames.com",
+   "controls": 0,
+   "bytes": 1884,
+   "words": 8,
+   "title": "Domain Registration - Register domain name at Pananames",
+   "plain": false
+  },
+  {
    "rank": 240020,
    "host": "zpecloud.com",
    "controls": 0,
@@ -286,12 +322,21 @@
    "plain": false
   },
   {
-   "rank": 153,
+   "rank": 147,
    "host": "archive.org",
    "controls": 0,
    "bytes": 2046,
    "words": 12,
    "title": "Internet Archive: Digital Library of Free &amp; Borrowable Texts, Movies, Music &amp; Wayb",
+   "plain": false
+  },
+  {
+   "rank": 3254,
+   "host": "dataprivacyframework.gov",
+   "controls": 0,
+   "bytes": 2116,
+   "words": 3,
+   "title": "Data Privacy Framework",
    "plain": false
   },
   {
@@ -301,6 +346,15 @@
    "bytes": 2577,
    "words": 3,
    "title": "CRM - WOLF",
+   "plain": false
+  },
+  {
+   "rank": 4277,
+   "host": "heytapimg.com",
+   "controls": 0,
+   "bytes": 2596,
+   "words": 1,
+   "title": "HeyTap",
    "plain": false
   },
   {
@@ -349,7 +403,16 @@
    "plain": false
   },
   {
-   "rank": 557,
+   "rank": 995,
+   "host": "playrix.com",
+   "controls": 0,
+   "bytes": 3024,
+   "words": 1,
+   "title": "Playrix",
+   "plain": false
+  },
+  {
+   "rank": 568,
    "host": "slideshare.net",
    "controls": 0,
    "bytes": 3038,
@@ -475,6 +538,15 @@
    "plain": false
   },
   {
+   "rank": 459,
+   "host": "eye4.cn",
+   "controls": 0,
+   "bytes": 5451,
+   "words": 1,
+   "title": "小鹰掌中视界",
+   "plain": false
+  },
+  {
    "rank": 841319,
    "host": "xn--88-ctiy8c2f.com",
    "controls": 0,
@@ -502,7 +574,7 @@
    "plain": false
   },
   {
-   "rank": 922,
+   "rank": 924,
    "host": "disqus.com",
    "controls": 0,
    "bytes": 6034,
@@ -529,7 +601,7 @@
    "plain": false
   },
   {
-   "rank": 59,
+   "rank": 62,
    "host": "myfritz.net",
    "controls": 0,
    "bytes": 6885,
@@ -538,10 +610,19 @@
    "plain": false
   },
   {
-   "rank": 3202,
+   "rank": 3051,
+   "host": "like.video",
+   "controls": 0,
+   "bytes": 7139,
+   "words": 16,
+   "title": "Likee - Short Video Community",
+   "plain": false
+  },
+  {
+   "rank": 2632,
    "host": "kahoot.it",
    "controls": 0,
-   "bytes": 7198,
+   "bytes": 7195,
    "words": 1,
    "title": "Kahoot!",
    "plain": false
@@ -637,6 +718,15 @@
    "plain": false
   },
   {
+   "rank": 1948,
+   "host": "fflivegame.com",
+   "controls": 0,
+   "bytes": 11337,
+   "words": 1,
+   "title": "FFLivegame",
+   "plain": false
+  },
+  {
    "rank": 840934,
    "host": "xfinity88.com",
    "controls": 0,
@@ -646,7 +736,7 @@
    "plain": false
   },
   {
-   "rank": 141,
+   "rank": 170,
    "host": "skybridge.click",
    "controls": 0,
    "bytes": 13100,
@@ -664,7 +754,7 @@
    "plain": false
   },
   {
-   "rank": 296,
+   "rank": 306,
    "host": "tinyurl.com",
    "controls": 0,
    "bytes": 13866,
@@ -679,6 +769,15 @@
    "bytes": 14052,
    "words": 56,
    "title": "Grabit - Multipurpose eCommerce HTML Template.",
+   "plain": false
+  },
+  {
+   "rank": 3184,
+   "host": "photofolio.com",
+   "controls": 0,
+   "bytes": 14765,
+   "words": 4,
+   "title": "PhotoFolio®: Design A Website",
    "plain": false
   },
   {
@@ -745,7 +844,16 @@
    "plain": false
   },
   {
-   "rank": 315,
+   "rank": 2757,
+   "host": "co.com",
+   "controls": 1,
+   "bytes": 255,
+   "words": 10,
+   "title": "co.com",
+   "plain": false
+  },
+  {
+   "rank": 320,
    "host": "cloudflareinsights.com",
    "controls": 1,
    "bytes": 498,
@@ -781,6 +889,15 @@
    "plain": false
   },
   {
+   "rank": 3012,
+   "host": "haxx.se",
+   "controls": 1,
+   "bytes": 1364,
+   "words": 150,
+   "title": "Haxx",
+   "plain": false
+  },
+  {
    "rank": 40056,
    "host": "oneyeard.com",
    "controls": 1,
@@ -796,6 +913,15 @@
    "bytes": 2031,
    "words": 13,
    "title": "Home - registrar-servers.com",
+   "plain": false
+  },
+  {
+   "rank": 4273,
+   "host": "registry.in",
+   "controls": 1,
+   "bytes": 2519,
+   "words": 11,
+   "title": "Registry",
    "plain": false
   },
   {
@@ -826,7 +952,7 @@
    "plain": false
   },
   {
-   "rank": 890,
+   "rank": 892,
    "host": "onetag-sys.com",
    "controls": 2,
    "bytes": 923,
@@ -844,7 +970,7 @@
    "plain": false
   },
   {
-   "rank": 179,
+   "rank": 187,
    "host": "astrumu.io",
    "controls": 2,
    "bytes": 985,
@@ -880,12 +1006,21 @@
    "plain": false
   },
   {
-   "rank": 377,
+   "rank": 383,
    "host": "google.cn",
    "controls": 2,
    "bytes": 1408,
    "words": 4,
    "title": "Google",
+   "plain": false
+  },
+  {
+   "rank": 1918,
+   "host": "mega.nz",
+   "controls": 2,
+   "bytes": 2525,
+   "words": 1,
+   "title": "MEGA",
    "plain": false
   },
   {
@@ -916,7 +1051,7 @@
    "plain": false
   },
   {
-   "rank": 523,
+   "rank": 513,
    "host": "share.google",
    "controls": 3,
    "bytes": 2016,
@@ -925,7 +1060,7 @@
    "plain": false
   },
   {
-   "rank": 770,
+   "rank": 776,
    "host": "g.co",
    "controls": 3,
    "bytes": 2190,
@@ -934,7 +1069,16 @@
    "plain": false
   },
   {
-   "rank": 329,
+   "rank": 3948,
+   "host": "jftechws.com",
+   "controls": 3,
+   "bytes": 3295,
+   "words": 10,
+   "title": "浙江杰峰物联股份有限公司",
+   "plain": false
+  },
+  {
+   "rank": 333,
    "host": "amazon.co.uk",
    "controls": 3,
    "bytes": 3805,
@@ -943,7 +1087,7 @@
    "plain": false
   },
   {
-   "rank": 379,
+   "rank": 386,
    "host": "amazon.de",
    "controls": 3,
    "bytes": 3817,
@@ -961,6 +1105,24 @@
    "plain": false
   },
   {
+   "rank": 1009,
+   "host": "heytapmobi.com",
+   "controls": 3,
+   "bytes": 4449,
+   "words": 25,
+   "title": "广东欢太科技有限公司",
+   "plain": false
+  },
+  {
+   "rank": 3863,
+   "host": "tns-counter.ru",
+   "controls": 3,
+   "bytes": 4638,
+   "words": 198,
+   "title": "Интернет-счетчик tns-counter.ru",
+   "plain": false
+  },
+  {
    "rank": 800044,
    "host": "mcau-dw.online",
    "controls": 3,
@@ -970,7 +1132,7 @@
    "plain": false
   },
   {
-   "rank": 401,
+   "rank": 391,
    "host": "live-video.net",
    "controls": 4,
    "bytes": 2180,
@@ -988,6 +1150,15 @@
    "plain": false
   },
   {
+   "rank": 3764,
+   "host": "ts.net",
+   "controls": 4,
+   "bytes": 7718,
+   "words": 66,
+   "title": "What is ts.net?",
+   "plain": false
+  },
+  {
    "rank": 842033,
    "host": "yafalo.com",
    "controls": 5,
@@ -997,7 +1168,7 @@
    "plain": false
   },
   {
-   "rank": 384,
+   "rank": 389,
    "host": "dns.google",
    "controls": 5,
    "bytes": 1381,
@@ -1024,7 +1195,7 @@
    "plain": false
   },
   {
-   "rank": 887,
+   "rank": 911,
    "host": "vivoglobal.com",
    "controls": 5,
    "bytes": 2252,
