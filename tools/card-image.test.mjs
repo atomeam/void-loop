@@ -110,3 +110,12 @@ test('a utility card (data-card-plain) saves a plain picture: its title and word
   assert.match(s, /<svg x="\d+" y="\d+" width="300" height="300" xmlns/); assert.ok(!/Mythic|Rare|Uncommon|>P<|>R</.test(s));
   assert.ok(!/<svg x=/.test(plainSvg({ title: 't', text: 'x' })), 'no code without a matrix');
 });
+
+test('condition-matched weather art beats a static Art Forge painting on a weather card', () => {
+  const art = 'data:image/png;base64,AAAA';
+  const rainy = cardSvg({ ...d, kind: 'Skill — Sky and earth', typeLine: 'Skill · Weather', text: 'Light rain in Paris', art, painting: true });
+  assert.ok(!/<image[^>]*href="data:image\/png;base64,AAAA"/.test(rainy), 'the static painting does not cover the rain art');
+  assert.match(rainy, /stroke="#a8d8ff"/, 'the rain scene is drawn instead');
+  const film = cardSvg({ ...d, art, painting: true });
+  assert.match(film, /<image[^>]*href="data:image\/png;base64,AAAA"/, 'other cards still keep their painting');
+});
