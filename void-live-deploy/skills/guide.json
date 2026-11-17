@@ -29,8 +29,8 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 11,
+    "tested": 1,
+    "checked": 12,
     "proven": 44
    },
    "from": 68,
@@ -2476,11 +2476,12 @@
    "line": "Choose-your-own-adventure books on the stage",
    "examples": [
     "choose your own adventure",
-    "adventure",
-    "play adventure"
+    "play adventure",
+    "adventure game"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 124
   },
   {
