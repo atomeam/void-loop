@@ -111,3 +111,5 @@
 /markets/caps/ /markets/?mode=caps 301
 /markets/screener /markets/?mode=screener 301
 /markets/screener/ /markets/?mode=screener 301
+/news/global-headlines /news/?sec=world 301
+/news/global-headlines/ /news/?sec=world 301

@@ -55,6 +55,10 @@ export const FAMILIES = Object.freeze([
     { path: "/convert/unit-converter/", to: "/convert/" },
     { path: "/convert/unit-converter-2/", to: "/convert/" }
   ] },
+  { id: "news", page: "/news/", members: [
+    { path: "/news/", to: "/news/" },
+    { path: "/news/global-headlines/", to: "/news/?sec=world" }
+  ] },
 ]);
 
 const byPath = new Map();
