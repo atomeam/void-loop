@@ -13,6 +13,8 @@ export function photoAsk(text) {
   const t = String(text || '').toLowerCase().replace(/\s+/g, ' ').replace(/[?!.]+$/, '').replace(/^(?:please |can you |could you |i want to |i need to |how do i |how to )/, '').trim();
   if (!t || t.length > 90 || /\d/.test(t.replace(/\b(?:png|jpe?g|webp|avif|gif|bmp)\b/g, ''))) return null;
   if (SITES[t] === 'exif' || SITES[t] === 'exifeditor') return { slug: '', tab: 'info' };
+  if (SITES[t] === 'photopea') return { slug: '', tab: 'draw' };
+  if (SITES[t] === 'iloveimg') return { slug: '', tab: 'out' };
   if (SITES[t]) return { slug: SITES[t], tab: '' };
   if (/^(?:online )?(?:photo|image|picture) (?:editor|tools?|toolkit|compressor|optimi[sz]er)$|^(?:free )?(?:online )?(?:photo|image) editor$/.test(t)) return { slug: '', tab: /compressor|optimi/.test(t) ? 'out' : '' };
   if (/^(?:(?:view|see|show|read|check|find|inspect|open)\s+(?:the\s+)?)?(?:exif|metadata|meta data|gps)\b.*\b(?:viewer|of|from|in|for|on)\b.*|^(?:photo|image|picture) (?:exif|metadata) (?:viewer|reader|checker)$|^exif (?:viewer|reader|data viewer)$/.test(t) && !/^(?:what|why|how)\b|\b(?:strip|remove|delete|clean|scrub|wipe|erase)\b/.test(t)) return { slug: '', tab: 'info' };

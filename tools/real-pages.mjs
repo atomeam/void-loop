@@ -456,7 +456,7 @@ export const SPECS = {
     await t.download('#aiout .aidl', /edited-ai-check\.txt$/);
     t.ok(/moonbeam846\.gumroad\.com\/l\/yinmj/.test(await t.p.locator('#pro-link').getAttribute('href')), 'the paid line links to MultiVerse on the store');
   },
-  '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
+  '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
   '/piano/': async (t) => { await t.p.keyboard.press('q'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'a key plays a note'); },
   '/local/': async (t) => {
     await t.fill('#q', 'Boston'); await t.clickText('Find stations'); await t.waitText('#radio-note', /stations within|No radio/, 20000);

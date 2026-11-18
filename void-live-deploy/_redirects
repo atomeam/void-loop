@@ -8,10 +8,14 @@
 /ai-authenticity-checker/ /photos/?tab=info&mode=ai 301
 /shopping/ /store/ 301
 # plain names for the photos lane pages (owner, 2026-10-28: plain titles, old URLs kept)
-/photos/batch /photos/iloveimg/ 301
-/photos/batch/ /photos/iloveimg/ 301
-/photos/editor /photos/photopea/ 301
-/photos/editor/ /photos/photopea/ 301
+/photos/batch /photos/?tab=out 301
+/photos/batch/ /photos/?tab=out 301
+/photos/iloveimg /photos/?tab=out 301
+/photos/iloveimg/ /photos/?tab=out 301
+/photos/photopea /photos/?tab=draw 301
+/photos/photopea/ /photos/?tab=draw 301
+/photos/editor /photos/?tab=draw 301
+/photos/editor/ /photos/?tab=draw 301
 /photos/compress /photos/tinypng/ 301
 /photos/compress/ /photos/tinypng/ 301
 /photos/metadata /photos/?tab=info 301

@@ -7,8 +7,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'v
 export const PAGES = [
   { slug: 'squoosh', host: 'squoosh.app', start: 'out', title: 'Compress and convert images', sub: 'Pick a quality, a format and a size, and drag the slider to compare the original and the result. JPEG, PNG, WebP and AVIF; the file never leaves this device.', tab: 'Image compressor: JPEG, PNG, WebP, AVIF' },
   { slug: 'tinypng', host: 'tinypng.com', start: 'out', title: 'Image compressor: shrink PNG, JPEG and WebP', sub: 'Drop many photos, make them smaller (PNGs drop to a palette of up to 256 colours) and download them all as one zip. No limit on size or count, nothing uploaded.', tab: 'Image compressor: shrink PNG, JPEG, WebP and AVIF' },
-  { slug: 'photopea', host: 'photopea.com', start: 'adj', title: 'Photo editor: crop, adjust, text and draw', sub: 'Crop, adjust, filters, text and drawing with a full undo history, then save as JPEG, PNG, WebP or AVIF. One picture at a time, no layers.', tab: 'Photo editor: crop, adjust, text and draw' },
-  { slug: 'iloveimg', host: 'iloveimg.com', start: 'crop', title: 'Batch photo tools: resize, crop, rotate, convert', sub: 'Resize, crop with shapes, rotate, convert, put text on a picture, and do many pictures at once as a zip. Everything happens on this device.', tab: 'Batch photo tools: resize, crop, rotate, convert' },
 ];
 const BLOCKS = [/<!-- seo -->[\s\S]*?<!-- \/seo -->\n?/g, /<!-- asks -->[\s\S]*?<!-- \/asks -->\n?/g]; // tools/seo-pages.mjs writes these into every page itself
 export const bare = (h) => BLOCKS.reduce((t, re) => t.replace(re, ''), h);
