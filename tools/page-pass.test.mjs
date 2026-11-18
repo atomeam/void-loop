@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, suiteOpen, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/page-pass.js';
-import { onRequest as gate } from '../void-live-deploy/functions/_middleware.js';
+import { onRequest as gate, keepQuery } from '../void-live-deploy/functions/_middleware.js';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/page-pass.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
 
@@ -102,3 +102,17 @@ test('loopback builds see full pages with no token; production stays gated', asy
 async function grantFirst(DB) {
   assert.equal(await applyStripeEvent({ DB }, { type: 'checkout.session.completed', data: { object: { metadata: { plan: 'universe' }, subscription: 'sub_abc123' } } }), true);
 }
+
+test('a same-site redirect from the assets keeps the visitor\'s query (a folded page\'s old link still carries its data)', async () => {
+  const hop = (location, status = 301) => () => Promise.resolve(new Response(null, { status, headers: { location } }));
+  const moved = await gate({ request: ask('/random-user/?nat=tr,nl&seed=abc&n=5'), env: {}, next: hop('/random/?mode=people') });
+  assert.equal(moved.status, 301);
+  const to = new URL(moved.headers.get('location'), 'https://a-to-mind.com');
+  assert.equal(to.pathname, '/random/'); assert.equal(to.searchParams.get('mode'), 'people'); assert.equal(to.searchParams.get('nat'), 'tr,nl'); assert.equal(to.searchParams.get('seed'), 'abc'); assert.equal(to.searchParams.get('n'), '5');
+  const own = keepQuery(new Response(null, { status: 301, headers: { location: '/random/?mode=wheel' } }), new URL('https://a-to-mind.com/wheel/?mode=evil&e=Ann'));
+  assert.equal(new URL(own.headers.get('location'), 'https://a-to-mind.com').searchParams.get('mode'), 'wheel');
+  const away = keepQuery(new Response(null, { status: 302, headers: { location: 'https://example.com/x' } }), new URL('https://a-to-mind.com/go/?t=1'));
+  assert.equal(away.headers.get('location'), 'https://example.com/x');
+  const page = keepQuery(new Response('ok', { status: 200 }), new URL('https://a-to-mind.com/flights/?q=1'));
+  assert.equal(await page.text(), 'ok');
+});

@@ -16,6 +16,18 @@
     xhr.send();
   } catch (e) { return; }
   if (xhr.status < 200 || xhr.status >= 300 || !xhr.responseText) return;
+  // a mode page that writes its state into the address (history.replaceState(null, '', '?n=5&nat=tr')) keeps ?mode=, so a
+  // reload, a copied link or a shared address reopens the same mode instead of the family's default page
+  const keepMode = (fn) => function (state, title, u) {
+    if (u != null) {
+      try {
+        const x = new URL(String(u), location.href);
+        if (x.origin === location.origin && x.pathname === location.pathname && !x.searchParams.has('mode')) { const rest = x.search.replace(/^\?/, ''); x.search = '?mode=' + mode + (rest ? '&' + rest : ''); u = x.pathname + x.search + x.hash; }
+      } catch (e) { /* void-review: ok (an address URL cannot read is passed on unchanged; history itself then reports it) */ }
+    }
+    return fn.call(history, state, title, u);
+  };
+  try { history.replaceState = keepMode(history.replaceState); history.pushState = keepMode(history.pushState); } catch (e) { /* void-review: ok (a browser with a read-only History keeps its own; the mode still loads) */ }
   // A blocking script's document.open() is ignored while the page is still being parsed, so the write only inserts the
   // mode document ahead of the family page's own markup, and the family page's scripts used to run as well (the scores
   // page rewrote /scores/?mode=sports&q=... to ?league=epl and dropped the search; lists run 27). The closing <plaintext>

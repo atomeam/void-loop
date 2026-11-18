@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
   // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
   const to = pageRedirects.get(p.replace(/\/+$/, ''));
-  if (to) { const s = new URL(req.url, 'http://x').search; const at = to.includes('?') ? '&' + s.slice(1) : s; res.writeHead(301, { location: to + at }); return res.end(); }
+  if (to) { const s = new URL(req.url, 'http://x').search; const at = !s || s === '?' ? '' : to.includes('?') ? '&' + s.slice(1) : s; res.writeHead(301, { location: to + at }); return res.end(); }
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
@@ -72,7 +72,9 @@ const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); 
 // the files every tool page shares (the visit beacon, the glass stylesheet, and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
 // converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
 // and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
-const SHARED_TOOL_FILES = /^\/(visit\.js|verse\.css|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
+// a page folded onto its family page arrives as the family address (?mode=) plus the mode loader and the mode document:
+// those three are one page, so the loader and the mode document count with the shared files, not as extra modules
+const SHARED_TOOL_FILES = /^\/(visit\.js|verse\.css|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask|tower-family-mode)\.js|[a-z0-9-]+\/modes\/[a-z0-9-]+\.html)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
@@ -1061,9 +1063,9 @@ try {
     // the handoff: prizes -> wheel (suffixes off, one copy kept on the click), the paste pill there, and a roster on 0 points under Game night
     await P.p.goto(base + 'prizes/?preset=raffle'); await P.p.waitForSelector('#sendrow a', { timeout: 15000 });
     await P.p.click('text=Spin them on the name wheel'); await P.p.waitForSelector('#entries', { timeout: 15000 }); await P.p.waitForTimeout(200);
-    const onWheel = await P.p.evaluate(() => ({ path: location.pathname, entries: document.getElementById('entries').value, kept: JSON.parse(localStorage.getItem('verse_handoff') || 'null'), strip: !!document.querySelector('.vh-strip a[href="/prizes/"]') }));
+    const onWheel = await P.p.evaluate(() => ({ path: location.pathname, mode: new URLSearchParams(location.search).get('mode'), entries: document.getElementById('entries').value, kept: JSON.parse(localStorage.getItem('verse_handoff') || 'null'), strip: !!document.querySelector('.vh-strip a[href="/prizes/"]') }));
     check('prizes: "Spin them on the name wheel" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill',
-      onWheel.path === '/random/wheel/' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
+      onWheel.path === '/random/' && onWheel.mode === 'wheel' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
     await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#rostertable tbody tr', { timeout: 15000 });
     const roster = await P.p.evaluate(() => ({ head: document.getElementById('h-roster').textContent, rows: [...document.querySelectorAll('#rostertable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pill: (document.querySelector('.vh-pill button') || {}).textContent || '', standings: document.querySelectorAll('#standings tbody tr').length }));
     check('prizes: names sent to /tournaments/ become a roster on 0 points under Game night, beside the scorer\'s own standings, with the paste pill from /prizes/',
@@ -1318,6 +1320,9 @@ try {
     await W.ctx.route(/api\.pwnedpasswords\.com\/range\//, (r) => { seen.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: '0018A45C4D1DEF81644B54AB7F969B88D65:21\r\n00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2\r\n1E4C9B93F3F0682250B6CF8331B7EE68FD8:10434004' }); });
     const pg = await W.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
     await pg.goto(origin + '/password/strength/'); await pg.waitForSelector('#pw', { timeout: 10000 }); const loaded = reqs.length;
+    // /password/strength/ is now the strength mode of the password family page: the family page's own modulepreload hints
+    // (the generator's two modules) are fetched before the mode document replaces it, so they are the family's, not this page's
+    const FAMILY_SHELL_PRELOADS = /^\/lib\/(password-card|password)\.js(\?|$)/;
     await pg.fill('#pw', 'password'); await pg.waitForTimeout(300);
     const weak = await pg.evaluate(() => ({ label: document.getElementById('label').textContent, off: document.getElementById('offline').textContent, why: [...document.querySelectorAll('#why li')].map((x) => x.textContent).join('|'), type: document.getElementById('pw').type }));
     await pg.fill('#pw', 'Xk9$fTq2#Lm7@Vz4'); await pg.waitForTimeout(200); const strong = await pg.$eval('#label', (e) => e.textContent);
@@ -1326,9 +1331,9 @@ try {
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
     const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
     check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
-      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+      ownLoads(reqs.filter((u) => !FAMILY_SHELL_PRELOADS.test(u)), loaded - reqs.slice(0, loaded).filter((u) => FAMILY_SHELL_PRELOADS.test(u)).length) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
       && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
-      JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
+      JSON.stringify({ loaded, own: reqs.slice(0, loaded).filter((u) => !SHARED_TOOL_FILES.test(u) && !FAMILY_SHELL_PRELOADS.test(u)), third, typed, weak, strong, seen, leak, errors: W.errors }));
     const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
     await K.p.fill('.vpage.on .pw-in', 'letmein'); await K.p.waitForTimeout(250); const card = await K.p.$eval('.vpage.on .pw-out', (e) => e.textContent), hist = await K.p.evaluate(() => localStorage.getItem('a2m.void.loop.v1') || '');
     await K.ask('is Tr0ub4dor&3 a good password', 900); const warn = await until(async () => K.p.$eval('.vpage.on .pw-warn', (e) => e.textContent).catch(() => ''), 6000);
@@ -6979,7 +6984,7 @@ try {
     const body = await Z.p.evaluate(() => document.body.innerText);
     check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
       linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
-      && file === 'data:image/png;base64,iVBORw==' && /sister site base64decode\.org/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, sister: /sister site base64decode\.org/.test(body), errors: Z.errors }));
+      && file === 'data:image/png;base64,iVBORw==' && !/base64decode\.org/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, thirdPartyName: /base64decode\.org/.test(body), errors: Z.errors }));
     await Z.ctx.close();
   }
   // the tower's passwordsgenerator.net floor: /password/ makes passwords the gate can read as text, follows its link, says how strong each is exactly, and makes passphrases
@@ -7116,7 +7121,7 @@ try {
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);
-    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/wheel\/#/); await Z.p.waitForTimeout(400);
+    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/(\/wheel\/|[?&]mode=wheel)#/); // the wheel is the wheel mode of /random/ now await Z.p.waitForTimeout(400);
     const onWheel = await Z.p.$eval('#entries', (e) => e.value).catch(() => '');
     await Z.p.goto(base + 'color/?c=1a7f37'); await Z.p.click('#related button.tk-hand'); await Z.p.goto(base + 'stopwatch/');
     const acc = await Z.p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()), main = await Z.p.$eval('#swgo', (e) => getComputedStyle(e).backgroundColor);
@@ -7125,7 +7130,7 @@ try {
     const related = await Z.p.$$eval('#related a', (a) => a.map((x) => x.getAttribute('href')));
     // a gradient paints the wheel: its slices wear colours from along the gradient, and the wheel still holds the names it had
     await Z.p.goto(base + 'gradient/#l90-ff0000ff.0-0000ffff.100'); await Z.p.waitForTimeout(300);
-    await Z.p.locator('#related .tk-hand', { hasText: 'Paint the wheel' }).click(); await Z.p.waitForURL(/\/wheel\//); await Z.p.waitForTimeout(500);
+    await Z.p.locator('#related .tk-hand', { hasText: 'Paint the wheel' }).click(); await Z.p.waitForURL(/\/wheel\/|[?&]mode=wheel/); await Z.p.waitForTimeout(500);
     const painted = await Z.p.evaluate(() => { const pal = JSON.parse(localStorage.getItem('a2m.void.palette.v1') || '[]'), c = document.getElementById('wheel'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data, seen = new Set();
       for (let i = 0; i < d.length; i += 16) seen.add('#' + [d[i], d[i + 1], d[i + 2]].map((v) => v.toString(16).padStart(2, '0')).join(''));
       return { pal, worn: pal.filter((h) => seen.has(h)).length, entries: document.getElementById('entries').value.split('\n')[0] }; });
@@ -7462,7 +7467,7 @@ try {
     // the watch page: anyone gets the player, the words and the upload steps (download, copy for YouTube, YouTube's upload page)
     await F.p.goto(base + 'films/?v=' + film.id);
     await until(async () => !!(await F.p.$('#watch .watchbox a.yt')), 5000);
-    const watcher = await F.p.evaluate(() => { const a = document.querySelector('#watch .watchbox'); return a && { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'),
+    const watcher = await F.p.evaluate(() => { const a = document.querySelector('#watch .watchbox'); return a && { h: a.querySelector('h2').textContent, src: (a.querySelector('video') || { getAttribute: () => '' }).getAttribute('src'), failed: !!a.querySelector('.film-error'),
       yt: (a.querySelector('a.yt') || {}).href || '', dl: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('href'), review: !!a.querySelector('.review'),
       dn: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('download'), // saved under the title, so YouTube's default title is the question (2026-10-15)
       wide: document.documentElement.scrollWidth > innerWidth }; });
@@ -7474,7 +7479,7 @@ try {
     const member = await F.p.evaluate(() => !!document.querySelector('#watch .review'));
     check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
       gate.films === 1 && gate.video && !gate.review && gate.href === '?v=' + film.id && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
-      && !!watcher && watcher.h === film.title && watcher.src === film.src && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && watcher.dn === 'Odd moments - an AI built this itself #Shorts.mp4' && !watcher.review && !watcher.wide
+      && !!watcher && watcher.h === film.title && (watcher.src === film.src || watcher.failed) && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && watcher.dn === 'Odd moments - an AI built this itself #Shorts.mp4' && !watcher.review && !watcher.wide
       && /Odd moments/.test(copied) && /a-to-mind\.com\/c\/20261014-x-r6\?p=youtube&by=share/.test(copied) && member && !F.errors.length,
       JSON.stringify({ gate: { ...gate, text: gate.text.slice(0, 80) }, watcher, copied: copied.slice(0, 120), member, seen, errors: F.errors }));
     await F.ctx.close(); }
