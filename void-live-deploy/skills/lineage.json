@@ -1,1 +1,10 @@
-PLACEHOLDER_REAL_LINEAGE
+{
+  "note": "Which skills were built by calling other skills (tools/skill-compose.mjs). A skill with no parts is written by hand.",
+  "count": 1,
+  "skills": {
+    "monitor-handoff": {
+      "builtWith": ["systems-owned"],
+      "examples": ["monitor handoff for invoice automation", "handoff monitoring for client onboarding"]
+    }
+  }
+}
