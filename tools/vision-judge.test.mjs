@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { surfacesOf, liveSurfacesOf, redirectDestOf, pixelStats, judge, run, LIMITS } from './vision-judge.mjs';
 
 const frame = (w, h, f) => { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = f(x, y), i = (y * w + x) * 4; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } return d; };
@@ -62,4 +63,13 @@ test('in a real browser: a white page with an offer on the landing fails; a dark
   const land = r.filter((x) => x.path === '/').flatMap((x) => x.failures), ok = r.filter((x) => x.path === '/ok/').flatMap((x) => x.failures);
   assert.ok(land.some((f) => /not the dark theme/.test(f)) && land.some((f) => /p/.test(f) && /more than the void/.test(f)), land.join('\n'));
   assert.deepEqual(ok, []);
+});
+
+test('the landing horizon stays soft at night on a phone', { skip: !chrome && 'no Chrome here' }, async () => {
+  const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
+  const r = await run({ paths: ['/'], dir, phase: 'night' });
+  const mobile = r.find((x) => x.path === '/' && x.viewport === 'mobile');
+  assert.ok(mobile, 'the phone landing was measured');
+  assert.equal(mobile.failures.join('\n'), '');
+  assert.ok(mobile.px.hardEdge <= LIMITS.HARD_EDGE, 'night phone hard-edge ' + mobile.px.hardEdge + ' > ' + LIMITS.HARD_EDGE);
 });

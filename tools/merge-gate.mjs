@@ -212,7 +212,9 @@ function main() {
     const files = String(git(['diff', '--name-only', base + '...HEAD'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
     if (surfacesOf(files).length) {
       if (!existsSync(resolve(dir, 'node_modules/playwright-core'))) installOnce();
-      const seen = spawnSync(process.execPath, [resolve(dir, 'tools/vision-judge.mjs'), '--files', files.join(',')], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6, timeout: 480000 });
+      const shots = process.env.VISION_JUDGE_SHOTS; const vj = [resolve(dir, 'tools/vision-judge.mjs'), '--files', files.join(',')];
+      if (shots) vj.push('--shots', resolve(shots));
+      const seen = spawnSync(process.execPath, vj, { cwd: dir, encoding: 'utf8', maxBuffer: 20e6, timeout: 480000 });
       if (seen.stdout) process.stdout.write(seen.stdout);
       if (seen.stderr) process.stderr.write(seen.stderr);
       if ((seen.status ?? 1) !== 0) { console.error('merge-gate: the runtime gate failed (tools/vision-judge.mjs): a changed page broke in the browser'); process.exit(seen.status ?? 1); }
