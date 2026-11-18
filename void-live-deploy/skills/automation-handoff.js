@@ -31,7 +31,7 @@ export function handoffFor(subject) {
       'Hand off docs, status and the running automations'
     ],
     status: 'Status lives on the client status card and the delivery board. Exceptions ping the owner; green runs stay quiet.',
-    reduced: 'No more watching the runs, chasing status, or re-starting failed jobs. Verse owns the heavy lifting.',
+    reduced: 'No more watching the runs, chasing status, or re-starting failed jobs. Verse owns the hard work.',
     next: 'Start from the idea-to-system or client-offer card for ' + name + '. This handoff stays here for the client.'
   };
 }
