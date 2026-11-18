@@ -116,11 +116,11 @@ export const PROBES = Object.freeze({
     facts: [['the answer', /\b(?:YES|NO)\b/], ['which day it is about', /christmas/i], ['how long until it', /\b\d+\s+(?:days?|sleeps?)\b/i], ['the date itself', /\b25\b.*\bdec|\bdec\w*\s+25\b/i]],
   },
   'coin flip': {
-    site: 'https://justflipacoin.com/', verse: '/random/coin/',
+    site: 'https://justflipacoin.com/', verse: '/random/?mode=coin',
     // one flip has no right answer, but ten have a right SHAPE: the gate presses each page's own flip control 10 times, as a person would
     // (tower-gate.mjs answer, `presses`), and reads the page each time it settles: every flip lands on one side, a fair coin shows both
     // sides in 10 (all ten alike is 2 in 1024), and any running count the page keeps grows by exactly the flips made, heads by the heads seen
-    ask: { site: 'https://justflipacoin.com/', verse: '/random/coin/', presses: 10 },
+    ask: { site: 'https://justflipacoin.com/', verse: '/random/?mode=coin', presses: 10 },
     truth: [['every flip lands on one side, heads or tails', (t) => { const f = flipsOf(t); return f.sides.length > 0 && f.sides.every(Boolean); }],
       ['both sides come up in 10 fair flips', (t) => new Set(flipsOf(t).sides.filter(Boolean)).size === 2],
       ['any count it shows adds up to the flips made', (t) => { const f = flipsOf(t); if (!f.after) return f.sides.length > 0; const b = f.before || { h: 0, t: 0 }, dh = f.after.h - b.h, dt = f.after.t - b.t;
@@ -155,19 +155,19 @@ export const PROBES = Object.freeze({
     truth: () => PROBES.colour.truth(), facts: null, // the colour floor's facts (below)
   },
   gradient: {
-    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/color/gradient/',
+    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/color/?mode=gradient',
     // the same gradient put to both in the address (ColorZilla's own hash: colour+position stops, top to bottom; Verse's packed link at 180deg,
     // which is "to bottom"): the CSS each writes must hold every stop's exact colour at its exact position, in order, and the direction
-    ask: { site: 'https://www.colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100', verse: '/color/gradient/#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100' },
+    ask: { site: 'https://www.colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100', verse: '/color/?mode=gradient#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100' },
     truth: [['the four stops, exact and in order', /linear-gradient\([^)]*#1e5799\s+0%\s*,\s*#2989d8\s+50%\s*,\s*#207cca\s+51%\s*,\s*#7db9e8\s+100%/i], ['top to bottom', /linear-gradient\(\s*(?:to bottom|180deg)\s*,\s*#1e5799/i]],
     facts: [['linear', /\blinear\b/i], ['radial', /\bradial\b/i], ['conic', /\bconic\b/i], ['opacity', /\bopacity\b/i], ['presets', /\bpresets?\b/i], ['import CSS', /\bimport\b|\bpaste\b/i],
       ['reverse', /\breverse\b/i], ['hue and saturation', /\bhue\b/i], ['SCSS', /\bscss\b/i], ['from a picture', /\b(?:image|picture)\b/i], ['text contrast', /\bcontrast\b|\bwcag\b/i], ['CSS output', /background(?:-image)?\s*:\s*(?:linear|radial|conic)-gradient/i]],
   },
   wheel: {
-    site: 'https://wheelofnames.com/', verse: '/random/wheel/',
+    site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel',
     // one spin of the same eight names on both (a tap at the wheel's centre): a winner is announced, and it is one of the names the wheel
     // held before the spin; after it, a way to remove the winner is offered (wheelofnames.com's dialog, Verse's button)
-    ask: { site: 'https://wheelofnames.com/', verse: '/random/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
+    ask: { site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
     truth: [['announces a winner', (t) => /winner/i.test(spun(t).after)], ['the winner is one of the wheel\'s own names', (t) => { const { after, before } = spun(t), names = new Set(before.split('\n').map((l) => l.trim()).filter((l) => l && l.length <= 40));
       return after.split('\n').some((l) => { const x = l.replace(/^.*\bwinner(?:\s+is)?\s*:?\s*/i, '').replace(/[!.]+$/, '').trim(); return !!x && names.has(x); }); }]],
     askParts: { 'remove the winner': [['a way to remove the winner', (t) => /remove/i.test(spun(t).after)]] },
@@ -175,11 +175,11 @@ export const PROBES = Object.freeze({
       ['a share link', /\bshare\b|\bcopy link\b/i], ['weights', /\bweights?\b|times as likely/i], ['says it is fair', /\bfair\b/i], ['sound control', /\bsound\b|\bmute\b/i]],
   },
   'random user': {
-    site: 'https://randomuser.me/', verse: '/random/people/',
+    site: 'https://randomuser.me/', verse: '/random/?mode=people',
     // the same request to both in the address (randomuser.me's own API, Verse's page as JSON): made-up people are accurate when they hold
     // together, which can be checked: as many as asked, from the country asked, each age right for its birthday, each email well formed,
     // and each phone in the range set aside for fiction (555-0100 to 555-0199), so a test that dials one reaches nobody
-    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/people/?n=5&nat=us&seed=verse&fmt=json' },
+    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/?mode=people&n=5&nat=us&seed=verse&fmt=json' },
     truth: [['five people, as asked', (t) => peopleIn(t).length === 5], ['all from the United States, as asked', everyone((p) => p.country === 'United States')],
       ['every age right for its birthday', everyone((p) => Number.isFinite(p.age) && p.age === ageOn(p.dob))], ['every email well formed', everyone((p) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(p.email)))],
       ['every phone in the range reserved for fiction', everyone((p) => /555-01\d\d$/.test(String(p.phone)))]],
@@ -230,11 +230,11 @@ export const PROBES = Object.freeze({
       ['lines of 76 characters', /\b76\b/], ['the newline form', /\bnewline\b|\bline\s?breaks?\b|\bCRLF\b|\bLF\b/i], ['encoding as you type', /\blive\b|as you type/i], ['files', /\bfiles?\b/i], ['copy', /\bcopy\b/i], ['download', /\bdownload\b/i]],
   },
   'password strength': {
-    site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/',
+    site: 'https://www.howsecureismypassword.net/', verse: '/password/?mode=strength',
     // the page never carries a password in its address (its own rule: nothing typed goes in a link), so the gate types the question into its box
     // (`verseType`). The question: qwerty123, at the head of every leaked list. The truth any correct checker agrees on: it is very weak, cracked
     // at once from a stolen list (a rig trying 10 billion a second needs far fewer), the word qwerty and the run 123 are why, and longer is the fix
-    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/', verseType: 'qwerty123' },
+    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/?mode=strength', verseType: 'qwerty123' },
     truth: [['rated very weak', /\bvery weak\b/i], ['cracked instantly', /\binstantly\b/i], ['the common password qwerty named', /\bqwerty\b/i], ['the run 123 named', /\b123\b/i], ['the fix: make it longer', /\blonger\b/i]],
     // the floor's own aspects, read off the same typed answer: a time at a login and a time from a stolen list; why it is weak and how to fix it
     askParts: { 'crack time': [['a time from a stolen list, offline', /\boffline\b|stolen list/i], ['a time at a login, online', /\blogin\b|\bonline\b/i]],
@@ -330,22 +330,22 @@ export const PROBES = Object.freeze({
     facts: [['the price and its change in percent', /[+−]\d+\.\d{2}%/], ['the previous close', /previous close/i], ['the day range', /day range/i], ['the 52-week range', /52-week range/i], ['volume', /\bvolume\b/i], ['market cap', /market cap/i],
       ['chart ranges 1D to Max', /\b1D\b[\s\S]{0,40}\b5D\b[\s\S]{0,60}\b5Y\b/], ['a watchlist', /\bwatchlist\b/i], ['compare two symbols', /\bcompare\b/i], ['top movers', /top movers/i], ['the main indices', /S&P 500/], ['a currency converter', /convert currency/i], ['a close on any day', /close on a day/i], ['a written market wrap', /verse reports/i], ['the source and the delay said', /may be delayed/i]],
   },
-  // the finance lane's own pages (owner, 2026-10-26: every lane site gets its own page): the market-cap site is measured against /markets/caps/, the screener site against
-  // /markets/screener/. Each judged on Verse alone; the truth is what holds on any day.
+  // the finance lane's own pages (owner, 2026-10-26: every lane site gets its own page): the market-cap site is measured against /markets/?mode=caps, the screener site against
+  // /markets/?mode=screener. Each judged on Verse alone; the truth is what holds on any day.
   'finance: companiesmarketcap.com': {
-    site: 'https://companiesmarketcap.com/', verse: '/markets/caps/',
+    site: 'https://companiesmarketcap.com/', verse: '/markets/?mode=caps',
     // the question: the coins by market cap. The truth on any day (worked out by hand): Bitcoin is rank 1, its name and ticker stand together on the row, with a price in dollars
     // and a market cap in billions or trillions; the page says it lists the 50 largest. Numbers only appear once the list has come back, so a loading page fails.
-    ask: { verse: '/markets/caps/' },
+    ask: { verse: '/markets/?mode=caps' },
     truth: [['Bitcoin is rank 1', /(?:^|\n)\s*1\s+\S*\s*Bitcoin\s*BTC\b/], ['a price in dollars on its row', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a market cap in trillions or billions', /\$\d+(?:\.\d+)?[TB]\b/], ['the 50 largest', /\b50 largest\b/i]],
     askParts: { 'live quotes': [['a price in dollars', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a 24 hour move in percent', /[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a 7 day chart', /\b7d chart\b/i], ['the 7 day move', /\b7d [+−]\d+\.\d{2}%/]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
     facts: [['rank', /(?:^|\n)\s*1\s/], ['price', /\$[\d,]{3,}/], ['market cap', /\bMkt cap\b|market cap/i], ['24 hour change', /[+−]\d+\.\d{2}%/], ['7 day change', /\b7d [+−]\d+\.\d{2}%/], ['24 hour volume', /\bVol 24h \$/i], ['a total market cap', /Total market cap of these \d+: \$\d/i], ['a coin search', /find a coin/i], ['sorting', /\bMkt cap\b/i], ['a 7 day chart', /\b7d chart\b/i], ['company market caps said to be absent, and why', /Company market caps[\s\S]{0,160}no free source/i]],
   },
   'finance: finviz.com': {
-    site: 'https://finviz.com/', verse: '/markets/screener/?near=100&sort=pct',
+    site: 'https://finviz.com/', verse: '/markets/?mode=screener&near=100&sort=pct',
     // the question: the whole small universe (a filter every symbol passes: within 100 percent of its high), biggest gain first. The truth on any day: the page counts how many of
     // the universe match, names a stock and a coin in its rows, and the universe is labelled as 12 stocks, 4 indices and 30 coins, "not every listed company".
-    ask: { verse: '/markets/screener/?near=100&sort=pct' },
+    ask: { verse: '/markets/?mode=screener&near=100&sort=pct' },
     truth: [['the matches counted', /\b\d+ of \d+ symbols match\b/], ['a share row with a price and a move', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['a coin row', /\bBTC\b[\s\S]{0,60}[+−]\d+\.\d{2}%/], ['the universe labelled as small', /12 large US stocks[\s\S]{0,200}30 large coins[\s\S]{0,80}not every listed company/i]],
     askParts: { 'live quotes': [['a price and a move on a row', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a chart under each move', /small line under each move is its chart/i], ['the distance from the high', /Below high/i]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
     facts: [['a move filter', /Move at least/i], ['a distance from the high filter', /Within % of high/i], ['a volume filter', /Volume at least/i], ['a group filter', /\bIndices\b[\s\S]{0,40}\bCoins\b/i], ['sorting', /Sort by/i], ['a match count', /\d+ of \d+ symbols match/], ['volume against the average', /Volume ×/], ['the universe said plainly', /not every listed company/i], ['a chart on each row', /small line under each move is its chart/i]],
@@ -624,8 +624,8 @@ export const PROBES = Object.freeze({
     ],
   },
   colorzilla: {
-    site: 'https://www.colorzilla.com/', verse: '/color/gradient/',
-    ask: { verse: '/color/gradient/' },
+    site: 'https://www.colorzilla.com/', verse: '/color/?mode=gradient',
+    ask: { verse: '/color/?mode=gradient' },
     truth: [
       ['linear gradients', /linear/i],
       ['radial gradients', /radial/i],
@@ -973,11 +973,11 @@ export const PROBES = Object.freeze({
       ['brightness and contrast', /\bbrightness\b[\s\S]{0,20}\bcontrast\b/i], ['saturation', /\bsaturation\b/i], ['blur and sharpen', /\bblur\b[\s\S]{0,12}\bsharpen\b/i], ['filters', /\bfilters\b/i], ['text', /\btext\b/i], ['drawing', /\bdrawing\b/i], ['undo and redo', /\bundo\b[\s\S]{0,12}\bredo\b/i], ['EXIF', /\bexif\b/i], ['GPS', /\bgps\b/i], ['strip metadata', /\bstrip\b/i], ['batch to a zip', /\bzip\b/i], ['paste or drop', /\bpaste\b[\s\S]{0,12}\bdrop\b|\bdrop\b[\s\S]{0,40}\bpaste\b/i], ['nothing uploaded', /nothing is uploaded|never uploaded/i], ['works offline', /\boffline\b/i]],
   },
   'photo resizer': {
-    site: 'https://pancardresizer.com/', verse: '/resize-image/',
+    site: 'https://pancardresizer.com/', verse: '/photos/?tab=crop',
     // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL) with the size in the link: the
     // PAN card photo, 3.5 by 2.5 cm at 200 dpi under 50 KB. The truth by arithmetic: 3.5 cm is 3.5 / 2.54 inches, times 200 dots, 276 pixels;
     // 2.5 cm is 197; a one-pixel picture resized to that is far under 50 KB, so the limit is met and the quality chosen is the highest that fits
-    ask: { site: 'https://pancardresizer.com/', verse: '/resize-image/?w=3.5&h=2.5&u=cm&dpi=200&kb=50', verseFile: true },
+    ask: { site: 'https://pancardresizer.com/', verse: '/photos/?tab=crop?w=3.5&h=2.5&u=cm&dpi=200&kb=50', verseFile: true },
     truth: [['3.5 by 2.5 cm at 200 dpi is 276 by 197 pixels', /\b276\s*[×x]\s*197\s*px\b/], ['the file is under the 50 KB limit', /\bKB \(limit 50 KB\)/], ['the JPEG quality chosen, the highest that fits', /\bquality \d+%/i]],
     askParts: { 'exact size': [['the pixel size made', /\b\d+\s*[×x]\s*\d+\s*px\b/]], 'size limit': [['the file size against the limit', /\bKB\b[^\n]*\blimit\b/i]], pdf: [['a PDF to download', /\bpdf\b/i]] },
     // what the best resizers show (pancardresizer.com's fixed card size and KB limit; the best take any size in cm, mm, inches or pixels, a dpi, a
@@ -986,10 +986,10 @@ export const PROBES = Object.freeze({
       ['a JPEG', /\bjpe?g\b/i], ['a PDF', /\bpdf\b/i], ['crop or keep the whole picture', /\bcrop\b|whole picture/i], ['a signature too', /\bsignature\b/i], ['nothing uploaded', /never uploaded|nothing is uploaded|on (?:this|your) device/i], ['a share link', /\bshare\b/i]],
   },
   'base converter': {
-    site: 'https://hextobinary.com/', verse: '/base64/bases/?v=ff&b=16',
+    site: 'https://hextobinary.com/', verse: '/base64/?mode=bases&v=ff&b=16',
     // hextobinary.com's address cannot carry a number, so the gate types it into the converter's box (`type`), as a person would; Verse takes it
     // in the link. The question: a 31-digit hex number (121 bits), past what a double holds exactly (53 bits); the truth is computed with BigInt
-    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/bases/?v=' + HUGE.toString(16) + '&b=16' },
+    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/?mode=bases&v=' + HUGE.toString(16) + '&b=16' },
     truth: [['the exact binary', exact(HUGE.toString(2))], ['the exact decimal', exact(HUGE.toString(10))]],
     askParts: { 'huge numbers': [['all 121 binary digits', exact(HUGE.toString(2))], ['all 37 decimal digits', exact(HUGE.toString(10))], ['all 41 octal digits', exact(HUGE.toString(8))]] },
     facts: [['binary', /\bbinary\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i], ['octal', /\boctal\b/i]],
@@ -1008,11 +1008,11 @@ export const PROBES = Object.freeze({
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
   },
   'formula calculators': {
-    site: 'https://www.vcalc.com/', verse: '/calculators/',
+    site: 'https://www.vcalc.com/', verse: '/calculator/?mode=formulas',
     // vcalc.com's robots.txt asks robots not to read it, so accuracy is Verse against the worked-out answer: the outside area of a pipe 2 inches
     // across and 10 feet long, pi x d x l = pi x (2/12 ft) x 10 ft = 5.235988 ft², and the same area in square metres (0.4864390 m²) and square
     // inches (753.9822 in²), the units a page that is unit-aware shows beside it
-    ask: { verse: '/calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
+    ask: { verse: '/calculator/?mode=formulas&calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
     truth: [['5.23599 ft²', /(?<![\d.])5\.2359\d*\s*ft²/], ['0.486439 m²', /(?<![\d.])0\.48643\d*\s*m²/], ['753.982 in²', /(?<![\d.])753\.98\d*\s*in²/]],
     askParts: {
       // the library: each kind of calculator the best formula sites keep, named as a section of the page
@@ -1146,49 +1146,49 @@ const LANE_PROBES = Object.freeze({
   // the travel lane (owner, 2026-10-26: "need a flights page"): each site has a page of its own (LANE_PAGES) and the question that page answers. Truths worked out by hand
   // (London to New York is 5,540 km and 3,442 miles; London to Singapore 10,880 km; a 40 minute wait is under 45 minutes; Lisbon's ICAO code is LPPT).
   'travel: tripwaffle.com': {
-    ask: { verse: '/flights/trip/#trip=' + ASK_TRIP },
+    ask: { verse: '/flights/?mode=trip#trip=' + ASK_TRIP },
     truth: [['both flights listed', /BA 117[\s\S]{0,400}UA 904/], ['the wait of 40 minutes at New York', /Wait: 40 min/], ['a warning for a wait under 45 minutes', /Under 45 minutes/], ['the whole trip time', /from the first departure to the last arrival/]],
     askParts: { 'paste a confirmation': [['a box to paste', /Paste a confirmation text/i], ['a button to read the flights', /Read the flights/i]], 'day by day timeline': [['your flights in order', /Your flights in order/i], ['times', /\d\d:\d\d/], ['dates', /20\d\d-\d\d-\d\d/]], 'layover warnings': [['a wait', /Wait: \d/], ['tight or too short', /Under 45 minutes|Under an hour/], ['an overnight or long wait', /overnight|long wait/i]], 'calendar export': [['a calendar file', /\.ics/], ['for my calendar', /calendar/i]], 'share a trip': [['a link to this trip', /link to this trip/i]], 'works offline': [['offline', /\boffline\b/i], ['on this device', /on this device/i]] },
     pageParts: {}, parts: {},
     facts: [['paste a confirmation', /Paste a confirmation/i], ['flights read from text', /Read the flights/i], ['add a flight by hand', /Add a flight by hand/i], ['a booking reference', /Booking reference/i], ['local times', /Departs \(local\)/i], ['layovers', /Wait: /], ['layover warnings', /Under 45 minutes|Under an hour|overnight/i], ['airport changes', /airport/i], ['a calendar file', /\.ics/], ['a share link', /link to this trip/i], ['on this device', /on this device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'travel: aruljohn.com': {
-    ask: { verse: '/flights/airports/?code=LIS' },
+    ask: { verse: '/flights/?mode=airports&code=LIS' },
     truth: [['LIS is Lisbon', /Lisbon/], ['its ICAO code LPPT', /LPPT/], ['its IATA code', /\bIATA\b/], ['its time zone Europe/Lisbon', /Europe\/Lisbon/]],
     askParts: { 'code lookup': [['IATA codes', /\bIATA\b/], ['ICAO codes', /\bICAO\b/]], 'search by city or country': [['a search for a city, name, country or code', /City, airport name, country or code/i]], 'airport details': [['a position', /Position/], ['a time zone', /Time zone/], ['a size', /large airport|medium airport|small airport/]], 'nearby airports': [['nearby airports', /Nearby airports:/]] },
     pageParts: {}, parts: {},
     facts: [['IATA codes', /\bIATA\b/], ['ICAO codes', /\bICAO\b/], ['search by city', /\bcity\b/i], ['search by country', /\bcountry\b/i], ['the position', /Position/], ['the time zone', /Time zone/], ['the time there now', /\bnow\b/i], ['nearby airports', /Nearby airports/i], ['other airports of the city', /same city/i], ['fly from or to here', /Fly from here/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'travel: clock7.com': {
-    ask: { verse: '/flights/time/?from=JFK&to=LHR&d=' + inDays(30) },
+    ask: { verse: '/flights/?mode=time&from=JFK&to=LHR&d=' + inDays(30) },
     truth: [['JFK to LHR', /JFK → LHR/], ['a flight of about 7 hours', /\b7 h \d{2} min/], ['London 5 hours ahead', /\+5 h 00 min ahead/], ['arrives the next day', /\+1 day/]],
     askParts: { 'flight duration': [['a typical flight time', /Typical|\b\d h \d{2} min/i], ['the distance', /\bkm\b/]], 'local arrival time': [['arrives in local time', /Arrives[\s\S]{0,60}local/i], ['a time at the destination', /\d\d:\d\d local/]], 'time zone difference': [['a time difference', /Time difference/i], ['ahead of the departure city', /ahead of the departure city|behind the departure city/]], 'date line': [['the date line', /date line/i]], layover: [['a stop on the way', /Stop on the way/i], ['the wait at the stop', /Wait at the stop/i]] },
     pageParts: {}, parts: {},
     facts: [['from and to', /From[\s\S]{0,60}To/], ['a departure date', /Depart/], ['a departure time', /Departure time/i], ['flight duration', /Typical flight time|\b\d h \d{2} min/], ['local arrival time', /Arrives/], ['the time difference', /Time difference/i], ['the date line', /date line/i], ['a layover', /Wait at the stop/i], ['the whole journey', /door to door|whole journey/i], ['daylight saving on the date', /UTC[+−]\d/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'travel: airmilescalculator.com': {
-    ask: { verse: '/flights/distance/?from=LHR&to=JFK' },
+    ask: { verse: '/flights/?mode=facts&from=LHR&to=JFK' },
     truth: [['about 5,540 km', /\b5,5\d\d km\b/], ['about 3,440 miles', /\b3,4\d\d miles\b/], ['nautical miles', /\bnm\b/], ['a flight of about 7 hours', /\b7 h \d{2} min/]],
     askParts: { 'distance in miles and km': [['kilometres', /\bkm\b/], ['miles', /\bmiles\b/], ['nautical miles', /\bnm\b/]], 'flight time': [['a typical flight time', /Typical flight time/i]], 'time difference': [['a time difference', /Time difference/i]], 'flown distance': [['the distance actually flown', /Distance actually flown/i]], 'multi leg trips': [['airports in order', /Airports in order/i], ['a total', /Total/]] },
     pageParts: {}, parts: {},
     facts: [['distance in km', /\bkm\b/], ['distance in miles', /\bmiles\b/], ['nautical miles', /\bnm\b/], ['flight time', /Typical flight time/i], ['time difference', /Time difference/i], ['the direction', /Direction/], ['the distance actually flown', /actually flown/i], ['a map', /Chain of airports|map/i], ['several legs and a total', /Total/], ['nearby airports', /Nearby airports/i], ['CO2', /CO2/], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'travel: gcmap.com': {
-    ask: { verse: '/flights/map/?route=JFK-LHR-SIN' },
+    ask: { verse: '/flights/?mode=route&route=JFK-LHR-SIN' },
     truth: [['the leg JFK to LHR', /JFK → LHR/], ['the leg LHR to SIN', /LHR → SIN/], ['about 10,880 km for London to Singapore', /\b10,8\d\d km\b/], ['a total', /Total/]],
     askParts: { 'route map': [['a map of the route', /Chain of airports/i], ['great-circle paths', /great-circle paths/i]], 'chained routes': [['airports in order', /Airports in order/i], ['a dash between codes', /JFK-LHR-SIN/]], 'great circle distance': [['kilometres', /\bkm\b/], ['miles', /\bmiles\b/], ['a total', /Total/]], 'airport info': [['airport names', /Kennedy/], ['their countries', /United States/]] },
     pageParts: {}, parts: {},
     facts: [['chained airports', /Airports in order/i], ['each leg', /Leg/], ['a total', /Total/], ['kilometres', /\bkm\b/], ['miles', /\bmiles\b/], ['flight time', /\bTime\b/], ['a map', /great-circle paths/i], ['codes by dash or space', /dash or a space/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'travel: co2.myclimate.org': {
-    ask: { verse: '/flights/co2/?from=LHR&to=JFK' },
+    ask: { verse: '/flights/?mode=co2?from=LHR&to=JFK' },
     truth: [['about 530 kg of CO2 for one economy seat', /\b5\d\d kg CO2/], ['the method written out', /How this is worked out/i], ['0.09 kg for each kilometre', /0\.09 kg/], ['the high-altitude factor 1.9', /×1[.,]9/]],
     askParts: { 'CO2 per passenger': [['kg of CO2', /kg CO2/], ['a range', /\bRange\b/], ['per passenger-kilometre', /Per passenger-kilometre/i]], 'cabin class': [['a cabin choice', /\bCabin\b/], ['business', /\bBusiness\b/], ['first', /\bFirst\b/]], 'return trip': [['return or one way', /Return[\s\S]{0,60}One way|One way[\s\S]{0,60}Return/i]], 'method named': [['the method', /How this is worked out/i], ['an average, not an airline\'s figure', /average/i]] },
     pageParts: {}, parts: {},
     facts: [['kg of CO2', /kg CO2/], ['a range', /\bRange\b/], ['high-altitude effects', /high-altitude/i], ['cabin class', /\bCabin\b/], ['passengers', /\bAdults\b|passengers?/i], ['return trip', /\bReturn\b/], ['the method', /How this is worked out/i], ['per passenger-kilometre', /passenger-kilometre/i], ['nothing sent', /nothing is sent|on this device/i], ['works offline', /\boffline\b/i], ['no account', /no account/i]],
   },
   'travel: flightconnections.com': {
-    ask: { verse: '/flights/routes/?from=LIS' },
+    ask: { verse: '/flights/?mode=routes&from=LIS' },
     truth: [['from Lisbon', /(?:Airports a flight from|nonstop route from) Lisbon/], ['Madrid within reach', /\bMAD\b/], ['Porto within reach', /\bOPO\b/], ['a flight time for each', /\b\d h \d{2} min|\b\d{2} min/]],
     askParts: { 'where can I go': [['where can I go', /Where can I go/i], ['airports that could be reached', /could reach/i]], 'filter by distance': [['a flight time limit', /Flight time up to/i], ['a country filter', /Any country/i], ['larger airports only', /Larger airports only/i]], 'airport finder': [['the origin airport', /\bFrom\b/], ['airport codes in the list', /\b[A-Z]{3}\b/]], 'provider links': [['each opens the route', /\bnearest first\b/i], ['no timetable said', /not a timetable|may be out of date/i]] },
     pageParts: {}, parts: {},
@@ -1198,56 +1198,56 @@ const LANE_PROBES = Object.freeze({
   // question each is asked is the job that board is known for. Truth is what a right answer shows whatever the day's listings are (counts, the filter applied, the source
   // credited and Apply on the original posting); judged on Verse alone.
   'jobs: jobicy.com': {
-    ask: { verse: '/jobs/regions/?region=usa' },
+    ask: { verse: '/jobs/?panel=regions?region=usa' },
     truth: [['jobs counted for the region', /\b\d[\d,.]* jobs? · USA/], ['region chips with counts', /USA \d+/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'jobs by region': [['regions', /Where you may work from/], ['anywhere', /Anywhere \d+/]], 'industry filter': [['a category filter', /Category/]], 'job level': [['a level filter', /\bLevel\b/]], 'salary when given': [['a salary filter', /Minimum salary/]], 'RSS feed': [['a feed', /RSS feed of this search/]] },
     pageParts: {}, parts: {},
     facts: [['region', /Work from/], ['industry', /Category/], ['level', /\bLevel\b/], ['job type', /Job type/], ['salary', /salary/i], ['keyword', /Keyword/], ['RSS', /RSS/], ['date posted', /Posted/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'jobs: workingnomads.com': {
-    ask: { verse: '/jobs/alerts/?q=developer' },
+    ask: { verse: '/jobs/?panel=alerts?q=developer' },
     truth: [['jobs counted for the search', /\b\d[\d,.]* jobs? · “developer”/], ['a way to save it as an alert', /Save this search as an alert/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'saved searches': [['save a search', /Save this search as an alert/]], 'new since last visit': [['new since your last visit', /new since your last visit|each time you come back/i]], 'no email needed': [['no email', /No email/i]], categories: [['categories', /Category/]], 'RSS feed': [['a feed', /RSS/]] },
     pageParts: {}, parts: {},
     facts: [['alerts', /Alerts/], ['saved searches', /saved search/i], ['new matches marked', /new since/i], ['notifications', /Notify me/i], ['RSS', /RSS/], ['categories', /Category/], ['keyword', /Keyword/], ['no email', /No email/i], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'jobs: arbeitnow.com': {
-    ask: { verse: '/jobs/europe/?region=germany' },
+    ask: { verse: '/jobs/?panel=regions&region=europe?region=germany' },
     truth: [['jobs counted for Germany', /\b\d[\d,.]* jobs? · Germany/], ['Germany counted', /Germany \d+/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'jobs open in Germany': [['Germany', /Germany \d+/]], 'visa sponsorship filter': [['a visa filter', /Visa sponsorship mentioned/]], 'remote filter': [['where you may work from', /Work from/]], 'German and English': [['German said', /English and German|German/]] },
     pageParts: {}, parts: {},
     facts: [['Germany', /Germany/], ['Europe', /Europe/], ['visa sponsorship', /visa sponsorship/i], ['place', /\bPlace\b/], ['keyword', /Keyword/], ['salary', /salary/i], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['German', /German/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'jobs: himalayas.app': {
-    ask: { verse: '/jobs/salary/?min=100000' },
+    ask: { verse: '/jobs/?panel=search&salary=1?min=100000' },
     truth: [['jobs counted over the minimum', /\b\d[\d,.]* jobs? · ≥ 100,000/], ['highest paid first', /Highest salary/], ['a salary on each job', /(?:USD|EUR|GBP|CAD|AUD) [\d,]+/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'salary filter': [['a minimum salary', /Minimum salary a year/]], 'highest paid first': [['sort by salary', /Highest salary/]], seniority: [['a level filter', /\bLevel\b/]], 'time zones': [['time zones', /Time zones/]] },
     pageParts: {}, parts: {},
     facts: [['minimum salary', /Minimum salary/], ['sort by pay', /Highest salary/], ['pay as a year', /a year/], ['level', /\bLevel\b/], ['job type', /Job type/], ['time zones', /Time zones/], ['keyword', /Keyword/], ['saved jobs', /Saved jobs/], ['tracker', /Applications/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'jobs: remotive.com': {
-    ask: { verse: '/jobs/categories/' },
+    ask: { verse: '/jobs/?panel=categories' },
     truth: [['categories listed with counts', /Categories[\s\S]{0,200}\w \d+/], ['jobs counted', /\b\d[\d,.]* jobs? · /], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'categories with counts': [['categories', /Categories/]], 'keyword search': [['keyword', /Keyword/]], 'job type': [['job type', /Job type/]], 'source credited': [['Remotive named', /Remotive/]] },
     pageParts: {}, parts: {},
     facts: [['categories', /Categories/], ['keyword', /Keyword/], ['place', /\bPlace\b/], ['job type', /Job type/], ['salary', /salary/i], ['date posted', /Posted/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['source credited', /Remotive/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'jobs: remoteok.com': {
-    ask: { verse: '/jobs/tags/?sort=salary' },
+    ask: { verse: '/jobs/?panel=tags?sort=salary' },
     truth: [['tags listed with counts', /Tags[\s\S]{0,200}\w \d+/], ['highest paid first', /Highest salary/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'tag cloud': [['tags', /Tags/]], salary: [['salaries', /salary/i]], 'sort by pay or date': [['sort', /\bSort\b/], ['newest', /Newest/]], 'RSS feed': [['a feed', /RSS/]] },
     pageParts: {}, parts: {},
     facts: [['tags', /Tags/], ['salary', /salary/i], ['sort', /\bSort\b/], ['region', /Work from/], ['keyword', /Keyword/], ['RSS', /RSS/], ['share link', /Share link/i], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'jobs: weworkremotely.com': {
-    ask: { verse: '/jobs/companies/' },
+    ask: { verse: '/jobs/?panel=companies' },
     truth: [['companies listed with their jobs counted', /Companies hiring[\s\S]{0,300}\w \d+/], ['most jobs first', /Most jobs first/], ['Apply opens the original posting', /Apply on (?:Remotive|Jobicy|Himalayas)/], ['each listing names its source', /Listing from (?:Remotive|Jobicy|Himalayas)/]],
     askParts: { 'companies hiring': [['companies', /Companies hiring/]], 'jobs of one company': [['a company filter', /A to Z/]], categories: [['categories', /Category/]], 'saved jobs': [['saved jobs', /Saved jobs/]] },
     pageParts: {}, parts: {},
     facts: [['companies', /Companies hiring/], ['A to Z', /A to Z/], ['categories', /Category/], ['keyword', /Keyword/], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['tracker', /Applications/], ['RSS', /RSS/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'sports: thesportsdb.com': {
-    ask: { verse: '/scores/sports/?q=arsenal' },
+    ask: { verse: '/scores/?mode=sports&q=arsenal' },
     truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
     askParts: { 'sport search': [['a search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['venues or events', /\bVenues\b|\bEvents\b/], ['players', /\bPlayers\b/]],
       'born on this day': [['born on this day', /Born on this day/i], ['a year and a name', /(?:1[89]|20)\d\d\s*[\s\S]{2,70} — /]],

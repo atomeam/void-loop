@@ -2,6 +2,7 @@
 <html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
+<script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Colour codes: hex, RGB, HSL, CMYK, shades and schemes · Verse</title>
 <meta name="description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
@@ -13,9 +14,9 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  /* a-to-mind.com/color/ (owner, 2026-10-24: back to the easy sites), against hexcolor16.com (Tranco 63,673: a hex-code page behind AdSense, two
+  /* a-to-mind.com/color/ (owner, 2026-10-24: back to the easy sites), against a hex-code page (a hex-code page behind AdSense, two
      analytics, a tag manager, web fonts and a beacon) and color-hex.com, both floors of the tower: one file and one small module, no third party.
-     Then "ok beat it": every model either site lists and the CSS ones, hexcolor16.com's ramps, six harmonies, VGA palette and random colour */
+     Then "ok beat it": every model either site lists and the CSS ones, that kind of page's ramps, six harmonies, VGA palette and random colour */
   :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c42b41; }
   :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
@@ -68,6 +69,7 @@
 <link rel="modulepreload" href="/lib/colour.js">
 <link rel="modulepreload" href="/lib/palettes.js">
 <!-- /modulepreload -->
+
 </head>
 <body>
 <!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
@@ -183,7 +185,7 @@
   $('json').addEventListener('click', () => now && save(now.hex.slice(1).toLowerCase() + '.json', 'application/json', JSON.stringify(now, null, 2)));
   $('csv').addEventListener('click', () => { if (!now) return; const d = now, rows = [['model', 'value'], ['hex', d.hex], ['rgb', d.rgb.r + ' ' + d.rgb.g + ' ' + d.rgb.b], ['hsl', d.hsl.h + ' ' + d.hsl.s + '% ' + d.hsl.l + '%'], ['hsv', d.hsv.h + ' ' + d.hsv.s + '% ' + d.hsv.v + '%'], ['cmyk', d.cmyk.c + ' ' + d.cmyk.m + ' ' + d.cmyk.y + ' ' + d.cmyk.k], ['lab', d.lab.l + ' ' + d.lab.a + ' ' + d.lab.b], ['name', d.name.name], ['contrast on white', d.contrast.white], ['contrast on black', d.contrast.black], ...['tints', 'shades', 'tones'].map((k) => [k, d[k].join(' ')]), ...Object.entries(d.schemes).map(([k, v]) => [k, v.join(' ')])]; save(d.hex.slice(1).toLowerCase() + '.csv', 'text/csv', rows.map((r) => r.join(',')).join('\n') + '\n'); });
   $('link').addEventListener('click', () => copy(location.href, $('link')));
-  // the 16 colours of the VGA (and CGA, and early web) palette, in their standard order, as hexcolor16.com lists them
+  // the 16 colours of the VGA (and CGA, and early web) palette, in their standard order, in the conventional VGA order
   const VGA = ['#000000', '#000080', '#008000', '#008080', '#800000', '#800080', '#808000', '#c0c0c0', '#808080', '#0000ff', '#00ff00', '#00ffff', '#ff0000', '#ff00ff', '#ffff00', '#ffffff'];
   fill('vga', VGA); drawWork(); drawMine();
   $('random').addEventListener('click', () => { const n = crypto.getRandomValues(new Uint32Array(1))[0] & 0xffffff; set('#' + n.toString(16).padStart(6, '0'), true); });

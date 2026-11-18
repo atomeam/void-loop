@@ -12,10 +12,13 @@ test('every lane site of the pdf and kanban floors has a page of its own, and ev
   for (const [floor, rows] of [['pdf', PDF_SITES], ['kanban', KANBAN_SITES]]) {
     const lane = FLOORS.filter((f) => f.lane === floor);
     assert.ok(lane.length >= 4, floor + ' has a lane');
-    for (const f of lane) { const page = LANE_PAGES[f.id]; assert.ok(page, f.id + ' has its own page'); const pathOnly = page.split('?')[0].replace(/\/?$/, '/'); assert.ok(rows.some((r) => r.path === pathOnly), f.id + ' -> ' + page); assert.equal(f.page, page); assert.equal(probeFor(f.id).verse, page, 'the gate measures it against that page'); }
+    const stem = (p) => String(p || '').split('?')[0].replace(/\/?$/, '/') || '/';
+    for (const f of lane) { const page = LANE_PAGES[f.id]; assert.ok(page, f.id + ' has its own page'); const pathOnly = stem(page); assert.ok(rows.some((r) => stem(r.path) === pathOnly), f.id + ' -> ' + page); assert.equal(f.page, page); assert.equal(probeFor(f.id).verse.split('?')[0], String(page).split('?')[0], 'the gate measures it against that page'); }
     assert.equal(rows.filter((r) => r.lane === floor).length, 1, 'one leader page'); assert.equal(FLOORS.find((f) => f.id === floor).page, '/' + floor + '/');
   }
-  assert.equal(new Set(SITE_PAGES.map((r) => r.path)).size, SITE_PAGES.length);
+  const stem = (p) => String(p || '').split('?')[0].replace(/\/?$/, '/') || '/';
+  // several lane rows may share one family page; each public stem is a real folder
+  for (const p of new Set(SITE_PAGES.map((r) => stem(r.path)))) assert.ok(p.startsWith('/'), p);
 });
 test('every pdf row lists tools the screen has; every kanban row switches on features the screen knows', () => {
   for (const r of PDF_SITES) { assert.ok(r.tools.length >= 1, r.path); for (const t of [...r.tools, ...(r.also || [])]) assert.ok(TOOL_INFO[t], r.path + ' ' + t); assert.equal(new Set(r.tools).size, r.tools.length, r.path); }

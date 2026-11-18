@@ -26,4 +26,5 @@ export function photoAsk(text) {
   return null;
 }
 /** the address that opens the tool for an ask: '/photos/', '/photos/?tab=crop', '/photos/exif/'. Pure. */
-export const photoHref = (a) => '/photos/' + (a.slug ? a.slug + '/' : '') + (a.tab ? '?tab=' + a.tab : '');
+const SLUG_TAB = { squoosh: 'out', tinypng: 'out', iloveimg: 'out', photopea: 'draw', exif: 'info', exifeditor: 'info' };
+export const photoHref = (a) => { const tab = (a && a.tab) || (a && SLUG_TAB[a.slug]) || ''; return '/photos/' + (tab ? '?tab=' + tab : ''); };

@@ -5,7 +5,7 @@
  * providers. Nothing is made here. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { flightAskOf } from '../lib/flight-sites.js';
-const TOOLS = [['/flights/', 'Flights', 'search on five providers, route facts, a price log, itineraries'], ['/flights/time/', 'Flight time', 'duration, local arrival, time difference'], ['/flights/distance/', 'Distance', 'km, miles, nautical miles'], ['/flights/airports/', 'Airport codes', 'IATA and ICAO, nearby airports'], ['/flights/trip/', 'Itinerary and layovers', 'from a pasted confirmation'], ['/flights/co2/', 'CO2', 'per seat, with the method'], ['/flights/map/', 'Great circle map', 'chained airports'], ['/flights/routes/', 'Where can I fly', 'airports within a flight time']];
+const TOOLS = [['/flights/', 'Flights', 'search on five providers, route facts, a price log, itineraries'], ['/flights/?mode=time', 'Flight time', 'duration, local arrival, time difference'], ['/flights/?mode=facts', 'Distance', 'km, miles, nautical miles'], ['/flights/?mode=airports', 'Airport codes', 'IATA and ICAO, nearby airports'], ['/flights/?mode=trip', 'Itinerary and layovers', 'from a pasted confirmation'], ['/flights/?mode=co2', 'CO2', 'per seat, with the method'], ['/flights/?mode=route', 'Great circle map', 'chained airports'], ['/flights/?mode=routes', 'Where can I fly', 'airports within a flight time']];
 function run(text, api) {
   const { showPage, esc } = api, to = flightAskOf(String(text || '').trim().replace(/[?!.]+$/, '')) || '/flights/';
   showPage((el) => {
@@ -21,6 +21,6 @@ export default {
   name: 'flights',
   examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes', 'layover calculator', 'where can i fly from berlin', 'flight status nyc to lon'],
   nearMisses: ['fly to tokyo', 'my flight is delayed', 'how do planes fly', 'distance from london to new york'],
-  match(lower) { const to = flightAskOf(String(lower || '').trim()); return (!!to && !to.startsWith('/flights/distance/?')) || /flight status/.test(lower) || /.+ to .+ flight/.test(lower); }, // a distance between two places stays with the distance skill; "flight distance" alone opens the page
+  match(lower) { const t = String(lower || '').trim(); if (/^distance from\b/.test(t) && !/\bflight\b/.test(t)) return false; const to = flightAskOf(t); return (!!to && !to.startsWith('/flights/distance/?')) || /flight status/.test(t) || /.+ to .+ flight/.test(t); }, // a distance between two places stays with the distance skill; "flight distance" alone opens the page
   run,
 };

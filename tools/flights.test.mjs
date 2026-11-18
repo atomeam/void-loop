@@ -131,15 +131,15 @@ test('the table: one page for the leader and one for each site of the lane, each
   for (const f of lane) { const page = LANE_PAGES[f.id]; assert.ok(page, f.id); assert.ok(FLIGHT_SITES.some((r) => r.path === page && r.lane === f.id), f.id + ' has a row'); assert.equal(f.page, page); assert.equal(probeFor(f.id).verse, page); assert.ok(probeFor(f.id).truth.length >= 3, f.id + ' has truths'); const parts = probeFor(f.id).askParts; for (const a of f.extra) assert.ok(parts[a], f.id + ' asks about ' + a); }
   assert.equal(FLIGHT_SITES.filter((r) => r.lane === 'travel').length, 1); assert.equal(FLOORS.find((f) => f.id === 'travel').page, '/flights/', 'the floor reads its page from the probe'); assert.equal(probeFor('travel').verse, '/flights/');
   for (const f of FLOORS.filter((x) => x.id === 'travel')) for (const a of f.extra) assert.ok(probeFor('travel').askParts[a], a);
-  for (const r of FLIGHT_SITES) { assert.ok(r.panels.length && r.de && r.de.h1 && r.de.intro, r.path); assert.doesNotMatch(r.intro + r.does + r.asks.join(' ') + r.h1, /\.com\b|\.org\b|\.net\b|\.io\b|tripwaffle|clock7|myclimate|gcmap|flightconnections|aruljohn|airmiles/i, r.path + ' names no other site'); assert.ok(fs.existsSync(new URL('../void-live-deploy' + r.path + 'index.html', import.meta.url)), r.path); }
+  for (const r of FLIGHT_SITES) { assert.ok(r.panels.length && r.de && r.de.h1 && r.de.intro, r.path); assert.doesNotMatch(r.intro + r.does + r.asks.join(' ') + r.h1, /\.com\b|\.org\b|\.net\b|\.io\b|tripwaffle|clock7|myclimate|gcmap|flightconnections|aruljohn|airmiles/i, r.path + ' names no other site'); assert.ok(fs.existsSync(new URL('../void-live-deploy' + String(r.path).replace(/[?#].*$/, '').replace(/\/?$/, '/') + 'index.html', import.meta.url)), r.path); }
 });
 test('the asks that reach the pages', () => {
   const o = (q) => flightAskOf(q);
   assert.equal(o('flights to lisbon'), '/flights/?toq=lisbon'); assert.equal(o('cheap flights'), '/flights/'); assert.equal(o('flights from london to paris'), '/flights/?fromq=london&toq=paris'); assert.equal(o('flights to lisbon from new york'), '/flights/?fromq=new%20york&toq=lisbon');
-  assert.equal(o('flight time london new york'), '/flights/time/?fromq=london&toq=new%20york'); assert.equal(o('how long is the flight from paris to tokyo'), '/flights/time/?fromq=paris&toq=tokyo'); assert.equal(o('distance from london to new york'), '/flights/distance/?fromq=london&toq=new%20york');
-  assert.equal(o('airport codes'), '/flights/airports/'); assert.equal(o('layover calculator'), '/flights/trip/'); assert.equal(o('flight co2 calculator'), '/flights/co2/'); assert.equal(o('great circle map'), '/flights/map/');
-  assert.equal(o('flight distance'), '/flights/distance/'); assert.equal(o('where can i fly'), '/flights/routes/'); assert.equal(o('where can i fly from berlin'), '/flights/routes/?fromq=berlin');
-  assert.equal(o('destinations from lisbon'), '/flights/routes/?fromq=lisbon'); assert.equal(o('airports within 3 hours of london'), '/flights/routes/?fromq=london'); assert.equal(o('nonstop destinations'), '/flights/routes/');
+  assert.equal(o('flight time london new york'), '/flights/?mode=time&fromq=london&toq=new%20york'); assert.equal(o('how long is the flight from paris to tokyo'), '/flights/?mode=time&fromq=paris&toq=tokyo'); assert.equal(o('distance from london to new york'), '/flights/?mode=facts&fromq=london&toq=new%20york');
+  assert.equal(o('airport codes'), '/flights/?mode=airports'); assert.equal(o('layover calculator'), '/flights/?mode=trip'); assert.equal(o('flight co2 calculator'), '/flights/?mode=co2'); assert.equal(o('great circle map'), '/flights/?mode=route');
+  assert.equal(o('flight distance'), '/flights/?mode=facts'); assert.equal(o('where can i fly'), '/flights/?mode=routes'); assert.equal(o('where can i fly from berlin'), '/flights/?mode=routes&fromq=berlin');
+  assert.equal(o('destinations from lisbon'), '/flights/?mode=routes&fromq=lisbon'); assert.equal(o('airports within 3 hours of london'), '/flights/?mode=routes&fromq=london'); assert.equal(o('nonstop destinations'), '/flights/?mode=routes');
   for (const no of ['fly to tokyo', 'flight', 'my flight is delayed', 'how do planes fly', 'merge pdf', 'distance to the moon', 'time in tokyo', 'destinations', 'where can i fly a drone']) assert.equal(o(no), '', no);
   for (const s of FLIGHT_SITES) assert.notEqual(o(s.card), '', 'the stage ask of ' + s.path + ' is a flight ask: ' + s.card);
 });
@@ -170,7 +170,7 @@ test('the stage card: takes flight asks, leaves distance asks to the distance sk
   let html = ''; const el = { dataset: {}, set innerHTML(v) { html = v; } }; assert.equal(skill.run('flights to lisbon', { showPage: (f) => f(el), esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;') }), 'flights');
   assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/?toq=lisbon', 'the full page link keeps the places too');
   const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js'), api = { showPage: (f) => f(el), esc: (s) => String(s) };
-  skill.run('where can i fly from berlin', api); assert.deepEqual(pageOfCard('flights', el.dataset.page)[0], '/flights/routes/?fromq=berlin', 'the full page opens on Berlin');
+  skill.run('where can i fly from berlin', api); assert.deepEqual(pageOfCard('flights', el.dataset.page)[0], '/flights/?mode=routes&fromq=berlin', 'the full page opens on Berlin');
   skill.run('flights to sao paulo', api); assert.equal(el.dataset.page, '/flights/?toq=sao%20paulo');
   skill.run("flights to xi'an", api); assert.equal(el.dataset.page, '/flights/', 'a query card-frame would refuse drops to the plain page');
   skill.run('cheap flights', api); assert.equal(el.dataset.page, '/flights/');
