@@ -255,3 +255,10 @@ Picked living figures (least recently advanced, 2026-11-04 14:15; its next quest
 - Folded: nothing pending; #2717 and #2726 were merged and their branches are gone.
 - Result: drift over 1,000 slips bounded on paper; fatigue and wear small, friction (0.2 to 0.5 published) decides; ring re-centred at 0.78 N per lobe; new open question 10.
 - Board: clutch sizer card row updated with the friction band.
+
+## 2026-11-18 14:05 ET
+
+- Track: life extension, open question 8 (least recently advanced).
+- Folded: nothing pending; no open forethinkers branches or think-tank PRs.
+- Result: TranslAGE public randomized arms tested; same sign as COSMOS in the B12 + folate placebo trial, flat in DIRECT-PLUS, pooled −0.19 y/y (−0.78 to 0.40); settling trial sized near 1,100 people; new open question 9 (DO-HEALTH).
+- Board: clock response card row gained a "does it hold in open data" part.
