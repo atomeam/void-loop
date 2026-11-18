@@ -38,6 +38,8 @@
 /wheel/ /random/?mode=wheel 301
 /random-user /random/?mode=people 301
 /random-user/ /random/?mode=people 301
+/color/colour-management /color/ 301
+/color/colour-management/ /color/ 301
 /color/gradient /color/?mode=gradient 301
 /color/gradient/ /color/?mode=gradient 301
 /gradient /color/?mode=gradient 301

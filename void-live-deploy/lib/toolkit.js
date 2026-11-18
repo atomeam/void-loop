@@ -16,6 +16,7 @@ import { localAsk, linkOf as localLink } from './local-ask.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
+  ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
   '/photos/': 'Photo tools',
   '/color/': 'Colour codes', '/random/': 'Random number',
   '/ledger/': 'Repo activity ledger',
@@ -29,8 +30,7 @@ export const TOOLS = Object.freeze({
   '/arcade/': 'Verse Arcade',
   // the research journal (the Versus floor for ajsonline.org, 2026-11-07): the papers, and the length of a paper an author is writing
   '/journal/': 'Research journal',
-  // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
-  ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
+  // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js). SITE_PAGES is also spread first so a self-site that shares a family path cannot overwrite the hand label.
 });
 // pages /tools/ lists that TOOLS does not (no "Use with" row reaches them yet): the Tools page and its stage card list them both, from here
 export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/assimilated/', 'Every site Versus assimilated'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
@@ -130,7 +130,7 @@ const HAND_RELATED = Object.freeze({
   '/tools/': ['/color/', '/random/', '/calculator/'],
 });
 // a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
-export const RELATED = Object.freeze({ ...HAND_RELATED, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_RELATED[r.base]).map((r) => [r.path, [r.base, ...HAND_RELATED[r.base]].slice(0, 4)])) });
+export const RELATED = Object.freeze({ ...HAND_RELATED, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_RELATED[r.base] && r.path.replace(/\/?$/, '') !== r.base.replace(/\/?$/, '')).map((r) => [r.path, [r.base, ...HAND_RELATED[r.base]].slice(0, 4)])) });
 // the ask that opens each page's own card on the stage, the other way round from the card's "Open the full page" link (owner, 2026-10-25:
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
 const HAND_CARD_ASK = Object.freeze({
@@ -139,13 +139,13 @@ const HAND_CARD_ASK = Object.freeze({
   '/base64/': 'convert 255 to binary', '/password/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/journal/': 'latest earth science papers', '/starboard/': 'open starboard', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', '/arcade/': 'arcade games', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/journal/': 'latest earth science papers', '/starboard/': 'open starboard', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', '/arcade/': 'arcade games', ...Object.fromEntries(SITE_PAGES.filter((p) => p.card).map((p) => [p.path, p.card])),
   '/lab/level/': 'spirit level', '/lab/checksum/': 'sha256 checksum', '/lab/pattern/': 'seamless pattern maker', '/lab/photo-palette/': 'color palette from a photo', '/lab/dictation/': 'speech to text', '/lab/mind-map/': 'mind map maker',
   // the research journal (the Versus floor for ajsonline.org, 2026-11-07): the open-tool card that links the page which reads the papers
   '/journal/': 'open research journal',
 });
 // a self-built page opens its family's card on the stage
-export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
+export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base] && r.path.replace(/\/?$/, '') !== r.base.replace(/\/?$/, '')).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
 /** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */

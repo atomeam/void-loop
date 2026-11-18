@@ -7,7 +7,7 @@ import { pageForJob } from './tower-self.mjs';
 // leftovers may only shrink: delete a path here in the same change that removes its page
 const NUMBERED = ['/convert/unit-converter-2/'];
 const SAME_HEADLINE = [
-  ['/color/colour-management/', '/color/colour-picker-tool/'],
+  ['/color/', '/color/colour-picker-tool/'],
   ['/convert/unit-converter-2/', '/convert/unit-converter/'],
 ];
 

@@ -47,7 +47,8 @@ export const FAMILIES = Object.freeze([
   ] },
   { id: "color", page: "/color/", members: [
     { path: "/color/", to: "/color/" },
-    { path: "/color/gradient/", to: "/color/?mode=gradient" }
+    { path: "/color/gradient/", to: "/color/?mode=gradient" },
+    { path: "/color/colour-management/", to: "/color/" }
   ] },
 ]);
 
