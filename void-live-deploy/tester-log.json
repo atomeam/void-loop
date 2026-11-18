@@ -11,6 +11,13 @@
  },
  "runs": [
   {
+   "at": "2026-11-18T18:20:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
    "at": "2026-11-18T17:49:21Z",
    "passed": 0,
    "of": 0,
@@ -224,28 +231,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T11:18:24Z",
-   "passed": 129,
-   "of": 132,
-   "kind": "grow",
-   "ms": 594,
-   "note": "new ground passed, kept as a regression case: \"time saved for the invoice automation\" (skill:time-saved)",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
