@@ -13,7 +13,7 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  /* a-to-mind.com/convert/ (the tower's unitconverters.net floor): one file and one small module, no third party */
+  /* a-to-mind.com/convert/ (the tower's unit-converter floor): one file and one small module, no third party */
   :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c0392b; --tint: #6d4aff14; }
   :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff7a6e; --tint: #a58bff1c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
@@ -97,7 +97,7 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
   else if (!restore({ kind: q.get('k'), from: q.get('from'), text: q.get('v') || '1', to: q.get('to') })) { try { restore(JSON.parse(localStorage.getItem(KEY) || 'null')); } catch (_) {} }
   if (q.get('sig') && +q.get('sig') >= 3 && +q.get('sig') <= 15) sig = +q.get('sig');
 
-  // the kinds, grouped as unitconverters.net groups them (common, then the engineering groups), as a select and as a line of words
+  // the kinds, grouped the usual way (common, then the engineering groups), as a select and as a line of words
   const kinds = kindsInOrder();
   $('kind').replaceChildren(...Object.entries(GROUPS).map(([g, label]) => { const og = document.createElement('optgroup'); og.label = label;
     og.append(...kinds.filter(([, k]) => k.group === g).map(([id, k]) => { const o = document.createElement('option'); o.value = id; o.textContent = k.label; return o; })); return og; }));
@@ -131,7 +131,7 @@ try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null
     $('answer').textContent = st.to ? show(v) + ' ' + st.from.sym + ' = ' + show(convert(v, st.from, st.to)) + ' ' + st.to.sym : show(v) + ' ' + st.from.sym + ' in every ' + KINDS[st.kind].label.toLowerCase() + ' unit';
     $('formula').textContent = st.to ? 'From ' + st.from.sym + ' to ' + st.to.sym + ', the formula: ' + formulaOf(st.from, st.to, sig) : 'Pick a second unit (type "' + st.text.trim() + ' ' + st.from.sym + ' to …") for the formula from one to the other.';
     $('swap').disabled = !st.to;
-    // the pair's table of common values (unitconverters.net's page per pair), below everything else so drawing it moves nothing above
+    // the pair's table of common values (the usual page per pair), below everything else so drawing it moves nothing above
     $('pair').hidden = !st.to;
     if (st.to) { $('pairh').textContent = st.from.sym + ' to ' + st.to.sym + ' table'; $('pairfrom').textContent = st.from.name.charAt(0).toUpperCase() + st.from.name.slice(1) + ' (' + st.from.sym + ')'; $('pairto').textContent = st.to.name.charAt(0).toUpperCase() + st.to.name.slice(1) + ' (' + st.to.sym + ')';
       $('pairrows').replaceChildren(...['0.01', '0.1', '1', '2', '3', '5', '10', '20', '25', '50', '100', '250', '500', '1000', '10000'].map((n) => { const tr = document.createElement('tr'), a = document.createElement('td'), b = document.createElement('td'), r = convert(parseNum(n), st.from, st.to);

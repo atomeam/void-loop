@@ -50,6 +50,11 @@ export const FAMILIES = Object.freeze([
     { path: "/color/gradient/", to: "/color/?mode=gradient" },
     { path: "/color/colour-management/", to: "/color/" }
   ] },
+  { id: "convert", page: "/convert/", members: [
+    { path: "/convert/", to: "/convert/" },
+    { path: "/convert/unit-converter/", to: "/convert/" },
+    { path: "/convert/unit-converter-2/", to: "/convert/" }
+  ] },
 ]);
 
 const byPath = new Map();

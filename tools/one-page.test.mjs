@@ -5,10 +5,10 @@ import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { pageForJob } from './tower-self.mjs';
 
 // leftovers may only shrink: delete a path here in the same change that removes its page
-const NUMBERED = ['/convert/unit-converter-2/'];
+const NUMBERED = [];
 const SAME_HEADLINE = [
   ['/color/', '/color/colour-picker-tool/'],
-  ['/convert/unit-converter-2/', '/convert/unit-converter/'],
+  ['/convert/', '/convert/'],
 ];
 
 test('a numbered second page is a leftover, and the list only shrinks', () => {
