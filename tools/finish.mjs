@@ -131,7 +131,7 @@ export function steps(a) {
     ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
     // a new skill file is registered before it is committed (Verse's ask: the skills/ manifest registers every new skill; the fast checks then run the router test on it)
     // the book's pages and the families they come from are generated: written here so a new skill is in the book's index without a manual step (owner, 2026-10-17: the book shows every update immediately)
-    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || run(process.execPath, [resolve(root, 'tools', 'families.mjs')]) || run(process.execPath, [resolve(root, 'tools', 'guide.mjs')]) || git('add', '-A') || (spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: root }).status === 0 ? (console.log('  nothing new to commit: already committed'), 0) : git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : []))))], // a tree committed by hand is not a failure (2026-10-23)
+    ['commit', () => commitStep(a)], // a tree committed by hand is not a failure (2026-10-23)
     ['bring main in', node('merge-main.mjs')],
     ['fast checks', node('checks.mjs', ...(a.full ? [] : ['--changed']))], // only what covers the changed files (tools/checks-changed.mjs); --full runs all 425
     ['push', node('push.mjs')],
@@ -141,6 +141,19 @@ export function steps(a) {
 
 function run(cmd, args, env) { return spawnSync(cmd, args, { cwd: root, stdio: 'inherit', env: { ...process.env, ...env } }).status ?? 1; }
 function git(...a) { return run('git', a); }
+
+/** step 4: register any new skill, regenerate the family list and the book, then commit everything. Every generator runs and
+ *  writes its file even when it reports a problem (a skill on no family), so guide.json never lags the index the browser check
+ *  reads; the fast checks (step 6) are what stop the run on that gap. */
+function commitStep(a) {
+  const gen = (script, ...args) => run(process.execPath, [resolve(root, 'tools', script), ...args]);
+  gen('skills-index.mjs', '--adopt'); // registers a new skill file at the end of the routing order, then writes the index
+  gen('families.mjs');
+  gen('guide.mjs');
+  if (git('add', '-A')) return 1;
+  if (spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: root }).status === 0) { console.log('  nothing new to commit: already committed'); return 0; }
+  return git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : []));
+}
 const out = (cmd, args) => { const r = spawnSync(cmd, args, { cwd: root, encoding: 'utf8' }); return r.status === 0 ? (r.stdout || '').trim() : null; };
 
 function openPr(a) {

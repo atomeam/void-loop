@@ -1,300 +1,5 @@
 [
  {
-  "at": "2026-11-06T10:32:48Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1803,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T10:58:47Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1141,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 8846 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T11:10:13Z",
-  "passed": 90,
-  "of": 93,
-  "ms": 344,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 1 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "save this recipe: Lemon cake, ingredients: 200 g flour, 3 eggs; steps: mix. bake",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1141,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 8846 ms"
-     ]
-    }
-   ]
-  },
-  "note": "new ground passed, kept as a regression case: \"make a 2d toon dog pls\" (skill:cartoon)"
- },
- {
-  "at": "2026-11-06T11:27:48Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1139,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 10303 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T11:54:34Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 1428,
-   "failed": []
-  },
-  "note": "visitor pass 15/15"
- },
- {
-  "at": "2026-11-06T12:03:25Z",
-  "passed": 89,
-  "of": 94,
-  "ms": 293,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 4 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "weather in boston",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "send it away",
-    "why": "only \"waking up\" appeared, never the answer"
-   },
-   {
-    "ask": "flip this card",
-    "why": "only \"waking up\" appeared, never the answer"
-   }
-  ],
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 1428,
-   "failed": []
-  },
-  "note": "new ground passed, kept as a regression case: \"yo create a toon style bird\" (skill:cartoon)"
- },
- {
-  "at": "2026-11-06T12:15:30Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1671,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 18379 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T13:22:05Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1600,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 9002 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T13:33:35Z",
-  "passed": 91,
-  "of": 94,
-  "ms": 386,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "send it away",
-    "why": "only \"waking up\" appeared, never the answer"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1600,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 9002 ms"
-     ]
-    }
-   ]
-  },
-  "note": "new ground passed, kept as a regression case: \"create a toon style bird pls\" (skill:cartoon)"
- },
- {
-  "at": "2026-11-06T15:11:51Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 2090,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 9982 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T15:38:34Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1593,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 11815 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T15:51:51Z",
-  "passed": 88,
-  "of": 95,
-  "ms": 424,
-  "kind": "file",
-  "key": "films by Kurosawa | load # ms > #",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 4 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "films by Kurosawa",
-    "why": "load 1510 ms > 1200"
-   },
-   {
-    "ask": "fimls by kurosawa",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "film meatdata for ikiru",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "yo what does ephemeral mean",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "map the heavy lifting for client onboarding",
-    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1593,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 11815 ms"
-     ]
-    }
-   ]
-  },
-  "note": "fix: \"films by Kurosawa\" load 1510 ms > 1200"
- },
- {
   "at": "2026-11-06T16:04:05Z",
   "kind": "visitor",
   "visitor": {
@@ -7076,5 +6781,232 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"token stand\" (skill:token-stand)"
+ },
+ {
+  "at": "2026-11-17T23:08:30Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 871,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-17T23:17:03Z",
+  "passed": 135,
+  "of": 135,
+  "ms": 541,
+  "kind": "grow",
+  "failed": [],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 871,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"is this system handoff ready\" (skill:handoff-ready)"
+ },
+ {
+  "at": "2026-11-18T02:47:27Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1214,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T02:55:48Z",
+  "passed": 135,
+  "of": 135,
+  "ms": 438,
+  "kind": "grow",
+  "failed": [],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1214,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"system design for client onboarding\" (skill:system-design)"
+ },
+ {
+  "at": "2026-11-18T04:42:27Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 720,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T04:51:14Z",
+  "passed": 132,
+  "of": 136,
+  "ms": 447,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "geenrate a toon style dog",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 720,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"why is a half moon called a quarter moon\" (skill:moon)"
+ },
+ {
+  "at": "2026-11-18T05:26:39Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 452,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T05:37:01Z",
+  "passed": 134,
+  "of": 137,
+  "ms": 504,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 452,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"adaptive flow canvas\" (skill:flow-canvas)"
+ },
+ {
+  "at": "2026-11-18T14:32:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1248,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T14:42:37Z",
+  "passed": 134,
+  "of": 138,
+  "ms": 535,
+  "kind": "file",
+  "key": "toss it off the screen | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1248,
+   "failed": []
+  },
+  "note": "fix: \"toss it off the screen\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-18T16:02:02Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 429,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-18T16:11:47Z",
+  "passed": 136,
+  "of": 138,
+  "ms": 610,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 429,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"automation handoff for the email reminders\" (skill:automation-handoff)"
  }
 ]

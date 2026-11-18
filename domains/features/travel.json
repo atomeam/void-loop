@@ -3654,7 +3654,6 @@
        "section password",
        "section choose your premium plan",
        "button pay",
-       "button privacy manager",
        "button cancel",
        "button save",
        "button yes delete",
@@ -3683,7 +3682,8 @@
        "section to algeria",
        "section to algeria with a stopover",
        "section to tunisia",
-       "section to tunisia with a stopover"
+       "section to tunisia with a stopover",
+       "button privacy manager"
       ]
      },
      {
@@ -14228,9 +14228,9 @@
      "/flights/routes/",
      "/members/"
     ],
-    "crawled": "2026-11-17"
+    "crawled": "2026-11-18"
    }
   },
-  "updated": "2026-11-17"
+  "updated": "2026-11-18"
  }
 }

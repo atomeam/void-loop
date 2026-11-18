@@ -1,0 +1,132 @@
+{
+ "at": "2026-11-18T05:32:12Z",
+ "sha": "1798f659cdfe29a4ae41399f86c2bf1ea6bb5654",
+ "runId": 44244091133,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44244091133",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 134598698286,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698286",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (8)",
+   "id": 134598698583,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698583",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (4)",
+   "id": 134598698737,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698737",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 134598698766,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698766",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (2)",
+   "id": 134598698775,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698775",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (1)",
+   "id": 134598698785,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698785",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (3)",
+   "id": 134598698813,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698813",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (7)",
+   "id": 134598698847,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244091133/job/134598698847",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

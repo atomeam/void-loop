@@ -50,10 +50,10 @@ runs:
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
         # The suite reads the index it just wrote. Rebuild the family list and the book from that index so the page count matches the routes.
-        node tools/skills-index.mjs --write
-        node tools/families.mjs
-        node tools/guide.mjs
-        node tools/self-context.mjs
+        # Through refresh.mjs (the one ordered list) with --keep-going, so one card that reports a problem (a skill on no family) never
+        # aborts this before the book is written and leaves guide.json stale against the index the suite compares it to (2026-11-18).
+        # A stale card is a warning here, exactly as the deploy treats it; the PR gate (tools/cards-delta.mjs) and main's checks catch the gap.
+        node tools/refresh.mjs --keep-going --only index,families,guide,self || echo "::warning title=A generated card is stale::the setup could not regenerate every card; the suite runs against what it wrote"
     - name: node tools/fringe.mjs (fringe ledger rules)
       if: inputs.bench != 'only' && inputs.part != 'suite'
       shell: bash

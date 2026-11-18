@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1344,
+ "counted": 1350,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -3412,6 +3412,13 @@
    "tests": 1
   },
   {
+   "file": "lib/sky-catalog.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/songs.js",
    "skills": 0,
    "direct": 0,
@@ -4106,6 +4113,13 @@
   },
   {
    "file": "lib/verse-world-bridge.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/void-cosmos.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -14933,6 +14947,12 @@
     "skills/family-health.js"
    ]
   },
+  "lib/sky-catalog.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/void-cosmos.js"
+   ]
+  },
   "lib/sky-math.js": {
    "imports": [],
    "importedBy": [
@@ -16916,6 +16936,12 @@
     "lib/verse-log.js"
    ]
   },
+  "lib/void-cosmos.js": {
+   "imports": [
+    "lib/sky-catalog.js"
+   ],
+   "importedBy": []
+  },
   "lib/void-me.js": {
    "imports": [
     "lib/webauthn.js",
@@ -18025,6 +18051,10 @@
    ]
   },
   "skills/compliment.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/connect-flows.js": {
    "imports": [],
    "importedBy": []
   },
@@ -19236,6 +19266,10 @@
    ]
   },
   "skills/handoff-checklist.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/handoff-ready.js": {
    "imports": [],
    "importedBy": []
   },
@@ -21713,6 +21747,10 @@
    ],
    "importedBy": []
   },
+  "skills/summon-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/sums.js": {
    "imports": [],
    "importedBy": []
@@ -21768,6 +21806,10 @@
    "importedBy": [
     "skills/idea-to-system.js"
    ]
+  },
+  "skills/system-design.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/system-handoff.js": {
    "imports": [],

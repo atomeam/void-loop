@@ -4,11 +4,12 @@
 // Run: node --test tools/guide.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { readFileSync, readdirSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { oneLine, listOf, partsOf, gamesOf, miniDocOf, miniOwners, asksInHeader, compose, glows, GLOW_ABOVE, spreadOf, pagesOfSpread, glyphSvg, openerSvg, seedOf, TIERS, TIER_MEANING } from '../void-live-deploy/lib/guide.js';
-import { bookFromRepo, textOf, OUT } from './guide.mjs';
+import { bookFromRepo, textOf, OUT, writeBook, problemsOf } from './guide.mjs';
 import guideSkill, { guideOf, pageHtml, tocHtml } from '../void-live-deploy/skills/guide.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -139,6 +140,25 @@ test('completeness: the real book has every skill in skills/index.json (families
   for (const n of members) assert.ok(b.index.some((e) => e.page === b.pages.find((p) => p.kind === 'skill' && p.name === n).n), n + ' is in the index');
   for (const p of b.pages) if (p.kind === 'skill') { assert.ok(p.line && p.line.length > 3, p.name + ' has a line'); assert.ok(TIERS.includes(p.tier)); }
   assert.equal(readFileSync(OUT, 'utf8'), textOf(b), 'void-live-deploy/skills/guide.json is stale: node tools/guide.mjs');
+});
+
+// 2026-11-18: a skill added to skills/order/ but not yet to a family made tools/guide.mjs report before it wrote, so guide.json lagged
+// skills/index.json on main and the browser check ("show the router rules") failed until someone added the family. The write must happen
+// first: the Rule registry is built from the index, so the book is complete even with a missing family, and the problem is still reported.
+test('the book is written before a missing family is reported, so it never lags the index', () => {
+  const names = ['a', 'b', 'orphan'];
+  const read = (n) => '/**\n * ' + n + ' skill — does a thing.\n */\nexport default { name: ' + JSON.stringify(n) + ', examples: [\"do ' + n + '\"] }';
+  const families = { families: [{ id: 'self', name: 'Verse itself', skills: [{ name: 'a', tier: 'proven', why: 'x' }, { name: 'b', tier: 'tested', why: 'y' }] }] };
+  const book = compose({ names, read, families });
+  assert.deepEqual(book.unplaced, ['orphan'], 'orphan is on no family page');
+  const rules = book.pages.filter((p) => p.kind === 'rules').flatMap((p) => p.rules);
+  assert.deepEqual(rules.map((r) => r.name), names, 'the registry lists every skill in the index, orphan included');
+  const dir = mkdtempSync(join(tmpdir(), 'book-'));
+  const out = join(dir, 'guide.json');
+  const problems = writeBook(out, book);
+  assert.deepEqual(problems, ['skills on no page of the book (their family is missing in tools/families.mjs): orphan'], 'the missing family is still reported');
+  assert.deepEqual(problemsOf({ unplaced: [] }), [], 'a whole book reports nothing');
+  assert.equal(readFileSync(out, 'utf8'), textOf(book), 'the file is written even with a problem, so it never lags the index');
 });
 
 // asked by Verse: a 'proven' glow on a skill's book page when its success_rate in families.json is above 0.9

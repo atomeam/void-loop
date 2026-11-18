@@ -1,0 +1,162 @@
+{
+ "at": "2026-11-18T05:33:30Z",
+ "sha": "ead9db68a48cd8be9acc2916980daa6ae3012523",
+ "runId": 44244237062,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44244237062",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 134599180759,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599180759",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (1)",
+   "id": 134599181163,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181163",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 134599181224,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181224",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (5)",
+   "id": 134599181276,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181276",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [
+    "Error: ead9db68a48cd8be9acc2916980daa6ae3012523 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: the full suite never ran: a step before it failed (see this run's log), so there is no failed check to revert by. Look at the failed checks and revert "
+   ],
+   "tail": [
+    "  exit 1",
+    "fi",
+    "if git diff --cached --quiet; then",
+    "  git revert --abort || true",
+    "  echo \"::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now.\"",
+    "  echo \"### $sha broke the suite ($why); its revert is empty on main now: look by hand\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  exit 1",
+    "fi",
+    "# the ledger says what was taken back, so \"growth\" never shows a change the site no longer has without saying so",
+    "node tools/grow.mjs retire \"Taken back off the site: \\\"$subject\\\" ($sha) failed the browser suite on main ($why).\" --by void-verify --ref \"https://github.com/atomeam/void-loop/actions/runs/44244237062\" && git add void-live-deploy/void.growth.json || true",
+    "git commit -q -m \"Revert \\\"$subject\\\"\" -m \"It shipped and the browser suite failed on main (job browser-suite in Verse verify, run 44244237062, testing $tested): $why. So it is taken back off the site.\" -m \"Verse-auto-revert: $sha\"",
+    "git push origin main",
+    "node tools/suite-gate.mjs queue \"$sha\" \"$why\" || echo \"::warning title=Fix job not filed::the revert is on main; the heal job was not queued\"",
+    "gh workflow run deploy.yml --repo \"atomeam/void-loop\" --ref main -f after_merge=true",
+    "echo \"::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again.\"",
+    "echo \"### $sha broke the suite after shipping ($why): reverted on main and redeployed\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "exit 1 # the test step no longer fails the job by itself (it continues so a flake can be rerun)",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig",
+    "  Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64",
+    "  LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib",
+    "  VOID_TEST_BROWSER: /home/runner/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "  GH_TOKEN: ***",
+    "  VOID_OWNER_TOKEN: ***",
+    "Error: ead9db68a48cd8be9acc2916980daa6ae3012523 failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: the full suite never ran: a step before it failed (see this run's log), so there is no failed check to revert by. Look at the failed checks and revert ",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (8)",
+   "id": 134599181279,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181279",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (7)",
+   "id": 134599181371,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181371",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (2)",
+   "id": 134599181380,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181380",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (3)",
+   "id": 134599181435,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44244237062/job/134599181435",
+   "conclusion": "failure",
+   "step": {
+    "number": 14,
+    "name": "Red after the deploy - revert the commit that broke it, on main, and deploy again"
+   },
+   "fails": [],
+   "tail": [
+    "skills with no family (add them to FAMILIES in tools/families.mjs): system-design, handoff-ready, summon-pack, connect-flows",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -130,9 +130,6 @@
       "ask": "are you web4"
     },
     {
-      "ask": "toss it off the screen"
-    },
-    {
       "ask": "what are the figures doing"
     },
     {
@@ -432,6 +429,21 @@
     },
     {
       "ask": "token stand"
+    },
+    {
+      "ask": "is this system handoff ready"
+    },
+    {
+      "ask": "system design for client onboarding"
+    },
+    {
+      "ask": "why is a half moon called a quarter moon"
+    },
+    {
+      "ask": "adaptive flow canvas"
+    },
+    {
+      "ask": "automation handoff for the email reminders"
     }
   ],
   "candidates": [],

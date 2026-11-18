@@ -1,5 +1,146 @@
 [
  {
+  "slug": "f782-devicemotion-hebbian-css3d-competition-mind",
+  "num": 782,
+  "title": "DeviceMotion Hebbian CSS3D Agent Competition Mind",
+  "blurb": "Interactive spatial prototype for The Verse canvas: a swarm of living CSS 3D DOM agents (perspective-transformed divs that fly in a shared 3D volume).",
+  "status": "broken",
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F782-devicemotion-hebbian-css3d-competition-mind",
+  "hash": "46d09f7105e8",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f781-webxr-hand-magnetic-string-genome-mind",
+  "num": 781,
+  "title": "WebXR Hand Magnetic String Genome Mind",
+  "blurb": "Interactive spatial prototype for The Verse: a set of living DOM \"node\" agents connected by dynamic magnetic strings (CSS-transformed lines or canvas overlays).",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F781-webxr-hand-magnetic-string-genome-mind",
+  "hash": "fcfb06cd889a",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f780-webgpu-lbm-causal-agent-competition",
+  "num": 780,
+  "title": "WebGPU Lattice Boltzmann Causal Agent Competition",
+  "blurb": "drafts/F780-webgpu-lbm-causal-agent-competition/SPEC.md",
+  "status": "works",
+  "source": "F780-webgpu-lbm-causal-agent-competition",
+  "hash": "bc97cff2fc59",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f780-webgpu-voronoi-policy-portal-mind",
+  "num": 780,
+  "title": "webgpu-voronoi-policy-portal-mind",
+  "blurb": "A previously unused primary spatial substrate for The Verse canvas: a live Voronoi tessellation whose seed sites are embodied as draggable DOM portals.",
+  "status": "works",
+  "source": "F780-webgpu-voronoi-policy-portal-mind",
+  "hash": "fde578699eb8",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f779-webgpu-echo-state-sdf-portal-mind",
+  "num": 779,
+  "title": "WebGPU Echo State SDF Portal Mind",
+  "blurb": "A spatial mind on The Verse canvas where a local Echo State Network (reservoir computing) processes continuous pointer trajectories, device orientation, and click",
+  "status": "broken",
+  "error": "console: Blocked call to navigator.vibrate because user hasn't tapped on the frame or any embedded frame yet: https://www.chromestatus.com/feature/5644273861001216.",
+  "source": "F779-webgpu-echo-state-sdf-portal-mind",
+  "hash": "4f6478ef473f",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f778-webrtc-broadcast-genome-competition-mind",
+  "num": 778,
+  "title": "WebRTC Broadcast Sealed Genome Competition Mind",
+  "blurb": "A multi-agent competition on The Verse canvas where independent local agents (one per browser tab or peer) run tiny MLPs that control spatial claim tokens.",
+  "status": "works",
+  "source": "F778-webrtc-broadcast-genome-competition-mind",
+  "hash": "9cb12b005a0e",
+  "grade": "toy",
+  "idea": "checksum"
+ },
+ {
+  "slug": "f777-webgpu-sph-policy-fluid-mind",
+  "num": 777,
+  "title": "WebGPU SPH Policy Fluid Mind",
+  "blurb": "A simplified smoothed-particle hydrodynamics (SPH) fluid simulated in pure JS (Canvas2D visualization, WebGPU compute path prepared for future).",
+  "status": "works",
+  "source": "F777-webgpu-sph-policy-fluid-mind",
+  "hash": "5673773f246f",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f776-webxr-ready-orientation-mlp-css3d-agent-swarm-mind",
+  "num": 776,
+  "title": "WebXR-Ready Orientation MLP CSS3D Agent Swarm Mind",
+  "blurb": "A pure-DOM spatial multi-agent system on The Verse canvas. 8–12 absolute-positioned CSS 3D transformed agent cards each carry their own local feed-forward MLP.",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F776-webxr-ready-orientation-mlp-css3d-agent-swarm-mind",
+  "hash": "930d0b781273",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f775-tip-calculator-fair-split",
+  "num": 775,
+  "title": "Tip calculator",
+  "blurb": "Job: Someone enters a bill amount, tip percent, tax, and number of people; they get clear per-person totals (with rounding options) they can copy or share via link.",
+  "status": "works",
+  "source": "F775-tip-calculator-fair-split",
+  "hash": "b34eb5465b7d",
+  "grade": "tool"
+ },
+ {
+  "slug": "f774-webgpu-sdf-sculpt-audio-feedback-mind",
+  "num": 774,
+  "title": "webgpu-sdf-sculpt-audio-feedback-mind",
+  "blurb": "Concept: Orientation- and pointer-sculpted WebGPU SDF multi-metaball volume with local MLP controller and closed-loop AudioWorklet feedback.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F774-webgpu-sdf-sculpt-audio-feedback-mind",
+  "hash": "51237892cf46",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f773-webgpu-biot-savart-orientation-mlp-dom",
+  "num": 773,
+  "title": "WebGPU Biot-Savart Magnetic Field Orientation-MLP DOM Mind",
+  "blurb": "A spatial magnetic field simulation on The Verse canvas where user-defined or agent-traced wire segments carry currents.",
+  "status": "works",
+  "source": "F773-webgpu-biot-savart-orientation-mlp-dom",
+  "hash": "2e236e764968",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f772-seating-chart-planner",
+  "num": 772,
+  "title": "Seating chart",
+  "blurb": "Job: Enter guest names, set the number of tables, mark pairs who must sit together or apart.",
+  "status": "works",
+  "source": "F772-seating-chart-planner",
+  "hash": "ef1f24986e18",
+  "grade": "tool"
+ },
+ {
   "slug": "f771-webcrypto-css3d-devicemotion-mlp-agents",
   "num": 771,
   "title": "WebCrypto-Sealed Competitive CSS3D Card Agents with DeviceMotion Causal MLP",

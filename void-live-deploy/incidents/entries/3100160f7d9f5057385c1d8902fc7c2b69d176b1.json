@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-18T16:00:13.663Z",
+ "sha": "3100160f7d9f5057385c1d8902fc7c2b69d176b1",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44334650351",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look",
+  "card physics: the grabbed card comes to the front and stays there after the drop; nothing selects while dragging"
+ ],
+ "touched": [
+  "domains/void.frontier.md",
+  "tools/automation-handoff.test.mjs",
+  "void-live-deploy/skills/automation-handoff.js",
+  "void-live-deploy/skills/index.json",
+  "void-live-deploy/skills/order/12010-automation-handoff"
+ ],
+ "shards": [
+  4
+ ]
+}

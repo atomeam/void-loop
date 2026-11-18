@@ -1,0 +1,57 @@
+{
+ "at": "2026-11-18T15:47:01Z",
+ "sha": "0322c7d0264db709459b6d05f51de4aef5799ee7",
+ "runId": 44339334773,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44339334773",
+ "workflow": "Verse deploy",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test-and-deploy",
+   "id": 134924648316,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44339334773/job/134924648316",
+   "conclusion": "failure",
+   "step": {
+    "number": 5,
+    "name": "Quick checks (when the browser suite does not run)"
+   },
+   "fails": [
+    "FAIL domains/void.frontier.md: 11 bytes: a ledger was wiped by a whole-file write (a placeholder, not its lines)"
+   ],
+   "tail": [
+    "if [ \"$EVENT\" = \"workflow_dispatch\" ] && [ -z \"$prcheck\" ]; then suite=true; fi",
+    "if [ \"$EVENT\" = \"pull_request\" ] || [ -n \"$prcheck\" ]; then",
+    "  # no preview deploys (owner, 2026-10-15: \"cloudflare is not unlimited Verse should spend its actions on growth and not",
+    "  # so much on testing old thing\"): a PR merges in minutes and main deploys right after, so a preview was a Cloudflare",
+    "  # deploy nobody opened. A PR gets the quick checks; main gets the deploy.",
+    "  echo \"### PR: quick checks only, no preview deploy\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  echo \"light=true\" >> \"$GITHUB_OUTPUT\"",
+    "fi",
+    "echo \"suite=$suite\" >> \"$GITHUB_OUTPUT\"",
+    "echo \"suite=$suite\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  CF_READY: true",
+    "  GH_TOKEN: ***",
+    "  EVENT: push",
+    "  BASE: ",
+    "suite=false",
+    "Run node --version",
+    "node --version",
+    "node tools/guard-source.mjs",
+    "node tools/fringe.mjs",
+    "node --test domains/forethinkers/think-tank.test.mjs",
+    "node --test tools/dispatcher.test.mjs",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  CF_READY: true",
+    "v22.23.4",
+    "FAIL domains/void.frontier.md: 11 bytes: a ledger was wiped by a whole-file write (a placeholder, not its lines)",
+    "1 file(s) do not parse or were wiped",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

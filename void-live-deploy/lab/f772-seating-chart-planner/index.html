@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4a9eff; --warn:#ff5a5a; --ok:#3dd68c; --text:#e8eaed; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a2e36; }
+h1 { margin:0; font-size:1.4rem; }
+.container { max-width:900px; margin:0 auto; padding:1rem; }
+.panel { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; margin:0.5rem 0 0.2rem; font-size:0.9rem; }
+input, button, select { font-size:1rem; padding:0.5rem; border-radius:8px; border:1px solid #3a3f4a; background:#12141a; color:var(--text); }
+button { background:var(--accent); color:#fff; border:none; cursor:pointer; font-weight:600; }
+button:hover { filter:brightness(1.1); }
+button.secondary { background:#3a3f4a; }
+.row { display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+.guest-pool, .tables { display:flex; flex-wrap:wrap; gap:0.5rem; min-height:60px; padding:0.5rem; background:#12141a; border-radius:8px; border:1px dashed #3a3f4a; }
+.guest { background:#2a3140; padding:0.4rem 0.7rem; border-radius:20px; cursor:grab; user-select:none; touch-action:none; font-size:0.9rem; }
+.guest.dragging { opacity:0.5; }
+.table { background:#22262f; border:2px solid #3a3f4a; border-radius:12px; padding:0.6rem; min-width:140px; min-height:120px; }
+.table.violation { border-color:var(--warn); }
+.table h3 { margin:0 0 0.4rem; font-size:0.95rem; text-align:center; }
+.seats { display:flex; flex-wrap:wrap; gap:0.3rem; min-height:40px; }
+.constraint { font-size:0.85rem; padding:0.2rem 0.4rem; background:#2a2e36; border-radius:6px; margin:0.2rem; display:inline-block; }
+.constraint.bad { background:var(--warn); color:#fff; }
+.actions { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+#status { font-size:0.85rem; color:#8a9099; margin-top:0.5rem; }
+canvas { display:none; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Seating chart · Verse lab</title>
+<meta name="description" content="Job: Enter guest names, set the number of tables, mark pairs who must sit together or apart.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Seating chart · Verse lab">
+<meta property="og:description" content="Job: Enter guest names, set the number of tables, mark pairs who must sit together or apart.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f772-seating-chart-planner/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f772-seating-chart-planner/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Seating Chart</h1>
+  <p>Add guests, set tables, drag to arrange, download the chart.</p>
+</header>
+<div class="container">
+  <div class="panel">
+    <div class="row">
+      <label>Tables <input type="number" id="numTables" value="2" min="1" max="20" style="width:60px"></label>
+      <label>Seats each <input type="number" id="seatsEach" value="4" min="1" max="12" style="width:60px"></label>
+      <button id="setupTables">Set tables</button>
+    </div>
+    <div class="row">
+      <input type="text" id="guestName" placeholder="Guest name" style="flex:1">
+      <button id="addGuest">Add guest</button>
+    </div>
+    <div id="guestPool" class="guest-pool"></div>
+  </div>
+  <div class="panel">
+    <div class="row">
+      <select id="cType"><option value="together">Keep together</option><option value="apart">Keep apart</option></select>
+      <select id="cA"></select>
+      <select id="cB"></select>
+      <button id="addConstraint">Add constraint</button>
+    </div>
+    <div id="constraints"></div>
+  </div>
+  <div class="panel">
+    <div id="tables" class="tables"></div>
+  </div>
+  <div class="actions">
+    <button id="downloadPNG">Download PNG</button>
+    <button id="downloadCSV" class="secondary">Download CSV</button>
+    <button id="copySummary" class="secondary">Copy summary</button>
+    <button id="clearAll" class="secondary">Clear</button>
+  </div>
+  <div id="status">Ready. Add guests and set tables.</div>
+</div>
+<canvas id="exportCanvas"></canvas>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

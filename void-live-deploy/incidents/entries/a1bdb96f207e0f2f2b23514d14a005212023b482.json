@@ -1,0 +1,38 @@
+{
+ "at": "2026-11-18T09:09:38.367Z",
+ "sha": "a1bdb96f207e0f2f2b23514d14a005212023b482",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44267693526",
+ "suite": "browser suite on main",
+ "checks": [
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look"
+ ],
+ "touched": [
+  ".github/actions/void-test/action.yml",
+  "docs/PARITY/github.md",
+  "docs/PARITY/gmail.md",
+  "docs/PARITY/google-search.md",
+  "docs/PARITY/hugging-face.md",
+  "docs/PARITY/lichess.md",
+  "docs/map.d/client-packs.md",
+  "domains/void.agents.log.md",
+  "growth/entries/20261118T082430Z-openhands-62644b90.json",
+  "tools/families.mjs",
+  "tools/finish.mjs",
+  "tools/guide.mjs",
+  "tools/guide.test.mjs",
+  "void-live-deploy/self.json",
+  "void-live-deploy/sitemap.xml"
+ ],
+ "shards": [
+  3,
+  4
+ ],
+ "passed": [
+  3
+ ]
+}

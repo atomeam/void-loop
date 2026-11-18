@@ -174,6 +174,10 @@ function main() {
     const restore = changed.filter((f) => !keep.has(f));
     if (restore.length) git(['checkout', '--', ...restore], dir);
     git(['clean', '-fd'], dir);
+    const guard = spawnSync(process.execPath, [resolve(dir, 'tools/guard-source.mjs')], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6 });
+    if (guard.stdout) process.stdout.write(guard.stdout);
+    if (guard.stderr) process.stderr.write(guard.stderr);
+    if ((guard.status ?? 1) !== 0) { console.error('merge-gate: guard-source failed (scripts must parse and ledgers must not be wiped)'); process.exit(guard.status ?? 1); }
     const runChecks = () => spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', maxBuffer: 20e6,
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
