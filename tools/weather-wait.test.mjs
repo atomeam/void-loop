@@ -5,7 +5,8 @@ import { getJson, forecastOf, edgeWeather } from '../void-live-deploy/skills/wea
 
 const W = { current: { temperature_2m: 12 }, hourly: { time: [] }, daily: { time: [] } };
 const ok = (j) => ({ ok: true, json: async () => j });
-const hang = (_u, o) => new Promise((_, rej) => { o.signal && o.signal.addEventListener('abort', () => rej(new Error('timeout'))); });
+// a host that never answers; the kept timer stands in for the open socket (AbortSignal.timeout's own timer does not hold the process open)
+const hang = (_u, o) => new Promise((_, rej) => { const keep = setTimeout(() => {}, 10000); o.signal && o.signal.addEventListener('abort', () => { clearTimeout(keep); rej(new Error('timeout')); }); });
 
 test('getJson gives up after its limit instead of hanging', async () => {
   const t = Date.now();
