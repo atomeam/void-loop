@@ -17,9 +17,9 @@ export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
   '/photos/': 'Photo tools',
-  '/color/': 'Colour codes', '/color/gradient/': 'Gradient', '/random/wheel/': 'Wheel of names', '/random/people/': 'Made-up people', '/random/': 'Random number',
+  '/color/': 'Colour codes', '/color/gradient/': 'Gradient', '/random/': 'Random number',
   '/ledger/': 'Repo activity ledger',
-  '/random/coin/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter',
+  '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter',
   '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
   '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'The Crew', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/journal/': 'Earth science journal', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
   // the Lab's tools: the one real job inside each cluster of hourly experiments (tools/lab-grade.mjs IDEAS), made into a page people come back to
@@ -46,16 +46,13 @@ const SITE_RELATED = Object.fromEntries([...PDF_SITES.map((p) => [p.path, p.path
 const HAND_RELATED = Object.freeze({
   ...SITE_RELATED,
   '/photos/': ['/resize-image/', '/color/', '/convert/', '/lab/photo-palette/'],
-  '/color/': ['/lab/photo-palette/', '/color/gradient/', '/random/wheel/', '/base64/'],
-  '/color/gradient/': ['/lab/pattern/', '/color/', '/random/wheel/'],
-  '/random/wheel/': ['/random/', '/random/people/', '/random/coin/', '/color/gradient/', '/color/'],
-  '/random/people/': ['/random/wheel/', '/random/', '/password/'],
-  '/random/': ['/random/wheel/', '/random/coin/', '/random/people/', '/base64/'],
-  '/random/coin/': ['/random/wheel/', '/random/'],
+  '/color/': ['/lab/photo-palette/', '/color/gradient/', '/random/', '/base64/'],
+  '/color/gradient/': ['/lab/pattern/', '/color/', '/random/'],
+  '/random/': ['/password/', '/base64/', '/color/'],
   '/stopwatch/': ['/word-count/', '/time/'],
   '/word-count/': ['/stopwatch/', '/fanfic/'],
   '/convert/': ['/base64/', '/stopwatch/', '/calculator/'],
-  '/password/': ['/random/', '/random/people/'],
+  '/password/': ['/random/'],
   '/resize-image/': ['/color/'],
   '/calculator/': ['/base64/', '/convert/', '/random/', '/vat/'],
   '/vat/': ['/calculator/', '/convert/', '/markets/'],
@@ -70,7 +67,7 @@ const HAND_RELATED = Object.freeze({
   '/local/': ['/weather/', '/news/', '/podcasts/', '/time/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
   '/markets/': ['/convert/', '/calculator/', '/time/'],
-  '/generators/': ['/image/', '/random/', '/random/coin/', '/random/wheel/'],
+  '/generators/': ['/image/', '/random/'],
   '/image/': ['/video/', '/generators/', '/resize-image/', '/color/'],
   '/video/': ['/image/', '/generators/', '/resize-image/'],
   '/notes/': ['/lab/dictation/', '/lab/mind-map/', '/word-count/', '/translate/', '/calendar/', '/fanfic/', '/rap/'],
@@ -84,7 +81,7 @@ const HAND_RELATED = Object.freeze({
   '/news/': ['/translate/', '/notes/', '/weather/', '/local/', '/starboard/', '/journal/'],
   '/journal/': ['/news/', '/translate/', '/notes/', '/tools/'],
   // Starboard: the pages its panels come from
-  '/starboard/': ['/weather/', '/news/', '/random/wheel/', '/pdf/'],
+  '/starboard/': ['/weather/', '/news/', '/random/', '/pdf/'],
   '/arcade/': ['/learn-to-draw/', '/random/', '/music/', '/fantasy/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
   '/rap/': ['/music/', '/metronome/', '/word-count/', '/translate/'],
@@ -131,7 +128,7 @@ const HAND_RELATED = Object.freeze({
   '/emoji-combos/': ['/emojis/', '/word-count/', '/base64/', '/g/'],
   // the snippet in a link (/g/, the gist): its text in Base64, counted, kept as a note, or the repo it came from listed issue by issue
   '/g/': ['/base64/', '/word-count/', '/notes/', '/ledger/'],
-  '/tools/': ['/color/', '/random/wheel/', '/calculator/'],
+  '/tools/': ['/color/', '/random/', '/calculator/'],
 });
 // a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
 export const RELATED = Object.freeze({ ...HAND_RELATED, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_RELATED[r.base]).map((r) => [r.path, [r.base, ...HAND_RELATED[r.base]].slice(0, 4)])) });
@@ -139,8 +136,7 @@ export const RELATED = Object.freeze({ ...HAND_RELATED, ...Object.fromEntries(SE
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
 const HAND_CARD_ASK = Object.freeze({
   '/photos/': 'edit a photo',
-  '/color/': 'color #ff5733', '/color/gradient/': 'gradient from red to blue', '/random/wheel/': 'spin the wheel with ann, bob and cat', '/random/people/': 'fake name generator',
-  '/random/': 'random number between 1 and 100', '/random/coin/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
+  '/color/': 'color #ff5733', '/color/gradient/': 'gradient from red to blue', '/random/': 'random number between 1 and 100', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base64/': 'convert 255 to binary', '/password/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
@@ -294,9 +290,9 @@ const ROUTES = [
   [/^(?:what(?:'s| is) the )?weather(?: (?:in|for|at) (.+))?$|^forecast(?: (?:in|for) (.+))?$/i, (m) => '/weather/' + (m[1] || m[2] ? '?q=' + encodeURIComponent(m[1] || m[2]) : '')],
   [/^(?:what )?time (?:is it )?in (.+)$|^(.+) time$/i, (m) => '/time/?q=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:is it|is today) (.+)$/i, (m) => '/is-it/' + encodeURIComponent(m[1].toLowerCase().replace(/[?!.]+$/, '').trim().replace(/\s+/g, '-'))],
-  [/^(?:flip|toss) (?:a )?coins?$|^coin ?flip$|^heads or tails$/i, () => '/random/coin/'],
-  [/^(?:spin (?:the |a )?)?wheel(?: of names)?$|^pick (?:a |one )?(?:name|winner)$/i, () => '/random/wheel/'],
-  [/^(?:a |one |some )?(?:random|fake|made-?up) (?:users?|people|persons?|names?)$|^(\d+) (?:random|fake|made-?up) (?:users?|people)$/i, (m) => '/random/people/' + (m[1] ? '?n=' + m[1] : '')],
+  [/^(?:flip|toss) (?:a )?coins?$|^coin ?flip$|^heads or tails$/i, () => '/random/?mode=coin'],
+  [/^(?:spin (?:the |a )?)?wheel(?: of names)?$|^pick (?:a |one )?(?:name|winner)$/i, () => '/random/?mode=wheel'],
+  [/^(?:a |one |some )?(?:random|fake|made-?up) (?:users?|people|persons?|names?)$|^(\d+) (?:random|fake|made-?up) (?:users?|people)$/i, (m) => '/random/?mode=people' + (m[1] ? '&n=' + m[1] : '')],
   [/^(?:a )?random number(?: (?:between|from) (\d+) (?:and|to) (\d+))?$|^(?:roll|dice|d\d+)$/i, () => '/random/'],
   [/^(?:a |an? )?(?:strong )?(?:password|passphrase)(?: of (\d+)(?: characters| letters)?)?$|^(?:generate|make|new) (?:a |me a )?(?:strong )?(?:password|passphrase)(?: of (\d+))?$/i, (m) => '/password/' + (m[1] || m[2] ? '?len=' + (m[1] || m[2]) : '')],
   // the STL checker (asked by Verse): 'check my stl file', 'is my stl watertight', 'stl checker'; the file itself is picked on the page, never put in a link

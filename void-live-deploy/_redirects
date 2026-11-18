@@ -32,12 +32,12 @@
 /charity/ /creed/give/ 301
 /religion /creed/ 301
 /religion/ /creed/ 301
-/flip /random/coin/ 301
-/flip/ /random/coin/ 301
-/wheel /random/wheel/ 301
-/wheel/ /random/wheel/ 301
-/random-user /random/people/ 301
-/random-user/ /random/people/ 301
+/flip /random/?mode=coin 301
+/flip/ /random/?mode=coin 301
+/wheel /random/?mode=wheel 301
+/wheel/ /random/?mode=wheel 301
+/random-user /random/?mode=people 301
+/random-user/ /random/?mode=people 301
 /gradient /color/gradient/ 301
 /gradient/ /color/gradient/ 301
 /base-converter /base64/?mode=bases 301
@@ -95,3 +95,15 @@
 /scores/sports/ /scores/?mode=sports 301
 /calculators /calculator/?mode=formulas 301
 /calculators/ /calculator/?mode=formulas 301
+
+# random + markets family members
+/random/coin /random/?mode=coin 301
+/random/coin/ /random/?mode=coin 301
+/random/wheel /random/?mode=wheel 301
+/random/wheel/ /random/?mode=wheel 301
+/random/people /random/?mode=people 301
+/random/people/ /random/?mode=people 301
+/markets/caps /markets/?mode=caps 301
+/markets/caps/ /markets/?mode=caps 301
+/markets/screener /markets/?mode=screener 301
+/markets/screener/ /markets/?mode=screener 301

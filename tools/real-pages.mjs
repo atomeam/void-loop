@@ -341,7 +341,7 @@ export const SPECS = {
     t.ok(/JFK/.test(await t.p.locator('main').innerText()) && /LHR/.test(await t.p.locator('main').innerText()), 'a pasted flight is read into the trip');
     await t.download('#i-ics', /\.ics$/i);
   },
-  '/random/coin/': async (t) => { const b = await t.p.locator('main').innerText(); await t.clickText('Flip again'); await t.p.waitForTimeout(1200); t.ok(/Heads|Tails/i.test(await t.p.locator('main').innerText()), 'a flip lands heads or tails'); t.ok(b !== (await t.p.locator('main').innerText()) || true, 'tally kept'); },
+  '/random/?mode=coin': async (t) => { const b = await t.p.locator('main').innerText(); await t.clickText('Flip again'); await t.p.waitForTimeout(1200); t.ok(/Heads|Tails/i.test(await t.p.locator('main').innerText()), 'a flip lands heads or tails'); t.ok(b !== (await t.p.locator('main').innerText()) || true, 'tally kept'); },
   '/g/': async (t) => { await t.fill('#ta', 'hello from the test'); await t.share('#share'); },
   '/generators/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate makes new names'); await t.copies('#copyAll'); await t.share('#share'); },
   '/generators/chat/': async (t) => { await t.fill('#say', 'hello captain'); await t.click('#send'); await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#log').innerText()).length > 20, 'the character answers'); await t.share('#share'); },
@@ -398,8 +398,8 @@ export const SPECS = {
   '/video/': async (t) => { t.ok((await t.p.locator('#prompt').count()) === 1 && (await t.p.locator('#make').count()) === 1 && (await t.p.locator('#state').count()) === 1, 'the clip form and its on/off line are there (a clip spends credits, so none is made here)'); },
   '/markets/': async (t) => { await t.fill('#q', 'AAPL'); await t.click('#go'); const m = await t.waitText('main', /Apple Inc\.[\s\S]*?\d+\.\d\d|could not|not reach|unavailable|try again/i, 20000);
     t.ok(/Apple Inc\.[\s\S]{0,80}\d+\.\d\d/.test(m) && /as of/.test(m), 'AAPL has a live, dated price: ' + ((m.match(/Apple Inc\.[\s\S]{0,60}/) || [m.slice(0, 60)])[0]).replace(/\s+/g, ' ')); await t.share('#share'); },
-  '/markets/caps/': async (t) => { await t.p.waitForTimeout(3000); t.ok(/Bitcoin|BTC/i.test(await t.p.locator('main').innerText()), 'the coin table lists Bitcoin'); },
-  '/markets/screener/': async (t) => { await t.clickText('Screen'); await t.p.waitForTimeout(3000); t.ok((await t.p.locator('main tr, main li').count()) > 3, 'the screener returns rows'); },
+  '/markets/?mode=caps': async (t) => { await t.p.waitForTimeout(3000); t.ok(/Bitcoin|BTC/i.test(await t.p.locator('main').innerText()), 'the coin table lists Bitcoin'); },
+  '/markets/?mode=screener': async (t) => { await t.clickText('Screen'); await t.p.waitForTimeout(3000); t.ok((await t.p.locator('main tr, main li').count()) > 3, 'the screener returns rows'); },
   '/metronome/': async (t) => { await t.fill('#bpmIn', '90'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(200); t.ok((await t.text('#bpmOut')).trim() === '90', 'tempo set to 90'); await t.click('#play'); await t.p.waitForTimeout(800); t.ok((await t.act()).sound > 0, 'Start makes a click sound'); await t.click('#play'); await t.share('#shareBtn'); },
   '/news/': async (t) => { await t.waitText('#status', /stories/, 20000); t.ok(/\d+ stories/.test(await t.text('#status')), 'real stories loaded: ' + (await t.text('#status'))); },
   '/journal/': async (t) => {  // the papers come from the DOI registry (live), the length of a paper is worked out here (never live)
@@ -469,7 +469,7 @@ export const SPECS = {
   },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },
-  '/random/people/': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
+  '/random/?mode=people': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
   '/recipes/': async (t) => { await t.fill('#q', 'chicken'); await t.click('#go'); await t.p.waitForTimeout(4000); t.ok(/chicken/i.test(await t.text('#results')), 'a search for chicken lists recipes'); },
   '/resize-image/': async (t) => { await t.share('#share'); },
   '/scores/': async (t) => { await t.p.waitForTimeout(4000); t.ok(!/couldn.t|error|unavailable/i.test(await t.text('#out')), 'scores load: ' + (await t.text('#out')).slice(0, 60)); await t.share('#share'); },
@@ -490,7 +490,7 @@ export const SPECS = {
   '/translate/': async (t) => { await t.p.selectOption('#to', 'es'); await t.fill('#in', 'good morning'); await t.click('#go'); await t.waitText('#out', /buen|could not|error/i, 30000); t.ok(/buen/i.test(await t.text('#out')), 'good morning is buenos días: ' + (await t.text('#out')).slice(0, 40)); await t.share('#share'); },
   '/tuner/': async (t) => { await t.click('#pipeBtn'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'the pitch pipe plays'); await t.share('#shareBtn'); },
   '/weather/': async (t) => { await t.fill('#q', 'London'); await t.clickText('Look'); await t.waitText('#temp', /\d/, 20000); t.ok(/-?\d+ ?°[FC]/.test(await t.text('#temp')), 'London has a live temperature: ' + (await t.text('#temp'))); },
-  '/random/wheel/': async (t) => { await t.click('#spin'); await t.p.waitForTimeout(6500); t.ok(/Alice|Bob|Carol|Dave|Eve/.test(await t.p.locator('main').innerText()), 'the wheel lands on a name'); await t.share('#link'); },
+  '/random/?mode=wheel': async (t) => { await t.click('#spin'); await t.p.waitForTimeout(6500); t.ok(/Alice|Bob|Carol|Dave|Eve/.test(await t.p.locator('main').innerText()), 'the wheel lands on a name'); await t.share('#link'); },
   '/word-count/': async (t) => {
     await t.fill('#text', 'The quick brown fox jumps.'); await t.p.waitForTimeout(200); t.ok(/^5 words · 26 characters/.test(await t.text('#big')), '"The quick brown fox jumps." is 5 words, 26 characters');
     await t.click('#upper'); t.ok((await t.val('#text')) === 'THE QUICK BROWN FOX JUMPS.', 'UPPERCASE'); await t.share('#link');

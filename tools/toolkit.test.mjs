@@ -14,7 +14,7 @@ test('every tool page is linked to at least one other, only to tools that exist,
     assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '(?:\/[a-z0-9-]+)+\/'/, p);
   }
   for (const p of Object.keys(TOOLS)) assert.ok(RELATED[p], p + ' has related tools');
-  assert.deepEqual(relatedOf('/random/people/')[0], { href: '/random/wheel/', label: 'Wheel of names' }); assert.deepEqual(relatedOf('/nope/'), []);
+  assert.deepEqual(relatedOf('/random/')[0], { href: '/password/', label: 'Password generator' }); assert.deepEqual(relatedOf('/nope/'), []);
 });
 test('colours: hex in any short form, and the text that reads on it', () => {
   assert.equal(hexOf('#F53'), '#ff5533'); assert.equal(hexOf('6d4aff'), '#6d4aff'); assert.equal(hexOf('red'), null); assert.equal(hexOf('#12345'), null);
@@ -31,11 +31,11 @@ test('the accent is kept on this device and put on the page; a bad colour is ref
 
 test('the ask bar routes an ask to the tool that does it, with the ask in the link, and anything else to the stage', () => {
   const to = (a) => routeAsk(a);
-  assert.equal(to('100 c to f'), '/convert/?q=100%20c%20to%20f'); assert.equal(to('flip a coin'), '/random/coin/'); assert.equal(to('weather in boston'), '/weather/?q=boston');
+  assert.equal(to('100 c to f'), '/convert/?q=100%20c%20to%20f'); assert.equal(to('flip a coin'), '/random/?mode=coin'); assert.equal(to('weather in boston'), '/weather/?q=boston');
   assert.equal(to('time in tokyo'), '/time/?q=tokyo'); assert.equal(to('is it christmas?'), '/is-it/christmas'); assert.equal(to('a password of 20'), '/password/?len=20');
   assert.equal(to('how strong is Tr0ub4dor&3'), '/password/?mode=strength', 'the typed password stays out of the address'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
   assert.equal(to('255 in hex'), '/base64/?mode=bases&v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
-  assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random/people/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
+  assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random/?mode=people&n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
   // a tool's own name opens the tool, not a stage answer about the words (2026-10-30: 'word count' opened Wikipedia's article on the stage)
   for (const [ask, page] of [['word count', '/word-count/'], ['Word counter', '/word-count/'], ['pdf', '/pdf/'], ['photo tools', '/photos/'], ['open the code review', '/code-review/'],
@@ -67,9 +67,9 @@ test('every tool page links to its own card on the stage, and every page has a c
   const { mountRelated } = await import('../void-live-deploy/lib/toolkit.js');
   const made = []; const mk = (tag) => { const n = { tag, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute() {}, addEventListener() {}, replaceChildren(...c) { this.children = c; } }; made.push(n); return n; };
   const host = mk('nav'); host.ownerDocument = { createElement: mk, defaultView: {} };
-  mountRelated(host, '/random/coin/');
+  mountRelated(host, '/random/');
   const row = host.children.find((c) => c.className === 'tk-row'), links = row.children.filter((c) => c.tag === 'a');
-  assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=flip%20a%20coin');
+  assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=random%20number%20between%201%20and%20100');
 });
 
 test('every page\'s stage ask reaches a card, so "See it as a card" never falls through to a generic answer', async () => {
@@ -159,7 +159,7 @@ test('the wheel page\'s card opens on the wheel open there: every entry and weig
   for (const e of [plain, hard]) { const back = W.askWheel(W.askOf(e)); assert.ok(back, W.askOf(e)); assert.equal(W.textOf(back.entries), W.textOf(e), 'the card spins the same entries'); assert.equal(await firstSkill(W.askOf(e)), 'wheel', 'the stage gives it to the wheel skill'); }
   assert.equal(W.askOf([{ label: 'one', weight: 1 }]), '', 'one entry: nothing to spin, the example');
   assert.equal(W.askWheel('wheel alignment near me'), null); assert.equal(W.askWheel('spin the wheel #!!'), null);
-  const src = fs.readFileSync(new URL('../void-live-deploy/random/wheel/index.html', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../void-live-deploy/random/modes/wheel.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*askOf\(entries\)/, 'the wheel page gives its card the entries open on it');
 });
 
@@ -277,7 +277,7 @@ test('the made-up people page\'s card shows the people on the page: its count, c
   for (const nat of Object.keys(F.NATS)) assert.deepEqual(F.askFake(C.cardAsk('4', [nat])).nats, [nat], 'each country reads back as itself: ' + nat);
   // other asks keep what they did: no seed, and the countries in the order asked
   assert.deepEqual(F.askFake('generate 5 fake german women'), { n: 5, nats: ['de'], gender: 'female' }); assert.deepEqual(F.askFake('20 random users from japan and brazil').nats, ['jp', 'br']);
-  const page = fs.readFileSync(new URL('../void-live-deploy/random/people/index.html', import.meta.url), 'utf8');
+  const page = fs.readFileSync(new URL('../void-live-deploy/random/modes/people.html', import.meta.url), 'utf8');
   assert.ok(page.includes("{ card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) }"), 'the page gives the card its count, countries, gender and seed');
 });
 

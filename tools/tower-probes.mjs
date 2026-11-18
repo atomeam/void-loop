@@ -116,11 +116,11 @@ export const PROBES = Object.freeze({
     facts: [['the answer', /\b(?:YES|NO)\b/], ['which day it is about', /christmas/i], ['how long until it', /\b\d+\s+(?:days?|sleeps?)\b/i], ['the date itself', /\b25\b.*\bdec|\bdec\w*\s+25\b/i]],
   },
   'coin flip': {
-    site: 'https://justflipacoin.com/', verse: '/random/coin/',
+    site: 'https://justflipacoin.com/', verse: '/random/?mode=coin',
     // one flip has no right answer, but ten have a right SHAPE: the gate presses each page's own flip control 10 times, as a person would
     // (tower-gate.mjs answer, `presses`), and reads the page each time it settles: every flip lands on one side, a fair coin shows both
     // sides in 10 (all ten alike is 2 in 1024), and any running count the page keeps grows by exactly the flips made, heads by the heads seen
-    ask: { site: 'https://justflipacoin.com/', verse: '/random/coin/', presses: 10 },
+    ask: { site: 'https://justflipacoin.com/', verse: '/random/?mode=coin', presses: 10 },
     truth: [['every flip lands on one side, heads or tails', (t) => { const f = flipsOf(t); return f.sides.length > 0 && f.sides.every(Boolean); }],
       ['both sides come up in 10 fair flips', (t) => new Set(flipsOf(t).sides.filter(Boolean)).size === 2],
       ['any count it shows adds up to the flips made', (t) => { const f = flipsOf(t); if (!f.after) return f.sides.length > 0; const b = f.before || { h: 0, t: 0 }, dh = f.after.h - b.h, dt = f.after.t - b.t;
@@ -164,7 +164,7 @@ export const PROBES = Object.freeze({
       ['reverse', /\breverse\b/i], ['hue and saturation', /\bhue\b/i], ['SCSS', /\bscss\b/i], ['from a picture', /\b(?:image|picture)\b/i], ['text contrast', /\bcontrast\b|\bwcag\b/i], ['CSS output', /background(?:-image)?\s*:\s*(?:linear|radial|conic)-gradient/i]],
   },
   wheel: {
-    site: 'https://wheelofnames.com/', verse: '/random/wheel/',
+    site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel',
     // one spin of the same eight names on both (a tap at the wheel's centre): a winner is announced, and it is one of the names the wheel
     // held before the spin; after it, a way to remove the winner is offered (wheelofnames.com's dialog, Verse's button)
     ask: { site: 'https://wheelofnames.com/', verse: '/random/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
@@ -175,7 +175,7 @@ export const PROBES = Object.freeze({
       ['a share link', /\bshare\b|\bcopy link\b/i], ['weights', /\bweights?\b|times as likely/i], ['says it is fair', /\bfair\b/i], ['sound control', /\bsound\b|\bmute\b/i]],
   },
   'random user': {
-    site: 'https://randomuser.me/', verse: '/random/people/',
+    site: 'https://randomuser.me/', verse: '/random/?mode=people',
     // the same request to both in the address (randomuser.me's own API, Verse's page as JSON): made-up people are accurate when they hold
     // together, which can be checked: as many as asked, from the country asked, each age right for its birthday, each email well formed,
     // and each phone in the range set aside for fiction (555-0100 to 555-0199), so a test that dials one reaches nobody
@@ -333,19 +333,19 @@ export const PROBES = Object.freeze({
   // the finance lane's own pages (owner, 2026-10-26: every lane site gets its own page): the market-cap site is measured against /markets/caps/, the screener site against
   // /markets/screener/. Each judged on Verse alone; the truth is what holds on any day.
   'finance: companiesmarketcap.com': {
-    site: 'https://companiesmarketcap.com/', verse: '/markets/caps/',
+    site: 'https://companiesmarketcap.com/', verse: '/markets/?mode=caps',
     // the question: the coins by market cap. The truth on any day (worked out by hand): Bitcoin is rank 1, its name and ticker stand together on the row, with a price in dollars
     // and a market cap in billions or trillions; the page says it lists the 50 largest. Numbers only appear once the list has come back, so a loading page fails.
-    ask: { verse: '/markets/caps/' },
+    ask: { verse: '/markets/?mode=caps' },
     truth: [['Bitcoin is rank 1', /(?:^|\n)\s*1\s+\S*\s*Bitcoin\s*BTC\b/], ['a price in dollars on its row', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a market cap in trillions or billions', /\$\d+(?:\.\d+)?[TB]\b/], ['the 50 largest', /\b50 largest\b/i]],
     askParts: { 'live quotes': [['a price in dollars', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a 24 hour move in percent', /[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a 7 day chart', /\b7d chart\b/i], ['the 7 day move', /\b7d [+−]\d+\.\d{2}%/]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
     facts: [['rank', /(?:^|\n)\s*1\s/], ['price', /\$[\d,]{3,}/], ['market cap', /\bMkt cap\b|market cap/i], ['24 hour change', /[+−]\d+\.\d{2}%/], ['7 day change', /\b7d [+−]\d+\.\d{2}%/], ['24 hour volume', /\bVol 24h \$/i], ['a total market cap', /Total market cap of these \d+: \$\d/i], ['a coin search', /find a coin/i], ['sorting', /\bMkt cap\b/i], ['a 7 day chart', /\b7d chart\b/i], ['company market caps said to be absent, and why', /Company market caps[\s\S]{0,160}no free source/i]],
   },
   'finance: finviz.com': {
-    site: 'https://finviz.com/', verse: '/markets/screener/?near=100&sort=pct',
+    site: 'https://finviz.com/', verse: '/markets/?mode=screener&near=100&sort=pct',
     // the question: the whole small universe (a filter every symbol passes: within 100 percent of its high), biggest gain first. The truth on any day: the page counts how many of
     // the universe match, names a stock and a coin in its rows, and the universe is labelled as 12 stocks, 4 indices and 30 coins, "not every listed company".
-    ask: { verse: '/markets/screener/?near=100&sort=pct' },
+    ask: { verse: '/markets/?mode=screener&near=100&sort=pct' },
     truth: [['the matches counted', /\b\d+ of \d+ symbols match\b/], ['a share row with a price and a move', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['a coin row', /\bBTC\b[\s\S]{0,60}[+−]\d+\.\d{2}%/], ['the universe labelled as small', /12 large US stocks[\s\S]{0,200}30 large coins[\s\S]{0,80}not every listed company/i]],
     askParts: { 'live quotes': [['a price and a move on a row', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a chart under each move', /small line under each move is its chart/i], ['the distance from the high', /Below high/i]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
     facts: [['a move filter', /Move at least/i], ['a distance from the high filter', /Within % of high/i], ['a volume filter', /Volume at least/i], ['a group filter', /\bIndices\b[\s\S]{0,40}\bCoins\b/i], ['sorting', /Sort by/i], ['a match count', /\d+ of \d+ symbols match/], ['volume against the average', /Volume ×/], ['the universe said plainly', /not every listed company/i], ['a chart on each row', /small line under each move is its chart/i]],

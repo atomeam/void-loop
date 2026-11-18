@@ -34,6 +34,17 @@ export const FAMILIES = Object.freeze([
     { path: "/calculator/", to: "/calculator/" },
     { path: "/calculators/", to: "/calculator/?mode=formulas" }
   ] },
+  { id: "random", page: "/random/", members: [
+    { path: "/random/", to: "/random/" },
+    { path: "/random/coin/", to: "/random/?mode=coin" },
+    { path: "/random/wheel/", to: "/random/?mode=wheel" },
+    { path: "/random/people/", to: "/random/?mode=people" }
+  ] },
+  { id: "markets", page: "/markets/", members: [
+    { path: "/markets/", to: "/markets/" },
+    { path: "/markets/caps/", to: "/markets/?mode=caps" },
+    { path: "/markets/screener/", to: "/markets/?mode=screener" }
+  ] },
 ]);
 
 const byPath = new Map();
@@ -76,4 +87,6 @@ export const FAMILY_MODE_SRC = Object.freeze({
   "/base64/": { "bases": "/base64/modes/bases.html" },
   "/scores/": { "sports": "/scores/modes/sports.html" },
   "/calculator/": { "formulas": "/calculator/modes/formulas.html" },
+  "/random/": { "coin": "/random/modes/coin.html", "wheel": "/random/modes/wheel.html", "people": "/random/modes/people.html" },
+  "/markets/": { "caps": "/markets/modes/caps.html", "screener": "/markets/modes/screener.html" },
 });
