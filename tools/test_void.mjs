@@ -4713,6 +4713,35 @@ try {
     await P.p.keyboard.press('Escape');
     for (const a of ['latest episode', 'verse podcast']) { await P.ask(a, 1100); const ok = await until(() => P.p.evaluate(() => !!document.querySelector('.vpage.on .vpod')), 4000); check('podcast: "' + a + '" opens the same player card', !!ok, a); await P.p.keyboard.press('Escape'); }
     await P.ctx.close(); }
+  // media really plays (2026-11-18): a card or page that shows a player must load and play its media, and say so plainly when it
+  // cannot. The podcast search card used to send a tap on a show to the Uni page; now its episodes open and play in the card.
+  if (want("media playback: a podcast found by search plays in its card, a film plays on the films page, and a broken film says so")) { const M = await fresh();
+    const cerr = []; M.p.on('console', (m) => { if (m.type() === 'error') cerr.push(m.text().slice(0, 160)); });
+    const mp3 = fs.readFileSync(path.join(root, 'podcast', 'verse-out-loud-001.mp3')), mp4 = fs.readFileSync(path.join(root, 'studio', '20261110-verse-1.mp4'));
+    await M.ctx.route(/^https:\/\/audio\.test\//, (r) => r.fulfill({ status: 200, contentType: 'audio/mpeg', headers: { 'access-control-allow-origin': '*' }, body: mp3 }));
+    await M.ctx.route(/\/api\/podcasts\?/, (r) => { const u = new URL(r.request().url());
+      if (u.searchParams.get('q')) return r.fulfill(json({ ok: true, shows: [{ id: '42', title: 'History Test Show', author: 'A Host', genre: 'History', feed: 'https://feed.test/rss' }] }));
+      return r.fulfill(json({ ok: true, show: { id: '42', title: 'History Test Show', link: 'https://show.test/', episodes: [{ id: 'e1', title: 'Episode one', audio: 'https://audio.test/ep1.mp3', dur: 77, pub: '2026-11-16T04:00:00Z' }] } })); });
+    await M.ask('podcasts about history', 900);
+    await M.p.click('.vpage.on a[href="/podcasts/?show=42"]');
+    await until(() => M.p.$('.vpage.on button[data-pod="play"]'), 5000);
+    const stayed = M.p.url().startsWith(base) && !/\/podcasts\//.test(M.p.url());
+    await M.p.click('.vpage.on button[data-pod="play"]');
+    const pod = await until(() => M.p.evaluate(() => { const a = document.querySelector('.vpage.on audio[data-pod="player"]'); return a && a.readyState >= 2 && a.duration > 0 && !a.paused ? { rs: a.readyState, dur: a.duration, paused: a.paused } : null; }), 8000);
+    const pause = await M.p.evaluate(() => { const a = document.querySelector('.vpage.on audio[data-pod="player"]'); a.pause(); return a.paused; });
+    const film = (id) => ({ id, at: '2026-11-10T21:25:30Z', title: 'Test film ' + id, description: 'A test film.', tags: 'Verse', bytes: mp4.length, src: '/api/films?id=' + id + '&exp=9&sig=s' });
+    await M.ctx.route(/\/api\/film-views/, (r) => r.fulfill(json({})));
+    await M.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const u = new URL(r.request().url());
+      if (u.searchParams.get('sig')) return u.searchParams.get('id') === 'good' ? r.fulfill({ status: 200, contentType: 'video/mp4', body: mp4 }) : r.fulfill({ status: 404, body: '' });
+      return r.fulfill(json({ films: [film('good'), film('gone')], owner: false, member: false })); });
+    await M.p.goto(base + 'films/?v=good');
+    const vid = await until(() => M.p.evaluate(async () => { const v = document.querySelector('.watchbox video'); if (!v || v.readyState < 2 || !(v.duration > 0)) return null; v.muted = true; await v.play().catch(() => {}); return v.paused ? null : { rs: v.readyState, dur: v.duration }; }), 10000);
+    await M.p.goto(base + 'films/?v=gone');
+    const broken = await until(() => M.p.evaluate(() => { const e = document.querySelector('.watchbox .film-error'); return e ? e.textContent : ''; }), 8000);
+    const errs = cerr.filter((t) => !/Failed to load resource/.test(t)); // the 404 the broken film asks for is the case under test
+    check('media playback: a podcast found by search plays in its card (readyState 2+, a duration, playing, pausable) without leaving the stage; a film plays on the films page; a film that cannot load shows a plain error with Try again; no console errors',
+      stayed && !!pod && pause && !!vid && /did not load/.test(broken) && !errs.length && !M.errors.length, JSON.stringify({ stayed, pod, pause, vid, broken, errs, e: M.errors }));
+    await M.ctx.close(); }
   // Local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): /local/ finds the place from the connection, lists the
   // radio near it through the real /api/local (Radio Browser answered offline here), plays a station's own stream in the page, links a station
   // whose stream cannot play in a secure page to its own site, and lists the TV broadcast to that city from the committed iptv-org table.

@@ -242,8 +242,12 @@
           $('p', { class: 'desc', text: cur.description }), $('div', { class: 'kick', text: 'Share it' }), shareRow,
           $('div', { class: 'kick', text: 'Upload it to your own channel' }), shareBox(cur)];
         if (j.member) kids.push(reviewBox(cur, j.owner));
+        const player = $('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata', draggable: 'false' });
+        // a film that cannot load (an expired link, a network cut) says so in place of a black box, with a way to get a fresh link
+        player.addEventListener('error', () => { const again = $('button', { class: 'btn', type: 'button', text: 'Try again' }); again.addEventListener('click', () => location.reload());
+          player.replaceWith($('div', { class: 'film-error', role: 'status' }, [$('p', { text: 'This film did not load. Its link may have expired.' }), again])); });
         watch.replaceChildren($('a', { class: 'home', href: './', text: '← All videos' }),
-          $('article', { class: 'film watchbox', 'data-id': cur.id }, [$('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata', draggable: 'false' }), $('div', { class: 'body' }, kids)]),
+          $('article', { class: 'film watchbox', 'data-id': cur.id }, [player, $('div', { class: 'body' }, kids)]),
           $('h3', { class: 'kick', text: 'Up next' }));
         status.textContent = '';
         for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(lazy(card(f)));
