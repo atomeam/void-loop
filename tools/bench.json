@@ -7283,5 +7283,12 @@
   {"ask": "propose automations for a new client", "want": "skill:automation-proposal"},
   {"ask": "choose your own adventure", "want": "skill:adventure"},
   {"ask": "play adventure", "want": "skill:adventure"},
-  {"ask": "adventure game", "want": "skill:adventure"}
+  {"ask": "adventure game", "want": "skill:adventure"},
+  {"ask": "what is missing for client handoff on the status reports", "want": "skill:handoff-ready"},
+  {"ask": "summon pack for the invoice automation", "want": "skill:summon-pack"},
+  {"ask": "client asks for onboarding status", "want": "skill:summon-pack"},
+  {"ask": "how does the client summon the support router status", "want": "skill:summon-pack"},
+  {"ask": "system design for client onboarding", "want": "skill:system-design"},
+  {"ask": "design the system for invoice reminders", "want": "skill:system-design"},
+  {"ask": "design systems for the support flow", "want": "skill:system-design"}
 ]
