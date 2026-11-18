@@ -25,8 +25,8 @@ test('pixel measures: a soft glow has few hard edges, a hard-edged disk many, a 
 test('judge names each failure with the surface, the viewport and the numbers', () => {
   const dom = { errors: ['boom'], scrollX: 40, clipped: ['p.x'], bg: 0.9, media: ['video a.mp4'], chrome: ['a#void-anchor', 'p.offer'] };
   const bad = judge('/', 'mobile', dom, { mean: 0.5, offMode: 0.0001, hardEdge: 0.5 });
+  assert.ok(bad.some((b) => b.includes('a#void-anchor')), 'nothing besides the ask bar, the old corner heart included');
   for (const w of ['console/page error', 'sideways scroll', 'clipped text', 'not the dark theme', 'blank render', 'media failed', 'p.offer', 'not near-black', 'hard-edged']) assert.ok(bad.some((b) => b.includes(w) && b.startsWith('/ @ mobile')), w);
-  assert.ok(!bad.some((b) => b.includes('a#void-anchor')), 'the corner heart is kept');
   assert.deepEqual(judge('/films/', 'desktop', { errors: [], scrollX: 0, clipped: [], bg: 0.01, media: [], chrome: ['a.x'] }, { mean: 0.5, offMode: 0.2, hardEdge: 0.9 }), []);
 });
 

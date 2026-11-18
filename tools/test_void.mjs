@@ -1954,31 +1954,17 @@ try {
     const rPh = worst(rb.ph), rInk = worst(rb.ink);
     check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
     await C.ctx.close();
-    // 7) no corner "support Verse" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
-    //    "open the store" still opens the store, and the book's Start here page names it
+    // 7) no link on the landing at all (owner, 2026-10-18: the corner text link went; owner, 2026-11-18: the corner heart went too, the landing is
+    //    only the void and the ask bar): "store", "open the store" and "buy" still open the store, /store/ still serves it, and the book's Start here page names it
     const S = await fresh(); await S.p.waitForTimeout(1500);
-    //    (asked by Verse, 2026-10-18, after the link went): a ghost of a heart in the corner, faint until the pointer nears the corner, then opaque
     await S.p.mouse.move(200, 200); await S.p.waitForTimeout(300);
-    const depthOf = () => S.p.evaluate(() => { const a = document.getElementById('void-anchor'), r = a && a.querySelector('clipPath rect'), f = a && a.querySelector('.void-anchor-fill'); return a ? { depth: a.dataset.depth, state: a.dataset.state, title: a.title, fillH: r ? +r.getAttribute('height') : -1, fillY: r ? +r.getAttribute('y') : -1, fill: f ? getComputedStyle(f).fill : '' } : null; });
-    const sup = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { el: !!document.getElementById('void-support'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.getClientRects().length).map((e) => e.id), /* getClientRects: a fixed element has no offsetParent */ text: /support v01d/i.test(document.body.innerText), ghost: a ? +getComputedStyle(a).opacity : -1, href: a && a.getAttribute('href'), label: a && a.getAttribute('aria-label') }; });
-    const depth0 = await depthOf(); // the heart's fill (asked by Verse: "navigation depth"): a fresh stage is 0 of 12, nothing filled
-    const vpS = await S.p.evaluate(() => [innerWidth, innerHeight]), anchorOp = () => S.p.evaluate(() => +getComputedStyle(document.getElementById('void-anchor')).opacity);
-    // under load the page may still be parsing its script when the pointer first arrives: nudge the pointer until the page listens, then measure
-    const near = await until(async () => { await S.p.mouse.move(vpS[0] - 40, vpS[1] - 40); await S.p.waitForTimeout(250); const o = await anchorOp(); return o === 1 ? o : false; }, 8000) || await anchorOp();
-    const far = await until(async () => { await S.p.mouse.move(200, 200); await S.p.waitForTimeout(250); const o = await anchorOp(); return o <= 0.25 ? o : false; }, 3000);
-    await S.ask('open the store', 900); const storePg = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300);
+    const sup = await S.p.evaluate(() => ({ el: !!document.getElementById('void-support'), heart: !!document.getElementById('void-anchor'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.getClientRects().length).map((e) => e.id || e.getAttribute('href')), /* getClientRects: a fixed element has no offsetParent */ text: /support v01d/i.test(document.body.innerText) }));
+    const storeOf = async (ask) => { await S.ask(ask, 900); const t = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300); return t; };
+    const asked = {}; for (const a of ['open the store', 'store', 'buy']) asked[a] = await storeOf(a);
+    const storeUrl = await S.p.evaluate(async () => { try { const r = await fetch('/store/'); return r.status + ' ' + /store/i.test(await r.text()); } catch (e) { return String(e); } });
     const howStore = /data-ask="open the store"/.test(fs.readFileSync(path.join(root, 'lib', 'tome.js'), 'utf8'));
-    check('empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; "open the store" answers; the book\'s Start here page names the store',
-      !sup.el && sup.links.join() === 'void-anchor' && !sup.text && sup.ghost > 0 && sup.ghost <= 0.25 && near === 1 && far <= 0.25 && sup.href === '/store/' && /store/i.test(sup.label) && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, near, far, storePg: storePg.slice(0, 80), howStore }));
-    // the heart fills with how much is on your stage to go back to (asked by Verse, 2026-10-18; lib/anchor-density.js): two asks that place things make it 2 of 12 and a taller violet fill;
-    // the anchor's opacity, name and href are as they were
-    await S.ask('make a clock', 600); await S.ask('add a sticky that says a', 600); await until(async () => (await S.state()).length === 2, 6000);
-    const depth2 = await until(async () => { const d = await depthOf(); return d && d.depth === '2' ? d : null; }, 4000) || await depthOf();
-    const after = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { href: a.getAttribute('href'), label: a.getAttribute('aria-label'), ghost: +getComputedStyle(a).opacity }; });
-    check('empty state: the ghost anchor\'s heart fills with navigation depth (asked by Verse): a fresh stage is "0 of 12 things on your stage" with no fill; after two asks that place things it is 2 of 12 with a taller violet fill rising from the bottom; its name, href and ghost opacity do not change',
-      !!depth0 && depth0.depth === '0' && depth0.state === 'under' && depth0.title === 'support Verse · 0 of 12 things on your stage' && depth0.fillH === 0
-        && !!depth2 && depth2.depth === '2' && depth2.state === 'under' && depth2.title === 'support Verse · 2 of 12 things on your stage' && depth2.fillH > 0 && depth2.fillY < depth0.fillY && /150, 120, 255/.test(depth2.fill)
-        && after.href === '/store/' && after.label === sup.label && after.ghost > 0 && after.ghost <= 0.25, JSON.stringify({ depth0, depth2, after, sup }));
+    check('empty state: no link and no corner heart on the landing; "open the store", "store" and "buy" each open the store; /store/ serves it; the book\'s Start here page names the store',
+      !sup.el && !sup.heart && sup.links.length === 0 && !sup.text && Object.values(asked).every((t) => /sells|store/i.test(t)) && storeUrl === '200 true' && howStore, JSON.stringify({ sup, asked: Object.fromEntries(Object.entries(asked).map(([k, v]) => [k, v.slice(0, 60)])), storeUrl, howStore }));
     // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
     const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
     await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
@@ -9884,7 +9870,7 @@ try {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('a fresh visit is the void: an empty stage and the input, nothing else to click but the ghost anchor in the corner (owner, 2026-10-15; the text link went and the ghost anchor came on 2026-10-18)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-anchor'), JSON.stringify(bare).slice(0, 200));
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click (owner, 2026-10-15; the corner heart came off the landing on 2026-11-18)', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));

@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-18T17:16:22.583Z",
+  "at": "2026-11-18T17:59:29.216Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -34,27 +34,24 @@
       }
     },
     "podcasts": {
-      "score": 92.1,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of my favorite murder",
+          "ask": "play the latest episode of hardcore history",
           "failed": [
-            "fast",
-            "audio",
             "show",
             "episode"
           ],
-          "score": 42.9
+          "score": 71.4
         },
         {
-          "ask": "play the podcast",
+          "ask": "play the latest episode of my favorite murder",
           "failed": [
-            "fast",
-            "audio"
+            "fast"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the episode before that",
@@ -119,73 +116,10 @@
       }
     },
     "weather": {
-      "score": 76.9,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "weather in paris",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "will it rain tomorrow in london",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "weather in tokyo this week",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "weather in seattle",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "what is the weather in paris",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "weather in london this weekend",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "what's the weather in miami tomorrow",
-          "failed": [
-            "skill",
-            "fast",
-            "temp"
-          ],
-          "score": 50
-        },
         {
           "ask": "weather",
           "failed": [
@@ -198,9 +132,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -232,10 +167,33 @@
       }
     },
     "recipes": {
-      "score": 96.3,
+      "score": 91.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "recipe for chocolate chip cookies",
+          "failed": [
+            "fast"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "recipe for salad dressing",
+          "failed": [
+            "fast"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how to bake banana bread",
+          "failed": [
+            "fast",
+            "dish",
+            "method"
+          ],
+          "score": 50
+        },
         {
           "ask": "recipe",
           "failed": [
@@ -308,12 +266,19 @@
       }
     },
     "sports": {
-      "score": 95.4,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
           "failed": [
             "board"
           ],
@@ -421,7 +386,7 @@
     }
   },
   "lowest": {
-    "domain": "weather",
-    "score": 76.9
+    "domain": "recipes",
+    "score": 91.7
   }
 }
