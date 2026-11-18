@@ -74,7 +74,7 @@ function wireShows(el, listHtml, esc) {
     }
     const id = (a.getAttribute('href').match(/show=(\d{1,12})/) || [])[1];
     el.innerHTML = '<p class="sub">Loading the episodes…</p>';
-    let show = null; try { const j = await fetch('/api/podcasts?id=' + id).then((r) => r.json()); show = j && j.ok && j.show; } catch (_) { show = null; }
+    let show = null; try { const j = await fetch('/api/podcasts?id=' + encodeURIComponent(id)).then((r) => r.json()); show = j && j.ok && j.show; } catch (_) { show = null; }
     if (!show) { el.innerHTML = listHtml + '<p class="sub" role="status">That show did not load just now. Tap it again in a moment.</p>'; return; } // void-review: ok (escaped parts)
     el._podShow = show; el.innerHTML = episodesHtml(show, esc); // void-review: ok (episodesHtml escapes every piece)
   });
