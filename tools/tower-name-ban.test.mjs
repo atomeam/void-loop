@@ -29,3 +29,10 @@ test('no family floor page names a rival host in visible markup, except /interne
 test('the name-ban allows only /internet-history/ to name studied sites', () => {
   assert.ok(FAMILIES.every((f) => f.page !== '/internet-history/'), 'the museum is not a family tool page');
 });
+
+test('the internet history page may name sites in plain text and does not use logos', () => {
+  const html = readFileSync(join(DIR, 'internet-history/index.html'), 'utf8');
+  assert.match(html, /Internet history/);
+  assert.ok(!/<img\b/i.test(html), 'no logos or images on the history page');
+  assert.ok(hosts.some((h) => html.toLowerCase().includes(h)), 'the history page names at least one studied site');
+});
