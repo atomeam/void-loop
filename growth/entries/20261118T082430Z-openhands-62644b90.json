@@ -1,0 +1,1 @@
+{"at":"2026-11-18T08:24:30Z","by":"openhands","kind":"fix","what":"The book's Rule registry can no longer lag the index: generators write before they report, the CI setup regenerates every card even when one is stale, and the four unplaced skills have a family","show":"the book's Rule registry lists every skill in routing order","try":"show the router rules"}

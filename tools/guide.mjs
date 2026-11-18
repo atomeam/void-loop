@@ -31,16 +31,24 @@ export function textOf(book) {
   return JSON.stringify({ note: 'The Book of Verse: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site\'s own data. Do not edit by hand.', ...rest }, null, 1) + '\n';
 }
 
+/** what is wrong with a book: a skill on no family page (the book still lists it in the Rule registry, which is built from the index). Pure. */
+export const problemsOf = (book) => (book.unplaced && book.unplaced.length ? ['skills on no page of the book (their family is missing in tools/families.mjs): ' + book.unplaced.join(', ')] : []);
+
+/** write the book to `out`, and return the problems found. The write happens whatever the problems are: a skill added to the
+ *  routing order but not yet to a family must never leave guide.json stale against the index the page and the browser check read
+ *  (2026-11-18: reporting first aborted the write, so the book lagged the index on main until someone added the family). */
+export function writeBook(out, book) { writeFileSync(out, textOf(book)); return problemsOf(book); }
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const book = bookFromRepo(), json = textOf(book), problems = [];
-  if (book.unplaced.length) problems.push('skills on no page of the book (their family is missing in tools/families.mjs): ' + book.unplaced.join(', '));
+  const book = bookFromRepo();
   if (process.argv.includes('--check')) {
-    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== json) console.log('guide.json lags the book; the deploy rewrites it (node tools/guide.mjs)');
+    const problems = problemsOf(book);
+    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== textOf(book)) console.log('guide.json lags the book; the deploy rewrites it (node tools/guide.mjs)');
     if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
     console.log('ok: the book has ' + book.totals.pages + ' pages in ' + book.totals.chapters + ' chapters (' + book.totals.skills + ' skills, ' + book.totals.games + ' games, ' + book.totals.minis + ' miniatures)'); process.exit(0);
   }
-  if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
-  writeFileSync(OUT, json);
+  const problems = writeBook(OUT, book); // write first: a missing family must not leave the book stale against the index
   for (const c of book.chapters) console.log(c.name.padEnd(22) + ' pages ' + String(c.from).padStart(3) + '–' + String(c.to).padEnd(4) + (c.for ? '  ' + c.for : ''));
   console.log('all'.padEnd(22) + ' ' + book.totals.pages + ' pages, ' + book.totals.skills + ' skills, ' + book.totals.games + ' games, ' + book.totals.minis + ' miniatures');
+  if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
 }
