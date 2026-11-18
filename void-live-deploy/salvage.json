@@ -1,9 +1,9 @@
 {
- "at": "2026-11-17",
- "scanned": 551,
+ "at": "2026-11-18",
+ "scanned": 553,
  "counts": {
   "unified": 69,
-  "live": 69,
+  "live": 71,
   "salvageable": 387,
   "history": 23,
   "skipped": 3
@@ -5801,6 +5801,30 @@
    "target": "page",
    "value": 2.1,
    "why": "live code shares its name; check for overlap before migrating",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "domains/void.evolve.json",
+   "kind": "domain",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "domains/void.evolve.promotions.json",
+   "kind": "domain",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
    "into": null,
    "test": null,
    "pr": null,

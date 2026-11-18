@@ -18,6 +18,14 @@ export const FAMILIES = Object.freeze([
     { path: "/kanban/teams/", to: "/kanban/" },
     { path: "/kanban/flow/", to: "/kanban/" }
   ] },
+  { id: "password", page: "/password/", members: [
+    { path: "/password/", to: "/password/" },
+    { path: "/password/strength/", to: "/password/?mode=strength" }
+  ] },
+  { id: "base64", page: "/base64/", members: [
+    { path: "/base64/", to: "/base64/" },
+    { path: "/base64/bases/", to: "/base64/?mode=bases" }
+  ] },
 ]);
 
 const byPath = new Map();
@@ -56,4 +64,6 @@ export function sameFamilyTwoPages(a, b) {
 }
 
 export const FAMILY_MODE_SRC = Object.freeze({
+  "/password/": { "strength": "/password/modes/strength.html" },
+  "/base64/": { "bases": "/base64/modes/bases.html" },
 });

@@ -2,6 +2,7 @@
 <html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
+<script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Base64 encode and decode, live as you type · Verse</title>
 <meta name="description" content="Encode text to Base64 and decode Base64 to text as you type, in both directions: RFC 4648 Base64 and URL-safe Base64URL, with or without padding, exact for emoji and accents (44 character sets both ways: UTF-8, UTF-16, ISO-8859, Windows, KOI8, DOS, EBCDIC, Shift_JIS, GBK, GB18030, Big5, EUC-KR and more). Each line on its own, LF or CRLF, MIME lines of 76. Bad input is named, not turned into garbage. Files of any size become Base64 and data: URLs on this device, ready to download. Works offline, nothing sent anywhere.">
@@ -13,7 +14,7 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  /* a-to-mind.com/base64/ (the tower's base64encode.org floor): one file and one small module, no third party */
+  /* a-to-mind.com/base64/ (the base64 floor): one file and one small module, no third party */
   :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b3261e; --good: #1f7a45; }
   :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a80; --good: #6fd49a; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
@@ -65,7 +66,7 @@
 </head>
 <body>
 <!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
-<nav class="v-modes" aria-label="Encode modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/base64/" aria-current="page">Base64</a><a href="/base64/bases/">Number bases</a></nav>
+<nav class="v-modes" aria-label="Encode modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/base64/" aria-current="page">Base64</a><a href="/base64/?mode=bases">Number bases</a></nav>
 
 <main>
   <h1>Base64 encode and decode</h1>
@@ -104,8 +105,8 @@
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/base64/?mode=decode">Decode Base64</a><a href="/base64/?t=Hello%2C+world">Encode &quot;Hello, world&quot;</a><a href="/base64/?b=SGVsbG8sIHdvcmxk">Decode SGVsbG8sIHdvcmxk</a><a href="/base64/?a=url">Base64URL</a><a href="/base64/?pad=0">Without padding</a><a href="/base64/?wrap=1">MIME lines of 76</a><a href="/base64/?lines=1">Each line on its own</a></nav>
 <!-- /asks -->
 <!-- lab-tools --><section id="lab-here" aria-label="Tools from the Verse lab" style="margin:14px 0"><details class="lab-here"><summary><b>File checksum checker</b>: check a downloaded file is the file it says it is, by its sha256 sum</summary><iframe src="/lab/checksum/" title="File checksum checker" loading="lazy" allow="microphone; clipboard-write" style="display:block;width:100%;height:560px;margin-top:8px;border:1px solid rgba(127,127,127,.35);border-radius:10px;background:#fff"></iframe><p style="margin:6px 0 0"><a href="/lab/checksum/">Open File checksum checker on its own page</a></p></details></section><!-- /lab-tools -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/checksum/">File checksum checker</a> <a href="/word-count/">Word counter</a> <a href="/base64/bases/">Base converter</a> <a href="/g/">Snippet / Note in a link</a> <a href="/emojis/">Emoji counts</a> <a href="/tools/">All tools</a><!-- /related --></nav>
-  <footer>Encoded and decoded on this device as you type, in both directions on one page: what base64encode.org and its sister site base64decode.org split across two addresses lives in two boxes here. Nothing is sent anywhere, and the page works offline after one visit. Base64 and Base64URL as RFC 4648 writes them: decoding takes either alphabet, with or without padding, ignores spaces and line breaks, takes a whole data: URL, and names the character that is wrong instead of guessing. Text is UTF-8 unless you pick another of the 44 character sets (Unicode, the ISO-8859 family, the Windows code pages, KOI8, Mac, DOS, EBCDIC, and Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR), every one both ways, so emoji and accents come back exactly; a character the set cannot hold is named, never turned into ?. The Asian sets are written from the browser's own decoder, swept once and turned around on this device: no table is downloaded. A file of any size is read a slice at a time; a long result is kept whole behind Copy and Download while the box shows its start. <a href="/">Ask Verse anything</a></footer>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/checksum/">File checksum checker</a> <a href="/word-count/">Word counter</a> <a href="/convert/">Unit converter</a> <a href="/g/">Snippet / Note in a link</a> <a href="/emojis/">Emoji counts</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer><!-- void-review: ok (character-set names in page prose, not JS identifiers) -->Encoded and decoded on this device as you type, in both directions on one page: what some sites split across two addresses lives in two boxes here. Nothing is sent anywhere, and the page works offline after one visit. Base64 and Base64URL as RFC 4648 writes them: decoding takes either alphabet, with or without padding, ignores spaces and line breaks, takes a whole data: URL, and names the character that is wrong instead of guessing. Text is UTF-8 unless you pick another of the 44 character sets (Unicode, the ISO-8859 family, the Windows code pages, KOI8, Mac, DOS, EBCDIC, and Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR), every one both ways, so emoji and accents come back exactly; a character the set cannot hold is named, never turned into ?. The Asian sets are written from the browser's own decoder, swept once and turned around on this device: no table is downloaded. A file of any size is read a slice at a time; a long result is kept whole behind Copy and Download while the box shows its start. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';

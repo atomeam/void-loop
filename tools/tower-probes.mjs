@@ -230,11 +230,11 @@ export const PROBES = Object.freeze({
       ['lines of 76 characters', /\b76\b/], ['the newline form', /\bnewline\b|\bline\s?breaks?\b|\bCRLF\b|\bLF\b/i], ['encoding as you type', /\blive\b|as you type/i], ['files', /\bfiles?\b/i], ['copy', /\bcopy\b/i], ['download', /\bdownload\b/i]],
   },
   'password strength': {
-    site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/',
+    site: 'https://www.howsecureismypassword.net/', verse: '/password/?mode=strength',
     // the page never carries a password in its address (its own rule: nothing typed goes in a link), so the gate types the question into its box
     // (`verseType`). The question: qwerty123, at the head of every leaked list. The truth any correct checker agrees on: it is very weak, cracked
     // at once from a stolen list (a rig trying 10 billion a second needs far fewer), the word qwerty and the run 123 are why, and longer is the fix
-    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/', verseType: 'qwerty123' },
+    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/?mode=strength', verseType: 'qwerty123' },
     truth: [['rated very weak', /\bvery weak\b/i], ['cracked instantly', /\binstantly\b/i], ['the common password qwerty named', /\bqwerty\b/i], ['the run 123 named', /\b123\b/i], ['the fix: make it longer', /\blonger\b/i]],
     // the floor's own aspects, read off the same typed answer: a time at a login and a time from a stolen list; why it is weak and how to fix it
     askParts: { 'crack time': [['a time from a stolen list, offline', /\boffline\b|stolen list/i], ['a time at a login, online', /\blogin\b|\bonline\b/i]],
@@ -986,10 +986,10 @@ export const PROBES = Object.freeze({
       ['a JPEG', /\bjpe?g\b/i], ['a PDF', /\bpdf\b/i], ['crop or keep the whole picture', /\bcrop\b|whole picture/i], ['a signature too', /\bsignature\b/i], ['nothing uploaded', /never uploaded|nothing is uploaded|on (?:this|your) device/i], ['a share link', /\bshare\b/i]],
   },
   'base converter': {
-    site: 'https://hextobinary.com/', verse: '/base64/bases/?v=ff&b=16',
+    site: 'https://hextobinary.com/', verse: '/base64/?mode=bases&v=ff&b=16',
     // hextobinary.com's address cannot carry a number, so the gate types it into the converter's box (`type`), as a person would; Verse takes it
     // in the link. The question: a 31-digit hex number (121 bits), past what a double holds exactly (53 bits); the truth is computed with BigInt
-    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/bases/?v=' + HUGE.toString(16) + '&b=16' },
+    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/?mode=bases&v=' + HUGE.toString(16) + '&b=16' },
     truth: [['the exact binary', exact(HUGE.toString(2))], ['the exact decimal', exact(HUGE.toString(10))]],
     askParts: { 'huge numbers': [['all 121 binary digits', exact(HUGE.toString(2))], ['all 37 decimal digits', exact(HUGE.toString(10))], ['all 41 octal digits', exact(HUGE.toString(8))]] },
     facts: [['binary', /\bbinary\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i], ['octal', /\boctal\b/i]],

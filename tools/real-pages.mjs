@@ -182,7 +182,7 @@ export const SPECS = {
     await t.fill('#input', '12 * 7'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(2500);
     t.ok(/\b84\b/.test(await t.p.locator('body').innerText()), 'the chat answers 12 * 7 = 84');
   },
-  '/base64/bases/': async (t) => {
+  '/base64/?mode=bases': async (t) => {
     await t.fill('#b10', '255'); t.ok((await t.val('#b16')).toLowerCase() === 'ff' && (await t.val('#b2')).replace(/\s/g, '') === '11111111' && (await t.val('#b8')) === '377', '255 is ff, 11111111, 377');
     await t.share('#link', async (p) => (await p.inputValue('#b16')).toLowerCase() === 'ff');
   },
@@ -435,7 +435,7 @@ export const SPECS = {
     await t.clickText('The Great Wave'); await t.p.waitForTimeout(1200); t.ok(/Great Wave/.test(await t.p.getAttribute('#c', 'aria-label').catch(() => '') || ''), 'and back to The Great Wave');
     await t.click('#next'); await t.download('#png', /\.png$/i); await t.share('#share'); },
   '/password/': async (t) => { await t.fill('#lenN', '24'); await t.click('#go'); await t.p.waitForTimeout(200); const pw = (await t.p.locator('#list').innerText()).split(/\s+/)[0]; t.ok(pw.length === 24, 'a 24 character password: ' + pw.length); await t.share('#link'); },
-  '/password/strength/': async (t) => {
+  '/password/?mode=strength': async (t) => {
     await t.fill('#pw', 'password'); await t.p.waitForTimeout(300); t.ok(/weak|very weak|instant/i.test(await t.p.locator('main').innerText()), '"password" is weak');
     await t.fill('#pw', 'c0rrect-Horse-battery-staple-91'); await t.p.waitForTimeout(300); t.ok(/strong|centur|years/i.test(await t.p.locator('main').innerText()), 'a long passphrase is strong');
     await t.click('#leak'); await t.p.waitForTimeout(3000); t.ok(/leak|breach|found|not found|seen/i.test(await t.p.locator('main').innerText()), 'the leak check answers');

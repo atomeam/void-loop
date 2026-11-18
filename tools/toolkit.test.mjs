@@ -33,8 +33,8 @@ test('the ask bar routes an ask to the tool that does it, with the ask in the li
   const to = (a) => routeAsk(a);
   assert.equal(to('100 c to f'), '/convert/?q=100%20c%20to%20f'); assert.equal(to('flip a coin'), '/random/coin/'); assert.equal(to('weather in boston'), '/weather/?q=boston');
   assert.equal(to('time in tokyo'), '/time/?q=tokyo'); assert.equal(to('is it christmas?'), '/is-it/christmas'); assert.equal(to('a password of 20'), '/password/?len=20');
-  assert.equal(to('how strong is Tr0ub4dor&3'), '/password/strength/', 'the typed password stays out of the address'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
-  assert.equal(to('255 in hex'), '/base64/bases/?v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
+  assert.equal(to('how strong is Tr0ub4dor&3'), '/password/?mode=strength', 'the typed password stays out of the address'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
+  assert.equal(to('255 in hex'), '/base64/?mode=bases&v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
   assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random/people/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
   // a tool's own name opens the tool, not a stage answer about the words (2026-10-30: 'word count' opened Wikipedia's article on the stage)
@@ -235,7 +235,7 @@ test('a made or typed password is never in an address, a hash or history: the st
   };
   for (const pw of [...P.generateMany({ length: 24 }, 5), 'Tr0ub4dor&3', 'a b#p=c&d']) {
     const { a, b, sent } = pair(); let got = null;
-    assert.equal(H.handOver(a, pw), true); assert.equal(b.url, '/password/strength/', 'the tab opens on the plain page'); assert.ok(!b.url.includes(pw) && !b.url.includes(encodeURIComponent(pw)) && !b.url.includes('#'), 'no password and no hash in the address it opens');
+    assert.equal(H.handOver(a, pw), true); assert.equal(b.url, '/password/?mode=strength', 'the tab opens on the plain page'); assert.ok(!b.url.includes(pw) && !b.url.includes(encodeURIComponent(pw)) && !b.url.includes('#'), 'no password and no hash in the address it opens');
     assert.equal(H.receive(b, (v) => { got = v; }), true); assert.equal(got, pw, 'the strength page gets the password');
     assert.ok(sent.every((m) => m.target === ORIGIN), 'every message names this origin, never *');
     assert.equal(a.heard(), 0, 'the opener stops listening and drops it'); assert.equal(b.heard(), 0, 'the strength page stops listening');
@@ -249,9 +249,9 @@ test('a made or typed password is never in an address, a hash or history: the st
     H.receive(b, () => {}, 5); b.postMessage = (data) => b.emit({ data, origin: ORIGIN, source: a }); a.emit({ data: { kind: 'a2m-pw-handover', want: true }, origin: ORIGIN, source: b }); }
   { const a = win(ORIGIN); a.open = () => null; assert.equal(H.handOver(a, 'x1'), false, 'a blocked tab carries nothing'); assert.equal(a.heard(), 0); }
   // the ask bar sends a typed password to the plain page
-  for (const ask of ['how strong is Tr0ub4dor&3', 'check password hunter2hunter2', 'how secure is a b c']) { const u = routeAsk(ask); assert.equal(u, '/password/strength/'); }
+  for (const ask of ['how strong is Tr0ub4dor&3', 'check password hunter2hunter2', 'how secure is a b c']) { const u = routeAsk(ask); assert.equal(u, '/password/?mode=strength'); }
   // the pages: no link the password page builds carries a password, and the strength page reads none from the address
-  const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), strength = fs.readFileSync(new URL('../void-live-deploy/password/strength/index.html', import.meta.url), 'utf8');
+  const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), strength = fs.readFileSync(new URL('../void-live-deploy/password/modes/strength.html', import.meta.url), 'utf8');
   assert.ok(!page.includes('#p=') && !/encodeURIComponent\((?:pw|made)/.test(page), 'the password page builds no address with a password in it');
   assert.ok(page.includes("handOver(window, pw)") && page.includes("go: () => !handOver(window, made[0])"), 'both checks hand it over in memory');
   assert.ok(!/pw\.value\s*=\s*decodeURIComponent/.test(strength) && !/(?:session|local)Storage/.test(strength) && !/sessionStorage/.test(page), 'the strength page reads nothing from the address and stores nothing');
@@ -446,7 +446,7 @@ test('the base converter\'s card opens on the number typed there, in the base it
   }
   assert.equal(B.baseAsk('12', 2), '', 'not a binary number: the example'); assert.equal(B.baseAsk('-5', 10), ''); assert.equal(B.baseAsk('', 16), '');
   assert.equal(B.baseAsk('0b101', 16), '', 'a prefix for another base');
-  const src = fs.readFileSync(new URL('../void-live-deploy/base64/bases/index.html', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../void-live-deploy/base64/modes/bases.html', import.meta.url), 'utf8');
   assert.match(src, /card: \(\) => \(!typedIn \? '' : typedIn\.dataset\.base === 'any' \? baseAsk\(\$\('b10'\)\.value, 10\) : baseAsk\(typedIn\.value, \+typedIn\.dataset\.base\)\)/, 'the page gives its card the box typed in');
   assert.match(src, /const show = \(fromBox\) => \{\n\s+typedIn = fromBox;/, 'every show remembers the box');
 });
