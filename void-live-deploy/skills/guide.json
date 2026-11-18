@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 4,
-    "proven": 89
+    "tested": 1,
+    "checked": 6,
+    "proven": 91
    },
    "from": 376,
    "to": 474
@@ -671,7 +671,7 @@
     "create a watercolour painting of a fox"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark, 3 live findings, 2026-11-17",
+   "why": "a self-test, 3 real asks in the benchmark, 4 live findings, 2026-11-18",
    "flavor": "Of the making things; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
    "n": 25
@@ -8586,8 +8586,10 @@
     "design the system for invoice reminders",
     "design systems for the support flow"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. This is the page of system-design.",
+   "glow": 100,
    "n": 471
   },
   {
@@ -8601,8 +8603,9 @@
     "handoff ready check for the onboarding automation",
     "what is missing for client handoff on the status reports"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 472
   },
   {
@@ -8616,8 +8619,10 @@
     "client asks for onboarding status",
     "how does the client summon the support router status"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. This is the page of summon-pack.",
+   "glow": 100,
    "n": 473
   },
   {
@@ -8631,8 +8636,9 @@
     "show the data flows for client onboarding",
     "map connections for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 474
   },
   {

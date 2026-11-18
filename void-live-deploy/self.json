@@ -353,8 +353,56 @@
  },
  "commits": [
   {
-   "at": "2026-11-18T08:24:34Z",
-   "subject": "Fix the flaky book Rule-registry check: generators write before they report, and every skill has a family"
+   "at": "2026-11-18T13:13:01Z",
+   "subject": "Finding: image-gen checked against the live site (findings/image-gen)"
+  },
+  {
+   "at": "2026-11-18T13:07:07Z",
+   "subject": "Better at connect flows: 1 more way of asking answered right — new phrases: “show the data flows for client onboarding” now opens…"
+  },
+  {
+   "at": "2026-11-18T12:09:26Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-18T11:05:35Z",
+   "subject": "Design loop: 1 page fixed, 40 -> 0 design defects"
+  },
+  {
+   "at": "2026-11-18T10:43:30Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-18T09:42:34Z",
+   "subject": "Incident: the browser suite failed on daac7b14 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-18T09:42:16Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-18T09:26:50Z",
+   "subject": "Flake: 1 check(s) passed on a rerun of daac7b1 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-18T09:09:39Z",
+   "subject": "Incident: the browser suite failed on a1bdb96f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-18T09:03:36Z",
+   "subject": "Better at handoff ready, summon pack and system design: 7 more ways of asking answered right — new phrases: “what is missing for client…"
+  },
+  {
+   "at": "2026-11-18T09:02:02Z",
+   "subject": "Outcome exam: weather 54.5"
+  },
+  {
+   "at": "2026-11-18T08:31:09Z",
+   "subject": "Fix the flaky book Rule-registry check: generators write before they report, and every skill has a family (#2947)"
+  },
+  {
+   "at": "2026-11-18T08:30:50Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"adaptive flow"
   },
   {
    "at": "2026-11-18T08:08:06Z",
@@ -383,54 +431,6 @@
   {
    "at": "2026-11-18T05:39:48Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"adaptive flow"
-  },
-  {
-   "at": "2026-11-18T05:36:30Z",
-   "subject": "Tower gate: versus measured"
-  },
-  {
-   "at": "2026-11-18T05:33:50Z",
-   "subject": "Failed jobs read: run 44244237062 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-18T05:32:38Z",
-   "subject": "Failed jobs read: run 44244091133 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-18T05:32:08Z",
-   "subject": "Failed jobs read: run 44244237042 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-18T05:26:05Z",
-   "subject": "Add connect-flows skill: map data flows between systems Verse owns (#2943)"
-  },
-  {
-   "at": "2026-11-18T05:24:52Z",
-   "subject": "Strip cosmos HUD readout and center planet; add home-stage sanity gate (#2946)"
-  },
-  {
-   "at": "2026-11-18T04:53:24Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"why is a half"
-  },
-  {
-   "at": "2026-11-18T04:39:55Z",
-   "subject": "Design loop: 3 pages fixed, 5 -> 1 design defects"
-  },
-  {
-   "at": "2026-11-18T04:32:04Z",
-   "subject": "Design loop: 2 pages fixed, 2 -> 0 design defects"
-  },
-  {
-   "at": "2026-11-18T03:34:02Z",
-   "subject": "make the landing canvas a deterministic explorable sky map (#2944)"
-  },
-  {
-   "at": "2026-11-18T03:33:37Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-18T03:20:09Z",
-   "subject": "Outcome exam: sports 95.4"
   }
  ],
  "builders": {
@@ -612,8 +612,8 @@
   }
  ],
  "visible": {
-  "day": 5,
-  "week": 156
+  "day": 6,
+  "week": 157
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

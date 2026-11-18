@@ -14,9 +14,9 @@
  "bench_at": "2026-11-16",
  "totals": {
   "experiment": 0,
-  "tested": 6,
-  "checked": 17,
-  "proven": 444
+  "tested": 2,
+  "checked": 19,
+  "proven": 446
  },
  "families": [
   {
@@ -203,8 +203,8 @@
     {
      "name": "image-gen",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark, 3 live findings, 2026-11-17",
-     "last_tested": "2026-11-17",
+     "why": "a self-test, 3 real asks in the benchmark, 4 live findings, 2026-11-18",
+     "last_tested": "2026-11-18",
      "last_tested_by": "a live call",
      "success_rate": 1,
      "promoted": "2026-11-06",
@@ -3790,9 +3790,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 4,
-    "proven": 89
+    "tested": 1,
+    "checked": 6,
+    "proven": 91
    },
    "skills": [
     {
@@ -4667,32 +4667,40 @@
     },
     {
      "name": "system-design",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-18",
      "streak": 1
     },
     {
      "name": "handoff-ready",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-11-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-18"
     },
     {
      "name": "summon-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-18"
     },
     {
      "name": "connect-flows",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-11-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-18"
     }
    ]
   },
