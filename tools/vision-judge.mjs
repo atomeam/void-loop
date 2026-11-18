@@ -20,8 +20,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile', width: 390, height: 844 }];
 // HARD_EDGE: the landing measured 0.043 (desktop) and 0.064 (phone) on main, 2026-11-18; the bar is about twice that
 export const LIMITS = { DARK: 0.2, NEAR_BLACK: 0.16, BLANK: 0.002, EDGE: 0.35, HARD_EDGE: 0.12, MAX_SURFACES: 6 };
-// the one control the landing keeps outside the ask bar today: the ghosted store heart in the corner (void.html #void-anchor, 2026-10-18)
-export const LANDING_KEEPS = ['a#void-anchor'];
 const LANDING = /^(?:void\.html|void-live-deploy\/(?:index|void)\.html|void-live-deploy\/(?:lib|skills)\/[^/]+\.(?:js|css)|void-live-deploy\/[^/]+\.css)$/;
 
 /** the surfaces a change can alter: the landing for the home and its scripts, /x/ for void-live-deploy/x/index.html. Pure. */
@@ -75,7 +73,7 @@ export function judge(pathname, vp, dom, px) {
   if (px.offMode < LIMITS.BLANK) bad.push(at + ': blank render (' + px.offMode + ' of pixels differ from the main colour)');
   if (dom.media.length) bad.push(at + ': media failed to load: ' + dom.media.slice(0, 2).join(', '));
   if (pathname === '/') {
-    const chrome = dom.chrome.filter((c) => !LANDING_KEEPS.includes(c));
+    const chrome = dom.chrome; // the landing keeps nothing outside the ask bar (owner, 2026-11-18)
     if (chrome.length) bad.push(at + ': landing shows more than the void and the ask bar: ' + chrome.slice(0, 3).join(', '));
     if (px.mean > LIMITS.NEAR_BLACK) bad.push(at + ': landing frame mean luminance ' + px.mean + ' > ' + LIMITS.NEAR_BLACK + ' (not near-black)');
     if (px.hardEdge > LIMITS.HARD_EDGE) bad.push(at + ': harsh hard-edged shapes: ' + px.hardEdge + ' of bright pixels on a strong edge > ' + LIMITS.HARD_EDGE);
