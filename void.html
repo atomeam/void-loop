@@ -4722,8 +4722,9 @@ say('nothing selected to remove');
     const STAR_SPRITES = new Map();
     function starSprite(c) {
       let cv = STAR_SPRITES.get(c); if (cv) return cv;
-      cv = document.createElement('canvas'); cv.width = cv.height = 64; const x = cv.getContext('2d'), img = x.createImageData(64, 64), [r, g, b] = c.split(',').map(Number);
-      for (let j = 0; j < 64; j++) for (let i = 0; i < 64; i++) { const d = Math.min(1, Math.hypot(i - 31.5, j - 31.5) / 32), k = (j * 64 + i) * 4; img.data[k] = r; img.data[k + 1] = g; img.data[k + 2] = b; img.data[k + 3] = Math.round(255 * (1 - d) ** 4); }
+      cv = document.createElement('canvas'); cv.width = cv.height = 65; const x = cv.getContext('2d'), img = x.createImageData(65, 65), [r, g, b] = c.split(',').map(Number);
+      // the centre sits on one texel and the falloff has a small cusp there, so every star has one brightest point rather than a flat top
+      for (let j = 0; j < 65; j++) for (let i = 0; i < 65; i++) { const d = Math.min(1, Math.hypot(i - 32, j - 32) / 32.5), k = (j * 65 + i) * 4; img.data[k] = r; img.data[k + 1] = g; img.data[k + 2] = b; img.data[k + 3] = Math.round(255 * (1 - d) ** 4 * Math.exp(-3 * d)); }
       x.putImageData(img, 0, 0); STAR_SPRITES.set(c, cv); return cv;
     }
     function drawStars(now) {
@@ -4761,7 +4762,7 @@ say('nothing selected to remove');
             const r = st.r * (1 + (s - 1) * 0.5);
             // a soft point of light: one cached sprite per colour whose alpha falls off as (1 - d)^4, never a hard disk with stepped halo rings
             const R = r * (st.halo && tw > 0.75 ? 7 : st.r > 1.25 ? 4.6 : 3.4);
-            ctx.globalAlpha = a; ctx.drawImage(starSprite(st.c), x - R, y - R, R * 2, R * 2);
+            ctx.globalAlpha = a; const cx = Math.floor(x) + 0.5, cy = Math.floor(y) + 0.5; ctx.drawImage(starSprite(st.c), cx - R, cy - R, R * 2, R * 2); // centred on a pixel
             if (streak && opts.streak) {
               const ex = x + sk.dx - (x - W / 2) * sk.warp, ey = y + sk.dy - (y - H / 2) * sk.warp;
               ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.7, r * 1.2); ctx.globalAlpha = a * 0.45;
