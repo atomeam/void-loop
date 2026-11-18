@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-18T15:45:19.190Z",
+ "updated": "2026-11-18T15:54:44.693Z",
  "last24h": {
-  "ticks": 82,
+  "ticks": 83,
   "started": 73,
   "requeued": 0,
   "setAside": 0,
@@ -12,8 +12,13 @@
  "broken": [
   {
    "wf": "tower-gate.yml",
-   "fails": 5,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44121494250"
+   "fails": 6,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44338886005"
+  },
+  {
+   "wf": "deploy.yml",
+   "fails": 3,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44340729935"
   }
  ],
  "held": [
@@ -2584,6 +2589,30 @@
    "grow": false,
    "design": false,
    "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 447,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T15:54:44.693Z",
+   "open": 460,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
    "lap": false,
    "revived": [
     "void-tick.yml"
