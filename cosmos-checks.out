@@ -1,0 +1,5 @@
+--changed: 69 of 735 checks (666 skipped: nothing they cover changed); the gate left 68 structural checks to main
+ok   home-stageΓä╣ duration_ms 14.387
+
+1 checks in 0.1s (1 pure, up to 4 at once: 0.1s of work; 0 browser: 0.0s); --changed ran 69 of 735 checks (666 skipped: nothing they cover changed); the gate left 68 structural checks to main
+slowest: home-stage 0.1s

@@ -24,15 +24,21 @@ export function telemetry(c) { const p = raDecOf(c.x, c.y, c.z), ly = layerOffse
 
 /** Build the entire static universe once, from typed arrays and one fixed seed. Pure apart from allocations. */
 export function buildUniverse(n = 5200) {
-  const rnd = rng(SEED), pos = new Float32Array(n * 3), col = new Float32Array(n * 3); let i = 0;
-  const put = (p, c) => { if (i >= n) return; pos[i * 3] = p[0]; pos[i * 3 + 1] = p[1]; pos[i * 3 + 2] = p[2]; const k = i * 3; col[k] = c[0]; col[k + 1] = c[1]; col[k + 2] = c[2]; i++; };
-  for (const s of STARS) { const p = project(s[1], s[2], s[3] * 3.26156), c = bvColor(s[4]); put(p, [c[0] * 1.4, c[1] * 1.4, c[2] * 1.4]); for (let j = 0; j < 26; j++) put([p[0] + (rnd() - .5) * 2.4, p[1] + (rnd() - .5) * 2.4, p[2] + (rnd() - .5) * 2.4], [c[0] * .28, c[1] * .3, c[2] * .38]); }
-  for (const L of LANDMARKS) { const p = project(L[1], L[2], L[3]), tint = L[4] === 'galaxy' ? [.62, .74, 1] : L[4] === 'cluster' ? [1, .9, .68] : [1, .58, .72]; for (let j = 0; j < 340; j++) { const r = Math.pow(rnd(), 1.7) * 26; put([p[0] + (rnd() - .5) * r * 2, p[1] + (rnd() - .5) * r, p[2] + (rnd() - .5) * r * 2], [tint[0] * (.25 + rnd() * .6), tint[1] * (.25 + rnd() * .6), tint[2] * (.25 + rnd() * .6)]); } }
+  const rnd = rng(SEED), pos = new Float32Array(n * 3), col = new Float32Array(n * 4); let i = 0;
+  // fourth component is an opacity weight: stars sit inside the depth field, deep-sky dust is a whisper on top of it.
+  const put = (p, c, w = 1) => { if (i >= n) return; pos[i * 3] = p[0]; pos[i * 3 + 1] = p[1]; pos[i * 3 + 2] = p[2]; const k = i * 4; col[k] = c[0]; col[k + 1] = c[1]; col[k + 2] = c[2]; col[k + 3] = w; i++; };
+  // desaturated star temperatures: ice white, pale gold, faint blue-white. No neon.
+  const soft = (c) => { const l = (c[0] + c[1] + c[2]) / 3; return [l * .55 + c[0] * .45, l * .6 + c[1] * .4, l * .65 + c[2] * .35]; };
+  for (const s of STARS) { const p = project(s[1], s[2], s[3] * 3.26156), c = soft(bvColor(s[4])); put(p, c, .82); for (let j = 0; j < 26; j++) put([p[0] + (rnd() - .5) * 2.4, p[1] + (rnd() - .5) * 2.4, p[2] + (rnd() - .5) * 2.4], c, .12); }
+  // Messier/NGC landmarks: a soft silver-blue or warm-dust Gaussian haze, never coloured noise. The global scale
+  // fade keeps the whole catalog invisible at overview; these weights keep the haze faint even when zoomed in.
+  const gauss = () => (rnd() + rnd() + rnd()) / 3 - .5;
+  for (const L of LANDMARKS) { const p = project(L[1], L[2], L[3]), dust = L[4] === 'galaxy' ? [.54, .7, .95] : L[4] === 'cluster' ? [.85, .78, .72] : [.74, .8, .9]; for (let j = 0; j < 140; j++) { const s = gauss() * 26; put([p[0] + s * 2, p[1] + gauss() * 26, p[2] + gauss() * 2], dust, .1); } }
   const tilt = GALACTIC_TILT * Math.PI / 180, ct = Math.cos(tilt), st = Math.sin(tilt), off = radiusOf(SOL_GALACTOCENTRIC_LY);
   const place = (q) => { const z = q[2] * Math.cos(GALACTIC_INCLINE * Math.PI / 180 / 2); return [q[0] - off * ct, q[1] * ct - z * st, q[1] * st + z * ct]; };
-  for (let a = 0; a < ARM_COUNT; a++) for (let j = 0; j < 620 && i < n; j++) { const t = rnd(); const q = armPoint(a, t, rnd() - .5, .5 + t); put(place(q), [.42 + .3 * (1 - t), .5 + .24 * (1 - t), .9]); }
-  for (let j = 0; j < 700 && i < n; j++) { const th = rnd() * 6.2832, r = radiusOf(BAR_LENGTH_LY) * rnd(); put(place([Math.cos(th) * r * 2.2, (rnd() - .5) * 60, Math.sin(th) * r]), [1, .84 + rnd() * .16, .6 + rnd() * .3]); }
-  while (i < n) { const r = 300 + rnd() * 900, th = rnd() * 6.2832, ph = Math.acos(2 * rnd() - 1); put([r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)], [.3, .36, .5]); }
+  for (let a = 0; a < ARM_COUNT; a++) for (let j = 0; j < 620 && i < n; j++) { const t = rnd(); const q = armPoint(a, t, rnd() - .5, .5 + t); put(place(q), [.58, .64, .76], .5); }
+  for (let j = 0; j < 700 && i < n; j++) { const th = rnd() * 6.2832, r = radiusOf(BAR_LENGTH_LY) * rnd(); put(place([Math.cos(th) * r * 2.2, (rnd() - .5) * 60, Math.sin(th) * r]), [.78, .74, .66], .55); }
+  while (i < n) { const r = 300 + rnd() * 900, th = rnd() * 6.2832, ph = Math.acos(2 * rnd() - 1); put([r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)], [.42, .48, .6], .35); }
   return { pos, col, count: i };
 }
 
@@ -43,8 +49,8 @@ export function mount(opts = {}) {
   const cv = document.createElement('canvas'); cv.id = 'void-cosmos'; cv.setAttribute('aria-hidden', 'true'); document.body.appendChild(cv);
   const gl = cv.getContext('webgl2', { alpha: true, antialias: false, depth: false, premultipliedAlpha: false });
   if (!gl) { cv.remove(); return null; }
-  const VS = '#version 300 es\nin vec3 aP;in vec3 aC;uniform vec3 uCam;uniform vec2 uAng,uR;uniform float uZoom,uFade;out vec3 vC;out float vA;void main(){vec3 p=(aP-uCam)*uZoom;float cy=cos(uAng.x),sy=sin(uAng.x),cp=cos(uAng.y),sp=sin(uAng.y);float t=p.x*sy+p.z*cy;vec3 q=vec3(p.x*cy-p.z*sy,p.y*cp-t*sp,p.y*sp+t*cp);float d=max(.2,1.+q.z/1200.);gl_Position=vec4(q.xy*vec2(uR.y/uR.x,1.)/(d*420.),0.,1.);gl_PointSize=clamp(2.2+1.6*uZoom,1.,5.);vC=aC;vA=uFade;}';
-  const FS = '#version 300 es\nprecision mediump float;in vec3 vC;in float vA;out vec4 o;void main(){vec2 q=gl_PointCoord-.5;float a=smoothstep(.25,.02,dot(q,q));o=vec4(vC*a,a*vA);}';
+  const VS = '#version 300 es\nin vec3 aP;in vec4 aC;uniform vec3 uCam;uniform vec2 uAng,uR;uniform float uZoom,uFade;out vec3 vC;out float vA;void main(){vec3 p=(aP-uCam)*uZoom;float cy=cos(uAng.x),sy=sin(uAng.x),cp=cos(uAng.y),sp=sin(uAng.y);float t=p.x*sy+p.z*cy;vec3 q=vec3(p.x*cy-p.z*sy,p.y*cp-t*sp,p.y*sp+t*cp);float d=max(.2,1.+q.z/1200.);gl_Position=vec4(q.xy*vec2(uR.y/uR.x,1.)/(d*420.),0.,1.);gl_PointSize=clamp(2.2+1.6*uZoom,1.,5.);vC=aC.rgb;vA=uFade*aC.a;}';
+  const FS = '#version 300 es\nprecision mediump float;in vec3 vC;in float vA;out vec4 o;void main(){float r=length(gl_PointCoord-.5)*2.;if(r>1.)discard;float a=pow(1.-r,4.);o=vec4(vC*a,a*vA);}';
   const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
   const prog = (v, f) => { const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, v)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, f)); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
   const P = prog(VS, FS); if (!P) { cv.remove(); return null; };
@@ -70,9 +76,9 @@ export function mount(opts = {}) {
   const draw = (now) => { raf = 0; const dt = lastT ? Math.min(.05, (now - lastT) / 1000) : 1 / 60; lastT = now; if (Object.keys(keys).length) { cam = stepKeys(cam, keys, dt); if (now - lastSave > 500) { lastSave = now; remember(); } } const W = cv.width, H = cv.height; gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(P); const ap = gl.getAttribLocation(P, 'aP'), ac = gl.getAttribLocation(P, 'aC');
     gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.enableVertexAttribArray(ac); gl.vertexAttribPointer(ac, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, cbuf); gl.enableVertexAttribArray(ac); gl.vertexAttribPointer(ac, 4, gl.FLOAT, false, 0, 0);
     gl.uniform3f(uCam, cam.x, cam.y, cam.z); gl.uniform2f(uAng, cam.yaw, cam.pitch); gl.uniform2f(uR, W, H); gl.uniform1f(uZoom, zoomOf(cam.scaleLog)); gl.uniform1f(uFade, clamp((cam.scaleLog - LOG_MIN) / 1.2, 0, 1)); gl.drawArrays(gl.POINTS, 0, uni.count);
-    if (ln) { gl.bindBuffer(gl.ARRAY_BUFFER, lbuf); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0); gl.bindBuffer(gl.ARRAY_BUFFER, lcbuf); gl.enableVertexAttribArray(ac); gl.vertexAttribPointer(ac, 3, gl.FLOAT, false, 0, 0); gl.uniform1f(uFade, .5); gl.drawArrays(gl.LINES, 0, ln / 3); }
+    if (ln) { gl.bindBuffer(gl.ARRAY_BUFFER, lbuf); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 3, gl.FLOAT, false, 0, 0); gl.bindBuffer(gl.ARRAY_BUFFER, lcbuf); gl.enableVertexAttribArray(ac); gl.vertexAttribPointer(ac, 3, gl.FLOAT, false, 0, 0); gl.uniform1f(uFade, .12); gl.drawArrays(gl.LINES, 0, ln / 3); }
     if (Object.keys(keys).length && !reduce.matches && !document.hidden) raf = requestAnimationFrame(draw); };
   const kick = () => { if (document.hidden) return; if (reduce.matches) { draw(performance.now()); return; } if (!raf) raf = requestAnimationFrame(draw); };
   const typing = (t) => !!t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName || '') || t.isContentEditable);
