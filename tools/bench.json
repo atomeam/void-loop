@@ -7293,5 +7293,8 @@
   {"ask": "design systems for the support flow", "want": "skill:system-design"},
   {"ask": "show the data flows for client onboarding", "want": "skill:connect-flows"},
   {"ask": "connect the systems for invoice reminders", "want": "skill:connect-flows"},
-  {"ask": "map connections for the support router", "want": "skill:connect-flows"}
+  {"ask": "map connections for the support router", "want": "skill:connect-flows"},
+  {"ask": "automation handoff for the email reminders", "want": "skill:automation-handoff"},
+  {"ask": "handoff the running automations for onboarding", "want": "skill:automation-handoff"},
+  {"ask": "package the running jobs for the client", "want": "skill:automation-handoff"}
 ]
