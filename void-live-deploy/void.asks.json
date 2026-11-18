@@ -2497,6 +2497,11 @@
       "words": "Repair the sports exam logic to correctly identify the NBA Celtics.",
       "ledgerAt": "2026-11-11T17:36:49Z",
       "why": "built: the sports exam failed board on MLB, Premier League and Serie A on days with no games (the card said only No games today); the card now shows the latest results of the last seven days, else the next games, else the table as it stands (skills/scores.js, tools/scores-skill.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Teach the wants skill to answer probes instead of turning them into questions.",
+      "ledgerAt": "2026-10-15T20:03:39Z",
+      "why": "built: V01D writes its own probe asks (frontier #28, step 2 of the probe-and-fix playbook; owner, 2026-10-15: 'teach a man to fish so that V01D can do all this itself one day'): once a day the V01D probes itself workflow has V0 (linked by tools/asks-link.mjs, shared words: teach, want, skill, answ, prob, them)"
     }
   ],
   "held": [
@@ -2508,29 +2513,29 @@
     }
   ],
   "totals": {
-    "asked": 274,
-    "built": 268,
-    "through": "2026-11-17T02:26:00Z",
+    "asked": 278,
+    "built": 269,
+    "through": "2026-11-18T01:34:00Z",
     "open": [
       {
         "ask": "Stabilize sports data retrieval for Yankees, Chiefs, and Packers scores.",
-        "at": "2026-11-17T02:26:00Z",
+        "at": "2026-11-18T01:34:00Z",
         "kind": "daily",
         "small": true,
         "times": 3,
         "ids": [
-          "ask-20261115-0804-2",
-          "ask-20261115-1113-2",
-          "ask-20261115-1126-2",
-          "ask-20261115-1213-2",
-          "ask-20261115-1334-2",
-          "ask-20261115-1409-2",
-          "ask-20261115-1501-2",
-          "ask-20261115-1534-2",
-          "ask-20261115-1737-2",
-          "ask-20261115-1946-3",
-          "ask-20261117-0135-2",
-          "ask-20261117-0226-1"
+          "ask-20261117-1010-1",
+          "ask-20261117-1059-1",
+          "ask-20261117-1109-1",
+          "ask-20261117-1350-1",
+          "ask-20261117-1409-1",
+          "ask-20261117-1737-1",
+          "ask-20261117-1749-1",
+          "ask-20261117-1842-1",
+          "ask-20261117-1957-1",
+          "ask-20261117-2142-1",
+          "ask-20261117-2259-1",
+          "ask-20261118-0040-1"
         ]
       },
       {
@@ -2556,23 +2561,23 @@
       },
       {
         "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
-        "at": "2026-11-17T02:26:00Z",
+        "at": "2026-11-18T01:34:00Z",
         "kind": "daily",
         "small": true,
-        "times": 3,
+        "times": 4,
         "ids": [
-          "ask-20261115-1708-1",
-          "ask-20261115-1737-1",
-          "ask-20261115-1758-2",
-          "ask-20261115-1946-2",
-          "ask-20261115-1946-1",
-          "ask-20261115-2008-1",
-          "ask-20261115-2210-1",
-          "ask-20261115-2321-2",
-          "ask-20261116-1726-3",
-          "ask-20261116-1736-3",
           "ask-20261116-1750-3",
-          "ask-20261116-1755-2"
+          "ask-20261116-1755-2",
+          "ask-20261117-1705-2",
+          "ask-20261117-1737-2",
+          "ask-20261117-1749-2",
+          "ask-20261117-1842-2",
+          "ask-20261117-1957-2",
+          "ask-20261117-2142-2",
+          "ask-20261117-1010-2",
+          "ask-20261117-1050-3",
+          "ask-20261117-1059-2",
+          "ask-20261117-1109-2"
         ]
       },
       {
@@ -2582,6 +2587,7 @@
         "small": false,
         "times": 4,
         "ids": [
+          "ask-20261113-2348-3",
           "ask-20261116-1606-1",
           "ask-20261116-1624-1",
           "ask-20261116-1726-1",
@@ -2592,8 +2598,7 @@
           "ask-20261115-1113-1",
           "ask-20261115-1126-1",
           "ask-20261115-1213-1",
-          "ask-20261115-1334-1",
-          "ask-20261116-2258-3"
+          "ask-20261115-1334-1"
         ]
       },
       {
@@ -2626,9 +2631,46 @@
         "ids": [
           "ask-20261117-0035-1",
           "ask-20261117-0108-1",
-          "ask-20261117-0226-3",
           "ask-20261117-0117-1",
-          "ask-20261117-0135-1"
+          "ask-20261117-0135-1",
+          "ask-20261117-0226-3"
+        ]
+      },
+      {
+        "ask": "Rebuild the weather exam to correctly process temperature and rainfall for specific cities.",
+        "at": "2026-11-17T19:57:00Z",
+        "kind": "build",
+        "small": false,
+        "times": 2,
+        "ids": [
+          "ask-20261117-1059-3",
+          "ask-20261117-1109-3",
+          "ask-20261117-1350-3",
+          "ask-20261117-1409-3",
+          "ask-20261117-1617-3",
+          "ask-20261117-1634-3",
+          "ask-20261117-1704-3",
+          "ask-20261117-1705-3",
+          "ask-20261117-1737-3",
+          "ask-20261117-1749-3",
+          "ask-20261117-1842-3",
+          "ask-20261117-1957-3"
+        ]
+      },
+      {
+        "ask": "Implement a fourth skill for the lab/pattern family.",
+        "small": true,
+        "times": 1,
+        "ids": [
+          "ask-20261117-0839-3"
+        ]
+      },
+      {
+        "ask": "Fix the recipes exam specifically for the guacamole recipe.",
+        "small": true,
+        "times": 1,
+        "ids": [
+          "ask-20261117-0823-2"
         ]
       }
     ]
