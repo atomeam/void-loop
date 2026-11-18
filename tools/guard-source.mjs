@@ -3,6 +3,7 @@
 // Ledger wipe (2026-11-11): a whole-file write replaced domains/void.frontier.md, the one build order, with the word PLACEHOLDER
 // on main (PR #2701) and nothing in CI caught it. The append-only ledgers (tools/prepush.mjs LEDGERS) are checked here too, since
 // this runs in CI on every pull request and every head of main (deploy.yml quick checks, the void-test action).
+// The book's pages are checked for decorative art too (tools/book-art.mjs).
 //   node tools/guard-source.mjs      lists each file that does not parse, with the line, and the adjacent near-duplicate lines
 //                                    (the usual sign of a merge that re-encoded a file); exit 1 if any
 import { spawnSync } from 'node:child_process';
@@ -50,5 +51,8 @@ for (const f of LEDGERS) {
   const why = text === null ? '' : ledgerWiped(f, text);
   if (why) { bad++; console.log(`FAIL ${why}`); }
 }
+// the book carries no decorative art (tools/book-art.mjs): a multi-colour or filled svg, an emoji or an img on any page or cover fails
+try { const { auditBook } = await import('./book-art.mjs'); const art = await auditBook(root); for (const b of art.slice(0, 10)) console.log(`FAIL book art: ${b}`); if (art.length) bad++; }
+catch (e) { bad++; console.log(`FAIL book art: the audit could not run (${String(e && e.message).slice(0, 160)})`); }
 console.log(bad ? `${bad} file(s) do not parse or were wiped` : `${files.length} scripts parse, ${LEDGERS.length} ledgers whole`);
 process.exit(bad ? 1 : 0);

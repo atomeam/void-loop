@@ -5,8 +5,7 @@
 // This file is the pure half: the tome's CSS and every page typeset for parchment (a running head, a title with a rule, a drop
 // capital, the asks as lines of italic ink, the folio in the outer corner). skills/guide.js mounts it full screen and turns the
 // leaves. The content is the same skills/guide.json page data the generator writes (lib/guide.js), so nothing is left out.
-import { glyphSvg, openerSvg, TIERS, TIER_MEANING } from './guide.js';
-import { artSvg, seasonOf } from './card-art.js';
+import { TIERS, TIER_MEANING } from './guide.js';
 import { rulesPageHtml, RULES_CSS } from './rule-registry.js';
 import { dayLabel } from './book-news.js';
 
@@ -17,6 +16,42 @@ const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 const MOTTLE = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .28 0 0 0 0 .08 0 0 0 .55 -.22'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23m)'/%3E%3C/svg%3E\")";
 
 /** the whole look, one stylesheet. Pure. */
+// Pitch-black glass (2026-11-18): the book carries no decorative art. Its covers, chapter headers and pages are black glass with
+// hairline edges, light editorial type and monochrome numerals (01, 02 ...); every word of every page is kept. Set last, so it wins.
+const GLASS = 'rgba(10,12,18,0.72)', HAIR = '1px solid rgba(255,255,255,0.08)', INK = '#e8ebf2', DIM = 'rgba(214,220,232,.62)';
+export const GLASS_CSS = [
+  '#vtome .tome-dim{background:rgba(2,3,6,.86)}',
+  '#vtome .tome-boards,#vtome .tome-spine,#vtome .tome-stack{background:transparent!important;box-shadow:none!important;border:0!important}#vtome .tome-boards::after{content:none}',
+  '#vtome .tome-page,#vtome .tome-face,#vtome .tome-cover .face,#vtome .tome-backcover{background:' + GLASS + '!important;background-image:none!important;border:' + HAIR + ';box-shadow:none!important;color:' + INK + ';backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}',
+  '#vtome .tome-cover .face.out::before{content:none}',
+  '#vtome .tome-head,#vtome .tome-folio,#vtome .tome-kicker,#vtome .tome-title small,#vtome .tome-sub,#vtome .tome-say,#vtome .tome-tier,#vtome .tome-list .n,#vtome .tome-toc .tome-for,#vtome .tome-epigraph{color:' + DIM + '}',
+  '#vtome .tome-title,#vtome .tome-tier b,#vtome .tome-legend dt,#vtome .tome-day{color:' + INK + '}',
+  '#vtome .tome-body,#vtome .tome-body p,#vtome .tome-body .tome-note,#vtome .tome-legend dd,#vtome .tome-try li{color:rgba(232,235,242,.86)}',
+  '#vtome .tome-rule{background:rgba(255,255,255,0.08)}#vtome .tome-day{border-bottom:' + HAIR + '}',
+  '#vtome .tome-body p.lead::first-letter{color:' + INK + '}#vtome .tome-try li::before{color:' + DIM + '}',
+  '#vtome .tome a{color:' + INK + ';border-bottom:1px solid rgba(255,255,255,.22)}#vtome .tome a:hover{color:#fff;border-bottom-color:rgba(255,255,255,.6)}',
+  '#vtome .tome-new,#vtome .tome-cover .newbadge{background:transparent;color:' + INK + ';border:' + HAIR + ';box-shadow:none}',
+  '#vtome .tome-cover .gilt,#vtome .tome-backcover .gilt{background:none!important;-webkit-text-fill-color:' + INK + ';color:' + INK + ';text-shadow:none;filter:none}',
+  '#vtome .tome-cover .gilt.line,#vtome .tome-backcover .gilt.line{-webkit-text-fill-color:' + DIM + ';color:' + DIM + '}',
+  // the numerals: a chapter's number above its header, a page's number within its chapter above its line; one colour, tabular figures
+  '#vtome .tome-num{font:500 1.9cqh/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.24em;color:' + DIM + ';text-align:center;margin:0 0 1cqh;font-variant-numeric:tabular-nums}',
+  '#vtome .tome-num.big{font-size:5.4cqh;letter-spacing:.12em;color:' + INK + ';margin:6cqh 0 0}',
+  '#vtome .tome-firsts{list-style:none;padding:0;margin:1.4cqh 0;text-align:center;font-size:2cqh;line-height:1.7}#vtome .tome-firsts li{display:inline}#vtome .tome-firsts li+li::before{content:" \\00b7  ";color:' + DIM + '}',
+  '#vtome .tome-prompt,#vtome .tome-prompt kbd{color:' + DIM + ';border-color:rgba(255,255,255,.18)}',
+  '#vtome .tome-tocover{background:' + GLASS + ';color:' + INK + ';border:' + HAIR + '}',
+  '#vtome .tome-search input,#vtome .tome-hits{background:' + GLASS + ';color:' + INK + ';border:' + HAIR + ';box-shadow:none}#vtome .tome-search input::placeholder{color:' + DIM + '}#vtome .tome-search input:focus{border-color:rgba(255,255,255,.28)}',
+  '#vtome .tome-cover .face.out::after{content:"a-to-mind.com";position:absolute;left:0;right:0;bottom:6cqh;text-align:center;font-size:1.7cqh;letter-spacing:.24em;text-transform:uppercase;color:' + DIM + '}',
+].join('');
+/** a number set as two figures or more: 1 is 01. Pure. */
+export const numeral = (n) => String(Math.max(0, n | 0)).padStart(2, '0');
+/** the chapter a page opens, counted from the first chapter after the front matter (1-based); 0 for the front matter. Pure. */
+const chapterNo = (book, id) => { const list = (book.chapters || []).filter((c) => c.id !== 'front'); return list.findIndex((c) => c.id === id) + 1; };
+/** a chapter's first pages as plain links to them: the names, no pictures. Pure. */
+const firstsHtml = (opener, book, esc, n) => {
+  const items = (opener.skills || []).map((name) => book.pages.find((p) => (p.kind === 'skill' || p.kind === 'mini' || p.kind === 'game') && p.name === name)).filter(Boolean).slice(0, n);
+  return items.length ? '<ul class="tome-firsts">' + items.map((p) => '<li>' + jump(p.n, p.title, esc) + '</li>').join('') + '</ul>' : '';
+};
+
 export const TOME_CSS = [
   // the screen: the stage dims behind the book (as the world does in Skyrim); nothing of the page's own chrome shows through
   'html.v-tome #stage{filter:brightness(.42) blur(2px);transition:filter .5s ease}html.v-tome #void-syn{opacity:.25}',
@@ -103,7 +138,8 @@ export const TOME_CSS = [
   '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
   '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition:none}}', // none, not .01s: a transform transition still waits on the compositor to start, and headless Chrome left the shut tilt standing (the tester saw the open book 312px left at 1920x1080)
-].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Verse)
+].join('') + RULES_CSS // the rule registry's illuminated entries (asked by Verse)
+  + GLASS_CSS;
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
 const jump = (n, label, esc) => '<a href="#" class="gjump" data-page="' + n + '">' + esc(label) + '</a>';
@@ -127,12 +163,8 @@ export function tocHtml(book, esc) {
 }
 
 /** one page typeset for the tome (without its running head and folio, which the spread adds). Pure. */
-/** the page's own ink art (lib/card-art.js): the plate a card of its kind gets, keyed by the page so it is always the same picture, haunted in October. '' if it cannot draw. */
-const pageArt = (p, h = 120) => {
-  try {
-    return '<div class="tome-art">' + artSvg({ key: 'book:' + (p.name || p.title || p.kind), name: p.title || '', kind: p.kind === 'mini' ? 'Miniature' : p.game ? 'Game' : p.kind === 'skill' ? 'Skill' : 'Idea', chapter: p.chapter, rarity: p.tier || 'common', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h }) + '</div>';
-  } catch (_) { return ''; }
-};
+/** a page carries no decorative plate any more (pitch-black glass, 2026-11-18): this stays so every caller reads the same. */
+const pageArt = () => '';
 // Verse's own picture for the pages about Verse itself (owner, 2026-10-24: "Verse is a universe that comes from an Atom", "represents its growth
 // plus im Atom", "needs to look more universe and less atom", "design an atom shaped galaxy that looks natural", with a picture: a spiral
 // galaxy, golden core, whose arms are three orbit rings of stars, blue clusters, pink nebula knots and dark dust lanes, in a field of stars).
@@ -183,7 +215,7 @@ export function pageHtml(p, book, esc) {
   if (p.kind === 'cover') { // the title page
     const firsts = (book.chapters || []).filter((c) => c.kind === 'family' || c.kind === 'games').map((c) => book.pages.slice(c.from, c.to).find((x) => x.kind === 'skill')).filter(Boolean);
     return '<div class="tome-kicker">a-to-mind.com</div><h3 class="tome-title big">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><p class="tome-note" style="text-align:center">' + esc(p.line) + '</p>'
-      + openerSvg({ skills: firsts.map((x) => x.name) }, book, 10) + '<p class="tome-sub">' + t.skills + ' skills · ' + t.games + ' games · ' + t.minis + ' miniatures<br>' + t.pages + ' pages</p></div>';
+      + firstsHtml({ skills: firsts.map((x) => x.name) }, book, esc, 10) + '<p class="tome-sub">' + t.skills + ' skills · ' + t.games + ' games · ' + t.minis + ' miniatures<br>' + t.pages + ' pages</p></div>';
   }
   if (p.kind === 'how') {
     return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + (p.part === 2 ? '<p class="lead">More of the first things to say. Each line of ink below is an ask: touch it and the book closes to do it.</p>' : pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
@@ -201,13 +233,13 @@ export function pageHtml(p, book, esc) {
   if (p.kind === 'news') { // a page of the newest changes a visitor can try (lib/book-news.js): by the visitor's own day, then by kind; an ask is
     // touched to run it on the stage, a page of the site opens as a link; a day with asks that answered live (claims-verified.json) plays them all
     const tryLink = (t) => (t.charAt(0) === '/' ? ' <a href="' + esc(t) + '" class="tome-tryit">open it</a>' : ' <a href="#" class="tome-tryit" data-ask="' + esc(t) + '">try it</a>');
-    return '<div class="tome-kicker">Just shipped</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
+    return '<div class="tome-kicker">Just shipped</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + (p.grown ? '<p class="tome-sub">' + p.grown + ' entries in Verse\'s growth ledger</p>' : '')
       + (p.days || []).map((d) => { const live = (d.all || d.groups.flatMap((g) => g.items)).filter((e) => e.live).length; // the whole day: the link plays every live line of it
         return '<div class="tome-day">' + esc(dayLabel(d.day)) + (live ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">play ' + (live === 1 ? 'it' : 'all ' + live) + ' on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? tryLink(e.try) : '') + '</li>').join('') + '</ul>').join(''); }).join('') + '</div>';
   }
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
-    return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(stop(p.line || '')) + '</p>' + openerSvg(p, book, 16)
+    return '<div class="tome-num big">' + numeral(chapterNo(book, p.chapter)) + '</div><div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:2cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(stop(p.line || '')) + '</p>' + firstsHtml(p, book, esc, 16)
       + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : p.chapter === 'rules' ? ' rules, tried in this order' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
   }
   if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Verse): lib/rule-registry.js
@@ -219,8 +251,9 @@ export function pageHtml(p, book, esc) {
   const kicker = p.kind === 'mini' ? '3D miniature' : p.game ? 'On the rack' : '';
   const sub = p.kind === 'skill' && p.game && p.name !== p.title.toLowerCase() ? '<small>' + esc(p.name) + '</small>' : p.kind === 'mini' ? '<small>a thing a card carries</small>' : '';
   const line = String(p.line || ''), dropCap = /^[A-Za-z]/.test(line); // a line that opens with a quote mark keeps its first letter in the line
-  let body = (kicker ? '<div class="tome-kicker">' + esc(kicker) + '</div>' : '<div class="tome-kicker tome-kicker-blank">&nbsp;</div>') + '<h3 class="tome-title">' + esc(p.title) + sub + '</h3><div class="tome-rule"></div><div class="tome-body">'
-    + pageArt(p, 150) + (p.flavor ? '<p class="tome-epigraph">' + esc(p.flavor) + '</p>' : '') + '<div class="tome-plate">' + glyphSvg(p, 64) + '</div>'
+  const no = chap.from != null && p.n > chap.from ? numeral(p.n - chap.from) : ''; // the page's number within its chapter, 01 first
+  let body = (kicker ? '<div class="tome-kicker">' + (no ? no + ' · ' : '') + esc(kicker) + '</div>' : '<div class="tome-kicker tome-kicker-blank tome-num">' + (no || '&nbsp;') + '</div>') + '<h3 class="tome-title">' + esc(p.title) + sub + '</h3><div class="tome-rule"></div><div class="tome-body">'
+    + pageArt(p, 150) + (p.flavor ? '<p class="tome-epigraph">' + esc(p.flavor) + '</p>' : '') 
     + '<p class="' + (dropCap ? 'lead ' : '') + 'gb-line">' + esc(line) + (/[.!?…]$/.test(line) ? '' : '.') + '</p>';
   if (p.kind === 'mini' && p.ownerPage) body += '<p class="tome-note">Carried by the ' + jump(p.ownerPage, (p.card || p.owner) + ' card, page ' + p.ownerPage, esc) + '.</p>';
   else if (p.kind === 'mini' && p.card) body += '<p class="tome-note">Carried by ' + esc(p.card) + '.</p>';
@@ -360,9 +393,9 @@ export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
 }
 /** the back cover: the same tooled leather and medallion, and the last words. Pure. */
 export function backCoverHtml(book, esc) {
-  return '<div class="cover-art cover-leather">' + leatherSvg({ medallion: true }) + '</div><div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Book of Verse') + '</div><div class="gilt line foot">a-to-mind.com</div>';
+  return '<div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Book of Verse') + '</div><div class="gilt line foot">a-to-mind.com</div>';
 }
 /** the shut cover's face: the tooled leather board with the title stamped in gold above the medallion and nothing else (no tagline, no page count: owner, 2026-10-25, "no book ever lists its page count on the cover"). Pure. */
 export function coverHtml(book, esc) {
-  return '<div class="face out"><div class="cover-art cover-leather">' + leatherSvg() + '</div><div class="gilt title">' + esc(book.title || 'The Book of Verse') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
+  return '<div class="face out"><div class="gilt title">' + esc(book.title || 'The Book of Verse') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }

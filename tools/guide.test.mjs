@@ -110,7 +110,7 @@ test('the rating words are the four tiers, each with a meaning for the front mat
 test('the reader: pages render to HTML with try-it asks as data-ask links, the contents jump by page', () => {
   const b = sample(), esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
   const timer = pageHtml(b.pages.find((p) => p.name === 'timer'), b, esc);
-  assert.match(timer, /data-ask="set a timer for 5 minutes"/); assert.match(timer, /Countdowns on the stage/); assert.match(timer, /proven/); assert.match(timer, /<svg class="gglyph"/);
+  assert.match(timer, /data-ask="set a timer for 5 minutes"/); assert.match(timer, /Countdowns on the stage/); assert.match(timer, /proven/); assert.doesNotMatch(timer, /<svg/, 'a book page carries no picture (pitch-black glass, 2026-11-18)');
   assert.match(pageHtml(b.pages[2], b, esc), /nothing checks it yet/, 'the legend says what each word means');
   assert.match(pageHtml(b.pages[1], b, esc), /data-ask="what is a black hole"/, 'how to ask lists the page\'s own built-ins');
   const toc = tocHtml(b, esc); assert.match(toc, /data-page="5"/); assert.match(toc, /Time/);
