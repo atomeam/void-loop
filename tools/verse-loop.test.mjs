@@ -567,3 +567,13 @@ test('the lap step writes nothing into the checkout before the lap reads git sta
   const outs = [...line.matchAll(/(?:\btee\s+(?:-a\s+)?|>>?\s*)("?)([^\s"|;&]+)\1/g)].map((m) => m[2]);
   for (const o of outs) assert.match(o, /^\$\{?(RUNNER_TEMP|GITHUB_STEP_SUMMARY|GITHUB_OUTPUT)\b|^\/dev\//, 'the lap writes ' + o + ' into the checkout');
 });
+
+test('triage-cortex: a vague --task spends no brain run; a scoped one goes to the brain', async () => {
+  const s = sandbox({ groomed: true });
+  const r = await lap(parseArgs(['--dry-run', '--agent', 'cmd', '--task', 'make Verse smarter']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet });
+  assert.equal(r.outcome, 'skipped'); assert.match(r.why, /^triage-cortex: unscoped/);
+  assert.ok(!existsSync(join(s.work, 'ran.txt')), 'no brain ran');
+  const ok = await lap(parseArgs(['--dry-run', '--agent', 'cmd', '--task', 'add a line to tools/x.mjs']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet });
+  assert.notEqual(ok.outcome, 'skipped', ok.why);
+  assert.deepEqual(agentCommand('verse', 'p.txt', { kind: 'next', reads: 6 }).args.slice(-2), ['--max-reads', '6']);
+});

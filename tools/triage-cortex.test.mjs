@@ -11,6 +11,7 @@ test('a task that names a file or a failing test passes; a vague one is refused'
   const t = preflight({ kind: 'next', text: 'make failing test "fly stars move" pass' });
   assert.equal(t.ok, true); assert.deepEqual(t.tests, ['fly stars move']);
   assert.deepEqual(scopeOf('see tools/lab-theme.test.mjs.').files, ['tools/lab-theme.test.mjs']);
+  assert.deepEqual(scopeOf('[assimilation gap] site A → /a/ (2026-10-28): the weather tools.').files, ['void-live-deploy/a/index.html']);
   assert.deepEqual(scopeOf('see tools/lab-theme.test.mjs.').tests, ['tools/lab-theme.test.mjs']);
 });
 

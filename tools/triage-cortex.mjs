@@ -18,6 +18,8 @@ export function scopeOf(text) {
   const s = String(text || ''), files = new Set(), tests = new Set();
   for (const m of s.matchAll(PATH)) files.add(m[1].replace(/[.,:;]+$/, ''));
   for (const m of s.matchAll(TEST)) tests.add((m[1] || m[2] || m[3] || m[4] || m[5]).trim());
+  // a parity gap names its page as 'site → /route/' (docs/PARITY.md): that page's file is the target
+  for (const m of s.matchAll(/→\s*\/([a-z0-9-]+(?:\/[a-z0-9-]+)*)\/(?=$|[\s),.])/gi)) files.add('void-live-deploy/' + m[1] + '/index.html');
   return { files: [...files], tests: [...tests] };
 }
 
