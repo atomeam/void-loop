@@ -1,0 +1,1 @@
+The skill `systems-connect-pack` (#2963) packages the connections between systems for a business idea: the systems, how the integration is owned (existing tools first), the automations across them, the monitoring and the handoff. Rules-based, offline, nothing is sent.
