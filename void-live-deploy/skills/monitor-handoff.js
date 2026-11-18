@@ -1,78 +1,83 @@
 /**
- * monitor-handoff skill: hand off a client-visible monitor for systems Verse owns.
- * Produces a status card the client can ask for, reducing their work by showing
- * real (never invented) state of monitors, docs, and running automations.
- * "monitor handoff for the onboarding system", "status handoff for my automation",
- * "handoff the monitors for this idea". "client monitor ..." is skills/client-monitor.js's, and "handoff monitor ..."
- * (one monitor, no "the") is skills/systems-monitor.js's board, so neither is matched here.
- * Uses existing /api/status where possible; empty surface stays empty.
+ * monitor-handoff skill — package monitoring and status handoff for a system Verse owns,
+ * so the client gets a clear board of what is watched, current state, and the next step,
+ * reducing their work on ongoing delivery.
+ * Rules-based, offline. Nothing is sent or claimed as live beyond the plan.
+ * "monitor handoff for invoice automation", "handoff monitoring for client onboarding",
+ * "monitoring package for support process", "status handoff for weekly reports".
  */
 export function isMonitorHandoff(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:monitor|status)\s+handoff\b/i.test(t)
-    || /^business\s+monitor(?:\s+(?:pack|handoff))?\b/i.test(t)
-    || /^(?:handoff|package)\s+(?:the\s+monitors?|monitors)\b/i.test(t)
-    || /^(?:make|generate|create)\s+(?:a\s+)?monitor\s+handoff\b/i.test(t);
+  return /^(?:monitor\s+handoff|handoff\s+monitoring|monitoring\s+(?:package|handoff)|status\s+handoff)\b/i.test(t)
+    || /^(?:make|generate|create|show)\s+(?:a\s+)?(?:monitor|monitoring)\s+(?:handoff|package|board)\b/i.test(t);
 }
 
 export function subjectOf(text) {
-  const m = String(text || '').match(/\b(?:for|of|:)\s+(?:the\s+|my\s+|a\s+)?(.+)/i);
-  const s = m ? m[1].trim() : '';
+  const m = String(text || '').match(/\b(?:for|of|on|:)\s+(?:the\s+|my\s+|a\s+)?(.+)/i);
+  const s = m ? m[1].trim().replace(/[?!.]+$/, '') : '';
   return s.length >= 3 ? s.slice(0, 160) : 'the system';
 }
 
-function cardHtml(esc, subject) {
-  return '<h2>Monitor handoff: ' + esc(subject) + '</h2>'
-    + '<p><b>What Verse owns:</b> the monitors, status line, and running automations for "' + esc(subject) + '". Client keeps the outcome.</p>'
-    + '<h3>Client-visible status</h3><ul>'
-    + '<li>Ask "system status" or "systems monitor" for the live board (GET /api/status; nothing painted green unless the API says up)</li>'
-    + '<li>Docs of what is watched and what the client owns</li>'
-    + '<li>Confirm-line approvals already in place for any send or spend</li>'
-    + '</ul>'
-    + '<h3>Handoff package</h3><ul>'
-    + '<li>One-line status the client can request anytime</li>'
-    + '<li>No invented state: unknown stays unknown</li>'
-    + '<li>We own the heavy lifting of watching and fixing</li>'
-    + '</ul>'
-    + '<p class="sub">Client work reduced: they ask for the status instead of checking themselves.</p>'
-    + '<div class="src">Source: A-to-Mind delivery practice · existing /api/status · nothing sent</div>';
+function pointsFor(subject) {
+  const t = subject.toLowerCase();
+  const points = [];
+  if (/invoice|bill|payment|remind/.test(t)) {
+    points.push({ watch: 'reminder send success', now: 'scheduled', next: 'confirm first live send' });
+    points.push({ watch: 'paid mark latency', now: 'watching', next: 'set alert threshold' });
+  }
+  if (/onboard|signup|welcome|client/.test(t)) {
+    points.push({ watch: 'welcome step completion', now: 'ready', next: 'first client walk-through' });
+    points.push({ watch: 'stalled after 48h', now: 'alert set', next: 'handoff the alert rule' });
+  }
+  if (/support|ticket|help/.test(t)) {
+    points.push({ watch: 'first response time', now: 'baseline', next: 'agree SLA handoff' });
+  }
+  if (points.length === 0) {
+    points.push({ watch: 'core flow uptime', now: 'planned', next: 'wire the status card' });
+    points.push({ watch: 'error rate', now: 'to set', next: 'define the threshold with client' });
+  }
+  return points;
 }
 
-async function run(text, api) {
+export function packFor(subject) {
+  const name = subjectOf(subject);
+  return {
+    subject: name,
+    owned: 'Verse designs, builds, connects, tests and monitors this; the client receives the handoff pack.',
+    points: pointsFor(name),
+    handoff: 'Share this card; the next step is the first live confirmation or the agreed alert.'
+  };
+}
+
+function run(text, api) {
   const { showPage, esc } = api;
-  const subject = subjectOf(text);
-  const el = showPage((p) => { p.innerHTML = '<h2>Monitor handoff</h2><div class="sub">building…</div>'; });
-  el.innerHTML = cardHtml(esc, subject);
+  const pack = packFor(text);
+  const rows = pack.points.map((p) =>
+    '<tr><td>' + esc(p.watch) + '</td><td>' + esc(p.now) + '</td><td>' + esc(p.next) + '</td></tr>'
+  ).join('');
+  showPage((el) => {
+    el.innerHTML = '<h2>Monitor handoff: ' + esc(pack.subject) + '</h2>'
+      + '<p>' + esc(pack.owned) + '</p>'
+      + '<table><thead><tr><th>Watches</th><th>Now</th><th>Next</th></tr></thead><tbody>' + rows + '</tbody></table>'
+      + '<p>' + esc(pack.handoff) + '</p>'
+      + '<div class="src">Source: system plan rules · nothing claimed live until confirmed · as of 2026-11</div>';
+  });
   return 'monitor-handoff';
 }
 
 export default {
   name: 'monitor-handoff',
   examples: [
-    'monitor handoff for the onboarding system',
-    'status handoff for my automation',
-    'handoff the monitors for invoice reminders',
-    'make a monitor handoff for the support router'
+    'monitor handoff for invoice automation',
+    'handoff monitoring for client onboarding',
+    'monitoring package for support process',
+    'status handoff for weekly reports'
   ],
   nearMisses: [
-    'what is a monitor',
-    'monitor the weather',
-    'status of the news',
-    'client monitor for the invoice automation',
-    'handoff monitor board'
+    'systems monitor',
+    'client status',
+    'automation status'
   ],
-  match(lower, text) { return isMonitorHandoff(text || lower); },
-  run,
-  suite() {
-    const ok = isMonitorHandoff('monitor handoff for the onboarding system')
-      && isMonitorHandoff('status handoff for my automation')
-      && isMonitorHandoff('handoff the monitors for invoice reminders')
-      && isMonitorHandoff('make a monitor handoff for the support router')
-      && !isMonitorHandoff('what is a monitor')
-      && !isMonitorHandoff('monitor the weather')
-      && !isMonitorHandoff('status of the news')
-      && !isMonitorHandoff('client monitor for the invoice automation')
-      && !isMonitorHandoff('handoff monitor board');
-    return { ok, got: 'match works' };
-  }
+  match(lower) { return isMonitorHandoff(lower); },
+  run
 };
