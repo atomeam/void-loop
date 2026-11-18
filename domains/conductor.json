@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-18T23:37:05.940Z",
+ "updated": "2026-11-18T23:46:29.796Z",
  "last24h": {
-  "ticks": 7,
+  "ticks": 8,
   "started": 1,
   "requeued": 0,
   "setAside": 0,
@@ -22,10 +22,6 @@
   }
  ],
  "held": [
-  {
-   "id": "want-page-tools-json",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
-  },
   {
    "id": "want-idea-298bf37d16",
    "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
@@ -100,6 +96,10 @@
   },
   {
    "id": "mwcg2h14",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwcm4wyk",
    "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
   }
  ],
@@ -358,6 +358,30 @@
    "sweep": false,
    "blueprints": 0,
    "held": 479,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:46:29.796Z",
+   "open": 481,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 478,
    "warnings": 1
   }
  ]
