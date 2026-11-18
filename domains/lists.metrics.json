@@ -1447,6 +1447,25 @@
      "status": "duplicate"
     }
    ]
+  },
+  {
+   "at": "2026-11-18T20:50:00Z",
+   "run": 27,
+   "closed": 1,
+   "touched": 1,
+   "pct_blocked": 0,
+   "top_block": null,
+   "dup_rate": 0,
+   "median_days": 0,
+   "asks_open_start": 1,
+   "asks_open_end": 1,
+   "items": [
+    {
+     "what": "main red: handoff-scan failed after the tower family merges (the wheel, /calculators/ and /markets/caps/ and /markets/screener/ became redirects onto family pages); stale handoff-types entries dropped, the ring and fantasy checks now look at /random/, docs/HANDOFF-GAPS.md regenerated; lists run 26 landed with main merged in",
+     "list": "main red",
+     "status": "built"
+    }
+   ]
   }
  ]
 }
