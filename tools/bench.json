@@ -7291,5 +7291,7 @@
   {"ask": "system design for client onboarding", "want": "skill:system-design"},
   {"ask": "design the system for invoice reminders", "want": "skill:system-design"},
   {"ask": "design systems for the support flow", "want": "skill:system-design"},
-  {"ask": "show the data flows for client onboarding", "want": "skill:connect-flows"}
+  {"ask": "show the data flows for client onboarding", "want": "skill:connect-flows"},
+  {"ask": "connect the systems for invoice reminders", "want": "skill:connect-flows"},
+  {"ask": "map connections for the support router", "want": "skill:connect-flows"}
 ]
