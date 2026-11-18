@@ -415,6 +415,31 @@
       "match": "definitions?\\s+exam.{0,80}(etymolog|unknown)|(etymolog|unknown).{0,80}definitions?\\s+exam",
       "ledgerAt": "2026-11-12T02:32:28Z",
       "why": "built: the definitions exam checks an etymology ask against Wiktionary's Etymology section, not the definition, and its unknown-word case is a word no dictionary has instead of Verse's own zorbleflux game (tools/exam-etymology.test.mjs, lists run 19, 2026-11-11)"
+    },
+    {
+      "match": "\\bweather\\b.{0,80}\\b(exam|skill)\\b.{0,140}(paris|london|tokyo|speed|accura|temperature|rainfall)|\\bweather exam\\b",
+      "ledgerAt": "2026-11-18T18:00:23Z",
+      "why": "the weather card has a time limit on every forecast call, asks once more, then Verse's own edge copy (/api/weather); the exam had swung between 54 and 98 on the same city asks while the card sat past 12 s, and measured 98.3 on live (tools/weather-wait.test.mjs, lists run 26, 2026-11-18)"
+    },
+    {
+      "match": "factorial\\(0\\)",
+      "ledgerAt": "2026-11-18T18:00:23Z",
+      "why": "the factorial(0) code exam passes: the code domain scored 100 on every run since 2026-11-15, the check runs factorial(0)==1 on the card's code (lists run 26, 2026-11-18)"
+    },
+    {
+      "match": "sports data retrieval.{0,40}(yankees|chiefs|packers)",
+      "ledgerAt": "2026-11-18T18:00:23Z",
+      "why": "Yankees, Chiefs and Packers scores pass on live: the sports exam measured 96.3 with those asks green (lists run 26, 2026-11-18)"
+    },
+    {
+      "match": "podcast retrieval.{0,80}(this american life|planet money)",
+      "ledgerAt": "2026-11-17T03:15:21Z",
+      "why": "the latest This American Life plays from the host's own file and the exam counts it as the feed's episode; on 2026-11-18 (lists run 26) This American Life and Planet Money both played in the exam"
+    },
+    {
+      "match": "bridge card.{0,60}fewer than two",
+      "ledgerAt": "2026-11-12T11:40:00Z",
+      "why": "\"bridge these inputs\" with nothing staged opens a Bridge card that says how to stage inputs and bridges two samples on a tap (tools/bridge-ask.test.mjs, lists run 22)"
     }
   ],
   "extra": [

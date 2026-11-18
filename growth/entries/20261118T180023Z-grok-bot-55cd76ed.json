@@ -1,0 +1,1 @@
+{"at":"2026-11-18T18:00:23Z","by":"grok-bot","kind":"fix","what":"The recipe card takes the ask in Spanish, French, German, Italian and Portuguese: \"receta de guacamole\", \"recette de crêpes\", \"Rezept für Pfannkuchen\" now open the recipe, money and friends stay out (tools/recipe-languages.test.mjs, lists run 26)","asked":"ask-20261117-0823-2","try":"receta de guacamole"}

@@ -14,7 +14,7 @@
  "bench_at": "2026-11-16",
  "totals": {
   "experiment": 0,
-  "tested": 4,
+  "tested": 5,
   "checked": 17,
   "proven": 447
  },
@@ -3790,7 +3790,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 4,
     "proven": 92
    },
@@ -4707,6 +4707,13 @@
      "success_rate": 1,
      "promoted": "2026-11-18",
      "streak": 1
+    },
+    {
+     "name": "systems-connect-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-18",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "automation-handoff",

@@ -1,0 +1,1 @@
+{"at":"2026-11-18T18:00:23Z","by":"grok-bot","kind":"build","what":"delivery-ready and handoff-ready are one ready-checks family at 10120, aliases kept, a routing replay of 6,659 asks moved none (tools/ready-checks-family.test.mjs, lists run 26)"}

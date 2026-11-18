@@ -1,0 +1,1 @@
+{"at":"2026-11-18T18:00:23Z","by":"grok-bot","kind":"fix","what":"main's red index check: systems-connect-pack (#2963) had no order file; it is adopted and joins connect-flows as one connections family at 12000, aliases kept, a routing replay of 6,665 asks moved none (tools/connections-family.test.mjs, lists run 26)"}

@@ -2502,6 +2502,21 @@
       "words": "Teach the wants skill to answer probes instead of turning them into questions.",
       "ledgerAt": "2026-10-15T20:03:39Z",
       "why": "built: V01D writes its own probe asks (frontier #28, step 2 of the probe-and-fix playbook; owner, 2026-10-15: 'teach a man to fish so that V01D can do all this itself one day'): once a day the V01D probes itself workflow has V0 (linked by tools/asks-link.mjs, shared words: teach, want, skill, answ, prob, them)"
+    },
+    {
+      "words": "Update the Bridge card logic to handle cases with fewer than two staged inputs.",
+      "ledgerAt": "2026-11-12T11:40:00Z",
+      "why": "built: \"bridge these inputs\" with nothing staged opens a Bridge card that says how to stage inputs and bridges two samples on a tap (tools/bridge-ask.test.mjs, lists run 22) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the podcast retrieval logic for 'this american life' and 'planet money'.",
+      "ledgerAt": "2026-11-17T03:15:21Z",
+      "why": "built: the latest This American Life plays from the host's own file and the exam counts it as the feed's episode; on 2026-11-18 (lists run 26) This American Life and Planet Money both played in the exam (tools/asks-link.json)"
+    },
+    {
+      "words": "Update the podcast retrieval logic to successfully play 'this american life' and 'planet money'.",
+      "ledgerAt": "2026-11-17T03:15:21Z",
+      "why": "built: the latest This American Life plays from the host's own file and the exam counts it as the feed's episode; on 2026-11-18 (lists run 26) This American Life and Planet Money both played in the exam (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2514,7 +2529,7 @@
   ],
   "totals": {
     "asked": 278,
-    "built": 269,
+    "built": 271,
     "through": "2026-11-18T01:34:00Z",
     "open": [
       {
@@ -2536,27 +2551,6 @@
           "ask-20261117-2142-1",
           "ask-20261117-2259-1",
           "ask-20261118-0040-1"
-        ]
-      },
-      {
-        "ask": "Update the Bridge card logic to handle cases with fewer than two staged inputs.",
-        "at": "2026-11-12T23:41:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 1,
-        "ids": [
-          "ask-20261112-2103-3",
-          "ask-20261112-2106-3",
-          "ask-20261112-2109-3",
-          "ask-20261112-2121-3",
-          "ask-20261112-2132-3",
-          "ask-20261112-2203-2",
-          "ask-20261112-2209-3",
-          "ask-20261112-2217-3",
-          "ask-20261112-2243-3",
-          "ask-20261112-2251-3",
-          "ask-20261112-2308-3",
-          "ask-20261112-2341-3"
         ]
       },
       {
@@ -2620,20 +2614,6 @@
           "ask-20261116-2201-2",
           "ask-20261116-2209-2",
           "ask-20261116-2258-3"
-        ]
-      },
-      {
-        "ask": "Fix the podcast retrieval logic for 'this american life' and 'planet money'.",
-        "at": "2026-11-17T02:26:00Z",
-        "kind": "daily",
-        "small": false,
-        "times": 2,
-        "ids": [
-          "ask-20261117-0035-1",
-          "ask-20261117-0108-1",
-          "ask-20261117-0117-1",
-          "ask-20261117-0135-1",
-          "ask-20261117-0226-3"
         ]
       },
       {

@@ -1,0 +1,1 @@
+{"at":"2026-11-18T18:00:23Z","by":"grok-bot","kind":"finding","what":"The factorial(0) code exam already passes: the code domain has scored 100 on every run since 2026-11-15 (it was 93.3 on 2026-11-14), and the check runs factorial(0)==1 and factorial(5)==120 on the card's own code (lists run 26)","asked":"ask-20261118-0134-2"}

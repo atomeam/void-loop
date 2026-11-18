@@ -388,6 +388,6 @@
  "process-map": ["map the process for invoice reminders","process chart of weekly status reports","process map for client onboarding","show the process map for support tickets"],
  "system-design": ["design a system for weekly status reports","design systems for the support flow","design the system for invoice reminders","system design for client onboarding"],
  "summon-pack": ["client asks for onboarding status","how does the client summon the support router status","package the client asks for weekly reports","summon pack for the invoice automation"],
- "connect-flows": ["connect the systems for invoice reminders","map connections for the support router","show the data flows for client onboarding"],
+ "connections": ["connect systems for invoice automation","connect the systems for invoice reminders","make a systems connect pack for the support process","map connections for the support router","package the connections for weekly status reports","show the data flows for client onboarding","systems connect pack for client onboarding"],
  "automation-handoff": ["automation handoff for the email reminders","automation handoff for the support router","handoff the running automations for onboarding","make an automation handoff for invoice follow-ups","package the running jobs for the client"]
 }

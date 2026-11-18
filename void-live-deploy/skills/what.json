@@ -404,6 +404,7 @@
  "system-handoff": "The handoff package for a system Verse is taking on",
  "system-slice": "Propose the next concrete system slice Verse will design, build, connect, test or monitor for a business idea or process",
  "system-status": "A status card for one named system, flow or address",
+ "systems-connect-pack": "Package the connections between systems for a business idea",
  "systems-monitor": "The board of systems Verse already watches",
  "systems-owned": "List the systems, monitors, tests and handoffs Verse owns for a business idea so the client sees what heavy lifting is taken over and does less chasing",
  "tab": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\"",
