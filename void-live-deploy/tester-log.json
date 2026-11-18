@@ -3,13 +3,20 @@
  "cases": 137,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 225,
   "grow": 44,
+  "visitor": 225,
   "file": 27,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-18T20:34:08Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-18T20:08:01Z",
    "passed": 0,
@@ -222,13 +229,6 @@
    "kind": "grow",
    "ms": 438,
    "note": "new ground passed, kept as a regression case: \"system design for client onboarding\" (skill:system-design)"
-  },
-  {
-   "at": "2026-11-18T02:47:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
@@ -294,7 +294,7 @@
   },
   {
    "from": "2026-11-04",
-   "runs": 157,
+   "runs": 156,
    "passed": 3606,
    "of": 5241,
    "broken": 14,
@@ -304,7 +304,7 @@
   },
   {
    "from": "2026-11-11",
-   "runs": 143,
+   "runs": 144,
    "passed": 3267,
    "of": 3366,
    "ms": 421

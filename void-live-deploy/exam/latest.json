@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-18T19:51:18.536Z",
+  "at": "2026-11-18T20:33:03.023Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -34,18 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 96.8,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of hardcore history",
-          "failed": [
-            "show",
-            "episode"
-          ],
-          "score": 71.4
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -109,25 +101,25 @@
       }
     },
     "weather": {
-      "score": 96.7,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -235,7 +227,7 @@
       }
     },
     "sports": {
-      "score": 93.5,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -255,6 +247,13 @@
         },
         {
           "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
           "failed": [
             "board"
           ],
@@ -363,6 +362,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 93.5
+    "score": 92.6
   }
 }
