@@ -141,8 +141,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 5,
+    "tested": 3,
+    "checked": 4,
     "proven": 92
    },
    "from": 376,
@@ -190,14 +190,14 @@
    "for": "every active router rule, in the order an ask meets them: the first that catches it answers",
    "kind": "rules",
    "from": 537,
-   "to": 587
+   "to": 586
   },
   {
    "id": "index",
    "name": "Index",
    "kind": "index",
-   "from": 588,
-   "to": 602
+   "from": 587,
+   "to": 601
   }
  ],
  "pages": [
@@ -8070,7 +8070,7 @@
     "verse podcast"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. It has not failed a reader yet.",
    "glow": 100,
    "n": 440
@@ -8604,8 +8604,8 @@
     "handoff ready check for the onboarding automation",
     "what is missing for client handoff on the status reports"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "tier": "tested",
+   "why": "1 real ask in the benchmark",
    "glow": 100,
    "n": 472
   },
@@ -9986,13 +9986,12 @@
     "delivery-dashboard",
     "roi-pack",
     "client-weekly",
-    "delivery-ready",
+    "ready-checks",
     "systems-owned",
     "incident-pack",
     "automation-proposal",
     "process-map",
     "system-design",
-    "handoff-ready",
     "summon-pack",
     "connect-flows",
     "automation-handoff"
@@ -12297,8 +12296,8 @@
     },
     {
      "rank": 384,
-     "name": "delivery-ready",
-     "catches": "is the invoice automation delivery ready"
+     "name": "ready-checks",
+     "catches": "is this system handoff ready"
     }
    ],
    "n": 585
@@ -12335,34 +12334,21 @@
     },
     {
      "rank": 390,
-     "name": "handoff-ready",
-     "catches": "is this system handoff ready"
-    },
-    {
-     "rank": 391,
      "name": "summon-pack",
      "catches": "summon pack for the invoice automation"
     },
     {
-     "rank": 392,
+     "rank": 391,
      "name": "connect-flows",
      "catches": "connect the systems for invoice reminders"
-    }
-   ],
-   "n": 586
-  },
-  {
-   "kind": "rules",
-   "chapter": "rules",
-   "title": "Rules CCCXCIII–CCCXCIII",
-   "rules": [
+    },
     {
-     "rank": 393,
+     "rank": 392,
      "name": "automation-handoff",
      "catches": "automation handoff for the email reminders"
     }
    ],
-   "n": 587
+   "n": 586
   },
   {
    "kind": "index",
@@ -12514,7 +12500,7 @@
      "page": 268
     }
    ],
-   "n": 588
+   "n": 587
   },
   {
    "kind": "index",
@@ -12666,7 +12652,7 @@
      "page": 287
     }
    ],
-   "n": 589
+   "n": 588
   },
   {
    "kind": "index",
@@ -12818,7 +12804,7 @@
      "page": 403
     }
    ],
-   "n": 590
+   "n": 589
   },
   {
    "kind": "index",
@@ -12970,7 +12956,7 @@
      "page": 249
     }
    ],
-   "n": 591
+   "n": 590
   },
   {
    "kind": "index",
@@ -13122,7 +13108,7 @@
      "page": 218
     }
    ],
-   "n": 592
+   "n": 591
   },
   {
    "kind": "index",
@@ -13274,7 +13260,7 @@
      "page": 36
     }
    ],
-   "n": 593
+   "n": 592
   },
   {
    "kind": "index",
@@ -13426,7 +13412,7 @@
      "page": 374
     }
    ],
-   "n": 594
+   "n": 593
   },
   {
    "kind": "index",
@@ -13578,7 +13564,7 @@
      "page": 514
     }
    ],
-   "n": 595
+   "n": 594
   },
   {
    "kind": "index",
@@ -13730,7 +13716,7 @@
      "page": 232
     }
    ],
-   "n": 596
+   "n": 595
   },
   {
    "kind": "index",
@@ -13882,7 +13868,7 @@
      "page": 383
     }
    ],
-   "n": 597
+   "n": 596
   },
   {
    "kind": "index",
@@ -14034,7 +14020,7 @@
      "page": 115
     }
    ],
-   "n": 598
+   "n": 597
   },
   {
    "kind": "index",
@@ -14186,7 +14172,7 @@
      "page": 65
     }
    ],
-   "n": 599
+   "n": 598
   },
   {
    "kind": "index",
@@ -14338,7 +14324,7 @@
      "page": 107
     }
    ],
-   "n": 600
+   "n": 599
   },
   {
    "kind": "index",
@@ -14490,7 +14476,7 @@
      "page": 223
     }
    ],
-   "n": 601
+   "n": 600
   },
   {
    "kind": "index",
@@ -14586,7 +14572,7 @@
      "page": 113
     }
    ],
-   "n": 602
+   "n": 601
   }
  ],
  "index": [
@@ -16696,7 +16682,7 @@
   }
  ],
  "totals": {
-  "pages": 602,
+  "pages": 601,
   "chapters": 16,
   "skills": 468,
   "games": 16,

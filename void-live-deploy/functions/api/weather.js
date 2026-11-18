@@ -18,7 +18,8 @@ import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence 
 export function placeIn(url) { const p = placeOf(new URL(url).searchParams.get('q') || ''); return PLACE.test(p) ? p : ''; }
 /** the forecast for a place, asked of Open-Meteo: { ok, loc, w } or { ok: false, kind: 'missing' | 'away' }. */
 export async function lookWeather(place, fetchFn = fetch) {
-  const get = async (u) => { const r = await fetchFn(u, { headers: { accept: 'application/json' } }); if (!r.ok) throw new Error('status ' + r.status); return r.json(); };
+  // each call has a 6 s limit, so a hung upstream answers 502 (the card then asks Open-Meteo itself) instead of never
+  const get = async (u) => { const r = await fetchFn(u, { headers: { accept: 'application/json' }, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined }); if (!r.ok) throw new Error('status ' + r.status); return r.json(); };
   let g; try { g = await get(geocodeUrl(place)); } catch (_) { return { ok: false, kind: 'away' }; }
   const loc = locOf(g && g.results && g.results[0]); if (!loc) return { ok: false, kind: 'missing' };
   let w; try { w = await get(forecastUrl(loc.lat, loc.lon)); } catch (_) { return { ok: false, kind: 'away' }; }

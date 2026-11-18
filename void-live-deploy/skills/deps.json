@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1350,
+ "counted": 1353,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -74,9 +74,9 @@
   },
   {
    "file": "lib/skill-family.js",
-   "skills": 26,
-   "direct": 26,
-   "dependants": 26,
+   "skills": 27,
+   "direct": 27,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -14928,6 +14928,7 @@
     "skills/ownership.js",
     "skills/proposals.js",
     "skills/quick-tools.js",
+    "skills/ready-checks.js",
     "skills/reuse-tools.js",
     "skills/riddle-gen.js",
     "skills/rooms.js",
@@ -17677,6 +17678,10 @@
     "functions/api/aurora.js"
    ]
   },
+  "skills/automation-handoff.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/automation-pack.js": {
    "imports": [],
    "importedBy": []
@@ -18355,7 +18360,9 @@
   },
   "skills/delivery-ready.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/ready-checks.js"
+   ]
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -19271,7 +19278,9 @@
   },
   "skills/handoff-ready.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/ready-checks.js"
+   ]
   },
   "skills/handoffs.js": {
    "imports": [
@@ -20892,6 +20901,14 @@
    ],
    "importedBy": []
   },
+  "skills/ready-checks.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/delivery-ready.js",
+    "skills/handoff-ready.js"
+   ],
+   "importedBy": []
+  },
   "skills/rebuild-map.js": {
    "imports": [
     "skills/rack.js"
@@ -21839,6 +21856,10 @@
     "skills/reliability-pack.js",
     "skills/status-digest.js"
    ]
+  },
+  "skills/systems-connect-pack.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/systems-monitor.js": {
    "imports": [],

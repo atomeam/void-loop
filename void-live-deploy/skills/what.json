@@ -19,6 +19,7 @@
  "ask-immune": "\"immune check: <your ask>\" / \"check my ask for vague goals\"",
  "attention-field-mind": "ATTENTION as a field mind",
  "aurora-tonight": "Aurora — \"aurora forecast\", \"can I see the northern lights tonight\": NOAA's planetary Kp index against how far from the geomagnetic pole you are",
+ "automation-handoff": "Package the running automations for a client handoff",
  "automation-pack": "Propose the automations Verse will own for a business process so the client does less building and monitoring",
  "automation-proposal": "Propose concrete automations Verse will own for a process so the client does less manual work, tracking and chasing",
  "automation-status": "A short client-facing status of the automations Verse owns so the client stops asking for updates",
