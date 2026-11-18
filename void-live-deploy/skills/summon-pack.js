@@ -7,7 +7,7 @@
 export function isSummonPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:summon|client\s+asks?)\s+(?:pack|package|for)\b/i.test(t)
-    || /^(?:make|generate|show|package)\s+(?:a\s+)?(?:summon|client\s+asks?)\s+pack\b/i.test(t)
+    || /^(?:make|generate|show|package)\s+(?:a\s+|the\s+)?(?:summon|client\s+asks?)\s+(?:pack|for)\b/i.test(t)
     || /\bhow\s+(?:does|can)\s+(?:the\s+)?client\s+summon\b/i.test(t)
     || /^(?:summon\s+pack)\s+(?:for|of|on)\b/i.test(t);
 }
