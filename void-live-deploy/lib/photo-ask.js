@@ -12,9 +12,10 @@ const VERB = [['out', /^(?:compress|optimi[sz]e|shrink|minify|convert|reduce)\b/
 export function photoAsk(text) {
   const t = String(text || '').toLowerCase().replace(/\s+/g, ' ').replace(/[?!.]+$/, '').replace(/^(?:please |can you |could you |i want to |i need to |how do i |how to )/, '').trim();
   if (!t || t.length > 90 || /\d/.test(t.replace(/\b(?:png|jpe?g|webp|avif|gif|bmp)\b/g, ''))) return null;
+  if (SITES[t] === 'exif' || SITES[t] === 'exifeditor') return { slug: '', tab: 'info' };
   if (SITES[t]) return { slug: SITES[t], tab: '' };
   if (/^(?:online )?(?:photo|image|picture) (?:editor|tools?|toolkit|compressor|optimi[sz]er)$|^(?:free )?(?:online )?(?:photo|image) editor$/.test(t)) return { slug: '', tab: /compressor|optimi/.test(t) ? 'out' : '' };
-  if (/^(?:(?:view|see|show|read|check|find|inspect|open)\s+(?:the\s+)?)?(?:exif|metadata|meta data|gps)\b.*\b(?:viewer|of|from|in|for|on)\b.*|^(?:photo|image|picture) (?:exif|metadata) (?:viewer|reader|checker)$|^exif (?:viewer|reader|data viewer)$/.test(t) && !/^(?:what|why|how)\b|\b(?:strip|remove|delete|clean|scrub|wipe|erase)\b/.test(t)) return { slug: 'exif', tab: 'info' };
+  if (/^(?:(?:view|see|show|read|check|find|inspect|open)\s+(?:the\s+)?)?(?:exif|metadata|meta data|gps)\b.*\b(?:viewer|of|from|in|for|on)\b.*|^(?:photo|image|picture) (?:exif|metadata) (?:viewer|reader|checker)$|^exif (?:viewer|reader|data viewer)$/.test(t) && !/^(?:what|why|how)\b|\b(?:strip|remove|delete|clean|scrub|wipe|erase)\b/.test(t)) return { slug: '', tab: 'info' };
   if (/^(?:what|why|who|when|where)\b/.test(t)) return null;
   for (const [tab, re] of VERB) {
     if (!re.test(t)) continue; const rest = t.replace(re, '').trim();
@@ -25,5 +26,5 @@ export function photoAsk(text) {
   if (/^(?:image|photo|picture) (?:converter|cropper|rotator)$|^(?:jpe?g|png|webp|avif) (?:converter|compressor)$|^(?:png|jpe?g|webp|avif) to (?:png|jpe?g|webp|avif)(?: converter)?$/.test(t)) return { slug: '', tab: /cropper|rotator/.test(t) ? 'crop' : '' };
   return null;
 }
-/** the address that opens the tool for an ask: '/photos/', '/photos/?tab=crop', '/photos/exif/'. Pure. */
+/** the address that opens the tool for an ask: '/photos/', '/photos/?tab=crop', '/photos/?tab=info'. Pure. */
 export const photoHref = (a) => '/photos/' + (a.slug ? a.slug + '/' : '') + (a.tab ? '?tab=' + a.tab : '');

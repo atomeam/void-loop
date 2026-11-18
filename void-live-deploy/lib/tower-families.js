@@ -63,6 +63,11 @@ export const FAMILIES = Object.freeze([
     { path: "/emoji-combos/", to: "/emoji-combos/" },
     { path: "/emoji-combos/emoji-dictionary/", to: "/emoji-combos/" }
   ] },
+  { id: "photos", page: "/photos/", members: [
+    { path: "/photos/", to: "/photos/" },
+    { path: "/photos/exif/", to: "/photos/?tab=info" },
+    { path: "/photos/exifeditor/", to: "/photos/?tab=info" }
+  ] },
 ]);
 
 const byPath = new Map();
@@ -108,4 +113,5 @@ export const FAMILY_MODE_SRC = Object.freeze({
   "/random/": { "coin": "/random/modes/coin.html", "wheel": "/random/modes/wheel.html", "people": "/random/modes/people.html" },
   "/markets/": { "caps": "/markets/modes/caps.html", "screener": "/markets/modes/screener.html" },
   "/color/": { "gradient": "/color/modes/gradient.html" },
+  "/photos/": { "ai": "/photos/modes/ai.html" },
 });

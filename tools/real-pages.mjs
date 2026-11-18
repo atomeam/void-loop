@@ -441,7 +441,7 @@ export const SPECS = {
     await t.click('#leak'); await t.p.waitForTimeout(3000); t.ok(/leak|breach|found|not found|seen/i.test(await t.p.locator('main').innerText()), 'the leak check answers');
   },
   '/pdf/': pdfMake,
-  '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); // the AI check mode, built from what Verse watched (domains/tv-built/): a real Stable Diffusion PNG and a real phone-style JPEG go in, each gets the exact verdict, the report downloads, the paid link is the store's
+  '/photos/': async (t) => { await t.share('#share'); }, '/photos/?mode=ai': async (t) => { await t.share('#share'); // the AI check mode, built from what Verse watched (domains/tv-built/): a real Stable Diffusion PNG and a real phone-style JPEG go in, each gets the exact verdict, the report downloads, the paid link is the store's
     const crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
     const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
     const zlib = await import('node:zlib'), png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10]), chunk('IHDR', Buffer.concat([be(2), be(2), Buffer.from([8, 2, 0, 0, 0])])),
@@ -456,7 +456,7 @@ export const SPECS = {
     await t.download('#aiout .aidl', /edited-ai-check\.txt$/);
     t.ok(/moonbeam846\.gumroad\.com\/l\/yinmj/.test(await t.p.locator('#pro-link').getAttribute('href')), 'the paid line links to MultiVerse on the store');
   },
-  '/photos/exifeditor/': async (t) => { await t.share('#share'); }, '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
+  '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
   '/piano/': async (t) => { await t.p.keyboard.press('q'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'a key plays a note'); },
   '/local/': async (t) => {
     await t.fill('#q', 'Boston'); await t.clickText('Find stations'); await t.waitText('#radio-note', /stations within|No radio/, 20000);

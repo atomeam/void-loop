@@ -305,7 +305,7 @@ const ROUTES = [
   // photo tools: 'compress image', 'crop photo', 'convert png to webp', 'view exif', 'strip exif', 'squoosh' (lib/photo-ask.js); a sized ask stays with the resizer below
   [/^(?:please )?(?:strip|remove|clean|scrub) (?:the )?(?:exif|metadata|gps|location)(?: (?:from|off|of|in) (?:an? |my |the |this )?(?:photo|picture|image|pic|jpe?g|png)s?)?$|^(?:exif|metadata) (?:stripper|remover|cleaner)$/i, () => '/photos/?tab=info'],
   [/^(?:please )?(?:compress|optimi[sz]e|convert|crop|rotate|flip|edit|annotate) (?:an? |my |the |this )?(?:image|photo|picture|pic|jpe?g|png|webp|avif)s?(?: (?:to|into) (?:jpe?g|png|webp|avif))?$|^(?:png|jpe?g|webp|avif) to (?:png|jpe?g|webp|avif)$|^(?:photo|image) (?:editor|compressor)$/i, (m, t) => '/photos/' + (/^(?:please )?(?:crop|rotate|flip)/i.test(t) ? '?tab=crop' : '')],
-  [/^(?:view |see |check )?(?:the )?(?:exif|metadata)(?: viewer| of (?:an? |my |the )?(?:photo|picture|image))?$/i, () => '/photos/exif/'],
+  [/^(?:view |see |check )?(?:the )?(?:exif|metadata)(?: viewer| of (?:an? |my |the )?(?:photo|picture|image))?$/i, () => '/photos/?tab=info'],
   [/^(squoosh|tinypng|photopea|iloveimg)$/i, (m) => '/photos/' + m[1].toLowerCase() + '/'],
   [/^(?:resize|shrink|crop) (?:an? |my |the )?(?:image|photo|picture|signature)(?: to (.+))?$/i, () => '/resize-image/'],
   [/^(?:count (?:the )?words(?: in)?|how many words(?: in)?|word count(?: of)?) (.+)$/i, (m) => '/word-count/?t=' + encodeURIComponent(m[1])],

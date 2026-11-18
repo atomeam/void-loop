@@ -4,8 +4,8 @@
 # Verse's redirects (Cloudflare Pages): a floor's own name never 404s - Versus's shopping floor is the store
 /shopping /store/ 301
 # the AI check is a mode of the photo details page (owner, 2026-11-03: one page per category, features fold in as modes)
-/ai-authenticity-checker /photos/exif/?mode=ai 301
-/ai-authenticity-checker/ /photos/exif/?mode=ai 301
+/ai-authenticity-checker /photos/?tab=info&mode=ai 301
+/ai-authenticity-checker/ /photos/?tab=info&mode=ai 301
 /shopping/ /store/ 301
 # plain names for the photos lane pages (owner, 2026-10-28: plain titles, old URLs kept)
 /photos/batch /photos/iloveimg/ 301
@@ -14,11 +14,15 @@
 /photos/editor/ /photos/photopea/ 301
 /photos/compress /photos/tinypng/ 301
 /photos/compress/ /photos/tinypng/ 301
-/photos/metadata /photos/exifeditor/ 301
-/photos/metadata/ /photos/exifeditor/ 301
+/photos/metadata /photos/?tab=info 301
+/photos/metadata/ /photos/?tab=info 301
 # the photo details checker by its short name
-/exif /photos/exif/ 301
-/exif/ /photos/exif/ 301
+/photos/exif /photos/?tab=info 301
+/photos/exif/ /photos/?tab=info 301
+/photos/exifeditor /photos/?tab=info 301
+/photos/exifeditor/ /photos/?tab=info 301
+/exif /photos/?tab=info 301
+/exif/ /photos/?tab=info 301
 # Verse's status page lives on /autopilot/ (combine-pages rule): the plain name opens it
 /status /autopilot/#status 301
 /status/ /autopilot/#status 301
