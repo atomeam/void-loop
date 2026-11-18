@@ -20,8 +20,8 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/color/gradient/': 'Gradient', '/random/wheel/': 'Wheel of names', '/random/people/': 'Made-up people', '/random/': 'Random number',
   '/ledger/': 'Repo activity ledger',
   '/random/coin/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter',
-  '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/scores/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'The Crew', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/journal/': 'Earth science journal', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
+  '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'The Crew', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/journal/': 'Earth science journal', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
   // the Lab's tools: the one real job inside each cluster of hourly experiments (tools/lab-grade.mjs IDEAS), made into a page people come back to
   '/lab/level/': 'Spirit level', '/lab/checksum/': 'File checksum checker', '/lab/pattern/': 'Seamless pattern maker', '/lab/photo-palette/': 'Palette from a photo', '/lab/dictation/': 'Dictation', '/lab/mind-map/': 'Mind map maker',
   // Starboard: a live benchmark, then weather, news, games and Lab tools on one page
@@ -57,16 +57,14 @@ const HAND_RELATED = Object.freeze({
   '/convert/': ['/base64/', '/stopwatch/', '/calculator/'],
   '/password/': ['/random/', '/random/people/'],
   '/resize-image/': ['/color/'],
-  '/calculator/': ['/base64/', '/convert/', '/random/', '/calculators/', '/vat/'],
-  '/calculators/': ['/calculator/', '/lab/level/', '/convert/', '/base64/', '/vat/'],
-  '/vat/': ['/calculator/', '/calculators/', '/convert/', '/markets/'],
+  '/calculator/': ['/base64/', '/convert/', '/random/', '/vat/'],
+  '/vat/': ['/calculator/', '/convert/', '/markets/'],
   '/time/': ['/stopwatch/', '/weather/'],
   '/weather/': ['/time/', '/stopwatch/', '/local/', '/starboard/'],
   '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
-  '/scores/': ['/scores/sports/', '/time/', '/calendar/'],
-  '/scores/sports/': ['/scores/', '/calendar/', '/time/'],
-  '/fantasy/': ['/scores/', '/scores/sports/', '/calculator/'],
+  '/scores/': ['/time/', '/calendar/'],
+  '/fantasy/': ['/scores/', '/calculator/'],
   '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/', '/local/'],
   // local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): the weather and the time of the same place, the news, and podcasts to listen to next
   '/local/': ['/weather/', '/news/', '/podcasts/', '/time/'],
@@ -93,7 +91,7 @@ const HAND_RELATED = Object.freeze({
   '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/', '/rap/'],
   '/piano/': ['/chords/', '/metronome/', '/tuner/'],
   '/tuner/': ['/piano/', '/chords/', '/metronome/'],
-  '/lab/level/': ['/convert/', '/calculators/', '/calculator/', '/starboard/'],
+  '/lab/level/': ['/convert/', '/calculator/', '/starboard/'],
   '/lab/checksum/': ['/base64/', '/converter/', '/password/', '/starboard/'],
   '/lab/pattern/': ['/lab/photo-palette/', '/color/', '/color/gradient/', '/resize-image/', '/starboard/'],
   '/lab/photo-palette/': ['/lab/pattern/', '/color/', '/color/gradient/', '/photos/', '/starboard/'],
@@ -122,7 +120,7 @@ const HAND_RELATED = Object.freeze({
   // the repo activity ledger (owner, 2026-10-28): a Kanban board and notes to plan from what it lists, the calendar for its dates
   '/ledger/': ['/kanban/', '/team/', '/notes/', '/calendar/', '/g/'],
   // the STL checker (asked by Verse): a part's size in other units, and the arithmetic of a print
-  '/stl/': ['/convert/', '/calculator/', '/calculators/'],
+  '/stl/': ['/convert/', '/calculator/'],
   // the research journal (the Versus floor for ajsonline.org): the papers a reader wants, the words of a paper counted, the length of the
   // paper an author is writing, and the notes the reading list is kept in
   '/journal/': ['/notes/', '/word-count/', '/g/', '/convert/'],
@@ -144,8 +142,8 @@ const HAND_CARD_ASK = Object.freeze({
   '/color/': 'color #ff5733', '/color/gradient/': 'gradient from red to blue', '/random/wheel/': 'spin the wheel with ann, bob and cat', '/random/people/': 'fake name generator',
   '/random/': 'random number between 1 and 100', '/random/coin/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base64/': 'convert 255 to binary', '/password/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
-  '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
-  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/scores/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+  '/calculator/': '17% of 240', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
+  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
   '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/journal/': 'latest earth science papers', '/starboard/': 'open starboard', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', '/arcade/': 'arcade games', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
   '/lab/level/': 'spirit level', '/lab/checksum/': 'sha256 checksum', '/lab/pattern/': 'seamless pattern maker', '/lab/photo-palette/': 'color palette from a photo', '/lab/dictation/': 'speech to text', '/lab/mind-map/': 'mind map maker',
   // the research journal (the Versus floor for ajsonline.org, 2026-11-07): the open-tool card that links the page which reads the papers

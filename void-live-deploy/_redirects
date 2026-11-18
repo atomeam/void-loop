@@ -48,8 +48,8 @@
 /one-time-fix/ /fix/one-time/ 301
 /full-stack-audit /fix/audit/ 301
 /full-stack-audit/ /fix/audit/ 301
-/sports /scores/sports/ 301
-/sports/ /scores/sports/ 301
+/sports /scores/?mode=sports 301
+/sports/ /scores/?mode=sports 301
 /podcast /podcasts/?show=verse 301
 /podcast/ /podcasts/?show=verse 301
 /convert/unit-converter /convert/ 301
@@ -89,3 +89,9 @@
 /password/strength/ /password/?mode=strength 301
 /base64/bases /base64/?mode=bases 301
 /base64/bases/ /base64/?mode=bases 301
+
+# scores + calculator family members
+/scores/sports /scores/?mode=sports 301
+/scores/sports/ /scores/?mode=sports 301
+/calculators /calculator/?mode=formulas 301
+/calculators/ /calculator/?mode=formulas 301

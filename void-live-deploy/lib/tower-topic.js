@@ -39,7 +39,7 @@ export const TOPICS = Object.freeze([
   ['flight distance', /distance calculator|flight distance|air miles/i, '/flights/distance/'],
   ['remote jobs', /remote jobs?|job board/i, '/jobs/'],
   ['calculator', /^(?:online |free )?calculator\b|\bonline calculator\b|calculadora online|онлайн калькулятор$/i, '/calculator/'],
-  ['formula calculators', /calculat|калькулятор|cálculo|calculo|rechner|calcul/i, '/calculators/'],
+  ['formula calculators', /calculat|калькулятор|cálculo|calculo|rechner|calcul/i, '/calculator/?mode=formulas'],
 ]);
 /** the topic and Verse's page for a site, from its title and host: { topic, page } or null. Pure. */
 export function topicOf(title, host = '') {

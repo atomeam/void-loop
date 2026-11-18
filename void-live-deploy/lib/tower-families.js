@@ -26,6 +26,14 @@ export const FAMILIES = Object.freeze([
     { path: "/base64/", to: "/base64/" },
     { path: "/base64/bases/", to: "/base64/?mode=bases" }
   ] },
+  { id: "scores", page: "/scores/", members: [
+    { path: "/scores/", to: "/scores/" },
+    { path: "/scores/sports/", to: "/scores/?mode=sports" }
+  ] },
+  { id: "calculator", page: "/calculator/", members: [
+    { path: "/calculator/", to: "/calculator/" },
+    { path: "/calculators/", to: "/calculator/?mode=formulas" }
+  ] },
 ]);
 
 const byPath = new Map();
@@ -66,4 +74,6 @@ export function sameFamilyTwoPages(a, b) {
 export const FAMILY_MODE_SRC = Object.freeze({
   "/password/": { "strength": "/password/modes/strength.html" },
   "/base64/": { "bases": "/base64/modes/bases.html" },
+  "/scores/": { "sports": "/scores/modes/sports.html" },
+  "/calculator/": { "formulas": "/calculator/modes/formulas.html" },
 });

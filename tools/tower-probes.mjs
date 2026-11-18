@@ -1008,11 +1008,11 @@ export const PROBES = Object.freeze({
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
   },
   'formula calculators': {
-    site: 'https://www.vcalc.com/', verse: '/calculators/',
+    site: 'https://www.vcalc.com/', verse: '/calculator/?mode=formulas',
     // vcalc.com's robots.txt asks robots not to read it, so accuracy is Verse against the worked-out answer: the outside area of a pipe 2 inches
     // across and 10 feet long, pi x d x l = pi x (2/12 ft) x 10 ft = 5.235988 ft², and the same area in square metres (0.4864390 m²) and square
     // inches (753.9822 in²), the units a page that is unit-aware shows beside it
-    ask: { verse: '/calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
+    ask: { verse: '/calculator/?mode=formulas&calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
     truth: [['5.23599 ft²', /(?<![\d.])5\.2359\d*\s*ft²/], ['0.486439 m²', /(?<![\d.])0\.48643\d*\s*m²/], ['753.982 in²', /(?<![\d.])753\.98\d*\s*in²/]],
     askParts: {
       // the library: each kind of calculator the best formula sites keep, named as a section of the page
@@ -1247,7 +1247,7 @@ const LANE_PROBES = Object.freeze({
     facts: [['companies', /Companies hiring/], ['A to Z', /A to Z/], ['categories', /Category/], ['keyword', /Keyword/], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['tracker', /Applications/], ['RSS', /RSS/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'sports: thesportsdb.com': {
-    ask: { verse: '/scores/sports/?q=arsenal' },
+    ask: { verse: '/scores/?mode=sports&q=arsenal' },
     truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
     askParts: { 'sport search': [['a search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['venues or events', /\bVenues\b|\bEvents\b/], ['players', /\bPlayers\b/]],
       'born on this day': [['born on this day', /Born on this day/i], ['a year and a name', /(?:1[89]|20)\d\d\s*[\s\S]{2,70} — /]],
