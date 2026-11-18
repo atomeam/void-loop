@@ -16,7 +16,6 @@ import { PRODUCTS } from '../void-live-deploy/lib/products.js';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** pages left alone for now, with why (handoff.md: who is on it) */
 export const SKIP = Object.freeze({
-  '/resize-image/': 'the tower session is on this page (handoff.md, 2026-10-25); its row in lib/seo.js waits for it',
   '/weather/': 'the tower session\'s current fight (handoff.md, 2026-10-25); its row in lib/seo.js waits for it',
 });
 export const HEAD = ['<!-- seo -->', '<!-- /seo -->'];

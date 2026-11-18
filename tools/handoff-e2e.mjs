@@ -275,7 +275,7 @@ export const JOURNEYS = {
   'paint a picture, resize it, edit the resized copy, edit it in the photo tools, and paint a kept picture as a new sheet': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the paint page opened with its picture');
-    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
+    await Promise.all([p.waitForURL(/\/photos\/\?mode=resize/), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
     await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
     if (new URL(p.url()).searchParams.has('img')) throw new Error('the resize page kept ?img=handoff in its address, so a reload opens the picture again');
     await check('the resize page opened the painting and made a ' + (await p.locator('#result').getAttribute('data-bytes')) + '-byte copy');
@@ -373,7 +373,7 @@ export const JOURNEYS = {
     await p.waitForFunction(() => location.hash.split('-').length > 2 && !/[?&]img=/.test(location.search), null, { timeout: 15000 });
     await check('the gradient page read the edit into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
     await toPhotos();
-    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your edit' }).click()]);
+    await Promise.all([p.waitForURL(/\/photos\/\?mode=resize/), p.locator('#related a', { hasText: 'Resize your edit' }).click()]);
     await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
     if (new URL(p.url()).searchParams.has('img')) throw new Error('the resize page kept ?img=handoff in its address, so a reload opens the edit again');
     await check('the resize page opened the edit and made a ' + (await p.locator('#result').getAttribute('data-bytes')) + '-byte copy');
@@ -411,7 +411,7 @@ export const JOURNEYS = {
     await p.waitForFunction(() => location.hash.split('-').length > 2 && !/[?&]img=/.test(location.search), null, { timeout: 15000 });
     await check('the gradient page read the PDF page into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
     await toPicture();
-    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('p.send a', { hasText: 'Resize it' }).click()]);
+    await Promise.all([p.waitForURL(/\/photos\/\?mode=resize/), p.locator('p.send a', { hasText: 'Resize it' }).click()]);
     await p.waitForFunction(() => /\d+\s*[×x]\s*\d+/.test(document.body.innerText) && !location.search, null, { timeout: 15000 });
     await check('the resize page opened the PDF page');
   },
@@ -435,7 +435,7 @@ export const JOURNEYS = {
   },
   'resize a picture, then translate the words in it: the translate page waits for the language and one press': async (p, check) => {
     await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
-    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
+    await Promise.all([p.waitForURL(/\/photos\/\?mode=resize/), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
     await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
     await check('the resize page made a copy of the painting');
     // nothing may reach the translator before the press: count every call from here on

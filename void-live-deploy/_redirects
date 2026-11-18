@@ -20,6 +20,8 @@
 /photos/squoosh/ /photos/?tab=out 301
 /photos/tinypng /photos/?tab=out 301
 /photos/tinypng/ /photos/?tab=out 301
+/resize-image /photos/?mode=resize 301
+/resize-image/ /photos/?mode=resize 301
 /photos/compress /photos/?tab=out 301
 /photos/compress/ /photos/?tab=out 301
 /photos/metadata /photos/?tab=info 301

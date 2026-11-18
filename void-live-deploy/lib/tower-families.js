@@ -70,7 +70,8 @@ export const FAMILIES = Object.freeze([
     { path: "/photos/iloveimg/", to: "/photos/?tab=out" },
     { path: "/photos/photopea/", to: "/photos/?tab=draw" },
     { path: "/photos/squoosh/", to: "/photos/?tab=out" },
-    { path: "/photos/tinypng/", to: "/photos/?tab=out" }
+    { path: "/photos/tinypng/", to: "/photos/?tab=out" },
+    { path: "/resize-image/", to: "/photos/?mode=resize" }
   ] },
 ]);
 
@@ -117,5 +118,5 @@ export const FAMILY_MODE_SRC = Object.freeze({
   "/random/": { "coin": "/random/modes/coin.html", "wheel": "/random/modes/wheel.html", "people": "/random/modes/people.html" },
   "/markets/": { "caps": "/markets/modes/caps.html", "screener": "/markets/modes/screener.html" },
   "/color/": { "gradient": "/color/modes/gradient.html" },
-  "/photos/": { "ai": "/photos/modes/ai.html" },
+  "/photos/": { "ai": "/photos/modes/ai.html", "resize": "/photos/modes/resize.html" },
 });

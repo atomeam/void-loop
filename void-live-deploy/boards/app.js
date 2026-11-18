@@ -350,6 +350,6 @@
     // the address decides the view: ?b=x&p=123 finds the thread of a post (>>123 from elsewhere, >>>/x/123)
     if (code && q.get('p') && !tno) { const r = await api('?b=' + code + '&p=' + (+q.get('p') || 0)); location.replace(r.ok ? link(code, r.thread, r.no) : link(code)); return; }
     if (q.has('review') && owner) await review(); else if (q.get('all') === '1') await over(); else if (code && tno) await thread(); else if (code) await board(); else await home();
-    mountRelated($('related'), '/boards/', [{ label: 'Shrink a picture first', href: () => '/resize-image/' }]);
+    mountRelated($('related'), '/boards/', [{ label: 'Shrink a picture first', href: () => '/photos/?mode=resize' }]);
     document.documentElement.classList.remove('pre');
   })();

@@ -23,7 +23,7 @@ export const TOPICS = Object.freeze([
   ['coin flip', /coin flip|flip a coin/i, '/random/?mode=coin'],
   ['base64', /base ?64/i, '/base64/'],
   ['base converter', /hex to binary|binary (?:to|converter)|base conver/i, '/base64/?mode=bases'],
-  ['resize an image', /resize (?:an )?(?:image|photo|picture)|image resiz/i, '/resize-image/'],
+  ['resize an image', /resize (?:an )?(?:image|photo|picture)|image resiz/i, '/photos/?mode=resize'],
   ['photo tools', /compress (?:image|photo)|image compress|photo editor|exif/i, '/photos/'],
   ['pdf', /\b(?:compress|merge|split|convert|edit|sign|rotate)\w* (?:\w+ )?pdf\b|\bpdf (?:compress|merge|split|convert|editor|tools?)/i, '/pdf/'],
   ['weather', /weather forecast|\bweather\b|прогноз погоды/i, '/weather/'],

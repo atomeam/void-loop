@@ -1,6 +1,6 @@
 /**
  * imgfit skill: "resize a photo to 3.5 x 2.5 cm under 50 kb", "compress my image to 100kb", "image resizer" (owner, 2026-10-24: back to the easy sites; pancardresizer.com).
- * A card that says what it does and opens the resizer with the size and limit the ask named already filled in; the resizer itself is /resize-image/ (lib/imgfit.js): any size
+ * A card that says what it does and opens the resizer with the size and limit the ask named already filled in; the resizer itself is /photos/?mode=resize (lib/imgfit.js): any size
  * in cm, mm, inches or pixels, a size limit in KB that is actually met, a JPEG or a PDF, all on this device, nothing uploaded. The page's own stage
  * card (lib/resize-card.js) asks for the size open on it, so the page and this card lead to each other.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
@@ -11,7 +11,7 @@ import { photoAsk } from '../lib/photo-ask.js'; // a bare "compress an image" or
 function run(text, api) {
   const { showPage, esc } = api, s = sizeIn(text), q = [];
   if (s.w && s.h) { q.push('w=' + s.w, 'h=' + s.h, 'u=' + (s.unit || 'px')); } if (s.kb) q.push('kb=' + s.kb);
-  const href = '/resize-image/' + (q.length ? '?' + q.join('&') : ''), said = (s.w && s.h ? s.w + ' × ' + s.h + ' ' + (s.unit || 'px') : 'the size you need') + (s.kb ? ', under ' + s.kb + ' KB' : '');
+  const href = '/photos/?mode=resize' + (q.length ? '&' + q.join('&') : ''), said = (s.w && s.h ? s.w + ' × ' + s.h + ' ' + (s.unit || 'px') : 'the size you need') + (s.kb ? ', under ' + s.kb + ' KB' : '');
   showPage((el) => {
     el.dataset.cardKind = 'Photo resizer';
     if (q.length && el.dataset) el.dataset.page = href; // the card's "Open the full page" link opens the resizer at this size (lib/card-frame.js pageOfCard)

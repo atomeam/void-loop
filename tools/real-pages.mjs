@@ -16,7 +16,7 @@ const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
 // other agents' floors: tested and reported, never edited from here (see domains/handoff.md)
-export const OTHERS = ['/tournaments/', '/prizes/', '/random/wheel/', '/boards/', '/resize-image/', '/g/', '/photos/', '/random/', '/random/people/', '/is-it/', '/color/'];
+export const OTHERS = ['/tournaments/', '/prizes/', '/random/wheel/', '/boards/', '/g/', '/photos/', '/random/', '/random/people/', '/is-it/', '/color/'];
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
@@ -471,7 +471,6 @@ export const SPECS = {
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },
   '/random/?mode=people': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
   '/recipes/': async (t) => { await t.fill('#q', 'chicken'); await t.click('#go'); await t.p.waitForTimeout(4000); t.ok(/chicken/i.test(await t.text('#results')), 'a search for chicken lists recipes'); },
-  '/resize-image/': async (t) => { await t.share('#share'); },
   '/scores/': async (t) => { await t.p.waitForTimeout(4000); t.ok(!/couldn.t|error|unavailable/i.test(await t.text('#out')), 'scores load: ' + (await t.text('#out')).slice(0, 60)); await t.share('#share'); },
   '/scores/?mode=sports': async (t) => { await t.clickText('Basketball'); await t.p.waitForTimeout(800); t.ok(/NBA|basketball/i.test(await t.text('#out')), 'basketball opens its leagues'); await t.share('#share'); },
   '/stopwatch/': async (t) => { await t.click('#swgo'); await t.p.waitForTimeout(1200); await t.click('#swgo'); t.ok(/0?0?:?0?1[.:]\d/.test(await t.p.locator('main').innerText()) || /1\.\d\d/.test(await t.p.locator('main').innerText()), 'about a second passes on the stopwatch'); await t.share('#link'); },

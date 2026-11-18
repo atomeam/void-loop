@@ -192,7 +192,7 @@ test('Verse\'s own /password-strength/ answers the password strength floor: qwer
     assert.equal(score(text, p.parts['leak check']).n, 1, 'a leak check offered at load');
   } finally { await b.close(); server.close(); }
 });
-test('Verse\'s own /resize-image/ answers the photo resizer floor: the gate puts in its one-pixel PNG with the size in the link and reads 276 by 197 px under 50 KB, a quality, a PDF; the page shows every fact at load', async (t) => {
+test('Verse\'s own /photos/?mode=resize answers the photo resizer floor: the gate puts in its one-pixel PNG with the size in the link and reads 276 by 197 px under 50 KB, a quality, a PDF; the page shows every fact at load', async (t) => {
   const http = await import('node:http'), fsm = await import('node:fs');
   const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
   if (!exe) return t.skip('no browser here');
@@ -211,7 +211,7 @@ test('Verse\'s own /resize-image/ answers the photo resizer floor: the gate puts
     const truth = score(got, p.truth); assert.equal(truth.n, 3, 'the truth: ' + truth.missing.join(', ') + ' in ' + JSON.stringify(got));
     for (const [a, items] of Object.entries(p.askParts)) { const s = score(got, items); assert.equal(s.n, s.of, a + ': ' + s.missing.join(', ')); }
     assert.equal(await answer(b, at('/password/strength/'), null, false, false, 0, 0, PIXEL), null, 'a page with no file box is not measured');
-    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/resize-image/'), { waitUntil: 'load' });
+    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/photos/?mode=resize'), { waitUntil: 'load' });
     const text = await pg.evaluate(() => document.body.innerText); await ctx.close();
     const facts = score(text, p.facts); assert.equal(facts.n, facts.of, 'facts at load: ' + facts.missing.join(', '));
   } finally { await b.close(); server.close(); }
