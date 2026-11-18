@@ -179,5 +179,6 @@
   {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "a0e66eb53020a1e4611bf9200e863f2953b98181", "at": "2026-11-17T10:30:57Z"},
   {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "eb543776360d048eadfa008c925d16b06b568237", "at": "2026-11-17T11:43:35Z"},
   {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "daac7b14b2b9ec7518875b6d4f9e4469323ec0d8", "at": "2026-11-18T09:26:50Z"},
-  {"check": "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the co", "sha": "65274720b4a7c28cc90c2d2e9c808babe1615f5e", "at": "2026-11-18T13:55:45Z"}
+  {"check": "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the co", "sha": "65274720b4a7c28cc90c2d2e9c808babe1615f5e", "at": "2026-11-18T13:55:45Z"},
+  {"check": "python-tests", "sha": "b6bc16792024a0869b42d667653bc164576f9da7", "at": "2026-11-18T19:24:06Z"}
 ]
