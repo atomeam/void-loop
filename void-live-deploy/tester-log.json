@@ -11,6 +11,13 @@
  },
  "runs": [
   {
+   "at": "2026-11-18T20:08:01Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
    "at": "2026-11-18T19:39:17Z",
    "passed": 0,
    "of": 0,
@@ -222,14 +229,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T23:17:03Z",
-   "passed": 135,
-   "of": 135,
-   "kind": "grow",
-   "ms": 541,
-   "note": "new ground passed, kept as a regression case: \"is this system handoff ready\" (skill:handoff-ready)"
   }
  ],
  "weekly": [
