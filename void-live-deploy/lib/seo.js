@@ -23,8 +23,6 @@ export const PAGES = Object.freeze(firstOfEach([
     asks: ['hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour shades and tints', 'colour scheme generator'],
     action: { template: '/color/?c={color}', input: 'color' },
     links: [['#ff5733', '/color/?c=ff5733'], ['#6d4aff', '/color/?c=6d4aff'], ['#ff0000', '/color/?c=ff0000'], ['#00ff00', '/color/?c=00ff00'], ['#0000ff', '/color/?c=0000ff'], ['#ffa500', '/color/?c=ffa500'], ['#808080', '/color/?c=808080']] },
-  { path: '/color/gradient/', name: 'CSS gradient generator', does: 'Make a linear, radial or conic CSS gradient from colour stops, name it, save it as your own preset on your device, pick colours from the screen, and copy its CSS. Nothing sent anywhere.',
-    asks: ['css gradient generator', 'linear gradient css', 'radial gradient generator', 'gradient background css', 'gradient colour generator'] },
   { path: '/random/', name: 'Random number', does: 'A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.',
     asks: ['random number generator', 'random number between 1 and 100', 'random number picker', 'random numbers no repeats', 'lottery number generator'],
     links: [['1 to 100', '/random/?min=1&max=100'], ['1 to 10', '/random/?min=1&max=10'], ['Roll a die (1 to 6)', '/random/?min=1&max=6'], ['6 lottery numbers from 1 to 49', '/random/?min=1&max=49&n=6&unique=1&sort=1'], ['5 numbers from 1 to 100, no repeats', '/random/?min=1&max=100&n=5&unique=1'], ['A number from 0 to 1', '/random/?min=0&max=1&dec=2']],

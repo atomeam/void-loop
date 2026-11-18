@@ -45,6 +45,10 @@ export const FAMILIES = Object.freeze([
     { path: "/markets/caps/", to: "/markets/?mode=caps" },
     { path: "/markets/screener/", to: "/markets/?mode=screener" }
   ] },
+  { id: "color", page: "/color/", members: [
+    { path: "/color/", to: "/color/" },
+    { path: "/color/gradient/", to: "/color/?mode=gradient" }
+  ] },
 ]);
 
 const byPath = new Map();
@@ -89,4 +93,5 @@ export const FAMILY_MODE_SRC = Object.freeze({
   "/calculator/": { "formulas": "/calculator/modes/formulas.html" },
   "/random/": { "coin": "/random/modes/coin.html", "wheel": "/random/modes/wheel.html", "people": "/random/modes/people.html" },
   "/markets/": { "caps": "/markets/modes/caps.html", "screener": "/markets/modes/screener.html" },
+  "/color/": { "gradient": "/color/modes/gradient.html" },
 });

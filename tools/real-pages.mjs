@@ -348,7 +348,7 @@ export const SPECS = {
   '/generators/forum/': async (t) => { t.ok((await t.p.locator('#tTitle').count()) === 1, 'the thread form is there'); },
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
-  '/color/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
+  '/color/?mode=gradient': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
   // Verse raps (2026-10-29): a topic in, a rap written for it by the free answer model (two verses and a hook, the rhymes lettered), performed by
   // Rap it yourself (beat and lights), copied, and shared with the whole rap in the link
   '/rap/': async (t) => {

@@ -147,7 +147,7 @@ test('the gradient page\'s card opens on the gradient open there: every stop, it
   for (const g of many) { const ask = 'css gradient ' + G.css(g), back = G.askGradient(ask); assert.ok(back, ask); assert.equal(G.css(back.g), G.css(g), 'the card draws the same gradient: ' + ask); }
   const ask = 'css gradient ' + G.css(many[0]); assert.equal(await firstSkill(ask), 'gradient', 'the stage gives it to the gradient skill');
   assert.equal(G.askGradient('gradient descent'), null); assert.ok(G.askGradient('gradient from red to blue'), 'the old asks still work');
-  const src = fs.readFileSync(new URL('../void-live-deploy/color/gradient/index.html', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../void-live-deploy/color/modes/gradient.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*'css gradient '\s*\+\s*css\(g\)/, 'the gradient page gives its card the gradient open on it');
 });
 

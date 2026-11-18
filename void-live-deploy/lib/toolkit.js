@@ -17,7 +17,7 @@ export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
   '/photos/': 'Photo tools',
-  '/color/': 'Colour codes', '/color/gradient/': 'Gradient', '/random/': 'Random number',
+  '/color/': 'Colour codes', '/random/': 'Random number',
   '/ledger/': 'Repo activity ledger',
   '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter',
   '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
@@ -46,8 +46,7 @@ const SITE_RELATED = Object.fromEntries([...PDF_SITES.map((p) => [p.path, p.path
 const HAND_RELATED = Object.freeze({
   ...SITE_RELATED,
   '/photos/': ['/resize-image/', '/color/', '/convert/', '/lab/photo-palette/'],
-  '/color/': ['/lab/photo-palette/', '/color/gradient/', '/random/', '/base64/'],
-  '/color/gradient/': ['/lab/pattern/', '/color/', '/random/'],
+  '/color/': ['/lab/photo-palette/', '/random/', '/base64/'],
   '/random/': ['/password/', '/base64/', '/color/'],
   '/stopwatch/': ['/word-count/', '/time/'],
   '/word-count/': ['/stopwatch/', '/fanfic/'],
@@ -90,8 +89,8 @@ const HAND_RELATED = Object.freeze({
   '/tuner/': ['/piano/', '/chords/', '/metronome/'],
   '/lab/level/': ['/convert/', '/calculator/', '/starboard/'],
   '/lab/checksum/': ['/base64/', '/converter/', '/password/', '/starboard/'],
-  '/lab/pattern/': ['/lab/photo-palette/', '/color/', '/color/gradient/', '/resize-image/', '/starboard/'],
-  '/lab/photo-palette/': ['/lab/pattern/', '/color/', '/color/gradient/', '/photos/', '/starboard/'],
+  '/lab/pattern/': ['/lab/photo-palette/', '/color/', '/resize-image/', '/starboard/'],
+  '/lab/photo-palette/': ['/lab/pattern/', '/color/', '/photos/', '/starboard/'],
   '/lab/dictation/': ['/word-count/', '/translate/', '/notes/', '/lab/mind-map/', '/starboard/'],
   '/lab/mind-map/': ['/notes/', '/lab/dictation/', '/word-count/', '/starboard/'],
   '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
@@ -136,7 +135,7 @@ export const RELATED = Object.freeze({ ...HAND_RELATED, ...Object.fromEntries(SE
 // "why are you not linking the cards to the pages?" then "and vice versa"): each was asked on the stage and answered by the skill that links back
 const HAND_CARD_ASK = Object.freeze({
   '/photos/': 'edit a photo',
-  '/color/': 'color #ff5733', '/color/gradient/': 'gradient from red to blue', '/random/': 'random number between 1 and 100', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
+  '/color/': 'color #ff5733', '/random/': 'random number between 1 and 100', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
   '/base64/': 'convert 255 to binary', '/password/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
@@ -302,7 +301,7 @@ const ROUTES = [
   [/^(?:base64 )?encode (.+)$|^(.+) (?:to|in|as) base64$/i, (m) => '/base64/?t=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:0x[0-9a-f]+|0b[01]+|\d+) (?:in|to|as) (binary|hex(?:adecimal)?|octal|decimal|base \d+)$/i, (m, t) => { const v = t.split(/\s/)[0], b = /^bin/i.test(m[1]) ? 2 : /^hex/i.test(m[1]) ? 16 : /^oct/i.test(m[1]) ? 8 : /^dec/i.test(m[1]) ? 10 : +m[1].replace(/\D/g, ''); return '/base64/?mode=bases&v=' + encodeURIComponent(v) + '&b=' + b; }],
   [/^#?[0-9a-f]{6}$|^#?[0-9a-f]{3}$|^rgba?\(.+\)$|^hsla?\(.+\)$/i, (m, t) => '/color/?c=' + encodeURIComponent(t.replace(/^#/, ''))],
-  [/^(?:a )?gradient(?: from (.+))?$/i, () => '/color/gradient/'],
+  [/^(?:a )?gradient(?: from (.+))?$/i, () => '/color/?mode=gradient'],
   // photo tools: 'compress image', 'crop photo', 'convert png to webp', 'view exif', 'strip exif', 'squoosh' (lib/photo-ask.js); a sized ask stays with the resizer below
   [/^(?:please )?(?:strip|remove|clean|scrub) (?:the )?(?:exif|metadata|gps|location)(?: (?:from|off|of|in) (?:an? |my |the |this )?(?:photo|picture|image|pic|jpe?g|png)s?)?$|^(?:exif|metadata) (?:stripper|remover|cleaner)$/i, () => '/photos/?tab=info'],
   [/^(?:please )?(?:compress|optimi[sz]e|convert|crop|rotate|flip|edit|annotate) (?:an? |my |the |this )?(?:image|photo|picture|pic|jpe?g|png|webp|avif)s?(?: (?:to|into) (?:jpe?g|png|webp|avif))?$|^(?:png|jpe?g|webp|avif) to (?:png|jpe?g|webp|avif)$|^(?:photo|image) (?:editor|compressor)$/i, (m, t) => '/photos/' + (/^(?:please )?(?:crop|rotate|flip)/i.test(t) ? '?tab=crop' : '')],

@@ -38,8 +38,10 @@
 /wheel/ /random/?mode=wheel 301
 /random-user /random/?mode=people 301
 /random-user/ /random/?mode=people 301
-/gradient /color/gradient/ 301
-/gradient/ /color/gradient/ 301
+/color/gradient /color/?mode=gradient 301
+/color/gradient/ /color/?mode=gradient 301
+/gradient /color/?mode=gradient 301
+/gradient/ /color/?mode=gradient 301
 /base-converter /base64/?mode=bases 301
 /base-converter/ /base64/?mode=bases 301
 /password-strength /password/?mode=strength 301

@@ -2,6 +2,7 @@
 <html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
+<script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Colour codes: hex, RGB, HSL, CMYK, shades and schemes · Verse</title>
 <meta name="description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
@@ -13,9 +14,9 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  /* a-to-mind.com/color/ (owner, 2026-10-24: back to the easy sites), against hexcolor16.com (Tranco 63,673: a hex-code page behind AdSense, two
-     analytics, a tag manager, web fonts and a beacon) and color-hex.com, both floors of the tower: one file and one small module, no third party.
-     Then "ok beat it": every model either site lists and the CSS ones, hexcolor16.com's ramps, six harmonies, VGA palette and random colour */
+  /* a-to-mind.com/color/ (owner, 2026-10-24: back to the easy sites), against a hex-code page (a hex-code page behind AdSense, two
+     analytics, a tag manager, web fonts and a beacon) and another hex-code page, both floors of the tower: one file and one small module, no third party.
+     Then "ok beat it": every model either site lists and the CSS ones, that kind of page's ramps, six harmonies, VGA palette and random colour */
   :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c42b41; }
   :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
@@ -71,7 +72,7 @@
 </head>
 <body>
 <!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
-<nav class="v-modes" aria-label="Colour modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/" aria-current="page">Colour codes</a><a href="/color/gradient/">Gradient</a></nav>
+<nav class="v-modes" aria-label="Colour modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/" aria-current="page">Colour codes</a><a href="/color/?mode=gradient">Gradient</a></nav>
 
 <main>
   <h1>Colour codes, shades and schemes</h1>
@@ -109,7 +110,7 @@
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/color/?c=ff5733">#ff5733</a><a href="/color/?c=6d4aff">#6d4aff</a><a href="/color/?c=ff0000">#ff0000</a><a href="/color/?c=00ff00">#00ff00</a><a href="/color/?c=0000ff">#0000ff</a><a href="/color/?c=ffa500">#ffa500</a><a href="/color/?c=808080">#808080</a></nav>
 <!-- /asks -->
 <!-- lab-tools --><section id="lab-here" aria-label="Tools from the Verse lab" style="margin:14px 0"><details class="lab-here"><summary><b>Photo palette</b>: pull the colours out of a photo, as codes to copy</summary><iframe src="/lab/photo-palette/" title="Photo palette" loading="lazy" allow="microphone; clipboard-write" style="display:block;width:100%;height:560px;margin-top:8px;border:1px solid rgba(127,127,127,.35);border-radius:10px;background:#fff"></iframe><p style="margin:6px 0 0"><a href="/lab/photo-palette/">Open Photo palette on its own page</a></p></details></section><!-- /lab-tools -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/photo-palette/">Palette from a photo</a> <a href="/color/gradient/">Gradient</a> <a href="/random/">Random number</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/photo-palette/">Palette from a photo</a> <a href="/random/">Random number</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Type a colour any way: <code>#f53</code>, <code>ff5733</code>, <code>rgb(255 87 51)</code>, <code>hsl(11 100% 60%)</code> or one of the 148 CSS names. Click any swatch to make it the colour. The nearest name is the nearest to the eye (CIE Lab), not to the numbers. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
   </div>
 </main>
@@ -183,7 +184,7 @@
   $('json').addEventListener('click', () => now && save(now.hex.slice(1).toLowerCase() + '.json', 'application/json', JSON.stringify(now, null, 2)));
   $('csv').addEventListener('click', () => { if (!now) return; const d = now, rows = [['model', 'value'], ['hex', d.hex], ['rgb', d.rgb.r + ' ' + d.rgb.g + ' ' + d.rgb.b], ['hsl', d.hsl.h + ' ' + d.hsl.s + '% ' + d.hsl.l + '%'], ['hsv', d.hsv.h + ' ' + d.hsv.s + '% ' + d.hsv.v + '%'], ['cmyk', d.cmyk.c + ' ' + d.cmyk.m + ' ' + d.cmyk.y + ' ' + d.cmyk.k], ['lab', d.lab.l + ' ' + d.lab.a + ' ' + d.lab.b], ['name', d.name.name], ['contrast on white', d.contrast.white], ['contrast on black', d.contrast.black], ...['tints', 'shades', 'tones'].map((k) => [k, d[k].join(' ')]), ...Object.entries(d.schemes).map(([k, v]) => [k, v.join(' ')])]; save(d.hex.slice(1).toLowerCase() + '.csv', 'text/csv', rows.map((r) => r.join(',')).join('\n') + '\n'); });
   $('link').addEventListener('click', () => copy(location.href, $('link')));
-  // the 16 colours of the VGA (and CGA, and early web) palette, in their standard order, as hexcolor16.com lists them
+  // the 16 colours of the VGA (and CGA, and early web) palette, in their standard order, in the conventional VGA order
   const VGA = ['#000000', '#000080', '#008000', '#008080', '#800000', '#800080', '#808000', '#c0c0c0', '#808080', '#0000ff', '#00ff00', '#00ffff', '#ff0000', '#ff00ff', '#ffff00', '#ffffff'];
   fill('vga', VGA); drawWork(); drawMine();
   $('random').addEventListener('click', () => { const n = crypto.getRandomValues(new Uint32Array(1))[0] & 0xffffff; set('#' + n.toString(16).padStart(6, '0'), true); });
