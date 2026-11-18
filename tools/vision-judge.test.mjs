@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { surfacesOf, pixelStats, judge, run, LIMITS } from './vision-judge.mjs';
+import { surfacesOf, liveSurfacesOf, redirectDestOf, pixelStats, judge, run, LIMITS } from './vision-judge.mjs';
 
 const frame = (w, h, f) => { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = f(x, y), i = (y * w + x) * 4; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; } return d; };
 
@@ -11,6 +11,16 @@ test('a change maps to the surfaces it can alter', () => {
   assert.deepEqual(surfacesOf(['void.html', 'void-live-deploy/films/index.html', 'tools/x.mjs', 'void-live-deploy/skills/clock.js']), ['/', '/films/']);
   assert.deepEqual(surfacesOf(['docs/MAP.md']), []);
   assert.equal(surfacesOf(Array.from({ length: 20 }, (_, i) => 'void-live-deploy/p' + i + '/index.html')).length, LIMITS.MAX_SURFACES);
+});
+
+test('a deleted page is judged at the address it 301s to, and a gone path with no redirect is dropped', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vj-redir-'));
+  fs.mkdirSync(path.join(dir, 'color'));
+  fs.writeFileSync(path.join(dir, 'color', 'index.html'), '<p>family</p>');
+  fs.writeFileSync(path.join(dir, '_redirects'), '/color/colour-management /color/ 301\n/color/colour-management/ /color/ 301\n');
+  assert.equal(redirectDestOf('/color/colour-management /color/ 301\n', '/color/colour-management/'), '/color/');
+  assert.deepEqual(liveSurfacesOf(['void-live-deploy/color/colour-management/index.html', 'void-live-deploy/gone/index.html'], dir), ['/color/']);
+  fs.rmSync(dir, { recursive: true, force: true });
 });
 
 test('pixel measures: a soft glow has few hard edges, a hard-edged disk many, a flat frame is blank', () => {

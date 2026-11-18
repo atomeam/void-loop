@@ -35,6 +35,33 @@ export function surfacesOf(files) {
   return [...out].sort((a, b) => (a === '/' ? -1 : b === '/' ? 1 : a.localeCompare(b))).slice(0, LIMITS.MAX_SURFACES);
 }
 
+/** dest for a path in a Cloudflare _redirects file, or "". Pure. */
+export function redirectDestOf(text, pathName) {
+  const want = String(pathName || '').split('?')[0];
+  const alt = want.endsWith('/') ? want.slice(0, -1) : want + '/';
+  for (const line of String(text || '').split(/\n/)) {
+    const p = line.trim().split(/\s+/);
+    if (p.length >= 3 && (p[0] === want || p[0] === alt)) return p[1];
+  }
+  return '';
+}
+
+/** surfaces that still exist, or the live page a deleted one 301s to. */
+export function liveSurfacesOf(files, dir) {
+  const raw = surfacesOf(files);
+  if (!dir) return raw;
+  let rules = '';
+  try { rules = fs.readFileSync(path.join(dir, '_redirects'), 'utf8'); } catch (_) {}
+  const exists = (p) => fs.existsSync(path.join(dir, p === '/' ? 'index.html' : p.replace(/\/?$/, '/') + 'index.html'));
+  const out = [];
+  for (const p of raw) {
+    if (exists(p)) { out.push(p); continue; }
+    const dest = redirectDestOf(rules, p).replace(/[?#].*$/, '');
+    if (dest && exists(dest)) out.push(dest.endsWith('/') || dest === '/' ? dest : dest + '/');
+  }
+  return [...new Set(out)];
+}
+
 /** relative luminance of an sRGB colour, 0..1. Pure. */
 export function luminance(r, g, b) {
   const c = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
@@ -212,7 +239,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   let paths = arg('--paths') ? arg('--paths').split(',').filter(Boolean) : null, looks = arg('--ask') ? [arg('--ask')] : [];
   if (!paths) {
     const files = arg('--files') ? arg('--files').split(',') : execFileSync('git', ['diff', '--name-only', (arg('--base') || 'origin/main') + '...HEAD'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
-    paths = surfacesOf(files);
+    paths = liveSurfacesOf(files, path.join(root, 'void-live-deploy'));
     if (!looks.length) looks = looksOf(files);
   }
   if (!paths.length) { console.log('vision-judge: no surface changed'); process.exit(0); }
