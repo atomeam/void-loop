@@ -7364,8 +7364,10 @@ try {
     await H.ask('remove every clock', 400); const left = (await H.state()).map((x) => x.kind);
     check('"remove every clock" removes both clocks and keeps the timer', !left.includes('clock') && left.includes('timer'), left.join(','));
     await H.ask('make my void deep blue', 500); const blue = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || '');
-    await H.ask('reset my void', 500); const after = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || '#050505');
-    check('"reset my void" brings the plain stage back after "make my void deep blue"', blue && blue !== '#050505' && after === '#050505', JSON.stringify({ blue, after }));
+    // the plain stage's colour is LOOK_DEFAULT.bg in void.html (#2899 deepened it from #050505 to the obsidian #05070d)
+    const PLAIN = '#05070d';
+    await H.ask('reset my void', 500); const after = await H.p.evaluate((d) => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || d, PLAIN);
+    check('"reset my void" brings the plain stage back after "make my void deep blue"', blue && blue !== PLAIN && after === PLAIN, JSON.stringify({ blue, after }));
     check('the how-to batch threw no page errors', !H.errors.length, H.errors.join(' | '));
     await H.ctx.close(); }
   // Handoff: writes need HANDOFF_TOKEN (the owner's READ_TOKEN never writes); the /handoff page drops and opens a file; /surface is a preview.

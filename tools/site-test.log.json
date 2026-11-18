@@ -1,88 +1,5 @@
 [
  {
-  "at": "2026-11-06T16:04:05Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1505,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T16:37:08Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1298,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 8459 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T16:48:52Z",
-  "passed": 89,
-  "of": 95,
-  "ms": 413,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "play solarquest",
-    "why": "load 1236 ms > 1200"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 1 < 5"
-   },
-   {
-    "ask": "bokos like dune",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "turn the questions i missed into a five-minute challenge",
-    "why": "only \"waking up\" appeared, never the answer"
-   },
-   {
-    "ask": "fimls by kurosawa",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1298,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 8459 ms"
-     ]
-    }
-   ]
-  },
-  "note": "new ground passed, kept as a regression case: \"yo funny cartoon dog\" (skill:cartoon)"
- },
- {
   "at": "2026-11-06T17:01:06Z",
   "kind": "visitor",
   "visitor": {
@@ -7008,5 +6925,56 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"automation handoff for the email reminders\" (skill:automation-handoff)"
+ },
+ {
+  "at": "2026-11-18T16:25:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1012,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T16:35:17Z",
+  "passed": 136,
+  "of": 139,
+  "ms": 608,
+  "kind": "file",
+  "key": "how do i magnetize this? | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "how do i magnetize this?",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1012,
+   "failed": []
+  },
+  "note": "fix: \"how do i magnetize this?\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-18T16:50:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1139,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
  }
 ]

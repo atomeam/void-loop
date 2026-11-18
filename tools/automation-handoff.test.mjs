@@ -22,8 +22,8 @@ test('automation-handoff run packages the running automations', () => {
   });
   assert.equal(ret, 'automation-handoff');
   assert.match(html, /Automation handoff: email reminders/);
-  assert.match(html, /The running automations Verse owns/);
-  assert.match(html, /Automations Verse runs/);
+  assert.match(html, /The running automations, packaged for handoff/);
+  assert.match(html, /Automations that run/);
   assert.match(html, /Status and monitoring/);
   assert.match(html, /Client work that drops/);
   assert.match(html, /Next step/);

@@ -1,0 +1,7 @@
+{
+ "note": "Immutable regression bank for the Forge. The first seedCount rows of tools/bench.json are pinned by seedDigest: never edit or remove them. Rows here are page-proven additions, appended by tools/evolve-merge.mjs only.",
+ "seedSource": "tools/bench.json",
+ "seedCount": 3550,
+ "seedDigest": "b491a10a425f0497",
+ "rows": []
+}

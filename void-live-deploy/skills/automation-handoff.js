@@ -1,6 +1,6 @@
 /**
- * automation-handoff skill — package the running automations Verse owns for a client handoff.
- * Turns a system or idea into a client-facing card that lists the automations Verse runs,
+ * automation-handoff skill — package the running automations for a client handoff.
+ * Turns a system or idea into a client-facing card that lists the automations that run,
  * their triggers, how status is handed off, monitoring points, and what client work drops.
  * Rules-based, offline. Nothing is sent. The card stays on the stage so the handoff can be shared.
  * "automation handoff for the email reminders", "handoff the running automations for onboarding",
@@ -31,7 +31,7 @@ export function handoffFor(subject) {
       'Hand off docs, status and the running automations'
     ],
     status: 'Status lives on the client status card and the delivery board. Exceptions ping the owner; green runs stay quiet.',
-    reduced: 'No more watching the runs, chasing status, or re-starting failed jobs. Verse owns the hard work.',
+    reduced: 'What drops off the client list: watching the runs, chasing status and re-starting failed jobs.',
     next: 'Start from the idea-to-system or client-offer card for ' + name + '. This handoff stays here for the client.'
   };
 }
@@ -43,8 +43,8 @@ function run(text, api) {
   const autos = h.automations.map(i => '<li>' + esc(i) + '</li>').join('');
   showPage((el) => {
     el.innerHTML = '<h2>Automation handoff: ' + esc(name) + '</h2>'
-      + '<p>The running automations Verse owns, packaged for handoff.</p>'
-      + '<h3>Automations Verse runs</h3><ul>'
+      + '<p>The running automations, packaged for handoff.</p>'
+      + '<h3>Automations that run</h3><ul>'
       + autos
       + '</ul>'
       + '<h3>Status and monitoring</h3><p>' + esc(h.status) + '</p>'
