@@ -52,7 +52,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          token: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - name: Who commits
@@ -61,8 +61,8 @@ jobs:
           git config user.email "verse-loop@users.noreply.github.com"
       - name: One stuck pull request
         env:
-          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
-          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_BOT_TOKEN == '' && secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -104,8 +104,8 @@ jobs:
           fi
       - name: Nightly note
         env:
-          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
-          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_BOT_TOKEN == '' && secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
         run: |
           set -euo pipefail
           gh api --paginate 'repos/{owner}/{repo}/pulls?state=closed&per_page=100' --jq '.[] | select(.merged_at != null) | {number, title, merged_at, ref: .head.ref, login: .user.login}' > pulls.ndjson || true

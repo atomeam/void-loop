@@ -112,7 +112,9 @@ test("dry run prints and does not call GitHub", async () => {
   assert.equal(plan.printed, true);
   assert.equal(plan.dryRun, true);
   assert.equal(github.commits.length, 0);
-  assert.equal(plan.board.length, 1);
+  // a board line that names no file or failing test is kept as a note, never queued (tools/triage-cortex.mjs)
+  assert.equal(plan.board.length, 0);
+  assert.deepEqual(plan.unscoped, ['[think-tank] motor reconfirmed']);
   assert.match(plan.log, /printing-working-machines/);
   assert.doesNotMatch(plan.log, /living-figures/);
 });

@@ -345,7 +345,7 @@ jobs:
         shell: bash
         env:
           WHAT: ${{ needs.build.outputs.title }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || github.token }} # a PR opened with the bot token starts its checks; github.token is the fallback
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
           # the patch touches exactly the benchmark, the art floors, the cycle's place, the gate's state, the log and the ledger

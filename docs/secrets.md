@@ -48,3 +48,12 @@ Rotation log: none needed (2026-10-15 full-history scan: test fixtures only).
 
 The same stack (key-shape engine, history scan, privacy redactor, keeper with positive redirects, CSP smoke) could sell as
 "Verse Vault / secret guard" in the store: a drop-in pre-push and PR gate for small teams. Not built as a product yet.
+
+## VERSE_BOT_TOKEN (optional, added by the owner only)
+
+A pull request opened or pushed with the workflow's own `github.token` starts no other workflow, so its checks wait. When the repository
+secret `VERSE_BOT_TOKEN` exists, the loop, pr-fix, verse-engineer, verse-job, void-review, grow-self, propose-fix and helper-pr open and
+push their pull requests with it, and their checks start at once; when it is missing, each falls back to `VERSE_LOOP_TOKEN`, then to
+`github.token` (and the loop starts the checks by `workflow_dispatch`, as before). Nothing creates this token: it is a fine-grained
+personal access token (or a GitHub App installation token) scoped to `atomeam/void-loop` only, with Contents read and write, Pull requests
+read and write, Workflows read and write, and Actions read and write; no other repository and no account scopes.

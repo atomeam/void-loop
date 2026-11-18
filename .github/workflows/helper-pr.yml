@@ -35,7 +35,7 @@ jobs:
           node-version: 22
       - name: Open the PR if the branch has none
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || github.token }} # a PR opened with the bot token starts its checks; github.token is the fallback
           REPO: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}

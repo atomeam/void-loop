@@ -184,7 +184,7 @@ jobs:
       - name: Open a pull request with Verse's fix
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || github.token }} # a PR opened with the bot token starts its checks; github.token is the fallback
           SKILL: ${{ needs.propose.outputs.skill }}
           SLUG: ${{ needs.propose.outputs.slug }}
           ASK: ${{ needs.propose.outputs.ask }}

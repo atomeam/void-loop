@@ -15,7 +15,7 @@ const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
 
 /** A repo with a bare origin, docs, a checks file whose checks read flag files, a fake brain and a fake gh. */
-const HAND_NEXT = '# NEXT\n\n1. **Done thing** status: done\n2. **Calculator sitemap** easiest small site\n3. **Later**\n';
+const HAND_NEXT = '# NEXT\n\n1. **Done thing** status: done\n2. **Calculator sitemap** easiest small site (void-live-deploy/sitemap.xml)\n3. **Later**\n';
 function sandbox({ red = [], groomed = true, gh: fixtures = {} } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'vl-test-'));
   const origin = join(dir, 'origin.git'), work = join(dir, 'work');
@@ -147,7 +147,7 @@ test('dry run, green: the fake brain takes NEXT item 2 and the lap would ship, w
   const head = sh(s.work, 'rev-parse', 'HEAD');
   const r = await lap(parseArgs(['--once', '--dry-run', '--agent', 'cmd']), { cwd: s.work, env: env(s, 'grep -q "NEXT 2" "$VERSE_LOOP_PROMPT_FILE" && echo built > built.txt'), log: quiet });
   assert.equal(r.outcome, 'would-ship', r.why);
-  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site' }, 'the top of Verse\'s groomed queue');
+  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site (void-live-deploy/sitemap.xml)' }, 'the top of Verse\'s groomed queue');
   assert.match(r.branch, /^loop\/\d{8}-\d{6}$/);
   assert.match(r.tagteamLine, /verse-loop \(cmd\): NEXT 1, \[NEXT 2\] Calculator/);
   assert.equal(sh(s.work, 'rev-parse', 'HEAD'), head, 'no commit');
@@ -345,7 +345,7 @@ test('Verse\'s coder on green takes the top of docs/NEXT.md (no probe without VO
   const add = '--- /dev/null\n+++ b/calc-sitemap.txt\n@@ -0,0 +1 @@\n+calculator sitemap\n';
   const r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: scripted(s, [{ tool: 'edit', diff: add }, { tool: 'finish', summary: 'step one' }]), log: quiet });
   assert.equal(r.outcome, 'would-ship', r.why);
-  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site' });
+  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site (void-live-deploy/sitemap.xml)' });
   assert.equal(readFileSync(join(s.work, 'calc-sitemap.txt'), 'utf8'), 'calculator sitemap\n');
 });
 
@@ -566,4 +566,14 @@ test('the lap step writes nothing into the checkout before the lap reads git sta
   assert.ok(line, 'the workflow runs a lap');
   const outs = [...line.matchAll(/(?:\btee\s+(?:-a\s+)?|>>?\s*)("?)([^\s"|;&]+)\1/g)].map((m) => m[2]);
   for (const o of outs) assert.match(o, /^\$\{?(RUNNER_TEMP|GITHUB_STEP_SUMMARY|GITHUB_OUTPUT)\b|^\/dev\//, 'the lap writes ' + o + ' into the checkout');
+});
+
+test('triage-cortex: a vague --task spends no brain run; a scoped one goes to the brain', async () => {
+  const s = sandbox({ groomed: true });
+  const r = await lap(parseArgs(['--dry-run', '--agent', 'cmd', '--task', 'make Verse smarter']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet });
+  assert.equal(r.outcome, 'skipped'); assert.match(r.why, /^triage-cortex: unscoped/);
+  assert.ok(!existsSync(join(s.work, 'ran.txt')), 'no brain ran');
+  const ok = await lap(parseArgs(['--dry-run', '--agent', 'cmd', '--task', 'add a line to tools/x.mjs']), { cwd: s.work, env: env(s, 'echo ran > ran.txt'), log: quiet });
+  assert.notEqual(ok.outcome, 'skipped', ok.why);
+  assert.deepEqual(agentCommand('verse', 'p.txt', { kind: 'next', reads: 6 }).args.slice(-2), ['--max-reads', '6']);
 });

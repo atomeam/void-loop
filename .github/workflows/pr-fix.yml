@@ -29,12 +29,12 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          token: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: git config user.name "github-actions[bot]" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - env:
-          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           PR: ${{ inputs.pr }}
           MODE: ${{ inputs.mode }}
