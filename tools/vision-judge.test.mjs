@@ -14,18 +14,30 @@ test('a change maps to the surfaces it can alter', () => {
 });
 
 test('pixel measures: a soft glow has few hard edges, a hard-edged disk many, a flat frame is blank', () => {
-  const W = 120, H = 120, r = (x, y) => Math.hypot(x - 60, y - 60) / 40;
+  const W = 160, H = 160, r = (x, y) => Math.hypot(x - 80, y - 80) / 60;
   const soft = pixelStats(frame(W, H, (x, y) => 8 + 120 * Math.max(0, 1 - r(x, y)) ** 4), W, H);
-  const hard = pixelStats(frame(W, H, (x, y) => (r(x, y) < 0.25 ? 230 : 8)), W, H);
+  const hard = pixelStats(frame(W, H, (x, y) => (r(x, y) < 0.3 ? 230 : 8)), W, H);
   assert.ok(soft.hardEdge < LIMITS.HARD_EDGE, JSON.stringify(soft));
   assert.ok(hard.hardEdge > LIMITS.HARD_EDGE, JSON.stringify(hard));
   assert.ok(pixelStats(frame(W, H, () => 5), W, H).offMode < LIMITS.BLANK);
 });
 
+test('pixel measures: points of light drawn as flat discs are harsh; the same points as a (1 - r)^4 falloff are not', () => {
+  const W = 200, H = 200, at = [];
+  for (let i = 0; i < 25; i++) at.push([20 + (i % 5) * 40, 20 + Math.floor(i / 5) * 40]);
+  const near = (x, y) => Math.min(...at.map(([a, b]) => Math.hypot(x - a, y - b)));
+  const discs = pixelStats(frame(W, H, (x, y) => (near(x, y) <= 1.6 ? 220 : 6)), W, H);
+  const soft = pixelStats(frame(W, H, (x, y) => 6 + 214 * Math.max(0, 1 - near(x, y) / 6) ** 4), W, H);
+  assert.equal(discs.dots, 25); assert.equal(soft.dots, 25);
+  assert.ok(discs.hardDots > LIMITS.HARD_DOTS, JSON.stringify(discs));
+  assert.ok(soft.hardDots < LIMITS.HARD_DOTS, JSON.stringify(soft));
+  assert.equal(discs.hardEdge, 0, 'points are not shapes');
+});
+
 test('judge names each failure with the surface, the viewport and the numbers', () => {
   const dom = { errors: ['boom'], scrollX: 40, clipped: ['p.x'], bg: 0.9, media: ['video a.mp4'], chrome: ['a#void-anchor', 'p.offer'] };
-  const bad = judge('/', 'mobile', dom, { mean: 0.5, offMode: 0.0001, hardEdge: 0.5 });
-  for (const w of ['console/page error', 'sideways scroll', 'clipped text', 'not the dark theme', 'blank render', 'media failed', 'p.offer', 'not near-black', 'hard-edged']) assert.ok(bad.some((b) => b.includes(w) && b.startsWith('/ @ mobile')), w);
+  const bad = judge('/', 'mobile', dom, { mean: 0.5, offMode: 0.0001, hardEdge: 0.5, dots: 10, hardDots: 0.5 });
+  for (const w of ['console/page error', 'sideways scroll', 'clipped text', 'not the dark theme', 'blank render', 'media failed', 'p.offer', 'not near-black', 'hard-edged', 'harsh star dots']) assert.ok(bad.some((b) => b.includes(w) && b.startsWith('/ @ mobile')), w);
   assert.ok(!bad.some((b) => b.includes('a#void-anchor')), 'the corner heart is kept');
   assert.deepEqual(judge('/films/', 'desktop', { errors: [], scrollX: 0, clipped: [], bg: 0.01, media: [], chrome: ['a.x'] }, { mean: 0.5, offMode: 0.2, hardEdge: 0.9 }), []);
 });
