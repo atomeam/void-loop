@@ -308,7 +308,7 @@ const ROUTES = [
   [/^(?:view |see |check )?(?:the )?(?:exif|metadata)(?: viewer| of (?:an? |my |the )?(?:photo|picture|image))?$/i, () => '/photos/?tab=info'],
   [/^(photopea)$/i, () => '/photos/?tab=draw'],
   [/^(iloveimg)$/i, () => '/photos/?tab=out'],
-  [/^(squoosh|tinypng)$/i, (m) => '/photos/' + m[1].toLowerCase() + '/'],
+  [/^(squoosh|tinypng)$/i, () => '/photos/?tab=out'],
   [/^(?:resize|shrink|crop) (?:an? |my |the )?(?:image|photo|picture|signature)(?: to (.+))?$/i, () => '/resize-image/'],
   [/^(?:count (?:the )?words(?: in)?|how many words(?: in)?|word count(?: of)?) (.+)$/i, (m) => '/word-count/?t=' + encodeURIComponent(m[1])],
   [/^(?:start (?:a )?)?(?:stopwatch|timer|countdown)(?: (?:for|of) (.+))?$|^(\d+ ?(?:min(?:ute)?s?|sec(?:ond)?s?|hours?)) timer$/i, (m) => '/stopwatch/' + (m[1] || m[2] ? '?t=' + encodeURIComponent(m[1] || m[2]) : '')],

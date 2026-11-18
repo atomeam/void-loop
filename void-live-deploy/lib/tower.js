@@ -216,7 +216,7 @@ export function selfLanes(lanes, rows) {
 // floor id of a lane site -> the Verse page built to have every feature that site has, which the gate measures it against instead of the leader's page.
 // A site not listed here is still measured against its leader's page until its own page is built.
 export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
-  'photos: exifeditor.io': '/photos/?tab=info', 'photos: exif.tools': '/photos/?tab=info', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/?tab=draw', 'photos: iloveimg.com': '/photos/?tab=out',
+  'photos: exifeditor.io': '/photos/?tab=info', 'photos: exif.tools': '/photos/?tab=info', 'photos: tinypng.com': '/photos/?tab=out', 'photos: squoosh.app': '/photos/?tab=out', 'photos: photopea.com': '/photos/?tab=draw', 'photos: iloveimg.com': '/photos/?tab=out',
   'pdf: codeshack.io': '/pdf/?tool=merge', 'pdf: 10015.io': '/pdf/?tool=pages', 'pdf: pdfcandy.com': '/pdf/', 'pdf: sejda.com': '/pdf/?tool=pages', 'pdf: tools.pdf24.org': '/pdf/', 'pdf: smallpdf.com': '/pdf/?tool=compress',
   'ndscalc.ru': '/calculator/?mode=vat', // the calculator's VAT mode is ndscalc.ru's page (#2294 said so in its test, not here; lists run 15)
   'sports: thesportsdb.com': '/scores/?mode=sports', emojis: '/emojis/', // emojitracker.com's own page (2026-10-30: the floor came with /emojis/ but no row here, so the lane-page ratchet failed on main)

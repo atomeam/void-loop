@@ -22,7 +22,7 @@ test('"edit" is a word, not a substring: credit and edited are not edit asks', (
 });
 test('which tab or page each ask opens', () => {
   assert.deepEqual(photoAsk('crop a photo'), { slug: '', tab: 'crop' }); assert.equal(photoHref({ slug: '', tab: 'crop' }), '/photos/?tab=crop');
-  const want = { 'crop a photo': '/photos/?tab=crop', 'view the exif of a photo': '/photos/?tab=info', squoosh: '/photos/squoosh/', tinypng: '/photos/tinypng/', 'tiny png': '/photos/tinypng/', photopea: '/photos/?tab=draw', iloveimg: '/photos/?tab=out', 'i love img': '/photos/?tab=out', 'convert png to webp': '/photos/', 'compress an image': '/photos/',
+  const want = { 'crop a photo': '/photos/?tab=crop', 'view the exif of a photo': '/photos/?tab=info', squoosh: '/photos/?tab=out', tinypng: '/photos/?tab=out', 'tiny png': '/photos/?tab=out', photopea: '/photos/?tab=draw', iloveimg: '/photos/?tab=out', 'i love img': '/photos/?tab=out', 'convert png to webp': '/photos/', 'compress an image': '/photos/',
     'add text to a photo': '/photos/?tab=text', 'filter my selfie': '/photos/?tab=fil', 'annotate a screenshot': '/photos/?tab=draw', 'photo cropper': '/photos/?tab=crop', 'image compressor': '/photos/?tab=out', 'brighten my photo': '/photos/?tab=adj' };
   for (const [a, h] of Object.entries(want)) assert.equal(href(a), h, a);
   assert.equal(photoAsk('compress my image to 100kb'), null); assert.equal(photoAsk('strip the exif from a photo'), null);

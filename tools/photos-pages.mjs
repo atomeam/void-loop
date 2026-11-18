@@ -5,8 +5,6 @@
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'photos');
 export const PAGES = [
-  { slug: 'squoosh', host: 'squoosh.app', start: 'out', title: 'Compress and convert images', sub: 'Pick a quality, a format and a size, and drag the slider to compare the original and the result. JPEG, PNG, WebP and AVIF; the file never leaves this device.', tab: 'Image compressor: JPEG, PNG, WebP, AVIF' },
-  { slug: 'tinypng', host: 'tinypng.com', start: 'out', title: 'Image compressor: shrink PNG, JPEG and WebP', sub: 'Drop many photos, make them smaller (PNGs drop to a palette of up to 256 colours) and download them all as one zip. No limit on size or count, nothing uploaded.', tab: 'Image compressor: shrink PNG, JPEG, WebP and AVIF' },
 ];
 const BLOCKS = [/<!-- seo -->[\s\S]*?<!-- \/seo -->\n?/g, /<!-- asks -->[\s\S]*?<!-- \/asks -->\n?/g]; // tools/seo-pages.mjs writes these into every page itself
 export const bare = (h) => BLOCKS.reduce((t, re) => t.replace(re, ''), h);

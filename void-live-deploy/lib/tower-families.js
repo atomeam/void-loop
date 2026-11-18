@@ -68,7 +68,9 @@ export const FAMILIES = Object.freeze([
     { path: "/photos/exif/", to: "/photos/?tab=info" },
     { path: "/photos/exifeditor/", to: "/photos/?tab=info" },
     { path: "/photos/iloveimg/", to: "/photos/?tab=out" },
-    { path: "/photos/photopea/", to: "/photos/?tab=draw" }
+    { path: "/photos/photopea/", to: "/photos/?tab=draw" },
+    { path: "/photos/squoosh/", to: "/photos/?tab=out" },
+    { path: "/photos/tinypng/", to: "/photos/?tab=out" }
   ] },
 ]);
 

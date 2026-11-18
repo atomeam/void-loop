@@ -16,8 +16,12 @@
 /photos/photopea/ /photos/?tab=draw 301
 /photos/editor /photos/?tab=draw 301
 /photos/editor/ /photos/?tab=draw 301
-/photos/compress /photos/tinypng/ 301
-/photos/compress/ /photos/tinypng/ 301
+/photos/squoosh /photos/?tab=out 301
+/photos/squoosh/ /photos/?tab=out 301
+/photos/tinypng /photos/?tab=out 301
+/photos/tinypng/ /photos/?tab=out 301
+/photos/compress /photos/?tab=out 301
+/photos/compress/ /photos/?tab=out 301
 /photos/metadata /photos/?tab=info 301
 /photos/metadata/ /photos/?tab=info 301
 # the photo details checker by its short name
