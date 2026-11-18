@@ -80,7 +80,7 @@ test('a run after a deploy measures the current fight, the floors whose page cha
   assert.ok(measurable(F.find((f) => f.id === 'colour codes')).includes('every colour model')); assert.ok(['accuracy', 'flip animation'].every((a) => measurable(F.find((f) => f.id === 'coin flip')).includes(a)), 'ten flips have a right shape, and a flip can be seen moving');
   const ev = Object.fromEntries(F.map((f) => [f.id, full(f.id)])); // every floor fully measured: only the fight is picked
   const t = pick(ev, null, []); assert.equal(t.length, 1);
-  assert.deepEqual(pick(ev, null, ['void-live-deploy/random/coin/index.html']).slice(1), ['coin flip'], 'a changed page adds its floor');
+  assert.deepEqual(pick(ev, null, ['void-live-deploy/random/modes/coin.html']).slice(1), ['coin flip'], 'a changed page adds its floor');
   delete ev.calculator.speed; assert.ok(pick(ev, null, []).includes('calculator'), 'a missing row adds its floor');
   assert.ok(pick({}, null, [], 3).length === 3 && pick({}, null, [], 1).length === 1);
   for (const id of pick({}, { sites: [{ site: 'only-on-the-frontier.example', hardness: 1 }] }, [])) assert.ok(F.some((f) => f.id === id), 'a frontier site has no Verse page to measure: ' + id);

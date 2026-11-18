@@ -167,7 +167,7 @@ export const PROBES = Object.freeze({
     site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel',
     // one spin of the same eight names on both (a tap at the wheel's centre): a winner is announced, and it is one of the names the wheel
     // held before the spin; after it, a way to remove the winner is offered (wheelofnames.com's dialog, Verse's button)
-    ask: { site: 'https://wheelofnames.com/', verse: '/random/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
+    ask: { site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
     truth: [['announces a winner', (t) => /winner/i.test(spun(t).after)], ['the winner is one of the wheel\'s own names', (t) => { const { after, before } = spun(t), names = new Set(before.split('\n').map((l) => l.trim()).filter((l) => l && l.length <= 40));
       return after.split('\n').some((l) => { const x = l.replace(/^.*\bwinner(?:\s+is)?\s*:?\s*/i, '').replace(/[!.]+$/, '').trim(); return !!x && names.has(x); }); }]],
     askParts: { 'remove the winner': [['a way to remove the winner', (t) => /remove/i.test(spun(t).after)]] },
@@ -179,7 +179,7 @@ export const PROBES = Object.freeze({
     // the same request to both in the address (randomuser.me's own API, Verse's page as JSON): made-up people are accurate when they hold
     // together, which can be checked: as many as asked, from the country asked, each age right for its birthday, each email well formed,
     // and each phone in the range set aside for fiction (555-0100 to 555-0199), so a test that dials one reaches nobody
-    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/people/?n=5&nat=us&seed=verse&fmt=json' },
+    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/?mode=people&n=5&nat=us&seed=verse&fmt=json' },
     truth: [['five people, as asked', (t) => peopleIn(t).length === 5], ['all from the United States, as asked', everyone((p) => p.country === 'United States')],
       ['every age right for its birthday', everyone((p) => Number.isFinite(p.age) && p.age === ageOn(p.dob))], ['every email well formed', everyone((p) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(p.email)))],
       ['every phone in the range reserved for fiction', everyone((p) => /555-01\d\d$/.test(String(p.phone)))]],
