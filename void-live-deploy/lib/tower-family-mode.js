@@ -16,7 +16,9 @@
     xhr.send();
   } catch (e) { return; }
   if (xhr.status < 200 || xhr.status >= 300 || !xhr.responseText) return;
-  document.open();
-  document.write(xhr.responseText); // void-review: ok (same-origin static mode file; mode is [a-z0-9-]+ only; runs in head during parse so the family page never finishes loading; write is what lets the mode document's own scripts run)
-  document.close();
+  // A blocking script's document.open() is ignored while the page is still being parsed, so the write only inserts the
+  // mode document ahead of the family page's own markup, and the family page's scripts used to run as well (the scores
+  // page rewrote /scores/?mode=sports&q=... to ?league=epl and dropped the search; lists run 27). The closing <plaintext>
+  // turns the rest of the family page into inert hidden text, so only the mode document's scripts run.
+  document.write(xhr.responseText + '<plaintext hidden style="display:none">'); // void-review: ok (same-origin static mode file; mode is [a-z0-9-]+ only; runs in head during parse; the write is what lets the mode document's own scripts run)
 })();

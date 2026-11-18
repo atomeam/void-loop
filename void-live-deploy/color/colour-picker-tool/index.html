@@ -204,7 +204,7 @@
     { label: 'Use it as every tool\u2019s accent', run: () => (setAccent('#' + curHex()) ? 'Every tool wears it now' : 'This browser will not keep it') },
     { label: 'Paint the wheel in its shades', href: () => '/wheel/', go: () => setPalette(shadesOf('#' + curHex(), 8)) },
     { label: 'Paint a picture by number in its shades', href: () => paintLink(shadesOf('#' + curHex(), 6)) },
-    { label: 'It as a number', href: () => '/base-converter/?v=' + curHex() + '&b=16' },
+    { label: 'It as a number', href: () => '/base64/?mode=bases&v=' + curHex() + '&b=16' },
   ], { card: () => 'color #' + curHex() }); // the stage card opens on the colour open here, not the example
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

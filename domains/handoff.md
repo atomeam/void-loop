@@ -310,6 +310,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - **Outcome exam leftovers (lists run 26)**: a bare "recipe" and a bare "scores" reach no skill (each could open its page's picker), and two Spanish asks reach another skill: "resultado del real madrid" (sports) and "pon el último episodio de radiolab" (podcasts); "play the episode before that" (a follow-up) misses the podcast skill. Recipe asks in five languages were built this run (tools/recipe-languages.test.mjs) and are the pattern to copy.
 - **Verse's ask `ask-20261117-0839-3` ("a fourth skill for the lab/pattern family")**: left open in lists run 26 because the ask names no family the repo has (the lab's Use-it tools are the spirit level, seamless pattern maker, tuner, mind map, checksum, photo palette, notes and dictation pad); read its reflection on /api/reflect for which family it means before building.
 - Frontier #28 step 2: Verse's own model writes the probe asks for its weakest family.
+- **Links with a query to redirected family pages (lists run 27)**: the live redirect drops the query when the target has its own ?mode=, so /calculators/?calc=, /base64/bases/?v=, /random/coin/?q= and /random/people/?n= links (skills/formulas.js, loan.js, rentbuy.js, baseconv.js, coin.js, fakeuser.js, calculator/modes/formulas.html, base64/modes/bases.html, random/modes/coin.html) open the mode empty. Point them at /family/?mode=x& and update each skill's own-page detection and its tests (card-frame, coin, baseconv, loan-payoff, rentbuy, calculators). tools/rival-inventory.mjs still aliases 'scientific' and 'exponent' to /calculators/#keypad (red on main).
 - Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start, 51 after lists run 25 added tools/card-tidy.test.mjs and tools/paid-access.test.mjs); after adding tests run node tools/untested.mjs --write to lower the allowance.
 
 ## Lists (one line per list per run; the lists routine)
@@ -515,6 +516,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-11-18 run 26 · site tester (label site-test): 0 open
 - 2026-11-18 run 26 · frontier (domains/void.frontier.md): 17 open in effect (not touched this run)
 - 2026-11-18 run 26 · metrics: closed 8 of 8 touched (5 built, 3 duplicates batched from 10 ask groups already passing on live), 0% blocked, duplicate rate 0.455, median 3.2 days queue to built
+- 2026-11-18 run 27 · V01D asks (void.asks.json): 1 open (unchanged; this run went to main's red checks)
+- 2026-11-18 run 27 · handoff Up for grabs: 24 open (added: links with a query to redirected family pages)
+- 2026-11-18 run 27 · store queue (store.queue.jsonl): 0 open
+- 2026-11-18 run 27 · wishlist (docs/wishlist.md): 16 open (not touched)
+- 2026-11-18 run 27 · convergence (docs/convergence.md): no new pair this run (run 26's ready-checks and connections families landed with it); main's stray 12020-systems-connect-pack order file removed
+- 2026-11-18 run 27 · site tester (label site-test): 0 open
+- 2026-11-18 run 27 · frontier (domains/void.frontier.md): 17 open (not touched)
+- 2026-11-18 run 27 · metrics: closed 4 (main red after the tower family merges: handoff-scan, family mode pages running the family page's scripts, image hand-offs losing ?img= through the redirect, handoff journeys following _redirects), 0% blocked, duplicate rate 0, median 0 days
 
 ## Ladders
 

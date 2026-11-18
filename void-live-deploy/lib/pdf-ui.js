@@ -95,11 +95,11 @@ export function mountPdf(root, cfg) {
   const build = (id) => { cleanup = () => {}; const nodes = PANELS[id](); cleanups.push(cleanup); return nodes; };
 
   // a page made into a picture goes on to the other picture pages (lib/image-handoff.js): the press keeps it on this device and opens the next page with it
-  const SEND = [['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Take its colours as a gradient', '/color/gradient/?img=handoff'], ['Resize it', '/resize-image/?img=handoff']];
+  const SEND = [['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Take its colours as a gradient', '/color/?mode=gradient&img=handoff'], ['Resize it', '/resize-image/?img=handoff']];
   function sendRow(imgs, mime) {
     const pick = imgs.length > 1 ? h('select', { 'aria-label': 'Which page to send' }, imgs.map((x, i) => h('option', { value: i }, 'Page ' + ((x.name.match(/(\d+)\.\w+$/) || [])[1] || i + 1)))) : null;
     const go = (href) => (e) => { e.preventDefault(); const x = imgs[pick ? +pick.value : 0];
-      sendImage(href.split('?')[0], () => new Blob([x.bytes], { type: mime }), { name: x.name, fromPage: location.pathname }).then((kept) => { if (!kept) status('This browser could not keep the picture for the next page.', true); }); };
+      sendImage(href.replace(/[?&]img=handoff$/, ''), () => new Blob([x.bytes], { type: mime }), { name: x.name, fromPage: location.pathname }).then((kept) => { if (!kept) status('This browser could not keep the picture for the next page.', true); }); };
     return h('p', { class: 'result send' }, h('span', {}, imgs.length > 1 ? 'Open a page in another tool: ' : 'Open the page in another tool: '), pick, ...SEND.flatMap(([label, href], i) => [i ? ' · ' : ' ', h('a', { href, onclick: go(href) }, label)]));
   }
 
