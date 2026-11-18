@@ -20,7 +20,7 @@ test('a failed status is an error, not a forecast', async () => {
 test('a forecast that hangs twice comes from the edge copy for the place', async () => {
   const seen = [];
   const f = (u, o) => { seen.push(u); return u.startsWith('/api/weather') ? Promise.resolve(ok({ ok: true, loc: { name: 'Paris, France', lat: 48.85, lon: 2.35 }, w: W })) : hang(u, o); };
-  const w = await forecastOf('https://api.open-meteo.com/v1/forecast?x', 'paris', f);
+  const w = await forecastOf('https://api.open-meteo.com/v1/forecast?x', 'paris', f, 40);
   assert.equal(w.current.temperature_2m, 12);
   assert.equal(seen.filter((u) => u.startsWith('https://api.open-meteo.com')).length, 2);
   assert.equal(seen.at(-1), '/api/weather?q=paris');

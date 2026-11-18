@@ -116,8 +116,8 @@ export async function edgeWeather(place, fetchFn = fetch) {
   return { loc: { latitude: j.loc.lat, longitude: j.loc.lon, name: j.loc.name }, w: j.w };
 }
 /** the forecast at u: Open-Meteo, once more on a miss, then the edge copy for the place; throws when none answered. */
-export async function forecastOf(u, place, fetchFn = fetch) {
-  for (const ms of [WAIT_MS, WAIT_MS]) { const w = await getJson(u, ms, fetchFn).catch(() => null); if (w && w.current) return w; }
+export async function forecastOf(u, place, fetchFn = fetch, wait = WAIT_MS) {
+  for (const ms of [wait, wait]) { const w = await getJson(u, ms, fetchFn).catch(() => null); if (w && w.current) return w; }
   const e = await edgeWeather(place, fetchFn); if (e) return e.w;
   throw new Error('no forecast');
 }

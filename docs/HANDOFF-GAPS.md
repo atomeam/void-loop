@@ -123,6 +123,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /generators/make/ | names | names, text | yes | handoff-types.json |
 | /generators/story/ | names | names, text | no | handoff-types.json |
 | /image/ | text | image | yes | handoff-types.json |
+| /internet-history/ | - | - | no | its tag |
 | /jobs/ | text, location | items, url | yes | handoff-types.json |
 | /jobs/alerts/ | text, location | items, url | yes | handoff-types.json |
 | /jobs/categories/ | text, location | items, url | yes | handoff-types.json |
