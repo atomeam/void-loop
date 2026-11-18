@@ -113,3 +113,5 @@
 /markets/screener/ /markets/?mode=screener 301
 /news/global-headlines /news/?sec=world 301
 /news/global-headlines/ /news/?sec=world 301
+/emoji-combos/emoji-dictionary /emoji-combos/ 301
+/emoji-combos/emoji-dictionary/ /emoji-combos/ 301

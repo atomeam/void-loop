@@ -59,6 +59,10 @@ export const FAMILIES = Object.freeze([
     { path: "/news/", to: "/news/" },
     { path: "/news/global-headlines/", to: "/news/?sec=world" }
   ] },
+  { id: "emoji-combos", page: "/emoji-combos/", members: [
+    { path: "/emoji-combos/", to: "/emoji-combos/" },
+    { path: "/emoji-combos/emoji-dictionary/", to: "/emoji-combos/" }
+  ] },
 ]);
 
 const byPath = new Map();
