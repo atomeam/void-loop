@@ -85,6 +85,8 @@ function openPrs() {
 
 function main() {
   const args = process.argv.slice(2);
+  const guard = spawnSync(process.execPath, [resolve(root, 'tools/guard-source.mjs')], { cwd: root, encoding: 'utf8', stdio: 'inherit' });
+  if ((guard.status ?? 1) !== 0) { console.error('pre-pr: guard-source failed (scripts must parse and ledgers must not be wiped)'); process.exit(guard.status ?? 1); }
   const behind = behindCount();
   if (behind === null) { console.error('pre-pr: fetch origin main first (git fetch origin main)'); process.exit(2); }
   const files = branchFiles();
