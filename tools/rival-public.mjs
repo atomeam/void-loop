@@ -40,6 +40,7 @@ export function publicRivalHits(dir = SITE, sites = SITES) {
   for (const file of htmlFiles(dir)) {
     const rel = '/' + path.relative(dir, file).split(path.sep).join('/');
     if (rel === '/versus/index.html' || rel.startsWith('/versus/')) continue;
+    if (rel === '/internet-history/index.html' || rel.startsWith('/internet-history/')) continue; // the museum may name studied sites in plain text
     const html = readFileSync(file, 'utf8');
     const route = rel.endsWith('/index.html') ? rel.slice(0, -'index.html'.length) : rel;
     if (/the original\s*:/i.test(html) || /class="original"/.test(html)) hits.push(route + ' credits another site');

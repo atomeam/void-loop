@@ -11,6 +11,13 @@
  },
  "runs": [
   {
+   "at": "2026-11-18T17:17:24Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
    "at": "2026-11-18T16:50:36Z",
    "passed": 0,
    "of": 0,
@@ -239,14 +246,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T10:55:38Z",
-   "passed": 131,
-   "of": 131,
-   "kind": "grow",
-   "ms": 470,
-   "note": "new ground passed, kept as a regression case: \"three alike\" (skill:three-alike)"
   }
  ],
  "weekly": [
@@ -312,7 +311,7 @@
   },
   {
    "from": "2026-11-04",
-   "runs": 161,
+   "runs": 160,
    "passed": 3698,
    "of": 5337,
    "broken": 14,
@@ -322,7 +321,7 @@
   },
   {
    "from": "2026-11-11",
-   "runs": 139,
+   "runs": 140,
    "passed": 3267,
    "of": 3366,
    "ms": 421
