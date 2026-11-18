@@ -1,41 +1,5 @@
 [
  {
-  "at": "2026-11-06T16:04:05Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1505,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "nothing useful"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T16:37:08Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1298,
-   "failed": [
-    {
-     "ask": "capital of France",
-     "why": [
-      "slow 8459 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-06T16:48:52Z",
   "passed": 89,
   "of": 95,
@@ -7008,5 +6972,45 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"automation handoff for the email reminders\" (skill:automation-handoff)"
+ },
+ {
+  "at": "2026-11-18T16:25:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1012,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T16:35:17Z",
+  "passed": 136,
+  "of": 139,
+  "ms": 608,
+  "kind": "file",
+  "key": "how do i magnetize this? | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "how do i magnetize this?",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1012,
+   "failed": []
+  },
+  "note": "fix: \"how do i magnetize this?\" only \"waking up\" appeared, never the answer"
  }
 ]
