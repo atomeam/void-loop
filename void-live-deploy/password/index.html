@@ -2,6 +2,7 @@
 <html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
+<script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Password generator: strong random passwords and passphrases · Verse</title>
 <meta name="description" content="Generate strong random passwords on your device: 4 to 128 characters, uppercase, lowercase, numbers and symbols, no look-alikes, no ambiguous punctuation, no repeats, no three in a row, one of each class; up to 20 at once, each with its own Copy; passphrases of 3 to 10 common words. Every password shows its strength: the exact entropy in bits and how long it takes to crack at ten billion guesses a second. Nothing leaves the device; works offline.">
@@ -13,7 +14,7 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  /* a-to-mind.com/password/ (the tower's passwordsgenerator.net floor): one file and one small module, no third party, nothing stored but the setting */
+  /* a-to-mind.com/password/ (the password floor): one file and one small module, no third party, nothing stored but the setting */
   :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --c0: #d6334a; --c1: #e0702b; --c2: #d9a400; --c3: #3d9c4f; --c4: #1f8a70; }
   :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --c0: #ff6b7e; --c1: #ff9a5c; --c2: #f0c43a; --c3: #6fd184; --c4: #4fd1b0; --on-accent: #15131c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
@@ -69,7 +70,7 @@
 </head>
 <body>
 <!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
-<nav class="v-modes" aria-label="Passwords modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/password/" aria-current="page">Generator</a><a href="/password/strength/">Strength check</a></nav>
+<nav class="v-modes" aria-label="Passwords modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/password/" aria-current="page">Generator</a><a href="/password/?mode=strength">Strength check</a></nav>
 
 <main>
   <h1>Password generator</h1>
@@ -122,8 +123,8 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/password/?len=16">16 characters</a><a href="/password/?len=12">12 characters</a><a href="/password/?len=20">20 characters</a><a href="/password/?len=32">32 characters</a><a href="/password/?len=16&amp;symbols=0">Letters and numbers only</a><a href="/password/?mode=phrase&amp;words=4">A passphrase of 4 words</a><a href="/password/?len=16&amp;n=5">5 passwords at once</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password/strength/">Password strength</a> <a href="/random/">Random number</a> <a href="/random/people/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
-  <footer>Made on this device from its secure random numbers (<code>crypto.getRandomValues</code>, with rejection sampling so no character is likelier than another); no password is ever sent anywhere, stored, or put in the address (Copy link carries only the setting), and the page works offline after one visit. The strength is exact: the entropy is log2 of how many passwords the setting can make, counting "one of each class" and "no repeats" precisely, and the crack time is how long it takes to try them all at ten billion guesses a second, a stolen hash list on one modern rig. A password is as strong as that only if it is random: never reuse one. <a href="/password/strength/">Check a password you already have</a> · <a href="/">Ask Verse anything</a></footer>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/random/">Random number</a> <a href="/random/people/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Made on this device from its secure random numbers (<code>crypto.getRandomValues</code>, with rejection sampling so no character is likelier than another); no password is ever sent anywhere, stored, or put in the address (Copy link carries only the setting), and the page works offline after one visit. The strength is exact: the entropy is log2 of how many passwords the setting can make, counting "one of each class" and "no repeats" precisely, and the crack time is how long it takes to try them all at ten billion guesses a second, a stolen hash list on one modern rig. A password is as strong as that only if it is random: never reuse one. <a href="/password/?mode=strength">Check a password you already have</a> · <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';

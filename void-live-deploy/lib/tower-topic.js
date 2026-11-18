@@ -8,7 +8,7 @@
 export const TOPICS = Object.freeze([
   ['vat', /\b(?:vat|gst|mwst|iva|tva|ust)\b|ндс|налог на добавленную|mehrwertsteuer|umsatzsteuer/i, '/calculator/?mode=vat'],
   ['currency converter', /currency conver|exchange rate|курс валют|конвертер валют/i, '/markets/currency-converter/'],
-  ['password strength', /password (?:strength|checker|meter)|how secure is my password|надежност[ьи] парол/i, '/password/strength/'],
+  ['password strength', /password (?:strength|checker|meter)|how secure is my password|надежност[ьи] парол/i, '/password/?mode=strength'],
   ['password generator', /password generator|генератор парол|random password/i, '/password/'],
   ['unit converter', /unit conver|convert units|measurement (?:unit )?conver|конвертер величин/i, '/convert/'],
   ['emoji combos', /emoji comb/i, '/emoji-combos/'],
@@ -22,7 +22,7 @@ export const TOPICS = Object.freeze([
   ['wheel of names', /wheel of names|spin the wheel|name picker/i, '/random/wheel/'],
   ['coin flip', /coin flip|flip a coin/i, '/random/coin/'],
   ['base64', /base ?64/i, '/base64/'],
-  ['base converter', /hex to binary|binary (?:to|converter)|base conver/i, '/base64/bases/'],
+  ['base converter', /hex to binary|binary (?:to|converter)|base conver/i, '/base64/?mode=bases'],
   ['resize an image', /resize (?:an )?(?:image|photo|picture)|image resiz/i, '/resize-image/'],
   ['photo tools', /compress (?:image|photo)|image compress|photo editor|exif/i, '/photos/'],
   ['pdf', /\b(?:compress|merge|split|convert|edit|sign|rotate)\w* (?:\w+ )?pdf\b|\bpdf (?:compress|merge|split|convert|editor|tools?)/i, '/pdf/'],

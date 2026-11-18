@@ -19,7 +19,7 @@ test('the page links to the tools it goes with, All tools and the home page, eac
   const t = await onRequestGet({ request: req('1.2.3.4', 'text/html') }).text();
   const hrefs = [...t.matchAll(/<a href="([^"]+)"/g)].map((m) => m[1].replace(/&amp;/g, '&'));
   assert.match(t, /<nav id="related" aria-label="Use with">/);
-  for (const h of ['/', '/tools/', '/local/', '/time/', '/base64/bases/', '/password/', '/?q=what%20is%20my%20ip']) assert.ok(hrefs.includes(h), h);
+  for (const h of ['/', '/tools/', '/local/', '/time/', '/base64/', '/password/', '/?q=what%20is%20my%20ip']) assert.ok(hrefs.includes(h), h);
   for (const h of hrefs.filter((x) => !x.startsWith('/?'))) assert.ok(h === '/' || existsSync(new URL('../void-live-deploy' + h + 'index.html', import.meta.url)), h + ' is a page in the site');
 });
 test('JSON on ask; a bad header is never echoed', async () => {
