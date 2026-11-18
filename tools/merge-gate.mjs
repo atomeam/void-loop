@@ -5,6 +5,7 @@
 // print only "FAIL merge-policy" and a duration (2026-11-05, #2315).
 //   node tools/merge-gate.mjs
 import { spawnSync } from 'node:child_process';
+import { surfacesOf } from './vision-judge.mjs';
 import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
@@ -182,13 +183,15 @@ function main() {
       cwd: dir, encoding: 'utf8', maxBuffer: 20e6,
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
     });
+    let install = null; // the lockfile is installed at most once per gate (no install scripts), whoever needs it first
+    const installOnce = () => install || (install = spawnSync('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6, timeout: 300000 }));
     let checks = runChecks();
     // a red run that only lacked an installed package: install the lockfile once (no install scripts) and run the checks again, so a
     // missing package does not fail every pull request; a second red run is the real answer
     const missing = (checks.status ?? 1) !== 0 ? missingPackages(String(checks.stdout || '') + String(checks.stderr || '')) : [];
     if (missing.length && existsSync(resolve(dir, 'package-lock.json'))) {
       console.log('merge-gate: the checks could not find ' + missing.join(', ') + '; installing the lockfile once and running them again');
-      const ci = spawnSync('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6, timeout: 300000 });
+      const ci = installOnce();
       if (ci.status === 0) checks = runChecks();
       else console.error('merge-gate: npm ci exited ' + ci.status + ': ' + String(ci.stderr || (ci.error && ci.error.message) || '').split('\n').slice(-3).join(' ').slice(0, 300));
     }
@@ -203,7 +206,18 @@ function main() {
       if (lines.length) for (const line of lines) console.error('merge-gate: ' + line);
       else console.error('merge-gate: merge-policy failed and named no rule');
     }
-    process.exit(checks.status ?? 1);
+    if ((checks.status ?? 1) !== 0) process.exit(checks.status ?? 1);
+    // the runtime gate: a pull request that changes a page people see does not land unless that page, opened in a real browser at
+    // desktop and phone size, shows no console error, plays its media and passes the look checks (tools/vision-judge.mjs)
+    const files = String(git(['diff', '--name-only', base + '...HEAD'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
+    if (surfacesOf(files).length) {
+      if (!existsSync(resolve(dir, 'node_modules/playwright-core'))) installOnce();
+      const seen = spawnSync(process.execPath, [resolve(dir, 'tools/vision-judge.mjs'), '--files', files.join(',')], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6, timeout: 480000 });
+      if (seen.stdout) process.stdout.write(seen.stdout);
+      if (seen.stderr) process.stderr.write(seen.stderr);
+      if ((seen.status ?? 1) !== 0) { console.error('merge-gate: the runtime gate failed (tools/vision-judge.mjs): a changed page broke in the browser'); process.exit(seen.status ?? 1); }
+    }
+    process.exit(0);
   } finally { rm(); }
 }
 
