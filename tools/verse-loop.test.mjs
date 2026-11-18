@@ -15,7 +15,7 @@ const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
 
 /** A repo with a bare origin, docs, a checks file whose checks read flag files, a fake brain and a fake gh. */
-const HAND_NEXT = '# NEXT\n\n1. **Done thing** status: done\n2. **Calculator sitemap** easiest small site\n3. **Later**\n';
+const HAND_NEXT = '# NEXT\n\n1. **Done thing** status: done\n2. **Calculator sitemap** easiest small site (void-live-deploy/sitemap.xml)\n3. **Later**\n';
 function sandbox({ red = [], groomed = true, gh: fixtures = {} } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'vl-test-'));
   const origin = join(dir, 'origin.git'), work = join(dir, 'work');
@@ -147,7 +147,7 @@ test('dry run, green: the fake brain takes NEXT item 2 and the lap would ship, w
   const head = sh(s.work, 'rev-parse', 'HEAD');
   const r = await lap(parseArgs(['--once', '--dry-run', '--agent', 'cmd']), { cwd: s.work, env: env(s, 'grep -q "NEXT 2" "$VERSE_LOOP_PROMPT_FILE" && echo built > built.txt'), log: quiet });
   assert.equal(r.outcome, 'would-ship', r.why);
-  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site' }, 'the top of Verse\'s groomed queue');
+  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site (void-live-deploy/sitemap.xml)' }, 'the top of Verse\'s groomed queue');
   assert.match(r.branch, /^loop\/\d{8}-\d{6}$/);
   assert.match(r.tagteamLine, /verse-loop \(cmd\): NEXT 1, \[NEXT 2\] Calculator/);
   assert.equal(sh(s.work, 'rev-parse', 'HEAD'), head, 'no commit');
@@ -345,7 +345,7 @@ test('Verse\'s coder on green takes the top of docs/NEXT.md (no probe without VO
   const add = '--- /dev/null\n+++ b/calc-sitemap.txt\n@@ -0,0 +1 @@\n+calculator sitemap\n';
   const r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: scripted(s, [{ tool: 'edit', diff: add }, { tool: 'finish', summary: 'step one' }]), log: quiet });
   assert.equal(r.outcome, 'would-ship', r.why);
-  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site' });
+  assert.deepEqual(r.task, { kind: 'next', n: 1, text: '[NEXT 2] **Calculator sitemap** easiest small site (void-live-deploy/sitemap.xml)' });
   assert.equal(readFileSync(join(s.work, 'calc-sitemap.txt'), 'utf8'), 'calculator sitemap\n');
 });
 

@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
+import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -140,10 +141,10 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
 
 /** How to call each brain: { cmd, args, shell? }. Verse's: propose-fix for a probe job, its coder for anything else.
  *  Keys reach the CLI only through the environment it inherits. */
-export function agentCommand(agent, promptFile, { env = process.env, outDir = '', dryRun = false, kind = 'probe', target = '', checksFile = '', repo = '.' } = {}) {
+export function agentCommand(agent, promptFile, { env = process.env, outDir = '', dryRun = false, kind = 'probe', target = '', checksFile = '', repo = '.', reads = 0 } = {}) {
   const model = env.VERSE_LOOP_MODEL;
   if (agent === 'verse' && kind === 'probe') return { cmd: process.execPath, args: ['tools/propose-fix.mjs', '--out', outDir, ...(dryRun ? ['--dry'] : [])] };
-  if (agent === 'verse') return { cmd: process.execPath, args: [CODER, '--repo', repo, '--prompt-file', promptFile, ...(checksFile ? ['--checks', checksFile] : []), ...(target ? ['--target', target] : [])] };
+  if (agent === 'verse') return { cmd: process.execPath, args: [CODER, '--repo', repo, '--prompt-file', promptFile, ...(checksFile ? ['--checks', checksFile] : []), ...(target ? ['--target', target] : []), ...(reads ? ['--max-reads', String(reads)] : [])] };
   if (agent === 'opencode') return { cmd: 'opencode', args: ['run', ...(model ? ['--model', model] : []), readFileSync(promptFile, 'utf8')] };
   if (agent === 'aider') return { cmd: 'aider', args: ['--yes-always', '--no-auto-commits', '--no-gitignore', ...(model ? ['--model', model] : []), '--message-file', promptFile] };
   if (!env.VERSE_LOOP_AGENT_CMD) throw new Error('--agent cmd needs VERSE_LOOP_AGENT_CMD (the prompt is on stdin and its path in VERSE_LOOP_PROMPT_FILE)');
@@ -450,7 +451,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         : t.kind === 'heal' ? 'task: heal ' + t.branch + ' (' + t.check + ')' : 'task: the oldest open probe job (tools/propose-fix.mjs)');
       const prompt = buildPrompt({ task: t.kind === 'probe' ? { kind: 'next', text: 'probe job', n: null } : t, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
       writeFileSync(promptFile, prompt);
-      const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun, kind: t.kind, target: t.kind === 'fix' ? t.check : '', checksFile: checksCopy, repo: cwd });
+      const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun, kind: t.kind, target: t.kind === 'fix' ? t.check : '', checksFile: checksCopy, repo: cwd, reads: t.kind === 'next' ? CAPS.reads : 0 });
       step('brain: ' + opts.agent + (opts.agent === 'verse' ? (t.kind === 'probe' ? ' (propose-fix)' : ' (verse-coder)') : ''));
       return sh(a.cmd, a.args, { cwd, env: { ...env, VERSE_LOOP_PROMPT_FILE: promptFile }, input: prompt, shell: !!a.shell, timeout: Number(env.VERSE_LOOP_AGENT_TIMEOUT_MIN || 45) * 60e3 });
     };
@@ -575,6 +576,8 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       task = pickTask({ before, agent: opts.agent, next, task: opts.task, probe: !!env.VOID_OWNER_TOKEN });
       if (task.kind === 'idle') return done(task.kind, task.why);
     }
+    // the scope guard (tools/triage-cortex.mjs): a backlog item that names no file and no failing test spends no model turn
+    { const g = preflight(task); if (!g.ok) return done('skipped', 'triage-cortex: ' + g.why, { triage: g }); }
 
     // one open PR per task: a twin opened under DUP_HOURS ago is still the answer, so this lap spends no model calls on it
     if (task.kind === 'fix' || task.kind === 'next') {
@@ -591,6 +594,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         step('no probe job (tools/propose-fix.mjs exit 3): on to docs/NEXT.md');
         task = pickTask({ before, agent: opts.agent, next, probe: false });
         if (task.kind === 'idle') return done('idle', 'no open probe job, and ' + task.why);
+        { const g = preflight(task); if (!g.ok) return done('skipped', 'triage-cortex: ' + g.why, { triage: g }); }
         ar = brain(task);
       }
       if (opts.agent === 'verse' && task.kind !== 'probe') {
@@ -644,6 +648,10 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     git('checkout', '-q', '-b', branch);
     appendFileSync(resolve(cwd, 'docs/TAGTEAM.md'), '\n' + line + '\n');
     git('add', '-A');
+    if (task.kind === 'next') { // a backlog lap stays small (tools/triage-cortex.mjs CAPS.lines)
+      const n = changedLines(git('diff', '--cached', '--numstat', '--', '.', ':!docs/TAGTEAM.md').out);
+      if (n > CAPS.lines) { git('reset', '-q'); git('checkout', '-q', '--detach', 'origin/' + opts.base); return done('refused', 'triage-cortex: ' + n + ' changed lines, over the backlog cap of ' + CAPS.lines + '; split the item'); }
+    }
     const last = scanDiff(git('diff', '--cached').out);
     if (last.length) { git('reset', '-q'); return done('refused', 'possible secret in the diff', { secrets: last }); }
     const c = git('commit', '-q', '-m', title, '-m', 'One lap of tools/verse-loop.mjs (brain: ' + opts.agent + '). Checks after: ' + v.why + '.');

@@ -689,8 +689,8 @@ export function ownReview(root, env = keyless()) {
 export function scriptedModel(replies) { let i = 0; return async () => ({ text: typeof replies[Math.min(i, replies.length - 1)] === 'string' ? replies[Math.min(i++, replies.length - 1)] : JSON.stringify(replies[Math.min(i++, replies.length - 1)]) }); }
 
 function parseCli(argv) {
-  const o = { repo: process.cwd(), promptFile: '', task: '', checks: '', target: '', turns: 0, tokens: 0 };
-  const flags = { '--repo': 'repo', '--prompt-file': 'promptFile', '--task': 'task', '--checks': 'checks', '--target': 'target', '--max-turns': 'turns', '--max-tokens': 'tokens' };
+  const o = { repo: process.cwd(), promptFile: '', task: '', checks: '', target: '', turns: 0, tokens: 0, reads: 0 };
+  const flags = { '--repo': 'repo', '--prompt-file': 'promptFile', '--task': 'task', '--checks': 'checks', '--target': 'target', '--max-turns': 'turns', '--max-tokens': 'tokens', '--max-reads': 'reads' };
   for (let i = 0; i < argv.length; i++) { const k = flags[argv[i]]; if (!k) throw new Error('unknown flag ' + argv[i]); o[k] = argv[++i]; }
   return o;
 }
@@ -708,7 +708,7 @@ async function main() {
     if (!ps.length) return say({ outcome: 'no-model', why: 'Verse\'s coder needs one model key in the environment: ' + KEY_NAMES.join(', ') });
     model = stackModel(ps); provider = ps.map((p) => p.name).join(' > ');
   }
-  const r = await runCoder({ root, prompt, checks, target: o.target, model, env, limits: { ...(+o.turns ? { turns: +o.turns } : {}), ...(+o.tokens ? { tokens: +o.tokens } : {}) }, log: (s) => console.error(s) });
+  const r = await runCoder({ root, prompt, checks, target: o.target, model, env, limits: { ...(+o.turns ? { turns: +o.turns } : {}), ...(+o.tokens ? { tokens: +o.tokens } : {}), ...(+o.reads ? { reads: +o.reads } : {}) }, log: (s) => console.error(s) });
   say({ ...r, provider: (model.last || provider) });
 }
 
