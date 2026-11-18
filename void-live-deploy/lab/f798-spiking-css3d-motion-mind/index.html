@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; perspective:800px; transform-style:preserve-3d; }
+.spark { position:absolute; width:24px; height:24px; border-radius:50%; background:radial-gradient(circle,#fff,#aaf 40%,transparent 70%); opacity:0.7; pointer-events:auto; cursor:pointer; transition:transform 0.05s linear; will-change:transform,opacity,background; }
+#hud { position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #55f; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spiking CSS3D Motion Mind · Verse lab</title>
+<meta name="description" content="A local Leaky Integrate-and-Fire (LIF) spiking neural network whose recurrent weights and membrane potentials form a sealed genome.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spiking CSS3D Motion Mind · Verse lab">
+<meta property="og:description" content="A local Leaky Integrate-and-Fire (LIF) spiking neural network whose recurrent weights and membrane potentials form a sealed genome.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f798-spiking-css3d-motion-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f798-spiking-css3d-motion-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  F798 Spiking CSS3D Motion Mind<br>
+  Tilt/shake device or move pointer to spike. Click sparks to reward.<br>
+  <button id="seal">Seal Genome</button> <button id="reset">Reset</button>
+  <div id="status">Loading...</div>
+</div>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spiking CSS3D Motion Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

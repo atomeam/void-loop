@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0a12; --fg: #e0e0ff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    user-select: none;
+  }
+  #info {
+    position: fixed; top: 12px; left: 12px; z-index: 100;
+    background: rgba(10,10,20,0.85); padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; max-width: 320px; line-height: 1.4;
+  }
+  #info button {
+    margin: 4px 6px 0 0; padding: 4px 10px; background: #222; color: #fff;
+    border: 1px solid #555; border-radius: 4px; cursor: pointer;
+  }
+  #info button:hover { background: #333; }
+  .agent {
+    position: absolute; width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; text-align: center; line-height: 1.1;
+    cursor: pointer; transition: box-shadow 0.2s;
+    border: 2px solid rgba(255,255,255,0.25);
+    will-change: transform, left, top;
+  }
+  .agent:hover { box-shadow: 0 0 18px currentColor; z-index: 10; }
+  #status { position: fixed; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Living DOM Agent RNN Proximity-Sealed Genome Mind · Verse lab</title>
+<meta name="description" content="Pure multi-agent competition where the agents are the living DOM portals.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Living DOM Agent RNN Proximity-Sealed Genome Mind · Verse lab">
+<meta property="og:description" content="Pure multi-agent competition where the agents are the living DOM portals.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f793-living-dom-agent-rnn-genome-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f793-living-dom-agent-rnn-genome-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="info">
+  <strong>F793 Living DOM Agent RNN Mind</strong><br>
+  Tilt device or move pointer. Click agents to reward. Close agents seal genomes.<br>
+  <button id="sealBtn">Seal & Broadcast</button>
+  <button id="resetBtn">Reset Genomes</button>
+  <button id="addBtn">+ Agent</button>
+</div>
+<div id="status">Initializing…</div>
+<div id="stage"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Living DOM Agent RNN Proximity-Sealed Genome Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/checksum/" data-tool="File checksum checker">Use it: File checksum checker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
+  #info { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; line-height: 1.4; max-width: 320px; z-index: 10; }
+  #status { color: #8f8; margin-top: 4px; }
+  button { margin-top: 8px; padding: 6px 12px; background: #334; color: #fff; border: 1px solid #556; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #445; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Worker-Isolated Sealed Genome Competition Mind · Verse lab</title>
+<meta name="description" content="A previously unexplored architecture for The Verse canvas: a population of tiny local MLPs, each isolated in its own Web Worker.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Worker-Isolated Sealed Genome Competition Mind · Verse lab">
+<meta property="og:description" content="A previously unexplored architecture for The Verse canvas: a population of tiny local MLPs, each isolated in its own Web Worker.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f786-worker-isolated-sealed-genome-competition-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f786-worker-isolated-sealed-genome-competition-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="info">
+  <div><strong>F-786: Worker Minds Competition</strong></div>
+  <div id="status">Initializing workers...</div>
+  <button id="sealBtn">Seal Best Genome</button>
+  <button id="resetBtn">Reset Field</button>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Worker-Isolated Sealed Genome Competition Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/checksum/" data-tool="File checksum checker">Use it: File checksum checker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

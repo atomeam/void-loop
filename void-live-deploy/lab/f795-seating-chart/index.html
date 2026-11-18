@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg: #0f1419; --fg: #e7e9ea; --accent: #1d9bf0; --card: #1a2332; --border: #38444d; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.4; }
+header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+h1 { margin: 0; font-size: 1.5rem; }
+.container { max-width: 1100px; margin: 0 auto; padding: 1rem; display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; }
+@media (max-width: 800px) { .container { grid-template-columns: 1fr; } }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+label { display: block; font-size: 0.85rem; margin-bottom: 0.25rem; color: #8b98a5; }
+input, textarea, button, select { width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); background: #15202b; color: var(--fg); font: inherit; }
+textarea { min-height: 80px; resize: vertical; }
+button { background: var(--accent); color: #fff; border: none; cursor: pointer; font-weight: 600; margin-top: 0.5rem; }
+button.secondary { background: transparent; border: 1px solid var(--border); color: var(--fg); }
+.tables { display: flex; flex-wrap: wrap; gap: 1rem; min-height: 400px; }
+.table { background: #15202b; border: 2px dashed var(--border); border-radius: 12px; min-width: 180px; min-height: 140px; padding: 0.75rem; flex: 1; }
+.table h3 { margin: 0 0 0.5rem; font-size: 0.95rem; text-align: center; }
+.seat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.6rem; margin: 0.25rem 0; cursor: grab; user-select: none; font-size: 0.9rem; }
+.seat.dragging { opacity: 0.5; }
+.guest-pool { max-height: 300px; overflow-y: auto; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+.actions button { width: auto; padding: 0.5rem 1rem; }
+.note { font-size: 0.8rem; color: #8b98a5; margin-top: 0.5rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Seating chart maker · Verse lab</title>
+<meta name="description" content="Job: Paste a list of guests, choose how many tables, mark pairs who must sit together or apart; drag people onto tables to arrange them.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Seating chart maker · Verse lab">
+<meta property="og:description" content="Job: Paste a list of guests, choose how many tables, mark pairs who must sit together or apart; drag people onto tables to arrange them.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f795-seating-chart/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f795-seating-chart/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Seating Chart Maker</h1>
+  <p style="margin:0.25rem 0 0; color:#8b98a5;">Arrange guests at tables. Drag to place. Nothing leaves your device.</p>
+</header>
+<div class="container">
+  <div class="panel">
+    <label for="names">Guest names (one per line)</label>
+    <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;Dave"></textarea>
+    <label for="numTables" style="margin-top:0.75rem">Number of tables</label>
+    <input type="number" id="numTables" min="1" max="20" value="4">
+    <label for="together" style="margin-top:0.75rem">Must sit together (pairs, one per line: Name1, Name2)</label>
+    <textarea id="together" placeholder="Alice, Bob"></textarea>
+    <label for="apart" style="margin-top:0.75rem">Must sit apart (pairs, one per line)</label>
+    <textarea id="apart" placeholder="Carol, Dave"></textarea>
+    <button id="generate">Generate tables</button>
+    <div class="actions">
+      <button id="save" class="secondary">Save arrangement</button>
+      <button id="csv" class="secondary">Download CSV</button>
+      <button id="png" class="secondary">Download PNG</button>
+    </div>
+    <p class="note">Drag guests between tables or back to the pool. Constraints are checked on generate and shown as warnings.</p>
+  </div>
+  <div>
+    <div class="panel" style="margin-bottom:1rem">
+      <h2 style="margin:0 0 0.5rem; font-size:1.1rem">Unseated guests</h2>
+      <div id="pool" class="guest-pool"></div>
+    </div>
+    <div id="tables" class="tables"></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
