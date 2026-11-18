@@ -37,7 +37,15 @@ jobs:
       - name: Test the merge with main
         env:
           MERGE_GATE_BASE: origin/${{ github.event.pull_request.base.ref || 'main' }}
+          VISION_JUDGE_SHOTS: ${{ runner.temp }}/vision-judge-shots
         run: node tools/merge-gate.mjs
+      - name: Upload vision-judge shots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vision-judge-shots
+          path: ${{ runner.temp }}/vision-judge-shots
+          if-no-files-found: ignore
       # A gate started by a pull_request event wakes automerge through workflow_run already. Only a dispatched gate (a run started
       # with the workflow's token fires no workflow_run) wakes it here, for its one PR (2026-11-04: double wakes spent the API quota).
       - name: Wake automerge (only after a dispatched gate)

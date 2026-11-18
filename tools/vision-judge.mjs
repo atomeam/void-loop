@@ -9,7 +9,7 @@
 //   (mean luminance at most NEAR_BLACK); no harsh hard-edged blobs: of the pixels brighter than the void, the share sitting on a
 //   strong edge (Sobel magnitude over EDGE) stays at most HARD_EDGE, with the ask bar masked out.
 // A failure names the surface, the viewport, the measure, and the numbers, so the coder can fix exactly that.
-//   node tools/vision-judge.mjs [--paths /,/films/] [--files a,b] [--base origin/main] [--shots dir] [--json]
+//   node tools/vision-judge.mjs [--paths /,/films/] [--files a,b] [--base origin/main] [--shots dir] [--phase night] [--json]
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -209,7 +209,7 @@ async function measure(b, png, mask) {
 }
 
 /** open every surface at both viewports and judge it; offline: any request off the local server is answered empty. */
-export async function run({ paths, dir = path.join(root, 'void-live-deploy'), shots = '', ask = '' } = {}) {
+export async function run({ paths, dir = path.join(root, 'void-live-deploy'), shots = '', ask = '', phase = '' } = {}) {
   const server = await serve(dir), base = 'http://127.0.0.1:' + server.address().port, b = await browser(), results = [];
   try {
     for (const p of paths) for (const vp of VIEWPORTS) {
@@ -220,6 +220,7 @@ export async function run({ paths, dir = path.join(root, 'void-live-deploy'), sh
       page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text().slice(0, 160)); });
       await page.goto(base + p, { waitUntil: 'load', timeout: 30000 }).catch((e) => errors.push('load: ' + e.message.slice(0, 120)));
       await page.waitForTimeout(1500);
+      if (phase) await page.evaluate((ph) => { document.documentElement.dataset.phase = ph; }, phase);
       if (ask) { await page.fill('#input', ask).catch((e) => errors.push('ask: ' + e.message.slice(0, 120))); await page.press('#input', 'Enter').catch(() => {}); await page.waitForTimeout(2500); await page.mouse.move(vp.width / 2, 40); }
       const unplayable = await page.evaluate(PLAY).catch(() => []);
       const dom = { ...(await page.evaluate(DOM).catch((e) => ({ scrollX: 0, clipped: [], chrome: [], bg: 0, media: [], mask: null, fail: e.message }))), errors };
@@ -227,7 +228,8 @@ export async function run({ paths, dir = path.join(root, 'void-live-deploy'), sh
       const png = await page.screenshot();
       if (shots) { fs.mkdirSync(shots, { recursive: true }); fs.writeFileSync(path.join(shots, (p.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'landing') + (ask ? '-' + ask.replace(/\W+/g, '-') : '') + '-' + vp.name + '.png'), png); }
       const px = await measure(b, png, dom.mask);
-      results.push({ path: p, viewport: vp.name, px, dom: { ...dom, mask: undefined }, failures: judge(p, vp.name, dom, px) });
+      const pagePhase = p === '/' ? await page.evaluate(() => document.documentElement.getAttribute('data-phase') || '') : '';
+      results.push({ path: p, viewport: vp.name, px, phase: pagePhase, dom: { ...dom, mask: undefined }, failures: judge(p, vp.name, dom, px) });
       await ctx.close();
     }
   } finally { await b.close(); server.close(); }
@@ -243,11 +245,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     if (!looks.length) looks = looksOf(files);
   }
   if (!paths.length) { console.log('vision-judge: no surface changed'); process.exit(0); }
-  const results = await run({ paths, shots: arg('--shots') });
+  const results = await run({ paths, shots: arg('--shots'), phase: arg('--phase') });
   for (const ask of looks) results.push(...(await run({ paths: ['/'], shots: arg('--shots'), ask })).map((r) => ({ ...r, path: '/ (' + ask + ')', failures: r.failures.map((f) => f.replace(/^\/ @/, '/ (' + ask + ') @')) })));
   const bad = results.flatMap((r) => r.failures);
   if (process.argv.includes('--json')) console.log(JSON.stringify(results.map((r) => ({ path: r.path, viewport: r.viewport, px: r.px, failures: r.failures })), null, 1));
-  for (const r of results) console.log((r.failures.length ? 'FAIL ' : 'ok   ') + r.path + ' @ ' + r.viewport + '  mean ' + r.px.mean + ', off-colour ' + r.px.offMode + ', hard-edge ' + r.px.hardEdge);
+  for (const r of results) console.log((r.failures.length ? 'FAIL ' : 'ok   ') + r.path + ' @ ' + r.viewport + '  mean ' + r.px.mean + ', off-colour ' + r.px.offMode + ', hard-edge ' + r.px.hardEdge + (r.phase ? '  phase ' + r.phase : ''));
   for (const f of bad) console.error('vision-judge: ' + f);
   process.exit(bad.length ? 1 : 0);
 }
