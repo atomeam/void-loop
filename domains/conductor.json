@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-18T06:03:57.861Z",
+ "updated": "2026-11-18T06:13:22.451Z",
  "last24h": {
-  "ticks": 32,
-  "started": 39,
+  "ticks": 33,
+  "started": 41,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -117,9 +117,9 @@
   "mva30j4u": 1794969408401,
   "mwa0agd2": 1794972231422,
   "mwa0ah54": 1794975047948,
-  "mvbl52gd": 1794960474640,
+  "mvbl52gd": 1794982402451,
   "mveb8rsi": 1794960474640,
-  "mwdsggtv": 1794960474640,
+  "mwdsggtv": 1794982402451,
   "mvu167w7": 1794961038496,
   "mveb8svc": 1794961038496,
   "mwdsgi9n": 1794961038496,
@@ -1199,6 +1199,42 @@
    "blueprints": 0,
    "held": 444,
    "warnings": 1
+  },
+  {
+   "at": "2026-11-18T06:13:22.451Z",
+   "open": 460,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mwdsggtv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 51
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 445,
+   "warnings": 2
   }
  ]
 }
