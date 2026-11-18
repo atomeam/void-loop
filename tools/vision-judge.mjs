@@ -220,12 +220,6 @@ export async function run({ paths, dir = path.join(root, 'void-live-deploy'), sh
       page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text().slice(0, 160)); });
       await page.goto(base + p, { waitUntil: 'load', timeout: 30000 }).catch((e) => errors.push('load: ' + e.message.slice(0, 120)));
       await page.waitForTimeout(1500);
-      // the landing field is a late WebGL mount; judge it after #void-cosmos has painted, so a slow runner is not scored on the fallback particles
-      if (p === '/') {
-        await page.waitForSelector('#void-cosmos', { timeout: 5000 }).catch(() => {});
-        await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
-        await page.waitForTimeout(300);
-      }
       if (ask) { await page.fill('#input', ask).catch((e) => errors.push('ask: ' + e.message.slice(0, 120))); await page.press('#input', 'Enter').catch(() => {}); await page.waitForTimeout(2500); await page.mouse.move(vp.width / 2, 40); }
       const unplayable = await page.evaluate(PLAY).catch(() => []);
       const dom = { ...(await page.evaluate(DOM).catch((e) => ({ scrollX: 0, clipped: [], chrome: [], bg: 0, media: [], mask: null, fail: e.message }))), errors };
