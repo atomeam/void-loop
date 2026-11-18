@@ -11,7 +11,7 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-18",
- "bench_at": "2026-11-16",
+ "bench_at": "2026-11-18",
  "totals": {
   "experiment": 0,
   "tested": 5,
@@ -984,9 +984,12 @@
      "name": "gamebox",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
+     "failing": [
+      "games"
+     ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.667,
      "streak": 26
     },
     {
@@ -1398,9 +1401,9 @@
      "tier": "proven",
      "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
      "failing": [
-      "days until july 4",
       "countdown to chirstmas",
-      "how many days until january 1st"
+      "how many days until january 1st",
+      "days until the 1st of march"
      ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
@@ -1538,12 +1541,9 @@
      "name": "baseconv",
      "tier": "proven",
      "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
-     "failing": [
-      "1010 binary to decimal"
-     ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.889,
+     "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 24
     },
@@ -1596,12 +1596,11 @@
      "why": "a self-test, 9 browser-suite mentions, 5 real asks in the benchmark",
      "failing": [
       "keep 5 miles to km as a card",
-      "convert card for 72 f to c",
-      "72 f to c as a converter card"
+      "convert card for 72 f to c"
      ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.4,
+     "success_rate": 0.6,
      "streak": 30
     },
     {
@@ -1628,7 +1627,7 @@
      "tier": "proven",
      "why": "a self-test, 9 browser-suite mentions, 13 real asks in the benchmark",
      "failing": [
-      "if i save 200 a month how much in 5 years"
+      "save $50 a week for 5 years"
      ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
@@ -1660,13 +1659,13 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
      "failing": [
-      "calculate a 20% tip on 45",
       "what is a 20% tip on 45",
-      "split 120 between 4 people"
+      "split 120 between 4 people",
+      "18% tip on 64 dollars"
      ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.833,
+     "success_rate": 0.861,
      "streak": 30
     },
     {
@@ -4480,9 +4479,12 @@
      "name": "automation-pack",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
+     "failing": [
+      "propose automations for the support router"
+     ],
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.667,
      "promoted": "2026-11-12",
      "streak": 7
     },
@@ -4683,7 +4685,7 @@
       "\"is this system handoff ready\" -> delivery-ready",
       "\"handoff ready check for the onboarding automation\" -> delivery-ready"
      ],
-     "last_tested": "2026-11-16",
+     "last_tested": "2026-11-18",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "streak": 0
@@ -4722,6 +4724,13 @@
      "last_tested": "2026-11-18",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "systems-connect-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-18",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },

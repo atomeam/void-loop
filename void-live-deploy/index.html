@@ -4718,6 +4718,15 @@ say('nothing selected to remove');
       else { PTR.x = 0; PTR.y = 0; }
       return movingCam || pulse > 0.01 || Math.abs(PTR.x - PTR.tx) > 0.001 || Math.abs(PTR.y - PTR.ty) > 0.001;
     }
+    // the star sprite: a 64 px radial falloff, alpha (1 - d)^4 from the centre out, built once per colour and drawn scaled
+    const STAR_SPRITES = new Map();
+    function starSprite(c) {
+      let cv = STAR_SPRITES.get(c); if (cv) return cv;
+      cv = document.createElement('canvas'); cv.width = cv.height = 65; const x = cv.getContext('2d'), img = x.createImageData(65, 65), [r, g, b] = c.split(',').map(Number);
+      // the centre sits on one texel and the falloff has a small cusp there, so every star has one brightest point rather than a flat top
+      for (let j = 0; j < 65; j++) for (let i = 0; i < 65; i++) { const d = Math.min(1, Math.hypot(i - 32, j - 32) / 32.5), k = (j * 65 + i) * 4; img.data[k] = r; img.data[k + 1] = g; img.data[k + 2] = b; img.data[k + 3] = Math.round(255 * (1 - d) ** 4 * Math.exp(-3 * d)); }
+      x.putImageData(img, 0, 0); STAR_SPRITES.set(c, cv); return cv;
+    }
     function drawStars(now) {
       const live = SKY.lib ? skyTick(performance.now()) : (pulse = pulseUntil > performance.now() ? (pulseUntil - performance.now()) / 400 : 0, !reduceMotion.matches && (PTR.x += (PTR.tx - PTR.x) * 0.12, PTR.y += (PTR.ty - PTR.y) * 0.12), pulse > 0.01 || Math.abs(PTR.x - PTR.tx) > 0.001);
       if (typeof now === 'number' && !live && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
@@ -4751,17 +4760,13 @@ say('nothing selected to remove');
           ctx.fillStyle = col;
           const one = (x, y, s) => {
             const r = st.r * (1 + (s - 1) * 0.5);
-            ctx.globalAlpha = a; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+            // a soft point of light: one cached sprite per colour whose alpha falls off as (1 - d)^4, never a hard disk with stepped halo rings
+            const R = r * (st.halo && tw > 0.75 ? 7 : st.r > 1.25 ? 4.6 : 3.4);
+            ctx.globalAlpha = a; const cx = Math.floor(x) + 0.5, cy = Math.floor(y) + 0.5; ctx.drawImage(starSprite(st.c), cx - R, cy - R, R * 2, R * 2); // centred on a pixel
             if (streak && opts.streak) {
               const ex = x + sk.dx - (x - W / 2) * sk.warp, ey = y + sk.dy - (y - H / 2) * sk.warp;
               ctx.strokeStyle = col; ctx.lineWidth = Math.max(0.7, r * 1.2); ctx.globalAlpha = a * 0.45;
               ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
-            }
-            if (st.halo && tw > 0.75) { // subtle diffraction halo on brightest foreground stars
-              ctx.globalAlpha = a * 0.14; ctx.beginPath(); ctx.arc(x, y, r * 4.2, 0, Math.PI * 2); ctx.fill();
-              ctx.globalAlpha = a * 0.06; ctx.beginPath(); ctx.arc(x, y, r * 7.5, 0, Math.PI * 2); ctx.fill();
-            } else if (st.r > 1.25 && tw > 0.82) {
-              ctx.globalAlpha = a * 0.12; ctx.beginPath(); ctx.arc(x, y, r * 3.0, 0, Math.PI * 2); ctx.fill();
             }
           };
           if (!off && !(opts.streak && streak)) one(st.x, st.y, 1); else each(st, v, one);

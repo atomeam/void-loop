@@ -1,0 +1,33 @@
+comparison,role,clock,model,n,n_treat,n_accel,interaction,se,p,ci_lo,ci_hi,effect_not_accel,effect_accel,tau2
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,PCGrimAge,arm * accel,87,44.0,43.0,-0.7373,0.5509,0.1808,-1.8171,0.3425,0.1517,-0.5856,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,PCGrimAge,arm * resid,87,44.0,43.0,-0.1417,0.1038,0.1723,-0.3452,0.0618,,,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,PCPhenoAge,arm * accel,87,44.0,43.0,-0.9907,1.0485,0.3447,-3.0458,1.0643,0.423,-0.5677,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,PCPhenoAge,arm * resid,87,44.0,43.0,-0.2635,0.1819,0.1476,-0.6201,0.0931,,,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,DunedinPACE,arm * accel,87,44.0,43.0,-0.0184,0.0246,0.4544,-0.0667,0.0298,0.012,-0.0064,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,DunedinPACE,arm * resid,87,44.0,43.0,-0.0046,0.0043,0.2838,-0.0131,0.0039,,,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,GrimAgeV2,arm * accel,87,44.0,43.0,-1.3735,0.8503,0.1062,-3.0402,0.2931,0.481,-0.8926,
+"B12+folate vs placebo (GSE74548, 2 y)",placebo,GrimAgeV2,arm * resid,87,44.0,43.0,-0.2528,0.1265,0.0457,-0.5008,-0.0049,,,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,PCGrimAge,arm * accel,256,168.0,122.0,-0.0231,0.1648,0.8888,-0.3461,0.3,0.0267,0.0036,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,PCGrimAge,arm * resid,256,168.0,122.0,-0.0344,0.0326,0.2914,-0.0983,0.0295,,,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,PCPhenoAge,arm * accel,256,168.0,122.0,-0.3523,0.3993,0.3776,-1.135,0.4304,-0.02,-0.3724,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,PCPhenoAge,arm * resid,256,168.0,122.0,-0.1431,0.0792,0.071,-0.2984,0.0122,,,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,DunedinPACE,arm * accel,256,168.0,122.0,0.0083,0.011,0.4512,-0.0132,0.0298,-0.0039,0.0044,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,DunedinPACE,arm * resid,256,168.0,122.0,-0.0002,0.0022,0.9115,-0.0045,0.0041,,,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,GrimAgeV2,arm * accel,256,168.0,122.0,0.053,0.404,0.8957,-0.7389,0.8448,-0.1741,-0.1212,
+"Mediterranean diets vs healthy-guidelines control (DIRECT-PLUS E-MTAB-12527, 18 mo)",active control,GrimAgeV2,arm * resid,256,168.0,122.0,-0.0746,0.0663,0.2605,-0.2044,0.0553,,,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,PCGrimAge,arm * accel,120,60.0,57.0,0.0995,0.2995,0.7398,-0.4876,0.6866,0.0975,0.197,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,PCGrimAge,arm * resid,120,60.0,57.0,0.0589,0.0864,0.4957,-0.1105,0.2282,,,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,PCPhenoAge,arm * accel,120,60.0,57.0,-0.1253,0.5673,0.8252,-1.2371,0.9866,0.1317,0.0064,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,PCPhenoAge,arm * resid,120,60.0,57.0,0.0204,0.1531,0.8942,-0.2797,0.3205,,,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,DunedinPACE,arm * accel,120,60.0,57.0,-0.0029,0.015,0.8444,-0.0323,0.0265,0.0073,0.0044,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,DunedinPACE,arm * resid,120,60.0,57.0,-0.0022,0.004,0.5838,-0.01,0.0056,,,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,GrimAgeV2,arm * accel,120,60.0,57.0,-0.2418,0.5866,0.6801,-1.3915,0.9078,0.3005,0.0586,
+"Low-carb vs low-fat (CENTRAL E-MTAB-8956, 18 mo)",head to head,GrimAgeV2,arm * resid,120,60.0,57.0,-0.0013,0.1695,0.9937,-0.3335,0.3309,,,
+POOLED controlled (random effects),pooled,PCGrimAge,arm * accel,343,,,-0.1867,0.3002,0.5339,-0.7751,0.4017,,,0.0897
+POOLED controlled (random effects),pooled,PCGrimAge,arm * resid,343,,,-0.044,0.0311,0.157,-0.105,0.0169,,,0.0
+POOLED controlled (random effects),pooled,PCPhenoAge,arm * accel,343,,,-0.4332,0.3732,0.2457,-1.1647,0.2982,,,0.0
+POOLED controlled (random effects),pooled,PCPhenoAge,arm * resid,343,,,-0.1623,0.0727,0.0255,-0.3047,-0.0199,,,0.0
+POOLED controlled (random effects),pooled,DunedinPACE,arm * accel,343,,,0.0038,0.01,0.701,-0.0158,0.0235,,,0.0
+POOLED controlled (random effects),pooled,DunedinPACE,arm * resid,343,,,-0.0011,0.002,0.5597,-0.005,0.0027,,,0.0
+POOLED controlled (random effects),pooled,GrimAgeV2,arm * accel,343,,,-0.4641,0.6857,0.4986,-1.8081,0.8799,,,0.5743
+POOLED controlled (random effects),pooled,GrimAgeV2,arm * resid,343,,,-0.1311,0.083,0.114,-0.2938,0.0315,,,0.0057

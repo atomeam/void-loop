@@ -2,7 +2,7 @@
  * systems-connect-pack skill — package the connections between systems for a business idea.
  * Lists the systems to connect, how Verse owns the integration (existing tools first), the automations that run across them,
  * the monitoring, and the handoff so client work drops. Rules-based, offline. Nothing is sent.
- * "connect systems for client onboarding", "systems connect pack for invoice automation",
+ * "systems connect pack for client onboarding", "make a systems connect pack for invoice automation" (a bare "connect systems for …" is connect-flows),
  * "package the connections for weekly reports".
  */
 export function isSystemsConnect(text) {
@@ -65,7 +65,7 @@ export default {
   name: 'systems-connect-pack',
   examples: [
     'systems connect pack for client onboarding',
-    'connect systems for invoice automation',
+    'make a systems connect pack for invoice automation',
     'package the connections for weekly status reports',
     'make a systems connect pack for the support process'
   ],

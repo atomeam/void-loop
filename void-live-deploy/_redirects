@@ -32,24 +32,28 @@
 /charity/ /creed/give/ 301
 /religion /creed/ 301
 /religion/ /creed/ 301
-/flip /random/coin/ 301
-/flip/ /random/coin/ 301
-/wheel /random/wheel/ 301
-/wheel/ /random/wheel/ 301
-/random-user /random/people/ 301
-/random-user/ /random/people/ 301
-/gradient /color/gradient/ 301
-/gradient/ /color/gradient/ 301
-/base-converter /base64/bases/ 301
-/base-converter/ /base64/bases/ 301
-/password-strength /password/strength/ 301
-/password-strength/ /password/strength/ 301
+/flip /random/?mode=coin 301
+/flip/ /random/?mode=coin 301
+/wheel /random/?mode=wheel 301
+/wheel/ /random/?mode=wheel 301
+/random-user /random/?mode=people 301
+/random-user/ /random/?mode=people 301
+/color/colour-management /color/ 301
+/color/colour-management/ /color/ 301
+/color/gradient /color/?mode=gradient 301
+/color/gradient/ /color/?mode=gradient 301
+/gradient /color/?mode=gradient 301
+/gradient/ /color/?mode=gradient 301
+/base-converter /base64/?mode=bases 301
+/base-converter/ /base64/?mode=bases 301
+/password-strength /password/?mode=strength 301
+/password-strength/ /password/?mode=strength 301
 /one-time-fix /fix/one-time/ 301
 /one-time-fix/ /fix/one-time/ 301
 /full-stack-audit /fix/audit/ 301
 /full-stack-audit/ /fix/audit/ 301
-/sports /scores/sports/ 301
-/sports/ /scores/sports/ 301
+/sports /scores/?mode=sports 301
+/sports/ /scores/?mode=sports 301
 /podcast /podcasts/?show=verse 301
 /podcast/ /podcasts/?show=verse 301
 /convert/unit-converter /convert/ 301
@@ -83,3 +87,31 @@
 /emoji /emojis/ 301
 /emoji/ /emojis/ 301
 /emoji/* /emojis/ 302
+
+# password + base64 family members
+/password/strength /password/?mode=strength 301
+/password/strength/ /password/?mode=strength 301
+/base64/bases /base64/?mode=bases 301
+/base64/bases/ /base64/?mode=bases 301
+
+# scores + calculator family members
+/scores/sports /scores/?mode=sports 301
+/scores/sports/ /scores/?mode=sports 301
+/calculators /calculator/?mode=formulas 301
+/calculators/ /calculator/?mode=formulas 301
+
+# random + markets family members
+/random/coin /random/?mode=coin 301
+/random/coin/ /random/?mode=coin 301
+/random/wheel /random/?mode=wheel 301
+/random/wheel/ /random/?mode=wheel 301
+/random/people /random/?mode=people 301
+/random/people/ /random/?mode=people 301
+/markets/caps /markets/?mode=caps 301
+/markets/caps/ /markets/?mode=caps 301
+/markets/screener /markets/?mode=screener 301
+/markets/screener/ /markets/?mode=screener 301
+/news/global-headlines /news/?sec=world 301
+/news/global-headlines/ /news/?sec=world 301
+/emoji-combos/emoji-dictionary /emoji-combos/ 301
+/emoji-combos/emoji-dictionary/ /emoji-combos/ 301

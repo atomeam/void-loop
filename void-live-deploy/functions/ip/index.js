@@ -16,7 +16,7 @@ export function formatOf(url, accept = '') {
 const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // the tools that go with your address, named as every other page's "Use with" row names them (lib/toolkit.js TOOLS): local TV and radio for where
 // this connection is, the clock there, the address in binary or hex, and a password for what you sign in to from it
-export const WITH = Object.freeze(['/local/', '/time/', '/base64/bases/', '/password/']);
+export const WITH = Object.freeze(['/local/', '/time/', '/base64/', '/password/']);
 // the same ask on the stage opens the my-device card (skills/my-device.js), which reads the address from /api/ip
 export const CARD = '/?q=' + encodeURIComponent('what is my ip');
 /** the "Use with" row the other Verse tool pages have (owner, 2026-11-06: "our ip page should still have links back to other pages usable with and

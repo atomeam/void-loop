@@ -9026,7 +9026,7 @@ try {
       ranOk = !!ask && !(await N.p.$('#vtome'));
     }
     check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
-      info && info.count === top.length && /\d+ new since you last opened the book/.test(badge) && /\d+ new/.test(tocText) && tocFits && tocFits.ok && pg.text.includes(first) && pg.days >= 1 && pg.tries >= 0 && pg.art >= 1 && Number(pg.folio) >= info.from && seen === top[0].at && ranOk && !N.errors.length,
+      info && info.count === top.length && /\d+ new since you last opened the book/.test(badge) && /\d+ new/.test(tocText) && tocFits && tocFits.ok && pg.text.includes(first) && pg.days >= 1 && pg.tries >= 0 && pg.art === 0 && /\d+ entries in Verse's growth ledger/.test(pg.text) && Number(pg.folio) >= info.from && seen === top[0].at && ranOk && !N.errors.length,
       JSON.stringify({ info, badge, tocText, tocFits, pg: { ...pg, text: pg.text.slice(0, 200) }, seen, top0: top[0].at, ranOk, e: N.errors }));
     await N.ctx.close(); }
   // owner, 2026-10-17: "the swipe to turn pages doesn't work properly" and the cover could not be reached. A sideways swipe was the browser's
@@ -9042,27 +9042,27 @@ try {
     await swipe(300, 60); const fwd = await pageNow(); await swipe(60, 300); const back = await pageNow(); await swipe(60, 300); const cover = await pageNow();
     check("the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it", guard.ta === 'pan-y' && guard.ov === 'none' && fwd && fwd.pages.includes('2') && back && back.pages.includes('1') && cover && cover.shut === true && !W.errors.length, JSON.stringify({ guard, fwd, back, cover, e: W.errors }));
     await W.ctx.close(); }
-  // owner, 2026-10-17: "still can't get to the cover of the book, book should have art also": from any page the Cover button and the Home key
-  // swing the cover shut, and the cover carries Verse's ink art.
+  // owner, 2026-10-17: "still can't get to the cover of the book": from any page the Cover button and the Home key swing the cover shut.
+  // The book's art came off on 2026-11-18 (pitch-black glass): no page and no cover carries a picture; the cover is glass and its title.
   if (want("the book: the Cover button and the Home key shut the book from any page, and the pages and the cover have art")) {
     const K = await fresh(); await K.ask('open the book', 900); await until(async () => !!(await K.p.$('#vtome .tome.opened')), 8000); await K.p.waitForTimeout(400);
     for (let k = 0; k < 4; k++) { await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800); }
     const deep = await K.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page).filter(Boolean));
-    const pageArt = await K.p.evaluate(() => document.querySelectorAll('#vtome .tome-page .tome-art svg').length);
+    const pageArt = await K.p.evaluate(() => document.querySelectorAll('#vtome .tome-page svg, #vtome .tome-page img, #vtome .tome-page .tome-art').length);
     await K.p.click('.tome-tocover'); await K.p.waitForTimeout(700);
-    const a = await K.p.evaluate(() => ({ shut: document.querySelector('#vtome .tome').classList.contains('shut'), art: !!document.querySelector('#vtome .cover-art svg path, #vtome .cover-art svg rect, #vtome .cover-art svg circle') }));
+    const a = await K.p.evaluate(() => ({ shut: document.querySelector('#vtome .tome').classList.contains('shut'), art: !!document.querySelector('#vtome .tome-cover svg, #vtome .tome-cover img'), title: (document.querySelector('#vtome .tome-cover .gilt.title') || {}).textContent || '', glass: getComputedStyle(document.querySelector('#vtome .tome-cover .face.out')).backgroundColor }));
     await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800); await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800);
     await K.p.keyboard.press('Home'); await K.p.waitForTimeout(700);
     const h = await K.p.evaluate(() => document.querySelector('#vtome .tome').classList.contains('shut'));
-    check('the book: the Cover button and the Home key shut the book from any page, and the pages and the cover have art', deep.some((n) => Number(n) > 4) && pageArt >= 1 && a.shut && a.art && h && !K.errors.length, JSON.stringify({ deep, pageArt, a, h, e: K.errors }));
+    check('the book: the Cover button and the Home key shut the book from any page; no page and no cover carries a picture, the cover is black glass with its title', deep.some((n) => Number(n) > 4) && pageArt === 0 && a.shut && !a.art && /Book of Verse/.test(a.title) && a.glass === 'rgba(10, 12, 18, 0.72)' && h && !K.errors.length, JSON.stringify({ deep, pageArt, a, h, e: K.errors }));
     await K.ctx.close(); }
   if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
     const members = [...new Set(JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; }))]; // one page per skill; a part that is also its own route is still one page. The Cover chip is not a menu
     const look = () => B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); if (!t || !window.__voidBook) return null; const pg = [...document.querySelectorAll('#vtome .tome-page')]; const r = t.getBoundingClientRect(); return { cls: t.className, shown: pg.map((s) => s.dataset.page), text: pg.map((s) => s.innerText).join('\n'), cur: window.__voidBook.cur, turning: !!window.__voidBook.turning, skills: window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on'), dim: document.documentElement.classList.contains('v-tome'), chrome: !!document.querySelector('#vtome button:not(.tome-tocover), #vtome nav, #vtome h2'), w: r.width, h: r.height, fits: r.right <= innerWidth && r.bottom <= innerHeight, serif: /Palatino|Georgia|Iowan|Times|serif/.test(getComputedStyle(pg[1] || pg[0]).fontFamily), paper: getComputedStyle(pg[1] || pg[0]).backgroundColor, drop: !!document.querySelector('#vtome .tome-body p.lead'), folio: (document.querySelector('#vtome .tome-page.right .tome-folio') || {}).textContent, prompt: (document.querySelector('#vtome .tome-prompt') || {}).innerText || '' }; });
     await B.ask('open the book', 900);
     const open = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) ? l : null; }, 8000);
-    check('the book: "open the book" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
-      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Book of Verse/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
+    check('the book: "open the book" dims the stage and fills it with the book, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), black glass set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
+      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Book of Verse/.test(open.text) && open.skills === members.length && open.serif && open.paper === 'rgba(10, 12, 18, 0.72)' && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
       JSON.stringify({ open: open && { ...open, text: open.text.slice(0, 80) }, members: members.length }));
     await B.p.keyboard.press('ArrowRight');
     const mid = await B.p.evaluate(() => !!document.querySelector('#vtome .tome-leaf')); // a leaf is in the air
@@ -9088,8 +9088,8 @@ try {
     const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
     const indexed = idx.names.map(([n]) => n);
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
-    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
-    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph',
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('.tome-num') && !pg.querySelector('svg, img'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and its number in its chapter, no picture',
       !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The Book of Verse/.test(landed.heads || ''),
       JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
     // a proven skill's page opens with a line of lore (asked by Verse: flavor text for every proven skill), each page's its own

@@ -18,6 +18,51 @@ export const FAMILIES = Object.freeze([
     { path: "/kanban/teams/", to: "/kanban/" },
     { path: "/kanban/flow/", to: "/kanban/" }
   ] },
+  { id: "password", page: "/password/", members: [
+    { path: "/password/", to: "/password/" },
+    { path: "/password/strength/", to: "/password/?mode=strength" }
+  ] },
+  { id: "base64", page: "/base64/", members: [
+    { path: "/base64/", to: "/base64/" },
+    { path: "/base64/bases/", to: "/base64/?mode=bases" }
+  ] },
+  { id: "scores", page: "/scores/", members: [
+    { path: "/scores/", to: "/scores/" },
+    { path: "/scores/sports/", to: "/scores/?mode=sports" }
+  ] },
+  { id: "calculator", page: "/calculator/", members: [
+    { path: "/calculator/", to: "/calculator/" },
+    { path: "/calculators/", to: "/calculator/?mode=formulas" }
+  ] },
+  { id: "random", page: "/random/", members: [
+    { path: "/random/", to: "/random/" },
+    { path: "/random/coin/", to: "/random/?mode=coin" },
+    { path: "/random/wheel/", to: "/random/?mode=wheel" },
+    { path: "/random/people/", to: "/random/?mode=people" }
+  ] },
+  { id: "markets", page: "/markets/", members: [
+    { path: "/markets/", to: "/markets/" },
+    { path: "/markets/caps/", to: "/markets/?mode=caps" },
+    { path: "/markets/screener/", to: "/markets/?mode=screener" }
+  ] },
+  { id: "color", page: "/color/", members: [
+    { path: "/color/", to: "/color/" },
+    { path: "/color/gradient/", to: "/color/?mode=gradient" },
+    { path: "/color/colour-management/", to: "/color/" }
+  ] },
+  { id: "convert", page: "/convert/", members: [
+    { path: "/convert/", to: "/convert/" },
+    { path: "/convert/unit-converter/", to: "/convert/" },
+    { path: "/convert/unit-converter-2/", to: "/convert/" }
+  ] },
+  { id: "news", page: "/news/", members: [
+    { path: "/news/", to: "/news/" },
+    { path: "/news/global-headlines/", to: "/news/?sec=world" }
+  ] },
+  { id: "emoji-combos", page: "/emoji-combos/", members: [
+    { path: "/emoji-combos/", to: "/emoji-combos/" },
+    { path: "/emoji-combos/emoji-dictionary/", to: "/emoji-combos/" }
+  ] },
 ]);
 
 const byPath = new Map();
@@ -56,4 +101,11 @@ export function sameFamilyTwoPages(a, b) {
 }
 
 export const FAMILY_MODE_SRC = Object.freeze({
+  "/password/": { "strength": "/password/modes/strength.html" },
+  "/base64/": { "bases": "/base64/modes/bases.html" },
+  "/scores/": { "sports": "/scores/modes/sports.html" },
+  "/calculator/": { "formulas": "/calculator/modes/formulas.html" },
+  "/random/": { "coin": "/random/modes/coin.html", "wheel": "/random/modes/wheel.html", "people": "/random/modes/people.html" },
+  "/markets/": { "caps": "/markets/modes/caps.html", "screener": "/markets/modes/screener.html" },
+  "/color/": { "gradient": "/color/modes/gradient.html" },
 });

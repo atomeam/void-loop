@@ -116,11 +116,11 @@ export const PROBES = Object.freeze({
     facts: [['the answer', /\b(?:YES|NO)\b/], ['which day it is about', /christmas/i], ['how long until it', /\b\d+\s+(?:days?|sleeps?)\b/i], ['the date itself', /\b25\b.*\bdec|\bdec\w*\s+25\b/i]],
   },
   'coin flip': {
-    site: 'https://justflipacoin.com/', verse: '/random/coin/',
+    site: 'https://justflipacoin.com/', verse: '/random/?mode=coin',
     // one flip has no right answer, but ten have a right SHAPE: the gate presses each page's own flip control 10 times, as a person would
     // (tower-gate.mjs answer, `presses`), and reads the page each time it settles: every flip lands on one side, a fair coin shows both
     // sides in 10 (all ten alike is 2 in 1024), and any running count the page keeps grows by exactly the flips made, heads by the heads seen
-    ask: { site: 'https://justflipacoin.com/', verse: '/random/coin/', presses: 10 },
+    ask: { site: 'https://justflipacoin.com/', verse: '/random/?mode=coin', presses: 10 },
     truth: [['every flip lands on one side, heads or tails', (t) => { const f = flipsOf(t); return f.sides.length > 0 && f.sides.every(Boolean); }],
       ['both sides come up in 10 fair flips', (t) => new Set(flipsOf(t).sides.filter(Boolean)).size === 2],
       ['any count it shows adds up to the flips made', (t) => { const f = flipsOf(t); if (!f.after) return f.sides.length > 0; const b = f.before || { h: 0, t: 0 }, dh = f.after.h - b.h, dt = f.after.t - b.t;
@@ -155,19 +155,19 @@ export const PROBES = Object.freeze({
     truth: () => PROBES.colour.truth(), facts: null, // the colour floor's facts (below)
   },
   gradient: {
-    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/color/gradient/',
+    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/color/?mode=gradient',
     // the same gradient put to both in the address (ColorZilla's own hash: colour+position stops, top to bottom; Verse's packed link at 180deg,
     // which is "to bottom"): the CSS each writes must hold every stop's exact colour at its exact position, in order, and the direction
-    ask: { site: 'https://www.colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100', verse: '/color/gradient/#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100' },
+    ask: { site: 'https://www.colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100', verse: '/color/?mode=gradient#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100' },
     truth: [['the four stops, exact and in order', /linear-gradient\([^)]*#1e5799\s+0%\s*,\s*#2989d8\s+50%\s*,\s*#207cca\s+51%\s*,\s*#7db9e8\s+100%/i], ['top to bottom', /linear-gradient\(\s*(?:to bottom|180deg)\s*,\s*#1e5799/i]],
     facts: [['linear', /\blinear\b/i], ['radial', /\bradial\b/i], ['conic', /\bconic\b/i], ['opacity', /\bopacity\b/i], ['presets', /\bpresets?\b/i], ['import CSS', /\bimport\b|\bpaste\b/i],
       ['reverse', /\breverse\b/i], ['hue and saturation', /\bhue\b/i], ['SCSS', /\bscss\b/i], ['from a picture', /\b(?:image|picture)\b/i], ['text contrast', /\bcontrast\b|\bwcag\b/i], ['CSS output', /background(?:-image)?\s*:\s*(?:linear|radial|conic)-gradient/i]],
   },
   wheel: {
-    site: 'https://wheelofnames.com/', verse: '/random/wheel/',
+    site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel',
     // one spin of the same eight names on both (a tap at the wheel's centre): a winner is announced, and it is one of the names the wheel
     // held before the spin; after it, a way to remove the winner is offered (wheelofnames.com's dialog, Verse's button)
-    ask: { site: 'https://wheelofnames.com/', verse: '/random/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
+    ask: { site: 'https://wheelofnames.com/', verse: '/random/?mode=wheel#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
     truth: [['announces a winner', (t) => /winner/i.test(spun(t).after)], ['the winner is one of the wheel\'s own names', (t) => { const { after, before } = spun(t), names = new Set(before.split('\n').map((l) => l.trim()).filter((l) => l && l.length <= 40));
       return after.split('\n').some((l) => { const x = l.replace(/^.*\bwinner(?:\s+is)?\s*:?\s*/i, '').replace(/[!.]+$/, '').trim(); return !!x && names.has(x); }); }]],
     askParts: { 'remove the winner': [['a way to remove the winner', (t) => /remove/i.test(spun(t).after)]] },
@@ -175,11 +175,11 @@ export const PROBES = Object.freeze({
       ['a share link', /\bshare\b|\bcopy link\b/i], ['weights', /\bweights?\b|times as likely/i], ['says it is fair', /\bfair\b/i], ['sound control', /\bsound\b|\bmute\b/i]],
   },
   'random user': {
-    site: 'https://randomuser.me/', verse: '/random/people/',
+    site: 'https://randomuser.me/', verse: '/random/?mode=people',
     // the same request to both in the address (randomuser.me's own API, Verse's page as JSON): made-up people are accurate when they hold
     // together, which can be checked: as many as asked, from the country asked, each age right for its birthday, each email well formed,
     // and each phone in the range set aside for fiction (555-0100 to 555-0199), so a test that dials one reaches nobody
-    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/people/?n=5&nat=us&seed=verse&fmt=json' },
+    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/?mode=people&n=5&nat=us&seed=verse&fmt=json' },
     truth: [['five people, as asked', (t) => peopleIn(t).length === 5], ['all from the United States, as asked', everyone((p) => p.country === 'United States')],
       ['every age right for its birthday', everyone((p) => Number.isFinite(p.age) && p.age === ageOn(p.dob))], ['every email well formed', everyone((p) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(p.email)))],
       ['every phone in the range reserved for fiction', everyone((p) => /555-01\d\d$/.test(String(p.phone)))]],
@@ -230,11 +230,11 @@ export const PROBES = Object.freeze({
       ['lines of 76 characters', /\b76\b/], ['the newline form', /\bnewline\b|\bline\s?breaks?\b|\bCRLF\b|\bLF\b/i], ['encoding as you type', /\blive\b|as you type/i], ['files', /\bfiles?\b/i], ['copy', /\bcopy\b/i], ['download', /\bdownload\b/i]],
   },
   'password strength': {
-    site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/',
+    site: 'https://www.howsecureismypassword.net/', verse: '/password/?mode=strength',
     // the page never carries a password in its address (its own rule: nothing typed goes in a link), so the gate types the question into its box
     // (`verseType`). The question: qwerty123, at the head of every leaked list. The truth any correct checker agrees on: it is very weak, cracked
     // at once from a stolen list (a rig trying 10 billion a second needs far fewer), the word qwerty and the run 123 are why, and longer is the fix
-    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/', verseType: 'qwerty123' },
+    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/?mode=strength', verseType: 'qwerty123' },
     truth: [['rated very weak', /\bvery weak\b/i], ['cracked instantly', /\binstantly\b/i], ['the common password qwerty named', /\bqwerty\b/i], ['the run 123 named', /\b123\b/i], ['the fix: make it longer', /\blonger\b/i]],
     // the floor's own aspects, read off the same typed answer: a time at a login and a time from a stolen list; why it is weak and how to fix it
     askParts: { 'crack time': [['a time from a stolen list, offline', /\boffline\b|stolen list/i], ['a time at a login, online', /\blogin\b|\bonline\b/i]],
@@ -333,19 +333,19 @@ export const PROBES = Object.freeze({
   // the finance lane's own pages (owner, 2026-10-26: every lane site gets its own page): the market-cap site is measured against /markets/caps/, the screener site against
   // /markets/screener/. Each judged on Verse alone; the truth is what holds on any day.
   'finance: companiesmarketcap.com': {
-    site: 'https://companiesmarketcap.com/', verse: '/markets/caps/',
+    site: 'https://companiesmarketcap.com/', verse: '/markets/?mode=caps',
     // the question: the coins by market cap. The truth on any day (worked out by hand): Bitcoin is rank 1, its name and ticker stand together on the row, with a price in dollars
     // and a market cap in billions or trillions; the page says it lists the 50 largest. Numbers only appear once the list has come back, so a loading page fails.
-    ask: { verse: '/markets/caps/' },
+    ask: { verse: '/markets/?mode=caps' },
     truth: [['Bitcoin is rank 1', /(?:^|\n)\s*1\s+\S*\s*Bitcoin\s*BTC\b/], ['a price in dollars on its row', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a market cap in trillions or billions', /\$\d+(?:\.\d+)?[TB]\b/], ['the 50 largest', /\b50 largest\b/i]],
     askParts: { 'live quotes': [['a price in dollars', /Bitcoin[\s\S]{0,40}\$[\d,]{3,}/], ['a 24 hour move in percent', /[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a 7 day chart', /\b7d chart\b/i], ['the 7 day move', /\b7d [+−]\d+\.\d{2}%/]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
     facts: [['rank', /(?:^|\n)\s*1\s/], ['price', /\$[\d,]{3,}/], ['market cap', /\bMkt cap\b|market cap/i], ['24 hour change', /[+−]\d+\.\d{2}%/], ['7 day change', /\b7d [+−]\d+\.\d{2}%/], ['24 hour volume', /\bVol 24h \$/i], ['a total market cap', /Total market cap of these \d+: \$\d/i], ['a coin search', /find a coin/i], ['sorting', /\bMkt cap\b/i], ['a 7 day chart', /\b7d chart\b/i], ['company market caps said to be absent, and why', /Company market caps[\s\S]{0,160}no free source/i]],
   },
   'finance: finviz.com': {
-    site: 'https://finviz.com/', verse: '/markets/screener/?near=100&sort=pct',
+    site: 'https://finviz.com/', verse: '/markets/?mode=screener&near=100&sort=pct',
     // the question: the whole small universe (a filter every symbol passes: within 100 percent of its high), biggest gain first. The truth on any day: the page counts how many of
     // the universe match, names a stock and a coin in its rows, and the universe is labelled as 12 stocks, 4 indices and 30 coins, "not every listed company".
-    ask: { verse: '/markets/screener/?near=100&sort=pct' },
+    ask: { verse: '/markets/?mode=screener&near=100&sort=pct' },
     truth: [['the matches counted', /\b\d+ of \d+ symbols match\b/], ['a share row with a price and a move', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['a coin row', /\bBTC\b[\s\S]{0,60}[+−]\d+\.\d{2}%/], ['the universe labelled as small', /12 large US stocks[\s\S]{0,200}30 large coins[\s\S]{0,80}not every listed company/i]],
     askParts: { 'live quotes': [['a price and a move on a row', /\bAAPL\b[\s\S]{0,40}\d[\d,]*\.\d{2}[\s\S]{0,40}[+−]\d+\.\d{2}%/], ['prices said to be delayed', /may be delayed/i]], charts: [['a chart under each move', /small line under each move is its chart/i], ['the distance from the high', /Below high/i]], watchlists: [['a watchlist', /\bwatchlist\b/i], ['kept on the device', /on this device/i]] },
     facts: [['a move filter', /Move at least/i], ['a distance from the high filter', /Within % of high/i], ['a volume filter', /Volume at least/i], ['a group filter', /\bIndices\b[\s\S]{0,40}\bCoins\b/i], ['sorting', /Sort by/i], ['a match count', /\d+ of \d+ symbols match/], ['volume against the average', /Volume ×/], ['the universe said plainly', /not every listed company/i], ['a chart on each row', /small line under each move is its chart/i]],
@@ -624,8 +624,8 @@ export const PROBES = Object.freeze({
     ],
   },
   colorzilla: {
-    site: 'https://www.colorzilla.com/', verse: '/color/gradient/',
-    ask: { verse: '/color/gradient/' },
+    site: 'https://www.colorzilla.com/', verse: '/color/?mode=gradient',
+    ask: { verse: '/color/?mode=gradient' },
     truth: [
       ['linear gradients', /linear/i],
       ['radial gradients', /radial/i],
@@ -986,10 +986,10 @@ export const PROBES = Object.freeze({
       ['a JPEG', /\bjpe?g\b/i], ['a PDF', /\bpdf\b/i], ['crop or keep the whole picture', /\bcrop\b|whole picture/i], ['a signature too', /\bsignature\b/i], ['nothing uploaded', /never uploaded|nothing is uploaded|on (?:this|your) device/i], ['a share link', /\bshare\b/i]],
   },
   'base converter': {
-    site: 'https://hextobinary.com/', verse: '/base64/bases/?v=ff&b=16',
+    site: 'https://hextobinary.com/', verse: '/base64/?mode=bases&v=ff&b=16',
     // hextobinary.com's address cannot carry a number, so the gate types it into the converter's box (`type`), as a person would; Verse takes it
     // in the link. The question: a 31-digit hex number (121 bits), past what a double holds exactly (53 bits); the truth is computed with BigInt
-    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/bases/?v=' + HUGE.toString(16) + '&b=16' },
+    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/?mode=bases&v=' + HUGE.toString(16) + '&b=16' },
     truth: [['the exact binary', exact(HUGE.toString(2))], ['the exact decimal', exact(HUGE.toString(10))]],
     askParts: { 'huge numbers': [['all 121 binary digits', exact(HUGE.toString(2))], ['all 37 decimal digits', exact(HUGE.toString(10))], ['all 41 octal digits', exact(HUGE.toString(8))]] },
     facts: [['binary', /\bbinary\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i], ['octal', /\boctal\b/i]],
@@ -1008,11 +1008,11 @@ export const PROBES = Object.freeze({
       ['history of results', /\bhistory\b/i], ['keyboard input', /\bkeyboard\b/i]],
   },
   'formula calculators': {
-    site: 'https://www.vcalc.com/', verse: '/calculators/',
+    site: 'https://www.vcalc.com/', verse: '/calculator/?mode=formulas',
     // vcalc.com's robots.txt asks robots not to read it, so accuracy is Verse against the worked-out answer: the outside area of a pipe 2 inches
     // across and 10 feet long, pi x d x l = pi x (2/12 ft) x 10 ft = 5.235988 ft², and the same area in square metres (0.4864390 m²) and square
     // inches (753.9822 in²), the units a page that is unit-aware shows beside it
-    ask: { verse: '/calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
+    ask: { verse: '/calculator/?mode=formulas&calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft' },
     truth: [['5.23599 ft²', /(?<![\d.])5\.2359\d*\s*ft²/], ['0.486439 m²', /(?<![\d.])0\.48643\d*\s*m²/], ['753.982 in²', /(?<![\d.])753\.98\d*\s*in²/]],
     askParts: {
       // the library: each kind of calculator the best formula sites keep, named as a section of the page
@@ -1247,7 +1247,7 @@ const LANE_PROBES = Object.freeze({
     facts: [['companies', /Companies hiring/], ['A to Z', /A to Z/], ['categories', /Category/], ['keyword', /Keyword/], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['tracker', /Applications/], ['RSS', /RSS/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'sports: thesportsdb.com': {
-    ask: { verse: '/scores/sports/?q=arsenal' },
+    ask: { verse: '/scores/?mode=sports&q=arsenal' },
     truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
     askParts: { 'sport search': [['a search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['venues or events', /\bVenues\b|\bEvents\b/], ['players', /\bPlayers\b/]],
       'born on this day': [['born on this day', /Born on this day/i], ['a year and a name', /(?:1[89]|20)\d\d\s*[\s\S]{2,70} — /]],

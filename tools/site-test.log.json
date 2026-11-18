@@ -1,102 +1,5 @@
 [
  {
-  "at": "2026-11-06T18:05:35Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1543,
-   "failed": [
-    {
-     "ask": "what time is it",
-     "why": [
-      "slow 20127 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T18:32:06Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 839,
-   "failed": []
-  },
-  "note": "visitor pass 15/15"
- },
- {
-  "at": "2026-11-06T18:44:31Z",
-  "passed": 92,
-  "of": 96,
-  "ms": 387,
-  "kind": "grow",
-  "failed": [
-   {
-    "ask": "play voidquest",
-    "why": "fps 4 < 5"
-   },
-   {
-    "ask": "play chess",
-    "why": "fps 2 < 5"
-   },
-   {
-    "ask": "are you web4",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "film meatdata for ikiru",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 839,
-   "failed": []
-  },
-  "note": "new ground passed, kept as a regression case: \"funny cartoon dog pls\" (skill:cartoon)"
- },
- {
-  "at": "2026-11-06T18:57:54Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 732,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 9282 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
-  "at": "2026-11-06T19:31:58Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 466,
-   "failed": [
-    {
-     "ask": "what can you do",
-     "why": [
-      "slow 11027 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-06T20:07:32Z",
   "kind": "visitor",
   "visitor": {
@@ -6959,6 +6862,82 @@
    "correct": 15,
    "of": 15,
    "medianMs": 693,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T18:20:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1423,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-18T18:46:17Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 832,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 12714 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-18T19:13:23Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1568,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 14204 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-18T19:39:17Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1556,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8430 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-18T20:08:01Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1295,
    "failed": []
   },
   "note": "visitor pass 15/15"

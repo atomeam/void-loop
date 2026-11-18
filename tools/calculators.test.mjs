@@ -123,7 +123,7 @@ test('the stage card with the asker\'s own numbers: the epoch, percent-encoding 
 
 test('the floor: vcalc.com on the tower, its ask answered by /calculators/, a probe for its four extras (library size held to vcalc.com\'s published count)', async () => {
   const { FLOORS } = await import('../void-live-deploy/lib/tower.js'); const { probeFor } = await import('./tower-probes.mjs');
-  const f = FLOORS.find((x) => x.id === 'formula calculators'); assert.ok(f); assert.equal(f.page, '/calculators/'); assert.equal(f.site, 'vcalc.com');
+  const f = FLOORS.find((x) => x.id === 'formula calculators'); assert.ok(f); assert.equal(f.page, '/calculator/?mode=formulas'); assert.equal(f.site, 'vcalc.com');
   assert.deepEqual(f.extra, ['formula library', 'unit-aware inputs', 'custom formulas', 'library size']);
   const p = probeFor('formula calculators'); assert.ok(p); assert.match(p.ask.verse, /calc=pipe-surface-area&d=2&d\.u=in&l=10&l\.u=ft/);
   assert.deepEqual(Object.keys(p.askParts || {}).sort(), ['custom formulas', 'formula library', 'library size', 'unit-aware inputs']);

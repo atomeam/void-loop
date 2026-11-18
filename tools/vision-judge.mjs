@@ -18,8 +18,10 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile', width: 390, height: 844 }];
+// HARD_DOTS: the share of bright points that are flat discs; the field look measured 0.26 with disc stars and 0.05 with falloff stars (2026-11-18)
+// BLOB: a bright region of 400 px or more (about an 11 px radius) is a shape; anything smaller is a point of light
 // HARD_EDGE: the landing measured 0.043 (desktop) and 0.064 (phone) on main, 2026-11-18; the bar is about twice that
-export const LIMITS = { DARK: 0.2, NEAR_BLACK: 0.16, BLANK: 0.002, EDGE: 0.35, HARD_EDGE: 0.12, MAX_SURFACES: 6 };
+export const LIMITS = { DARK: 0.2, NEAR_BLACK: 0.16, BLANK: 0.002, EDGE: 0.35, HARD_EDGE: 0.12, BLOB: 400, HARD_DOTS: 0.12, MAX_SURFACES: 6 };
 const LANDING = /^(?:void\.html|void-live-deploy\/(?:index|void)\.html|void-live-deploy\/(?:lib|skills)\/[^/]+\.(?:js|css)|void-live-deploy\/[^/]+\.css)$/;
 
 /** the surfaces a change can alter: the landing for the home and its scripts, /x/ for void-live-deploy/x/index.html. Pure. */
@@ -31,6 +33,33 @@ export function surfacesOf(files) {
     if (m) out.add('/' + m[1]);
   }
   return [...out].sort((a, b) => (a === '/' ? -1 : b === '/' ? 1 : a.localeCompare(b))).slice(0, LIMITS.MAX_SURFACES);
+}
+
+/** dest for a path in a Cloudflare _redirects file, or "". Pure. */
+export function redirectDestOf(text, pathName) {
+  const want = String(pathName || '').split('?')[0];
+  const alt = want.endsWith('/') ? want.slice(0, -1) : want + '/';
+  for (const line of String(text || '').split(/\n/)) {
+    const p = line.trim().split(/\s+/);
+    if (p.length >= 3 && (p[0] === want || p[0] === alt)) return p[1];
+  }
+  return '';
+}
+
+/** surfaces that still exist, or the live page a deleted one 301s to. */
+export function liveSurfacesOf(files, dir) {
+  const raw = surfacesOf(files);
+  if (!dir) return raw;
+  let rules = '';
+  try { rules = fs.readFileSync(path.join(dir, '_redirects'), 'utf8'); } catch (_) {}
+  const exists = (p) => fs.existsSync(path.join(dir, p === '/' ? 'index.html' : p.replace(/\/?$/, '/') + 'index.html'));
+  const out = [];
+  for (const p of raw) {
+    if (exists(p)) { out.push(p); continue; }
+    const dest = redirectDestOf(rules, p).replace(/[?#].*$/, '');
+    if (dest && exists(dest)) out.push(dest.endsWith('/') || dest === '/' ? dest : dest + '/');
+  }
+  return [...new Set(out)];
 }
 
 /** relative luminance of an sRGB colour, 0..1. Pure. */
@@ -51,16 +80,43 @@ export function pixelStats(data, w, h, mask = null) {
   }
   const mode = Math.max(...counts.values()), mean = sum / n;
   const masked = (x, y) => mask && x >= mask.x && x < mask.x + mask.w && y >= mask.y && y < mask.y + mask.h;
-  let bright = 0, hard = 0;
-  const bar = mean + 0.04;
-  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
-    const i = y * w + x; if (L[i] <= bar || masked(x, y)) continue;
-    bright++;
-    const gx = L[i - w + 1] + 2 * L[i + 1] + L[i + w + 1] - L[i - w - 1] - 2 * L[i - 1] - L[i + w - 1];
-    const gy = L[i + w - 1] + 2 * L[i + w] + L[i + w + 1] - L[i - w - 1] - 2 * L[i - w] - L[i - w + 1];
-    if (Math.hypot(gx, gy) > LIMITS.EDGE) hard++;
+  // the bright pixels, grouped into 8-connected regions; a region smaller than BLOB pixels is a point of light (a star, a glyph's
+  // dot) and is not a blob, so only the rims of regions of BLOB pixels or more are counted
+  const bar = mean + 0.04, seen = new Uint8Array(n), stack = [];
+  let bright = 0, hard = 0, dots = 0, flat = 0;
+  for (let y0 = 1; y0 < h - 1; y0++) for (let x0 = 1; x0 < w - 1; x0++) {
+    const i0 = y0 * w + x0; if (seen[i0] || L[i0] <= bar || masked(x0, y0)) continue;
+    const region = []; seen[i0] = 1; stack.push(i0);
+    while (stack.length) {
+      const i = stack.pop(); region.push(i); const x = i % w, y = (i - x) / w;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy, j = yy * w + xx;
+        if (xx < 1 || yy < 1 || xx >= w - 1 || yy >= h - 1 || seen[j] || L[j] <= bar || masked(xx, yy)) continue;
+        seen[j] = 1; stack.push(j);
+      }
+    }
+    if (region.length < LIMITS.BLOB) {
+      // a point of light: harsh when it is a flat disc (four or more pixels within 80% of its peak) rather than a falloff from one bright centre
+      let peak = 0; for (const i of region) if (L[i] > peak) peak = L[i];
+      if (peak > 4 * bar) { dots++; let top = 0; for (const i of region) if (L[i] >= 0.8 * peak) top++; if (top >= 4) flat++; }
+      continue;
+    }
+    // a blob's rim: its pixels that touch a dark one. A soft falloff reaches the dark slowly, so its rim is dim and its gradient
+    // small; a hard-edged shape stops at full strength, so its rim carries a strong step
+    for (const i of region) {
+      if (L[i - 1] > bar && L[i + 1] > bar && L[i - w] > bar && L[i + w] > bar) continue;
+      bright++;
+      const gx = L[i - w + 1] + 2 * L[i + 1] + L[i + w + 1] - L[i - w - 1] - 2 * L[i - 1] - L[i + w - 1];
+      const gy = L[i + w - 1] + 2 * L[i + w] + L[i + w + 1] - L[i - w - 1] - 2 * L[i - w] - L[i - w + 1];
+      if (Math.hypot(gx, gy) > LIMITS.EDGE) hard++;
+    }
   }
-  return { mean: +mean.toFixed(4), offMode: +(1 - mode / n).toFixed(4), bright, hardEdge: bright ? +(hard / bright).toFixed(4) : 0 };
+  return { mean: +mean.toFixed(4), offMode: +(1 - mode / n).toFixed(4), bright, hardEdge: bright ? +(hard / bright).toFixed(4) : 0, dots, hardDots: dots ? +(flat / dots).toFixed(4) : 0 };
+}
+
+/** the earned looks a change can alter, each judged on the landing after its ask: the particle field and the sky map behind it */
+export function looksOf(files) {
+  return (files || []).some((f) => /(^|\/)lib\/(void-cosmos|sky-catalog|void-shapes)\.js$/.test(f)) ? ['add a particle field'] : [];
 }
 
 /** the failures for one surface at one viewport. Pure. */
@@ -76,6 +132,7 @@ export function judge(pathname, vp, dom, px) {
     const chrome = dom.chrome; // the landing keeps nothing outside the ask bar (owner, 2026-11-18)
     if (chrome.length) bad.push(at + ': landing shows more than the void and the ask bar: ' + chrome.slice(0, 3).join(', '));
     if (px.mean > LIMITS.NEAR_BLACK) bad.push(at + ': landing frame mean luminance ' + px.mean + ' > ' + LIMITS.NEAR_BLACK + ' (not near-black)');
+    if (px.hardDots > LIMITS.HARD_DOTS) bad.push(at + ': harsh star dots: ' + px.hardDots + ' of ' + px.dots + ' bright points are flat discs > ' + LIMITS.HARD_DOTS);
     if (px.hardEdge > LIMITS.HARD_EDGE) bad.push(at + ': harsh hard-edged shapes: ' + px.hardEdge + ' of bright pixels on a strong edge > ' + LIMITS.HARD_EDGE);
   }
   return bad;
@@ -152,7 +209,7 @@ async function measure(b, png, mask) {
 }
 
 /** open every surface at both viewports and judge it; offline: any request off the local server is answered empty. */
-export async function run({ paths, dir = path.join(root, 'void-live-deploy'), shots = '' } = {}) {
+export async function run({ paths, dir = path.join(root, 'void-live-deploy'), shots = '', ask = '' } = {}) {
   const server = await serve(dir), base = 'http://127.0.0.1:' + server.address().port, b = await browser(), results = [];
   try {
     for (const p of paths) for (const vp of VIEWPORTS) {
@@ -163,11 +220,12 @@ export async function run({ paths, dir = path.join(root, 'void-live-deploy'), sh
       page.on('console', (m) => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errors.push(m.text().slice(0, 160)); });
       await page.goto(base + p, { waitUntil: 'load', timeout: 30000 }).catch((e) => errors.push('load: ' + e.message.slice(0, 120)));
       await page.waitForTimeout(1500);
+      if (ask) { await page.fill('#input', ask).catch((e) => errors.push('ask: ' + e.message.slice(0, 120))); await page.press('#input', 'Enter').catch(() => {}); await page.waitForTimeout(2500); await page.mouse.move(vp.width / 2, 40); }
       const unplayable = await page.evaluate(PLAY).catch(() => []);
       const dom = { ...(await page.evaluate(DOM).catch((e) => ({ scrollX: 0, clipped: [], chrome: [], bg: 0, media: [], mask: null, fail: e.message }))), errors };
       dom.media = [...dom.media, ...unplayable];
       const png = await page.screenshot();
-      if (shots) { fs.mkdirSync(shots, { recursive: true }); fs.writeFileSync(path.join(shots, (p.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'landing') + '-' + vp.name + '.png'), png); }
+      if (shots) { fs.mkdirSync(shots, { recursive: true }); fs.writeFileSync(path.join(shots, (p.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'landing') + (ask ? '-' + ask.replace(/\W+/g, '-') : '') + '-' + vp.name + '.png'), png); }
       const px = await measure(b, png, dom.mask);
       results.push({ path: p, viewport: vp.name, px, dom: { ...dom, mask: undefined }, failures: judge(p, vp.name, dom, px) });
       await ctx.close();
@@ -178,13 +236,15 @@ export async function run({ paths, dir = path.join(root, 'void-live-deploy'), sh
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const arg = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(process.argv[i + 1] || '') : ''; };
-  let paths = arg('--paths') ? arg('--paths').split(',').filter(Boolean) : null;
+  let paths = arg('--paths') ? arg('--paths').split(',').filter(Boolean) : null, looks = arg('--ask') ? [arg('--ask')] : [];
   if (!paths) {
     const files = arg('--files') ? arg('--files').split(',') : execFileSync('git', ['diff', '--name-only', (arg('--base') || 'origin/main') + '...HEAD'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
-    paths = surfacesOf(files);
+    paths = liveSurfacesOf(files, path.join(root, 'void-live-deploy'));
+    if (!looks.length) looks = looksOf(files);
   }
   if (!paths.length) { console.log('vision-judge: no surface changed'); process.exit(0); }
   const results = await run({ paths, shots: arg('--shots') });
+  for (const ask of looks) results.push(...(await run({ paths: ['/'], shots: arg('--shots'), ask })).map((r) => ({ ...r, path: '/ (' + ask + ')', failures: r.failures.map((f) => f.replace(/^\/ @/, '/ (' + ask + ') @')) })));
   const bad = results.flatMap((r) => r.failures);
   if (process.argv.includes('--json')) console.log(JSON.stringify(results.map((r) => ({ path: r.path, viewport: r.viewport, px: r.px, failures: r.failures })), null, 1));
   for (const r of results) console.log((r.failures.length ? 'FAIL ' : 'ok   ') + r.path + ' @ ' + r.viewport + '  mean ' + r.px.mean + ', off-colour ' + r.px.offMode + ', hard-edge ' + r.px.hardEdge);
