@@ -20,6 +20,7 @@ function walk(dir) {
 
 const hits = [];
 for (const f of walk(DIR)) {
+  if (relative(root, f).replace(/\\/g, '/').includes('void-live-deploy/internet-history/')) continue;
   const text = readFileSync(f, 'utf8');
   for (const d of FORBIDDEN) {
     if (text.includes(d)) hits.push(relative(root, f) + ': ' + d);

@@ -138,16 +138,35 @@ export function triesOf(row) { return '<nav class="tries" id="tries" aria-label=
 export function appOf(row, kind) {
   const pdf = kind === 'pdf', fl = kind === 'flights', jb = kind === 'jobs', cfg = jb ? { panels: row.panels, ...(row.preset ? { preset: row.preset } : {}), de: row.de } : pdf ? { tools: row.tools, ...(row.also ? { also: row.also } : {}) } : fl ? { panels: row.panels, ...(row.controls ? { controls: row.controls } : {}), de: row.de } : { features: row.features };
   const fn = pdf ? 'mountPdf' : fl ? 'mountFlights' : 'mountKanban', lib = pdf ? 'pdf-ui' : fl ? 'flights-ui' : 'kanban-ui';
-  if (jb) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
-// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
-const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), ${JSON.stringify(cfg)}))
-  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
+  if (jb) return `// /jobs/: one page for every jobs-lane site. Written by tools/tool-site-pages.mjs; query picks the panel.
+const ALL = ["search","saved","alerts","tracker","feed","sources","regions","categories","tags","companies"];
+const go = () => {
+  const q = new URLSearchParams(location.search);
+  const panel = q.get('panel');
+  const preset = {};
+  if (q.get('region')) preset.region = q.get('region');
+  if (q.get('salary') === '1' || q.get('salary') === 'true') { preset.salaryOnly = true; preset.sort = q.get('sort') || 'salary'; }
+  if (q.get('sort')) preset.sort = q.get('sort');
+  return import('/lib/jobs-ui.js').then(({ mountJobs }) => {
+    mountJobs(document.getElementById('app'), { panels: ALL, preset, de: ` + JSON.stringify(cfg.de || {}) + ` });
+    if (panel) {
+      const el = document.getElementById('jb-' + panel) || document.getElementById(panel);
+      if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' });
+    }
+  }).finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/')));
+};
 if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 `;
-  if (fl) return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
-// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
-const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), ${JSON.stringify(cfg)}))
-  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '${row.path}')));
+  if (fl) return `// /flights/: one page for every travel-lane site. Written by tools/tool-site-pages.mjs; query picks the panel.
+const ALL = ["controls","providers","facts","tracker","trip","airports","time","route","co2","routes"];
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => {
+  mountFlights(document.getElementById('app'), { panels: ALL, controls: ["airports","trip","dates","pax","cabin"], de: ` + JSON.stringify(cfg.de || {}) + ` });
+  const mode = new URLSearchParams(location.search).get('mode');
+  if (mode) {
+    const el = document.getElementById(mode);
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' });
+  }
+}).finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/')));
 if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
 `;
   return `// ${row.path}: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
@@ -162,13 +181,18 @@ const MARK = /<!-- seo -->[\s\S]*?<!-- \/seo -->\n?|<!-- asks -->[\s\S]*?<!-- \/
 export const bare = (html) => html.replace(MARK, '');
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check'), bad = [];
+  const stemOf = (p) => String(p || '').replace(/[?#].*$/, '').replace(/\/?$/, '/') || '/';
+  const seen = new Set();
   for (const [rows, kind] of [[PDF_SITES, 'pdf'], [KANBAN_SITES, 'kanban'], [FLIGHT_SITES, 'flights'], [JOB_SITES, 'jobs']]) for (const row of rows) {
-    const appFile = resolve(root, 'void-live-deploy' + row.path + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
-    if (haveApp !== wantApp) { if (check) bad.push(row.path + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + row.path + 'app.js'); } }
-    const file = resolve(root, 'void-live-deploy' + row.path + 'index.html'), want = pageOf(row, kind);
+    const stem = stemOf(row.path);
+    if (seen.has(kind + ':' + stem)) continue; // one public page per family
+    seen.add(kind + ':' + stem);
+    const appFile = resolve(root, 'void-live-deploy' + stem + 'app.js'), wantApp = appOf(row, kind), haveApp = existsSync(appFile) ? readFileSync(appFile, 'utf8') : null;
+    if (haveApp !== wantApp) { if (check) bad.push(stem + 'app.js differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(appFile), { recursive: true }); writeFileSync(appFile, wantApp); console.log('wrote ' + stem + 'app.js'); } }
+    const file = resolve(root, 'void-live-deploy' + stem + 'index.html'), want = pageOf(row, kind);
     const have = existsSync(file) ? readFileSync(file, 'utf8') : null;
     if (have !== null && bare(have) === bare(want)) continue;
-    if (check) bad.push(row.path + ' differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(file), { recursive: true }); const keep = have ? have.match(MARK) || [] : []; writeFileSync(file, want); console.log('wrote ' + row.path + (keep.length ? ' (re-run seo-pages and preload)' : '')); }
+    if (check) bad.push(stem + ' differs from its row (node tools/tool-site-pages.mjs)'); else { mkdirSync(dirname(file), { recursive: true }); const keep = have ? have.match(MARK) || [] : []; writeFileSync(file, want); console.log('wrote ' + stem + (keep.length ? ' (re-run seo-pages and preload)' : '')); }
   }
   if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
 }

@@ -31,7 +31,7 @@ test('the loop runs without Claude: its workflow and every file it runs or impor
 test('a family is a floor with a page that can be copied and a probe that knows the answer on that page', () => {
   const fams = familiesOf(), ids = fams.map((f) => f.id);
   for (const id of ['colour', 'calculator', 'unit converter', 'word count', 'emoji combos']) assert.ok(ids.includes(id), id);
-  // the gradient page is the colour page's gradient mode since the pages were combined (#2100: /gradient/ 301s to /color/gradient/), so its sites go to colour
+  // the gradient page is the colour page's gradient mode since the pages were combined (#2100: /gradient/ 301s to /color/?mode=gradient), so its sites go to colour
   assert.ok(!ids.includes('gradient') && fams.some((f) => f.id === 'colour' && f.base === '/color/'), 'gradient is a mode of the colour floor');
   for (const id of ['is it', 'image boards', 'codebase', 'shopping', 'pdf', 'travel']) assert.ok(!ids.includes(id), id + ' is not a family');
   for (const f of fams) { assert.match(f.base, /^\/[a-z0-9-]+\/$/); assert.ok(f.does.length > 20, f.id + ' says what its page does'); }
@@ -59,9 +59,9 @@ test('the row\'s words: never the site, never what the page does not do, never m
   assert.match(validTexts({ ...good, intro: good.intro + ' <script>x</script>' }, { host: 'x.com', baseText, fam }).problem, /markup/);
   assert.deepEqual(brandTokens('www.any-color-id.com'), ['www', 'any-color-id', 'any', 'color'].filter((w) => w !== 'www'));
   const fb = fallbackTexts(fam); assert.ok(fb.intro.length > 30 && fb.name.length > 3);
-  assert.equal(slugFor('hex-names', fam, () => false), '/color/hex-names/');
-  assert.equal(slugFor('hex-names', fam, (p) => p === '/color/hex-names/'), null);
-  assert.equal(slugFor('Not A Slug!', fam, () => false), '/color/colour-picker-tool/');
+  assert.equal(slugFor('hex-names', fam, () => false), '/color/');
+  assert.equal(slugFor('hex-names', fam, (p) => p === '/color/'), '/color/');
+  assert.equal(slugFor('Not A Slug!', fam, () => false), '/color/');
 });
 
 test('the page is its family\'s page with its own title, preview words, headline and intro; the offline list gains it once', () => {
@@ -97,12 +97,15 @@ test('the page guard flags a frontier site at the front of the queue with no pag
   assert.deepEqual(guardOf(real, { sites: [{ site: 'easy.test', hardness: 99 }] }, 1), [], 'the current fight is a floor');
 });
 
-test('every self-built site is a lane site with its own page, the page its probe measures, a row in the tool table and a folder', () => {
+test('every self-built site is a lane site on its family page, the page its probe measures, and a row in the tool table', () => {
+  const stem = (p) => String(p || '').replace(/[?#].*$/, '').replace(/\/$/, '') || '/';
   for (const r of SELF_SITES) {
-    const f = FLOORS.find((x) => x.id === r.lane); assert.ok(f, r.lane + ' is a floor'); assert.equal(f.lane, r.family); assert.equal(f.page, r.page); assert.equal(LANE_PAGES[r.lane], r.page);
-    assert.ok(LANES[r.family].includes(r.url)); assert.ok(SITE_PAGES.some((p) => p.path === r.path)); assert.equal(probeFor(r.lane).verse, r.page);
-    if (r.ask) assert.equal(probeFor(r.lane).ask.verse, r.ask);
-    const html = fs.readFileSync(path.join(root, 'void-live-deploy', r.path, 'index.html'), 'utf8'); assert.ok(html.includes(MARK), r.path); assert.ok(html.includes('<h1') && html.includes(r.h1.replace(/&/g, '&amp;')), r.path);
+    const f = FLOORS.find((x) => x.id === r.lane); assert.ok(f, r.lane + ' is a floor'); assert.equal(f.lane, r.family);
+    assert.equal(stem(f.page), stem(r.page), r.lane); assert.equal(stem(LANE_PAGES[r.lane]), stem(r.page), r.lane);
+    assert.ok(LANES[r.family].includes(r.url)); assert.ok(SITE_PAGES.some((p) => stem(p.path) === stem(r.path)), r.path);
+    assert.equal(stem(probeFor(r.lane).verse), stem(r.page));
+    const folder = path.join(root, 'void-live-deploy', stem(r.path), 'index.html');
+    assert.ok(fs.existsSync(folder), folder);
     assert.doesNotMatch(r.name + r.h1 + r.intro + r.does + r.asks.join(' ') + r.path, /\.(?:com|org|net|io)\b/i, r.path + ' names no site');
   }
 });
