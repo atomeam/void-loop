@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "44268195640",
-  "at": "2026-11-18T08:35:39Z",
-  "what": "Verse hardened itself: 7 benchmark ask(s) for handoff-ready, summon-pack, system-design.  Why these: connect-flows (no benchmark ask, evidence tier: tested); handoff-ready (no benchmark ask, evidence tier: tested); summon-pack (no benchmark ask, evidence tier: tested); system-design (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked). New phrases: “what is missing for client handoff on the status reports” now opens handoff-ready; “summon pack for the invoice automation” now opens summon-pack; “client asks for onboarding status” now opens summon-pack; “how does the client summon the support router status” now opens summon-pack; “system design for client onboarding” now opens system-design; “design the system for invoice reminders” now opens system-design; “design systems for the support flow” now opens system-design. Did not route: connect the systems for invoice reminders; show the data flows for client onboarding; map connections for the support router; is this system handoff ready.",
-  "try": "what is missing for client handoff on the status reports",
+  "run": "44310256832",
+  "at": "2026-11-18T13:06:47Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for connect-flows.  Why these: connect-flows (no benchmark ask, evidence tier: tested); automation-status (only 1 benchmark ask, evidence tier: checked); full-handoff (only 2 benchmark asks, evidence tier: checked); ownership-pack (only 1 benchmark ask, evidence tier: checked); handoff-ready (only 1 benchmark ask, evidence tier: tested). New phrases: “show the data flows for client onboarding” now opens connect-flows. Did not route: connect the systems for invoice reminders; map connections for the support router; automation status for invoice reminders; status of the automations Verse owns for support.",
+  "try": "show the data flows for client onboarding",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-17T13:33:55Z",
-    "try": "adventure game",
-    "closedAt": "2026-11-18T08:35:19Z"
+    "at": "2026-11-18T08:35:39Z",
+    "try": "what is missing for client handoff on the status reports",
+    "closedAt": "2026-11-18T13:06:28Z"
   }
 }
