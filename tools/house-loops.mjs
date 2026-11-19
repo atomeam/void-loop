@@ -32,6 +32,7 @@ async function hit(path) {
   const t = Date.now();
   try {
     const r = await fetch(SITE + path, { redirect: 'manual', signal: AbortSignal.timeout(12000), headers: { 'user-agent': 'Verse-house' } });
+    if (!r.ok) return { path, status: r.status, ms: Date.now() - t, bytes: 0, html: '', headers: r.headers };
     const buf = await r.arrayBuffer();
     return { path, status: r.status, ms: Date.now() - t, bytes: buf.byteLength, html: new TextDecoder().decode(buf).slice(0, 180000), headers: r.headers };
   } catch { return { path, status: 0, ms: Date.now() - t, bytes: 0, html: '', headers: { get: () => '' } }; }
@@ -108,7 +109,12 @@ async function runHandoff() {
   return { last: top ? 'Next unconnected pair: ' + top.from + ' to ' + top.to + ', carrying ' + (top.shared || []).join(', ') + '.' : 'No unconnected page pair in the scan.', ok: true };
 }
 async function infraCents() {
-  try { const j = await (await fetch(SITE + '/api/treasury', { signal: AbortSignal.timeout(8000) })).json(); return Number(j && j.pots && j.pots.infrastructure) || 0; } catch { return 0; }
+  try {
+    const r = await fetch(SITE + '/api/treasury', { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) return 0;
+    const j = await r.json();
+    return Number(j && j.pots && j.pots.infrastructure) || 0;
+  } catch { return 0; }
 }
 const oneSentence = (s) => { const t = String(s || '').trim().split('\n')[0].trim(); return /^[A-Z][^<>"]{20,180}\.$/.test(t) && !/https?:/i.test(t) ? t : ''; };
 async function askSentence(h1) {
