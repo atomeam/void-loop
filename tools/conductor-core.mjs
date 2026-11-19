@@ -150,10 +150,6 @@ export const DESIGN_EVERY_H = 2;
 export function designDue({ exists, busy, lastRunMs, now }) {
   return !!exists && !busy && now - (lastRunMs || 0) >= DESIGN_EVERY_H * H;
 }
-/** a game update as soon as the last one can have finished. The 10-minute clock starts it when GitHub's cron is late. Pure. */
-export function gameDue({ exists, busy, lastRunMs, now, everyMs = 50 * 60 * 1000 }) {
-  return !!exists && !busy && now - (lastRunMs || 0) >= everyMs;
-}
 /** should the conductor start Verse's will (will.yml) this tick: its '7 * * * *' schedule fired every 4 to 6 hours (75 scheduled runs in
  *  2 weeks, 2026-10-29) and a deploy that automerge starts fires no workflow_run, so the will kept old wants for hours. The clock keeps
  *  the hour instead: a run when the last one (any trigger) is an hour old, never while one runs or waits. Pure. */

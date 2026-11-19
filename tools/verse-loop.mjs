@@ -22,7 +22,7 @@ import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
 import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
-import { acceptGame, gameTask, recordGame } from './game-updates.mjs';
+import { acceptGame, gameDueNow, gameTask, loadBook, recordGame } from './game-updates.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -576,6 +576,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const next = next0 ? groomNext(next0, { gaps: readDoc('docs/PARITY.md'), red }) : next0;
     const groomOpen = open.some((p) => /^loop\//.test(p.headRefName || '') && p.title === GROOM_TITLE);
     let task;
+    if (!opts.lane && !opts.dryRun && env.GAME_UPDATES !== '0' && existsSync(resolve(cwd, 'data/game-updates.json')) && gameDueNow(loadBook(cwd), now)) { opts.lane = 'games'; step('a game update is due'); }
     if (opts.lane === 'games') {
       task = gameTask(cwd);
       step('task: ' + task.title);

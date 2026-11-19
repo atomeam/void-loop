@@ -89,6 +89,10 @@ export async function acceptGame({ cwd = root, task, attempt = 1, coder = {}, pl
   return { ...d, game, note, born, cents, paid: !!(coder.paid || cents > 0), provider: coder.provider || '', cursor: task.nextCursor || 0 };
 }
 const funOfBook = (book, id) => { const s = book.scores && book.scores[id]; return s && Number.isFinite(+s.fun) ? +s.fun : null; };
+export function gameDueNow(book, now = Date.now(), everyMs = 50 * 60 * 1000) {
+  const last = book && Array.isArray(book.log) && book.log.length ? Date.parse(book.log[book.log.length - 1].at) : 0;
+  return !(last > 0) || now - last >= everyMs;
+}
 export function recordGame(cwd, gate, at = new Date().toISOString()) {
   const book = applyUpdate(loadBook(cwd), gate.game, { fun: gate.score, note: gate.note, at, cents: gate.cents, paid: gate.paid, provider: gate.provider, dropped: !gate.ship, cursor: gate.cursor, born: gate.born });
   saveBook(book, cwd); return book;

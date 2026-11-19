@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { applyUpdate, bornFrom, decide, funOf, gamesOf, had, nextTask, scoreFrom } from '../void-live-deploy/lib/game-updates.js';
+import { gameDueNow } from './game-updates.mjs';
 
 const live = JSON.parse(readFileSync(new URL('../data/game-updates.json', import.meta.url), 'utf8'));
 
@@ -41,4 +42,9 @@ test('a full cycle makes one original game; it stays hidden under the Debris Fie
   assert.equal(decide({ before: 40, score: 30, attempt: 2 }).retry, false);
   assert.equal(scoreFrom({ danger: 10, goal: 10, boss: 10, juice: 10, phone: 10, fair: 10, end: 10, fun: 10, polish: 10 }), 100);
   assert.match(bornFrom("export const id = 'block-fall'; export const title = 'Tetris Night'; export const whatsNew = 'Update 1: blocks fall in a well.';", 'void-live-deploy/skills/block-fall-rules.js', new Set()).why, /commercial/);
+});
+
+test('a game update is due until one has shipped within the hour', () => {
+  assert.equal(gameDueNow(live, Date.now()), true);
+  assert.equal(gameDueNow({ log: [{ at: new Date().toISOString() }] }, Date.now()), false);
 });
