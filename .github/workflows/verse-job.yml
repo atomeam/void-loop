@@ -107,9 +107,18 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          GAME_PLAY_DIR: ${{ runner.temp }}/game-play
+          GAME_PLAY_MS: '75000'
         run: |
           case "$JOB" in ''|*[!A-Za-z0-9_-]*) echo "::error title=Verse job::the job id is not an id"; exit 0 ;; esac
           node tools/verse-job.mjs "$JOB" $DRY
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-play
+          path: ${{ runner.temp }}/game-play
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Keep the loop's memory
         if: always()
         uses: actions/cache/save@v4

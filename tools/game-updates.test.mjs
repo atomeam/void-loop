@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { applyUpdate, bornFrom, decide, funOf, gamesOf, had, nextTask, scoreFrom } from '../void-live-deploy/lib/game-updates.js';
-import { gameDueNow } from './game-updates.mjs';
+import { gameDueNow, gatePlay, playLink } from './game-updates.mjs';
 
 const live = JSON.parse(readFileSync(new URL('../data/game-updates.json', import.meta.url), 'utf8'));
 
@@ -45,6 +45,21 @@ test('a full cycle makes one original game; it stays hidden under the Debris Fie
 });
 
 test('a game update is due until one has shipped within the hour', () => {
-  assert.equal(gameDueNow(live, Date.now()), true);
+  assert.equal(gameDueNow({ log: [] }, Date.now()), true);
   assert.equal(gameDueNow({ log: [{ at: new Date().toISOString() }] }, Date.now()), false);
+  assert.equal(gameDueNow({ log: [{ at: new Date(Date.now() - 60 * 60 * 1000).toISOString() }] }, Date.now()), true);
+});
+
+test('a play without pictures or a score does not ship, and a scored play records its video', () => {
+  assert.equal(gatePlay({ played: { broken: 'boom', shots: ['a.png'] }, judged: { score: 80 }, attempt: 1 }).ship, false);
+  assert.equal(gatePlay({ played: { broken: '', shots: [] }, judged: { score: 80 } }).why, 'the play-bot saved no picture');
+  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { hold: true, score: null } }).ship, false);
+  const ok = gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { hold: false, score: 44 }, before: 40 });
+  assert.equal(ok.ship, true); assert.equal(ok.score, 44);
+  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { score: 30 }, before: 40, attempt: 2 }).retry, false);
+  assert.equal(playLink({ GITHUB_REPOSITORY: 'atomeam/void-loop', GITHUB_RUN_ID: '44536076213' }), 'https://github.com/atomeam/void-loop/actions/runs/44536076213');
+  const row = applyUpdate(live, { id: 'null-waves', title: 'Null Waves', lane: 'hidden' }, { fun: 44, note: 'Update 2: a slower fall', at: 't', video: 'https://github.com/atomeam/void-loop/actions/runs/1', cents: 0 });
+  assert.equal(row.scores['null-waves'].video, 'https://github.com/atomeam/void-loop/actions/runs/1');
+  assert.equal(row.log.at(-1).fun, 44);
+  assert.ok(!row.shown.includes('null-waves'), 'hidden until Debris Field has a fun score it can clear');
 });

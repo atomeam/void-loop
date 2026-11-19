@@ -71,7 +71,7 @@ async function main() {
   } else { out.push(card("Verse's own loop", null, 'GitHub did not answer')); }
   document.getElementById('cards').replaceChildren(...out);
   const book = await get('/scoreboard/game-updates.json');
-  const rows = book && Array.isArray(book.log) && book.log.length ? book.log.slice().reverse() : book && book.scores ? Object.entries(book.scores).map(([id, s]) => ({ id, title: id, n: s.update, note: s.note, fun: s.fun, cents: s.cents })) : [];
+  const rows = book && Array.isArray(book.log) && book.log.length ? book.log.slice().reverse() : book && book.scores ? Object.entries(book.scores).map(([id, s]) => ({ id, title: id, n: s.update, note: s.note, fun: s.fun, cents: s.cents, video: s.video })) : [];
   const box = document.createElement('section');
   const h = document.createElement('h2'); h.textContent = 'Game updates'; box.append(h);
   if (!rows.length) { const p = document.createElement('p'); p.className = 'note'; p.textContent = 'No game update yet.'; box.append(p); }
@@ -80,6 +80,7 @@ async function main() {
     for (const u of rows.slice(0, 20)) {
       const li = document.createElement('li');
       li.textContent = (u.dropped ? 'Dropped' : 'Update ' + u.n) + ' · ' + (u.title || u.id) + (u.fun == null ? '' : ' · fun ' + u.fun) + ' · ' + (u.cents ? '$' + (u.cents / 100).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') : 'free') + (u.note ? ' · ' + u.note : '');
+      if (/^https:\/\/github\.com\/atomeam\/void-loop\/actions\/runs\/\d+$/.test(u.video || '')) { const a = document.createElement('a'); a.href = u.video; a.textContent = 'play'; li.append(' · ', a); }
       list.append(li);
     }
     box.append(list);

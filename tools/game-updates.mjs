@@ -5,6 +5,7 @@ import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { BOOK, PUBLIC_BOOK, CATALOG, applyUpdate, bornFrom, decide, emptyBook, gamesOf, inventPrompt, nextTask, readWhatsNew, scoreFrom, PARTS } from '../void-live-deploy/lib/game-updates.js';
+import { models, VISION_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { askFree } from './judgment.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png' };
@@ -60,10 +61,43 @@ export function readScore(raw) {
   const parts = {}; for (const k of PARTS) if (o[k] != null) parts[k] = o[k];
   return Object.keys(parts).length ? { score: scoreFrom(parts), why: String(o.why || '').slice(0, 160) } : null;
 }
+const textOf = (j) => { if (!j || typeof j !== 'object') return ''; const choice = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content; const nested = j.result && (typeof j.result === 'string' ? j.result : j.result.response || j.result.description); const t = j.response || nested || choice || ''; return typeof t === 'string' ? t.trim() : ''; };
+async function askVision(prompt, shots, { env, fetchFn }) {
+  const token = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN;
+  if (!token || !env.CLOUDFLARE_ACCOUNT_ID) return '';
+  const images = [];
+  for (const p of shots.slice(0, 2)) { try { const b = readFileSync(p); if (b.length && b.length < 500000) images.push('data:image/png;base64,' + b.toString('base64')); } catch (_) { /* one frame is enough */ } }
+  if (!images.length) return '';
+  const content = [{ type: 'text', text: prompt }, ...images.map((url) => ({ type: 'image_url', image_url: { url } }))];
+  const base = 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/';
+  for (const model of [models('vision'), VISION_FALLBACK]) {
+    try {
+      const r = await fetchFn(base + model, { method: 'POST', headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content }], max_tokens: 300, temperature: 0, chat_template_kwargs: { enable_thinking: false } }) });
+      let j = {}; try { j = await r.json(); } catch (_) { j = {}; }
+      const text = textOf(j);
+      if (r && r.ok && text) return text;
+    } catch (_) { /* the next model */ }
+  }
+  return '';
+}
 export async function judgePlay(play, { env = process.env, fetchFn = fetch, game, note } = {}) {
-  const raw = await askFree('Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '. Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });
+  const prompt = 'Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. A Debris Field bar is a phone game with a goal, danger, and an ending. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '.';
+  const shots = (play && play.shots || []).filter((p) => p && existsSync(p));
+  let raw = shots.length ? await askVision(prompt, shots, { env, fetchFn }) : '';
+  if (!raw) raw = await askFree(prompt + ' Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });
   const read = readScore(raw);
-  return read ? { hold: false, score: read.score, why: read.why || 'scored', cents: 0 } : { hold: true, score: null, why: 'no score came back', cents: 0 };
+  return read ? { hold: false, score: read.score, why: read.why || 'scored from the play', cents: 0 } : { hold: true, score: null, why: 'no score came back', cents: 0 };
+}
+/** The play-bot has to run and a model has to score it. A missing score is not a pass. Pure. */
+export function gatePlay({ played, judged, before = null, attempt = 1 } = {}) {
+  if (!played || played.broken) return { ship: false, retry: attempt < 2, why: played && played.broken ? 'the play broke: ' + played.broken : 'the play-bot did not run' };
+  if (!played.shots || !played.shots.length) return { ship: false, retry: attempt < 2, why: 'the play-bot saved no picture' };
+  if (!judged || judged.hold || !Number.isFinite(+judged.score)) return { ship: false, retry: attempt < 2, why: (judged && judged.why) || 'no score came back' };
+  return decide({ before, score: +judged.score, attempt, hold: false });
+}
+export function playLink(env = process.env) {
+  const repo = String(env.GITHUB_REPOSITORY || ''), run = String(env.GITHUB_RUN_ID || '');
+  return /^[\w.-]+\/[\w.-]+$/.test(repo) && /^\d+$/.test(run) ? 'https://github.com/' + repo + '/actions/runs/' + run : '';
 }
 function newRules(cwd) {
   const dir = join(cwd, 'void-live-deploy/skills');
@@ -80,13 +114,12 @@ export async function acceptGame({ cwd = root, task, attempt = 1, coder = {}, pl
     try { note = readWhatsNew(readFileSync(join(cwd, game.file), 'utf8'), task.update); } catch (_) { note = ''; }
     if (!note) return { ship: false, retry: attempt < 2, why: 'Update ' + task.update + ' is not on the start screen' };
   }
-  const played = await play(game, { cwd, ms: Number(env.GAME_PLAY_MS) || 70000, outDir: env.GAME_PLAY_DIR || '' });
-  if (played.broken) return { ship: false, retry: attempt < 2, why: 'the play broke: ' + played.broken, game };
+  const played = await play(game, { cwd, ms: Number(env.GAME_PLAY_MS) || 75000, outDir: env.GAME_PLAY_DIR || '' });
   const judged = await judge(played, { env, game, note });
   const before = funOfBook(loadBook(cwd), game.id);
-  const d = decide({ before, score: judged.score, attempt, hold: judged.hold });
+  const d = gatePlay({ played, judged, before, attempt });
   const cents = (+coder.cents || 0) + (+judged.cents || 0);
-  return { ...d, game, note, born, cents, paid: !!(coder.paid || cents > 0), provider: coder.provider || '', cursor: task.nextCursor || 0 };
+  return { ...d, game, note, born, cents, paid: !!(coder.paid || cents > 0), provider: coder.provider || '', cursor: task.nextCursor || 0, video: playLink(env) };
 }
 const funOfBook = (book, id) => { const s = book.scores && book.scores[id]; return s && Number.isFinite(+s.fun) ? +s.fun : null; };
 export function gameDueNow(book, now = Date.now(), everyMs = 50 * 60 * 1000) {
@@ -94,7 +127,7 @@ export function gameDueNow(book, now = Date.now(), everyMs = 50 * 60 * 1000) {
   return !(last > 0) || now - last >= everyMs;
 }
 export function recordGame(cwd, gate, at = new Date().toISOString()) {
-  const book = applyUpdate(loadBook(cwd), gate.game, { fun: gate.score, note: gate.note, at, cents: gate.cents, paid: gate.paid, provider: gate.provider, dropped: !gate.ship, cursor: gate.cursor, born: gate.born });
+  const book = applyUpdate(loadBook(cwd), gate.game, { fun: gate.score, note: gate.note, at, cents: gate.cents, paid: gate.paid, provider: gate.provider, dropped: !gate.ship, cursor: gate.cursor, born: gate.born, video: gate.video });
   saveBook(book, cwd); return book;
 }
 if (process.argv[1] && process.argv[1].endsWith('game-updates.mjs') && process.argv[2] === 'play') {

@@ -122,6 +122,8 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          GAME_PLAY_DIR: ${{ runner.temp }}/game-play
+          GAME_PLAY_MS: '75000'
         run: |
           if [ -z "$GH_TOKEN" ] && [ -z "$DRY" ]; then
             echo "::warning title=Verse loop runs dry::No token to open pull requests."
@@ -130,6 +132,13 @@ jobs:
           # the lap's output goes outside the checkout: a file in the tree is a local change, and a lap with local changes skips (2026-11-06)
           node tools/verse-loop.mjs --once $DRY | tee "$RUNNER_TEMP/lap.txt"
           { echo '### Verse loop'; echo; echo '```'; tail -n 20 "$RUNNER_TEMP/lap.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-play
+          path: ${{ runner.temp }}/game-play
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Keep the loop's memory
         if: always()
         uses: actions/cache/save@v4

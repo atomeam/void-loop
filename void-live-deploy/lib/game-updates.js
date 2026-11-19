@@ -67,15 +67,16 @@ export function decide({ before = null, score = null, broken = '', attempt = 1, 
   return { ship: true, retry: false, score: after, why: 'score ' + after + (hold ? ', the model was quiet and the play stayed clean' : '') };
 }
 /** Fold one result into the book. Debris Field and Gap Glide keep the notes they already have. Pure. */
-export function applyUpdate(book, game, { fun = null, note = '', at = '', cents = 0, paid = false, provider = '', dropped = false, cursor = 0, born = false } = {}) {
+export function applyUpdate(book, game, { fun = null, note = '', at = '', cents = 0, paid = false, provider = '', dropped = false, cursor = 0, born = false, video = '' } = {}) {
   const base = { cursor: 0, picks: {}, scores: {}, shown: [], bar: BAR_ID, born: [], cycle: 1, log: [], ...(book || {}) };
   const n = dropped ? null : ((base.scores[game.id] && +base.scores[game.id].update) || 0) + 1;
   const scores = { ...base.scores }, prev = scores[game.id] || {};
-  if (!dropped) scores[game.id] = { ...prev, update: n, note: note || prev.note || '', why: 'shipped', fun: fun == null ? prev.fun : fun, cents: Math.round(((+prev.cents || 0) + (+cents || 0)) * 10000) / 10000, paid: !!(paid || prev.paid), cycle: cycleOf(base) };
+  const clip = String(video || '').slice(0, 180);
+  if (!dropped) scores[game.id] = { ...prev, update: n, note: note || prev.note || '', why: 'shipped', fun: fun == null ? prev.fun : fun, cents: Math.round(((+prev.cents || 0) + (+cents || 0)) * 10000) / 10000, paid: !!(paid || prev.paid), cycle: cycleOf(base), video: clip || prev.video || '' };
   const barFun = funOf({ scores }, base.bar || BAR_ID), shown = new Set(base.shown || []);
   if (!dropped && game.lane === 'hidden' && barFun > 0 && fun != null && fun >= barFun) shown.add(game.id);
   const bornList = born && !dropped ? [...(base.born || []), { id: game.id, title: game.title, file: game.file, ask: game.ask, play: 'harness' }] : (base.born || []);
-  const log = [...(base.log || []), { at, id: game.id, title: game.title, n, note, fun: dropped ? null : fun, cents: +cents || 0, paid: !!paid, provider: provider || '', dropped: !!dropped, born: !!born }].slice(-200);
+  const log = [...(base.log || []), { at, id: game.id, title: game.title, n, note, fun: dropped ? null : fun, cents: +cents || 0, paid: !!paid, provider: provider || '', video: clip, dropped: !!dropped, born: !!born }].slice(-200);
   return { ...base, picks: { ...base.picks, [game.id]: (base.picks[game.id] || 0) + (dropped ? 0 : 1) }, scores, shown: [...shown], born: bornList, cursor, cycle: born && !dropped ? cycleOf(base) + 1 : cycleOf(base), log };
 }
 export const livePages = (names) => (names || []).some((f) => f === BOOK || f === PUBLIC_BOOK || /skills\/[a-z0-9-]+-rules\.js$/.test(f)) ? ['/arcade/', '/scoreboard/'] : [];
