@@ -177,7 +177,20 @@ export async function pollinations(env, prompt, key, fetchFn = (u, o) => fetch(u
 const hit = (row, key) => ({ state: 'art', key, img: row.img, cached: true, day: row.day });
 const plate = (why, extra = {}) => json({ state: 'plate', why, ...extra });
 
-export async function onRequestGet({ request, env }) {
+// the background repaint rides on the site's own traffic (no schedule needed): a card's read hands it off after answering (waitUntil), at most once
+// every REPAINT_EVERY_MS for the whole site (a D1 tick), so the old space-look pictures are redone a few an hour while people use Verse
+export const REPAINT_EVERY_MS = 120000;
+export async function repaintTick(request, env, now = Date.now()) {
+  try {
+    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_tick (id INTEGER PRIMARY KEY, at INTEGER NOT NULL)').run();
+    const r = await env.DB.prepare('UPDATE void_art_tick SET at = ? WHERE id = 1 AND at < ?').bind(now, now - REPAINT_EVERY_MS).run();
+    const changed = r && r.meta ? r.meta.changes : r && r.changes;
+    if (!changed) { const ins = await env.DB.prepare('INSERT OR IGNORE INTO void_art_tick (id, at) VALUES (1, ?)').bind(now).run(); const n = ins && ins.meta ? ins.meta.changes : ins && ins.changes; if (!n) return { state: 'wait' }; }
+    return await (await repaintOne(request, env, { internal: true })).json();
+  } catch (_) { return { state: 'busy' }; }
+}
+export async function onRequestGet({ request, env, waitUntil }) {
+  if (typeof waitUntil === 'function' && env && env.DB && on(env)) { try { waitUntil(repaintTick(request, env)); } catch (_) {} }
   const u = new URL(request.url), raw = u.searchParams.get('key'), kind = u.searchParams.get('kind');
   const key = keyOfKind(subjectKey(raw), kind); // a cartoon and a poster keep rows of their own (lib/art-rules.js)
   if (!key) return json({ error: 'a subject, please' }, 400);
@@ -185,17 +198,44 @@ export async function onRequestGet({ request, env }) {
   if (why) return plate(why);
   const row = await cached(env, key);
   if (row) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}) }, 200, { 'cache-control': 'public, max-age=3600' }); }
-  // a subject painted before the real-setting look (lib/art-rules.js staleKeyOf): its old picture shows while the page asks for the new one (stale: true)
+  // a subject painted before the real-setting look (lib/art-rules.js staleKeyOf): its old space-backdrop picture is never sent (owner, 2026-11-19: no
+  // galaxy versions); stale: true tells the page to paint the new one now (the background repaint below clears the rest)
   const old = staleKeyOf(subjectKey(raw), kind), was = old ? await cached(env, old) : null;
-  if (was) return json({ ...hit(was, key), stale: true }, 200, { 'cache-control': 'no-store' });
+  if (was) return json({ state: 'none', key, stale: true }, 200, { 'cache-control': 'no-store' });
   if (!on(env)) return plate('off', {}); // nothing can be painted: the page shows no button
   if ((await madeToday(env)) >= capOf(env)) return plate('cap');
   return json({ state: 'none', key }, 200, { 'cache-control': 'no-store' });
 }
 
-export async function onRequestPost({ request, env }) {
+// THE BACKGROUND REPAINT (owner, 2026-11-19: "old-style card paintings must repaint automatically"): POST { repaint: true } repaints ONE kept picture
+// still in the old space look (a bare row with no 'scene1 ' row beside it), newest first, as a card's answer painting, through the same route: the
+// same template, refusals, rate limit and daily cap. It never spends the last REPAINT_RESERVE of the day's paintings, so visitors' own cards always
+// have room, and a subject tried today is not tried again today. It answers with the outcome and how many are left, never a picture or a subject (a list of what people asked is nobody's business).
+// Run by the site's own reads (repaintTick, below) and callable by hand. A stranger calling it can do no more than a subject POST already can: spend the cap down to the reserve.
+export const REPAINT_RESERVE = 20, OLD_ROW = "subject NOT GLOB 'scene[0-9]* *' AND subject NOT GLOB 'weather[0-9]* *' AND subject NOT GLOB 'cartoon[0-9]* *' AND subject NOT GLOB 'poster[0-9]* *' AND subject NOT GLOB 'backdrop[0-9]* *'";
+export async function repaintOne(request, env, { internal = false } = {}) {
+  if (!on(env)) return json({ state: 'off' });
+  const made = await madeToday(env), room = capOf(env) + (pollOn(env) ? POLL_CAP : 0) - REPAINT_RESERVE;
+  if (made >= room) return json({ state: 'reserve', made });
+  let left = 0, pick = null;
+  try {
+    await ensure(env);
+    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_repaint (subject TEXT PRIMARY KEY, day TEXT NOT NULL)').run();
+    const where = OLD_ROW + " AND NOT EXISTS (SELECT 1 FROM void_art b WHERE b.subject = 'scene1 ' || void_art.subject)";
+    const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE ' + where).first(); left = Number(n && n.n) || 0;
+    pick = await env.DB.prepare('SELECT subject FROM void_art WHERE ' + where + ' AND NOT EXISTS (SELECT 1 FROM void_art_repaint r WHERE r.subject = void_art.subject AND r.day = ?) ORDER BY day DESC LIMIT 1').bind(today()).first();
+  } catch (_) { return json({ state: 'busy' }); }
+  if (!pick) return json({ state: left ? 'tried-today' : 'done', left });
+  try { await env.DB.prepare('INSERT OR REPLACE INTO void_art_repaint (subject, day) VALUES (?, ?)').bind(pick.subject, today()).run(); } catch (_) {}
+  const res = await onRequestPost({ request: new Request(request.url, { method: 'POST', headers: request.headers, body: JSON.stringify({ subject: pick.subject, kind: 'answer', rarity: 'common' }) }), env, internal }); // internal: the site's own tick, not a visitor's paint, so it does not spend that visitor's per-minute share
+  const got = await res.json().catch(() => ({}));
+  return json({ state: got.state === 'art' ? 'repainted' : 'plate', ...(internal ? { subject: pick.subject } : {}), why: got.why || '', left: Math.max(0, left - (got.state === 'art' ? 1 : 0)) }, res.status === 429 ? 429 : 200);
+}
+
+export async function onRequestPost({ request, env, internal = false }) {
   let body = {};
-  try { body = JSON.parse((await request.text()).slice(0, 2000)); } catch (_) { return new Response('bad', { status: 400 }); }
+  try { body = JSON.parse((await request.clone().text()).slice(0, 2000)); } catch (_) { return new Response('bad', { status: 400 }); }
+  if (body && body.repaint === true) return repaintOne(request, env);
   const raw = rawSubject(body && body.subject), kind = kindWordOf(body && body.kind), rarity = rarityOf(body && body.rarity);
   const key = keyOfKind(subjectKey(raw), kind), size = sizeOfKind(kind); // a cartoon and a poster keep rows of their own; a poster is painted tall (lib/art-rules.js)
   if (!key) return json({ error: 'a subject, please' }, 400);
@@ -208,7 +248,7 @@ export async function onRequestPost({ request, env }) {
   if (!on(env)) return plate('off');
   const made = await madeToday(env), overWorkers = made >= capOf(env);
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
-  if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
+  if (!internal && await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
   // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
   const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = undirected(kind) ? '' : await direct(env, key, kind, body && body.family, body && body.take); // a cartoon, a poster and a backdrop paint from their own templates (lib/art-rules.js)
   let img = '';

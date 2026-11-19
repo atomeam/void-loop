@@ -150,7 +150,7 @@ test('a copied recipe card holds every ingredient and step, set like the card, a
   const { bodyLayout } = await import('../void-live-deploy/lib/card-image.js');
   const text = '4 servings · US measures\n\nIngredients\n\n3 ripe avocados\n1 lime, juiced\n½ small red onion, finely diced\n1 small tomato, diced\n1 jalapeño, minced (optional)\n2 tablespoons chopped coriander (cilantro)\n½ teaspoon salt\n\nSteps\n\nHalve the avocados, scoop the flesh into a bowl and mash it roughly with the lime juice.\nFold in the onion, tomato, jalapeño and coriander.\nSeason with the salt, taste, and add more lime or salt as you like.\nServe within 30 minutes, before it browns; a layer of lime juice on top keeps it green a little longer.';
   const s = cardSvg({ ...d, title: 'Guacamole', kind: 'Skill — Body and mind', text, link: 'https://a-to-mind.com/recipes/?q=guacamole&units=us' });
-  for (const w of ['3 ripe avocados', '½ teaspoon salt', 'INGREDIENTS', 'STEPS', '>1.<', '>4.<', 'keeps it green a little longer.', 'a-to-mind.com/recipes/?q=guacamole&amp;units=us']) assert.ok(s.includes(w), 'the picture holds ' + w);
+  for (const w of ['3 ripe avocados', '½ teaspoon salt', 'INGREDIENTS', 'STEPS', '>1.<', '>4.<', 'keeps it green a little longer.', 'a-to-mind.com/recipes/?q=guacamole<']) assert.ok(s.includes(w), 'the picture holds ' + w);
   assert.ok(!/Halve the…|…<\/text>/.test(s), 'nothing cut');
   const r = bodyLayout(text, 246); assert.equal(r.cut, false); assert.ok(r.els.every((e) => e.fs >= 13), 'readable type');
   // weather: the hourly strip as one tidy line, the temperature large
@@ -159,4 +159,13 @@ test('a copied recipe card holds every ingredient and step, set like the card, a
   // truly huge: cut, and the last line says where the rest is
   const huge = bodyLayout(Array.from({ length: 400 }, (_, i) => 'Paragraph ' + i + ' says a good deal about something worth reading in full.').join('\n\n'), 246, { link: 'https://a-to-mind.com/x/' });
   assert.equal(huge.cut, true); assert.match(huge.els[huge.els.length - 1].text, /full card continues at a-to-mind\.com\/x/);
+});
+
+test('the Full card line is a short readable link that never runs past the text box', async () => {
+  const { bodyLayout, shortLink } = await import('../void-live-deploy/lib/card-image.js');
+  const u = 'https://a-to-mind.com/weather/?q=Paris%2C%20%C3%8Ele-de-France%20Region%2C%20France&ll=48.85341%2C2.3488';
+  assert.equal(shortLink(u), 'a-to-mind.com/weather/?q=Paris');
+  assert.equal(shortLink('https://a-to-mind.com/recipes/?q=guacamole&units=us'), 'a-to-mind.com/recipes/?q=guacamole');
+  const r = bodyLayout('Overcast', 246, { link: 'https://a-to-mind.com/' + 'x'.repeat(300) });
+  for (const e of r.els) assert.ok(e.x + e.text.length * e.fs * 0.5 <= 624, 'inside the box: ' + e.text);
 });

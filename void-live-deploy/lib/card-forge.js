@@ -30,7 +30,7 @@ const subjectFor = (el, c) => {
   if (!/^(?:looking|loading|thinking|searching)\b/i.test(String(k || ''))) el._vcArtKey = k; // a "thinking ..." frame is not the subject: the answer's own words are, once they arrive
   return k;
 };
-export const RETRY_S = [25, 50, 100]; const tries = new Map(); // a subject's retries after a busy or slow paint
+export const RETRY_S = [25, 50, 100, 200, 400]; // backoff: the art maker allows three paintings a minute per connection, so a page opening many cards waits its turn const tries = new Map(); // a subject's retries after a busy or slow paint
 /** a paint worth trying again later: no answer, a model timeout, a rate limit or an HTTP error; never the cap or the switch. Pure. */
 export const retryable = (got) => !got || ['busy', 'slow', 'http'].includes(got.why);
 const seen = new Map(); // folded-or-typed subject + kind -> 'art' | 'none' | 'plate' with the picture, so a card shown twice asks once
@@ -93,7 +93,7 @@ async function paint(el, c, b) {
   // person opening cards quickly still gets their paintings (owner, 2026-10-17: "still no art": three paintings in all, the rest 429s)
   // the cap and an off switch are final for the page
   if (!img && !b && autoOn() && retryable(got) && (tries.get(sk) || 0) < RETRY_S.length) { const n = tries.get(sk) || 0; tries.set(sk, n + 1); setTimeout(() => { seen.delete(sk); if (el.isConnected) forge(el, el._vcard || c, null); }, RETRY_S[n] * 1000); return; }
-  if (!img && !b) seen.set(subjectFor(el, c), String(el._vcForge || '').startsWith('data:') ? el._vcForge : 'plate'); // an older painting it already shows stays (stale); a capped, switched-off or thrice-failed paint is not retried this page
+  if (!img && !b) seen.set(subjectFor(el, c), 'plate'); // a capped, switched-off or thrice-failed paint is not retried this page
   if (!img) painting(el, false);
   if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
   if (!el.isConnected) return;
@@ -120,9 +120,9 @@ export function forge(el, c, photo) {
     seen.set(subjectFor(el, c), 'asking'); // one read per subject at a time
     ask('GET', el, c).then((got) => {
       const img = got && got.state === 'art' ? safeImg(got.img) : '';
-      if (img && got.stale) { // an older painting in the old space look (lib/art-rules.js staleKeyOf): shown at once, and the real-setting one painted to replace it
-        if (el.isConnected) { el._vcForge = img; show(el, img); }
-        if (autoOn() && worthy(el, el._vcard || c)) paint(el, c, null); else seen.set(subjectFor(el, c), img);
+      if (got && got.stale) { // painted in the old space look (lib/art-rules.js staleKeyOf): never shown (owner, 2026-11-19: no galaxy backdrops); the plate stays while the real-setting picture is painted
+        seen.set(subjectFor(el, c), 'none');
+        if (worthy(el, el._vcard || c)) { if (autoOn()) paint(el, c, null); else button(el, c); }
         return;
       }
       if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }

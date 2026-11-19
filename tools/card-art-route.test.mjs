@@ -55,11 +55,11 @@ test('a miss paints once and keeps the picture; the next person (any spelling) g
   assert.equal(rows(env)[0].subject, 'scene1 cat');
 });
 
-test('a subject painted in the old space look shows its old picture (stale) until the real-setting one is painted; a weather card never gets the bare city', async () => {
+test('a subject painted in the old space look never shows its old picture (stale) and is painted again; until the real-setting one is painted; a weather card never gets the bare city', async () => {
   const { env, calls } = world();
   const old = await (await post(env, 'guacamole', 'skill', 'common')).json(); assert.equal(old.state, 'art'); // a skill row keeps its bare key
   const g = await (await get(env, 'guacamole', 'answer')).json();
-  assert.equal(g.state, 'art'); assert.equal(g.stale, true, 'the old picture is shown, marked stale'); assert.equal(g.key, 'scene1 guacamole');
+  assert.equal(g.state, 'none'); assert.equal(g.stale, true, 'marked stale'); assert.ok(!g.img, 'the old space-look picture is never sent'); assert.equal(g.key, 'scene1 guacamole');
   const n = calls.length, p = await (await post(env, 'guacamole', 'answer', 'common')).json();
   assert.equal(p.state, 'art'); assert.equal(calls.length > n, true, 'the new look is painted'); assert.ok(!p.stale);
   const w = await (await get(env, 'guacamole', 'weather')).json(); assert.equal(w.state, 'none', 'a weather row is its own: ' + JSON.stringify(w).slice(0, 80));
@@ -294,4 +294,24 @@ test('a frame word is not a subject (2026-11-06: every sum card is titled "Calcu
   route.resetReady(); await post(env, 'moon'); env.DB.raw.prepare("INSERT INTO void_art (subject, img, day) VALUES ('calculated', ?, '2026-11-01')").run(rows(env)[0].img);
   const g = await (await get(env, 'Calculated')).json(); assert.deepEqual([g.state, g.why], ['plate', 'frame'], 'the garbled picture already kept is never shown again');
   assert.equal((await (await post(env, 'calculator')).json()).state, 'art', 'a real subject near the word still paints');
+});
+
+test('the background repaint redoes one old space-look picture at a time, newest first, and keeps a reserve for visitors', async () => {
+  const { env } = world();
+  for (const k of ['pancake', 'hummus']) assert.equal((await (await post(env, k, 'skill', 'common', '9.9.9.' + k.length)).json()).state, 'art'); // two old bare rows
+  const rp = (ip) => route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ repaint: true }) }) });
+  const a = await (await rp('5.5.5.1')).json(); assert.equal(a.state, 'repainted'); assert.ok(!a.img, 'no picture in the answer'); assert.equal(a.left, 1);
+  const b = await (await rp('5.5.5.2')).json(); assert.equal(b.state, 'repainted'); assert.equal(a.subject, undefined, 'no subject is told to a caller');
+  const c = await (await rp('5.5.5.3')).json(); assert.equal(c.state, 'done');
+  assert.equal(rows(env).filter((r) => r.subject.startsWith('scene1 ')).length, 2, 'each has its real-setting row');
+  assert.ok(route.REPAINT_RESERVE > 0);
+});
+
+test('the site\'s own reads repaint an old picture in the background, at most once every two minutes for the whole site', async () => {
+  const { env } = world();
+  assert.equal((await (await post(env, 'waffle', 'skill', 'common', '8.8.8.1')).json()).state, 'art');
+  const jobs = [], read = () => route.onRequestGet({ env, waitUntil: (p) => jobs.push(p), request: new Request('https://x/api/card-art?key=cat&kind=animal') });
+  await read(); const first = await jobs[0]; assert.equal(first.state, 'repainted'); assert.equal(first.subject, 'waffle');
+  await read(); assert.equal((await jobs[1]).state, 'wait', 'the next read within two minutes waits');
+  assert.equal((await route.repaintTick(new Request('https://x/'), env, Date.now() + route.REPAINT_EVERY_MS + 1000)).state, 'done', 'nothing old is left');
 });

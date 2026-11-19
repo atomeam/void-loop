@@ -14,7 +14,7 @@ test('a loading card or a fragment of a word is never painted; a real subject is
 test('a busy, rate-limited or failed paint is tried again a few times; the cap and the off switch are final', () => {
   for (const got of [null, { state: 'plate', why: 'busy' }, { state: 'plate', why: 'slow' }, { state: 'plate', why: 'http' }]) assert.equal(retryable(got), true, JSON.stringify(got));
   for (const got of [{ state: 'plate', why: 'cap' }, { state: 'plate', why: 'off' }, { state: 'plate', why: 'secret' }]) assert.equal(retryable(got), false, JSON.stringify(got));
-  assert.deepEqual(RETRY_S, [25, 50, 100]); // under three minutes in all, and never more than three tries
+  assert.deepEqual(RETRY_S, [25, 50, 100, 200, 400]); // backoff to about 13 minutes in all, five tries at most (the art maker's three-a-minute limit)
 });
 test('a card titled only with its frame word ("Calculated") is never painted; the answer keeps Verse\'s plate', () => {
   for (const k of ['Calculated', 'Converted', 'Result', 'Answer']) assert.equal(worthy(card({ subject: k }), { key: k, typeLine: 'Answer \u2014 from Verse' }), false, k);

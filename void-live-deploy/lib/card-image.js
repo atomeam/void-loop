@@ -71,7 +71,18 @@ export const BODY_MAX_EXTRA = 1600, BODY_MIN_FS = 16;
 const STEP_HEAD = /^(?:steps|method|directions|instructions|preparation|how to make it)$/i;
 const HEAD = (b, last) => b.length === 1 && !last && /^[A-Za-z][A-Za-z '&-]{1,30}$/.test(b[0]) && b[0].split(' ').length <= 4;
 const BIG = (b) => b.length === 1 && /^-?\d{1,3}(?:\.\d)?\s?°[FC]?$/.test(b[0]);
-const shortLink = (u) => String(u || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+/** a link as a person reads it on the picture (owner, 2026-11-19: the Paris card's address ran past the box): the host and path, and the first
+ *  ask in it in plain words, its first part only ("a-to-mind.com/weather/?q=Paris"); at most 56 letters. Pure. */
+export function shortLink(u) {
+  let out = String(u || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+  try {
+    const x = new URL(String(u)), first = [...x.searchParams][0];
+    let v = first ? String(first[1]).split(',')[0].trim() : '';
+    if (v.length > 24) v = v.slice(0, 24).replace(/\s+\S*$/, '');
+    out = x.host.replace(/^www\./, '') + x.pathname + (first && v ? '?' + first[0] + '=' + v : '');
+  } catch (_) {}
+  return out.length > 56 ? out.slice(0, 56).replace(/[/?=&][^/?=&]*$/, '') : out;
+}
 export function bodyLayout(text, room = 246, { w = 624, link = '', soft = '#c9cfe8' } = {}) {
   const blocks = String(text || '').replace(/\r/g, '').split(/\n\s*\n/).map((b) => b.split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean)).filter((b) => b.length);
   const lay = (fs, upto, tail) => {
@@ -112,7 +123,7 @@ export function bodyLayout(text, room = 246, { w = 624, link = '', soft = '#c9cf
       for (const l of b) wrap(l, cols(w), 9999).forEach((t) => { y += lh; put(t, 0); });
       steps = false;
     }
-    if (tail) { const tf = Math.max(13, fs - 3); y += Math.round(tf * 1.9); put(tail, 0, { italic: true, fill: soft, fs: tf }); }
+    if (tail) { const tf = Math.max(13, fs - 3); y += Math.round(tf * 0.6); wrap(tail, cols(w, tf), 4).forEach((t) => { y += Math.round(tf * 1.3); put(t, 0, { italic: true, fill: soft, fs: tf }); }); } // wrapped: the line never runs past the box
     return { els, height: y + Math.round(fs * 0.5) };
   };
   const tailOf = (cut) => (link ? (cut ? 'The full card continues at ' : 'Full card: ') + shortLink(link) : cut ? 'The rest of this card is in its copied text.' : '');
