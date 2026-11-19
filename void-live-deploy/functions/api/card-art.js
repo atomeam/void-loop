@@ -22,6 +22,7 @@
 // Verse's ink plate. Over the cap is the same answer.
 import { rateLimited } from './answer.js';
 import { imageAiToday } from './image.js';
+import { infraCents } from './coder.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
@@ -59,6 +60,40 @@ async function cached(env, key) {
 // the image page's Workers AI pictures (functions/api/image.js) count here too: the two share one daily cap, so /image/ spends nothing new
 async function madeToday(env) {
   try { await ensure(env); const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE day = ?').bind(today()).first(); return (Number(r && r.n) || 0) + (await imageAiToday(env)); } catch (_) { return Infinity; }
+}
+// PAST THE FREE SHARE, VERSE PAYS (owner, 2026-11-19: "a free limit is never a stop"; the coder's #3009 fall-through): when the day's free Workers AI
+// share (capOf) is used, the same Workers AI models keep painting as paid usage, each painting taken from the treasury's infrastructure pot and logged
+// there with its cost (one cent, the smallest charge: a FLUX picture costs Cloudflare well under that). It stops only when the pot is empty or at
+// ART_PAID_CAP paintings a day (a runaway guard, 300 by default). Keyless Pollinations is never asked (it stamps a logo).
+export const PAID_CAP = 300, ART_CENTS = 1;
+export const paidCapOf = (env) => { const n = Math.floor(Number(env && env.ART_PAID_CAP)); return Number.isFinite(n) && n >= 0 && String((env && env.ART_PAID_CAP) ?? '').trim() !== '' ? n : PAID_CAP; };
+export async function paidToday(env) {
+  try { await infraCents(env); const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_treasury WHERE kind = 'spend' AND purpose LIKE 'card art past the free share%' AND substr(at, 1, 10) = ?").bind(today()).first(); return Number(r && r.n) || 0; } catch (_) { return Infinity; }
+}
+export async function canPay(env) { return !!(env && env.AI) && (await paidToday(env)) < paidCapOf(env) && (await infraCents(env)) >= ART_CENTS; }
+export async function billArt(env, model) {
+  try { await env.DB.prepare('INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, ?, ?, ?, ?, ?)').bind('art-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8), new Date().toISOString(), 'spend', 'infrastructure', ART_CENTS, 'card art past the free share (' + String(model).split('/').pop().slice(0, 40) + ')', 'done').run(); return ART_CENTS; } catch (_) { return 0; }
+}
+const pollReady = (env) => pollOn(env) && !!String((env && env.POLLINATIONS_KEY) || '').trim();
+// THE KEPT-PICTURE CHECK (owner, 2026-11-19: "a saved picture that fails the quality check is dropped and never shown"): a real-setting row kept before
+// the quality gate is looked at once by the vision model before it is shown; a weak one (no clear subject, too dark, a watermark) is deleted, so the
+// card shows its plate and paints again. A row that passes, or any row painted since the gate, is marked in void_art_ok and never looked at again.
+const CHECKED = /^(?:scene|weather)\d+ /;
+async function okRow(env, key) { try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_ok (subject TEXT PRIMARY KEY, day TEXT NOT NULL)').run(); await env.DB.prepare('INSERT OR REPLACE INTO void_art_ok (subject, day) VALUES (?, ?)').bind(key, today()).run(); } catch (_) {} }
+export async function keptWeak(env, key, row) {
+  if (!CHECKED.test(key) || !row || !row.img) return false;
+  try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_ok (subject TEXT PRIMARY KEY, day TEXT NOT NULL)').run(); if (await env.DB.prepare('SELECT 1 AS y FROM void_art_ok WHERE subject = ?').bind(key).first()) return false; } catch (_) { return false; }
+  const kind = /^weather\d+ /.test(key) ? 'weather' : 'answer';
+  if (await weakArt(env, row.img, gateSubject(key, kind))) { try { await env.DB.prepare('DELETE FROM void_art WHERE subject = ?').bind(key).run(); } catch (_) {} await noteMiss(env, 'kept art dropped'); return true; }
+  await okRow(env, key); return false;
+}
+// one unchecked real-setting row a tick (the background repaint's turn): looked at, and dropped when weak
+export async function checkOne(env) {
+  try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_ok (subject TEXT PRIMARY KEY, day TEXT NOT NULL)').run();
+    const r = await env.DB.prepare("SELECT subject, img FROM void_art WHERE (subject GLOB 'scene[0-9]* *' OR subject GLOB 'weather[0-9]* *') AND subject NOT IN (SELECT subject FROM void_art_ok) ORDER BY day DESC LIMIT 1").first();
+    if (!r) return { state: 'checked-all' };
+    return { state: (await keptWeak(env, r.subject, r)) ? 'dropped' : 'ok' };
+  } catch (_) { return { state: 'busy' }; }
 }
 // why a paint gave the plate, counted by day (owner, 2026-10-17: "still no art": three paintings in a day, and nothing said why). The reason is the model's
 // own error (cut to 80 characters, keys and secrets removed), "timeout" or "not an image"; never a subject or anything typed. Read with D1: void_art_miss.
@@ -151,6 +186,7 @@ export async function photoLook(env, asked, get = (u, o) => fetch(u, o), why = [
 }
 // one painting from one model: FLUX.2 [klein] takes multipart form data with the card's 16:9 art window or a poster's tall 2:3 (its steps are fixed at 4); schnell takes JSON
 // and paints a square. The reply is { image: base64 }, or a stream of the image's bytes, read here.
+const paintWith = (...a) => paintOnce(...a); // the route's paid wrapper shadows the name
 export function paintOnce(env, model, prompt, [w, h] = [ART_W, ART_H]) {
   if (!/flux-2/.test(model)) return env.AI.run(model, { prompt, steps: 4 });
   const form = new FormData(); form.append('prompt', prompt); form.append('width', String(w)); form.append('height', String(h));
@@ -194,7 +230,8 @@ export async function repaintTick(request, env, now = Date.now()) {
     const r = await env.DB.prepare('UPDATE void_art_tick SET at = ? WHERE id = 1 AND at < ?').bind(now, now - REPAINT_EVERY_MS).run();
     const changed = r && r.meta ? r.meta.changes : r && r.changes;
     if (!changed) { const ins = await env.DB.prepare('INSERT OR IGNORE INTO void_art_tick (id, at) VALUES (1, ?)').bind(now).run(); const n = ins && ins.meta ? ins.meta.changes : ins && ins.changes; if (!n) return { state: 'wait' }; }
-    return await (await repaintOne(request, env, { internal: true })).json();
+    const done = await (await repaintOne(request, env, { internal: true })).json();
+    return { ...done, check: (await checkOne(env)).state };
   } catch (_) { return { state: 'busy' }; }
 }
 export async function onRequestGet({ request, env, waitUntil }) {
@@ -205,13 +242,14 @@ export async function onRequestGet({ request, env, waitUntil }) {
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
   const row = await cached(env, key);
+  if (row && await keptWeak(env, key, row)) return json({ state: 'none', key, dropped: true }, 200, { 'cache-control': 'no-store' }); // a weak kept picture is never shown: the page paints again
   if (row) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}) }, 200, { 'cache-control': 'public, max-age=3600' }); }
   // a subject painted before the real-setting look (lib/art-rules.js staleKeyOf): its old space-backdrop picture is never sent (owner, 2026-11-19: no
   // galaxy versions); stale: true tells the page to paint the new one now (the background repaint below clears the rest)
   const old = staleKeyOf(subjectKey(raw), kind), was = old ? await cached(env, old) : null;
   if (was) return json({ state: 'none', key, stale: true }, 200, { 'cache-control': 'no-store' });
   if (!on(env)) return plate('off', {}); // nothing can be painted: the page shows no button
-  if ((await madeToday(env)) >= capOf(env)) return plate('cap');
+  if ((await madeToday(env)) >= capOf(env) && !pollReady(env) && !(await canPay(env))) return plate('cap');
   return json({ state: 'none', key }, 200, { 'cache-control': 'no-store' });
 }
 
@@ -224,7 +262,7 @@ export const REPAINT_RESERVE = 10, OLD_ROW = "subject NOT GLOB 'scene[0-9]* *' A
 export async function repaintOne(request, env, { internal = false } = {}) {
   if (!on(env)) return json({ state: 'off' });
   const made = await madeToday(env), room = capOf(env) - REPAINT_RESERVE; // the Workers AI share only, less the reserve: the background never pushes visitors onto the slower free fallback
-  if (made >= room) return json({ state: 'reserve', made });
+  if (made >= room && !(await canPay(env))) return json({ state: 'reserve', made }); // past the free share the treasury pays (canPay), so the backlog keeps moving
   let left = 0, pick = null;
   try {
     await ensure(env);
@@ -249,14 +287,19 @@ export async function onRequestPost({ request, env, internal = false }) {
   if (!key) return json({ error: 'a subject, please' }, 400);
   const why = refusal(raw, kind, isSecret);
   if (why) return plate(why);
-  const row = await cached(env, key), again = !!(body && body.again === true);
+  let row = await cached(env, key); const again = !!(body && body.again === true);
   // a new painting of a subject already painted (owner, 2026-10-18: "each card could have a regenerate card art button"): at most once a day per
   // subject (the row's day says when it was last painted), counted in the same daily cap and rate limit; the old picture stays if the new one fails
   // a kept picture that fails the quality gate (below) may be painted again the same day
+  if (row && !again && await keptWeak(env, key, row)) row = null; // a weak kept picture is dropped (keptWeak) and painted fresh below
+  const weakAgain = !!(row && again && row.day === today()); // past the check below only when the kept picture is weak: it is never shown again
   if (row && (!again || (row.day === today() && !(await weakArt(env, row.img, gateSubject(key, kind)))))) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}), ...(again ? { why: 'again-today' } : {}) }); }
   if (!on(env)) return plate('off');
-  const made = await madeToday(env), overWorkers = made >= capOf(env);
-  if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
+  const dropWeak = async () => { if (weakAgain) { try { await env.DB.prepare('DELETE FROM void_art WHERE subject = ?').bind(key).run(); } catch (_) {} } };
+  const made = await madeToday(env), overFree = made >= capOf(env), paid = overFree && await canPay(env), overWorkers = overFree && !paid; // overWorkers: no Workers AI at all (the pot is empty or at its cap)
+  if (overWorkers && (!pollReady(env) || made >= capOf(env) + POLL_CAP)) { await dropWeak(); return plate('cap'); }
+  let spent = 0; // cents taken from the treasury for this card (logged in void_treasury, one row a painting)
+  const paintOnce = async (e, model, prompt, sz) => { const r = await paintWith(e, model, prompt, sz); if (paid) spent += await billArt(e, model); return r; };
   if (!internal && await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
   // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template; a cartoon gets its look instead (lib/art-rules.js LOOK_SYSTEM)
   const seen = kind === 'cartoon' ? await lookFor(env, key) : { look: '', why: '' }, look = seen.look, scene = undirected(kind) ? '' : await direct(env, key, kind, body && body.family, body && body.take); // a cartoon, a poster and a backdrop paint from their own templates (lib/art-rules.js)
@@ -272,8 +315,8 @@ export async function onRequestPost({ request, env, internal = false }) {
     if (!img && pollOn(env)) { try { img = await pollinations(env, prompt, key, undefined, size); } catch (e) { await noteMiss(env, 'pollinations ' + missWhy(e)); } }
     if (!img && !r) throw new Error('no painter answered');
     if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
-  } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }
-  if (!img) return plate('busy'); // nothing usable: nothing is kept
+  } catch (e) { await noteMiss(env, missWhy(e)); { await dropWeak(); return plate('busy'); }; }
+  if (!img) { await dropWeak(); return plate('busy'); }; // nothing usable: nothing is kept
   // readable writing on the painting (misspelt mottos, carved tablets): drop it, never keep it; one quiet retry with the fixed no-text template, then the plate
   if (kind !== 'cartoon' && await textInArt(env, img)) {
     await noteMiss(env, 'text in art');
@@ -286,7 +329,7 @@ export async function onRequestPost({ request, env, internal = false }) {
       }
       if (!img2 && pollOn(env)) { try { img2 = await pollinations(env, retry, key, undefined, size); } catch (_) {} }
     } catch (_) { img2 = ''; }
-    if (img2 && !(await textInArt(env, img2))) img = img2; else { await noteMiss(env, 'text in art again'); return plate('text'); }
+    if (img2 && !(await textInArt(env, img2))) img = img2; else { await noteMiss(env, 'text in art again'); { await dropWeak(); return plate('text'); }; }
   }
   if (kind !== 'cartoon' && await weakArt(env, img, gateSubject(key, kind))) {
     await noteMiss(env, 'weak art');
@@ -295,19 +338,20 @@ export async function onRequestPost({ request, env, internal = false }) {
       if (!overWorkers) { try { img3 = imageOf(await asImage(await Promise.race([paintOnce(env, models('art'), hero, size), new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS))]))); } catch (_) {} }
       if (!img3 && pollOn(env)) { try { img3 = await pollinations(env, hero, key + ' hero', undefined, size); } catch (_) {} }
     } catch (_) { img3 = ''; }
-    if (img3 && !(await weakArt(env, img3, gateSubject(key, kind))) && !(await textInArt(env, img3))) img = img3; else { await noteMiss(env, 'weak art again'); return plate('weak'); }
+    if (img3 && !(await weakArt(env, img3, gateSubject(key, kind))) && !(await textInArt(env, img3))) img = img3; else { await noteMiss(env, 'weak art again'); { await dropWeak(); return plate('weak'); }; }
   }
   const told = kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {};
   // a cartoon painted without a look because the look failed (no photo, and the text model erred or said nothing; 'unknown' is an answer and is kept) is a guess at the subject: shown once, never kept, so the next ask tries
   // again instead of serving the guess for ever (2026-10-24: the kept "dimebag darrel" was a smiling stranger in a blue shirt, painted when the look timed out)
   if (kind === 'cartoon' && !keepable(seen)) return json({ state: 'art', key, img, cached: false, kept: false, ...told });
   await keepName(env, key, seen.name);
+  if (CHECKED.test(key)) await okRow(env, key); // passed the gate: never looked at again
   try {
     await ensure(env);
-    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...told }); }
+    if (row) { await env.DB.prepare('UPDATE void_art SET img = ?, day = ? WHERE subject = ?').bind(img, today(), key).run(); return json({ state: 'art', key, img, cached: false, again: true, ...told, ...(spent ? { paid: true, cents: spent } : {}) }); }
     await env.DB.prepare('INSERT OR IGNORE INTO void_art (subject, img, day) VALUES (?, ?, ?)').bind(key, img, today()).run();
     const won = await cached(env, key); // two people at once: both get the picture stored first
-    if (won) return json({ ...hit(won, key), cached: false, ...told });
+    if (won) return json({ ...hit(won, key), cached: false, ...told, ...(spent ? { paid: true, cents: spent } : {}) });
   } catch (_) {}
   return json({ state: 'art', key, img, cached: false, ...told });
 }
