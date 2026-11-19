@@ -405,7 +405,6 @@ export const SPECS = {
     await t.p.waitForFunction(() => !/Reading the log/.test(document.getElementById('log').textContent), null, { timeout: 15000 }).catch(() => {});
     t.ok(!/Reading the log/.test(await t.text('#log')), 'the log is drawn, or says plainly it could not be read');
   },
-  '/obituaries/': async (t) => { await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#list > *').count()) > 0, 'real notices listed'); },
   '/paint/': async (t) => {
     await t.clickText('The Starry Night'); await t.p.waitForTimeout(1200); t.ok(/Starry Night/.test(await t.p.getAttribute('#c', 'aria-label').catch(() => '') || ''), 'picking The Starry Night loads that painting');
     await t.clickText('The Great Wave'); await t.p.waitForTimeout(1200); t.ok(/Great Wave/.test(await t.p.getAttribute('#c', 'aria-label').catch(() => '') || ''), 'and back to The Great Wave');

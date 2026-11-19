@@ -59,3 +59,12 @@ test('the assimilated list is an owner-only Versus view; its phone layout cannot
   assert.match(css, /\.as table, \.as tbody \{ display: block; \}/);
   assert.match(css, /\.as \.st \{ white-space: normal; \}/);
 });
+
+test('obituaries and lineage is an owner-only Versus view, with the files it reads', () => {
+  assert.ok(!existsSync(new URL('obituaries/index.html', D)), '/obituaries/ is no longer a page');
+  assert.match(read('versus/index.html'), /model && view === 'obituaries'[\s\S]*import\('\/versus\/obituaries\.js'\)/);
+  for (const f of ['/versus/obituaries.js', '/parity.json', '/tower.evidence.json', '/history/abc.com.json', '/lib/tower.js']) assert.ok(ownerOnlyPath(f), f);
+  for (const f of ['/versus/obituaries.js', '/parity.json']) assert.ok(JSON.parse(read('_routes.json')).include.includes(f), f + ' goes through the middleware');
+  assert.match(read('versus/obituaries.js'), /await import\('\/lib\/tower\.js'\)/, 'the Tower code loads only inside the owner view');
+  assert.deepEqual(movedTo('/obituaries/', '?q=abc'), { to: '/versus/?view=obituaries&q=abc', status: 301 });
+});

@@ -40,7 +40,6 @@ const KEPT = [
   ['/progress/', 'daily', '0.6', [D + 'progress/index.html', D + 'exam/latest.json']],
   ['/self/', 'daily', '0.6', [D + 'self/index.html', D + 'lib/self-model.js']],
   ['/under-the-hood/', 'weekly', '0.5', [D + 'under-the-hood/index.html', D + 'under-the-hood/app.js']],
-  ['/obituaries/', 'weekly', '0.7', [D + 'obituaries/index.html']],
   ['/markets/screener/', 'weekly', '0.7', [D + 'markets/screener/index.html']],
   // pages linked from the site and its footers that no list held, so neither a search engine nor the self-check opened them: the privacy policy,
   // the boards' rules, and the four pages under /generators/ (the editor, the character chat, the story writer, the forum)
