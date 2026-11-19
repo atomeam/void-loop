@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T20:25:43.122Z",
+ "updated": "2026-11-19T20:35:06.386Z",
  "last24h": {
-  "ticks": 2,
+  "ticks": 3,
   "started": 0,
-  "requeued": 0,
+  "requeued": 1,
   "setAside": 0,
   "probes": 0,
   "errors": 1
@@ -22,6 +22,10 @@
   }
  ],
  "held": [
+  {
+   "id": "want-exam-podcasts",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
   {
    "id": "want-guard-hourly-main-green",
    "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
@@ -97,16 +101,12 @@
   {
    "id": "mwe253d6",
    "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
-  },
-  {
-   "id": "mwe25lmi",
-   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 7,
+   "used": 8,
    "cap": 90
   },
   "day": {
@@ -229,6 +229,30 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 493,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-19T20:35:06.386Z",
+   "open": 500,
+   "started": [],
+   "requeued": 1,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 493,
    "warnings": 0
