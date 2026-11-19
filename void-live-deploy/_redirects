@@ -129,8 +129,4 @@
 /news/global-headlines/ /news/?sec=world 301
 /emoji-combos/emoji-dictionary /emoji-combos/ 301
 /emoji-combos/emoji-dictionary/ /emoji-combos/ 301
-# the rival list and the side-by-side moved into the owner-only Versus (visitors there see the Out of Order sign)
-/rival /versus/?view=rival 301
-/rival/ /versus/?view=rival 301
-/compare /versus/?view=compare 301
-/compare/ /versus/?view=compare 301
+# /rival/ and /compare/ moved into Versus: lib/versus-moved.js answers them (it keeps the query; this file would drop it)

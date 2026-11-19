@@ -3,19 +3,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { parseRedirects, redirectTo } from '../void-live-deploy/lib/page-pass.js';
+import { movedTo, MOVED_PATHS } from '../void-live-deploy/lib/versus-moved.js';
+import { onRequest } from '../void-live-deploy/functions/_middleware.js';
 import { ownerOnlyPath } from '../void-live-deploy/lib/owner-gate.js';
 
 const D = new URL('../void-live-deploy/', import.meta.url);
 const read = (p) => readFileSync(new URL(p, D), 'utf8');
 
-test('/rival/ and /compare/ are no longer pages; they redirect into /versus/ and keep the question asked', () => {
+test('/rival/ and /compare/ are no longer pages; they redirect into /versus/ and keep the query, so an old bookmark lands on the same view', async () => {
   assert.ok(!existsSync(new URL('rival/index.html', D)) && !existsSync(new URL('compare/index.html', D)));
-  const t = parseRedirects(read('_redirects'));
-  assert.deepEqual(redirectTo(t, '/rival/', '').to, '/versus/?view=rival');
-  assert.deepEqual(redirectTo(t, '/rival/', '?site=abc.com'), { to: '/versus/?view=rival&site=abc.com', status: 301 });
-  assert.deepEqual(redirectTo(t, '/compare/', '?floor=x'), { to: '/versus/?view=compare&floor=x', status: 301 });
-  assert.equal(redirectTo(t, '/compare', '').status, 301);
+  assert.deepEqual(movedTo('/rival/', ''), { to: '/versus/?view=rival', status: 301 });
+  assert.deepEqual(movedTo('/rival/', '?site=abc.com'), { to: '/versus/?view=rival&site=abc.com', status: 301 });
+  assert.deepEqual(movedTo('/compare', '?floor=x'), { to: '/versus/?view=compare&floor=x', status: 301 });
+  assert.equal(movedTo('/versus/', ''), null);
+  // _redirects runs before any function on Cloudflare and drops the query, so these paths are not in it; they reach the middleware through _routes.json
+  assert.doesNotMatch(read('_redirects'), /^\/(rival|compare)\/? /m);
+  const include = JSON.parse(read('_routes.json')).include;
+  for (const p of MOVED_PATHS) assert.ok(include.includes(p), p + ' goes to the middleware');
+  const res = await onRequest({ request: new Request('https://a-to-mind.com/rival/?site=abc.com'), env: {}, next: () => new Response('static') });
+  assert.equal(res.status, 301);
+  assert.equal(res.headers.get('location'), 'https://a-to-mind.com/versus/?view=rival&site=abc.com');
 });
 
 test('the sitemap builder lists neither old page', async () => {
