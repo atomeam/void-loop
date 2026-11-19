@@ -668,9 +668,13 @@
         radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
       opacity: .55; animation: depthBreath 14s steps(70) infinite alternate; will-change: transform, opacity; } /* steps: ~5 redraws a second, too slow a drift to see the steps; a smooth 60 fps breath made every keystroke wait an extra frame (2026-10-10) */
     @keyframes depthBreath { to { opacity: .8; transform: scale(1.04); } }
-    /* the particle field (#2921) and the sky map (#2944) are earned looks, like the swarm and the nebula: "add a particle field" (the public stage runs no WebGL) */
+    /* the particle field (#2921), its shape morph (#2926) and the sky map (#2944) are the DEFAULT look (owner, 2026-11-19: "i had an updated
+       starfield"): fx 'field' on a fresh visit. While it shows, the plain void's layers step aside, as they did before #2957 (the elements stay,
+       so their checks still read them). "calm my void" or "remove the particle field" brings the plain void back. */
     #void-particles, #void-cosmos { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: none; }
     html[data-fx="field"] #void-particles, html[data-fx="field"] #void-cosmos { display: block; }
+    html[data-fx="field"], html[data-fx="field"] body { background: #05060a; }
+    html[data-fx="field"] #void-stars, html[data-fx="field"] #void-stars-far, html[data-fx="field"] #void-depth, html[data-fx="field"] #void-glow, html[data-fx="field"] body::after { display: none !important; }
     /* film grain dithers the dark gradient so it never bands into rings */
     #void-depth::after { content: ''; position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -1171,7 +1175,7 @@
     *,*::before,*::after{box-sizing:border-box}
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
-    /* the home is the void and the ask bar (owner, 2026-11-05): no wordmark, no heading, no Install line */
+    /* the home shows no wordmark, no heading and no Install line (2026-11-05) */
     #v01d,#verse-install{display:none !important} #away-note{opacity:0 !important} /* the away line keeps its place and its state but is not shown (opacity, not display:none, so its "show me" stays clickable: display:none failed four suite shards). The intro wordmark stays in the stylesheet and is not painted. */
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
@@ -4626,12 +4630,13 @@ say('nothing selected to remove');
 
     // row 13: entering your own Verse (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#05070d', glow: '#0b111c', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
+    const LOOK_DEFAULT = { bg: '#05070d', glow: '#0b111c', stars: 'on', quiet: false, scale: 1, fx: 'field', backdrop: '' }; // fx 'field': the starfield is the default (owner, 2026-11-19)
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
     const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
     let voidLook = { ...LOOK_DEFAULT };
-    try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
+    // a look saved before the starfield became the default holds fx 'off' without anyone asking for it: only an explicit "calm my void" (calm: true) keeps it off
+    try { const saved = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}; if (saved.fx === 'off' && !saved.calm) delete saved.fx; voidLook = { ...LOOK_DEFAULT, ...saved }; } catch (_) {}
     if (PAGE && PAGE.look) voidLook = { ...LOOK_DEFAULT, ...PAGE.look };
     const starCv = document.getElementById('void-stars');
     const starFar = document.getElementById('void-stars-far');
@@ -4827,7 +4832,7 @@ say('nothing selected to remove');
       else { starCv.classList.remove('on'); if (starFar) starFar.classList.remove('on'); }
       const bd = document.getElementById('void-backdrop');
       if (bd) { const on = backdropOk(voidLook.backdrop); bd.style.backgroundImage = on ? 'url("' + voidLook.backdrop + '")' : ''; bd.classList.toggle('on', on); }
-      document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
+      document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the default is the particle field
       window.dispatchEvent(new Event('void-fx'));
       if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
@@ -4853,6 +4858,7 @@ say('nothing selected to remove');
       if (/\bquieter\s+(font|text)\b/.test(lower)) voidLook.quiet = true;
       if (/\b(bigger|larger)\s+text\b/.test(lower)) voidLook.scale = Math.min(1.4, (voidLook.scale || 1) + 0.15);
       if (/\bsmaller\s+text\b/.test(lower)) voidLook.scale = Math.max(0.85, (voidLook.scale || 1) - 0.15);
+      voidLook.calm = voidLook.fx === 'off'; // the visitor turned the effects off themselves: it stays off on the next visit
       applyLook(true);
       return true;
     }
@@ -7643,7 +7649,7 @@ say('nothing selected to remove');
     }
   })();
   // The particle field: one WebGL2 micro-particle field on obsidian. Still at rest; pointer, touch or typing gives a damped nudge; one submit ripple.
-  // An earned look ("add a particle field"), started the first time the look asks for it: the public stage runs no WebGL.
+  // The default look (fx 'field'), started as soon as the look asks for it; "calm my void" turns it off.
   (function () { var started = false;
     function want() { return (document.documentElement.dataset.fx || 'off') === 'field'; }
     function go() { if (started || !want()) return; started = true; field();
