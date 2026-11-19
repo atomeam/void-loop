@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #portals { position: absolute; inset: 0; pointer-events: none; }
+  .portal {
+    position: absolute; width: 120px; height: 80px; border-radius: 12px;
+    background: rgba(30,40,80,0.6); border: 1px solid rgba(100,180,255,0.4);
+    backdrop-filter: blur(4px); color: #adf; font-size: 12px; padding: 8px;
+    pointer-events: auto; cursor: grab; transition: transform 0.1s linear, background 0.3s;
+    user-select: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .portal:active { cursor: grabbing; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { background: #224; color: #adf; border: 1px solid #46a; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+  #status { margin-top: 6px; font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Particle Swarm Online-MLP Mind with Embodied DOM Portals · Verse lab</title>
+<meta name="description" content="A local online-learning Multi-Layer Perceptron (MLP) mind that continuously adapts its weights via a lightweight policy-gradient style update from user reward">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Particle Swarm Online-MLP Mind with Embodied DOM Portals · Verse lab">
+<meta property="og:description" content="A local online-learning Multi-Layer Perceptron (MLP) mind that continuously adapts its weights via a lightweight policy-gradient style update from user reward">
+<meta property="og:url" content="https://a-to-mind.com/lab/f816-webgpu-particle-online-mlp-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f816-webgpu-particle-online-mlp-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+<div id="ui">
+  <div>F816 Online-MLP Particle Mind</div>
+  <button id="seal">Seal Weights</button>
+  <button id="reset">Reset</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Particle Swarm Online-MLP Mind with Embodied DOM Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/photo-palette/" data-tool="Photo palette">Use it: Photo palette</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

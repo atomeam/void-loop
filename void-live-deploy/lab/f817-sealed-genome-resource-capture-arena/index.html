@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { position:absolute; top:0; left:0; z-index:0; }
+#arena { position:relative; width:100vw; height:100vh; }
+.agent {
+  position:absolute; width:60px; height:60px; border-radius:12px;
+  background:hsl(var(--h),70%,50%); display:flex; align-items:center; justify-content:center;
+  font-size:10px; color:#fff; user-select:none; cursor:pointer; z-index:2;
+  box-shadow:0 4px 12px rgba(0,0,0,.4); transition:transform .05s linear;
+}
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.6); padding:8px; border-radius:8px; font-size:12px; }
+button { margin:2px; padding:4px 8px; background:#222; color:#eee; border:1px solid #444; border-radius:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>sealed-genome-resource-capture-arena · Verse lab</title>
+<meta name="description" content="A competitive multi-agent arena on the Verse canvas. 6 living DOM agent cards, each controlled by a tiny local MLP (6-8-4), forage and compete for resources on a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="sealed-genome-resource-capture-arena · Verse lab">
+<meta property="og:description" content="A competitive multi-agent arena on the Verse canvas. 6 living DOM agent cards, each controlled by a tiny local MLP (6-8-4), forage and compete for resources on a">
+<meta property="og:url" content="https://a-to-mind.com/lab/f817-sealed-genome-resource-capture-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f817-sealed-genome-resource-capture-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F817 Resource Capture Arena</div>
+  <button id="seal">Seal Best Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Tilt or drag pointer to bias agents. Capture to transfer genomes.</div>
+</div>
+<div id="arena"><canvas id="field"></canvas></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">sealed-genome-resource-capture-arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/checksum/" data-tool="File checksum checker">Use it: File checksum checker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

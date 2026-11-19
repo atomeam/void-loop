@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#canvas { position:absolute; inset:0; }
+.agent { position:absolute; width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg,#4a6,#a46); display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; pointer-events:none; transition:transform 0.05s; box-shadow:0 0 12px #4af; }
+#ui { position:absolute; top:8px; left:8px; z-index:10; background:rgba(0,0,20,0.7); padding:8px; border-radius:8px; font-size:12px; max-width:280px; }
+button, textarea { margin:2px; font-size:11px; }
+textarea { width:260px; height:60px; }
+#log { font-size:10px; max-height:80px; overflow:auto; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webrtc-peer-sealed-orientation-mlp-arena · Verse lab</title>
+<meta name="description" content="Peer-to-peer multi-agent competition on The Verse canvas. Local tiny MLPs (8-12-4) are causally driven by DeviceOrientation tilt + pointer residual.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webrtc-peer-sealed-orientation-mlp-arena · Verse lab">
+<meta property="og:description" content="Peer-to-peer multi-agent competition on The Verse canvas. Local tiny MLPs (8-12-4) are causally driven by DeviceOrientation tilt + pointer residual.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f840-webrtc-peer-sealed-orientation-mlp-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f840-webrtc-peer-sealed-orientation-mlp-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div>F840 · Peer Sealed MLP Arena · Verse</div>
+  <button id="offer">Create Offer</button>
+  <button id="answer">Create Answer</button>
+  <button id="seal">Seal Genome</button>
+  <div>Paste SDP:</div>
+  <textarea id="sdp" placeholder="paste offer/answer JSON"></textarea>
+  <button id="apply">Apply Remote</button>
+  <div id="status">local</div>
+  <div id="log"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webrtc-peer-sealed-orientation-mlp-arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/checksum/" data-tool="File checksum checker">Use it: File checksum checker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.7); padding:8px 12px; border-radius:8px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; z-index:10; font-size:12px; opacity:.8; }
+canvas { display:block; width:100vw; height:100vh; }
+.portal { position:absolute; width:72px; height:72px; border:2px solid #4af; border-radius:8px; background:rgba(68,170,255,.15); cursor:grab; display:flex; align-items:center; justify-content:center; font-size:11px; text-align:center; user-select:none; transition:transform .1s; }
+.portal:active { cursor:grabbing; }
+.portal.high { border-color:#f4a; box-shadow:0 0 12px #f4a; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU CML Orientation-MLP Portal Mind · Verse lab</title>
+<meta name="description" content="A 2D Coupled Map Lattice (CML) of logistic maps evolves on a discrete lattice.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU CML Orientation-MLP Portal Mind · Verse lab">
+<meta property="og:description" content="A 2D Coupled Map Lattice (CML) of logistic maps evolves on a discrete lattice.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f828-webgpu-cml-orientation-mlp-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f828-webgpu-cml-orientation-mlp-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">F828 CML Orientation-MLP — tilt / move | click portal reward | S seal | R restore</div>
+<div id="status">init</div>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU CML Orientation-MLP Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
