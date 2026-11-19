@@ -1,6 +1,6 @@
 /**
  * client-confirm-pack skill — a client-facing card that lists the few confirms
- * the client still gives against everything Verse owns. Makes selling "we own
+ * the client still gives against everything Verse owns. Makes selling "verse does
  * the heavy lifting" clear and keeps client work minimal. Rules-based, offline.
  * Nothing is sent. The card stays on the stage.
  * "confirm pack for the onboarding system", "what does the client still confirm",
@@ -49,7 +49,7 @@ function run(text, api) {
   const pack = confirmPackFor(name);
   showPage((el) => {
     el.innerHTML = '<h2>Client confirm pack: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. The client keeps only the confirms.</p>'
+      + '<p>Verse owns the hard work. The client keeps only the confirms.</p>'
       + '<h3>What the client still confirms</h3><ul>'
       + pack.clientConfirms.map(s => '<li>' + esc(s) + '</li>').join('')
       + '</ul>'
