@@ -49,7 +49,7 @@ function run(text, api) {
   const pack = statusFor(name);
   showPage((el) => {
     el.innerHTML = '<h2>Delivery status: ' + esc(name) + '</h2>'
-      + '<p>Verse owns the heavy lifting. This is the living status the client can keep.</p>'
+      + '<p>Verse owns the hard work. This is the living status the client can keep.</p>'
       + '<h3>Systems Verse owns</h3><ul>'
       + pack.systems.map(s => '<li>' + esc(s) + '</li>').join('')
       + '</ul>'
