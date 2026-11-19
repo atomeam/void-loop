@@ -393,5 +393,6 @@
 "connections",
 "automation-handoff",
 "delivery-pack",
-"monitor-receipt"
+"monitor-receipt",
+"client-ownership-map"
 ]
