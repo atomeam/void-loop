@@ -11,6 +11,7 @@ import { plan, probeDue, growDue, designDue, willDue, lapDue, dailyDue, sweepDue
 import { wantsOf } from './visitor-pass.mjs';
 import { queueBlueprints } from './watch-build.mjs'; // every blueprint Verse wrote becomes a tv: build job, a few an hour
 import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
+import { issueJobsOf } from './site-test-close.mjs'; // open site-test issues become one fix job each
 import { pauseState, PAUSE_TITLE, LOOP_CODE } from './verse-loop.mjs'; // the coder's own back-off rule, so the conductor and the loop agree
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
@@ -226,4 +227,7 @@ function finish(state, now, t) {
   return out;
 }
 
-if (import.meta.url === `file://${process.argv[1]}` && args[0] === 'tick') tick().catch((e) => { warn('tick: ' + String(e.message || e).slice(0, 160)); finish({}, Date.now(), null); }).finally(() => process.exit(0));
+if (import.meta.url === `file://${process.argv[1]}` && args[0] === 'tick') {
+  process.on('unhandledRejection', (e) => warn('kept running after its call: ' + String((e && e.message) || e).slice(0, 140)));
+  tick().catch((e) => { warn('tick: ' + String(e.message || e).slice(0, 160)); finish({}, Date.now(), null); }).finally(() => process.exit(0));
+}
