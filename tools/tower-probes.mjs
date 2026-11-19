@@ -973,11 +973,11 @@ export const PROBES = Object.freeze({
       ['brightness and contrast', /\bbrightness\b[\s\S]{0,20}\bcontrast\b/i], ['saturation', /\bsaturation\b/i], ['blur and sharpen', /\bblur\b[\s\S]{0,12}\bsharpen\b/i], ['filters', /\bfilters\b/i], ['text', /\btext\b/i], ['drawing', /\bdrawing\b/i], ['undo and redo', /\bundo\b[\s\S]{0,12}\bredo\b/i], ['EXIF', /\bexif\b/i], ['GPS', /\bgps\b/i], ['strip metadata', /\bstrip\b/i], ['batch to a zip', /\bzip\b/i], ['paste or drop', /\bpaste\b[\s\S]{0,12}\bdrop\b|\bdrop\b[\s\S]{0,40}\bpaste\b/i], ['nothing uploaded', /nothing is uploaded|never uploaded/i], ['works offline', /\boffline\b/i]],
   },
   'photo resizer': {
-    site: 'https://pancardresizer.com/', verse: '/resize-image/',
+    site: 'https://pancardresizer.com/', verse: '/photos/?mode=resize',
     // the page answers once a picture is put in, so the gate chooses its own one-pixel PNG (tower-gate.mjs PIXEL) with the size in the link: the
     // PAN card photo, 3.5 by 2.5 cm at 200 dpi under 50 KB. The truth by arithmetic: 3.5 cm is 3.5 / 2.54 inches, times 200 dots, 276 pixels;
     // 2.5 cm is 197; a one-pixel picture resized to that is far under 50 KB, so the limit is met and the quality chosen is the highest that fits
-    ask: { site: 'https://pancardresizer.com/', verse: '/resize-image/?w=3.5&h=2.5&u=cm&dpi=200&kb=50', verseFile: true },
+    ask: { site: 'https://pancardresizer.com/', verse: '/photos/?mode=resize&w=3.5&h=2.5&u=cm&dpi=200&kb=50', verseFile: true },
     truth: [['3.5 by 2.5 cm at 200 dpi is 276 by 197 pixels', /\b276\s*[×x]\s*197\s*px\b/], ['the file is under the 50 KB limit', /\bKB \(limit 50 KB\)/], ['the JPEG quality chosen, the highest that fits', /\bquality \d+%/i]],
     askParts: { 'exact size': [['the pixel size made', /\b\d+\s*[×x]\s*\d+\s*px\b/]], 'size limit': [['the file size against the limit', /\bKB\b[^\n]*\blimit\b/i]], pdf: [['a PDF to download', /\bpdf\b/i]] },
     // what the best resizers show (pancardresizer.com's fixed card size and KB limit; the best take any size in cm, mm, inches or pixels, a dpi, a

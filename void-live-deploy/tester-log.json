@@ -3,13 +3,41 @@
  "cases": 137,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 225,
-  "grow": 44,
-  "file": 27,
+  "visitor": 227,
+  "grow": 43,
+  "file": 26,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-18T22:19:03Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T21:26:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T21:00:18Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T20:34:08Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-18T20:08:01Z",
    "passed": 0,
@@ -181,54 +209,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T04:51:14Z",
-   "passed": 132,
-   "of": 136,
-   "kind": "grow",
-   "ms": 447,
-   "note": "new ground passed, kept as a regression case: \"why is a half moon called a quarter moon\" (skill:moon)",
-   "failed": [
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-18T04:42:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T02:55:48Z",
-   "passed": 135,
-   "of": 135,
-   "kind": "grow",
-   "ms": 438,
-   "note": "new ground passed, kept as a regression case: \"system design for client onboarding\" (skill:system-design)"
-  },
-  {
-   "at": "2026-11-18T02:47:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
@@ -295,8 +275,8 @@
   {
    "from": "2026-11-04",
    "runs": 157,
-   "passed": 3606,
-   "of": 5241,
+   "passed": 3419,
+   "of": 5046,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,

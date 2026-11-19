@@ -1,26 +1,411 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-18T18:05:22.851Z",
+ "updated": "2026-11-18T23:56:03.618Z",
  "last24h": {
-  "ticks": 1,
-  "started": 0,
+  "ticks": 9,
+  "started": 1,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
   "errors": 1
  },
- "broken": [],
- "held": [],
- "coder": null,
+ "broken": [
+  {
+   "wf": "propose-fix.yml",
+   "fails": 3,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44411043111"
+  },
+  {
+   "wf": "tower-gate.yml",
+   "fails": 6,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44338886005"
+  }
+ ],
+ "held": [
+  {
+   "id": "want-idea-298bf37d16",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "want-idea-f167636764",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "want-idea-ac2885447b",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "want-idea-f50546a338",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "want-idea-5e6497554d",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "want-idea-25e717d31f",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwau0ded",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwau7dgo",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwavhzoe",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwaw4bg9",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwawomei",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwaxgnhr",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mway8e3z",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwb2rdef",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwb8vvz4",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwbfid91",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwcckvqs",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwcf54df",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwcg2h14",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  },
+  {
+   "id": "mwcm4wyk",
+   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+  }
+ ],
+ "coder": {
+  "model": "@cf/google/gemma-4-26b-a4b-it",
+  "hour": {
+   "used": 0,
+   "cap": 90
+  },
+  "day": {
+   "used": 348,
+   "cap": 360
+  },
+  "room": true,
+  "until": null,
+  "paid": false
+ },
  "handed": {},
- "sweptAt": 0,
- "blueprintsAt": 0,
- "visitorAt": null,
- "visitorFiled": [],
+ "sweptAt": 1795046163618,
+ "blueprintsAt": 1795046163618,
+ "visitorAt": "2026-11-18T22:19:03Z",
+ "visitorFiled": [
+  "heal:helper-track-times-11ee",
+  "heal:helper-sustain-pack",
+  "review:2787",
+  "review:2788",
+  "feature:flightconnections-co-16bb714c",
+  "feature:flightconnections-co-8e95a3b2",
+  "feature:flightconnections-co-a2eec86b",
+  "review:2792",
+  "heal:helper-handoff-next",
+  "review:2794",
+  "heal:helper-sales-pack",
+  "review:2804",
+  "review:2808",
+  "heal:helper-work-list-44cf",
+  "review:2805",
+  "review:2806",
+  "heal:helper-debris-field-bc88",
+  "heal:helper-scope-pack",
+  "review:2817",
+  "review:2827",
+  "review:2832",
+  "review:2831",
+  "feature:team-3565",
+  "heal:helper-image-change-f60f",
+  "review:2842",
+  "review:2843",
+  "review:2852",
+  "tv:contactless-delivery-verificatio",
+  "will:overhaul-site-email-persona-playtest-bes",
+  "feature:flightconnections-co-d3bf4719",
+  "feature:flightconnections-co-77245665",
+  "feature:flightconnections-co-68e29fa9",
+  "review:2845",
+  "review:2802",
+  "heal:helper-combine-pdf",
+  "review:2868",
+  "heal:tower-gate.yml",
+  "review:2875",
+  "tv:digital-resilience-audit",
+  "heal:helper-automation-proposal",
+  "gap:se-185621",
+  "review:2877",
+  "review:2899",
+  "review:2906",
+  "review:2916",
+  "review:2914",
+  "review:2920",
+  "next",
+  "review:2928",
+  "review:2930",
+  "review:2935",
+  "review:2937",
+  "review:2940",
+  "heal:helper-summon-pack",
+  "review:2941",
+  "heal:helper-connect-flows",
+  "review:2943",
+  "review:2944",
+  "heal:helper-automation-handoff",
+  "review:2951",
+  "review:2962",
+  "heal:helper-systems-connect-pack",
+  "review:2963",
+  "review:2964",
+  "review:2965",
+  "probe:eight-ball",
+  "probe:math-quiz-10-questions",
+  "review:2968",
+  "review:2972",
+  "review:2975",
+  "probe:automation-status-for-invoice-remi",
+  "flake:the-fix-pages-the-hub-lists-every",
+  "flake:python-tests",
+  "heal:suite-bf8d9a3",
+  "review:2974",
+  "review:2987",
+  "heal:helper-ops-digest",
+  "review:2988",
+  "review:2991",
+  "heal:propose-fix.yml"
+ ],
  "ticks": [
   {
-   "at": "2026-11-18T18:05:22.851Z",
-   "error": "tick: fetch failed",
+   "at": "2026-11-18T20:49:14.337Z",
+   "error": "tick: terminated",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T22:50:04.489Z",
+   "open": 479,
+   "started": [
+    {
+     "id": "want-idea-25e717d31f",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 66
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 36,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T22:59:30.095Z",
+   "open": 480,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 477,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:08:49.431Z",
+   "open": 480,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 477,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:18:15.053Z",
+   "open": 480,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 477,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:27:40.097Z",
+   "open": 481,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 478,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:37:05.940Z",
+   "open": 482,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 479,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:46:29.796Z",
+   "open": 481,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 478,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-18T23:56:03.618Z",
+   "open": 481,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 478,
    "warnings": 1
   }
  ]

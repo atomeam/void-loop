@@ -1056,15 +1056,16 @@
     html[data-phase="night"]{ --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1.08; }
     #void-depth::before { content: ''; position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; pointer-events: none;
       transform: translate(-50%, -50%); border-radius: 50%;
+      /* lip falloff in px so a 390px phone at night (--ring: 1.08) does not harden into a circle */
       background:
-        radial-gradient(closest-side, #000 0 32.5%, rgba(255,255,255,.75) 34.2%, rgb(var(--d-key) / .85) 35%, rgb(var(--d-warm) / .32) 39%, rgb(var(--d-key) / .12) 47%, transparent 62%),
+        radial-gradient(closest-side, #000 0 31%, rgba(255,255,255,.75) calc(32.5% + 8px), rgb(var(--d-key) / .85) calc(34% + 10px), rgb(var(--d-warm) / .32) calc(38% + 14px), rgb(var(--d-key) / .12) calc(46% + 16px), transparent calc(60% + 20px)),
         conic-gradient(from 210deg, rgb(var(--d-teal) / .30), rgb(var(--d-key) / .05) 15%, rgb(var(--d-key) / .45) 36%, rgb(255 236 210 / .40) 47%, transparent 60%, rgb(var(--d-warm) / .36) 78%, rgb(var(--d-teal) / .30));
       -webkit-mask: radial-gradient(closest-side, #000 50%, transparent 100%); mask: radial-gradient(closest-side, #000 50%, transparent 100%);
       opacity: calc(.9 * var(--ring)); animation: d-breathe 11s ease-in-out infinite, d-turn 160s linear infinite; }
     /* the gravitational lens: a thin bright arc that shimmers just outside the horizon, and the event horizon's own shadow on top */
     #void-lens { position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; z-index: 0; pointer-events: none; border-radius: 50%;
       transform: translate(-50%, -50%);
-      background: radial-gradient(closest-side, transparent 35.2%, rgba(255,255,255,.16) 36%, transparent 38.4%);
+      background: radial-gradient(closest-side, transparent calc(35.2% - 4px), rgba(255,255,255,.16) 36%, transparent calc(38.4% + 8px));
       animation: d-lens 7s ease-in-out infinite; }
     @keyframes d-lens { 0%,100% { scale: 1; opacity: .75; } 50% { scale: 1.012; opacity: 1; } }
     #void-depth::after { content: ''; position: absolute; inset: auto; opacity: 1; mix-blend-mode: screen; background-image: none; left: 50%; top: 44%; width: 160vmax; height: 90vmax; pointer-events: none; transform: translate(-50%, -50%) rotate(-14deg);

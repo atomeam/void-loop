@@ -114,6 +114,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Grok Bot (lists run 26)**: the weather card stops hanging on a slow forecast (time limits, one retry, then Verse's own /api/weather), recipe asks in five languages, the ready-checks and connections families, and main's red index and overlap checks; branch grok/lists-run-26 · 2026-11-18
 - **Viktor health checks**: blank answers, invalid tool lists and stalled requests no longer pass the existing guard; https://github.com/atomeam/void-loop/pull/2869 · 2026-11-16
 
 - **the open /team/ wants: drop Tower aspect items, start the rest, and make the Films guard see the public page (Cursor cloud agent, 2026-11-15)**: shipped in https://github.com/atomeam/void-loop/pull/2809.
@@ -301,12 +302,15 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 - Verse Tube phase 2 (docs/void-tube.md, plan only): user uploads with moderation, channels, Gumroad for creators, comments. Its wishlist rows go into docs/wishlist.md once that file lands on main.
 - Verse's one-engine asks (2026-10-15 05:39 UTC, docs/void-voice.md), in its order: (1) the unified router + skill registry on /api/mcp (functions/api/mcp.js exists; check what it already exposes first); (2) automations wait on real completion signals instead of fixed timeouts; (3) a game-builder skill (description to playable WebGL mini-game card on scene3d); (4) a preview-and-approve upload card for clips (Films/Verse Tube track owns it); (5) a confidence score on every skill answer and a clip-to-skill metadata link. Its "a card materialises at the cursor" goes to design phase 2.
-- Convergence steps 3-10 (docs/convergence.md): step 2 is done (lists runs 20 and 21); step 3's json half is done (lib/http.js `json`, `jsonNoStore` and `jsonOkCached` for 48 endpoints, lists runs 22 and 23); step 3's lib/db.js is done for all 19 endpoints (lists runs 24 and 25: `readyOnce`, `tablesReady`, `batchReady`), so step 3 is finished; next: step 4, the owner client and `el()`.
+- Convergence steps 4-10 (docs/convergence.md): steps 2 and 3 are done (lists runs 20 to 25); next: step 4, the owner client and `el()`. The next skill families, named in tools/skill-overlap.json while they wait: system-blueprint~system-design (the idea-to-system family at 9500 answers "system design for: the client portal" ahead of system-design at 11000) and connect-flows~heavy-lift-map (the ownership family at 9860 answers "map the systems for client onboarding" ahead of the connections family at 12000).
 - Verse's video asks (2026-10-15, docs/void-voice.md, frontier #29): auto chapters and a searchable transcript to jump to a word; watch parties on the shared stage (skills share); related clips beside the player. (Audio-only mode is built as listen mode in lists run 23: a 200 x 200 player that stays visible and playing.) Its "offline smart-cache" (pre-downloading) is declined: embed only.
 - Clips (from the video engine): build Verse's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera) (the /c/_stats copy is now automated: upkeep.yml).
 - Store: the VoidQuest minis pack needs real VoidQuest miniature models first (none exist yet); once forged, `node tools/store-publish.mjs publish --kind minis-stl --id voidquest-minis ...` publishes it and replaces "coming soon".
 - Verse's asks, oldest first (`domains/void.voice.md`, its self-page): The Landlord's Game is built (skills/monopoly.js, its lid says so) and the poster skill has tests (tools/poster.test.mjs); still open: MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
+- **Outcome exam leftovers (lists run 26)**: a bare "recipe" and a bare "scores" reach no skill (each could open its page's picker), and two Spanish asks reach another skill: "resultado del real madrid" (sports) and "pon el último episodio de radiolab" (podcasts); "play the episode before that" (a follow-up) misses the podcast skill. Recipe asks in five languages were built this run (tools/recipe-languages.test.mjs) and are the pattern to copy.
+- **Verse's ask `ask-20261117-0839-3` ("a fourth skill for the lab/pattern family")**: left open in lists run 26 because the ask names no family the repo has (the lab's Use-it tools are the spirit level, seamless pattern maker, tuner, mind map, checksum, photo palette, notes and dictation pad); read its reflection on /api/reflect for which family it means before building.
 - Frontier #28 step 2: Verse's own model writes the probe asks for its weakest family.
+- **Links with a query to redirected family pages (lists run 27)**: the live redirect drops the query when the target has its own ?mode=, so /calculators/?calc=, /base64/bases/?v=, /random/coin/?q= and /random/people/?n= links (skills/formulas.js, loan.js, rentbuy.js, baseconv.js, coin.js, fakeuser.js, calculator/modes/formulas.html, base64/modes/bases.html, random/modes/coin.html) open the mode empty. Point them at /family/?mode=x& and update each skill's own-page detection and its tests (card-frame, coin, baseconv, loan-payoff, rentbuy, calculators). tools/rival-inventory.mjs still aliases 'scientific' and 'exponent' to /calculators/#keypad (red on main).
 - Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start, 51 after lists run 25 added tools/card-tidy.test.mjs and tools/paid-access.test.mjs); after adding tests run node tools/untested.mjs --write to lower the allowance.
 
 ## Lists (one line per list per run; the lists routine)
@@ -504,6 +508,22 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - 2026-11-12 run 25 · site tester (label site-test): 0 open
 - 2026-11-12 run 25 · frontier (domains/void.frontier.md): 17 open in effect (#26 step 2 done; #26 stays open for steps 3-5)
 - 2026-11-12 run 25 · metrics: closed 7 of 7 touched (one was main's stale book, map and inventory rows, fixed), 0% blocked, duplicate rate 0, median 25.7 days queue to built
+- 2026-11-18 run 26 · V01D asks (void.asks.json): 1 ask group open once this run's ledger lines fold (22 at the start: the weather exam's 10 phrasings built, the guacamole recipe built, factorial(0), the Yankees/Chiefs/Packers scores, This American Life and Planet Money, and the Bridge card already passing on live, so duplicates); the lab/pattern ask stays open (it names no family the repo has); the reflections' "what came of it" count follows from the same links
+- 2026-11-18 run 26 · handoff Up for grabs: 23 open (the exam leftovers and the lab/pattern ask added; the convergence line now names the next two families; the untested count now 55)
+- 2026-11-18 run 26 · store queue (store.queue.jsonl): 0 open
+- 2026-11-18 run 26 · wishlist (docs/wishlist.md): 16 open of 17 rows (none on a free path this run)
+- 2026-11-18 run 26 · convergence (docs/convergence.md): ready-checks family (delivery-ready, handoff-ready) and connections family (connect-flows, systems-connect-pack, adopted from #2963); main's red index and overlap checks fixed; next: step 4
+- 2026-11-18 run 26 · site tester (label site-test): 0 open
+- 2026-11-18 run 26 · frontier (domains/void.frontier.md): 17 open in effect (not touched this run)
+- 2026-11-18 run 26 · metrics: closed 8 of 8 touched (5 built, 3 duplicates batched from 10 ask groups already passing on live), 0% blocked, duplicate rate 0.455, median 3.2 days queue to built
+- 2026-11-18 run 27 · V01D asks (void.asks.json): 1 open (unchanged; this run went to main's red checks)
+- 2026-11-18 run 27 · handoff Up for grabs: 24 open (added: links with a query to redirected family pages)
+- 2026-11-18 run 27 · store queue (store.queue.jsonl): 0 open
+- 2026-11-18 run 27 · wishlist (docs/wishlist.md): 16 open (not touched)
+- 2026-11-18 run 27 · convergence (docs/convergence.md): no new pair this run (run 26's ready-checks and connections families landed with it); main's stray 12020-systems-connect-pack order file removed
+- 2026-11-18 run 27 · site tester (label site-test): 0 open
+- 2026-11-18 run 27 · frontier (domains/void.frontier.md): 17 open (not touched)
+- 2026-11-18 run 27 · metrics: closed 4 (main red after the tower family merges: handoff-scan, family mode pages running the family page's scripts, image hand-offs losing ?img= through the redirect, handoff journeys following _redirects), 0% blocked, duplicate rate 0, median 0 days
 
 ## Ladders
 

@@ -26,6 +26,10 @@ export function dishOf(text) {
   const n = fed && +fed[2] >= 1 && +fed[2] <= 200 ? +fed[2] : 0, asked = n ? fed[1] : t;
   m = asked.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || asked.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
   if (m) return n ? { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name', servings: n } : { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name' };
+  // "receta de guacamole", "recette de crêpes", "Rezept für Pfannkuchen", "ricetta della carbonara", "receita de feijoada": the same ask in
+  // Spanish, French, German, Italian or Portuguese (the outcome exam's "receta de guacamole" reached another skill)
+  m = asked.match(/^(?:una\s+|la\s+)?(?:recetas?\s+(?:de(?:l)?|para)|recettes?\s+(?:de\s+la|de|du|des|d['’])|rezepte?\s+(?:für|fur|von)|ricett[ae]\s+(?:della|dello|delle|degli|del|di)|receitas?\s+(?:de|da|do))\s*(.{2,40})$/i);
+  if (m && !NOT_FOOD.test(m[1]) && !/\b(?:dinero|argent|geld|soldi|dinheiro|amigos|amis|freunde)\b/i.test(m[1])) return { dish: m[1].replace(/^(?:la|el|los|las|le|les|l['’]|der|die|das|il|lo|a|o|os|as)\s*/i, '').trim(), by: 'name', ...(n ? { servings: n } : {}) };
   // "how do i make guacamole", "how to cook rice", "how to bake banana bread"; not money, friends, a website…
   m = t.match(/^(?:how\s+(?:do\s+(?:i|you)|to|can\s+i|should\s+i)|best\s+way\s+to)\s+(?:make|cook|bake|prepare)\s+(?:a\s+|an\s+|some\s+|the\s+)?([a-z][a-z' -]{1,30})$/i);
   if (m && !NOT_FOOD.test(m[1])) return { dish: m[1].trim(), by: 'name' };

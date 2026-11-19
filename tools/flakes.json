@@ -184,5 +184,8 @@
   {"check": "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a", "sha": "bf8d9a388658ad6783324492ff84e9c50765053d", "at": "2026-11-18T19:47:16Z"},
   {"check": "base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: UR", "sha": "bf8d9a388658ad6783324492ff84e9c50765053d", "at": "2026-11-18T19:47:16Z"},
   {"check": "random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every passw", "sha": "bf8d9a388658ad6783324492ff84e9c50765053d", "at": "2026-11-18T19:49:58Z"},
-  {"check": "suite ran to the end", "sha": "bf8d9a388658ad6783324492ff84e9c50765053d", "at": "2026-11-18T19:49:58Z"}
+  {"check": "suite ran to the end", "sha": "bf8d9a388658ad6783324492ff84e9c50765053d", "at": "2026-11-18T19:49:58Z"},
+  {"check": "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download i", "sha": "e5755e8ddeba24baea9d67b890a6db1fbe74955c", "at": "2026-11-18T22:01:34Z"},
+  {"check": "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in", "sha": "e5755e8ddeba24baea9d67b890a6db1fbe74955c", "at": "2026-11-18T22:01:34Z"},
+  {"check": "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, h", "sha": "e5755e8ddeba24baea9d67b890a6db1fbe74955c", "at": "2026-11-18T22:04:23Z"}
 ]

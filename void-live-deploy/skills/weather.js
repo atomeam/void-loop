@@ -98,19 +98,46 @@ function hereCoords() {
   });
 }
 
+// Open-Meteo answers in well under a second most of the time, but some minutes it hangs, and a fetch with no time limit left the
+// card on "…" past the exam's 12 seconds (weather swung between 54 and 98 on the same asks, 2026-11-15 to 11-18). Every call here
+// has a time limit; a forecast that does not come is asked once more, then of Verse's own /api/weather, which keeps each place's
+// forecast on the edge for ten minutes (functions/api/weather.js), so one slow minute at Open-Meteo is not a failed card.
+export const WAIT_MS = 4500;
+export async function getJson(u, ms = WAIT_MS, fetchFn = fetch) {
+  const r = await fetchFn(u, { signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined });
+  if (!r.ok) throw new Error('status ' + r.status);
+  return r.json();
+}
+/** a place's { loc, w } from Verse's own edge copy, or null. loc in the card's shape: { latitude, longitude, name }. */
+export async function edgeWeather(place, fetchFn = fetch) {
+  if (!place) return null;
+  const j = await getJson('/api/weather?q=' + encodeURIComponent(place), 8000, fetchFn).catch(() => null);
+  if (!j || !j.ok || !j.loc || !j.w || !j.w.current) return null;
+  return { loc: { latitude: j.loc.lat, longitude: j.loc.lon, name: j.loc.name }, w: j.w };
+}
+/** the forecast at u: Open-Meteo, once more on a miss, then the edge copy for the place; throws when none answered. */
+export async function forecastOf(u, place, fetchFn = fetch, wait = WAIT_MS) {
+  for (const ms of [wait, wait]) { const w = await getJson(u, ms, fetchFn).catch(() => null); if (w && w.current) return w; }
+  const e = await edgeWeather(place, fetchFn); if (e) return e.w;
+  throw new Error('no forecast');
+}
+
 async function run(text, api) {
   const { showPage, esc, say, reportMiss, loopLog } = api;
   const place = weatherPlace(text);
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(place || 'Weather') + '</h2><div class="sub">…</div>'; });
   try {
-    let loc = null;
+    let loc = null, first = null; // first: a forecast the edge already gave with the place, drawn before asking Open-Meteo again
     if (place) {
       const { placeTries } = await import('../lib/where.js'); // the place lookup loads with a weather ask, not with the routing order (owner 2026-10-30)
+      let away = false;
       for (const q of placeTries(place)) {
-        const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
+        const g = await getJson('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).catch(() => null); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
+        if (!g) { away = true; break; } // the geocoder did not answer in time: Verse's own edge copy below, not a hang
         const r0 = g.results && g.results[0];
         if (r0) { loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') }; break; }
       }
+      if (!loc && away) { const e = await edgeWeather(place); if (e) { loc = e.loc; first = e.w; } }
     } else {
       // where you are: the device's location if already allowed (no prompt), else the city your time zone names
       let granted = false;
@@ -120,7 +147,7 @@ async function run(text, api) {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
         const city = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : '';
         if (city) {
-          const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(city)).then((r) => r.json()).catch(() => null);
+          const g = await getJson('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(city)).catch(() => null);
           const r0 = g && g.results && g.results[0];
           if (r0) loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.country ? ', ' + r0.country : ''), guessed: true };
         }
@@ -140,7 +167,8 @@ async function run(text, api) {
     // fetch and draw, in place: the first time here, then every 15 minutes while the card is up (skills/live.js), so a
     // card left open shows the weather now, not the weather when it was asked
     const draw = async () => {
-      const w = await fetch(u).then((r) => r.json());
+      const w = first || await forecastOf(u, place);
+      first = null; // the 15-minute refresh asks for a fresh forecast
       if (!api._pageStill(el)) return;
       const c = w.current, d = w.daily, hAll = w.hourly;
       if (!c || !d || !hAll) throw new Error('no forecast');

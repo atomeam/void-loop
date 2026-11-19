@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 26,
+ "count": 25,
  "skills": {
   "experiments": [
    "toolkit"
@@ -102,15 +102,6 @@
    "monitor-pack",
    "full-handoff"
   ],
-  "delivery-ready": [
-   "systems-owned",
-   "ownership-pack",
-   "monitor-pack",
-   "verify-pack",
-   "full-handoff",
-   "kickoff-pack",
-   "reliability-pack"
-  ],
   "systems-owned": [
    "ownership-pack",
    "monitor-pack",
@@ -147,19 +138,18 @@
    "verify-pack",
    "ownership"
   ],
-  "handoff-ready": [
-   "ownership-pack",
-   "system-status",
-   "monitor-pack",
-   "verify-pack",
-   "full-handoff"
-  ],
   "summon-pack": [
    "delivery-board",
    "status-digest",
    "time-saved",
    "ownership",
    "progress-report"
+  ],
+  "automation-handoff": [
+   "client-offer",
+   "handoff-checklist",
+   "systems-monitor",
+   "client-status"
   ]
  }
 }

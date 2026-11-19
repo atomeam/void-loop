@@ -1,8 +1,8 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 160000,
- "swept": 1127950,
+ "cursor": 200000,
+ "swept": 1167286,
  "lap": 1,
  "at": "2026-11-18",
  "smallest": [
@@ -250,6 +250,15 @@
    "plain": false
   },
   {
+   "rank": 160009,
+   "host": "youmark.jp",
+   "controls": 0,
+   "bytes": 1090,
+   "words": 10,
+   "title": "������� �C�l��",
+   "plain": false
+  },
+  {
    "rank": 40053,
    "host": "everycom.store",
    "controls": 0,
@@ -355,6 +364,15 @@
    "bytes": 2116,
    "words": 3,
    "title": "Data Privacy Framework",
+   "plain": false
+  },
+  {
+   "rank": 160055,
+   "host": "arema.mx",
+   "controls": 0,
+   "bytes": 2544,
+   "words": 2,
+   "title": "AREMA Ticket",
    "plain": false
   },
   {
@@ -508,6 +526,15 @@
    "bytes": 3882,
    "words": 8,
    "title": "국민리스",
+   "plain": false
+  },
+  {
+   "rank": 160058,
+   "host": "meetmarlo.com",
+   "controls": 0,
+   "bytes": 4459,
+   "words": 1,
+   "title": "MARLO",
    "plain": false
   },
   {
