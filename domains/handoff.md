@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/game-book-e463 · the game-update book: next round, a new game after a full cycle, cost on each row · 2026-11-19 13:00 UTC
 - Viktor · fix/verse-conductor-event-health · successes from a different trigger cannot hide a broken scheduled audit; watch recovery infrastructure too · 2026-11-16
 - Viktor · fix/verse-skill-self-registration · share deliberate skill retirement across adoption, routing checks and generated families; preserve system-plan retirement; no workflow or live-call changes · 2026-11-16
 
