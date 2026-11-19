@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T04:48:07.093Z",
+ "updated": "2026-11-19T04:57:31.402Z",
  "last24h": {
-  "ticks": 40,
-  "started": 11,
+  "ticks": 41,
+  "started": 12,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -23,84 +23,84 @@
  ],
  "held": [
   {
-   "id": "want-idea-1a3192a173",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "want-idea-298bf37d16",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "want-idea-f167636764",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "want-idea-ac2885447b",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "want-idea-f50546a338",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "want-idea-5e6497554d",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "want-idea-25e717d31f",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwau0ded",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mw5mm5fm",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwau7dgo",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mva30i2e",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   },
   {
-   "id": "mwavhzoe",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mva30j4u",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   },
   {
-   "id": "mwaw4bg9",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mwawomei",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mwa0agd2",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   },
   {
-   "id": "mwaxgnhr",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mwa0ah54",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   },
   {
-   "id": "mway8e3z",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwb2rdef",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwb8vvz4",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwbfid91",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwcckvqs",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mwdsggtv",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   },
   {
-   "id": "mwcf54df",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mwdsgi9n",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   },
   {
-   "id": "mwcg2h14",
-   "why": "verse-job.yml is paused (the coder's back-off, #2994, until 04:52 UTC)"
+   "id": "mwdsgj2z",
+   "why": "propose-fix.yml is broken (4 failed runs); its repair is queued"
   }
  ],
  "coder": {
@@ -1229,6 +1229,37 @@
    "sweep": false,
    "blueprints": 0,
    "held": 477,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-19T04:57:31.402Z",
+   "open": 482,
+   "started": [
+    {
+     "id": "want-idea-1a3192a173",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 87
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 35,
    "warnings": 1
   }
  ]
