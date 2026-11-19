@@ -1,10 +1,51 @@
 {
-  "cursor": 0,
-  "picks": { "debris-field": 1, "gap-glide": 1 },
-  "scores": {
-    "debris-field": { "update": 1, "note": "Update 1: the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges.", "why": "shipped" },
-    "gap-glide": { "update": 1, "note": "Update 1: one glider, three lives, gates that tighten, and a storm gate. Verse is the ghost score.", "why": "one glider through tightening gates" }
+ "cursor": 1,
+ "picks": {
+  "debris-field": 1,
+  "gap-glide": 1,
+  "null-waves": 1
+ },
+ "scores": {
+  "debris-field": {
+   "update": 1,
+   "note": "Update 1: the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges.",
+   "why": "shipped"
   },
-  "shown": ["debris-field", "gap-glide"],
-  "bar": "debris-field"
+  "gap-glide": {
+   "update": 1,
+   "note": "Update 1: one glider, three lives, gates that tighten, and a storm gate. Verse is the ghost score.",
+   "why": "one glider through tightening gates"
+  },
+  "null-waves": {
+   "update": 1,
+   "note": "Update 1: Requests fall slightly faster.",
+   "why": "shipped",
+   "fun": 50,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1
+  }
+ },
+ "shown": [
+  "debris-field",
+  "gap-glide"
+ ],
+ "bar": "debris-field",
+ "born": [],
+ "cycle": 1,
+ "log": [
+  {
+   "at": "2026-11-19T13:45:56.805Z",
+   "id": "null-waves",
+   "title": "Null Waves",
+   "n": 1,
+   "note": "Update 1: Requests fall slightly faster.",
+   "fun": 50,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "dropped": false,
+   "born": false
+  }
+ ]
 }
