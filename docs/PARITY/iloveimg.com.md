@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: iloveimg.com (https://www.iloveimg.com/)
-- Verse: /photos/iloveimg/ (photos: iloveimg.com, tower gate 13 of 15)
+- Verse: /photos/?tab=out (photos: iloveimg.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "iLoveIMG / The fastest free web app for easy image modification."
 - History: [docs/HISTORY/iloveimg.com.md](../HISTORY/iloveimg.com.md)
 
@@ -11,17 +11,17 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| All your photos in one place | Library | have | its live page (2026-10-28): "Resize IMAGE Crop IMAGE Convert to JPG Photo editor More tools Optimize Compress IMAGE Upscale Remove backgro" | void-live-deploy/photos/iloveimg/index.html:65 `les" role="group" aria-label="Your photos"></div>` |
-| Group photos by face | Library | missing | its live page (2026-10-28): "to IMAGE Security Watermark IMAGE Blur face Login Sign up Other products iLovePDF iLovePDF Simplify document" | no sign of it in the source of /photos/iloveimg/ |
-| Crop, rotate, adjust and filters | Editing | have | its live page (2026-10-28): "Image tools Compress IMAGE Resize IMAGE Crop IMAGE Convert to JPG Photo editor More tools Optimize Compress IM" | void-live-deploy/photos/iloveimg/index.html:67 `essed="false" data-i="t_crop">Crop and rotate</button><button type="button" data-t="adj" a` |
-| Compress and convert images | Files | have | its live page (2026-10-28): "tion. iLoveIMG iLoveIMG All Image tools Compress IMAGE Resize IMAGE Crop IMAGE Convert to JPG Photo editor Mor" | void-live-deploy/photos/iloveimg/index.html:63 `aps" style="min-height:7.5em">Compress and convert JPEG, PNG, WebP and AVIF with a quality` |
-| Many images at once | Files | have | its live page (2026-10-28): "y tool you could want to edit images in bulk Your online photo editor is here and forever free! All Optimize C" | void-live-deploy/photos/iloveimg/index.html:118 `lass="go" hidden data-i="zip">Download all as a zip</button><button type="button" id="stri` |
-| Layers, masks and PSD files | Editing | partial | its live page (2026-10-28): "G Convert to JPG Turn PNG , GIF , TIF , PSD , SVG , WEBP , HEIC , or RAW format images to JPG in bulk with eas" | void-live-deploy/photos/iloveimg/index.html:94 `ion class="panel" id="p-draw" aria-label="Draw" hidden>` |
-| Add text | Editing | have | its live page (2026-10-28): "hoto editor Spice up your pictures with text, effects, frames or stickers. Simple editing tools for your image" | void-live-deploy/photos/iloveimg/index.html:99 `ion class="panel" id="p-text" aria-label="Text" hidden>` |
-| Remove the background | Editing | missing | its live page (2026-10-28): "e tools Optimize Compress IMAGE Upscale Remove background Create Meme generator Photo editor Modify Resize IMA" | no sign of it in the source of /photos/iloveimg/ |
+| All your photos in one place | Library | have | its live page (2026-10-28): "Resize IMAGE Crop IMAGE Convert to JPG Photo editor More tools Optimize Compress IMAGE Upscale Remove backgro" | void-live-deploy/photos/index.html:72 `les" role="group" aria-label="Your photos"></div>` |
+| Group photos by face | Library | missing | its live page (2026-10-28): "to IMAGE Security Watermark IMAGE Blur face Login Sign up Other products iLovePDF iLovePDF Simplify document" | no sign of it in the source of /photos/ |
+| Crop, rotate, adjust and filters | Editing | have | its live page (2026-10-28): "Image tools Compress IMAGE Resize IMAGE Crop IMAGE Convert to JPG Photo editor More tools Optimize Compress IM" | void-live-deploy/photos/index.html:74 `essed="false" data-i="t_crop">Crop and rotate</button><button type="button" data-t="adj" a` |
+| Compress and convert images | Files | have | its live page (2026-10-28): "tion. iLoveIMG iLoveIMG All Image tools Compress IMAGE Resize IMAGE Crop IMAGE Convert to JPG Photo editor Mor" | void-live-deploy/photos/index.html:70 `aps" style="min-height:7.5em">Compress and convert JPEG, PNG, WebP and AVIF with a quality` |
+| Many images at once | Files | have | its live page (2026-10-28): "y tool you could want to edit images in bulk Your online photo editor is here and forever free! All Optimize C" | void-live-deploy/photos/index.html:125 `lass="go" hidden data-i="zip">Download all as a zip</button><button type="button" id="stri` |
+| Layers, masks and PSD files | Editing | partial | its live page (2026-10-28): "G Convert to JPG Turn PNG , GIF , TIF , PSD , SVG , WEBP , HEIC , or RAW format images to JPG in bulk with eas" | void-live-deploy/photos/index.html:101 `ion class="panel" id="p-draw" aria-label="Draw" hidden>` |
+| Add text | Editing | have | its live page (2026-10-28): "hoto editor Spice up your pictures with text, effects, frames or stickers. Simple editing tools for your image" | void-live-deploy/photos/index.html:106 `ion class="panel" id="p-text" aria-label="Text" hidden>` |
+| Remove the background | Editing | missing | its live page (2026-10-28): "e tools Optimize Compress IMAGE Upscale Remove background Create Meme generator Photo editor Modify Resize IMA" | no sign of it in the source of /photos/ |
 | An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "MAGE Security Watermark IMAGE Blur face Login Sign up Other products iLovePDF iLovePDF Simplify document manag" | void-live-deploy/photos/app.js:40 `it) { it.hist.push(snap(it)); sync(); }` |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "Company About us Contact us Blog Press Google Play Google Play App Store App Store English English Español Fr" | void-live-deploy/photos/iloveimg/index.html:126 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
-| A public API | Developers | missing | its live page (2026-10-28): "oveAPI iLoveAPI Document automation for developers Integrations Integrations Zapier, Make, Wordpress... Pricin" | no sign of it in the source of /photos/iloveimg/ |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "Company About us Contact us Blog Press Google Play Google Play App Store App Store English English Español Fr" | void-live-deploy/photos/index.html:136 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
+| A public API | Developers | missing | its live page (2026-10-28): "oveAPI iLoveAPI Document automation for developers Integrations Integrations Zapier, Make, Wordpress... Pricin" | no sign of it in the source of /photos/ |
 | iLoveIMG | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Resize IMAGE | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Upscale | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

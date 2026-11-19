@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 4,
-    "proven": 92
+    "tested": 2,
+    "checked": 5,
+    "proven": 93
    },
    "from": 376,
    "to": 476
@@ -190,14 +190,14 @@
    "for": "every active router rule, in the order an ask meets them: the first that catches it answers",
    "kind": "rules",
    "from": 538,
-   "to": 587
+   "to": 588
   },
   {
    "id": "index",
    "name": "Index",
    "kind": "index",
-   "from": 588,
-   "to": 602
+   "from": 589,
+   "to": 603
   }
  ],
  "pages": [
@@ -2263,7 +2263,6 @@
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Not a boast but a record: 3 askings, each one answered. Turn the page when you are done.",
-   "glow": 100,
    "n": 111
   },
   {
@@ -2579,7 +2578,7 @@
     "how heavy can my suitcase be"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark, 3 live findings, 2026-11-17",
+   "why": "a self-test, 3 real asks in the benchmark, 4 live findings, 2026-11-18",
    "flavor": "Of all the sky and earth, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
    "n": 129
@@ -3322,6 +3321,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
    "flavor": "9 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
+   "glow": 100,
    "n": 171
   },
   {
@@ -4950,7 +4950,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 34 live findings, 2026-11-17",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 35 live findings, 2026-11-18",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 265
@@ -6988,8 +6988,8 @@
     "handoff-ready",
     "summon-pack",
     "connect-flows",
-    "systems-connect-pack",
-    "automation-handoff"
+    "automation-handoff",
+    "systems-connect-pack"
    ],
    "n": 376
   },
@@ -8269,7 +8269,6 @@
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. This is the page of automation-pack.",
-   "glow": 100,
    "n": 452
   },
   {
@@ -8647,21 +8646,6 @@
   {
    "kind": "skill",
    "chapter": "self",
-   "name": "systems-connect-pack",
-   "title": "Systems connect pack",
-   "line": "Package the connections between systems for a business idea",
-   "examples": [
-    "systems connect pack for client onboarding",
-    "connect systems for invoice automation",
-    "package the connections for weekly status reports"
-   ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 475
-  },
-  {
-   "kind": "skill",
-   "chapter": "self",
    "name": "automation-handoff",
    "title": "Automation handoff",
    "line": "Package the running automations for a client handoff",
@@ -8670,8 +8654,26 @@
     "handoff the running automations for onboarding",
     "package the running jobs for the client"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. This is the page of automation-handoff.",
+   "glow": 100,
+   "n": 475
+  },
+  {
+   "kind": "skill",
+   "chapter": "self",
+   "name": "systems-connect-pack",
+   "title": "Systems connect pack",
+   "line": "Package the connections between systems for a business idea",
+   "examples": [
+    "systems connect pack for client onboarding",
+    "make a systems connect pack for invoice automation",
+    "package the connections for weekly status reports"
+   ],
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 476
   },
   {
@@ -10010,7 +10012,8 @@
     "system-design",
     "summon-pack",
     "connections",
-    "automation-handoff"
+    "automation-handoff",
+    "ops-digest"
    ],
    "n": 538
   },
@@ -12367,6 +12370,19 @@
    "n": 587
   },
   {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CCCXCIII–CCCXCIII",
+   "rules": [
+    {
+     "rank": 393,
+     "name": "ops-digest",
+     "catches": "ops digest for client onboarding"
+    }
+   ],
+   "n": 588
+  },
+  {
    "kind": "index",
    "chapter": "index",
    "title": "Index A–B",
@@ -12461,7 +12477,7 @@
     },
     {
      "name": "Automation handoff",
-     "page": 476
+     "page": 475
     },
     {
      "name": "Automation pack",
@@ -12516,7 +12532,7 @@
      "page": 268
     }
    ],
-   "n": 588
+   "n": 589
   },
   {
    "kind": "index",
@@ -12668,7 +12684,7 @@
      "page": 287
     }
    ],
-   "n": 589
+   "n": 590
   },
   {
    "kind": "index",
@@ -12820,7 +12836,7 @@
      "page": 403
     }
    ],
-   "n": 590
+   "n": 591
   },
   {
    "kind": "index",
@@ -12972,7 +12988,7 @@
      "page": 249
     }
    ],
-   "n": 591
+   "n": 592
   },
   {
    "kind": "index",
@@ -13124,7 +13140,7 @@
      "page": 218
     }
    ],
-   "n": 592
+   "n": 593
   },
   {
    "kind": "index",
@@ -13276,7 +13292,7 @@
      "page": 36
     }
    ],
-   "n": 593
+   "n": 594
   },
   {
    "kind": "index",
@@ -13428,7 +13444,7 @@
      "page": 374
     }
    ],
-   "n": 594
+   "n": 595
   },
   {
    "kind": "index",
@@ -13580,7 +13596,7 @@
      "page": 515
     }
    ],
-   "n": 595
+   "n": 596
   },
   {
    "kind": "index",
@@ -13732,7 +13748,7 @@
      "page": 232
     }
    ],
-   "n": 596
+   "n": 597
   },
   {
    "kind": "index",
@@ -13884,7 +13900,7 @@
      "page": 383
     }
    ],
-   "n": 597
+   "n": 598
   },
   {
    "kind": "index",
@@ -14036,7 +14052,7 @@
      "page": 115
     }
    ],
-   "n": 598
+   "n": 599
   },
   {
    "kind": "index",
@@ -14188,7 +14204,7 @@
      "page": 65
     }
    ],
-   "n": 599
+   "n": 600
   },
   {
    "kind": "index",
@@ -14277,7 +14293,7 @@
     },
     {
      "name": "Systems connect pack",
-     "page": 475
+     "page": 476
     },
     {
      "name": "Systems monitor",
@@ -14340,7 +14356,7 @@
      "page": 81
     }
    ],
-   "n": 600
+   "n": 601
   },
   {
    "kind": "index",
@@ -14492,7 +14508,7 @@
      "page": 26
     }
    ],
-   "n": 601
+   "n": 602
   },
   {
    "kind": "index",
@@ -14592,7 +14608,7 @@
      "page": 113
     }
    ],
-   "n": 602
+   "n": 603
   }
  ],
  "index": [
@@ -14686,7 +14702,7 @@
   },
   {
    "name": "Automation handoff",
-   "page": 476
+   "page": 475
   },
   {
    "name": "Automation pack",
@@ -16406,7 +16422,7 @@
   },
   {
    "name": "Systems connect pack",
-   "page": 475
+   "page": 476
   },
   {
    "name": "Systems monitor",
@@ -16706,7 +16722,7 @@
   }
  ],
  "totals": {
-  "pages": 602,
+  "pages": 603,
   "chapters": 16,
   "skills": 469,
   "games": 16,

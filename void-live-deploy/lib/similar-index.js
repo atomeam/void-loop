@@ -1063,6 +1063,44 @@ export default {
      "connect pack for client onboarding"
     ]
    }
+  ],
+  "ready-checks": [
+   {
+    "name": "delivery-ready",
+    "examples": [
+     "is the invoice automation delivery ready",
+     "handoff ready for onboarding flow",
+     "ready to handoff the weekly reports",
+     "check delivery readiness for support router"
+    ]
+   },
+   {
+    "name": "handoff-ready",
+    "examples": [
+     "is this system handoff ready",
+     "handoff ready check for the onboarding automation",
+     "what is missing for client handoff on the status reports"
+    ]
+   }
+  ],
+  "connections": [
+   {
+    "name": "connect-flows",
+    "examples": [
+     "connect the systems for invoice reminders",
+     "show the data flows for client onboarding",
+     "map connections for the support router"
+    ]
+   },
+   {
+    "name": "systems-connect-pack",
+    "examples": [
+     "systems connect pack for client onboarding",
+     "make a systems connect pack for invoice automation",
+     "package the connections for weekly status reports",
+     "make a systems connect pack for the support process"
+    ]
+   }
   ]
  }
 };

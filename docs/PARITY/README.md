@@ -4,8 +4,8 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 
 | Score | Verse page | Feature | Status | Original sites that have it |
 | --- | --- | --- | --- | --- |
+| 19 | /markets/ | Earnings and economic calendars | missing | barchart.com, investing.com, tradingview.com, marketwatch.com, google.com, stockanalysis.com, companiesmarketcap.com, finviz.com and 1 more |
 | 18 | /calendar/ | An account that keeps your things on every device | partial | calendar.online, teamup.com, timetreeapp.com, cozi.com, proton.me, calendar.yahoo.com, Google Calendar, any.do |
-| 17 | /markets/ | Earnings and economic calendars | missing | barchart.com, investing.com, tradingview.com, marketwatch.com, google.com, stockanalysis.com, Yahoo Finance |
 | 17 | /notes/ | Edit together in real time | missing | anotepad.com, simplenote.com, docs.zoho.com, onenote.com, evernote.com, notion.so, Google Docs |
 | 17 | /calendar/ | Events added from your email | missing | calendar.online, teamup.com, cozi.com, proton.me, outlook.live.com, Google Calendar, any.do |
 | 16 | /translate/ | A browser extension | partial | imtranslator.net, systransoft.com, itranslate.com, translate.yandex.com, deepl.com, Google Translate |
@@ -25,17 +25,19 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 12 | /calendar/ | Out of office that declines invites | missing | outlook.live.com, Google Calendar |
 | 12 | /news/ | Reader comments | missing | rnz.co.nz, channelnewsasia.com, france24.com, euronews.com, theguardian.com, BBC News, npr.org |
 | 11 | /scores/ | Goal and score alerts | missing | 365scores.com, fotmob.com, livescore.com, onefootball.com, flashscore.com, ESPN |
+| 10 | /markets/ | An account that keeps your things on every device | partial | marketwatch.com, google.com, stockanalysis.com, companiesmarketcap.com, finviz.com |
 | 10 | /podcasts/ | Hosts, guests and credits | missing | podchaser.com, podbean.com, Apple Podcasts, podcastindex.org, listennotes.com |
+| 10 | /markets/ | Price alerts | missing | investing.com, tradingview.com, stockanalysis.com, finviz.com, Yahoo Finance |
 | 9 | /kanban/ | A public API | missing | abacktools.com, wekan.fi, kanbanflow.com, Trello |
 | 9 | /notes/ | A public API | missing | anotepad.com, simplenote.com, evernote.com, notion.so |
 | 9 | /markets/ | Discussion and ideas from other investors | missing | investing.com, tradingview.com, stockanalysis.com, Yahoo Finance |
-| 9 | /markets/ | Price alerts | missing | investing.com, tradingview.com, stockanalysis.com, Yahoo Finance |
+| 9 | /photos/ | Group photos by face | missing | tinypng.com, photopea.com, iloveimg.com, Google Photos |
 | 9 | /calendar/ | Shopping and to-do lists | missing | calendar.online, cozi.com, Google Calendar, any.do |
 | 8 | /kanban/ | Add-ons and integrations | missing | jasperbernaers.com, kanbanflow.com, Trello |
 | 8 | /kanban/ | An account that keeps your things on every device | partial | abacktools.com, kanbanflow.com, Trello |
-| 8 | /markets/ | An account that keeps your things on every device | partial | marketwatch.com, google.com, stockanalysis.com |
 | 8 | /kanban/ | Attachments | missing | wekan.fi, kanbanflow.com, Trello |
 | 8 | /kanban/ | Automation rules | missing | jasperbernaers.com, abacktools.com, Trello |
+| 8 | /markets/ | Dark mode | missing | google.com, companiesmarketcap.com, finviz.com |
 | 7 | /translate/ | A spelling suggestion for what was typed (did you mean) | missing | translate.yandex.com, Google Translate |
 | 7 | /notes/ | Nested checklists | missing | simplenote.com, notion.so |
 | 7 | /translate/ | Translate offline with downloaded languages | missing | itranslate.com, Google Translate |
@@ -48,34 +50,36 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 6 | /news/ | An account that keeps your things on every device | partial | channelnewsasia.com, dw.com, euronews.com, theguardian.com, thelocal.com, npr.org |
 | 6 | /jobs/ | An account that keeps your things on every device | partial | LinkedIn Jobs |
 | 6 | /photos/ | Back up photos from your phone | missing | Google Photos |
-| 6 | /markets/ | Dark mode | missing | google.com |
 | 6 | /notes/ | Databases (tables of pages with views) | missing | notion.so |
 | 6 | /music/ | Download for offline | missing | Spotify |
 | 6 | /pdf/ | Fill in forms | missing | 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com, ilovepdf.com |
 | 6 | /music/ | Follow friends and share | missing | Spotify |
-| 6 | /photos/ | Group photos by face | missing | Google Photos |
 | 6 | /music/ | Lyrics | missing | Spotify |
 | 6 | /photos/ | Memories and highlights | missing | Google Photos |
 | 6 | /music/ | Podcasts and audiobooks | missing | Spotify |
 | 6 | /jobs/ | Post a job | missing | LinkedIn Jobs |
 | 6 | /jobs/ | See who you know at a company | missing | LinkedIn Jobs |
+| 6 | /markets/ | Technical indicators and drawing | missing | stockq.org, barchart.com, investing.com, tradingview.com, stockanalysis.com, finviz.com |
 | 5 | /pdf/ | An account that keeps your things on every device | missing | 10015.io, pdfcandy.com, sejda.com, smallpdf.com, ilovepdf.com |
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
 | 5 | /pdf/ | Read scanned text (OCR) | missing | pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com, ilovepdf.com |
-| 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, barchart.com, investing.com, tradingview.com, stockanalysis.com |
+| 4 | /scores/ | An account that keeps your things on every device | partial | thesportsdb.com, cbssports.com, onefootball.com, besoccer.com |
 | 4 | /books/ | An account that keeps your things on every device | missing | squibler.io, inkfluenceai.com, sudowrite.com, novelcrafter.com |
 | 3 | /notes/ | A passcode lock on the notes | missing | standardnotes.com, simplenote.com, evernote.com |
 | 3 | /pdf/ | A public API | missing | sejda.com, smallpdf.com, ilovepdf.com |
-| 3 | /scores/ | An account that keeps your things on every device | partial | cbssports.com, onefootball.com, besoccer.com |
+| 3 | /photos/ | A public API | missing | tinypng.com, photopea.com, iloveimg.com |
+| 3 | /convert/ | Currency | missing | convertlive.com, convertunits.com, unitconverters.net |
+| 3 | /photos/ | Remove the background | missing | photopea.com, iloveimg.com, exif.tools |
 | 3 | /books/ | Share a link to what you made or found | missing | squibler.io, inkfluenceai.com, novelcrafter.com |
 | 2 | /notes/ | A drawing in a note | missing | onenote.com, evernote.com |
 | 2 | /notes/ | A Markdown source view and preview | missing | standardnotes.com, simplenote.com |
 | 2 | /notes/ | A reminder on a note at a time or place | missing | onenote.com, evernote.com |
+| 2 | /random/ | An account that keeps your things on every device | partial | random.org, randomuser.me |
 | 2 | /generators/ | Dark mode | missing | behindthename.com, rangen.co.uk |
 | 2 | /notes/ | End-to-end encryption | missing | standardnotes.com, notepad.pw |
+| 2 | /photos/ | Layers, masks and PSD files | partial | photopea.com, iloveimg.com |
 | 2 | /pdf/ | The site in other languages | missing | sejda.com, smallpdf.com |
 | 2 | /translate/ | Verb conjugation tables | missing | linguee.com, reverso.net |
-| 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
 | 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
@@ -83,15 +87,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /flights/airports/ | A public API | missing | aruljohn.com |
 | 1 | /g/ | A public API | missing | codebasehq.com |
 | 1 | /hosting/ | A public API | missing | thunit.com |
-| 1 | /photos/tinypng/ | A public API | missing | tinypng.com |
-| 1 | /photos/photopea/ | A public API | missing | photopea.com |
-| 1 | /photos/iloveimg/ | A public API | missing | iloveimg.com |
 | 1 | /tournaments/ | A public API | missing | yunite.xyz |
-| 1 | /markets/caps/ | A quote page for any stock | missing | companiesmarketcap.com |
-| 1 | /markets/screener/ | A quote page for any stock | missing | finviz.com |
-| 1 | /markets/caps/ | A watchlist | missing | companiesmarketcap.com |
-| 1 | /markets/screener/ | A watchlist | missing | finviz.com |
-| 1 | /scores/sports/ | An account that keeps your things on every device | partial | thesportsdb.com |
 | 1 | /jobs/regions/ | An account that keeps your things on every device | partial | jobicy.com |
 | 1 | /jobs/alerts/ | An account that keeps your things on every device | partial | workingnomads.com |
 | 1 | /jobs/europe/ | An account that keeps your things on every device | partial | arbeitnow.com |
@@ -99,28 +95,30 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /jobs/tags/ | An account that keeps your things on every device | partial | remoteok.com |
 | 1 | /g/ | An account that keeps your things on every device | partial | codebasehq.com |
 | 1 | /calculator/ | An account that keeps your things on every device | partial | calculator.net |
-| 1 | /random/ | An account that keeps your things on every device | partial | random.org |
 | 1 | /word-count/ | An account that keeps your things on every device | partial | wordcounter.net |
-| 1 | /random/people/ | An account that keeps your things on every device | partial | randomuser.me |
-| 1 | /markets/caps/ | An account that keeps your things on every device | partial | companiesmarketcap.com |
-| 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
 | 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
-| 1 | /scores/sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
 | 1 | /weather/ | Climate records | missing | weather.gov |
 | 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
-| 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
-| 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
-| 1 | /convert/ | Currency | missing | unitconverters.net |
 | 1 | /pdf/ | Dark mode | missing | tools.pdf24.org |
 | 1 | /kanban/ | Dark mode | missing | abacktools.com |
 | 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
 | 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |
 | 1 | /calendar/ | Dark mode | missing | calendar.online |
-| 1 | /markets/caps/ | Dark mode | missing | companiesmarketcap.com |
-| 1 | /markets/screener/ | Dark mode | missing | finviz.com |
 | 1 | /books/ | Dark mode | missing | sudowrite.com |
-| 1 | /markets/caps/ | Earnings and economic calendars | missing | companiesmarketcap.com |
-| 1 | /markets/screener/ | Earnings and economic calendars | missing | finviz.com |
 | 1 | /time/ | Eclipses | missing | timeanddate.com |
+| 1 | /chords/ | Export MIDI | missing | chordchord.com |
+| 1 | /weather/ | Forecaster discussions | missing | weather.gov |
+| 1 | /chords/ | Generate random progressions | missing | chordchord.com |
+| 1 | /piano/ | Lessons and a guided mode | missing | virtualpiano.net |
+| 1 | /weather/ | Marine, aviation and fire weather | missing | weather.gov |
+| 1 | /piano/ | Play from a MIDI keyboard | missing | virtualpiano.net |
+| 1 | /jobs/regions/ | Post a job | missing | jobicy.com |
+| 1 | /jobs/alerts/ | Post a job | missing | workingnomads.com |
+| 1 | /jobs/europe/ | Post a job | missing | arbeitnow.com |
+| 1 | /jobs/categories/ | Post a job | missing | remotive.com |
+| 1 | /jobs/tags/ | Post a job | missing | remoteok.com |
+| 1 | /jobs/regions/ | See who you know at a company | missing | jobicy.com |
+| 1 | /jobs/europe/ | See who you know at a company | missing | arbeitnow.com |
+| 1 | /piano/ | Sheets added by players | missing | virtualpiano.net |

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1356,
+ "counted": 1357,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -167,14 +167,14 @@
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 66,
+   "dependants": 65,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 64,
+   "dependants": 63,
    "tests": 5
   },
   {
@@ -7826,7 +7826,6 @@
     "lib/card-frame.js",
     "lib/card-image.js",
     "lib/skill-confidence.js",
-    "lib/tome.js",
     "skills/rally.js"
    ],
    "reachedBy": [
@@ -8190,7 +8189,6 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/term-card.js",
-    "lib/tome.js",
     "lib/verse-log.js",
     "lib/verse-world-bridge.js",
     "lib/voice.js",
@@ -16323,7 +16321,6 @@
   "lib/tome.js": {
    "imports": [
     "lib/guide.js",
-    "lib/card-art.js",
     "lib/rule-registry.js",
     "lib/book-news.js"
    ],
@@ -20481,6 +20478,10 @@
     "lib/toolkit.js",
     "lib/verse-shell.js"
    ],
+   "importedBy": []
+  },
+  "skills/ops-digest.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/oracle.js": {

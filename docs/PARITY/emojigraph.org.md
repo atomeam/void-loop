@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: emojigraph.org (https://emojigraph.org/)
-- Verse: /emoji-combos/emoji-dictionary/ (emoji combos: emojigraph.org, tower gate 11 of 15)
+- Verse: /emoji-combos/ (emoji combos: emojigraph.org, tower gate 11 of 15)
 - Live scan: not scanned yet
 - History: [docs/HISTORY/emojigraph.org.md](../HISTORY/emojigraph.org.md)
 
@@ -11,8 +11,8 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Search combos by tag | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:85 `<p class="intro">Search emoji combos, kaomoji and text art by tag and copy them. Collect` |
-| Copy a combo | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:84 `<h1>Emoji combos to copy</h1>` |
-| Collect several into one | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:85 `ext art by tag and copy them. Collect several into one, make fancy text, turn a picture in` |
-| Fancy text | Text | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:85 `ollect several into one, make fancy text, turn a picture into dot art, and keep combos of` |
+| Search combos by tag | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/index.html:82 `<p class="hint">Search emoji combos, kaomoji and text art by tag, then copy one, or coll` |
+| Copy a combo | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/index.html:82 `oji and text art by tag, then copy one, or collect several into one. Everything here works` |
+| Collect several into one | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/index.html:82 `art by tag, then copy one, or collect several into one. Everything here works on this devi` |
+| Fancy text | Text | have | every site of this kind offers it | void-live-deploy/emoji-combos/index.html:90 `Collect combos, single emoji, fancy text or dot art into one box, then copy them together.` |
 | Its live pages could not be read, so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://emojigraph.org/ | not compared yet |

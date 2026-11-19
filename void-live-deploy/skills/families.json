@@ -14,9 +14,9 @@
  "bench_at": "2026-11-18",
  "totals": {
   "experiment": 0,
-  "tested": 5,
-  "checked": 17,
-  "proven": 447
+  "tested": 3,
+  "checked": 18,
+  "proven": 448
  },
  "families": [
   {
@@ -1157,7 +1157,7 @@
     {
      "name": "baggage",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark, 3 live findings, 2026-11-17",
+     "why": "a self-test, 3 real asks in the benchmark, 4 live findings, 2026-11-18",
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2759,7 +2759,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 34 live findings, 2026-11-17",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 35 live findings, 2026-11-18",
      "last_tested": "2026-11-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3789,9 +3789,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 4,
-    "proven": 92
+    "tested": 2,
+    "checked": 5,
+    "proven": 93
    },
    "skills": [
     {
@@ -4712,18 +4712,22 @@
     },
     {
      "name": "automation-handoff",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-19",
      "streak": 1
     },
     {
      "name": "systems-connect-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-18",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-19"
     }
    ]
   },
