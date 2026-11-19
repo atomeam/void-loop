@@ -1,27 +1,237 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T20:16:17.243Z",
+ "updated": "2026-11-19T20:25:43.122Z",
  "last24h": {
-  "ticks": 1,
+  "ticks": 2,
   "started": 0,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
   "errors": 1
  },
- "broken": [],
- "held": [],
- "coder": null,
+ "broken": [
+  {
+   "wf": "propose-fix.yml",
+   "fails": 7,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44605293528"
+  },
+  {
+   "wf": "tower-gate.yml",
+   "fails": 7,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44558712521"
+  }
+ ],
+ "held": [
+  {
+   "id": "want-guard-hourly-main-green",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-298bf37d16",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-f167636764",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-ac2885447b",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-f50546a338",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-5e6497554d",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-25e717d31f",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "want-idea-1a3192a173",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwbfid91",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwcckvqs",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwcf54df",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwcg2h14",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwcm4wyk",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwcuue69",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwdkp801",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwe1dy24",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwe1sh8c",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwe1w3ao",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwe253d6",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  },
+  {
+   "id": "mwe25lmi",
+   "why": "verse-job.yml is paused (the coder's back-off, #3030, until 01:00 UTC)"
+  }
+ ],
+ "coder": {
+  "model": "@cf/google/gemma-4-26b-a4b-it",
+  "hour": {
+   "used": 7,
+   "cap": 90
+  },
+  "day": {
+   "used": 360,
+   "cap": 360
+  },
+  "room": false,
+  "until": "2026-11-20T00:00:00.000Z",
+  "paid": false
+ },
  "handed": {},
- "sweptAt": 0,
- "blueprintsAt": 0,
- "visitorAt": null,
- "visitorFiled": [],
+ "sweptAt": 1795119943122,
+ "blueprintsAt": 1795119943122,
+ "visitorAt": "2026-11-19T20:22:55Z",
+ "visitorFiled": [
+  "review:2832",
+  "review:2831",
+  "feature:team-3565",
+  "heal:helper-image-change-f60f",
+  "review:2842",
+  "review:2843",
+  "review:2852",
+  "tv:contactless-delivery-verificatio",
+  "feature:flightconnections-co-d3bf4719",
+  "feature:flightconnections-co-77245665",
+  "feature:flightconnections-co-68e29fa9",
+  "review:2845",
+  "review:2802",
+  "heal:helper-combine-pdf",
+  "review:2868",
+  "heal:tower-gate.yml",
+  "review:2875",
+  "tv:digital-resilience-audit",
+  "heal:helper-automation-proposal",
+  "gap:se-185621",
+  "review:2877",
+  "review:2899",
+  "review:2906",
+  "review:2916",
+  "review:2914",
+  "review:2920",
+  "next",
+  "review:2928",
+  "review:2930",
+  "review:2935",
+  "review:2937",
+  "review:2940",
+  "heal:helper-summon-pack",
+  "review:2941",
+  "heal:helper-connect-flows",
+  "review:2943",
+  "review:2944",
+  "heal:helper-automation-handoff",
+  "review:2951",
+  "review:2962",
+  "heal:helper-systems-connect-pack",
+  "review:2963",
+  "review:2964",
+  "review:2965",
+  "probe:math-quiz-10-questions",
+  "review:2968",
+  "review:2972",
+  "review:2975",
+  "probe:automation-status-for-invoice-remi",
+  "flake:the-fix-pages-the-hub-lists-every",
+  "flake:python-tests",
+  "heal:suite-bf8d9a3",
+  "review:2974",
+  "review:2987",
+  "heal:helper-ops-digest",
+  "review:2988",
+  "review:2991",
+  "heal:propose-fix.yml",
+  "probe:connect-systems-for-invoice-automa",
+  "heal:suite-e5755e8",
+  "tv:prayer-request-workflow",
+  "route:games-eight-ball",
+  "probe:status-of-the-automations-verse-ow",
+  "will:overhaul-site-shopping-persona-playtest-",
+  "review:2999",
+  "heal:helper-process-lift-pack",
+  "probe:client-handoff-pack-on-onboarding-",
+  "review:3001",
+  "heal:helper-reliability-ownership",
+  "review:3007",
+  "flake:password-strength-password-strengt",
+  "flake:base64-page-base64-encodes-and-dec",
+  "heal:helper-delivery-pack",
+  "review:3018",
+  "review:3019",
+  "visit:define-serendipity",
+  "heal:helper-connections-watch",
+  "review:3022",
+  "heal:helper-status-handoff",
+  "review:3031"
+ ],
  "ticks": [
   {
    "at": "2026-11-19T20:16:17.243Z",
    "error": "tick: fetch failed",
    "warnings": 1
+  },
+  {
+   "at": "2026-11-19T20:25:43.122Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 493,
+   "warnings": 0
   }
  ]
 }
