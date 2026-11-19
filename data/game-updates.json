@@ -1,9 +1,10 @@
 {
- "cursor": 1,
+ "cursor": 2,
  "picks": {
   "debris-field": 1,
   "gap-glide": 1,
-  "null-waves": 1
+  "null-waves": 1,
+  "packet-maze": 1
  },
  "scores": {
   "debris-field": {
@@ -24,6 +25,16 @@
    "cents": 0,
    "paid": false,
    "cycle": 1
+  },
+  "packet-maze": {
+   "update": 1,
+   "note": "Update 1: Verse now moves on every other step.",
+   "why": "shipped",
+   "fun": 56,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44550618957"
   }
  },
  "shown": [
@@ -44,6 +55,20 @@
    "cents": 0,
    "paid": false,
    "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-19T15:08:06.147Z",
+   "id": "packet-maze",
+   "title": "Packet Maze",
+   "n": 1,
+   "note": "Update 1: Verse now moves on every other step.",
+   "fun": 56,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44550618957",
    "dropped": false,
    "born": false
   }
