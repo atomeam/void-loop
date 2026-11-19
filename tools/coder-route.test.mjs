@@ -39,7 +39,7 @@ test('the hourly cap fails closed with a 429; no model, no database or a silent 
   const env = { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => ({ response: 'ok' }) } };
   for (let i = 0; i < CODER_LIMITS.perHour; i++) assert.equal((await onRequestPost({ request: req({ messages: MSG }), env })).status, 200);
   const full = await onRequestPost({ request: req({ messages: MSG }), env });
-  assert.equal(full.status, 429); assert.match(await full.text(), /hour/);
+  assert.equal(full.status, 429); assert.match(await full.text(), /free allowance used/);
   assert.ok(CODER_LIMITS.perDay > CODER_LIMITS.perHour);
   assert.equal((await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, DB: d1() } })).status, 503, 'no model bound');
   assert.equal((await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, AI: env.AI } })).status, 429, 'no database: refused, never uncounted');
@@ -81,7 +81,11 @@ test('past the free ceiling a call is billed to the infrastructure pot and the c
   await env.DB.prepare('CREATE TABLE void_treasury (id TEXT PRIMARY KEY, at TEXT, kind TEXT, bucket TEXT, cents INTEGER, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)').run();
   await env.DB.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', '2026-11-01', 'alloc', 'infrastructure', 500, 'test', 'ok')").run();
   for (let i = 0; i < CODER_LIMITS.perHour; i++) assert.equal((await onRequestPost({ request: req({ messages: MSG }), env })).status, 200);
-  const paid = await onRequestPost({ request: req({ messages: MSG }), env });
+  const held = await onRequestPost({ request: req({ messages: MSG }), env });
+  assert.equal(held.status, 429, 'a full free hour is a fall-through, not a paid call');
+  assert.equal(await held.text(), 'free allowance used');
+  assert.ok(!calls.includes(PAID_MODEL));
+  const paid = await onRequestPost({ request: req({ messages: MSG, pay: true }), env });
   assert.equal(paid.status, 200);
   const body = await paid.json();
   assert.equal(body.model, PAID_MODEL); assert.equal(body.paid, true); assert.ok(body.cents >= 1);

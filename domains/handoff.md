@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/coder-fallthrough-e463 · a used-up free coder falls through the stack, then the treasury · 2026-11-19 15:05 UTC
 - Cursor cloud agent · helper/conductor-tick-e463 · a skill the builder calls cannot crash the conductor tick · 2026-11-19 14:55 UTC
 - Cursor cloud agent · helper/game-gate-e463 · a game update ships only after a scored play · 2026-11-19 14:10 UTC
 - Cursor cloud agent · helper/game-lap-e463 · the hourly Verse loop plays one due game update · 2026-11-19 13:30 UTC

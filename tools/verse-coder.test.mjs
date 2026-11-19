@@ -421,6 +421,24 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.equal(seen.length, 2); assert.match(seen[1], /openrouter/); assert.match(m.last, /^openrouter /);
   const down = stackModel(ps.slice(0, 1), { fetchImpl: async () => ({ ok: false, status: 500 }) });
   assert.match((await down([])).error, /no model answered \(workers-ai 500\)/);
+  const chain = providersFrom({ VOID_OWNER_TOKEN: 'o'.repeat(30), VOID_SITE: 'https://example.invalid', GROQ_API_KEY: 'g'.repeat(20) });
+  const freeFirst = [];
+  const fell = stackModel(chain, { fetchImpl: async (url, init) => {
+    const body = JSON.parse(init.body); freeFirst.push(body.pay === true);
+    if (String(url).includes('example.invalid')) return { ok: false, status: 429, text: async () => 'free allowance used' };
+    return { ok: true, json: async () => ({ choices: [{ message: { content: call('finish') } }], usage: { total_tokens: 3 } }) };
+  } });
+  assert.equal((await fell([])).tokens, 3);
+  assert.deepEqual(freeFirst, [false, false], 'the next free provider answers before the treasury is asked');
+  const paidBodies = [];
+  const billed = stackModel(chain, { fetchImpl: async (url, init) => {
+    const body = JSON.parse(init.body); paidBodies.push(body);
+    if (body.pay) return { ok: true, json: async () => ({ result: { response: call('finish'), usage: { total_tokens: 4 } }, paid: true, cents: 2 }) };
+    return { ok: false, status: url.includes('groq') ? 404 : 429, text: async () => 'free allowance used' };
+  } });
+  assert.equal((await billed([])).tokens, 4);
+  assert.equal(billed.paid, true); assert.equal(billed.cents, 2);
+  assert.equal(paidBodies.filter((b) => b.pay).length, 1, 'one paid call after the free stack misses');
   assert.deepEqual(Object.keys(keyless({ PATH: '/bin', GROQ_API_KEY: 'k', CLOUDFLARE_API_TOKEN: 't', GH_TOKEN: 'g', HOME: '/h' })), ['PATH', 'HOME'], 'checks never see a key');
 });
 

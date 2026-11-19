@@ -95,42 +95,58 @@ export async function readReply(r) {
   return n <= 64 && !/[<>]/.test(s) ? { notJson: bad(n).notJson + ' ' + JSON.stringify(s.replace(/[A-Za-z0-9_\-]{20,}/g, '[masked]')) } : bad(n);
 }
 
-/** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
+/** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on.
+ *  Verse's own free allowance answering 429 is not a stop: the other providers go first, then one paid call (pay:true on /api/coder). */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
   let at = 0;
   const fn = async (messages) => {
     const errs = [];
+    const noteOf = async (r) => {
+      if (typeof r.text !== 'function') return '';
+      try {
+        const t = await r.text();
+        let j = null; try { j = JSON.parse(t); } catch (_) { /* a plain sentence */ }
+        const e = j && j.errors && j.errors[0];
+        if (e && (e.code || e.message)) return ' ' + [e.code, String(e.message || '').slice(0, 80)].filter(Boolean).join(' ');
+        if (t && t.length <= 80 && !/[<>]/.test(t)) return ' ' + t.replace(/[A-Za-z0-9_-]{20,}/g, '[masked]').replace(/\s+/g, ' ').trim();
+      } catch (_) { /* status alone */ }
+      return '';
+    };
+    const accept = (p, j, i) => {
+      if (j && j.notJson) { errs.push(p.name + ' ' + j.notJson); return null; }
+      const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
+      const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
+      if (!text.trim()) { errs.push(p.name + ' empty'); return null; }
+      at = i; fn.last = p.name + ' ' + ((j && j.model) || p.model);
+      if (j && j.paid) fn.paid = true;
+      if (j && j.cents) fn.cents = (fn.cents || 0) + Number(j.cents);
+      const u = x.usage || (j && j.usage) || {};
+      return { text, tokens: u.total_tokens || 0 };
+    };
+    const post = (p, body) => fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    let verseCapped = false;
     for (let k = 0; k < providers.length; k++) {
       const i = (at + k) % providers.length, p = providers[i];
       try {
         const body = p.shape === 'workers'
           ? { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false } }
           : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
-        const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+        const r = await post(p, body);
         if (!r.ok) {
-          let note = '';
-          if (typeof r.text === 'function') {
-            try {
-              const t = await r.text();
-              let j = null; try { j = JSON.parse(t); } catch (_) { /* a plain sentence */ }
-              const e = j && j.errors && j.errors[0];
-              if (e && (e.code || e.message)) note = ' ' + [e.code, String(e.message || '').slice(0, 80)].filter(Boolean).join(' ');
-              else if (t && t.length <= 80 && !/[<>]/.test(t)) note = ' ' + t.replace(/[A-Za-z0-9_-]{20,}/g, '[masked]').replace(/\s+/g, ' ').trim();
-            } catch (_) { /* status alone */ }
-          }
-          errs.push(p.name + ' ' + r.status + note); continue;
+          if (p.name === 'verse' && r.status === 429) verseCapped = true;
+          errs.push(p.name + ' ' + r.status + await noteOf(r)); continue;
         }
-        const j = await readReply(r);
-        if (j && j.notJson) { errs.push(p.name + ' ' + j.notJson); continue; }
-        const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
-        const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
-        if (!text.trim()) { errs.push(p.name + ' empty'); continue; }
-        at = i; fn.last = p.name + ' ' + ((j && j.model) || p.model);
-        if (j && j.paid) fn.paid = true;
-        if (j && j.cents) fn.cents = (fn.cents || 0) + Number(j.cents);
-        const u = x.usage || (j && j.usage) || {};
-        return { text, tokens: u.total_tokens || 0 };
+        const got = accept(p, await readReply(r), i);
+        if (got) return got;
       } catch (e) { errs.push(p.name + ' ' + String((e && e.name) || e)); }
+    }
+    const verse = verseCapped && providers.find((p) => p.name === 'verse');
+    if (verse) {
+      try {
+        const r = await post(verse, { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false }, pay: true });
+        if (!r.ok) errs.push('verse paid ' + r.status + await noteOf(r));
+        else { const got = accept(verse, await readReply(r), providers.indexOf(verse)); if (got) return got; }
+      } catch (e) { errs.push('verse paid ' + String((e && e.name) || e)); }
     }
     return { error: 'no model answered (' + errs.join(', ') + ')' };
   };
