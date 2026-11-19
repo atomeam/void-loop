@@ -7,9 +7,9 @@
 export function isProcessLiftPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:process\s+)?lift\s+(?:pack|package)\b/i.test(t)
-    || /^(?:package|pack)\s+the\s+(?:heavy\s+)?lift(?:ing)?\b/i.test(t)
-    || /^(?:we\s+own\s+the\s+lift)\b/i.test(t)
-    || /^(?:heavy\s+lift(?:ing)?\s+pack)\b/i.test(t);
+    || /^(?:package|pack)\s+(?:the\s+)?(?:(?:\w+\s+)?(?:heavy\s+)?(?:work|lift(?:ing)?))\b/i.test(t)
+    || /^(?:we\s+own\s+the\s+lift|verse\s+does\s+the\s+lift)\b/i.test(t)
+    || /^(?:heavy\s+lift(?:ing)?\s+pack|hard\s+work\s+pack)\b/i.test(t);
 }
 
 export function subjectOf(text) {
@@ -65,13 +65,28 @@ export default {
   match(lower, text) { return isProcessLiftPack(text || lower); },
   run,
   suite() {
-    const ok = isProcessLiftPack('process lift pack for client onboarding')
-      && isProcessLiftPack('package the hard work for invoice automation')
-      && isProcessLiftPack('verse does the lift for support routing')
-      && isProcessLiftPack('hard work pack for the sales follow-up process')
-      && !isProcessLiftPack('what is hard work')
-      && !isProcessLiftPack('lift the card')
-      && !isProcessLiftPack('process map');
-    return { ok, got: 'match works' };
+    const tests = [
+      { input: 'process lift pack for client onboarding', expected: true },
+      { input: 'package the hard work for invoice automation', expected: true },
+      { input: 'verse does the lift for support routing', expected: true },
+      { input: 'hard work pack for the sales follow-up process', expected: true },
+      { input: 'what is hard work', expected: false },
+      { input: 'lift the card', expected: false },
+      { input: 'process map', expected: false }
+    ];
+
+    let ok = true;
+    let got = '';
+
+    for (const { input, expected } of tests) {
+      const result = isProcessLiftPack(input) === expected;
+      if (!result) {
+        ok = false;
+        got = `match works (expected ${expected} for "${input}")`;
+        break;
+      }
+    }
+
+    return { ok, got };
   }
 };
