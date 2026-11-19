@@ -19,7 +19,7 @@ const locs = entries.map((e) => e.loc);
 
 test('every tool page, the home page, the tower and every fix page, each exactly once', () => {
   for (const p of Object.keys(TOOLS)) assert.equal(locs.filter((l) => l === p).length, 1, p);
-  for (const p of ['/', '/compare/', '/fix/', '/store/', '/code-review/', '/llms.txt']) assert.equal(locs.filter((l) => l === p).length, 1, p);
+  for (const p of ['/', '/fix/', '/store/', '/code-review/', '/llms.txt']) assert.equal(locs.filter((l) => l === p).length, 1, p);
   for (const p of fixPages) assert.ok(locs.includes('/fix/' + p.slug + '/'), p.slug);
   assert.equal(new Set(locs).size, locs.length, 'no page listed twice');
   for (const l of locs) assert.match(l, /^\/(?:[a-z0-9-]+\/?|[a-z0-9-]+\/[a-z0-9-]+\/?|llms\.txt)?$/, l);

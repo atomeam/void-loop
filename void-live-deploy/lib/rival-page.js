@@ -19,5 +19,5 @@ export function rivalPageHtml(r, h, esc) {
 export function rivalListHtml(idx, esc) {
   const pages = (idx && idx.pages) || {}, rivals = (idx && idx.rivals) || {};
   return '<p class="sub">Grouped by the Verse page that takes them on; a page covering several rivals carries every feature any of them has.</p>'
-    + Object.keys(pages).sort().map((p) => '<h2><a href="' + esc(p) + '">' + esc(p) + '</a> · ' + pages[p].union.length + ' features across ' + pages[p].rivals.length + ' rival' + (pages[p].rivals.length === 1 ? '' : 's') + '</h2><div id="pick">' + pages[p].rivals.map((s) => '<a href="/rival/?site=' + esc(encodeURIComponent(s)) + '">' + esc((rivals[s] || {}).site || s) + '</a>').join('') + '</div>').join('');
+    + Object.keys(pages).sort().map((p) => '<h2><a href="' + esc(p) + '">' + esc(p) + '</a> · ' + pages[p].union.length + ' features across ' + pages[p].rivals.length + ' rival' + (pages[p].rivals.length === 1 ? '' : 's') + '</h2><div id="pick">' + pages[p].rivals.map((s) => '<a href="/versus/?view=rival&amp;site=' + esc(encodeURIComponent(s)) + '">' + esc((rivals[s] || {}).site || s) + '</a>').join('') + '</div>').join('');
 }

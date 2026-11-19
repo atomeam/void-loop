@@ -118,17 +118,6 @@ export const SPECS = {
     t.ok(rows >= 3, 'a score row for each domain: ' + rows);
     t.ok(/\d/.test(await t.text('#rows')), 'the rows carry scores');
   },
-  '/compare/': async (t) => {
-    const hint = await t.waitText('#who', /floor=\S+/, 10000); let id = ((hint.match(/floor=(\S+)/) || [])[1] || '').trim();
-    try { id = decodeURIComponent(id); } catch (_) { /* the hint is already the raw id */ }
-    t.ok(!!id && !/\s/.test(hint.split('floor=')[1] || ''), 'with no floor it names one as a real address (' + hint.slice(0, 80) + ')');
-    t.ok(await t.p.locator('iframe:visible').count() === 0, 'with no floor the blank frame stays hidden');
-    t.ok(await t.p.locator('#pick a[href*="floor="]').count() >= 8, 'floors are listed to open');
-    await t.p.goto(t.p.url().split('?')[0] + '?floor=' + encodeURIComponent(id)); const who = await t.waitText('#who', /side by side/, 10000);
-    t.ok(/^Verse and \S+, side by side$/.test(who.trim()), 'the floor opens as Verse beside its site: ' + who.slice(0, 60));
-    t.ok(/^https?:\/\//.test(await t.p.getAttribute('#so', 'href') || ''), 'the rival site opens from a real link');
-    const st = await t.waitText('#st', /aspects ahead|every aspect matched/, 15000); t.ok(/\d+ of \d+ aspects ahead|every aspect matched/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
-  },
   '/vat/': async (t) => { // 1000 with 22% VAT in it: 180,33 VAT and 819,67 net, to the kopeck; adding 20% to 5000 is 6 000,00
     await t.fill('#amount', '1000'); await t.fill('#rate', '22'); await t.p.selectOption('#mode', 'extract');
     const v = await t.waitText('#vatValue', /180,33/, 5000); t.ok(/180,33/.test(v), 'VAT out of 1000 at 22% is 180,33: ' + v);
@@ -138,12 +127,6 @@ export const SPECS = {
     t.ok((await t.p.locator('#related a[href="/calculator/"]').count()) > 0, 'the page links to its related tools');
     await t.share('#copyLink', async (p) => /6\s?000,00/.test(await p.locator('#grossValue').innerText()));
     await t.links();
-  },
-  '/rival/': async (t) => { // every rival on the tower (rivals/index.json, tools/rival-pages.mjs), then one rival's own page: its history, what Verse lacks, every feature
-    await t.waitText('#out', /features across/, 10000); const n = await t.p.locator('#out a[href^="/rival/?site="]').count(); t.ok(n > 100, n + ' rivals listed');
-    await t.p.goto(new URL('/rival/?site=flightconnections.com', t.p.url()).href); const h = await t.waitText('#out', /What Verse still lacks/, 10000);
-    t.ok(/Its history/.test(h) && /Every feature, with evidence/.test(h), 'a rival page carries its history and its features');
-    t.ok(/flightconnections\.com/.test(await t.text('#title')), 'its name is the heading');
   },
   '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
     const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"

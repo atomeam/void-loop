@@ -9,9 +9,13 @@ async function readJson(path) {
   } catch (_) { return null; }
 }
 
+/** the owner token this browser holds, or '' for anyone else. */
+export async function ownerToken() {
+  try { return (await ownerLink()) || ''; } catch (_) { return ''; }
+}
+
 export async function ownerModel() {
-  let token = '';
-  try { token = await ownerLink(); } catch (_) { token = ''; }
+  const token = await ownerToken();
   if (!token) return null;
   try {
     const r = await fetch('/api/versus-floor', { headers: { authorization: 'Bearer ' + token }, cache: 'no-store' });

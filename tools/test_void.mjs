@@ -1586,18 +1586,6 @@ try {
     }, agentLabel), 8000);
     check('phone polish: the current nav item is fully inside the nav bar and the page is not wider than the screen',
       nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
-    await P.p.goto(base + 'compare/');
-    const cmp = await until(() => P.p.evaluate(() => {
-      const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
-      if (picks < 8) return null;
-      return {
-        who: (document.getElementById('who') || {}).textContent || '',
-        frames: [...document.querySelectorAll('iframe')].filter((f) => f.getClientRects().length && getComputedStyle(f).display !== 'none').length,
-        picks,
-      };
-    }), 8000);
-    check('phone polish: /compare/ with no floor names a real address, lists floors, and shows no blank frame',
-      cmp && /floor=\S+/.test(cmp.who) && !/\s/.test((cmp.who.split('floor=')[1] || '')) && cmp.frames === 0 && cmp.picks >= 8, JSON.stringify(cmp));
     await P.p.goto(base + 'credits/');
     const cred = await until(() => P.p.evaluate(() => {
       const td = [...document.querySelectorAll('#c td')].find((e) => /MIT|Apache|Unlicense|CC0|ODbL/.test(e.textContent));

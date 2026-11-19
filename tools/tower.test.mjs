@@ -163,7 +163,7 @@ test('every assimilated site is on the card, visible and copyable, by name with 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const html = towerHtml(t, esc);
   const list = html.slice(html.indexOf('class="tw-won"'));
-  assert.ok(list.includes(esc(won.site)) && list.includes('/rival/?site='), 'an assimilated site is listed with its rival page');
+  assert.ok(list.includes(esc(won.site)) && list.includes('/versus/?view=rival'), 'an assimilated site is listed with its rival page');
   assert.ok(html.includes('<b>Assimilated (1)</b>')); assert.doesNotMatch(html, /Conquered|surpassed|taught me/);
   const { siteFace } = await import('../void-live-deploy/skills/tower.js');
   assert.doesNotMatch(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /<img|favicons/, 'no logos: plain text only');

@@ -24,9 +24,15 @@
 </main>
 <script type="module">
 import { ownerHtml } from '/lib/versus-floor.js';
-import { ownerModel } from '/versus/open.js';
+import { ownerModel, ownerToken } from '/versus/open.js';
+const root = document.getElementById('elv-root'), q = new URLSearchParams(location.search), view = q.get('view');
 const model = await ownerModel();
-if (model) document.getElementById('elv-root').innerHTML = ownerHtml(model); // void-review: ok (ownerHtml runs every value through esc before it is placed in the markup)
+// the owner's views: every rival (it was /rival/) and the side-by-side (it was /compare/). Anyone else only ever gets the sign above.
+if (model && view === 'rival') await (await import('/versus/rivals.js')).renderRivals(root, location.search, await ownerToken());
+else if (model && view === 'compare') (await import('/versus/compare.js')).renderCompare(root, location.search);
+else if (model) {
+  root.innerHTML = ownerHtml(model) + '<nav class="elv-views" aria-label="More on Versus"><a href="/versus/?view=rival">Every rival</a> · <a href="/versus/?view=compare">Side by side</a></nav>'; // void-review: ok (ownerHtml runs every value through esc; the links are fixed)
+}
 </script>
 <script type="module" src="/verse-shell.js"></script>
 </body>

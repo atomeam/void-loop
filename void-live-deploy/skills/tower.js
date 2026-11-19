@@ -3,7 +3,7 @@
  * changing anything here or in lib/tower.js; tools/tower-rules.test.mjs enforces them and fails the build when one breaks.
  * In short: each floor is a real, studied site people use; the climb runs from the site Verse is closest to assimilating to the hardest; the
  * floor Verse is on stays until every aspect is verified against the live site; one word, assimilated; the History is the rival's own history;
- * every rival has its own page (/rival/?site=); sites in plain text, no logos; no Verse dates or attempt logs on the card. Real data only.
+ * every rival has its own page (/versus/?view=rival&site=, owner only); sites in plain text, no logos; no Verse dates or attempt logs on the card. Real data only.
  */
 import { towerArtSvg } from '../lib/tower-art.js';
 import { visitorHtml, ownerHtml } from '../lib/versus-floor.js';
@@ -106,7 +106,7 @@ export function vsHtml(f, esc, { enter = true } = {}) {
 /** the awareness rows: one per aspect (the verdict in a word, the measured numbers), then when it was measured and what is next. Pure. */
 const rowsHtml = (f, esc, _now) => '<ul class="tw-aspects">' + matchRows(f).map((r) => '<li data-v="' + r.v + '"><span>' + MARK[r.v] + ' ' + esc(r.a) + '<span class="tw-say' + (r.say === 'not measured yet' ? ' tw-nm' : '') + '">' + esc(r.say) + '</span></span>' + (r.nums ? '<span class="tw-num">' + esc(r.nums) + '</span>' : '') + '</li>').join('') + '</ul>'
   + '<div class="tw-meta">' + esc(nextLine(f)) + '</div>';
-/** the whole matchup on its own, for a page outside the card (/compare/): the splash, the rows and the awareness line, with the styles. Pure. */
+/** the whole matchup on its own, for a page outside the card (the owner's side-by-side in /versus/): the splash, the rows and the awareness line, with the styles. Pure. */
 export const matchupHtml = (f, esc, { enter = true, now = Date.now() } = {}) => TW_CSS + '<div class="tw">' + vsHtml(f, esc, { enter }) + rowsHtml(f, esc, now) + '</div>';
 /** the stack scrolled to its top, where the current site is (call after drawing). */
 export function centerOnYou(root) { const stack = root && root.querySelector('.tw-stack'); if (stack) stack.scrollTop = 0; }
@@ -130,7 +130,7 @@ export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' +
 export function sizeListHtml(t, esc, lang = 'en') {
   const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
-    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : 'Verse ahead on ' + f.n + ' of ' + f.m + ' aspects') + '</span>' + gateTag(f, esc) + pageLink(f, esc) + '<a class="tw-sidebyside" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
+    + '<span class="tw-count">' + esc(f.state === 'beaten' ? 'surpassed' : 'Verse ahead on ' + f.n + ' of ' + f.m + ' aspects') + '</span>' + gateTag(f, esc) + pageLink(f, esc) + '<a class="tw-sidebyside" href="/versus/?view=compare&amp;floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></li>').join('') + '</ol>';
 }
 /** the plan block (tower.plan.json, made by tools/tower-plan.mjs from the tower-plan block in docs/NEXT.md; owner, 2026-10-28: "move backwards
  *  to easier sites"): what is worked on now, the next easiest floors and the far-future ones, each joined with the gate's own numbers from
@@ -200,7 +200,7 @@ export function whyLine(f) {
 /** three actions for the target: Verse's page (or that it has none yet), side by side, the site itself. Pure. */
 export function actionsHtml(f, esc) {
   return '<div class="tw-actions" data-share-skip>' + (f.page ? '<a class="tw-act" data-main href="' + esc(f.page) + '">Open Verse\'s page</a>' : '<span class="tw-act" aria-disabled="true">No Verse page yet</span>')
-    + '<a class="tw-act" href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">Side by side</a>' + (f.url ? '<a class="tw-act" href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">Visit ↗</a>' : '') + '</div>';
+    + '<a class="tw-act" href="/versus/?view=compare&amp;floor=' + esc(encodeURIComponent(f.id)) + '">Side by side</a>' + (f.url ? '<a class="tw-act" href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">Visit ↗</a>' : '') + '</div>';
 }
 /** the next easiest sites after the target, from the same order that picks the target (lib/tower.js: size tier, then work left, then a page first). Pure. */
 export function nextHtml(t, esc, n = 3) {
@@ -296,7 +296,7 @@ export function rivalHistoryOf(h) {
   return ((h && h.events) || []).filter((e) => e && !e.u && e.t && !/unknown \(no source found yet\)/i.test(e.t)).map((e) => ({ kind: String(e.k || ''), text: String(e.t), year: e.y ? String(e.y) : '', source: /^https:\/\//.test(String(e.s || '')) ? String(e.s) : '' }));
 }
 export function rivalHistoryHtml(f, h, esc) {
-  const rows = rivalHistoryOf(h), link = '/rival/?site=' + encodeURIComponent(siteSlug(f.site));
+  const rows = rivalHistoryOf(h), link = '/versus/?view=rival&site=' + encodeURIComponent(siteSlug(f.site));
   return '<div class="tw-history"><b>' + esc(f.site) + ': its history</b>' + (rows.length ? '<ul>' + rows.map((r) => '<li>' + esc(r.text) + (r.source ? ' <a href="' + esc(r.source) + '" target="_blank" rel="noopener noreferrer">source</a>' : '') + '</li>').join('') + '</ul>' : '<p>No cited history found yet; nothing is guessed.</p>')
     + '<a href="' + esc(link) + '">' + esc(f.site) + ': its page (history, every feature, what Verse lacks)</a></div>';
 }
@@ -311,7 +311,7 @@ const CARD_CSS = '<style>.tw-sum{display:grid;grid-template-columns:repeat(4,1fr
 /** an assimilated floor: its name, the word, and its links (the site, Verse's page, side by side, the rival's own page); a div, so a copied card keeps it. Pure. */
 export const wonRow = (f, esc) => '<div class="tower-floor" role="button" tabindex="0" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="beaten"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-count">assimilated</span>' + gateTag(f, esc) + '</div>'
   + '<div class="tw-links" style="display:flex;flex-wrap:wrap;gap:4px 10px;margin:-2px 0 6px 10px;font-size:12px;opacity:.85">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : '') + pageLink(f, esc)
-  + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a><a href="/rival/?site=' + esc(encodeURIComponent(siteSlug(f.site))) + '">its page</a></div>';
+  + '<a href="/versus/?view=compare&amp;floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a><a href="/versus/?view=rival&amp;site=' + esc(encodeURIComponent(siteSlug(f.site))) + '">its page</a></div>';
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now() } = {}) {
   const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.beaten), s = summaryOf(t);
   const curHtml = cur ? '<div class="tw-cur" data-id="' + esc(cur.id) + '"><div class="tw-cur-k">Current floor</div><div class="tw-cur-name">' + esc(cur.site) + gateTag(cur, esc) + '</div>'
@@ -441,7 +441,7 @@ export function plainHtml(t, esc) {
   const done = fl.filter((f) => f.beaten).length;
   return PLAIN_CSS + '<div class="vp tw"><h2 class="tw-head">Versus</h2><p class="vp-sub">' + esc('The website Verse is learning to replace right now, and what is left. ' + done + ' site' + (done === 1 ? '' : 's') + ' done so far.') + '</p>'
     + (art ? '<div class="vp-art" aria-hidden="true" data-share-skip>' + art + '</div>' : '') + now + cant + up
-    + '<div class="vp-actions"><a data-main href="/versus/">Open the full Tower</a>' + (cur ? '<a href="/rival/?site=' + esc(encodeURIComponent(siteSlug(cur.site))) + '">Everything about ' + esc(cur.site) + '</a>' : '') + '</div></div>';
+    + '<div class="vp-actions"><a data-main href="/versus/">Open the full Tower</a>' + (cur ? '<a href="/versus/?view=rival&amp;site=' + esc(encodeURIComponent(siteSlug(cur.site))) + '">Everything about ' + esc(cur.site) + '</a>' : '') + '</div></div>';
 }
 /** the spoken line for the owner, plain. Pure. */
 export const plainLine = (t) => { const cur = ((t && t.floors) || []).find((f) => f.state === 'current'); return cur ? 'Verse is working on ' + cur.site + ' and is ' + (Math.round(+cur.assim) || 0) + '% of the way there.' : 'Verse has finished every site on its list.'; };
