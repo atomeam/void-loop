@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { parseRedirects, redirectTo } from '../void-live-deploy/lib/page-pass.js';
-import { onRequest } from '../void-live-deploy/functions/rivals/[[path]].js';
+import { ownerOnlyPath } from '../void-live-deploy/lib/owner-gate.js';
 
 const D = new URL('../void-live-deploy/', import.meta.url);
 const read = (p) => readFileSync(new URL(p, D), 'utf8');
@@ -28,17 +28,11 @@ test('/versus/ opens the rival and side-by-side views only after the owner gate 
   const html = read('versus/index.html');
   assert.match(html, /const model = await ownerModel\(\);[\s\S]*model && view === 'rival'[\s\S]*model && view === 'compare'/);
   assert.ok(existsSync(new URL('versus/rivals.js', D)) && existsSync(new URL('versus/compare.js', D)));
-  assert.match(read('_routes.json'), /"\/rivals\/\*"/);
+  assert.match(read('_routes.json'), /"\/versus\/rivals\.js"/);
 });
 
-test('the rival feature files answer the owner key and nobody else', async () => {
-  const env = { READ_TOKEN: 'owner-test-key', ASSETS: { fetch: async (r) => new Response('{"site":"x"}', { headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=60' } }) } };
-  const ask = (headers, method = 'GET') => onRequest({ request: new Request('https://a-to-mind.com/rivals/index.json', { headers, method }), env });
-  assert.equal((await ask({})).status, 404, 'signed out');
-  assert.equal((await ask({ authorization: 'Bearer wrong' })).status, 404, 'a wrong key');
-  assert.equal((await ask({ authorization: 'Bearer owner-test-key' }, 'POST')).status, 404, 'only reads');
-  const ok = await ask({ authorization: 'Bearer owner-test-key' });
-  assert.equal(ok.status, 200); assert.equal(ok.headers.get('cache-control'), 'private, no-store'); assert.deepEqual(await ok.json(), { site: 'x' });
+test('the rival feature files are owner-only files (lib/owner-gate.js, tools/owner-gate.test.mjs)', () => {
+  assert.ok(ownerOnlyPath('/rivals/index.json') && ownerOnlyPath('/rivals/abc.com.json'));
 });
 
 test('what /versus/ sends a visitor has no static import of the file that lists the sites; it loads after the owner gate says yes', () => {

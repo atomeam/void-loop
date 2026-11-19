@@ -1,6 +1,7 @@
 // Full pages (a trailing slash or an html file) answer with Uni unless the visitor is the owner, on Multi, or holds a Uni pass.
 // Home, APIs, assets, legal pages, checkout and health checks are not gated. A Stripe key Stripe will not accept leaves every page open.
 import { gatedPath, liveState, passage, screen, gateHeaders, parseRedirects, redirectTo } from '../lib/page-pass.js';
+import { ownerOnlyPath, ownerGate } from '../lib/owner-gate.js';
 
 let redirects = null;
 async function table(env, request) {
@@ -22,6 +23,12 @@ function opened(res) {
 export async function onRequest(ctx) {
   const { request, env, next } = ctx;
   const url = new URL(request.url);
+  if (ownerOnlyPath(url.pathname)) { // files that name the sites Versus is measured against: the owner only (lib/owner-gate.js)
+    if (!/^(GET|HEAD)$/.test(request.method) || !(await ownerGate(request, env))) return new Response('Not found', { status: 404, headers: { 'cache-control': 'no-store' } });
+    const res = await next(), headers = new Headers(res.headers);
+    headers.set('cache-control', 'private, no-store');
+    return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+  }
   if (!/^(GET|HEAD)$/.test(request.method) || !gatedPath(url.pathname)) return next();
   const hop = redirectTo(await table(env, request), url.pathname, url.search);
   if (hop) return new Response(null, { status: hop.status, headers: { location: new URL(hop.to, url.origin).href } });
