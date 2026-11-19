@@ -20,3 +20,12 @@ test('a card titled only with its frame word ("Calculated") is never painted; th
   for (const k of ['Calculated', 'Converted', 'Result', 'Answer']) assert.equal(worthy(card({ subject: k }), { key: k, typeLine: 'Answer \u2014 from Verse' }), false, k);
   assert.equal(worthy(card({ subject: 'calculator' }), { key: 'calculator', typeLine: 'Answer \u2014 from Verse' }), true);
 });
+
+test('a recipe card about pancakes paints as an answer even after data-skill lands; a skill\'s own card stays a skill', async () => {
+  const { kindOf } = await import('../void-live-deploy/lib/card-forge.js');
+  const el = { dataset: {}, _vcArtKey: 'pancake' }, c = { key: 'pancake' }; // the subject kept from the card's first ask (subjectFor)
+  assert.equal(kindOf(el, c), 'answer');
+  el.dataset.skill = 'recipe'; assert.equal(kindOf(el, c), 'answer', 'the same subject, the same kind: its old skill row is never asked for');
+  assert.equal(kindOf({ dataset: { skill: 'recipe' } }, { key: 'recipe' }), 'skill');
+  assert.equal(kindOf({ dataset: { skill: 'weather', artKind: 'weather', artSubject: 'Paris France rain' } }, {}), 'weather');
+});

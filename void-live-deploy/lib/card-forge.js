@@ -50,7 +50,10 @@ export function answerText(el) {
   let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.vc-variants,.src,.vtail,.vtell,.vtell-box,.vc-share,.thin,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
   return t.replace(/\s+/g, ' ').trim().slice(0, 1500);
 }
-export const kindOf = (el, c) => (el.dataset && el.dataset.artKind ? el.dataset.artKind : el.dataset && el.dataset.cardOwn ? 'merge' : el.dataset && el.dataset.skill ? 'skill' : (c && c.kindName) || 'answer');
+// a skill's own card is a 'skill' only when its subject IS the skill (owner, 2026-11-19: a Pancakes recipe card read its picture as an answer, then
+// painted as a skill once data-skill landed, and got the skill's old space-look row back): an answer about pancakes stays an answer, whatever skill made it
+const fold = (v) => String(v || '').toLowerCase().replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+export const kindOf = (el, c) => (el.dataset && el.dataset.artKind ? el.dataset.artKind : el.dataset && el.dataset.cardOwn ? 'merge' : el.dataset && el.dataset.skill && fold(subjectFor(el, c)) === fold(el.dataset.skill) ? 'skill' : (c && c.kindName) || 'answer');
 const mode = () => { try { const m = typeof location !== 'undefined' && /[?&]art=(off|button)\b/.exec(location.search); return m ? m[1] : 'auto'; } catch (_) { return 'auto'; } };
 const autoOn = () => mode() === 'auto';
 
