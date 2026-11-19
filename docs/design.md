@@ -2,7 +2,7 @@
 
 Owner, 2026-10-15: "I wouldn't mind if Verse became unrecognizably good looking."
 
-The idea in one line: **a dark stage lit from above, with glass that catches the light**. The page stays empty until you ask (that rule does not change); what changes is that the emptiness is a place: deep space, a breathing event-horizon glow, a pool of light where answers stand, and everything that appears stands in it.
+The idea in one line: **a dark stage lit from above, with glass that catches the light**. The emptiness is a place: deep space, a breathing event-horizon glow, a pool of light where answers stand, and everything that appears stands in it.
 
 ## Benchmarks (what we take from whom)
 
@@ -69,7 +69,6 @@ The shell (nav, command palette, live line, view transitions) is `verse-shell.js
 
 ### Never
 - **No perspective grids, grid floors, synthwave horizons or tron lines.** Adam called it "the ugly every-AI-website grid" and it was removed. A check in `tools/checks.mjs` fails on `rotateX(` paired with `repeating-linear-gradient` in a page background.
-- No generic SaaS feature-tile grids on the empty stage. The stage stays empty until you ask.
 
 ### The Verse, pass 2 (2026-10-15: "too dim to put people in awe")
 - Star dust is on by default: two canvases, DPR capped at 2, count scales with screen area, warm/cool tints, about 14% twinkle, brightest stars get a soft halo. They stop drawing when the tab is hidden and pick up again when it's visible. With reduced motion they're drawn once and held still.

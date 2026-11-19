@@ -58,7 +58,7 @@
 
 ## Direction (Adam, 2026-09-25; ranked by Claude)
 
-Verse is the front door. Blank until asked; then anything can be summoned: an explanation page, text, a product, later a venture intake. Humble and quiet, unlike modern sites that are in your face. No rush to sell: right now Verse's job is to grow and improve, using Victus and the agent team first. Each Next item should move Verse from "a canvas of widgets" toward "ask anything, it appears."
+Verse is the front door. Blank until asked; then anything can be summoned: an explanation page, text, a product, later a venture intake. Right now Verse's job is to grow and improve, using Victus and the agent team first. Each Next item should move Verse from "a canvas of widgets" toward "ask anything, it appears."
 
 ## Direction (Adam, 2026-10-03): two-part summons
 
