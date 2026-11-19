@@ -28,9 +28,10 @@ export const cutWhole = (t, n) => {
   return end > n * 0.4 ? s.slice(0, end).trim() : cutAtWord(s, n);
 };
 /** the facts a card carries, cleaned and capped: { v, t, k, b, src: [{ t, u }] }. Pure. */
-export function dataOf({ title, kind, body, sources, n } = {}) {
+export function dataOf({ title, kind, body, sources, n, page } = {}) {
   const gen = Math.floor(+n); // version history: how many times this card has been copied on from a pasted one (2 = the copy of a pasted card); only 2..99 ride along
-  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: cutWhole(clip(title, 4 * TITLE_MAX), TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.u) }; // a source with no https link cannot be checked, so it is not carried (owner, 2026-10-26)
+  const p = httpsOnly(page);
+  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), ...(p ? { p } : {}), t: cutWhole(clip(title, 4 * TITLE_MAX), TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.u) }; // a source with no https link cannot be checked, so it is not carried (owner, 2026-10-26)
 }
 /** the code line for a card. Pure. */
 // short on purpose (owner, 2026-10-17: "are the letters necessary to copy along with the card?"): the readable text above it already holds the
@@ -51,14 +52,18 @@ export function cutSentence(t, n = 200, max = SENTENCE_MAX) {
   if (ends.length && ends[0] <= max) return s.slice(0, ends[0]).trim();
   return s.length <= max && !ends.length ? s : '';
 }
-export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n }); return MARK + b64(JSON.stringify({ ...x, b: cutSentence(x.b, 200), src: x.src.slice(0, 2) })); };
+export const codeOf = (d, bodyMax = 200) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n, page: d.p }); return MARK + b64(JSON.stringify({ ...x, b: cutSentence(x.b, bodyMax, Math.max(SENTENCE_MAX, bodyMax)), src: x.src.slice(0, 2) })); };
 /** the text a person copies or saves: readable, then the code. Pure. */
 export function shareText(d) {
-  const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n });
-  return [x.t, x.k, '', x.b, x.src.length ? '\nSources:\n' + x.src.map((s, i) => '[' + (i + 1) + '] ' + s.t + (s.u ? ' ' + s.u : '')).join('\n') : '', '\nVerse card from a-to-mind.com' + (x.n ? ' \u00b7 v' + x.n : ''), codeOf(x)].filter((l, i) => i !== 2 || l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n, page: d.p });
+  return [x.t, x.k, '', x.b, x.p ? '\nFull card: ' + x.p : '', x.src.length ? '\nSources:\n' + x.src.map((s, i) => '[' + (i + 1) + '] ' + s.t + (s.u ? ' ' + s.u : '')).join('\n') : '', '\nVerse card from a-to-mind.com' + (x.n ? ' \u00b7 v' + x.n : ''), codeOf(x)].filter((l, i) => i !== 2 || l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 /** a link that reopens the card on the site: the short code rides in the #fragment, so it never reaches a server log. Pure. */
-export const linkOf = (d, origin = 'https://a-to-mind.com') => origin.replace(/\/+$/, '') + '/#vc=' + codeOf(d).slice(MARK.length);
+// the link holds the whole card up to LINK_BODY letters (owner, 2026-11-19: "the card when copied barely sends you any of it"); a card with a full page of its own shares that page (shareUrl)
+export const LINK_BODY = 2400;
+export const linkOf = (d, origin = 'https://a-to-mind.com') => origin.replace(/\/+$/, '') + '/#vc=' + codeOf(d, LINK_BODY).slice(MARK.length);
+/** where a shared card opens: its own full page with every figure (a recipe, a forecast) when it has one, else the card itself. Pure. */
+export const shareUrl = (d, origin) => (d && d.p) || linkOf(d, origin);
 /** the card a #vc= link carries, or null. Pure. */
 export const fromHash = (hash) => { const m = /(?:^#|&)vc=([A-Za-z0-9_-]{8,12000})/.exec(String(hash || '')); return m ? parse(MARK + m[1]) : null; };
 /** the card inside a pasted text, or null: any text holding a code line, or a bare code. Pure. */
@@ -71,7 +76,7 @@ export function parse(text) {
     let body = j.b, src = j.src;
     if (at >= 0) { const rest = lines.slice(at + 1).join('\n'), cut = rest.search(/\n?Sources:\n/); const full = (cut >= 0 ? rest.slice(0, cut) : rest).trim(); if (full.length > String(j.b || '').length && full.startsWith(String(j.b || '').slice(0, 40))) body = full;
       if (cut >= 0) { const found = [...rest.slice(cut).matchAll(/^\[\d+\] (.*?)(?: (https:\/\/\S+))?$/gm)].map((x) => ({ t: x[1], u: x[2] || '' })); if (found.length > (src || []).length) src = found; } }
-    return dataOf({ title: j.t, kind: j.k, body, sources: src, n: j.n });
+    return dataOf({ title: j.t, kind: j.k, body, sources: src, n: j.n, page: j.p });
   } catch (_) { return null; }
 }
 /** a file name for a saved card. Pure. */
@@ -99,11 +104,18 @@ export const tidy = (s) => String(s || '').split('\n').map((l) => l.replace(/[ \
 function bodyOf(el) {
   const c = el.cloneNode(true);
   // [data-share-skip]: a part the card shows but the saved text leaves out / [data-nosave] (the self card's folded items keep their one line, not their dates and details)
-  c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent, [data-share-skip], [data-nosave]').forEach((x) => x.remove());
+  c.querySelectorAll('button, .src, .vc-page, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent, [data-share-skip], [data-nosave]').forEach((x) => x.remove());
   c.querySelectorAll('[data-share-short]').forEach((x) => { x.textContent = x.getAttribute('data-share-short'); }); // ... and a long line it shows saves as its short form
   const h2 = c.querySelector('h2'), title = h2 ? h2.textContent : '';
   if (h2) h2.remove();
   return { title, body: Array.from(c.children).map((x) => tidy(textOf(x))).filter(Boolean).join('\n\n') };
+}
+/** a card's own full page as an https link (data-page, or the frame's "Open the full ... page" link), or ''. */
+export function fullLinkOf(el, origin) {
+  const o = origin || (typeof location !== 'undefined' && /^https:/.test(location.origin) ? location.origin : 'https://a-to-mind.com');
+  const a = el && el.querySelector && el.querySelector(':scope > .vc-page, a.vc-page'), raw = (el && el.dataset && el.dataset.page) || (a && a.getAttribute('href')) || '';
+  if (!raw || /^(?:#|javascript:)/i.test(raw)) return '';
+  try { const u = new URL(raw, o); return u.protocol === 'https:' ? u.href.slice(0, 300) : ''; } catch (_) { return ''; }
 }
 /** what a card on the page holds, from its elements (the frame's own chrome and buttons left out). */
 export function readCard(el) {
@@ -111,15 +123,16 @@ export function readCard(el) {
   const kind = (el.querySelector(':scope > .vc-type') || {}).textContent || '';
   const sources = [...el.querySelectorAll(SOURCE_LINKS)].map((a) => ({ title: a.textContent.replace(/^\[\d+\]\s*/, ''), url: a.href }));
   const was = Math.floor(+(el.dataset && el.dataset.cardVersion)); // a card brought back from a paste is at version `was`; copying it again makes the next
-  return dataOf({ title, kind: kind.replace(/\s+/g, ' ').trim(), body, sources, n: was >= 1 ? was + 1 : undefined });
+  return dataOf({ title, kind: kind.replace(/\s+/g, ' ').trim(), body, sources, n: was >= 1 ? was + 1 : undefined, page: fullLinkOf(el) });
 }
 /** what the card's picture is drawn from: the frame's own numbers (el._vcard, set by keep) and the card's text. */
 export function imageData(el, d) {
   const c = el._vcard || {}, raw = d.b || '';
   // cap the body for the picture so a dense card (many asks, many inbox items) stays a standard card shape
   // instead of stretching into a tall strip; the full text still rides in the code line and the saved text
-  const text = raw.length > 240 ? raw.slice(0, 237).replace(/\s+\S*$/, '') + '…' : raw; // ellipsis-ok: capped card image body, full text in code line
-  return { art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, fetched: !!c.fetched, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill, painting: !!el._vcForge, wxArt: !!(el._vcForge && el.dataset && el.dataset.artKind === 'weather'), weatherCard: !!(el.dataset && el.dataset.skill === 'weather') || undefined, poster: !!el.dataset.poster, sub: (el.querySelector(':scope > .sub:not([hidden])') || {}).textContent || '',
+  // the whole text (owner, 2026-11-19: the picture stopped at "Halve the..."): lib/card-image.js bodyLayout sets it like the card and grows the card; only a huge text is cut, with the link to the rest
+  const text = raw.slice(0, 8000);
+  return { link: d.p || '', art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, fetched: !!c.fetched, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill, painting: !!el._vcForge, wxArt: !!(el._vcForge && el.dataset && el.dataset.artKind === 'weather'), weatherCard: !!(el.dataset && el.dataset.skill === 'weather') || undefined, poster: !!el.dataset.poster, sub: (el.querySelector(':scope > .sub:not([hidden])') || {}).textContent || '',
     // the self card draws its own shape (lib/card-image.js selfLayout): its words, the family bars, each block's heading and first lines; other cards: none
     self: el.classList && el.classList.contains('vc-self') ? selfImage(el) : undefined };
 }
@@ -201,12 +214,12 @@ export function bar(el) {
   // share (asked 2026-10-22: every card has copy, save text, save picture and share): the system share sheet with the card's text and a link
   // that reopens it; with no share sheet the link is copied. The link carries what the card shows, never who made it.
   mk(gCard, 'share', async () => {
-    const d = readCard(el), url = linkOf(d, typeof location !== 'undefined' && /^https:/.test(location.origin) ? location.origin : undefined);
+    const d = readCard(el), url = shareUrl(d, typeof location !== 'undefined' && /^https:/.test(location.origin) ? location.origin : undefined);
     try { if (navigator.share) { await navigator.share({ title: d.t.slice(0, 120), text: d.t + (d.b ? '\n\n' + d.b : ''), url }); return 'shared'; } } catch (e) { if (e && e.name === 'AbortError') return 'share'; }
     try { await navigator.clipboard.writeText(url); return 'link copied'; } catch (_) { return 'select and copy'; }
   });
   mk(gText, 'copy text', async () => { // what the answer's own "copy" pill did: the heading and the answer's words, no sources, no frame
-    try { const d = readCard(el); await navigator.clipboard.writeText(d.t + (d.b ? '\n\n' + d.b : '')); return 'copied'; } catch (_) { return 'select and copy'; }
+    try { const d = readCard(el); await navigator.clipboard.writeText(d.t + (d.b ? '\n\n' + d.b : '') + (d.p ? '\n\nFull card: ' + d.p : '')); return 'copied'; } catch (_) { return 'select and copy'; }
   });
   mk(gText, 'save text', async () => { try { const d = readCard(el); download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved'; } catch (_) { return 'could not save'; } });
   if (el.classList.contains('vc-self')) {

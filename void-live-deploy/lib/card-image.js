@@ -63,6 +63,67 @@ export function fitLong(text, h, w = 624) {
   if (lines.length < l.length && lines.length > 0) lines[lines.length - 1] = lines[lines.length - 1].replace(/.{0,3}$/, (m) => m.length >= 3 ? '…' : m);
   return { lines, fs, lh, extra: 0 };
 }
+// A card's whole text, laid out like the card on the page (owner, 2026-11-19: a copied guacamole card stopped at "Halve the..." and a Paris weather card spilled
+// its hourly strip down the box a word per line): headings set small and bold, a short list in two columns, the steps of a method numbered, a lone
+// temperature large, every paragraph wrapped. The type shrinks from 21 to 16 px to fit the standard card; past that the card grows (up to BODY_MAX_EXTRA
+// more), and only text beyond even that is cut, with a last line that says where the full card is. { els, extra, cut }. Pure.
+export const BODY_MAX_EXTRA = 1600, BODY_MIN_FS = 16;
+const STEP_HEAD = /^(?:steps|method|directions|instructions|preparation|how to make it)$/i;
+const HEAD = (b, last) => b.length === 1 && !last && /^[A-Za-z][A-Za-z '&-]{1,30}$/.test(b[0]) && b[0].split(' ').length <= 4;
+const BIG = (b) => b.length === 1 && /^-?\d{1,3}(?:\.\d)?\s?°[FC]?$/.test(b[0]);
+const shortLink = (u) => String(u || '').replace(/^https?:\/\//, '').replace(/\/$/, '');
+export function bodyLayout(text, room = 246, { w = 624, link = '', soft = '#c9cfe8' } = {}) {
+  const blocks = String(text || '').replace(/\r/g, '').split(/\n\s*\n/).map((b) => b.split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean)).filter((b) => b.length);
+  const lay = (fs, upto, tail) => {
+    const els = [], lh = Math.round(fs * 1.3), cols = (px, f = fs) => Math.max(8, Math.floor(px / (f * 0.5)));
+    let y = 0, steps = false;
+    const put = (t, x, o = {}) => els.push({ k: 'text', x, y, text: t, fs: o.fs || fs, bold: !!o.bold, italic: !!o.italic, fill: o.fill || '#e6e1d3' });
+    for (let bi = 0; bi < upto; bi++) {
+      const b = blocks[bi];
+      if (bi) y += Math.round(fs * 0.5);
+      if (HEAD(b, bi === blocks.length - 1)) { const hf = Math.max(13, fs - 4); y += Math.round(hf * 1.5); put(b[0].toUpperCase(), 0, { bold: true, fill: soft, fs: hf }); steps = STEP_HEAD.test(b[0]); continue; }
+      const strip = b.length === 1 && /^next hours:/i.test(b[0]) ? b[0].replace(/^next hours:\s*/i, '').split(/\s+\u00b7\s+/).map((c) => /^(\d{1,2}(?::\d\d)?\s?(?:[AaPp]\.?[Mm]\.?)?)\s+(-?\d+°[FC]?)(?:\s+(\d+%))?/.exec(c)).filter(Boolean) : null;
+      if (strip && strip.length >= 2) { // the hourly forecast as a strip: hour, temperature, chance of rain, column by column (as the card shows it)
+        const cw = w / Math.min(strip.length, 8), sf = Math.max(12, fs - 5);
+        y += Math.round(sf * 1.4); put('NEXT HOURS', 0, { bold: true, fill: soft, fs: Math.max(13, fs - 4) });
+        for (let row = 0; row * 8 < strip.length; row++) {
+          const cells = strip.slice(row * 8, row * 8 + 8), y0 = y;
+          cells.forEach((m, i) => { const x = Math.round(i * cw); y = y0 + Math.round(sf * 1.6); put(m[1].toUpperCase(), x, { fs: sf, fill: '#a9a69a' }); y = y0 + Math.round(sf * 1.6 + fs * 1.35); put(m[2], x, { bold: true, fill: '#f3efe2' }); if (m[3]) { y = y0 + Math.round(sf * 1.6 + fs * 1.35 + sf * 1.35); put(m[3], x, { fs: sf, fill: '#8fc8f0' }); } });
+          y = y0 + Math.round(sf * 1.6 + fs * 1.35 + sf * 1.35);
+        }
+        continue;
+      }
+      if (BIG(b)) { const bf = Math.round(fs * 2.2); y += bf; put(b[0], 0, { fs: bf, fill: '#f3efe2' }); steps = false; continue; }
+      const sentences = b.length >= 2 && b.filter((l) => /[.!?)]$/.test(l)).length >= Math.ceil(b.length * 0.6);
+      if (b.length >= 2 && (steps || sentences)) { // a method: numbered, a hanging indent
+        b.forEach((l, i) => { const n = (i + 1) + '.', ind = Math.round(fs * 1.6); wrap(l, cols(w - ind), 9999).forEach((t, j) => { y += j ? lh : (i ? Math.round(lh * 1.15) : lh); if (!j) put(n, 0, { bold: true, fill: soft }); put(t, ind); }); });
+        steps = false; continue;
+      }
+      const half = (w - 24) / 2, bullet = Math.round(fs * 0.9);
+      if (b.length >= 3 && b.every((l) => l.length * fs * 0.5 <= half - bullet)) { // a list of short items: two columns
+        const rows = Math.ceil(b.length / 2);
+        for (let r = 0; r < rows; r++) { y += lh; for (const [c, i] of [[0, r], [1, r + rows]]) { if (i >= b.length) continue; const x = c ? half + 24 : 0; put('\u2022', x, { fill: soft }); put(b[i], x + bullet); } }
+        continue;
+      }
+      if (b.length >= 2 && b.every((l) => l.length <= 90)) { // a short list: bullets, one column
+        for (const l of b) wrap(l, cols(w - bullet), 9999).forEach((t, j) => { y += lh; if (!j) put('\u2022', 0, { fill: soft }); put(t, bullet); });
+        continue;
+      }
+      for (const l of b) wrap(l, cols(w), 9999).forEach((t) => { y += lh; put(t, 0); });
+      steps = false;
+    }
+    if (tail) { const tf = Math.max(13, fs - 3); y += Math.round(tf * 1.9); put(tail, 0, { italic: true, fill: soft, fs: tf }); }
+    return { els, height: y + Math.round(fs * 0.5) };
+  };
+  const tailOf = (cut) => (link ? (cut ? 'The full card continues at ' : 'Full card: ') + shortLink(link) : cut ? 'The rest of this card is in its copied text.' : '');
+  for (let fs = 21; fs >= BODY_MIN_FS; fs--) { const r = lay(fs, blocks.length, tailOf(false)); if (r.height <= room) return { els: r.els, extra: 0, cut: false }; }
+  const whole = lay(BODY_MIN_FS, blocks.length, tailOf(false));
+  if (whole.height - room <= BODY_MAX_EXTRA) return { els: whole.els, extra: Math.max(0, whole.height - room), cut: false };
+  // truly huge: the blocks that fit, then where the rest is
+  let n = blocks.length - 1; while (n > 1 && lay(BODY_MIN_FS, n, tailOf(true)).height - room > BODY_MAX_EXTRA) n--;
+  const r = lay(BODY_MIN_FS, n, tailOf(true)), keep = r.els.filter((e) => e.y <= room + BODY_MAX_EXTRA);
+  return { els: keep, extra: Math.min(BODY_MAX_EXTRA, Math.max(0, r.height - room)), cut: true };
+}
 // The self card's picture (owner's redesign, 2026-10-18: the saved "What I think of myself" was a tall PNG holding every ask as raw lines, 16k
 // characters). It has the live card's shape instead: Verse's own words as a quotation with an accent bar, "How sure I am of my skills" as a bar per
 // family (the proven share; the weakest in amber), then each block's heading with its count and at most SELF_LINES lines. Nothing is a wall.
@@ -118,7 +179,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
   const { lines: tl, fs } = fitTitle(title, 620 - cost * 24), T = titleExtra(tl.length, fs); // T: how much taller a long ask makes the title bar; everything below moves down by it
   const adds = d.adds ? fitAdds('Adds to Verse: ' + d.adds) : null, AT = adds ? 246 - Math.max(74, adds.h) : 246; // AT: where the text stops and the Adds rule sits, from the top of the text box
-  const selfBox = d.self && typeof d.self === 'object' ? selfLayout(d.self) : null, box = selfBox ? { els: selfBox.els, extra: Math.max(0, selfBox.height - 246) } : fitLong(d.text, AT), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
+  const selfBox = d.self && typeof d.self === 'object' ? selfLayout(d.self) : null, box = selfBox ? { els: selfBox.els, extra: Math.max(0, selfBox.height - 246) } : bodyLayout(d.text, AT, { link: d.link, soft: 'hsl(' + (Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230) + ' 40% 78%)' }), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
   const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const edge = 'hsl(' + hue + ' 38% 48%)', dark = 'hsl(' + hue + ' 22% 8%)', mid = 'hsl(' + hue + ' 28% 20%)', soft = 'hsl(' + hue + ' 40% 78%)';
   let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — Verse card">';
