@@ -565,7 +565,19 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://a-to-mind.com/rival/</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://a-to-mind.com/assimilated/</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/compare/</loc>
     <lastmod>2026-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
