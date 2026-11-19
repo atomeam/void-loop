@@ -115,7 +115,7 @@ test('rule 7: the History is the rival\'s own, cited, and never Verse\'s attempt
 });
 
 test('rule 8: every floor has its rival page, kept current by the deploy and the gate', async () => {
-  assert.ok(fs.existsSync(path.join(SITE, 'rival', 'index.html')));
+  assert.ok(fs.existsSync(path.join(SITE, 'versus', 'rivals.js')), 'the owner-only Versus view that shows the rival pages');
   const idx = rd('rivals/index.json'); assert.ok(idx && idx.rivals);
   for (const f of served().floors) assert.ok(fs.existsSync(path.join(SITE, 'rivals', siteSlug(f.site) + '.json')), f.site + ' has no rival page');
   // the files are regenerated on every deploy and every gate run (deploy.yml, tower-gate.yml); here: every served floor has one and the index maps it

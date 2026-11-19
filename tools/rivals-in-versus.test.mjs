@@ -18,8 +18,10 @@ test('/rival/ and /compare/ are no longer pages; they redirect into /versus/ and
   assert.equal(redirectTo(t, '/compare', '').status, 301);
 });
 
-test('the sitemap lists neither old page', () => {
-  assert.doesNotMatch(read('sitemap.xml'), /a-to-mind\.com\/(?:rival|compare)\//);
+test('the sitemap builder lists neither old page', async () => {
+  const { pages } = await import('./sitemap.mjs');
+  const locs = pages().map((p) => p.loc);
+  assert.ok(locs.length > 10 && !locs.includes('/rival/') && !locs.includes('/compare/'));
 });
 
 test('/versus/ opens the rival and side-by-side views only after the owner gate has answered', () => {
