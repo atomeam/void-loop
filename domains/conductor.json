@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T04:57:31.402Z",
+ "updated": "2026-11-19T07:00:02.364Z",
  "last24h": {
-  "ticks": 41,
-  "started": 12,
+  "ticks": 42,
+  "started": 14,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -110,7 +110,7 @@
    "cap": 90
   },
   "day": {
-   "used": 16,
+   "used": 22,
    "cap": 360
   },
   "room": true,
@@ -118,7 +118,7 @@
   "paid": false
  },
  "handed": {
-  "mvbl52gd": 1795046734044,
+  "mvbl52gd": 1795071602364,
   "mveb8rsi": 1795046734044,
   "mvu167w7": 1795047298827,
   "mveb8svc": 1795047298827,
@@ -129,8 +129,8 @@
   "mvvjzso8": 1795050131759,
   "mw5mm5fm": 1795050696021
  },
- "sweptAt": 1795061989923,
- "blueprintsAt": 1795061989923,
+ "sweptAt": 1795071602364,
+ "blueprintsAt": 1795071602364,
  "visitorAt": "2026-11-19T03:50:28Z",
  "visitorFiled": [
   "heal:helper-sustain-pack",
@@ -1258,6 +1258,43 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 35,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-19T07:00:02.364Z",
+   "open": 482,
+   "started": [
+    {
+     "id": "want-idea-1a3192a173",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 62
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 35,
    "warnings": 1
