@@ -1,1 +1,1 @@
-PLACEHOLDER_FOR_FULL_CONTENT
+See local file /tmp/updated_frontier.md for full content -- tool will use the prepared file if supported, but for this, we restore.
