@@ -43,7 +43,7 @@ const rows = (env) => { try { return env.DB.raw.prepare('SELECT * FROM void_art'
 
 test('a miss paints once and keeps the picture; the next person (any spelling) gets it without the model', async () => {
   const { env, calls } = world();
-  assert.deepEqual(await (await get(env, 'a cat')).json(), { state: 'none', key: 'cat' });
+  assert.deepEqual(await (await get(env, 'a cat')).json(), { state: 'none', key: 'scene1 cat' }); // the real-setting look's own row (lib/art-rules.js sceneKey)
   const a = await (await post(env, 'A Cat!', 'animal', 'rare')).json();
   assert.equal(a.state, 'art'); assert.equal(a.cached, false); assert.match(a.img, /^data:image\/jpeg;base64,/);
   assert.equal(calls.length, 1); assert.equal(calls[0].model, models('art'));
@@ -52,7 +52,17 @@ test('a miss paints once and keeps the picture; the next person (any spelling) g
   const g = await (await get(env, 'cat')).json(); assert.equal(g.state, 'art'); assert.equal(g.img, a.img);
   assert.equal(rows(env).length, 1);
   assert.deepEqual(Object.keys(rows(env)[0]).sort(), ['day', 'img', 'subject'], 'no text, no person, no address is kept');
-  assert.equal(rows(env)[0].subject, 'cat');
+  assert.equal(rows(env)[0].subject, 'scene1 cat');
+});
+
+test('a subject painted in the old space look shows its old picture (stale) until the real-setting one is painted; a weather card never gets the bare city', async () => {
+  const { env, calls } = world();
+  const old = await (await post(env, 'guacamole', 'skill', 'common')).json(); assert.equal(old.state, 'art'); // a skill row keeps its bare key
+  const g = await (await get(env, 'guacamole', 'answer')).json();
+  assert.equal(g.state, 'art'); assert.equal(g.stale, true, 'the old picture is shown, marked stale'); assert.equal(g.key, 'scene1 guacamole');
+  const n = calls.length, p = await (await post(env, 'guacamole', 'answer', 'common')).json();
+  assert.equal(p.state, 'art'); assert.equal(calls.length > n, true, 'the new look is painted'); assert.ok(!p.stale);
+  const w = await (await get(env, 'guacamole', 'weather')).json(); assert.equal(w.state, 'none', 'a weather row is its own: ' + JSON.stringify(w).slice(0, 80));
 });
 
 test('a GET never calls the model', async () => {

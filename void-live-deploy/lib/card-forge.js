@@ -24,6 +24,7 @@ const land = (key, img) => { for (const e of waiting.get(key) || []) { if (e.isC
 // kept on the card from its first ask: a frame rebuilt mid-paint (its stats arrive, a merged card gains data-skill="merge") must not become a
 // new subject, or a slow paint is asked for twice and spends two of the day's paintings on one card
 const subjectFor = (el, c) => {
+  if (el.dataset && el.dataset.artSubject) return el.dataset.artSubject; // a card that names its own art subject (a weather card: "Paris France rain", skills/weather.js), whatever its title
   if (el._vcArtKey) return el._vcArtKey;
   const k = el.dataset && el.dataset.skill ? el.dataset.skill.replace(/[-_]+/g, ' ') : el._vcSubject || c.key;
   if (!/^(?:looking|loading|thinking|searching)\b/i.test(String(k || ''))) el._vcArtKey = k; // a "thinking ..." frame is not the subject: the answer's own words are, once they arrive
@@ -35,7 +36,8 @@ export const retryable = (got) => !got || ['busy', 'slow', 'http'].includes(got.
 const seen = new Map(); // folded-or-typed subject + kind -> 'art' | 'none' | 'plate' with the picture, so a card shown twice asks once
 /** is this card one the forge paints: an answer or a merged card, never a skill, a game or a miniature, a person, or a sky card. Pure. */
 export function worthy(el, c) {
-  if (!el || !c || (el.classList && el.classList.contains('skyc'))) return false; // a skill's card is painted too (backfill, tools/prepaint-art.mjs): its subject is its name
+  if (!el || !c || (el.classList && el.classList.contains('skyc'))) return false;
+  if (el.dataset && el.dataset.artWait !== undefined) return false; // its subject is not known yet (a weather card before its forecast): never paint the place's bare name // a skill's card is painted too (backfill, tools/prepaint-art.mjs): its subject is its name
   const kind = String(c.kindName || '').toLowerCase();
   // a card still loading is never painted ("Repository — looking" painted the word "looking"), nor a fragment of a word ("rt")
   const sk = String(subjectFor(el, c) || '').trim();
@@ -48,7 +50,7 @@ export function answerText(el) {
   let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.vc-variants,.src,.vtail,.vtell,.vtell-box,.vc-share,.thin,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
   return t.replace(/\s+/g, ' ').trim().slice(0, 1500);
 }
-export const kindOf = (el, c) => (el.dataset && el.dataset.cardOwn ? 'merge' : el.dataset && el.dataset.skill ? 'skill' : (c && c.kindName) || 'answer');
+export const kindOf = (el, c) => (el.dataset && el.dataset.artKind ? el.dataset.artKind : el.dataset && el.dataset.cardOwn ? 'merge' : el.dataset && el.dataset.skill ? 'skill' : (c && c.kindName) || 'answer');
 const mode = () => { try { const m = typeof location !== 'undefined' && /[?&]art=(off|button)\b/.exec(location.search); return m ? m[1] : 'auto'; } catch (_) { return 'auto'; } };
 const autoOn = () => mode() === 'auto';
 
@@ -91,7 +93,7 @@ async function paint(el, c, b) {
   // person opening cards quickly still gets their paintings (owner, 2026-10-17: "still no art": three paintings in all, the rest 429s)
   // the cap and an off switch are final for the page
   if (!img && !b && autoOn() && retryable(got) && (tries.get(sk) || 0) < RETRY_S.length) { const n = tries.get(sk) || 0; tries.set(sk, n + 1); setTimeout(() => { seen.delete(sk); if (el.isConnected) forge(el, el._vcard || c, null); }, RETRY_S[n] * 1000); return; }
-  if (!img && !b) seen.set(subjectFor(el, c), 'plate'); // a capped, switched-off or thrice-failed paint is not retried this page
+  if (!img && !b) seen.set(subjectFor(el, c), String(el._vcForge || '').startsWith('data:') ? el._vcForge : 'plate'); // an older painting it already shows stays (stale); a capped, switched-off or thrice-failed paint is not retried this page
   if (!img) painting(el, false);
   if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
   if (!el.isConnected) return;
@@ -106,6 +108,7 @@ export function paintNow(el) {
 /** the forge's turn for a card whose frame was just built: show the art it has, look for cached art, or offer the button. Never throws. */
 export function forge(el, c, photo) {
   try {
+    if (el.dataset && el.dataset.artSubject && el._vcArtFor !== el.dataset.artSubject) { el._vcForge = null; el._vcArtFor = el.dataset.artSubject; } // the weather changed: a new subject, a new picture
     if (el._vcForge) { show(el, el._vcForge); return; } // a rebuilt frame shows the picture it already has, whatever the card turned out to be
     if (photo) return; // a real picture of the thing (a poster, a still) is the art: never paint over it
     if (!worthy(el, c) || typeof fetch === 'undefined' || mode() === 'off') return;
@@ -117,6 +120,11 @@ export function forge(el, c, photo) {
     seen.set(subjectFor(el, c), 'asking'); // one read per subject at a time
     ask('GET', el, c).then((got) => {
       const img = got && got.state === 'art' ? safeImg(got.img) : '';
+      if (img && got.stale) { // an older painting in the old space look (lib/art-rules.js staleKeyOf): shown at once, and the real-setting one painted to replace it
+        if (el.isConnected) { el._vcForge = img; show(el, img); }
+        if (autoOn() && worthy(el, el._vcard || c)) paint(el, c, null); else seen.set(subjectFor(el, c), img);
+        return;
+      }
       if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
       seen.set(subjectFor(el, c), got && got.state === 'none' ? 'none' : 'plate');
       if (got && got.state === 'none' && worthy(el, el._vcard || c)) { if (autoOn()) paint(el, c, null); else button(el, c); }

@@ -31,6 +31,29 @@ export function weatherPlace(text) {
   return text.replace(/[?.!,]/g, '').replace(WX_WORDS, ' ').replace(/\s+/g, ' ').trim();
 }
 
+/** the one word for the sky a weather code reports, from lib/art-rules.js WEATHER_WORDS. Pure. */
+export function skyWord(code) {
+  const c = +code;
+  if (c >= 95) return 'storm';
+  if ((c >= 71 && c <= 77) || c === 85 || c === 86) return 'snow';
+  if ((c >= 61 && c <= 67) || (c >= 80 && c <= 82)) return 'rain';
+  if (c >= 51 && c <= 57) return 'drizzle';
+  if (c === 45 || c === 48) return 'fog';
+  if (c === 3) return 'overcast';
+  if (c === 2) return 'cloudy';
+  return 'clear';
+}
+/** the weather card's art subject (lib/card-forge.js reads it from data-art-subject): the city and its country, then the sky now, with rain when the
+ *  next three hours are likely wet (owner, 2026-11-19: Paris was overcast with a 95% chance of rain), and "night" after dark. "Paris France rain". Pure. */
+export function weatherArtSubject(name, code, rainNext = [], isDay = true) {
+  const parts = String(name || '').split(',').map((x) => x.trim()).filter(Boolean);
+  const place = parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1] : parts[0] || '';
+  let sky = skyWord(code);
+  if (/^(?:clear|cloudy|overcast)$/.test(sky) && (rainNext || []).slice(0, 3).some((p) => +p >= 60)) sky = 'rain';
+  return place ? (place + ' ' + sky + (isDay ? '' : ' night')).replace(/\s+/g, ' ').trim() : '';
+}
+/** the hourly strip as one tidy line for a copied or saved card ("Next hours: 8 PM 12° 30% · 9 PM 12° 20%"), instead of a word per line. Pure. */
+export const hoursLine = (cells) => 'Next hours: ' + cells.filter((x) => x && x.at).map((x) => x.at + ' ' + x.temp + (x.rain ? ' ' + x.rain + ' rain' : '')).join(' \u00b7 ');
 const RAIN = (c) => (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95, SNOW = (c) => (c >= 71 && c <= 77) || c === 85 || c === 86;
 const hourWord = (iso) => { const hr = new Date(iso).getHours(); return (hr % 12 || 12) + (hr < 12 ? 'am' : 'pm'); };
 /** the one actionable prompt in the next hours: { kind, at, minutes, ask, why } for rain, snow, frost or heat (°C), or null; the
@@ -88,7 +111,7 @@ export function graph(h, now, us) {
   if (now > 0 && now < n) out += '<line x1="' + x(now).toFixed(1) + '" x2="' + x(now).toFixed(1) + '" y1="' + top + '" y2="' + (H - 24) + '" stroke="#ffffff" stroke-opacity=".6" stroke-dasharray="4 4"/>';
   out += '<polyline points="' + temps.map((t, i) => x(i).toFixed(1) + ',' + y(t).toFixed(1)).join(' ') + '" fill="none" stroke="#ffb347" stroke-width="3"/>';
   out += '<text x="2" y="' + (y(hi) + 6).toFixed(1) + '" font-size="19" fill="#8b90a0">' + hi + '°</text><text x="2" y="' + (y(lo) + 6).toFixed(1) + '" font-size="19" fill="#8b90a0">' + lo + '°</text></svg>';
-  return '<div class="wx-graph" style="margin-top:8px"><div style="color:#8b90a0;font-size:12px">Hour by hour to ' + Math.round(n / 24) + (Math.round(n / 24) === 1 ? ' day' : ' days') + ': temperature <span style="color:#ffb347">—</span>, chance of rain <span style="color:#5aa9e6">▮</span></div>' + out + '</div>';
+  return '<div class="wx-graph" data-share-skip style="margin-top:8px"><div style="color:#8b90a0;font-size:12px">Hour by hour to ' + Math.round(n / 24) + (Math.round(n / 24) === 1 ? ' day' : ' days') + ': temperature <span style="color:#ffb347">—</span>, chance of rain <span style="color:#5aa9e6">▮</span></div>' + out + '</div>';
 }
 
 function hereCoords() {
@@ -125,7 +148,7 @@ export async function forecastOf(u, place, fetchFn = fetch, wait = WAIT_MS) {
 async function run(text, api) {
   const { showPage, esc, say, reportMiss, loopLog } = api;
   const place = weatherPlace(text);
-  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(place || 'Weather') + '</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.dataset.artWait = ''; p.innerHTML = '<h2>' + esc(place || 'Weather') + '</h2><div class="sub">…</div>'; }); // no painting until the forecast names the sky (lib/card-forge.js)
   try {
     let loc = null, first = null; // first: a forecast the edge already gave with the place, drawn before asking Open-Meteo again
     if (place) {
@@ -179,6 +202,10 @@ async function run(text, api) {
       const next = weatherPrompt(h); // asked by Verse: rain, snow, frost or heat in the next hours offers one reminder
       const nextLine = next ? '<p class="wx-next">' + esc(next.why) + ' <a href="#" data-ask="' + esc(next.ask) + '">' + esc(next.ask) + '</a> <span style="color:#8b90a0;font-size:12px">· a timer on the stage, to ' + esc(next.at) + '</span></p>' : '';
       const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
+      // the art is the place under its weather now (lib/art-rules.js weatherScenePrompt), never the skill's own painting; set before the text so the re-frame paints it
+      const artSub = weatherArtSubject(loc.name, c.weather_code, (h.precipitation_probability || []), c.is_day !== 0);
+      if (artSub) { el.dataset.artSubject = artSub; el.dataset.artKind = 'weather'; } delete el.dataset.artWait;
+      const cells = h.time.slice(0, 8).map((t, i) => ({ at: new Date(t).toLocaleTimeString([], { hour: 'numeric' }), temp: T(h.temperature_2m[i]), rain: h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '' }));
       el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
       el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
         + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + (Number.isFinite(c.relative_humidity_2m) ? ' · humidity ' + Math.round(c.relative_humidity_2m) + '%' : '')
@@ -187,7 +214,7 @@ async function run(text, api) {
         + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
         + (days.length ? '<p class="wx-days">' + days.map((i) => esc(askedDayLabel(i, d.time[i])) + ' ' + T(d.temperature_2m_max[i]) + ' / ' + T(d.temperature_2m_min[i]) + (d.precipitation_probability_max && d.precipitation_probability_max[i] != null ? ' · rain chance ' + d.precipitation_probability_max[i] + '%' : '')).join('<br>') + '</p>' : '')
         + nextLine
-        + '<div class="wx-hours" style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(46px,1fr);overflow-x:auto;gap:8px 2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
+        + '<div class="wx-hours" data-share-short="' + esc(hoursLine(cells)) + '" style="display:grid;grid-auto-flow:column;grid-auto-columns:minmax(46px,1fr);overflow-x:auto;gap:8px 2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
         + graph(hAll, from, f)
         + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
     };

@@ -119,3 +119,28 @@ test('condition-matched weather art beats a static Art Forge painting on a weath
   const film = cardSvg({ ...d, art, painting: true });
   assert.match(film, /<image[^>]*href="data:image\/png;base64,AAAA"/, 'other cards still keep their painting');
 });
+
+// owner, 2026-11-19 ("this still doesnt have the right card art"): a Paris weather card under rain showed the skill's generic painting (a cube in space)
+test('a weather card for a place and condition never falls back to the generic skill painting when its condition art exists', async () => {
+  const { weatherArtSubject } = await import('../void-live-deploy/skills/weather.js');
+  const { keyOfKind, artPrompt, subjectKey, ART_STYLE, SKILL_STYLE } = await import('../void-live-deploy/lib/art-rules.js');
+  const sub = weatherArtSubject('Paris, Île-de-France Region, France', 3, [30, 20, 95], true);
+  assert.equal(sub, 'Paris France rain', 'overcast now with rain on the way: the place and rain');
+  assert.equal(weatherArtSubject('Paris, France', 0, [0, 0, 0], false), 'Paris France clear night');
+  const key = keyOfKind(subjectKey(sub), 'weather'), p = artPrompt(key, 'weather');
+  assert.equal(key, 'weather1 paris france rain', 'its own row: never the skill\'s "weather" row or the bare city\'s');
+  assert.match(p, /paris france/); assert.match(p, /rain/); assert.match(p, /landmark/);
+  assert.ok(!/galaxy|space|arcane|cube/i.test(p), 'no cosmic backdrop or skill object: ' + p);
+  assert.ok(!ART_STYLE.includes('galaxy') && SKILL_STYLE.includes('galaxy'), 'the atom galaxy stays only behind a skill\'s own card');
+  const skillArt = 'data:image/png;base64,CUBEART', wxArt = 'data:image/png;base64,PARISRAIN';
+  const base = { ...d, title: 'Paris, Île-de-France Region, France', kind: 'Skill — Sky and earth', typeLine: 'Skill — Sky and earth', text: 'Overcast · rain chance 95%', weatherCard: true };
+  // the skill's painting handed in as the art and the photo (lib/card-share.js artPicture): never drawn on a weather card
+  const old = cardSvg({ ...base, art: skillArt, photo: skillArt, painting: true });
+  assert.ok(!old.includes('CUBEART'), 'the generic skill painting is not on the weather card');
+  // the condition painting (data-art-subject, kind weather) is the art
+  const now = cardSvg({ ...base, art: wxArt, photo: wxArt, painting: true, wxArt: true });
+  assert.ok(now.includes('PARISRAIN'), 'the place-and-weather painting is the art');
+  // a recipe whose steps say "clear" keeps its painting
+  const recipe = cardSvg({ ...d, kind: 'Skill — Body and mind', typeLine: 'Skill — Body and mind', text: 'Stir until the syrup is clear', art: 'data:image/png;base64,FOOD', painting: true });
+  assert.ok(recipe.includes('FOOD'), 'other cards keep their painting');
+});

@@ -26,7 +26,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind, drawableLook, undirected, TEXT_GATE_ASK, textGateYes } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, staleKeyOf, sizeOfKind, drawableLook, undirected, TEXT_GATE_ASK, textGateYes } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
@@ -185,6 +185,9 @@ export async function onRequestGet({ request, env }) {
   if (why) return plate(why);
   const row = await cached(env, key);
   if (row) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}) }, 200, { 'cache-control': 'public, max-age=3600' }); }
+  // a subject painted before the real-setting look (lib/art-rules.js staleKeyOf): its old picture shows while the page asks for the new one (stale: true)
+  const old = staleKeyOf(subjectKey(raw), kind), was = old ? await cached(env, old) : null;
+  if (was) return json({ ...hit(was, key), stale: true }, 200, { 'cache-control': 'no-store' });
   if (!on(env)) return plate('off', {}); // nothing can be painted: the page shows no button
   if ((await madeToday(env)) >= capOf(env)) return plate('cap');
   return json({ state: 'none', key }, 200, { 'cache-control': 'no-store' });
