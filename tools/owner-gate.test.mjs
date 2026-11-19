@@ -12,9 +12,9 @@ const get = (path, headers = {}, method = 'GET') => new Request('https://a-to-mi
 const mw = (path, headers, method) => onRequest({ request: get(path, headers, method), env, next: async () => new Response('{"ok":1}', { headers: { 'cache-control': 'public, max-age=60' } }) });
 
 test('which paths are owner-only', () => {
-  for (const p of ['/tower.evidence.json', '/tower.shots/a-b.jpg', '/tower.icons/x.png', '/tower-evidence/a.json', '/rivals/index.json', '/history/some.site.json', '/assimilated.json', '/lib/tower.js', '/versus/card.js'])
+  for (const p of ['/tower.evidence.json', '/tower.shots/a-b.jpg', '/tower.icons/x.png', '/tower-evidence/a.json', '/rivals/index.json', '/history/some.site.json', '/assimilated.json', '/versus/compare.js'])
     assert.ok(ownerOnlyPath(p), p);
-  for (const p of ['/', '/versus/', '/versus/open.js', '/history/', '/history/index.html', '/lib/avatar.js', '/skills/tower.js', '/api/versus-floor', '/lib/versus-sign.js'])
+  for (const p of ['/', '/versus/', '/versus/open.js', '/history/', '/history/index.html', '/lib/avatar.js', '/skills/tower.js', '/api/versus-floor'])
     assert.ok(!ownerOnlyPath(p), p);
 });
 
@@ -23,7 +23,7 @@ test('a visitor gets a 404, the owner key, an owner session header and the cooki
   assert.equal((await mw('/tower.evidence.json', { authorization: 'Bearer wrong' })).status, 404);
   assert.equal((await mw('/tower.evidence.json', { cookie: 'verse_owner=nope' })).status, 404);
   assert.equal((await mw('/tower.evidence.json', { authorization: 'Bearer owner-test-key' }, 'POST')).status, 404, 'reads only');
-  const key = await mw('/lib/tower.js', { authorization: 'Bearer owner-test-key' });
+  const key = await mw('/versus/compare.js', { authorization: 'Bearer owner-test-key' });
   assert.equal(key.status, 200); assert.equal(key.headers.get('cache-control'), 'private, no-store');
   const { token } = await mintOwnerSession(env, 'test');
   assert.equal((await mw('/rivals/a.json', { authorization: 'Bearer ' + token })).status, 200);
