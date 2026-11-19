@@ -79,7 +79,7 @@ export const CATALOG = Object.freeze([
   vid('Image', 'Image to Video', 'pictures-video', 'Shows 1 or more pictures one after another, for the seconds you set each, as a video; you can add a sound.', { from: 'picture+sound?' }),
   tool('Image', 'Merge Images', 'here', { run: 'merge-images', from: 'picture', many: true, note: 'Puts 2 or more pictures side by side or one above the other, as one PNG.' }),
   tool('Image', 'Remove Image Background', 'no', { note: NO }),
-  tool('Image', 'Resize Image', 'verse', { href: '/resize-image/', note: 'On Verse: resize by pixels or by percent.' }),
+  tool('Image', 'Resize Image', 'verse', { href: '/photos/?mode=resize', note: 'On Verse: resize by pixels or by percent.' }),
   tool('Image', 'Rotate Image', 'verse', { href: '/photos/?tab=crop', note: 'On Verse photo tools: Crop and rotate.' }),
   tool('Image', 'Watermark Image', 'here', { run: 'watermark-image', from: 'picture+picture?', note: 'Puts your words, or a picture you pick as the mark (the smallest one), in a corner of each picture, see-through by the amount you set. A JPG stays a JPG, a PNG a PNG. Still pictures only: not an animated GIF.' }),
   ...['EPUB', 'AZW', 'DOCX', 'HTML', 'MOBI', 'PDF', 'RTF', 'TXT'].map((f) => (['AZW', 'MOBI'].includes(f)

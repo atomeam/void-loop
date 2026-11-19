@@ -78,6 +78,8 @@ export function familiesOf(floors = FLOORS, probe = probeFor, read = baseHtmlOf)
   const out = [];
   for (const f of floors) {
     if (f.lane || !f.page || noShotOf(f) || PINNED.includes(f.id) || PARTIAL.includes(f.id) || f.defer) continue;
+    // a ?mode=/tab=/tool=/panel=/sec= page is a mode of a combined family, not its own copyable family
+    if (/[?&](?:mode|tab|tool|panel|sec)=/.test(f.page || '')) continue;
     const base = pathOnly(f.page); if (!/^\/[a-z0-9-]+\/$/.test(base)) continue;
     const p = probe(f.id); if (!p || !p.truth || !(p.truth.length) || !(p.facts || []).length) continue;
     if (pathOnly(p.verse) !== base || (p.ask && pathOnly(p.ask.verse) !== base)) continue;
@@ -150,15 +152,13 @@ export function validTexts(t, { host, baseText, fam }) {
 /** text cut to `n` characters at the end of a sentence, never mid-sentence. Pure. */
 export const sentences = (t, n) => { const c = clip(t, 2000); if (c.length <= n) return c.replace(/[,;:]$/, '.'); const cut = c.slice(0, n), at = cut.lastIndexOf('. '); return at > n / 3 ? cut.slice(0, at + 1) : cut.replace(/[,;:]?\s+\S*$/, '') + '.'; };
 export const fallbackTexts = (fam) => ({ name: clip(fam.title || fam.label, 60), h1: clip(fam.title || fam.label, 70), intro: sentences(fam.does, 320), does: sentences(fam.does, 320), asks: (fam.asks || []).slice(0, 6), slug: '' });
-/** the folder the row would take: the model's slug, else the family's own words. Pure. */
+/** the folder the row would take: always the family's combined page, never a new per-site folder. Pure. */
 export function slugPath(want, fam) {
-  const base = SLUG.test(want || '') ? want : (keywordsOf(fam.label).join('-') || 'more').replace(/[^a-z0-9-]/g, '') + '-tool';
-  return fam.base + base + '/';
+  return fam.base || (fam.page || '');
 }
-/** that folder when it is free, else null: a name already used is that page's job, never a second page called name-2. Pure. */
+/** the family page itself. A second site in the family joins that page; it never gets a new folder. Pure. */
 export function slugFor(want, fam, taken) {
-  const p = slugPath(want, fam);
-  return taken(p) ? null : p;
+  return slugPath(want, fam);
 }
 /** an existing page under this family that already says this headline, or null when the job is new. The family folder existing is not enough. Pure. */
 export function pageForJob(fam, texts, rows) {
@@ -309,7 +309,11 @@ export function keepSeo(have, want) {
 }
 export function writePages(rows = SELF_SITES) {
   const done = [];
-  for (const r of rows) { const base = baseHtmlOf(r.base); if (!base) continue; const file = path.join(SITE_DIR, r.path, 'index.html'), built = variantHtml(base, r, declOf(base) || handoffLegacy()[r.base] || null); const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null, want = keepSeo(have, built);
+  const stem = (p) => String(p || '').replace(/[?#].*$/, '').replace(/\/$/, '') || '/';
+  for (const r of rows) {
+    // a site that joins its family page must not overwrite that page's working tools
+    if (r.base && stem(r.path) === stem(r.base)) continue;
+    const base = baseHtmlOf(r.base); if (!base) continue; const file = path.join(SITE_DIR, r.path, 'index.html'), built = variantHtml(base, r, declOf(base) || handoffLegacy()[r.base] || null); const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null, want = keepSeo(have, built);
     if (have !== null && have.replace(SEO_BLOCKS, '') === want.replace(SEO_BLOCKS, '')) continue; fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, want); done.push(r.path); }
   return done;
 }

@@ -1,0 +1,114 @@
+# One house lane per run. The cron names the lane. A lane opens one automerge pull request and
+# will not open a second while that branch already exists: it pushes onto it instead.
+name: Verse house loops
+
+on:
+  schedule:
+    - cron: '7 1 * * *'
+    - cron: '17 3 * * *'
+    - cron: '27 5 * * *'
+    - cron: '37 7 * * *'
+    - cron: '47 9 * * *'
+    - cron: '57 11 * * *'
+    - cron: '13 13 * * *'
+    - cron: '23 15 * * *'
+    - cron: '33 17 * * *'
+    - cron: '43 19 * * *'
+    - cron: '53 21 * * *'
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: which job
+        type: choice
+        options: [links, health, speed, twins, plain, fresh, seo, coverage, deps, handoff, next-tool]
+        default: links
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: verse-house
+  cancel-in-progress: false
+
+jobs:
+  lane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: which
+        env:
+          EVENT: ${{ github.event_name }}
+          CRON: ${{ github.event.schedule }}
+          INPUT: ${{ inputs.lane }}
+        run: |
+          lane=""
+          if [ "$EVENT" = "workflow_dispatch" ]; then lane="$INPUT"; fi
+          case "$CRON" in
+            '7 1 * * *') lane=links ;;
+            '17 3 * * *') lane=health ;;
+            '27 5 * * *') lane=speed ;;
+            '37 7 * * *') lane=twins ;;
+            '47 9 * * *') lane=plain ;;
+            '57 11 * * *') lane=fresh ;;
+            '13 13 * * *') lane=seo ;;
+            '23 15 * * *') lane=coverage ;;
+            '33 17 * * *') lane=deps ;;
+            '43 19 * * *') lane=handoff ;;
+            '53 21 * * *') lane=next-tool ;;
+          esac
+          echo "lane=$lane" >> "$GITHUB_OUTPUT"
+          test -n "$lane"
+      - name: Install for the dependency audit
+        if: steps.which.outputs.lane == 'deps'
+        run: npm ci --no-audit --no-fund
+      - name: Run the lane
+        env:
+          LANE: ${{ steps.which.outputs.lane }}
+          HOUSE_ASK: '1'
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: node tools/house-loops.mjs run "$LANE"
+      - name: Pull request when the lane changed a file
+        env:
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          LANE: ${{ steps.which.outputs.lane }}
+        run: |
+          git status --porcelain -- void-live-deploy | grep -q . || { echo "nothing to ship"; exit 0; }
+          git config user.name "verse-house"
+          git config user.email "verse-house@users.noreply.github.com"
+          branch="house/${LANE}"
+          stage() { git add void-live-deploy/progress/loops void-live-deploy/_redirects && git add -u -- void-live-deploy; }
+          if git ls-remote --exit-code origin "$branch" >/dev/null 2>&1; then
+            patch=$(mktemp)
+            git diff > "$patch"
+            git checkout -- .
+            git fetch origin "$branch"
+            git checkout -B "$branch" "origin/$branch"
+            git apply "$patch" || { echo "the open branch could not take this patch"; exit 0; }
+            stage
+            git diff --cached --quiet && exit 0
+            git commit -m "House heal: ${LANE}"
+            git push origin "HEAD:$branch"
+            exit 0
+          fi
+          git checkout -b "$branch"
+          stage
+          git diff --cached --quiet && exit 0
+          git commit -m "House: ${LANE}"
+          git push -u origin "HEAD:$branch"
+          body=$(printf '%s\n' "For people using the site. The ${LANE} lane recorded one result and, when a file changed, shipped only that." '' 'It does not open a second pull request for the same lane, it does not bump a dependency, and it does not edit games or the Echo Vault page.' '' 'A lane that fails three times pauses for six hours and then tries again.')
+          gh pr create --repo "${GITHUB_REPOSITORY}" --base main --head "$branch" --label automerge --title "House: ${LANE}" --body "$body"

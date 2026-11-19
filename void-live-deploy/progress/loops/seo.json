@@ -1,0 +1,1 @@
+{"id":"seo","name":"Search tags","what":"Adds a title from the heading when a page has none.","schedule":"daily at 13:13 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":3,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; }
+#portals { position:absolute; inset:0; pointer-events:none; }
+.portal { position:absolute; width:72px; height:72px; border-radius:50%; background:hsla(var(--hue),70%,55%,0.7); 
+  transform:translate(-50%,-50%) scale(var(--s,1)) rotate(var(--r,0deg)); transition:transform 0.3s; 
+  pointer-events:auto; cursor:pointer; box-shadow:0 0 20px hsla(var(--hue),70%,50%,0.5); }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #445; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>devicemotion-esn-particlelife-dom-mind · Verse lab</title>
+<meta name="description" content="A spatial multi-agent mind for The Verse canvas: a local Echo State Network (fixed random reservoir + trainable linear readout) is driven by a short history of">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="devicemotion-esn-particlelife-dom-mind · Verse lab">
+<meta property="og:description" content="A spatial multi-agent mind for The Verse canvas: a local Echo State Network (fixed random reservoir + trainable linear readout) is driven by a short history of">
+<meta property="og:url" content="https://a-to-mind.com/lab/f802-devicemotion-esn-particlelife-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f802-devicemotion-esn-particlelife-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+<div id="ui">
+  <div>F802 · ESN Particle Life · <span id="status">init</span></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="info">Tilt / move pointer. Click portals to reward.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">devicemotion-esn-particlelife-dom-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

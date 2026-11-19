@@ -4,6 +4,7 @@
 // Dry-run is the default for a manual Actions run.
 
 import { readFile } from "node:fs/promises";
+import { splitBoard } from "../../tools/triage-cortex.mjs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -153,7 +154,10 @@ export async function runCycle({
 
 async function finish({ nodes, log, writes, board, dryRun, github, any }) {
   const map = renderMap(nodes, log);
-  const plan = { map, writes: any ? writes : [], board: any ? board : [], log, dryRun };
+  // the scope guard (tools/triage-cortex.mjs): only a line that names a file or a failing test goes on the task board;
+  // the rest stay in the plan as notes, never queued for a coder
+  const { scoped, unscoped } = splitBoard(any ? board : []);
+  const plan = { map, writes: any ? writes : [], board: scoped, unscoped, log, dryRun };
   if (dryRun) {
     plan.printed = true;
     return plan;

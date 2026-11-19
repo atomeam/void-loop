@@ -1,0 +1,1 @@
+{"id":"links","name":"Broken links","what":"Checks live addresses and adds a redirect when a plain name already has a home.","schedule":"daily at 01:07 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":3,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

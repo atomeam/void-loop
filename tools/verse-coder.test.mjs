@@ -394,6 +394,8 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
     return { ok: false, status: 401 }; } });
   assert.deepEqual(await odd([{ role: 'user', content: 'hi' }]), { text: call('finish'), tokens: 7 }, 'the site answers in the Workers AI shape');
   assert.equal(sent.length, 1); assert.equal(sent[0][1].authorization, 'Bearer ' + 'o'.repeat(30)); assert.match(odd.last, /^verse /);
+  const nil = await stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, json: async () => null }) })([]);
+  assert.match(nil.error, /no model answered/, 'a null JSON body moves on instead of throwing');
   const html = stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': 'text/html; charset=utf-8' }), json: async () => { throw new SyntaxError('Unexpected token <'); } }) });
   const said = (await html([])).error;
   assert.equal(said, 'no model answered (openrouter 200 text/html not JSON)'); assert.doesNotMatch(said, /Unexpected token/);
@@ -419,6 +421,34 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.equal(seen.length, 2); assert.match(seen[1], /openrouter/); assert.match(m.last, /^openrouter /);
   const down = stackModel(ps.slice(0, 1), { fetchImpl: async () => ({ ok: false, status: 500 }) });
   assert.match((await down([])).error, /no model answered \(workers-ai 500\)/);
+  const chain = providersFrom({ VOID_OWNER_TOKEN: 'o'.repeat(30), VOID_SITE: 'https://example.invalid', GROQ_API_KEY: 'g'.repeat(20) });
+  const freeFirst = [];
+  const fell = stackModel(chain, { fetchImpl: async (url, init) => {
+    const body = JSON.parse(init.body); freeFirst.push(body.pay === true);
+    if (String(url).includes('example.invalid')) return { ok: false, status: 429, text: async () => 'free allowance used' };
+    return { ok: true, json: async () => ({ choices: [{ message: { content: call('finish') } }], usage: { total_tokens: 3 } }) };
+  } });
+  assert.equal((await fell([])).tokens, 3);
+  assert.deepEqual(freeFirst, [false, false], 'the next free provider answers before the treasury is asked');
+  const paidBodies = [];
+  const billed = stackModel(chain, { fetchImpl: async (url, init) => {
+    const body = JSON.parse(init.body); paidBodies.push(body);
+    if (body.pay) return { ok: true, json: async () => ({ result: { response: call('finish'), usage: { total_tokens: 4 } }, paid: true, cents: 2 }) };
+    return { ok: false, status: url.includes('groq') ? 404 : 429, text: async () => 'free allowance used' };
+  } });
+  assert.equal((await billed([])).tokens, 4);
+  assert.equal(billed.paid, true); assert.equal(billed.cents, 2);
+  assert.equal(paidBodies.filter((b) => b.pay).length, 1, 'one paid call after the free stack misses');
+  const slow = [];
+  const timed = stackModel(chain, { fetchImpl: async (url, init) => {
+    const body = JSON.parse(init.body); slow.push(!!body.pay);
+    if (body.pay) return { ok: true, json: async () => ({ result: { response: call('finish'), usage: { total_tokens: 5 } }, paid: true, cents: 3 }) };
+    if (String(url).includes('example.invalid')) { const e = new Error('aborted'); e.name = 'TimeoutError'; throw e; }
+    return { ok: false, status: 404, text: async () => 'missing' };
+  } });
+  assert.equal((await timed([])).tokens, 5);
+  assert.equal(timed.paid, true); assert.equal(timed.cents, 3);
+  assert.equal(slow.filter(Boolean).length, 1, 'a timeout falls through to the paid coder');
   assert.deepEqual(Object.keys(keyless({ PATH: '/bin', GROQ_API_KEY: 'k', CLOUDFLARE_API_TOKEN: 't', GH_TOKEN: 'g', HOME: '/h' })), ['PATH', 'HOME'], 'checks never see a key');
 });
 

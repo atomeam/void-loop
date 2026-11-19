@@ -63,7 +63,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          token: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -98,8 +98,8 @@ jobs:
           VERSE_LOOP_STATE: ${{ runner.temp }}/verse-loop/state.json
           VERSE_LOOP_AGENT: verse
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
-          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
-          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_BOT_TOKEN == '' && secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
@@ -107,9 +107,18 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          GAME_PLAY_DIR: ${{ runner.temp }}/game-play
+          GAME_PLAY_MS: '75000'
         run: |
           case "$JOB" in ''|*[!A-Za-z0-9_-]*) echo "::error title=Verse job::the job id is not an id"; exit 0 ;; esac
           node tools/verse-job.mjs "$JOB" $DRY
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: game-play
+          path: ${{ runner.temp }}/game-play
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Keep the loop's memory
         if: always()
         uses: actions/cache/save@v4

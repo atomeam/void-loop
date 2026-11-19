@@ -1,5 +1,6 @@
 /** Packet Maze: collect packets in a walled grid. Verse moves half as often and hunts the nearest packet. */
 export const id = 'packet-maze', N = 11, CELL = 18, W = 11 * 18, H = 11 * 18, CAP = 500;
+export const whatsNew = 'Update 1: Verse now moves on every other step.';
 const wall = (r, c) => r === 0 || c === 0 || r === 10 || c === 10 || (c === 5 && r % 2 === 0);
 export function create(seed = 1) {
   const pk = [];
@@ -45,4 +46,4 @@ export function draw(g, s) {
   const dot = (a, color) => { g.fillStyle = color; g.beginPath(); g.arc(a.c * CELL + CELL / 2, a.r * CELL + CELL / 2, 6, 0, 7); g.fill(); };
   dot(s.verse, '#b79bff'); dot(s.you, '#4fe3e3');
 }
-export const how = 'Step through the maze with the arrows and take the packets. Verse hunts them too, but only moves on every other step. Whoever holds more when the maze is empty wins. A link hands a friend the same maze.';
+export const how = 'Step through the maze with the arrows and take the packets. Verse hunts them too, but only moves on every other step. Whoever holds more when the maze is empty wins. A link hands a friend the same maze. ' + whatsNew;

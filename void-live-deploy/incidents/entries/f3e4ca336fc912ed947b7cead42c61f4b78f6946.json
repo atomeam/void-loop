@@ -1,0 +1,30 @@
+{
+ "at": "2026-11-18T19:20:48.450Z",
+ "sha": "f3e4ca336fc912ed947b7cead42c61f4b78f6946",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44375400635",
+ "suite": "browser suite on main",
+ "checks": [
+  "random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "tools/real-pages.mjs",
+  "tools/toolkit.test.mjs",
+  "tools/tower-probes.mjs",
+  "void-live-deploy/_redirects",
+  "void-live-deploy/color/colour-management/index.html",
+  "void-live-deploy/color/colour-picker-tool/index.html",
+  "void-live-deploy/color/gradient/index.html",
+  "void-live-deploy/color/index.html",
+  "void-live-deploy/color/modes/gradient.html",
+  "void-live-deploy/lab/pattern/index.html",
+  "void-live-deploy/lab/photo-palette/index.html",
+  "void-live-deploy/lib/seo.js",
+  "void-live-deploy/lib/toolkit.js",
+  "void-live-deploy/lib/tower-families.js",
+  "void-live-deploy/lib/tower-topic.js"
+ ],
+ "shards": [
+  4
+ ]
+}

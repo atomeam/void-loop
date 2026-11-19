@@ -1,0 +1,21 @@
+{
+ "at": "2026-11-18T22:06:39.590Z",
+ "sha": "e5755e8ddeba24baea9d67b890a6db1fbe74955c",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44402308869",
+ "suite": "browser suite on main",
+ "checks": [
+  "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+  "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in",
+  "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px"
+ ],
+ "touched": [
+  "tools/page-pass.test.mjs",
+  "tools/test_void.mjs",
+  "void-live-deploy/functions/_middleware.js",
+  "void-live-deploy/lib/tower-family-mode.js",
+  "void-live-deploy/skills/photos.js"
+ ],
+ "shards": [
+  4
+ ]
+}

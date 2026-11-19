@@ -1,0 +1,1 @@
+{"id":"deps","name":"Dependencies","what":"Names a high or critical advisory. It does not bump a package.","schedule":"daily at 17:33 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":4,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.5); padding:8px; border-radius:6px; font-size:13px; }
+.portal { position:absolute; width:70px; height:50px; background:rgba(80,160,255,.25); border:1px solid #4af; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; cursor:pointer; user-select:none; backdrop-filter:blur(4px); transition:transform .1s; }
+.portal:hover { background:rgba(80,160,255,.4); }
+button { background:#222; color:#eee; border:1px solid #555; padding:4px 8px; margin:2px; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Cellular Potts Orientation Mind · Verse lab</title>
+<meta name="description" content="A local tiny MLP receives DeviceOrientation (or pointer velocity proxy) as causal input and outputs bias parameters (temperature, adhesion preferences, motility)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Cellular Potts Orientation Mind · Verse lab">
+<meta property="og:description" content="A local tiny MLP receives DeviceOrientation (or pointer velocity proxy) as causal input and outputs bias parameters (temperature, adhesion preferences, motility)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f788-webgpu-cellular-potts-orientation-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f788-webgpu-cellular-potts-orientation-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="hud">
+  F788 Cellular Potts Orientation Mind<br>
+  Tilt device or move pointer • Click portals to reward<br>
+  <button id="seal">Seal Genome</button> <span id="status">ready</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Cellular Potts Orientation Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

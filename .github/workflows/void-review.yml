@@ -204,7 +204,7 @@ jobs:
       - name: "Verdict: merge, or a fix job"
         if: ${{ always() && inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         env:
-          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           PR: ${{ steps.pr.outputs.number }}
           SHA: ${{ steps.pr.outputs.sha }}

@@ -1,0 +1,28 @@
+{
+ "at": "2026-11-18T16:34:48.178Z",
+ "sha": "525fc89bcb35b9e837c7e3fef1df7736948e90f5",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44342430330",
+ "suite": "browser suite on main",
+ "checks": [
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "suite ran to the end",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look"
+ ],
+ "touched": [
+  "domains/void.frontier.md",
+  "tools/merge-gate.mjs",
+  "tools/pre-pr.mjs"
+ ],
+ "shards": [
+  3,
+  4
+ ],
+ "passed": [
+  3,
+  4
+ ],
+ "closedAt": "2026-11-18T17:15:27.839Z",
+ "closedBy": "34c4ffafc92177318e8a518447e4b483aaa848c7",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44351699437",
+ "minutes": 41
+}

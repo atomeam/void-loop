@@ -16,7 +16,7 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'time zone converter': '/time/', 'timezone converter': '/time/', 'time zone calculator': '/time/',
   'random number generator': '/random/', 'random number picker': '/random/', 'number generator': '/random/',
   'binary to decimal': '/base64/bases/', 'decimal to binary': '/base64/bases/', 'hex to decimal': '/base64/bases/', 'decimal to hex': '/base64/bases/',
-  'binary to hex': '/base64/bases/', 'hex to binary': '/base64/bases/', 'binary converter': '/base64/bases/', 'number base converter': '/base64/bases/',
+  'binary to hex': '/base64/bases/', 'hex to binary': '/base64/bases/', 'binary converter': '/base64/bases/', 'number base converter': '/base64/bases/', 'base converter': '/base64/bases/', 'kanban board': '/kanban/',
   'hex to rgb': '/color/', 'rgb to hex': '/color/', 'hex color converter': '/color/', 'color code converter': '/color/', 'colour code converter': '/color/',
   // the Lab's tools (2026-11-06: the owner found the Lab's experiments pointless; these are the jobs inside them)
   'spirit level': '/lab/level/', 'bubble level': '/lab/level/', 'level app': '/lab/level/', 'phone level': '/lab/level/', 'level tool': '/lab/level/',
@@ -46,7 +46,8 @@ export function toolAsk(text) {
   if (!alias && (!name || (!opened && !TOOL_NOUN.test(name)))) return null;
   const href = alias || toolNamed(name);
   if (!href || OWNED.has(href)) return null;
-  const label = (allTools().find(([p]) => p === href) || [href, (NAV.find((n) => n.href === href) || {}).label || name])[1];
+  const labels = { '/base64/bases/': 'Base converter' };
+  const label = labels[href] || (allTools().find(([p]) => p === href) || [href, (NAV.find((n) => n.href === href) || {}).label || name])[1];
   return { href, label };
 }
 

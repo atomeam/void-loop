@@ -1393,6 +1393,99 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-18T18:15:00Z",
+   "run": 26,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": null,
+   "dup_rate": 0.455,
+   "median_days": 3.2,
+   "asks_open_start": 22,
+   "asks_open_end": 1,
+   "items": [
+    {
+     "what": "the weather card waits at most 4.5 s per Open-Meteo call, asks once more, then Verse's own /api/weather; /api/weather gives up after 6 s (the weather exam's 10 ask groups: it swung 54 to 98 on the same asks)",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "recipe asks in Spanish, French, German, Italian and Portuguese reach the recipe card (\"receta de guacamole\")",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "delivery-ready and handoff-ready are one ready-checks family at 10120, aliases kept, 0 of 6,659 asks moved",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "main red: systems-connect-pack (#2963) adopted, and connect-flows plus systems-connect-pack are one connections family at 12000, 0 of 6,665 asks moved",
+     "list": "convergence / main red",
+     "status": "built"
+    },
+    {
+     "what": "main red overlap check: system-blueprint~system-design and connect-flows~heavy-lift-map named while their merge waits, listed in Up for grabs",
+     "list": "convergence / main red",
+     "status": "built"
+    },
+    {
+     "what": "factorial(0) code exam and Yankees/Chiefs/Packers scores: already passing on live (code 100 since 2026-11-15, sports 96.3 this run)",
+     "list": "void.asks.json",
+     "status": "duplicate"
+    },
+    {
+     "what": "This American Life and Planet Money play: already built 2026-11-17 (ledger 2026-11-17T03:15:21Z)",
+     "list": "void.asks.json",
+     "status": "duplicate"
+    },
+    {
+     "what": "Bridge card with fewer than two inputs: already built in lists run 22 (ledger 2026-11-12T11:40:00Z)",
+     "list": "void.asks.json",
+     "status": "duplicate"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-18T20:50:00Z",
+   "run": 27,
+   "closed": 4,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": null,
+   "dup_rate": 0,
+   "median_days": 0,
+   "asks_open_start": 1,
+   "asks_open_end": 1,
+   "items": [
+    {
+     "what": "main red: handoff-scan failed after the tower family merges (the wheel, /calculators/ and /markets/caps/ and /markets/screener/ became redirects onto family pages); stale handoff-types entries dropped, the ring and fantasy checks now look at /random/, docs/HANDOFF-GAPS.md regenerated; lists run 26 landed with main merged in",
+     "list": "main red",
+     "status": "built"
+    },
+    {
+     "what": "family mode pages ran the family page's own scripts too (a blocking script's document.open is ignored mid-parse): lib/tower-family-mode.js now ends the written mode with a hidden <plaintext>, so /scores/?mode=sports&q= keeps its search instead of jumping to ?league=epl",
+     "list": "main red / site tester",
+     "status": "built"
+    },
+    {
+     "what": "hand-off links that carried data to a redirected page lost it, because the live redirect drops the query when the target has its own (/color/gradient/?img=handoff became /color/?mode=gradient): image, PDF, paint, photos, resize and colour pages now link the family page directly, and the PDF send row keeps ?mode=",
+     "list": "main red / handoff",
+     "status": "built"
+    },
+    {
+     "what": "handoff journeys: tools/handoff-e2e.mjs follows _redirects like the real host (all 19 journeys pass again); the stray 12020-systems-connect-pack order file from a main merge removed so the connections family routes its examples",
+     "list": "main red",
+     "status": "built"
+    },
+    {
+     "what": "still open (Up for grabs): skills and pages that link /calculators/?calc=, /base64/bases/?v=, /random/coin/?q= and /random/people/?n= lose their query through the live redirect; moving them needs each skill's own-page detection updated (card-frame, coin, baseconv, loan, rentbuy tests). rival-inventory's 'scientific' alias still points at /calculators/#keypad (red on main)",
+     "list": "up for grabs",
+     "status": "open"
+    }
+   ]
   }
  ]
 }

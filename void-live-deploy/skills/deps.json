@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1350,
+ "counted": 1356,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -74,9 +74,9 @@
   },
   {
    "file": "lib/skill-family.js",
-   "skills": 26,
-   "direct": 26,
-   "dependants": 26,
+   "skills": 28,
+   "direct": 28,
+   "dependants": 28,
    "tests": 1
   },
   {
@@ -399,7 +399,7 @@
    "skills": 8,
    "direct": 2,
    "dependants": 14,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/stage-find.js",
@@ -819,7 +819,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 5,
-   "tests": 34
+   "tests": 36
   },
   {
    "file": "lib/field-cards.js",
@@ -4078,6 +4078,20 @@
   },
   {
    "file": "lib/time-machine-boot.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
+  },
+  {
+   "file": "lib/tower-families.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
+   "file": "lib/tower-family-mode.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -14916,6 +14930,7 @@
     "skills/build-world.js",
     "skills/cinema.js",
     "skills/client-status.js",
+    "skills/connections.js",
     "skills/date-math.js",
     "skills/dates.js",
     "skills/experiments.js",
@@ -14928,6 +14943,7 @@
     "skills/ownership.js",
     "skills/proposals.js",
     "skills/quick-tools.js",
+    "skills/ready-checks.js",
     "skills/reuse-tools.js",
     "skills/riddle-gen.js",
     "skills/rooms.js",
@@ -16382,6 +16398,14 @@
     "skills/walker.js"
    ]
   },
+  "lib/tower-families.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/tower-family-mode.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/tower-journeys.js": {
    "imports": [
     "lib/tower-controls.js"
@@ -17677,6 +17701,10 @@
     "functions/api/aurora.js"
    ]
   },
+  "skills/automation-handoff.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/automation-pack.js": {
    "imports": [],
    "importedBy": []
@@ -18056,7 +18084,9 @@
   },
   "skills/connect-flows.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/connections.js"
+   ]
   },
   "skills/connect-pack.js": {
    "imports": [],
@@ -18086,6 +18116,14 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/connections.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/connect-flows.js",
+    "skills/systems-connect-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/constellation-weaver.js": {
    "imports": [
@@ -18355,7 +18393,9 @@
   },
   "skills/delivery-ready.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/ready-checks.js"
+   ]
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -19271,7 +19311,9 @@
   },
   "skills/handoff-ready.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/ready-checks.js"
+   ]
   },
   "skills/handoffs.js": {
    "imports": [
@@ -20892,6 +20934,14 @@
    ],
    "importedBy": []
   },
+  "skills/ready-checks.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/delivery-ready.js",
+    "skills/handoff-ready.js"
+   ],
+   "importedBy": []
+  },
   "skills/rebuild-map.js": {
    "imports": [
     "skills/rack.js"
@@ -21838,6 +21888,12 @@
     "skills/delivery-board.js",
     "skills/reliability-pack.js",
     "skills/status-digest.js"
+   ]
+  },
+  "skills/systems-connect-pack.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/connections.js"
    ]
   },
   "skills/systems-monitor.js": {

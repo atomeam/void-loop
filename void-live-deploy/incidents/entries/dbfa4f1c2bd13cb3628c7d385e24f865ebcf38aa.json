@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-18T21:33:07.491Z",
+ "sha": "dbfa4f1c2bd13cb3628c7d385e24f865ebcf38aa",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44398402294",
+ "suite": "browser suite on main",
+ "checks": [
+  "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
+  "base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "tools/photo-tools.test.mjs",
+  "tools/photos-pages.mjs",
+  "tools/real-pages.mjs",
+  "void-live-deploy/_redirects",
+  "void-live-deploy/lib/photo-ask.js",
+  "void-live-deploy/lib/toolkit.js",
+  "void-live-deploy/lib/tower-families.js",
+  "void-live-deploy/lib/tower.js",
+  "void-live-deploy/photos/iloveimg/index.html",
+  "void-live-deploy/photos/photopea/index.html",
+  "void-live-deploy/sw.js"
+ ],
+ "shards": [
+  1,
+  4
+ ],
+ "passed": [
+  1
+ ]
+}

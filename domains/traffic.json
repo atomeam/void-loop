@@ -1,13 +1,13 @@
 {
- "at": "2026-11-18T14:01Z",
+ "at": "2026-11-19T14:27Z",
  "source": "verse",
  "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
  "week": {
-  "since": "2026-11-12",
+  "since": "2026-11-13",
   "unique": true,
-  "people": 81,
-  "views": 370,
-  "ours": 6651,
+  "people": 62,
+  "views": 326,
+  "ours": 3885,
   "bots": 0
  },
  "days": [
@@ -197,17 +197,25 @@
   },
   {
    "day": "2026-11-18",
-   "all": 210,
-   "people": 28,
-   "ours": 182,
+   "all": 771,
+   "people": 40,
+   "ours": 731,
    "bots": 0,
-   "uniquePeople": 5
+   "uniquePeople": 11
+  },
+  {
+   "day": "2026-11-19",
+   "all": 165,
+   "people": 2,
+   "ours": 163,
+   "bots": 0,
+   "uniquePeople": 2
   }
  ],
  "pages": [
   {
    "k": "/",
-   "n": 752
+   "n": 764
   },
   {
    "k": "/lab/",
@@ -249,7 +257,7 @@
  "referrers": [
   {
    "k": "google.com",
-   "n": 34
+   "n": 35
   },
   {
    "k": "bing.com",
@@ -257,13 +265,13 @@
   },
   {
    "k": "github.com",
-   "n": 24
+   "n": 25
   }
  ],
  "countries": [
   {
    "k": "US",
-   "n": 1509
+   "n": 1520
   },
   {
    "k": "TR",
@@ -275,7 +283,7 @@
   },
   {
    "k": "CN",
-   "n": 9
+   "n": 10
   },
   {
    "k": "NL",
@@ -294,13 +302,13 @@
    "n": 3
   },
   {
-   "k": "EG",
-   "n": 2
+   "k": "IN",
+   "n": 3
   },
   {
-   "k": "FR",
+   "k": "EG",
    "n": 2
   }
  ],
- "line": "People this week: 81 (370 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+ "line": "People this week: 62 (326 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }

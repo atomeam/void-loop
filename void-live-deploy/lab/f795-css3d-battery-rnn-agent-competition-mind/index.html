@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+#scene { perspective:800px; width:100vw; height:100vh; position:relative; }
+.agent { position:absolute; width:80px; height:60px; background:rgba(0,200,255,0.7); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:grab; user-select:none; transform-style:preserve-3d; transition:box-shadow 0.2s; }
+.agent.rewarded { box-shadow:0 0 20px gold; }
+#ui { position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; z-index:10; }
+button { margin:4px; padding:6px 10px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>CSS3D Battery-RNN Agent Competition · Verse lab</title>
+<meta name="description" content="Job: Tilt your phone or move the pointer to train tiny recurrent networks that move floating panels in 3D.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="CSS3D Battery-RNN Agent Competition · Verse lab">
+<meta property="og:description" content="Job: Tilt your phone or move the pointer to train tiny recurrent networks that move floating panels in 3D.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f795-css3d-battery-rnn-agent-competition-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f795-css3d-battery-rnn-agent-competition-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>Tilt device or move pointer. Drag agents. Click to reward.</div>
+  <button id="seal">Seal Best Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Battery: --</div>
+</div>
+<div id="scene"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">CSS3D Battery-RNN Agent Competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#seal { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+#reset { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+/* end verse design loop */
+</style>
+</body>
+</html>

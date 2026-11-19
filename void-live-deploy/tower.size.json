@@ -634,6 +634,20 @@
    "weight": 575846,
    "at": "2026-10-30"
   },
+  "arema.mx": {
+   "bytes": 3479382,
+   "controls": 523,
+   "scripts": 6,
+   "styles": 2,
+   "nodes": 26,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 49728,
+   "shell": "none",
+   "weight": 3491642,
+   "at": "2026-11-18"
+  },
   "arfonts.net": {
    "bytes": 851519,
    "controls": 123,
@@ -5714,7 +5728,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-18"
+   "at": "2026-11-19"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -7055,7 +7069,7 @@
    "shell": "none",
    "text": 14,
    "weight": 15,
-   "at": "2026-11-18"
+   "at": "2026-11-19"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -8644,6 +8658,20 @@
    "shell": "none",
    "weight": 2722896,
    "at": "2026-10-30"
+  },
+  "meetmarlo.com": {
+   "bytes": 20641,
+   "controls": 91,
+   "scripts": 6,
+   "styles": 3,
+   "nodes": 22,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 4202,
+   "shell": "none",
+   "weight": 32861,
+   "at": "2026-11-19"
   },
   "mega.co.nz": {
    "bytes": 2771,
@@ -10309,7 +10337,7 @@
    "shell": "none",
    "text": 37,
    "weight": 70,
-   "at": "2026-11-18"
+   "at": "2026-11-19"
   },
   "proton.me": {
    "bytes": 835896,
@@ -15667,6 +15695,10 @@
    "shell": "none",
    "weight": 720051,
    "at": "2026-10-30"
+  },
+  "youmark.jp": {
+   "refused": true,
+   "at": "2026-11-18"
   },
   "younit.kr": {
    "refused": true,

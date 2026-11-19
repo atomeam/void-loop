@@ -10,29 +10,26 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-18. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-19. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Stabilize sports data retrieval for the Yankees, Chiefs, and Packers. (daily, 2026-11-18) `ask-20261118-0134-1`
-- Fix the factorial(0) code exam to ensure it returns 1. *(small)* (daily, 2026-11-18) `ask-20261118-0134-2`
-- Teach the wants skill to answer probes instead of turning them into questions. *(small)* (daily, 2026-11-18) `ask-20261118-0134-3`
-- Rebuild the weather exam to correctly process temperature and rainfall for specific cities like Paris, London, and Tokyo. (after a build, 2026-11-17) `ask-20261117-1957-3`
-- Implement a fourth skill for the lab/pattern family. *(small)* (after a build, 2026-11-17) `ask-20261117-0839-3`
-- Fix the recipes exam specifically for the guacamole recipe. *(small)* (after a build, 2026-11-17) `ask-20261117-0823-2`
-- Fix the podcast retrieval logic for 'this american life' and 'planet money'. (daily, 2026-11-17)
-- Update the weather skill to fix accuracy failures for Paris, London, and Tokyo. (after a build, 2026-11-16)
-- Fix the weather exam failures for speed, skill, and temperature accuracy. (after a build, 2026-11-16)
-- Update the Bridge card logic to handle cases with fewer than two staged inputs. *(small)* (after a build, 2026-11-12)
+- Implement a miss-board reader that reads.git/verse-loop.stops.jsonl. *(small)* (daily, 2026-11-19) `ask-20261119-0105-2`
+- Rebuild the weather exam to correctly process temperature and rainfall for Paris and London. (daily, 2026-11-19) `ask-20261119-0105-1`
+- Improve the response speed of the 'what can you do' answer for visitors. (daily, 2026-11-19) `ask-20261119-0105-3`
+- Implement audio playback and episode navigation for the podcast skill. (after a build, 2026-11-18) `ask-20261118-2006-3`
+- Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread. (after a build, 2026-11-18) `ask-20261118-1913-2`
+- Fix the podcast exam failures for English and Spanish audio requests. (after a build, 2026-11-18) `ask-20261118-1720-1`
+- Implement a fourth skill for the lab/pattern family. *(small)* (after a build, )
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261118-0134-1` queued, not decided yet
-- `ask-20261118-0134-2` queued, not decided yet
-- `ask-20261118-0134-3` queued, not decided yet
-- `ask-20261117-1957-3` queued, not decided yet
-- `ask-20261117-0839-3` queued, not decided yet
-- `ask-20261117-0823-2` queued, not decided yet
+- `ask-20261119-0105-2` queued, not decided yet
+- `ask-20261119-0105-1` queued, not decided yet
+- `ask-20261119-0105-3` queued, not decided yet
+- `ask-20261118-2006-3` queued, not decided yet
+- `ask-20261118-1913-2` queued, not decided yet
+- `ask-20261118-1720-1` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -12960,6 +12957,354 @@ Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers scor
 > **Next video trick:** a dash meter that moves off the stick [S2]
 
 Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers scores."; "Fix the factorial(0) code exam to ensure it returns 1." (small); "Teach the wants skill to answer probes instead of turning them into questions." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T19:37:34.283Z -->
+### 2026-11-18 19:37 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 394 entries, incorporating recent updates to Gap Glide and Debris Field. While many client-facing skills like summon-pack and process-map have shipped, the recipes exam is weak with a score of 91.7, failing on chocolate chip cookies, salad dressing, and banana bread. Performance latency for 'what time is it' queries is high at 12714 ms.
+>
+> **How I would make it better:** The two longest browser checks, which take between 11 and 26 minutes, require a dedicated runner to reduce ship wait times. The podcast skill needs fixing for playback and episode navigation to address its low 90.5 exam score.
+>
+> **Next video trick:** Learn a new video transition effect to use in upcoming skill showcases.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T19:41:14.731Z -->
+### 2026-11-18 19:41 UTC · after a build
+
+**Asked:** This just shipped: "Redirect the global-headlines self-site onto the news family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 394 entries, recently incorporating updates to Gap Glide and Debris Field. Client-facing capabilities like summon-pack, process-map, and incident-pack have been shipped to improve handoffs and visibility. Recent deployment redirected the global-headlines self-site onto the news family page.
+>
+> **How I would make it better:** The recipes exam needs improvement to address failures in chocolate chip cookies, salad dressing, and banana bread. The weather exam requires a rebuild to correctly process temperature and rainfall for specific cities. Audio playback and episode navigation must be fixed to raise the podcast skill score above 90.5.
+>
+> **Next video trick:** A video effect using the new stage-fx to create a seamless transition between different skill cards.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T19:44:14.941Z -->
+### 2026-11-18 19:44 UTC · after a build
+
+**Asked:** This just shipped: "Redirect the global-headlines self-site onto the news family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 394 entries, including recent additions to the client-facing skill families like summon-pack, process-map, and incident-pack. My current status shows 269 of 281 asks have been built, though several long-standing issues in sports data, weather processing, and podcast audio remain. The global-headlines self-site has been redirected to the news family page.
+>
+> **How I would make it better:** The podcast skill score must be raised above 90.5 by fixing audio playback and episode navigation for requests like 'play the latest episode of this american life'. Weather processing for specific cities needs a rebuild to correctly handle temperature and rainfall.
+>
+> **Next video trick:** Learn to use a physical prop to create a digital 'glitch' transition in a video clip.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T19:55:44.124Z -->
+### 2026-11-18 19:55 UTC · after a build
+
+**Asked:** This just shipped: "Redirect the emoji-dictionary self-site onto the emoji-combos family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 394 entries, including recent additions like the summon-pack and client-weekly skills. Current development has successfully shipped several client-facing packages, including the process-map, incident-pack, and full-handoff skills. Growth is focused on stabilizing sports data retrieval and rebuilding the weather exam to handle temperature and rainfall for specific cities.
+>
+> **How I would make it better:** The podcast skill needs immediate attention to fix audio playback and episode navigation, as it scored a low 90.5 on exams. Weather processing must be rebuilt to correctly handle specific city data including temperature and rainfall.
+>
+> **Next video trick:** Learn to use a physical card to trigger a stage-fx transition that mimics a digital dissolve.
+
+Asks: "Implement audio playback and episode navigation for the podcast skill."; "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T20:06:54.404Z -->
+### 2026-11-18 20:06 UTC · after a build
+
+**Asked:** This just shipped: "Revert "Better at automation handoff: 3 more ways of asking answered right — new phrases: “automation handoff for the email reminders” now opens automation-handoff; “handoff the running automations for onboarding” now opens automation-handoff; “pac (#2982)"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 394 entries, with recent deployments adding client-facing packages like summon-pack, process-map, incident-pack, client-weekly, and full-handoff. Current development is focused on stabilizing sports data for the Yankees, Chiefs, and Packers, and rebuilding weather processing for specific city data. The recent revert of automation handoff phrases removes three specific phrases from the automation-handoff routing.
+>
+> **How I would make it better:** The sports exam must be stabilized by fixing data retrieval for the Yankees, Chiefs, and Packers to address its current low score of 93.5. The podcast skill requires immediate attention to fix audio playback and episode navigation following its 90.5 score.
+>
+> **Next video trick:** Learn a new way to use stage-fx to transition between different skill-family views.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers scores."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Implement audio playback and episode navigation for the podcast skill."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T20:58:14.145Z -->
+### 2026-11-18 20:58 UTC · after a build
+
+**Asked:** This just shipped: "Soften the event-horizon ring so a night phone landing stays under the hard-edge bar". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 394 entries, including recent client-facing deployments like summon-pack, process-map, and full-handoff. Current development focus is on stabilizing sports data for the Yankees, Chiefs, and Packers to address a low score of 93.5. The podcast skill remains a priority due to audio playback and navigation issues.
+>
+> **How I would make it better:** Improve response speed for 'what can you do' inquiries to prevent visitors from failing to understand value immediately. Stabilize sports data retrieval for the Yankees, Chiefs, and Packers to resolve the current 93.5 score. Rebuild the weather exam to correctly process temperature and rainfall for specific cities.
+>
+> **Next video trick:** Create a video effect where a digital 'glitch' transition reveals a 3D miniature of a card.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers scores."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Improve the response speed of the 'what can you do' answer for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:04:41.109Z -->
+### 2026-11-18 21:04 UTC · after a build
+
+**Asked:** This just shipped: "Fold the photos EXIF pages onto the photos family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 394 entries, including recent client-facing deployments like summon-pack, process-map, and full-handoff. Current development is focused on addressing the low sports exam score of 92.6 by stabilizing data for the Yankees, Chiefs, and Packers. The system is also working to improve visitor response times for 'what can you do' inquiries and implementing audio playback for the podcast skill.
+>
+> **How I would make it better:** The sports data retrieval for the Yankees, Chiefs, and Packers must be stabilized to resolve the current low score. Additionally, the response speed for visitor inquiries regarding utility should be increased.
+>
+> **Next video trick:** Learn to execute a seamless card-to-stage transition using a custom CSS clip-path animation.
+
+Asks: "Stabilize sports data retrieval for the Yankees, Chiefs, and Packers scores."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Improve the response speed of the 'what can you do' answer for visitors." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:08:14.844Z -->
+### 2026-11-18 21:08 UTC · after a build
+
+**Asked:** This just shipped: "Lists runs 26-27: weather card stops hanging, recipe asks in five languages, two skill families, main's red after the tower family merges". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 394 entries, including recent client-facing deployments like summon-pack, process-map, and full-handoff. Current development targets stabilizing sports data retrieval for the Yankees, Chiefs, and Packers to improve a 92.6 sports exam score. The system also aims to improve visitor response times for utility inquiries.
+>
+> **How I would make it better:** The visitor pass response time for 'what can you do' inquiries must be reduced to improve essential user onboarding. Additionally, the recipe exam needs rebuilding to fix chocolate chip cookies, salad dressing, and banana bread.
+>
+> **Next video trick:** Create a seamless transition between two different video clip styles using a single motion-blur wipe.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Improve the response speed of the 'what can you do' answer for visitors." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:12:40.628Z -->
+### 2026-11-18 21:12 UTC · after a build
+
+**Asked:** This just shipped: "Fold the photos editor and batch pages onto the photos family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 394 entries, incorporating recent client-facing deployments including summon-pack, process-map, and full-handoff. Recent work has consolidated the photos family by folding the photos editor and batch pages onto the main photos family page. Current development focuses on stabilizing sports data retrieval for the Yankees, Chiefs, and Packers to support a 92.6 sports exam score.
+>
+> **How I would make it better:** Response times for 'what can you do' inquiries must be reduced to improve user onboarding. The recipe exam requires a rebuild to resolve failures in chocolate chip cookies, salad dressing, and banana bread. Additionally, the weather exam needs a rebuild to correctly process temperature and rainfall for specific cities.
+>
+> **Next video trick:** A smooth transition effect for when a user shifts from a complex analytical topic to a new inquiry without losing context.
+
+Asks: "Improve the response speed of the 'what can you do' answer for visitors."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:18:52.528Z -->
+### 2026-11-18 21:18 UTC · after a build
+
+**Asked:** This just shipped: "Fold the photos compress pages onto the photos family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 392 entries, with recent shipments including the summon-pack, process-map, incident-pack, client-weekly, time-saved, full-handoff, status-digest, and system-plan skills. Current growth focuses on client-facing automation and reliability packs. The recent deployment of photo compression on the photos family page optimizes page weight.
+>
+> **How I would make it better:** The response speed for 'what can you do' inquiries must be improved to assist visitor onboarding. The weather exam needs a complete rebuild to correctly process temperature and rainfall for specific cities. The recipe exam requires a rebuild to fix failures in chocolate chip cookies, salad dressing, and banana bread.
+>
+> **Next video trick:** Learn to use a physical depth-of-field effect with a macro lens for clearer 3D miniature close-ups.
+
+Asks: "Improve the response speed of the 'what can you do' answer for visitors."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:22:40.372Z -->
+### 2026-11-18 21:22 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 392 entries across multiple families, including the newly shipped 'versus measured' tower gate. Most system asks are resolved, with 277 of 284 completed. Current operational focus is on transitioning from fragmented projects into a unified system of thought through repository absorption.
+>
+> **How I would make it better:** Response speed for 'what can you do' inquiries must be improved to facilitate visitor onboarding. The weather exam requires a complete rebuild to accurately process temperature and rainfall for specific cities. The recipe exam needs a rebuild to resolve failures in chocolate chip cookies, salad dressing, and banana bread.
+>
+> **Next video trick:** Learn a new way to use the 'stage-fx' skill to create dynamic transitions between card animations.
+
+Asks: "Improve the response speed of the 'what can you do' answer for visitors."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:29:15.519Z -->
+### 2026-11-18 21:29 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 392 entries, covering families from 'make' to 'self'. Recent builds include weather and recipe fixes, Gap Glide updates, and several client-facing skills like 'summon-pack' and 'system-plan'. Operational growth is focused on moving from one-off answers to permanent, tested skills.
+>
+> **How I would make it better:** The weather exam and recipe exam require complete rebuilds to handle specific inputs like temperature, rainfall, and complex ingredients. The response speed for 'what can you do' inquiries must be improved to facilitate visitor onboarding.
+>
+> **Next video trick:** Learn a video effect that uses a 'glitch-to-clear' transition to showcase the 'void-breaker' skill.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl" (small); "Rebuild the weather exam to correctly process temperature and rainfall for specific cities"; "Improve the response speed of the 'what can you do' answer for visitors"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:34:36.101Z -->
+### 2026-11-18 21:34 UTC · after a build
+
+**Asked:** This just shipped: "Fold the exact-size photo resizer onto the photos family page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 392 entries, and the photo resizer is now folded into the photos family page. My current open asks include implementing a miss-board reader for .git/verse-loop.stops.jsonl, rebuilding the weather exam to handle specific temperature and rainfall inputs, and improving response speed for 'what can you do' inquiries. The system's recent builds have successfully addressed weather card hanging, recipe asks in five languages, and several security/guardrail fixes.
+>
+> **How I would make it better:** The weather exam and recipe exam require complete rebuilds to handle specific inputs like temperature, rainfall, and complex ingredients. Response speed for 'what can you do' inquiries must be improved to facilitate visitor onboarding.
+>
+> **Next video trick:** A transition effect that mimics the 'jump-stack' or 'null-sweep' visual style for card animations.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Improve the response speed of the 'what can you do' answer for visitors." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T21:37:54.490Z -->
+### 2026-11-18 21:37 UTC · after a build
+
+**Asked:** This just shipped: "Builder: main's browser suite back to green; folded pages run only their mode, old links keep their data, Add photos is back". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 392 entries, covering diverse families like making, games, sky, and time. Recent growth includes the deployment of client-facing skills such as summon-pack, process-map, incident-pack, client-weekly, time-saved, full-handoff, and system-plan. The system has successfully transitioned its primary answer model to gemma-4-26b-a4b-it to stay within free usage limits.
+>
+> **How I would make it better:** The response speed for 'what can you do' inquiries needs to be improved to facilitate visitor onboarding. Rebuild the weather exam to correctly process temperature and rainfall for specific cities instead of hanging. Implement a miss-board reader to process .git/verse-loop.stops.jsonl.
+>
+> **Next video trick:** Learn a technique for creating seamless transitions between disparate video segments in a single-take style shot.
+
+Asks: "Improve the response speed of the 'what can you do' answer for visitors."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T23:15:58.256Z -->
+### 2026-11-18 23:15 UTC · after a build
+
+**Asked:** This just shipped: "Better at automation handoff and systems connect pack: 5 more ways of asking answered right — new phrases: “automation handoff for the email reminders” now opens automation-handoff; “handoff the running automations for onboarding” now opens". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 392 entries, incorporating new client-facing capabilities like the automation-handoff and systems-connect packs. Most asks are being met, with 279 of 286 completed, though critical latency and accuracy issues persist. Current operational focus is shifting toward professional service tools for client delivery.
+>
+> **How I would make it better:** Response speed for 'what can you do' inquiries must be optimized to improve visitor onboarding. The weather exam requires a rebuild to correctly process temperature and rainfall for specific cities rather than hanging.
+>
+> **Next video trick:** Learn to use a physical light to trigger a sensor-based digital effect for a stage-fx clip.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Improve the response speed of the 'what can you do' answer for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T23:16:12.627Z -->
+### 2026-11-18 23:16 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth over the last 7 days includes 120 changes, consisting of 23 new capabilities, 26 improvements, 24 fixes, 45 findings, and 1 idea. The skill index currently contains 392 entries across various families. System progress is reflected in the completion of 279 out of 286 total asks.
+>
+> **How I would make it better:** Response speed for 'what can you do' inquiries needs optimization to improve visitor onboarding. The weather exam requires a rebuild to correctly process temperature and rainfall for specific cities instead of hanging.
+>
+> **Weakest operational area:** Visitor onboarding is hindered by slow response speeds for 'what can you do' inquiries and weather card hanging issues.
+>
+> **Next targeted capability:** Implement a miss-board reader that reads .git/verse-loop.stops.jsonl (asked 46 times).
+>
+> **Next video trick:** Double exposure transition
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Improve the response speed of the 'what can you do' answer for visitors." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-18T23:35:35.605Z -->
+### 2026-11-18 23:35 UTC · after a build
+
+**Asked:** This just shipped: "Revert "Builder: main's browser suite back to green; folded pages run only their mode, old links keep their data, Add photos is back (#2991)"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 392 entries, including recently shipped client-focused skills like summon-pack, process-map, and incident-pack. High latency on visitor 'what can you do' inquiries and weather card hanging issues remain unresolved. My builders just finished reverting a main browser suite to green and ensuring folded pages and old links maintain data integrity.
+>
+> **How I would make it better:** The weather exam needs a rebuild to process temperature and rainfall for specific cities instead of hanging. Response speed for visitor onboarding inquiries must be optimized. The miss-board reader needs implementation to ingest .git/verse-loop.stops.jsonl.
+>
+> **Next video trick:** Learn to render a 3D spinning version of the 'void' card using a custom shader for video clips.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Improve the response speed of the 'what can you do' answer for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T00:24:17.122Z -->
+### 2026-11-19 00:24 UTC · after a build
+
+**Asked:** This just shipped: "Mark delivery packs shipped (automation-proposal, handoff-ready, systems-connect-pack)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 392 entries, recently bolstered by the delivery of automation-proposal, handoff-ready, and systems-connect-pack skills. My builders have resolved issues with weather card hanging, recipe language support, and guard rails for invalid tool lists. However, high latency for visitor 'what can you do' inquiries and unresolved weather exam bugs remain.
+>
+> **How I would make it better:** The weather exam requires a rebuild to correctly process temperature and rainfall for specific cities rather than hanging. Response speed for visitor onboarding inquiries must be optimized to improve first impressions. The miss-board reader needs implementation to ingest .git/verse-loop.stops.jsonl.
+>
+> **Next video trick:** A seamless transition effect where one 3D miniature card dissolves into a second card using particle physics.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."; "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Improve the response speed of the 'what can you do' answer for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T00:54:59.453Z -->
+### 2026-11-19 00:54 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 2 -> 1 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 392 entries, bolstered by recent deliveries of automation-proposal, handoff-ready, and systems-connect-pack skills. Recent builds resolved issues with weather card hanging, recipe language support, and guard rails for invalid tool lists, though the design loop shows 2 defects per 1 fixed page. High latency for visitor 'what can you do' inquiries and an unresolved weather exam bug remain primary friction points.
+>
+> **How I would make it better:** The weather exam must be rebuilt to process temperature and rainfall for specific cities instead of hanging. Response speed for visitor onboarding inquiries and the implementation of a miss-board reader for .git/verse-loop.stops.jsonl should be prioritized to improve first impressions and system observability.
+>
+> **Next video trick:** A video effect where a 3D miniature card shatters into its constituent shapes when a specific skill is triggered.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Rebuild the weather exam to correctly process temperature and rainfall for specific cities."; "Improve the response speed of the 'what can you do' answer for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T01:05:02.802Z -->
+### 2026-11-19 01:05 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 392 entries, following the recent shipment of automation-proposal, handoff-ready, and systems-connect-pack skills. Growth over the last 7 days includes 120 changes, with 23 new capabilities and 23 fixes. High latency for visitor time requests and an unresolved weather exam bug persist.
+>
+> **How I would make it better:** The weather exam must be rebuilt to process temperature and rainfall for specific cities rather than hanging. Response speed for visitor onboarding inquiries needs improvement to reduce friction.
+>
+> **Weakest operational area:** The weakest part is the visitor pass on the live site, which shows a slow response of 10673 ms across 40 probes.
+>
+> **Next targeted capability:** Implement audio playback and episode navigation for the podcast skill to resolve the low 95.2 exam score.
+>
+> **Next video trick:** A smooth zoom-to-detail transition for 3D models in the forge.
+
+Asks: "Rebuild the weather exam to correctly process temperature and rainfall for Paris and London."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Improve the response speed of the 'what can you do' answer for visitors."
 
 *Verse flagged this one for Adam.*
 

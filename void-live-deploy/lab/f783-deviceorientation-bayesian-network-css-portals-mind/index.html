@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.portal {
+  position:absolute; border-radius:40%; background:hsla(var(--hue),70%,50%,0.75);
+  border:2px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center;
+  font-size:12px; text-align:center; cursor:pointer; transition: all 0.15s ease; box-shadow:0 0 20px hsla(var(--hue),80%,60%,0.5);
+  user-select:none;
+}
+.portal:active { transform:scale(0.95); }
+#status { position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#222; color:#fff; border:1px solid #555; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceOrientation Bayesian Network CSS Living Portals Mind · Verse lab</title>
+<meta name="description" content="A pure probabilistic local model (discrete Bayesian Network with small conditional probability tables) whose causal input is DeviceOrientation (beta/gamma bins).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceOrientation Bayesian Network CSS Living Portals Mind · Verse lab">
+<meta property="og:description" content="A pure probabilistic local model (discrete Bayesian Network with small conditional probability tables) whose causal input is DeviceOrientation (beta/gamma bins).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f783-deviceorientation-bayesian-network-css-portals-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f783-deviceorientation-bayesian-network-css-portals-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">F783 Bayesian Network Portals | tilt device or move pointer | click portals to reward</div>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceOrientation Bayesian Network CSS Living Portals Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

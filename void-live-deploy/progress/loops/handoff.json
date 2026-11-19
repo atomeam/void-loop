@@ -1,0 +1,1 @@
+{"id":"handoff","name":"Page handoff","what":"Names the next page pair that share data and are not connected.","schedule":"daily at 19:43 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":4,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

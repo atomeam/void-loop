@@ -1,0 +1,33 @@
+{
+ "at": "2026-11-18T19:45:10.807Z",
+ "sha": "b6bc16792024a0869b42d667653bc164576f9da7",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44378689017",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
+  "suite ran to the end",
+  "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request"
+ ],
+ "touched": [
+  "tools/one-page.test.mjs",
+  "tools/tool-sites.test.mjs",
+  "tools/vision-judge.mjs",
+  "tools/vision-judge.test.mjs",
+  "void-live-deploy/_redirects",
+  "void-live-deploy/color/colour-management/index.html",
+  "void-live-deploy/lib/self-sites.js",
+  "void-live-deploy/lib/toolkit.js",
+  "void-live-deploy/lib/tower-families.js",
+  "void-live-deploy/llms.txt",
+  "void-live-deploy/sw.js",
+  "void-live-deploy/tools/index.html"
+ ],
+ "shards": [
+  3,
+  4
+ ],
+ "passed": [
+  3
+ ]
+}

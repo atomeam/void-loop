@@ -1,15 +1,149 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 138,
+ "cases": 137,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 224,
-  "grow": 46,
+  "visitor": 228,
   "file": 26,
+  "grow": 42,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-19T13:51:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-19T03:50:28Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-19T00:21:27Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T22:19:03Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T21:26:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T21:00:18Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T20:34:08Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-18T20:08:01Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-18T19:39:17Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T19:13:23Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T18:46:17Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-18T18:20:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-18T17:49:21Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-18T17:17:24Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-18T16:50:36Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-18T16:35:17Z",
+   "passed": 136,
+   "of": 139,
+   "kind": "file",
+   "ms": 608,
+   "note": "fix: \"how do i magnetize this?\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "how do i magnetize this?",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-18T16:25:28Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-18T16:11:47Z",
    "passed": 136,
@@ -60,264 +194,85 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-18T14:32:15Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T05:37:01Z",
-   "passed": 134,
-   "of": 137,
-   "kind": "grow",
-   "ms": 504,
-   "note": "new ground passed, kept as a regression case: \"adaptive flow canvas\" (skill:flow-canvas)",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-18T05:26:39Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T04:51:14Z",
-   "passed": 132,
-   "of": 136,
-   "kind": "grow",
-   "ms": 447,
-   "note": "new ground passed, kept as a regression case: \"why is a half moon called a quarter moon\" (skill:moon)",
-   "failed": [
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-18T04:42:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T02:55:48Z",
-   "passed": 135,
-   "of": 135,
-   "kind": "grow",
-   "ms": 438,
-   "note": "new ground passed, kept as a regression case: \"system design for client onboarding\" (skill:system-design)"
-  },
-  {
-   "at": "2026-11-18T02:47:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T23:17:03Z",
-   "passed": 135,
-   "of": 135,
-   "kind": "grow",
-   "ms": 541,
-   "note": "new ground passed, kept as a regression case: \"is this system handoff ready\" (skill:handoff-ready)"
-  },
-  {
-   "at": "2026-11-17T23:08:30Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T14:59:43Z",
-   "passed": 133,
-   "of": 133,
-   "kind": "grow",
-   "ms": 367,
-   "note": "new ground passed, kept as a regression case: \"token stand\" (skill:token-stand)"
-  },
-  {
-   "at": "2026-11-17T14:52:23Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T11:18:24Z",
-   "passed": 129,
-   "of": 132,
-   "kind": "grow",
-   "ms": 594,
-   "note": "new ground passed, kept as a regression case: \"time saved for the invoice automation\" (skill:time-saved)",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-17T11:08:39Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T10:55:38Z",
-   "passed": 131,
-   "of": 131,
-   "kind": "grow",
-   "ms": 470,
-   "note": "new ground passed, kept as a regression case: \"three alike\" (skill:three-alike)"
-  },
-  {
-   "at": "2026-11-17T10:47:32Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-17T09:16:49Z",
-   "passed": 130,
-   "of": 131,
-   "kind": "grow",
-   "ms": 383,
-   "note": "new ground passed, kept as a regression case: \"game\" (skill:games-hub)",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-17T09:08:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-26",
+   "from": "2026-08-27",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-02",
+   "from": "2026-09-03",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-09",
+   "from": "2026-09-10",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-16",
+   "from": "2026-09-17",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-23",
+   "from": "2026-09-24",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-30",
+   "from": "2026-10-01",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-07",
+   "from": "2026-10-08",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-14",
+   "from": "2026-10-15",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-21",
+   "from": "2026-10-22",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-28",
+   "from": "2026-10-29",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-04",
-   "runs": 161,
-   "passed": 3669,
-   "of": 5311,
+   "from": "2026-11-05",
+   "runs": 174,
+   "passed": 3799,
+   "of": 5439,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
-   "ms": 396
+   "ms": 393
   },
   {
-   "from": "2026-11-11",
-   "runs": 139,
-   "passed": 3249,
-   "of": 3348,
-   "ms": 391
+   "from": "2026-11-12",
+   "runs": 126,
+   "passed": 2795,
+   "of": 2875,
+   "ms": 438
   }
  ],
  "seen": {
@@ -391,7 +346,7 @@
   "skill:markets": "2026-11-12T08:05:47Z",
   "skill:memory": "2026-11-12T08:50:40Z",
   "skill:moon": "2026-11-18T04:51:14Z",
-  "skill:motorbody": "2026-10-17T10:26:08Z",
+  "skill:motorbody": "2026-11-18T16:35:17Z",
   "skill:news": "2026-10-17T10:26:08Z",
   "skill:nightsky": "2026-10-17T10:32:13Z",
   "skill:notepad": "2026-10-17T10:32:13Z",

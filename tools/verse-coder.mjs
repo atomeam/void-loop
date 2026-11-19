@@ -95,40 +95,54 @@ export async function readReply(r) {
   return n <= 64 && !/[<>]/.test(s) ? { notJson: bad(n).notJson + ' ' + JSON.stringify(s.replace(/[A-Za-z0-9_\-]{20,}/g, '[masked]')) } : bad(n);
 }
 
-/** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
+/** a model function over the providers: each call tries them in order from the last one that answered; a 429, a timeout, or an empty answer moves on.
+ *  When none of the free providers answer, one paid call (pay:true on /api/coder) runs and its cents are kept on the function. */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
   let at = 0;
   const fn = async (messages) => {
     const errs = [];
+    const noteOf = async (r) => {
+      if (typeof r.text !== 'function') return '';
+      try {
+        const t = await r.text();
+        let j = null; try { j = JSON.parse(t); } catch (_) { /* a plain sentence */ }
+        const e = j && j.errors && j.errors[0];
+        if (e && (e.code || e.message)) return ' ' + [e.code, String(e.message || '').slice(0, 80)].filter(Boolean).join(' ');
+        if (t && t.length <= 80 && !/[<>]/.test(t)) return ' ' + t.replace(/[A-Za-z0-9_-]{20,}/g, '[masked]').replace(/\s+/g, ' ').trim();
+      } catch (_) { /* status alone */ }
+      return '';
+    };
+    const accept = (p, j, i) => {
+      if (j && j.notJson) { errs.push(p.name + ' ' + j.notJson); return null; }
+      const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
+      const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
+      if (!text.trim()) { errs.push(p.name + ' empty'); return null; }
+      at = i; fn.last = p.name + ' ' + ((j && j.model) || p.model);
+      if (j && j.paid) fn.paid = true;
+      if (j && j.cents) fn.cents = (fn.cents || 0) + Number(j.cents);
+      const u = x.usage || (j && j.usage) || {};
+      return { text, tokens: u.total_tokens || 0 };
+    };
+    const post = (p, body) => fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
     for (let k = 0; k < providers.length; k++) {
       const i = (at + k) % providers.length, p = providers[i];
       try {
         const body = p.shape === 'workers'
           ? { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false } }
           : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
-        const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
-        if (!r.ok) {
-          let note = '';
-          if (typeof r.text === 'function') {
-            try {
-              const t = await r.text();
-              let j = null; try { j = JSON.parse(t); } catch (_) { /* a plain sentence */ }
-              const e = j && j.errors && j.errors[0];
-              if (e && (e.code || e.message)) note = ' ' + [e.code, String(e.message || '').slice(0, 80)].filter(Boolean).join(' ');
-              else if (t && t.length <= 80 && !/[<>]/.test(t)) note = ' ' + t.replace(/[A-Za-z0-9_-]{20,}/g, '[masked]').replace(/\s+/g, ' ').trim();
-            } catch (_) { /* status alone */ }
-          }
-          errs.push(p.name + ' ' + r.status + note); continue;
-        }
-        const j = await readReply(r);
-        if (j && j.notJson) { errs.push(p.name + ' ' + j.notJson); continue; }
-        const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
-        const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
-        if (!text.trim()) { errs.push(p.name + ' empty'); continue; }
-        at = i; fn.last = p.name + ' ' + p.model;
-        const u = x.usage || j.usage || {};
-        return { text, tokens: u.total_tokens || 0 };
+        const r = await post(p, body);
+        if (!r.ok) { errs.push(p.name + ' ' + r.status + await noteOf(r)); continue; }
+        const got = accept(p, await readReply(r), i);
+        if (got) return got;
       } catch (e) { errs.push(p.name + ' ' + String((e && e.name) || e)); }
+    }
+    const verse = errs.length && providers.find((p) => p.name === 'verse');
+    if (verse) {
+      try {
+        const r = await post(verse, { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false }, pay: true });
+        if (!r.ok) errs.push('verse paid ' + r.status + await noteOf(r));
+        else { const got = accept(verse, await readReply(r), providers.indexOf(verse)); if (got) return got; }
+      } catch (e) { errs.push('verse paid ' + String((e && e.name) || e)); }
     }
     return { error: 'no model answered (' + errs.join(', ') + ')' };
   };
@@ -689,15 +703,15 @@ export function ownReview(root, env = keyless()) {
 export function scriptedModel(replies) { let i = 0; return async () => ({ text: typeof replies[Math.min(i, replies.length - 1)] === 'string' ? replies[Math.min(i++, replies.length - 1)] : JSON.stringify(replies[Math.min(i++, replies.length - 1)]) }); }
 
 function parseCli(argv) {
-  const o = { repo: process.cwd(), promptFile: '', task: '', checks: '', target: '', turns: 0, tokens: 0 };
-  const flags = { '--repo': 'repo', '--prompt-file': 'promptFile', '--task': 'task', '--checks': 'checks', '--target': 'target', '--max-turns': 'turns', '--max-tokens': 'tokens' };
+  const o = { repo: process.cwd(), promptFile: '', task: '', checks: '', target: '', turns: 0, tokens: 0, reads: 0 };
+  const flags = { '--repo': 'repo', '--prompt-file': 'promptFile', '--task': 'task', '--checks': 'checks', '--target': 'target', '--max-turns': 'turns', '--max-tokens': 'tokens', '--max-reads': 'reads' };
   for (let i = 0; i < argv.length; i++) { const k = flags[argv[i]]; if (!k) throw new Error('unknown flag ' + argv[i]); o[k] = argv[++i]; }
   return o;
 }
 
 async function main() {
   const o = parseCli(process.argv.slice(2)), env = process.env, root = resolve(o.repo);
-  const say = (r) => { console.log(JSON.stringify({ outcome: r.outcome, why: r.why, turns: r.turns || 0, tokens: r.tokens || 0, files: r.files || [], provider: r.provider || '', spent: r.spent || null })); process.exit(EXIT[r.outcome] ?? 1); };
+  const say = (r) => { console.log(JSON.stringify({ outcome: r.outcome, why: r.why, turns: r.turns || 0, tokens: r.tokens || 0, files: r.files || [], provider: r.provider || '', spent: r.spent || null, cents: r.cents || 0, paid: !!r.paid })); process.exit(EXIT[r.outcome] ?? 1); };
   const prompt = o.promptFile ? readFileSync(o.promptFile, 'utf8') : o.task;
   if (!prompt) return say({ outcome: 'error', why: 'give --prompt-file or --task' });
   const checks = o.checks ? JSON.parse(readFileSync(o.checks, 'utf8')) : existsSync(join(root, 'tools/verse-loop.checks.json')) ? JSON.parse(readFileSync(join(root, 'tools/verse-loop.checks.json'), 'utf8')) : DEFAULT_CHECKS;
@@ -708,8 +722,8 @@ async function main() {
     if (!ps.length) return say({ outcome: 'no-model', why: 'Verse\'s coder needs one model key in the environment: ' + KEY_NAMES.join(', ') });
     model = stackModel(ps); provider = ps.map((p) => p.name).join(' > ');
   }
-  const r = await runCoder({ root, prompt, checks, target: o.target, model, env, limits: { ...(+o.turns ? { turns: +o.turns } : {}), ...(+o.tokens ? { tokens: +o.tokens } : {}) }, log: (s) => console.error(s) });
-  say({ ...r, provider: (model.last || provider) });
+  const r = await runCoder({ root, prompt, checks, target: o.target, model, env, limits: { ...(+o.turns ? { turns: +o.turns } : {}), ...(+o.tokens ? { tokens: +o.tokens } : {}), ...(+o.reads ? { reads: +o.reads } : {}) }, log: (s) => console.error(s) });
+  say({ ...r, provider: (model.last || provider), cents: (model && model.cents) || 0, paid: !!(model && model.paid) });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((e) => { console.log(JSON.stringify({ outcome: 'error', why: String((e && e.message) || e).slice(0, 300) })); process.exit(1); });

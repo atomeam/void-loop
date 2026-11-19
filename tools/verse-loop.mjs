@@ -21,6 +21,8 @@ import { fileURLToPath } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
+import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
+import { acceptGame, aimGame, gameDueNow, gameTask, loadBook, recordGame, scoreBar } from './game-updates.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -38,7 +40,7 @@ export const DEFAULT_CHECKS = [
 
 /** Parse argv into options. Pure. */
 export function parseArgs(argv, env = {}) {
-  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false };
+  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false, lane: '', bar: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = () => { const v = argv[++i]; if (v === undefined) throw new Error(a + ' needs a value'); return v; };
@@ -50,6 +52,8 @@ export function parseArgs(argv, env = {}) {
     else if (a === '--checks') o.checks = val();
     else if (a === '--base') o.base = val();
     else if (a === '--task') o.task = val();
+    else if (a === '--lane') o.lane = val();
+    else if (a === '--bar') o.bar = true;
     else if (a === '--strict') o.strict = true;
     else if (a === '-h' || a === '--help') o.help = true;
     else throw new Error('unknown flag ' + a);
@@ -124,7 +128,8 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
     '- a workflow: .github/workflows/<file> (read it, never edit it). The map of everything: docs/MAP.md.',
     '',
     '## Task',
-    task.kind === 'heal'
+    task.kind === 'game' || task.kind === 'invent' ? task.text
+      : task.kind === 'heal'
       ? `A check failed on the open pull request ${task.pr} (branch ${task.branch}); you are on that branch. Fix what it tests (never by weakening the test).\nFailed: ${task.check}\nWorkflow: ${task.cmd}\nFailure log:\n${tail(task.output || '', 6000)}`
       : task.kind === 'fix'
       ? `A check is red. Make it green by fixing what it tests (never by weakening the test).\nCheck: ${task.check}\nCommand: ${task.cmd}\nLast output:\n${tail(task.output || '', 4000)}`
@@ -140,10 +145,10 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
 
 /** How to call each brain: { cmd, args, shell? }. Verse's: propose-fix for a probe job, its coder for anything else.
  *  Keys reach the CLI only through the environment it inherits. */
-export function agentCommand(agent, promptFile, { env = process.env, outDir = '', dryRun = false, kind = 'probe', target = '', checksFile = '', repo = '.' } = {}) {
+export function agentCommand(agent, promptFile, { env = process.env, outDir = '', dryRun = false, kind = 'probe', target = '', checksFile = '', repo = '.', reads = 0 } = {}) {
   const model = env.VERSE_LOOP_MODEL;
   if (agent === 'verse' && kind === 'probe') return { cmd: process.execPath, args: ['tools/propose-fix.mjs', '--out', outDir, ...(dryRun ? ['--dry'] : [])] };
-  if (agent === 'verse') return { cmd: process.execPath, args: [CODER, '--repo', repo, '--prompt-file', promptFile, ...(checksFile ? ['--checks', checksFile] : []), ...(target ? ['--target', target] : [])] };
+  if (agent === 'verse') return { cmd: process.execPath, args: [CODER, '--repo', repo, '--prompt-file', promptFile, ...(checksFile ? ['--checks', checksFile] : []), ...(target ? ['--target', target] : []), ...(reads ? ['--max-reads', String(reads)] : [])] };
   if (agent === 'opencode') return { cmd: 'opencode', args: ['run', ...(model ? ['--model', model] : []), readFileSync(promptFile, 'utf8')] };
   if (agent === 'aider') return { cmd: 'aider', args: ['--yes-always', '--no-auto-commits', '--no-gitignore', ...(model ? ['--model', model] : []), '--message-file', promptFile] };
   if (!env.VERSE_LOOP_AGENT_CMD) throw new Error('--agent cmd needs VERSE_LOOP_AGENT_CMD (the prompt is on stdin and its path in VERSE_LOOP_PROMPT_FILE)');
@@ -284,7 +289,8 @@ export function failedLoopPr(prs, heals = {}) {
 export const DUP_HOURS = 12;
 /** The PR title a lap of this task opens. Pure. */
 export function titleFor(task, probe = null) {
-  return task.kind === 'fix' ? `Verse loop: fix ${task.check}`
+  return task.kind === 'game' || task.kind === 'invent' ? task.title
+    : task.kind === 'fix' ? `Verse loop: fix ${task.check}`
     : task.kind === 'groom' ? GROOM_TITLE
     : task.kind === 'probe' ? String((probe && probe.title) || 'Verse fixes ' + ((probe && probe.skill) || 'a skill')).slice(0, 90)
     : `Verse loop: ${task.n != null ? 'NEXT ' + task.n : 'task'}, ${String(task.text || '').replace(/\*\*/g, '').slice(0, 60)}`;
@@ -358,7 +364,7 @@ function sh(cmd, args, opts = {}) {
 
 /** One lap. Returns a report; an ordinary red, a no-op, a refusal or a pause is an outcome, not a throw. Before the lap: the pause
  *  (skip, or resume by itself after PAUSE_HOURS) and the PRs earlier laps opened. After: the streak, and a pause at BACKOFF_AFTER. */
-export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now(), judge = judgeDiff } = {}) {
+export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now(), judge = judgeDiff, play, judgePlay } = {}) {
   const git = (...a) => sh('git', a, { cwd, env });
   const gh = (...a) => sh(env.VERSE_LOOP_GH || 'gh', a, { cwd, env });
   const ghJson = (...a) => { const r = gh(...a); if (r.code) return null; try { return JSON.parse(r.out); } catch { return null; } };
@@ -432,6 +438,29 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       step('started from origin/' + opts.base + ' ' + git('rev-parse', '--short', 'HEAD').out.trim());
     } else step('dry run: no fetch, starting from ' + git('rev-parse', '--short', 'HEAD').out.trim());
 
+    const shipBar = (fun) => {
+      const branch = 'loop/bar-' + stamp();
+      git('checkout', '-q', '-b', branch);
+      git('add', '--', 'data/game-updates.json', 'void-live-deploy/scoreboard/game-updates.json');
+      const title = 'Debris Field fun ' + fun + ' is the public bar';
+      const body = 'Played Debris Field once, with no coder. Fun ' + fun + ' is the score a hidden game has to reach.';
+      const c = git('commit', '-q', '-m', title, '-m', body);
+      if (c.code) return done('error', 'commit failed: ' + c.out.trim());
+      const p = git('push', '-u', 'origin', branch);
+      if (p.code) return done('error', 'push failed: ' + p.out.trim());
+      const pr = gh('pr', 'create', '--base', opts.base, '--head', branch, '--title', title, '--body', body, '--label', 'automerge');
+      if (pr.code) return done('pushed', 'pushed ' + branch + ' but the PR was not opened: ' + pr.out.trim());
+      report.pr = pr.out.trim().split('\n').pop();
+      return done('shipped', title + ' ' + report.pr, { pr: report.pr });
+    };
+    if (opts.bar) {
+      const r = await scoreBar(cwd, { env });
+      step('Debris Field: ' + (r.stored ? 'fun ' + r.fun : r.why));
+      if (!r.stored) return done('no-change', 'Debris Field: ' + r.why + (r.fun ? ' (fun ' + r.fun + ')' : ''));
+      if (opts.dryRun) return done('would-ship', 'Debris Field fun ' + r.fun);
+      return shipBar(r.fun);
+    }
+
     const checksFile = opts.checks || env.VERSE_LOOP_CHECKS || resolve(cwd, 'tools/verse-loop.checks.json');
     const checks = existsSync(checksFile) ? JSON.parse(readFileSync(checksFile, 'utf8')) : DEFAULT_CHECKS;
     const run = (label) => checks.map((c) => {
@@ -445,12 +474,14 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     writeFileSync(checksCopy, JSON.stringify(checks));
     const brain = (t) => {
       report.task = t.kind === 'fix' ? { kind: 'fix', check: t.check } : t.kind === 'next' ? { kind: 'next', n: t.n, text: t.text.slice(0, 200) }
+        : t.kind === 'game' || t.kind === 'invent' ? { kind: t.kind, title: t.title }
         : t.kind === 'heal' ? { kind: 'heal', branch: t.branch, pr: t.pr, failed: t.check } : { kind: 'probe' };
-      step(t.kind === 'fix' ? 'task: fix the first red check, ' + t.check : t.kind === 'next' ? 'task: ' + (t.n != null ? 'docs/NEXT.md item ' + t.n : 'the given task')
+      step(t.kind === 'fix' ? 'task: fix the first red check, ' + t.check : t.kind === 'game' || t.kind === 'invent' ? 'task: ' + t.title
+        : t.kind === 'next' ? 'task: ' + (t.n != null ? 'docs/NEXT.md item ' + t.n : 'the given task')
         : t.kind === 'heal' ? 'task: heal ' + t.branch + ' (' + t.check + ')' : 'task: the oldest open probe job (tools/propose-fix.mjs)');
       const prompt = buildPrompt({ task: t.kind === 'probe' ? { kind: 'next', text: 'probe job', n: null } : t, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
       writeFileSync(promptFile, prompt);
-      const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun, kind: t.kind, target: t.kind === 'fix' ? t.check : '', checksFile: checksCopy, repo: cwd });
+      const a = agentCommand(opts.agent, promptFile, { env, outDir: join(work, 'fix'), dryRun: opts.dryRun, kind: t.kind, target: t.kind === 'fix' ? t.check : '', checksFile: checksCopy, repo: cwd, reads: t.kind === 'next' ? CAPS.reads : 0 });
       step('brain: ' + opts.agent + (opts.agent === 'verse' ? (t.kind === 'probe' ? ' (propose-fix)' : ' (verse-coder)') : ''));
       return sh(a.cmd, a.args, { cwd, env: { ...env, VERSE_LOOP_PROMPT_FILE: promptFile }, input: prompt, shell: !!a.shell, timeout: Number(env.VERSE_LOOP_AGENT_TIMEOUT_MIN || 45) * 60e3 });
     };
@@ -465,7 +496,15 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         try { appendFileSync(join(gitDir, 'verse-loop.stops.jsonl'), JSON.stringify(stop) + '\n'); } catch (_) { /* the report still says it */ }
         step('stopped at ' + c.outcome + ': spent ' + stop.turns + ' turns, most on ' + (stop.top || 'nothing'));
       }
-      if (git('status', '--porcelain').out.trim()) return done('refused', why + '; it left changes in the tree, which stay for a look');
+      if (git('status', '--porcelain').out.trim()) {
+        const names = git('status', '--porcelain').out.trim().split('\n').filter(Boolean).map((l) => l.slice(3).trim());
+        const books = new Set(['data/game-updates.json', 'void-live-deploy/scoreboard/game-updates.json']);
+        if (names.length && names.every((n) => books.has(n))) {
+          const row = (loadBook(cwd).scores || {})['debris-field'] || {};
+          if (+row.fun > 0) return shipBar(row.fun);
+        }
+        return done('refused', why + '; it left changes in the tree, which stay for a look');
+      }
       return done(ar.code === 4 || ar.code === 6 ? 'idle' : 'no-change', why);
     };
     // the diff, the key scan, the checks again and the verdict; null means go on
@@ -507,7 +546,9 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       const g = gate(before, task);
       if (g.stop) return g;
       const diffOf = () => { git('add', '-A'); const d = git('diff', '--cached').out; git('reset', '-q'); return d; };
-      const ask = (diff) => judge(diff, { env, cwd, task: task.text || task.check || task.kind });
+      const ask = (diff) => (task.kind === 'game' || task.kind === 'invent') && task.gamePass
+        ? Promise.resolve({ pass: true, why: task.gamePass })
+        : judge(diff, { env, cwd, task: task.text || task.check || task.kind });
       let j = await ask(diffOf());
       report.judgment = j;
       if (j.pass) { step('judgment: ' + j.why); return g; }
@@ -525,7 +566,8 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     };
     // self-heal first: an open loop/* PR with a failed check is fixed on its own branch, and the lap does nothing else
     const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup,createdAt', '--limit', '100') || [];
-    const sick = failedLoopPr(open, state.heals || {});
+    const healOpen = opts.lane === 'games' ? open.filter((p) => /^Game update:/.test(p.title || '')) : open;
+    const sick = failedLoopPr(healOpen, state.heals || {});
     if (sick) {
       report.healed = sick.branch;
       const f = git('fetch', 'origin', sick.branch);
@@ -566,7 +608,11 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const next = next0 ? groomNext(next0, { gaps: readDoc('docs/PARITY.md'), red }) : next0;
     const groomOpen = open.some((p) => /^loop\//.test(p.headRefName || '') && p.title === GROOM_TITLE);
     let task;
-    if (!red.length && !opts.task && next !== next0 && !groomOpen) {
+    if (!opts.lane && !opts.dryRun && env.GAME_UPDATES !== '0' && existsSync(resolve(cwd, 'data/game-updates.json')) && gameDueNow(loadBook(cwd), now)) { opts.lane = 'games'; step('a game update is due'); }
+    if (opts.lane === 'games') {
+      task = gameTask(cwd);
+      step('task: ' + task.title);
+    } else if (!red.length && !opts.task && next !== next0 && !groomOpen) {
       task = { kind: 'groom' };
       report.task = { kind: 'groom' };
       step('task: groom docs/NEXT.md (the ranked queue changed)');
@@ -575,14 +621,23 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       task = pickTask({ before, agent: opts.agent, next, task: opts.task, probe: !!env.VOID_OWNER_TOKEN });
       if (task.kind === 'idle') return done(task.kind, task.why);
     }
+    // the scope guard (tools/triage-cortex.mjs): a backlog item that names no file and no failing test spends no model turn
+    { const g = preflight(task); if (!g.ok) return done('skipped', 'triage-cortex: ' + g.why, { triage: g }); }
 
     // one open PR per task: a twin opened under DUP_HOURS ago is still the answer, so this lap spends no model calls on it
-    if (task.kind === 'fix' || task.kind === 'next') {
+    if (task.kind === 'fix' || task.kind === 'next' || task.kind === 'game' || task.kind === 'invent') {
       const twin = twins(open, titleFor(task), now)[0];
       if (twin && twin.ageH < DUP_HOURS) return done('skipped', `an open loop PR already does this (${twin.url}, opened ${twin.ageH.toFixed(1)} h ago); no model calls spent`, { duplicateOf: twin.url });
     }
 
-    let probe = null;
+    if (opts.lane === 'games' && !opts.dryRun && task.kind === 'game') {
+      const aim = await aimGame(cwd, task, { env });
+      if (aim.fun) step('Debris Field bar: fun ' + aim.fun);
+      step(aim.gap ? 'the change targets ' + aim.gap : 'no review yet, so the change fills a missing part');
+      task.text = aim.text;
+    }
+
+    let probe = null, coderOut = {};
     if (task.kind !== 'groom') {
       let ar = brain(task);
       if (ar.error && ar.error.code === 'ENOENT') return done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)');
@@ -591,6 +646,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         step('no probe job (tools/propose-fix.mjs exit 3): on to docs/NEXT.md');
         task = pickTask({ before, agent: opts.agent, next, probe: false });
         if (task.kind === 'idle') return done('idle', 'no open probe job, and ' + task.why);
+        { const g = preflight(task); if (!g.ok) return done('skipped', 'triage-cortex: ' + g.why, { triage: g }); }
         ar = brain(task);
       }
       if (opts.agent === 'verse' && task.kind !== 'probe') {
@@ -624,6 +680,21 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         if (ap.code) return done('error', 'the patch no longer applies: ' + ap.out.trim());
         report.task = { kind: 'probe', skill: probe.skill, ask: probe.ask };
       } else if (ar.code) step('the brain exited ' + ar.code + ' (its changes, if any, still face the checks)');
+      if (opts.lane === 'games') coderOut = said(ar);
+    }
+
+    if (opts.lane === 'games') {
+      const handed = { env, ...(play ? { play } : {}), ...(judgePlay ? { judge: judgePlay } : {}) };
+      let gate = await acceptGame({ cwd, task, attempt: 1, coder: coderOut, ...handed });
+      if (!gate.ship && gate.retry) {
+        step('game gate: ' + gate.why + '; one more try');
+        const fix = brain({ ...task, text: task.text + '\n\nThe last try did not ship. ' + gate.why });
+        if (!(opts.agent === 'verse' && fix.code)) gate = await acceptGame({ cwd, task, attempt: 2, coder: said(fix), ...handed });
+      }
+      if (!gate.ship) { git('reset', '--hard', 'HEAD'); git('clean', '-fd'); return done('dropped', gate.why + '; retried once, then dropped'); }
+      recordGame(cwd, gate);
+      task.gamePass = gate.why + (gate.cents ? '; treasury paid ' + gate.cents + ' cents' : '; free');
+      step('game gate: ' + task.gamePass);
     }
 
     const g = await hold(before, task);
@@ -644,6 +715,10 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     git('checkout', '-q', '-b', branch);
     appendFileSync(resolve(cwd, 'docs/TAGTEAM.md'), '\n' + line + '\n');
     git('add', '-A');
+    if (task.kind === 'next') { // a backlog lap stays small (tools/triage-cortex.mjs CAPS.lines)
+      const n = changedLines(git('diff', '--cached', '--numstat', '--', '.', ':!docs/TAGTEAM.md').out);
+      if (n > CAPS.lines) { git('reset', '-q'); git('checkout', '-q', '--detach', 'origin/' + opts.base); return done('refused', 'triage-cortex: ' + n + ' changed lines, over the backlog cap of ' + CAPS.lines + '; split the item'); }
+    }
     const last = scanDiff(git('diff', '--cached').out);
     if (last.length) { git('reset', '-q'); return done('refused', 'possible secret in the diff', { secrets: last }); }
     const c = git('commit', '-q', '-m', title, '-m', 'One lap of tools/verse-loop.mjs (brain: ' + opts.agent + '). Checks after: ' + v.why + '.');
@@ -652,7 +727,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     if (p.code) return done('error', 'push failed: ' + p.out.trim());
     step('pushed ' + branch);
     const what = task.kind === 'fix' ? 'fix the first red check, `' + task.check + '`' : task.kind === 'groom' ? 're-rank Verse\'s queue in docs/NEXT.md (easiest first)'
-      : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ', confidence ' + probe.confidence + ')' : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task');
+      : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ', confidence ' + probe.confidence + ')' : task.kind === 'game' || task.kind === 'invent' ? task.title : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task');
     const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${what}\n\nChecks after: ${v.why}.\nJudgment: ${(report.judgment && report.judgment.why) || 'not recorded'}.\nMerges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
     // no human in the loop: every PR the loop opens is labelled automerge (a low-confidence probe patch was dropped above)
     report.label = 'automerge';

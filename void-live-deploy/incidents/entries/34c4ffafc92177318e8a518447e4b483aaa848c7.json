@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-18T17:15:27.747Z",
+ "sha": "34c4ffafc92177318e8a518447e4b483aaa848c7",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44351699437",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end"
+ ],
+ "touched": [
+  "cosmos-checks.out",
+  "void-live-deploy/lib/void-cosmos.js"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-18T17:30:48.485Z",
+ "closedBy": "4ed64bdbc9fb92c997243c6321e240f6b1eb3d5d",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44355591260",
+ "minutes": 15
+}

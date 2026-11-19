@@ -52,7 +52,7 @@ function headlessEl() {
   const noop = () => {};
   return { innerHTML: '', textContent: '', className: '', dataset: {}, style: {}, hidden: false, classList: { add: noop, remove: noop, toggle: noop, contains: () => false },
     querySelector: () => null, querySelectorAll: () => [], addEventListener: noop, removeEventListener: noop, setAttribute: noop, getAttribute: () => null,
-    appendChild: (x) => x, insertBefore: (x) => x, remove: noop, focus: noop, scrollIntoView: noop };
+    appendChild: (x) => x, insertBefore: (x) => x, remove: noop, focus: noop, scrollIntoView: noop, closest: () => null };
 }
 
 /**

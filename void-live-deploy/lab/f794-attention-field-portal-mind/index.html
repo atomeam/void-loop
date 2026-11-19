@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #chrome { position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,0.75); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 100; backdrop-filter: blur(4px); }
+  button { background: #224; color: #adf; border: 1px solid #46a; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+  .portal {
+    position: absolute; min-width: 90px; min-height: 48px; padding: 6px 8px;
+    background: rgba(20,30,60,0.7); border: 1px solid #6af; border-radius: 8px;
+    font-size: 11px; pointer-events: auto; cursor: grab; user-select: none;
+    backdrop-filter: blur(2px); transition: border-color 0.15s;
+    z-index: 10;
+  }
+  .portal:active { cursor: grabbing; border-color: #ffa; }
+  .portal .score { font-weight: bold; color: #9cf; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>attention-field-portal-mind · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial/local-AI interface for The Verse canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="attention-field-portal-mind · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial/local-AI interface for The Verse canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f794-attention-field-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f794-attention-field-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="chrome">
+  F794 Attention Field Portals · history: <span id="hlen">0</span> · energy: <span id="en">0</span>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">attention-field-portal-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

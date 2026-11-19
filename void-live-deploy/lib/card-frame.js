@@ -265,13 +265,24 @@ export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) 
   podcast: ['/podcasts/', 'Podcasts'], 'podcast-search': ['/podcasts/', 'Podcasts'], 'local-stations': ['/local/', 'Local TV and radio'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], fanfic: ['/fanfic/', 'Fan fiction'], 'team-chat': ['/team/', 'Team chat'], draw: ['/learn-to-draw/', 'Learn to draw'], 'verse-brain': ['/brain/', 'Verse Brain'], converter: ['/converter/', 'File converter'], rap: ['/rap/', 'Verse raps'], markets: ['/markets/', 'Markets'], stocks: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/scores/sports/', 'Sports'], fantasy: ['/fantasy/', 'Fantasy tools'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'], 'video-gen': ['/video/', 'AI video generator'], formulas: ['/calculators/', 'Formula calculators'], repo: ['/ledger/', 'Repo activity ledger'], emoji: ['/emojis/', 'Emoji counts'], 'emoji-combos': ['/emoji-combos/', 'Emoji combos'], 'gh-file': ['/g/', 'Snippet / Note in a link'], arcade: ['/arcade/', 'Verse Arcade'] });
 // a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
 // stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
-export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));
+export const PAGE_PATHS = Object.freeze({ ...Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])), '/photos/?mode=resize': 'Resize an image' });
 // a data-page may carry what the card shows in a plain query ('/random/?min=-5&max=5'), so the page opens on it, not on its default
 const PAGE_QUERY = /^\?[A-Za-z0-9_.=&%-]{1,200}$/;
 /** the [href, label] of a card's full page: its own data-page when it is a known page (with a plain query or none), else its skill's; null when it has none. Pure. */
 export const pageOfCard = (name, page) => {
-  const i = page ? page.indexOf('?') : -1, base = i < 0 ? page : page.slice(0, i);
-  return page && PAGE_PATHS[base] && (i < 0 || PAGE_QUERY.test(page.slice(i))) ? [page, PAGE_PATHS[base]] : PAGE_OF[name] || null;
+  if (page) {
+    const i = page.indexOf('?');
+    if (i < 0 || PAGE_QUERY.test(page.slice(i))) {
+      let best = '';
+      for (const href of Object.keys(PAGE_PATHS)) {
+        if (page === href || page.startsWith(href + (href.includes('?') ? '&' : '?'))) {
+          if (href.length > best.length) best = href;
+        }
+      }
+      if (best) return [page, PAGE_PATHS[best]];
+    }
+  }
+  return PAGE_OF[name] || null;
 };
 /** a card with no data-page that links to its own skill's page with a plain query ('/translate/?q=good%20morning&to=fr') opens that page on
  *  what it shows, not on its default: the first such href, or '' (also when the card links to the plain page too). hrefs: the card's own link targets. Pure. */

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.7); padding:8px; border-radius:6px; font-size:13px; }
+#canvas { position:absolute; top:0; left:0; pointer-events:none; }
+.portal { position:absolute; width:120px; height:70px; background:#222; border:2px solid #4af; border-radius:8px; padding:6px; font-size:12px; cursor:pointer; transition:transform .15s, background .3s; user-select:none; }
+.portal:hover { border-color:#f4a; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Pointer-History Causal Attention CSS Morph Mind · Verse lab</title>
+<meta name="description" content="A local pure-JS multi-head attention mechanism processes a rolling buffer of recent pointer events (position, velocity, buttons, timestamp deltas) as tokens.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Pointer-History Causal Attention CSS Morph Mind · Verse lab">
+<meta property="og:description" content="A local pure-JS multi-head attention mechanism processes a rolling buffer of recent pointer events (position, velocity, buttons, timestamp deltas) as tokens.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f789-pointer-attention-css-morph-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f789-pointer-attention-css-morph-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  F789 Pointer Attention CSS Morph Mind<br>
+  Move pointer · click portals to reward · <button id="seal">Seal</button> <span id="status">ready</span>
+</div>
+<canvas id="canvas"></canvas>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Pointer-History Causal Attention CSS Morph Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#seal { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+/* end verse design loop */
+</style>
+</body>
+</html>

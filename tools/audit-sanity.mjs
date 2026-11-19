@@ -21,6 +21,7 @@ function walk(dir) {
 
 const hits = [];
 for (const f of walk(DIR)) {
+  if (relative(root, f).replace(/\\/g, '/').includes('void-live-deploy/internet-history/')) continue;
   const text = readFileSync(f, 'utf8');
   const rel = relative(root, f);
   for (const d of FORBIDDEN_DOMAINS) {

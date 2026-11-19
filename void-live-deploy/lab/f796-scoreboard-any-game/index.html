@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4cc9f0; --text:#e8e8e8; --muted:#888; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #333; }
+h1 { margin:0; font-size:1.4rem; }
+.container { max-width:900px; margin:0 auto; padding:1rem; }
+.section { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; margin-bottom:.25rem; font-size:.9rem; color:var(--muted); }
+input, button, textarea { font:inherit; }
+input[type="text"], input[type="number"] { width:100%; padding:.5rem; border-radius:6px; border:1px solid #444; background:#111; color:var(--text); margin-bottom:.5rem; }
+.row { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
+button { background:var(--accent); color:#000; border:0; padding:.5rem 1rem; border-radius:6px; cursor:pointer; font-weight:600; }
+button.secondary { background:#333; color:var(--text); }
+button:hover { opacity:.9; }
+#players { display:flex; flex-wrap:wrap; gap:.5rem; margin:.5rem 0; }
+.player-chip { background:#222; padding:.25rem .75rem; border-radius:999px; display:flex; align-items:center; gap:.5rem; }
+.player-chip button { padding:.1rem .4rem; font-size:.8rem; background:#c00; color:#fff; }
+table { width:100%; border-collapse:collapse; margin-top:.5rem; }
+th, td { padding:.4rem .5rem; text-align:center; border-bottom:1px solid #333; }
+th { background:#222; }
+input.score { width:60px; text-align:center; }
+.totals { font-weight:bold; background:#1a2a3a; }
+.actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.5rem; }
+#chart { width:100%; height:200px; background:#111; border-radius:8px; margin-top:.5rem; }
+footer { text-align:center; font-size:.8rem; color:var(--muted); padding:1rem; }
+@media (max-width:600px) { table { font-size:.85rem; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Scoreboard for any game · Verse lab</title>
+<meta name="description" content="Job: Add players, enter scores for each round, see running totals and a simple chart.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Scoreboard for any game · Verse lab">
+<meta property="og:description" content="Job: Add players, enter scores for each round, see running totals and a simple chart.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f796-scoreboard-any-game/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f796-scoreboard-any-game/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Scoreboard for any game</h1>
+  <p>Add players, enter round scores, watch the totals. Everything stays on this device.</p>
+</header>
+<div class="container">
+  <div class="section">
+    <label for="newPlayer">Add a player</label>
+    <div class="row">
+      <input type="text" id="newPlayer" placeholder="Player name" onkeydown="if(event.key==='Enter')addPlayer()">
+      <button onclick="addPlayer()">Add</button>
+    </div>
+    <label>Or paste names (one per line)</label>
+    <textarea id="pasteNames" rows="3" placeholder="Alice&#10;Bob&#10;Carol"></textarea>
+    <button class="secondary" onclick="addFromPaste()">Add from paste</button>
+    <div id="players"></div>
+  </div>
+
+  <div class="section">
+    <div class="row">
+      <button onclick="addRound()">Add round</button>
+      <button class="secondary" onclick="clearScores()">Clear scores</button>
+    </div>
+    <div id="board"></div>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <div class="section">
+    <div class="actions">
+      <button onclick="copyTotals()">Copy totals</button>
+      <button class="secondary" onclick="downloadCSV()">Download CSV</button>
+      <button class="secondary" onclick="shareLink()">Copy share link</button>
+      <button class="secondary" onclick="resetAll()">Reset all</button>
+    </div>
+    <p id="status" style="font-size:.85rem;color:var(--muted);margin-top:.5rem;"></p>
+  </div>
+</div>
+<footer>Works offline. Data is saved in this browser only. Share link carries the board in the URL.</footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

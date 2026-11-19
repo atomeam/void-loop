@@ -1,5 +1,6 @@
 /** Null Waves: a block of plain rectangles steps down. Verse drops a request toward your column. */
 export const id = 'null-waves', COLS = 6, ROWS = 2, CELL = 22, W = 220, H = 240, CAP = 2400;
+export const whatsNew = 'Update 1: Requests fall slightly faster.';
 export function create(seed = 1) {
   const cells = [];
   for (let i = 0; i < COLS * ROWS; i++) cells.push(1);

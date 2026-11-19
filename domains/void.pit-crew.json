@@ -1,22 +1,12 @@
 {
-  "at": "2026-11-18T15:59:20.334Z",
+  "at": "2026-11-19T16:06:17.408Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261118-0134-2",
-      "ask": "Fix the factorial(0) code exam to ensure it returns 1.",
-      "target": "voice:ask-20261118-0134-2"
-    },
-    {
-      "id": "ask-20261118-0134-3",
-      "ask": "Teach the wants skill to answer probes instead of turning them into questions.",
-      "target": "voice:ask-20261118-0134-3"
-    },
-    {
-      "id": "ask-20261117-0839-3",
-      "ask": "Implement a fourth skill for the lab/pattern family.",
-      "target": "voice:ask-20261117-0839-3"
+      "id": "ask-20261119-0105-2",
+      "ask": "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl.",
+      "target": "voice:ask-20261119-0105-2"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."

@@ -1,0 +1,1 @@
+{"id":"health","name":"Page health","what":"Reads a live page for language, a picture with no alt text, and a security header.","schedule":"daily at 03:17 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":3,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

@@ -1954,31 +1954,17 @@ try {
     const rPh = worst(rb.ph), rInk = worst(rb.ink);
     check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
     await C.ctx.close();
-    // 7) no corner "support Verse" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
-    //    "open the store" still opens the store, and the book's Start here page names it
+    // 7) no link on the landing at all (owner, 2026-10-18: the corner text link went; owner, 2026-11-18: the corner heart went too, the landing is
+    //    only the void and the ask bar): "store", "open the store" and "buy" still open the store, /store/ still serves it, and the book's Start here page names it
     const S = await fresh(); await S.p.waitForTimeout(1500);
-    //    (asked by Verse, 2026-10-18, after the link went): a ghost of a heart in the corner, faint until the pointer nears the corner, then opaque
     await S.p.mouse.move(200, 200); await S.p.waitForTimeout(300);
-    const depthOf = () => S.p.evaluate(() => { const a = document.getElementById('void-anchor'), r = a && a.querySelector('clipPath rect'), f = a && a.querySelector('.void-anchor-fill'); return a ? { depth: a.dataset.depth, state: a.dataset.state, title: a.title, fillH: r ? +r.getAttribute('height') : -1, fillY: r ? +r.getAttribute('y') : -1, fill: f ? getComputedStyle(f).fill : '' } : null; });
-    const sup = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { el: !!document.getElementById('void-support'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.getClientRects().length).map((e) => e.id), /* getClientRects: a fixed element has no offsetParent */ text: /support v01d/i.test(document.body.innerText), ghost: a ? +getComputedStyle(a).opacity : -1, href: a && a.getAttribute('href'), label: a && a.getAttribute('aria-label') }; });
-    const depth0 = await depthOf(); // the heart's fill (asked by Verse: "navigation depth"): a fresh stage is 0 of 12, nothing filled
-    const vpS = await S.p.evaluate(() => [innerWidth, innerHeight]), anchorOp = () => S.p.evaluate(() => +getComputedStyle(document.getElementById('void-anchor')).opacity);
-    // under load the page may still be parsing its script when the pointer first arrives: nudge the pointer until the page listens, then measure
-    const near = await until(async () => { await S.p.mouse.move(vpS[0] - 40, vpS[1] - 40); await S.p.waitForTimeout(250); const o = await anchorOp(); return o === 1 ? o : false; }, 8000) || await anchorOp();
-    const far = await until(async () => { await S.p.mouse.move(200, 200); await S.p.waitForTimeout(250); const o = await anchorOp(); return o <= 0.25 ? o : false; }, 3000);
-    await S.ask('open the store', 900); const storePg = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300);
+    const sup = await S.p.evaluate(() => ({ el: !!document.getElementById('void-support'), heart: !!document.getElementById('void-anchor'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.getClientRects().length).map((e) => e.id || e.getAttribute('href')), /* getClientRects: a fixed element has no offsetParent */ text: /support v01d/i.test(document.body.innerText) }));
+    const storeOf = async (ask) => { await S.ask(ask, 900); const t = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300); return t; };
+    const asked = {}; for (const a of ['open the store', 'store', 'buy']) asked[a] = await storeOf(a);
+    const storeUrl = await S.p.evaluate(async () => { try { const r = await fetch('/store/'); return r.status + ' ' + /store/i.test(await r.text()); } catch (e) { return String(e); } });
     const howStore = /data-ask="open the store"/.test(fs.readFileSync(path.join(root, 'lib', 'tome.js'), 'utf8'));
-    check('empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; "open the store" answers; the book\'s Start here page names the store',
-      !sup.el && sup.links.join() === 'void-anchor' && !sup.text && sup.ghost > 0 && sup.ghost <= 0.25 && near === 1 && far <= 0.25 && sup.href === '/store/' && /store/i.test(sup.label) && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, near, far, storePg: storePg.slice(0, 80), howStore }));
-    // the heart fills with how much is on your stage to go back to (asked by Verse, 2026-10-18; lib/anchor-density.js): two asks that place things make it 2 of 12 and a taller violet fill;
-    // the anchor's opacity, name and href are as they were
-    await S.ask('make a clock', 600); await S.ask('add a sticky that says a', 600); await until(async () => (await S.state()).length === 2, 6000);
-    const depth2 = await until(async () => { const d = await depthOf(); return d && d.depth === '2' ? d : null; }, 4000) || await depthOf();
-    const after = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { href: a.getAttribute('href'), label: a.getAttribute('aria-label'), ghost: +getComputedStyle(a).opacity }; });
-    check('empty state: the ghost anchor\'s heart fills with navigation depth (asked by Verse): a fresh stage is "0 of 12 things on your stage" with no fill; after two asks that place things it is 2 of 12 with a taller violet fill rising from the bottom; its name, href and ghost opacity do not change',
-      !!depth0 && depth0.depth === '0' && depth0.state === 'under' && depth0.title === 'support Verse · 0 of 12 things on your stage' && depth0.fillH === 0
-        && !!depth2 && depth2.depth === '2' && depth2.state === 'under' && depth2.title === 'support Verse · 2 of 12 things on your stage' && depth2.fillH > 0 && depth2.fillY < depth0.fillY && /150, 120, 255/.test(depth2.fill)
-        && after.href === '/store/' && after.label === sup.label && after.ghost > 0 && after.ghost <= 0.25, JSON.stringify({ depth0, depth2, after, sup }));
+    check('empty state: no link and no corner heart on the landing; "open the store", "store" and "buy" each open the store; /store/ serves it; the book\'s Start here page names the store',
+      !sup.el && !sup.heart && sup.links.length === 0 && !sup.text && Object.values(asked).every((t) => /sells|store/i.test(t)) && storeUrl === '200 true' && howStore, JSON.stringify({ sup, asked: Object.fromEntries(Object.entries(asked).map(([k, v]) => [k, v.slice(0, 60)])), storeUrl, howStore }));
     // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
     const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
     await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
@@ -4713,6 +4699,35 @@ try {
     await P.p.keyboard.press('Escape');
     for (const a of ['latest episode', 'verse podcast']) { await P.ask(a, 1100); const ok = await until(() => P.p.evaluate(() => !!document.querySelector('.vpage.on .vpod')), 4000); check('podcast: "' + a + '" opens the same player card', !!ok, a); await P.p.keyboard.press('Escape'); }
     await P.ctx.close(); }
+  // media really plays (2026-11-18): a card or page that shows a player must load and play its media, and say so plainly when it
+  // cannot. The podcast search card used to send a tap on a show to the Uni page; now its episodes open and play in the card.
+  if (want("media playback: a podcast found by search plays in its card, a film plays on the films page, and a broken film says so")) { const M = await fresh();
+    const cerr = []; M.p.on('console', (m) => { if (m.type() === 'error') cerr.push(m.text().slice(0, 160)); });
+    const mp3 = fs.readFileSync(path.join(root, 'podcast', 'verse-out-loud-001.mp3')), mp4 = fs.readFileSync(path.join(root, 'studio', '20261110-verse-1.mp4'));
+    await M.ctx.route(/^https:\/\/audio\.test\//, (r) => r.fulfill({ status: 200, contentType: 'audio/mpeg', headers: { 'access-control-allow-origin': '*' }, body: mp3 }));
+    await M.ctx.route(/\/api\/podcasts\?/, (r) => { const u = new URL(r.request().url());
+      if (u.searchParams.get('q')) return r.fulfill(json({ ok: true, shows: [{ id: '42', title: 'History Test Show', author: 'A Host', genre: 'History', feed: 'https://feed.test/rss' }] }));
+      return r.fulfill(json({ ok: true, show: { id: '42', title: 'History Test Show', link: 'https://show.test/', episodes: [{ id: 'e1', title: 'Episode one', audio: 'https://audio.test/ep1.mp3', dur: 77, pub: '2026-11-16T04:00:00Z' }] } })); });
+    await M.ask('podcasts about history', 900);
+    await M.p.click('.vpage.on a[href="/podcasts/?show=42"]');
+    await until(() => M.p.$('.vpage.on button[data-pod="play"]'), 5000);
+    const stayed = M.p.url().startsWith(base) && !/\/podcasts\//.test(M.p.url());
+    await M.p.click('.vpage.on button[data-pod="play"]');
+    const pod = await until(() => M.p.evaluate(() => { const a = document.querySelector('.vpage.on audio[data-pod="player"]'); return a && a.readyState >= 2 && a.duration > 0 && !a.paused ? { rs: a.readyState, dur: a.duration, paused: a.paused } : null; }), 8000);
+    const pause = await M.p.evaluate(() => { const a = document.querySelector('.vpage.on audio[data-pod="player"]'); a.pause(); return a.paused; });
+    const film = (id) => ({ id, at: '2026-11-10T21:25:30Z', title: 'Test film ' + id, description: 'A test film.', tags: 'Verse', bytes: mp4.length, src: '/api/films?id=' + id + '&exp=9&sig=s' });
+    await M.ctx.route(/\/api\/film-views/, (r) => r.fulfill(json({})));
+    await M.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const u = new URL(r.request().url());
+      if (u.searchParams.get('sig')) return u.searchParams.get('id') === 'good' ? r.fulfill({ status: 200, contentType: 'video/mp4', body: mp4 }) : r.fulfill({ status: 404, body: '' });
+      return r.fulfill(json({ films: [film('good'), film('gone')], owner: false, member: false })); });
+    await M.p.goto(base + 'films/?v=good');
+    const vid = await until(() => M.p.evaluate(async () => { const v = document.querySelector('.watchbox video'); if (!v || v.readyState < 2 || !(v.duration > 0)) return null; v.muted = true; await v.play().catch(() => {}); return v.paused ? null : { rs: v.readyState, dur: v.duration }; }), 10000);
+    await M.p.goto(base + 'films/?v=gone');
+    const broken = await until(() => M.p.evaluate(() => { const e = document.querySelector('.watchbox .film-error'); return e ? e.textContent : ''; }), 8000);
+    const errs = cerr.filter((t) => !/Failed to load resource/.test(t)); // the 404 the broken film asks for is the case under test
+    check('media playback: a podcast found by search plays in its card (readyState 2+, a duration, playing, pausable) without leaving the stage; a film plays on the films page; a film that cannot load shows a plain error with Try again; no console errors',
+      stayed && !!pod && pause && !!vid && /did not load/.test(broken) && !errs.length && !M.errors.length, JSON.stringify({ stayed, pod, pause, vid, broken, errs, e: M.errors }));
+    await M.ctx.close(); }
   // Local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): /local/ finds the place from the connection, lists the
   // radio near it through the real /api/local (Radio Browser answered offline here), plays a station's own stream in the page, links a station
   // whose stream cannot play in a secure page to its own site, and lists the TV broadcast to that city from the committed iptv-org table.
@@ -7364,8 +7379,10 @@ try {
     await H.ask('remove every clock', 400); const left = (await H.state()).map((x) => x.kind);
     check('"remove every clock" removes both clocks and keeps the timer', !left.includes('clock') && left.includes('timer'), left.join(','));
     await H.ask('make my void deep blue', 500); const blue = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || '');
-    await H.ask('reset my void', 500); const after = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || '#050505');
-    check('"reset my void" brings the plain stage back after "make my void deep blue"', blue && blue !== '#050505' && after === '#050505', JSON.stringify({ blue, after }));
+    // the plain stage's colour is LOOK_DEFAULT.bg in void.html (#2899 deepened it from #050505 to the obsidian #05070d)
+    const PLAIN = '#05070d';
+    await H.ask('reset my void', 500); const after = await H.p.evaluate((d) => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || d, PLAIN);
+    check('"reset my void" brings the plain stage back after "make my void deep blue"', blue && blue !== PLAIN && after === PLAIN, JSON.stringify({ blue, after }));
     check('the how-to batch threw no page errors', !H.errors.length, H.errors.join(' | '));
     await H.ctx.close(); }
   // Handoff: writes need HANDOFF_TOKEN (the owner's READ_TOKEN never writes); the /handoff page drops and opens a file; /surface is a preview.
@@ -9009,7 +9026,7 @@ try {
       ranOk = !!ask && !(await N.p.$('#vtome'));
     }
     check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
-      info && info.count === top.length && /\d+ new since you last opened the book/.test(badge) && /\d+ new/.test(tocText) && tocFits && tocFits.ok && pg.text.includes(first) && pg.days >= 1 && pg.tries >= 0 && pg.art >= 1 && Number(pg.folio) >= info.from && seen === top[0].at && ranOk && !N.errors.length,
+      info && info.count === top.length && /\d+ new since you last opened the book/.test(badge) && /\d+ new/.test(tocText) && tocFits && tocFits.ok && pg.text.includes(first) && pg.days >= 1 && pg.tries >= 0 && pg.art === 0 && /\d+ entries in Verse's growth ledger/.test(pg.text) && Number(pg.folio) >= info.from && seen === top[0].at && ranOk && !N.errors.length,
       JSON.stringify({ info, badge, tocText, tocFits, pg: { ...pg, text: pg.text.slice(0, 200) }, seen, top0: top[0].at, ranOk, e: N.errors }));
     await N.ctx.close(); }
   // owner, 2026-10-17: "the swipe to turn pages doesn't work properly" and the cover could not be reached. A sideways swipe was the browser's
@@ -9025,27 +9042,27 @@ try {
     await swipe(300, 60); const fwd = await pageNow(); await swipe(60, 300); const back = await pageNow(); await swipe(60, 300); const cover = await pageNow();
     check("the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it", guard.ta === 'pan-y' && guard.ov === 'none' && fwd && fwd.pages.includes('2') && back && back.pages.includes('1') && cover && cover.shut === true && !W.errors.length, JSON.stringify({ guard, fwd, back, cover, e: W.errors }));
     await W.ctx.close(); }
-  // owner, 2026-10-17: "still can't get to the cover of the book, book should have art also": from any page the Cover button and the Home key
-  // swing the cover shut, and the cover carries Verse's ink art.
+  // owner, 2026-10-17: "still can't get to the cover of the book": from any page the Cover button and the Home key swing the cover shut.
+  // The book's art came off on 2026-11-18 (pitch-black glass): no page and no cover carries a picture; the cover is glass and its title.
   if (want("the book: the Cover button and the Home key shut the book from any page, and the pages and the cover have art")) {
     const K = await fresh(); await K.ask('open the book', 900); await until(async () => !!(await K.p.$('#vtome .tome.opened')), 8000); await K.p.waitForTimeout(400);
     for (let k = 0; k < 4; k++) { await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800); }
     const deep = await K.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page).filter(Boolean));
-    const pageArt = await K.p.evaluate(() => document.querySelectorAll('#vtome .tome-page .tome-art svg').length);
+    const pageArt = await K.p.evaluate(() => document.querySelectorAll('#vtome .tome-page svg, #vtome .tome-page img, #vtome .tome-page .tome-art').length);
     await K.p.click('.tome-tocover'); await K.p.waitForTimeout(700);
-    const a = await K.p.evaluate(() => ({ shut: document.querySelector('#vtome .tome').classList.contains('shut'), art: !!document.querySelector('#vtome .cover-art svg path, #vtome .cover-art svg rect, #vtome .cover-art svg circle') }));
+    const a = await K.p.evaluate(() => ({ shut: document.querySelector('#vtome .tome').classList.contains('shut'), art: !!document.querySelector('#vtome .tome-cover svg, #vtome .tome-cover img'), title: (document.querySelector('#vtome .tome-cover .gilt.title') || {}).textContent || '', glass: getComputedStyle(document.querySelector('#vtome .tome-cover .face.out')).backgroundColor }));
     await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800); await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800);
     await K.p.keyboard.press('Home'); await K.p.waitForTimeout(700);
     const h = await K.p.evaluate(() => document.querySelector('#vtome .tome').classList.contains('shut'));
-    check('the book: the Cover button and the Home key shut the book from any page, and the pages and the cover have art', deep.some((n) => Number(n) > 4) && pageArt >= 1 && a.shut && a.art && h && !K.errors.length, JSON.stringify({ deep, pageArt, a, h, e: K.errors }));
+    check('the book: the Cover button and the Home key shut the book from any page; no page and no cover carries a picture, the cover is black glass with its title', deep.some((n) => Number(n) > 4) && pageArt === 0 && a.shut && !a.art && /Book of Verse/.test(a.title) && a.glass === 'rgba(10, 12, 18, 0.72)' && h && !K.errors.length, JSON.stringify({ deep, pageArt, a, h, e: K.errors }));
     await K.ctx.close(); }
   if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
     const members = [...new Set(JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; }))]; // one page per skill; a part that is also its own route is still one page. The Cover chip is not a menu
     const look = () => B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); if (!t || !window.__voidBook) return null; const pg = [...document.querySelectorAll('#vtome .tome-page')]; const r = t.getBoundingClientRect(); return { cls: t.className, shown: pg.map((s) => s.dataset.page), text: pg.map((s) => s.innerText).join('\n'), cur: window.__voidBook.cur, turning: !!window.__voidBook.turning, skills: window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on'), dim: document.documentElement.classList.contains('v-tome'), chrome: !!document.querySelector('#vtome button:not(.tome-tocover), #vtome nav, #vtome h2'), w: r.width, h: r.height, fits: r.right <= innerWidth && r.bottom <= innerHeight, serif: /Palatino|Georgia|Iowan|Times|serif/.test(getComputedStyle(pg[1] || pg[0]).fontFamily), paper: getComputedStyle(pg[1] || pg[0]).backgroundColor, drop: !!document.querySelector('#vtome .tome-body p.lead'), folio: (document.querySelector('#vtome .tome-page.right .tome-folio') || {}).textContent, prompt: (document.querySelector('#vtome .tome-prompt') || {}).innerText || '' }; });
     await B.ask('open the book', 900);
     const open = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) ? l : null; }, 8000);
-    check('the book: "open the book" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
-      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Book of Verse/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
+    check('the book: "open the book" dims the stage and fills it with the book, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), black glass set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
+      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Book of Verse/.test(open.text) && open.skills === members.length && open.serif && open.paper === 'rgba(10, 12, 18, 0.72)' && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
       JSON.stringify({ open: open && { ...open, text: open.text.slice(0, 80) }, members: members.length }));
     await B.p.keyboard.press('ArrowRight');
     const mid = await B.p.evaluate(() => !!document.querySelector('#vtome .tome-leaf')); // a leaf is in the air
@@ -9071,8 +9088,8 @@ try {
     const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
     const indexed = idx.names.map(([n]) => n);
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
-    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
-    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph',
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('.tome-num') && !pg.querySelector('svg, img'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and its number in its chapter, no picture',
       !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The Book of Verse/.test(landed.heads || ''),
       JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
     // a proven skill's page opens with a line of lore (asked by Verse: flavor text for every proven skill), each page's its own
@@ -9853,7 +9870,7 @@ try {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('a fresh visit is the void: an empty stage and the input, nothing else to click but the ghost anchor in the corner (owner, 2026-10-15; the text link went and the ghost anchor came on 2026-10-18)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-anchor'), JSON.stringify(bare).slice(0, 200));
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click (owner, 2026-10-15; the corner heart came off the landing on 2026-11-18)', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));

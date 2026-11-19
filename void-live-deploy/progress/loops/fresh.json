@@ -1,0 +1,1 @@
+{"id":"fresh","name":"Data freshness","what":"Reads the date on a dataset and names the loop that refreshes it.","schedule":"daily at 11:57 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":2,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

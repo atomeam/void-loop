@@ -1,0 +1,1 @@
+{"id":"plain","name":"Plain words","what":"Puts the page description under a heading that has no sentence.","schedule":"daily at 09:47 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":3,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

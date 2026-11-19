@@ -54,3 +54,38 @@ fetch('/progress/nightly.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.jso
   else p.textContent = String(j.at || '').slice(0, 10) + ': Verse\'s loop authored ' + (j.share.share == null ? 'no measured share of' : j.share.share + '% of') + ' merged pulls against outside agents. Next: ' + ((j.pick && j.pick.why) || 'nothing picked') + '.';
   main.append(h, p);
 }).catch(() => {});
+const LANES = ['links', 'health', 'speed', 'twins', 'plain', 'fresh', 'seo', 'coverage', 'deps', 'handoff', 'next-tool'];
+const money = (c) => c === null ? 'Treasury, not metered per call.' : (c > 0 ? c + ' cents from the treasury.' : 'Nothing from the treasury.');
+function mountLoops() {
+  const main = document.querySelector('main');
+  const before = document.getElementById('fails');
+  if (!main || document.getElementById('loops')) return;
+  const h = document.createElement('h2'); h.textContent = 'What Verse is doing';
+  const note = document.createElement('p'); note.className = 'note';
+  note.textContent = 'Each row is one job Verse runs on its own. A model is used only when a sentence has to be written, the free ones first. The treasury pays only after those are used up, and only when it holds a month of the stronger model. The minutes on each row, once a day, are the Actions time. This public repo is not billed for standard runner minutes.';
+  const table = document.createElement('table');
+  const head = document.createElement('thead');
+  const hr = document.createElement('tr');
+  for (const label of ['Loop', 'Last result', 'Status', 'Cost']) { const th = document.createElement('th'); th.textContent = label; hr.appendChild(th); }
+  head.appendChild(hr);
+  const body = document.createElement('tbody'); body.id = 'loops';
+  const wait = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 4; td.textContent = 'Reading the loops.'; wait.appendChild(td); body.appendChild(wait);
+  table.appendChild(head); table.appendChild(body);
+  const anchor = before ? before.previousElementSibling : null;
+  if (anchor && anchor.parentNode === main) main.insertBefore(table, anchor), main.insertBefore(note, table), main.insertBefore(h, note);
+  else main.append(h, note, table);
+  return body;
+}
+const loopsBody = mountLoops();
+Promise.all(LANES.map((id) => fetch('/progress/loops/' + id + '.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).catch(() => null))).then((rows) => {
+  const body = loopsBody || document.getElementById('loops');
+  if (!body) return;
+  body.textContent = '';
+  for (const id of LANES) {
+    const row = rows[LANES.indexOf(id)];
+    const tr = document.createElement('tr');
+    const cells = row ? [row.name, row.last || 'Nothing recorded yet.', row.status, (row.cost && row.cost.minutes != null ? 'About ' + row.cost.minutes + ' minutes. ' : '') + money(row.cost && row.cost.paidCents) + ' ' + ((row.cost && row.cost.note) || '')] : [id, 'Nothing recorded yet.', 'Waiting for its first run.', 'Nothing from the treasury.'];
+    for (const text of cells) { const cell = document.createElement('td'); cell.textContent = text; tr.appendChild(cell); }
+    body.appendChild(tr);
+  }
+}).catch(() => {});

@@ -1,4 +1,4 @@
-// The tome (lib/tome.js): the Book of Verse typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
+// The tome (lib/tome.js): the Book of Verse typeset on pitch-black glass, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -11,8 +11,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const book = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/guide.json'), 'utf8'));
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-test('the look is a book, not a card: parchment, a serif, a drop capital, running heads and folios; no menu, tabs or buttons', () => {
-  assert.match(TOME_CSS, /#e6d5ae/, 'parchment');
+test('the look is a book, not a card: pitch-black glass with hairlines, a serif, a drop capital, running heads and folios; no menu, tabs or buttons', () => {
+  assert.ok(TOME_CSS.includes('rgba(10,12,18,0.72)') && TOME_CSS.includes('1px solid rgba(255,255,255,0.08)'), 'black glass with hairline edges, set last so it wins');
+  assert.ok(TOME_CSS.lastIndexOf('rgba(10,12,18,0.72)') > TOME_CSS.lastIndexOf('#e6d5ae'), 'the glass is set after the old paper');
   assert.match(TOME_CSS, /first-letter/, 'a drop capital');
   assert.ok(TOME_CSS.includes(SERIF) && /Palatino|Georgia/.test(SERIF));
   assert.match(TOME_CSS, /html\.v-tome #stage\{filter:brightness/, 'the stage dims behind the book');
@@ -22,11 +23,13 @@ test('the look is a book, not a card: parchment, a serif, a drop capital, runnin
   assert.match(PROMPT, /Turn page/); assert.match(PROMPT, /Esc/); assert.match(PROMPT, /Swipe/);
 });
 
-test('every page of the real book typesets, with a title and a rule; a skill page has its line, its asks as ink, its rating and its glyph', () => {
+test('every page of the real book typesets, with a title and a rule; a skill page has its line, its asks as ink, its rating and its number in its chapter, and no picture', () => {
   for (const p of book.pages) { const h = pageHtml(p, book, esc); assert.ok(h.length > 40, p.kind + ' ' + p.n); assert.match(h, /tome-title/); assert.match(h, /tome-rule/); }
   const timer = book.pages.find((p) => p.name === 'timer'), h = pageHtml(timer, book, esc);
   assert.match(h, /class="lead gb-line"/, 'a drop capital on the line');
-  assert.match(h, /tome-try/); assert.match(h, /data-ask="/); assert.match(h, /tome-tier/); assert.match(h, /svg class="gglyph"/);
+  assert.match(h, /tome-try/); assert.match(h, /data-ask="/); assert.match(h, /tome-tier/); assert.match(h, /class="tome-kicker tome-kicker-blank tome-num">\d{2,}</, 'a monochrome numeral, 01 first'); assert.doesNotMatch(h, /<svg|tome-art/, 'no decorative plate or glyph');
+  const opener = book.pages.find((p) => p.kind === 'opener'); assert.match(pageHtml(opener, book, esc), /tome-num big">\d{2}</, 'a chapter header carries its number');
+  assert.doesNotMatch(coverHtml(book, esc), /<svg|cover-leather/, 'the cover is glass and type');
   assert.doesNotMatch(h, /tome-kicker">Time</, 'the chapter is the running head, not repeated above the title');
   const quoted = book.pages.find((p) => p.kind === 'skill' && /^"/.test(p.line || ''));
   if (quoted) assert.doesNotMatch(pageHtml(quoted, book, esc), /class="lead /, 'a line that opens with a quote keeps its first letter');

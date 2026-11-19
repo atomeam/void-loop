@@ -80,7 +80,7 @@ test('a run after a deploy measures the current fight, the floors whose page cha
   assert.ok(measurable(F.find((f) => f.id === 'colour codes')).includes('every colour model')); assert.ok(['accuracy', 'flip animation'].every((a) => measurable(F.find((f) => f.id === 'coin flip')).includes(a)), 'ten flips have a right shape, and a flip can be seen moving');
   const ev = Object.fromEntries(F.map((f) => [f.id, full(f.id)])); // every floor fully measured: only the fight is picked
   const t = pick(ev, null, []); assert.equal(t.length, 1);
-  assert.deepEqual(pick(ev, null, ['void-live-deploy/random/coin/index.html']).slice(1), ['coin flip'], 'a changed page adds its floor');
+  assert.deepEqual(pick(ev, null, ['void-live-deploy/random/modes/coin.html']).slice(1), ['coin flip'], 'a changed page adds its floor');
   delete ev.calculator.speed; assert.ok(pick(ev, null, []).includes('calculator'), 'a missing row adds its floor');
   assert.ok(pick({}, null, [], 3).length === 3 && pick({}, null, [], 1).length === 1);
   for (const id of pick({}, { sites: [{ site: 'only-on-the-frontier.example', hardness: 1 }] }, [])) assert.ok(F.some((f) => f.id === id), 'a frontier site has no Verse page to measure: ' + id);
@@ -192,7 +192,7 @@ test('Verse\'s own /password-strength/ answers the password strength floor: qwer
     assert.equal(score(text, p.parts['leak check']).n, 1, 'a leak check offered at load');
   } finally { await b.close(); server.close(); }
 });
-test('Verse\'s own /resize-image/ answers the photo resizer floor: the gate puts in its one-pixel PNG with the size in the link and reads 276 by 197 px under 50 KB, a quality, a PDF; the page shows every fact at load', async (t) => {
+test('Verse\'s own /photos/?mode=resize answers the photo resizer floor: the gate puts in its one-pixel PNG with the size in the link and reads 276 by 197 px under 50 KB, a quality, a PDF; the page shows every fact at load', async (t) => {
   const http = await import('node:http'), fsm = await import('node:fs');
   const exe = process.env.CHROME_PATH || (fsm.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : null);
   if (!exe) return t.skip('no browser here');
@@ -211,7 +211,7 @@ test('Verse\'s own /resize-image/ answers the photo resizer floor: the gate puts
     const truth = score(got, p.truth); assert.equal(truth.n, 3, 'the truth: ' + truth.missing.join(', ') + ' in ' + JSON.stringify(got));
     for (const [a, items] of Object.entries(p.askParts)) { const s = score(got, items); assert.equal(s.n, s.of, a + ': ' + s.missing.join(', ')); }
     assert.equal(await answer(b, at('/password/strength/'), null, false, false, 0, 0, PIXEL), null, 'a page with no file box is not measured');
-    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/resize-image/'), { waitUntil: 'load' });
+    const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), pg = await ctx.newPage(); await pg.goto(at('/photos/?mode=resize'), { waitUntil: 'load' });
     const text = await pg.evaluate(() => document.body.innerText); await ctx.close();
     const facts = score(text, p.facts); assert.equal(facts.n, facts.of, 'facts at load: ' + facts.missing.join(', '));
   } finally { await b.close(); server.close(); }
@@ -288,7 +288,7 @@ test('a coin: its own flip control pressed 10 times by the gate, every side read
     assert.deepEqual(score(await answer(b, at('/always'), null, false, false, 0, 10), c.truth).missing, ['both sides come up in 10 fair flips'], 'a coin that always lands heads is not fair');
     assert.equal(await answer(b, at('/drawn'), null, false, false, 0, 10), null, 'a side the gate cannot read is not measured, never a loss');
     const look = async (u) => { const ctx = await b.newContext({ viewport: { width: 390, height: 800 } }), p = await ctx.newPage(); try { await p.goto(at(u)); await p.waitForTimeout(1500); return await motionOf(p); } finally { await ctx.close(); } };
-    const mv = await look('/random/coin/'), still = await look('/swap');
+    const mv = await look('/random/?mode=coin'), still = await look('/swap');
     assert.equal(scoreOf(mv, c.motion['flip animation']).n, 1, 'Verse\'s coin turns: ' + JSON.stringify(mv));
     assert.equal(scoreOf(still, c.motion['flip animation']).n, 0, 'a word swapped at once is not an animation: ' + JSON.stringify(still));
     assert.equal(await look('/plain'), null, 'no flip control: not measured');
@@ -380,7 +380,7 @@ test('the random generators floor: image generation, list language and publish a
 test('a lane site with a page of its own asks its own question; the others keep their leader\'s', async () => {
   const { probeFor, score, withFeatureFacts } = await import('./tower-probes.mjs'), { FLOORS } = await import('../void-live-deploy/lib/tower.js');
   const own = probeFor('sports: thesportsdb.com'), lead = probeFor('sports'), other = probeFor('sports: besoccer.com');
-  assert.equal(own.verse, '/scores/sports/'); assert.equal(own.ask.verse, '/scores/sports/?q=arsenal'); assert.deepEqual(Object.keys(own.askParts), ['sport search', 'born on this day', 'sport grid', 'free api']); assert.deepEqual(own.pageParts, {});
+  assert.equal(own.verse, '/scores/?mode=sports'); assert.equal(own.ask.verse, '/scores/?mode=sports&q=arsenal'); assert.deepEqual(Object.keys(own.askParts), ['sport search', 'born on this day', 'sport grid', 'free api']); assert.deepEqual(own.pageParts, {});
   assert.match(lead.verse, /^\/scores\//); assert.equal(other.verse, lead.verse, 'a lane site with no page of its own is measured against its leader\'s'); assert.deepEqual(Object.keys(other.pageParts), ['live scores', 'schedules', 'standings']);
   assert.equal(withFeatureFacts(own, 'sports: thesportsdb.com').facts.length, own.facts.length, 'its own facts are not topped up with its leader\'s features');
   assert.deepEqual(FLOORS.find((f) => f.id === 'sports: thesportsdb.com').extra, ['sport search', 'born on this day', 'sport grid', 'free api']); assert.deepEqual(FLOORS.find((f) => f.id === 'sports: besoccer.com').extra, ['live scores', 'schedules', 'standings']);

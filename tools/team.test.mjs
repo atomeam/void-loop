@@ -201,6 +201,20 @@ test('the team chat card on the stage (skills/team-chat.js): takes the team-chat
   assert.deepEqual(teamLines(null), { builders: [], asks: [], feed: [], waiting: 0, busy: 0, busiest: '' }, 'an answer that is not the workspace shows nothing made up');
 });
 
+test('a headless team chat does not throw when the read has no page', async () => {
+  const errors = [];
+  const on = (e) => errors.push(e);
+  process.on('unhandledRejection', on);
+  const real = globalThis.fetch;
+  globalThis.fetch = () => Promise.reject(new Error('no network'));
+  try {
+    const el = { innerHTML: '', dataset: {}, querySelector: () => null, closest: () => null };
+    chatSkill.run('team chat', { showPage(fn) { fn(el); } });
+    await new Promise((r) => setTimeout(r, 30));
+    assert.equal(errors.length, 0);
+  } finally { globalThis.fetch = real; process.off('unhandledRejection', on); }
+});
+
 test('the owner is an account: the owner account\'s signed-in session is the owner here; any other account is not let in', async () => {
   const env = world(); const sid = async (t) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('void-session:' + t)))].map((x) => x.toString(16).padStart(2, '0')).join('');
   env.DB.raw.exec('CREATE TABLE void_sessions (id TEXT PRIMARY KEY, user_id TEXT, expires INTEGER); CREATE TABLE void_passkeys (id TEXT PRIMARY KEY, user_id TEXT); CREATE TABLE void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT)');

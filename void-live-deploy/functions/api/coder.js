@@ -3,8 +3,9 @@
 // the coder idled for a day with nothing shipped; the site's own AI binding answers the same free model without that token.
 // POST { messages: [{ role: system|user|assistant, content }], max_tokens? }
 //   -> { result: { response, usage }, model }   the Workers AI shape, so the coder reads it like a direct call
-// 401 for anyone but the owner; 400 for a malformed conversation; 429 when the day's or the hour's calls are used up (lib/daily-cap.js,
-// so a runaway lap cannot spend the free allowance the public answers need); 503 when no model is bound or it did not answer.
+// 401 for anyone but the owner; 400 for a malformed conversation; 429 when the day's or the hour's free calls are used up (lib/daily-cap.js).
+// A 429 is not a stop: the caller tries the next free provider, then sends the same body with pay:true, which runs the treasury path below.
+// 402 when that path is asked and the infrastructure pot is empty; 503 when no model is bound or it did not answer.
 import { ownerOk } from '../../lib/guard.js';
 import { models, PAID_MODEL } from '../../lib/models.js';
 import { runFree } from '../../lib/ai-gateway.js';
@@ -101,11 +102,11 @@ export async function onRequestPost({ request, env }) {
   if (!env.AI) return new Response('no model bound', { status: 503 });
   const now = Date.now(), keys = [[hourKey(now), CODER_LIMITS.perHour], [DAY_KEY, CODER_LIMITS.perDay]];
   const max = Math.min(CODER_LIMITS.maxOut, Math.max(1, Math.floor(Number(b.max_tokens) || 4096)));
-  const room = await capAll(env, keys, now);
-  const giveBack = async () => { for (const [key] of keys) await uncap(env, key, now); };
-  if (!room.ok) {
+  const pay = b.pay === true;
+  // the treasury path (the same bill as before): only when the caller has already tried the other free providers
+  if (pay) {
     const have = await infraCents(env);
-    if (have < 1) return new Response('the coder\'s calls for this ' + (room.key === DAY_KEY ? 'day' : 'hour') + ' are used up', { status: 429 });
+    if (have < 1) return new Response('the infrastructure pot is empty', { status: 402 });
     try {
       const paid = await env.AI.run(PAID_MODEL, { messages, max_tokens: max, ...RUN });
       const text = saidText(paid);
@@ -119,6 +120,9 @@ export async function onRequestPost({ request, env }) {
       return new Response('the model did not answer: ' + reasonOf(e) + (clip(e && e.message) ? ' (' + clip(e && e.message) + ')' : ''), { status: 503 });
     }
   }
+  const room = await capAll(env, keys, now);
+  const giveBack = async () => { for (const [key] of keys) await uncap(env, key, now); };
+  if (!room.ok) return new Response('free allowance used', { status: 429 });
   const model = models('coder');
   const ask = (extra) => runFree(env, model, { messages, max_tokens: max, ...RUN, ...extra });
   try {

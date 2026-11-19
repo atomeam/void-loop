@@ -395,7 +395,8 @@ jobs:
       - name: Does this PR touch a hand-off?
         id: touch
         run: |
-          if git diff --name-only HEAD^1 HEAD | grep -Eq 'void-live-deploy/(bpm|metronome|chords|piano|calendar|time|weather)/|handoff'; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "### No hand-off page changed: journeys not played" >> "$GITHUB_STEP_SUMMARY"; fi
+          # domains/handoff.md is the working-on log. A claim line there is not a hand-off page, and playing every journey on it held a merge on two unrelated paint timeouts.
+          if git diff --name-only HEAD^1 HEAD | grep -vE '^(domains|docs)/' | grep -Eq 'void-live-deploy/(bpm|metronome|chords|piano|calendar|time|weather)/|handoff'; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "### No hand-off page changed: journeys not played" >> "$GITHUB_STEP_SUMMARY"; fi
       - uses: actions/setup-node@v4
         if: steps.touch.outputs.run == 'true'
         with:

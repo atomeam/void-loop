@@ -1,0 +1,32 @@
+{
+ "at": "2026-11-18T16:34:21.436Z",
+ "sha": "0322c7d0264db709459b6d05f51de4aef5799ee7",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44339334828",
+ "suite": "browser suite on main",
+ "checks": [
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "suite ran to the end",
+  "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+  "\"reset my void\" brings the plain stage back after \"make my void deep blue\"",
+  "effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: \"make my void swirl\" starts the particle swarm, \"add a nebula\" swaps to the nebula, \"calm my void\" stops both; saved in your look"
+ ],
+ "touched": [
+  "domains/void.agents.log.md",
+  "tools/bench.json",
+  "tools/card-cycle.json",
+  "tools/grow-self.state.json",
+  "void-live-deploy/void.growth.json"
+ ],
+ "shards": [
+  3,
+  4
+ ],
+ "passed": [
+  3,
+  4
+ ],
+ "closedAt": "2026-11-18T17:15:27.839Z",
+ "closedBy": "34c4ffafc92177318e8a518447e4b483aaa848c7",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44351699437",
+ "minutes": 41
+}
