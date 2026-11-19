@@ -22,7 +22,7 @@ import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
 import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
-import { acceptGame, gameDueNow, gameTask, loadBook, recordGame } from './game-updates.mjs';
+import { acceptGame, aimGame, gameDueNow, gameTask, loadBook, recordGame } from './game-updates.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -596,6 +596,13 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     if (task.kind === 'fix' || task.kind === 'next' || task.kind === 'game' || task.kind === 'invent') {
       const twin = twins(open, titleFor(task), now)[0];
       if (twin && twin.ageH < DUP_HOURS) return done('skipped', `an open loop PR already does this (${twin.url}, opened ${twin.ageH.toFixed(1)} h ago); no model calls spent`, { duplicateOf: twin.url });
+    }
+
+    if (opts.lane === 'games' && !opts.dryRun && task.kind === 'game') {
+      const aim = await aimGame(cwd, task, { env });
+      if (aim.fun) step('Debris Field bar: fun ' + aim.fun);
+      step(aim.gap ? 'the change targets ' + aim.gap : 'no review yet, so the change fills a missing part');
+      task.text = aim.text;
     }
 
     let probe = null, coderOut = {};

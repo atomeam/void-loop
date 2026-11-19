@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { applyUpdate, bornFrom, decide, funOf, gamesOf, had, nextTask, scoreFrom } from '../void-live-deploy/lib/game-updates.js';
+import { applyUpdate, bornFrom, decide, funOf, gamesOf, gapOf, had, nextTask, promptFor, scoreFrom, withBar } from '../void-live-deploy/lib/game-updates.js';
 import { gameDueNow, gatePlay, playLink } from './game-updates.mjs';
 
 const live = JSON.parse(readFileSync(new URL('../data/game-updates.json', import.meta.url), 'utf8'));
@@ -62,4 +62,22 @@ test('a play without pictures or a score does not ship, and a scored play record
   assert.equal(row.scores['null-waves'].video, 'https://github.com/atomeam/void-loop/actions/runs/1');
   assert.equal(row.log.at(-1).fun, 44);
   assert.ok(!row.shown.includes('null-waves'), 'hidden until Debris Field has a fun score it can clear');
+});
+
+test('Debris Field fun is the public bar, and the coder is aimed at the lowest review mark', () => {
+  const note = live.scores['debris-field'].note;
+  const low = withBar(live, 50, { danger: 8, goal: 7, boss: 2, juice: 6, phone: 5, end: 4, fair: 5, fun: 5, polish: 5 });
+  assert.equal(low.scores['debris-field'].fun, 50);
+  assert.equal(low.scores['debris-field'].note, note, 'the existing note stays');
+  assert.equal(low.scores['debris-field'].update, 1);
+  assert.ok(low.shown.includes('null-waves') && low.shown.includes('packet-maze'));
+  const high = withBar(live, 70, { boss: 1 });
+  assert.ok(!high.shown.includes('null-waves') && !high.shown.includes('packet-maze'));
+  const gap = gapOf({ danger: 8, goal: 7, boss: 2, juice: 6, phone: 5, end: 4 });
+  assert.equal(gap.words, 'a boss or climax');
+  const text = promptFor(live && nextTask(live).game, 1, { danger: 8, goal: 7, boss: 2, juice: 6, phone: 5, end: 4 });
+  assert.match(text, /a boss or climax lowest, 2 of 10/);
+  assert.match(text, /Do not ship a tiny tweak/);
+  assert.doesNotMatch(text, /One small change/);
+  assert.match(promptFor({ id: 'cross-bus', title: 'Cross the Bus', lane: 'hidden', file: 'void-live-deploy/skills/cross-bus-rules.js' }, 1, null), /no review yet/);
 });

@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
-import { BOOK, PUBLIC_BOOK, CATALOG, applyUpdate, bornFrom, decide, emptyBook, gamesOf, inventPrompt, nextTask, readWhatsNew, scoreFrom, PARTS } from '../void-live-deploy/lib/game-updates.js';
+import { BOOK, PUBLIC_BOOK, BAR_ID, CATALOG, applyUpdate, bornFrom, decide, emptyBook, funOf, gamesOf, gapOf, inventPrompt, nextTask, promptFor, readWhatsNew, scoreFrom, withBar, PARTS } from '../void-live-deploy/lib/game-updates.js';
 import { models, VISION_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { askFree } from './judgment.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -59,7 +59,7 @@ export function readScore(raw) {
   let o = null; try { o = JSON.parse((String(raw || '').match(/\{[\s\S]*\}/) || [])[0]); } catch (_) { return null; }
   if (!o) return null;
   const parts = {}; for (const k of PARTS) if (o[k] != null) parts[k] = o[k];
-  return Object.keys(parts).length ? { score: scoreFrom(parts), why: String(o.why || '').slice(0, 160) } : null;
+  return Object.keys(parts).length ? { score: scoreFrom(parts), why: String(o.why || '').slice(0, 160), parts } : null;
 }
 const textOf = (j) => { if (!j || typeof j !== 'object') return ''; const choice = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content; const nested = j.result && (typeof j.result === 'string' ? j.result : j.result.response || j.result.description); const t = j.response || nested || choice || ''; return typeof t === 'string' ? t.trim() : ''; };
 async function askVision(prompt, shots, { env, fetchFn }) {
@@ -87,7 +87,7 @@ export async function judgePlay(play, { env = process.env, fetchFn = fetch, game
   let raw = seen.text;
   if (!raw && seen.frames) raw = await askFree(prompt + ' Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });
   const read = readScore(raw);
-  return read ? { hold: false, score: read.score, why: read.why || 'scored from the play', cents: 0, frames: seen.frames } : { hold: true, score: null, why: 'no score came back', cents: 0, frames: seen.frames };
+  return read ? { hold: false, score: read.score, why: read.why || 'scored from the play', cents: 0, frames: seen.frames, parts: read.parts } : { hold: true, score: null, why: 'no score came back', cents: 0, frames: seen.frames, parts: null };
 }
 /** The play-bot has to run and a model has to score a real frame. A missing score is not a pass. Pure. */
 export function gatePlay({ played, judged, before = null, attempt = 1 } = {}) {
@@ -120,7 +120,7 @@ export async function acceptGame({ cwd = root, task, attempt = 1, coder = {}, pl
   const before = funOfBook(loadBook(cwd), game.id);
   const d = gatePlay({ played, judged, before, attempt });
   const cents = (+coder.cents || 0) + (+judged.cents || 0);
-  return { ...d, game, note, born, cents, paid: !!(coder.paid || cents > 0), provider: coder.provider || '', cursor: task.nextCursor || 0, video: playLink(env) };
+  return { ...d, game, note, born, cents, paid: !!(coder.paid || cents > 0), provider: coder.provider || '', cursor: task.nextCursor || 0, video: playLink(env), parts: judged.parts || null };
 }
 const funOfBook = (book, id) => { const s = book.scores && book.scores[id]; return s && Number.isFinite(+s.fun) ? +s.fun : null; };
 export function gameDueNow(book, now = Date.now(), everyMs = 50 * 60 * 1000) {
@@ -128,8 +128,31 @@ export function gameDueNow(book, now = Date.now(), everyMs = 50 * 60 * 1000) {
   return !(last > 0) || now - last >= everyMs;
 }
 export function recordGame(cwd, gate, at = new Date().toISOString()) {
-  const book = applyUpdate(loadBook(cwd), gate.game, { fun: gate.score, note: gate.note, at, cents: gate.cents, paid: gate.paid, provider: gate.provider, dropped: !gate.ship, cursor: gate.cursor, born: gate.born, video: gate.video });
+  const book = applyUpdate(loadBook(cwd), gate.game, { fun: gate.score, note: gate.note, at, cents: gate.cents, paid: gate.paid, provider: gate.provider, dropped: !gate.ship, cursor: gate.cursor, born: gate.born, video: gate.video, parts: gate.parts });
   saveBook(book, cwd); return book;
+}
+/** Play Debris Field once when it has no fun, then name the weakest mark so the coder prompt aims at it. */
+export async function aimGame(cwd, task, { env = process.env, play = playGame, judge = judgePlay } = {}) {
+  let book = loadBook(cwd);
+  let fun = funOf(book, BAR_ID);
+  if (!(fun > 0)) {
+    const barGame = CATALOG.find((g) => g.id === BAR_ID);
+    const played = await play(barGame, { cwd, ms: Number(env.GAME_PLAY_MS) || 75000, outDir: env.GAME_PLAY_DIR || '' });
+    const judged = await judge(played, { env, game: barGame, note: 'the public bar' });
+    if (played && !played.broken && judged && judged.frames && Number.isFinite(+judged.score)) {
+      book = withBar(book, +judged.score, judged.parts);
+      saveBook(book, cwd);
+      fun = +judged.score;
+    }
+  }
+  let parts = (book.scores[task.game.id] || {}).parts;
+  if (!gapOf(parts) && task.game) {
+    const played = await play(task.game, { cwd, ms: Number(env.GAME_PLAY_MS) || 75000, outDir: env.GAME_PLAY_DIR || '' });
+    const judged = await judge(played, { env, game: task.game, note: '' });
+    if (judged && judged.parts) parts = judged.parts;
+  }
+  const gap = gapOf(parts);
+  return { fun, gap: gap ? gap.words : '', text: promptFor(task.game, task.update, parts) };
 }
 if (process.argv[1] && process.argv[1].endsWith('game-updates.mjs') && process.argv[2] === 'play') {
   const game = CATALOG.find((g) => g.id === (process.argv[3] || 'null-waves'));
