@@ -28,9 +28,10 @@ const model = await ownerModel();
 // the owner's views: every rival (it was /rival/) and the side-by-side (it was /compare/). Anyone else only ever gets the sign above.
 if (model && view === 'rival') await (await import('/versus/rivals.js')).renderRivals(root, location.search, await ownerToken());
 else if (model && view === 'compare') (await import('/versus/compare.js')).renderCompare(root, location.search);
+else if (model && view === 'assimilated') (await import('/versus/assimilated.js')).renderAssimilated(root);
 else if (model) {
   const { ownerHtml } = await import('/lib/versus-floor.js');
-  root.innerHTML = ownerHtml(model) + '<nav class="elv-views" aria-label="More on Versus"><a href="/versus/?view=rival">Every rival</a> · <a href="/versus/?view=compare">Side by side</a></nav>'; // void-review: ok (ownerHtml runs every value through esc; the links are fixed)
+  root.innerHTML = ownerHtml(model) + '<nav class="elv-views" aria-label="More on Versus"><a href="/versus/?view=rival">Every rival</a> · <a href="/versus/?view=compare">Side by side</a> · <a href="/versus/?view=assimilated">Assimilated</a></nav>'; // void-review: ok (ownerHtml runs every value through esc; the links are fixed)
 }
 </script>
 <script type="module" src="/verse-shell.js"></script>

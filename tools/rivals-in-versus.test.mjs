@@ -15,6 +15,7 @@ test('/rival/ and /compare/ are no longer pages; they redirect into /versus/ and
   assert.deepEqual(movedTo('/rival/', ''), { to: '/versus/?view=rival', status: 301 });
   assert.deepEqual(movedTo('/rival/', '?site=abc.com'), { to: '/versus/?view=rival&site=abc.com', status: 301 });
   assert.deepEqual(movedTo('/compare', '?floor=x'), { to: '/versus/?view=compare&floor=x', status: 301 });
+  assert.deepEqual(movedTo('/assimilated/', '?q=abc'), { to: '/versus/?view=assimilated&q=abc', status: 301 });
   assert.equal(movedTo('/versus/', ''), null);
   // _redirects runs before any function on Cloudflare and drops the query, so these paths are not in it; they reach the middleware through _routes.json
   assert.doesNotMatch(read('_redirects'), /^\/(rival|compare)\/? /m);
@@ -46,4 +47,15 @@ test('what /versus/ sends a visitor has no static import of the file that lists 
   for (const f of ['versus/index.html', 'versus/open.js']) assert.doesNotMatch(read(f), /^\s*import[^\n]*versus-floor\.js|modulepreload" href="\/lib\/versus-floor\.js/m, f);
   assert.match(read('versus/open.js'), /await import\('\.\.\/lib\/versus-floor\.js'\)/);
   assert.match(read('versus/index.html'), /await import\('\/lib\/versus-floor\.js'\)/);
+});
+
+test('the assimilated list is an owner-only Versus view; its phone layout cannot push the page sideways', () => {
+  assert.ok(!existsSync(new URL('assimilated/index.html', D)), '/assimilated/ is no longer a page');
+  assert.match(read('versus/index.html'), /model && view === 'assimilated'[\s\S]*import\('\/versus\/assimilated\.js'\)/);
+  assert.ok(ownerOnlyPath('/versus/assimilated.js') && ownerOnlyPath('/assimilated.json'));
+  assert.match(read('_routes.json'), /"\/versus\/assimilated\.js"/);
+  // the phone check found a status text that cannot wrap ("measured ahead, still being checked") stretching the table past a 390 px window
+  const css = read('versus/assimilated.js').match(/@media \(max-width: 640px\) \{([^`]*?)\}\s*<\/style>/)[1];
+  assert.match(css, /\.as table, \.as tbody \{ display: block; \}/);
+  assert.match(css, /\.as \.st \{ white-space: normal; \}/);
 });

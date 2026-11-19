@@ -7,6 +7,7 @@ import { parseRedirects, redirectTo } from './page-pass.js';
 const MOVED = [
   ['/rival', '/versus/?view=rival'], ['/rival/', '/versus/?view=rival'],
   ['/compare', '/versus/?view=compare'], ['/compare/', '/versus/?view=compare'],
+  ['/assimilated', '/versus/?view=assimilated'], ['/assimilated/', '/versus/?view=assimilated'],
 ].map(([from, to]) => from + ' ' + to + ' 301').join('\n');
 const TABLE = parseRedirects(MOVED);
 

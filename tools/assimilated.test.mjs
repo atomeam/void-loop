@@ -37,8 +37,8 @@ test('the real list: every site Versus by itself read and every lane page is in 
   for (const h of Object.keys(state.sites)) assert.ok(sites.has(hostOf(h)), h);
   for (const r of j.sites) { assert.ok(r.sources.length, r.site + ' names where it is recorded'); assert.match(r.at, /^20\d\d-\d\d-\d\dT/, r.site + ' has a date'); }
   assert.ok(j.counts.surpassed >= 2 && j.counts.assimilated >= 1);
-  const page = readFileSync(new URL('../void-live-deploy/assimilated/index.html', import.meta.url), 'utf8');
-  assert.match(page, /fetch\('\/assimilated\.json'/);
+  const view = readFileSync(new URL('../void-live-deploy/versus/assimilated.js', import.meta.url), 'utf8');
+  assert.match(view, /fetch\('\/assimilated\.json'/);
 });
 
 test('the card\'s target is the history\'s target, with its page by topic and its score; a site covered by an existing page counts as assimilated', () => {

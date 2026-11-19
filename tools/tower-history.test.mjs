@@ -37,7 +37,7 @@ test('history html: the current target first, a link to each Verse page that exi
   assert.match(h, /<a href="\/emoji-combos\/">emojicombos\.com<\/a>/);
   assert.doesNotMatch(h, /<a href="[^"]*">id5-sync\.com/);
   assert.match(h, /Show all 5/);
-  assert.match(h, /href="\/assimilated\/"/);
+  assert.match(h, /href="\/versus\/\?view=assimilated"/);
 });
 test('history html: nothing to show, nothing drawn', () => {
   assert.equal(historyHtml({ target: {}, floors: [] }, esc), '');

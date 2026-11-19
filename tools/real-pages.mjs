@@ -128,13 +128,6 @@ export const SPECS = {
     await t.share('#copyLink', async (p) => /6\s?000,00/.test(await p.locator('#grossValue').innerText()));
     await t.links();
   },
-  '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
-    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
-    const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
-    await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
-    const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'every aspect matched'), 'Every aspect matched shows only those sites (' + st.length + ')');
-    await t.links();
-  },
   '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece
     const n = await t.waitText('#n', /scanned/, 10000); t.ok(/\d+\s*scanned/.test(n), 'it counts what was scanned: ' + n.slice(0, 80));
     t.ok((await t.p.locator('#top tr').count()) > 0, 'the next pieces by value are listed');

@@ -253,7 +253,7 @@ export function historyHtml(t, esc, n = 5) {
   const top = cur ? '<li data-how="now" style="padding:4px 0;border-bottom:1px solid #221e30"><span style="opacity:.7">' + esc(since ? 'since ' + dayOf(since) : 'now') + '</span> · <b>' + name(cur) + '</b> · taking on now</li>' : '';
   return '<div class="tw-history" style="margin:6px 0 8px;font-size:13px"><b>History</b> · each site the tower took on, newest first<ol style="list-style:none;margin:4px 0 0;padding:0">' + top + rows.slice(0, n).map(li).join('') + '</ol>'
     + (rows.length > n ? '<details><summary style="cursor:pointer;font-size:12px;margin-top:4px">Show all ' + rows.length + '</summary><ol style="list-style:none;margin:4px 0 0;padding:0">' + rows.slice(n).map(li).join('') + '</ol></details>' : '')
-    + '<div style="font-size:12px;margin-top:4px"><a href="/assimilated/">Every site Verse has read or built from</a></div></div>';
+    + '<div style="font-size:12px;margin-top:4px"><a href="/versus/?view=assimilated">Every site Verse has read or built from</a></div></div>';
 }
 // The card (docs/TOWER-RULES.md; the layout agreed 2026-10-28): the counts in one word, assimilated; the summary (assimilated, inventoried,
 // average assimilation, the three closest, the far floors); the current floor with its gate badge, its aspects and what Verse still lacks
