@@ -394,5 +394,6 @@
   "automation-handoff",
   "delivery-pack",
   "monitor-receipt",
-  "delivery-status-pack"
+  "delivery-status-pack",
+  "client-confirm-pack"
 ]
