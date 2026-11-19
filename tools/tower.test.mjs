@@ -294,17 +294,17 @@ test('the queue ranks on measured rows only: a loss against the default bar (the
   const j = judgeRows({ id: 'away.test', site: 'away.test', url: 'https://away.test/', extra: [] }, ev['away.test']);
   assert.deepEqual(j.jobs.find((x) => x.aspect === first), { aspect: first, evidence: 'not measured yet: away.test turned the gate away, so only the default bar was scored' });
 });
-test('a site with a feature Verse lacks is never assimilated: it stays on the climb and the card names what is missing (tools/site-crawl.mjs)', async () => {
-  const { passedLine, missingLine } = await import('../void-live-deploy/lib/tower.js');
-  const f = FLOORS[0], ev = { [f.id]: all(f) }, host = new URL(f.url).hostname.replace(/^www\./, '');
+test('a site counts once every check is won and Verse has its page; the crawl\'s gaps are listed and queued, never a hold (owner, 2026-11-12)', async () => {
+  const { passedLine, missingLine, realGaps } = await import('../void-live-deploy/lib/tower.js');
+  const f = FLOORS.find((x) => x.page), ev = { [f.id]: all(f) }, host = new URL(f.url).hostname.replace(/^www\./, '');
   assert.equal(tower([], ev).floors.find((x) => x.id === f.id).state, 'beaten');
   const ft = { sites: { [host]: { pages: 40, templates: 5, features: 12, verse_pages: 6, verse_features: 10, missing: ['Apple Name', 'A table'] } } };
   const t = tower([], ev, null, null, null, null, null, null, ft), g = t.floors.find((x) => x.id === f.id);
-  assert.equal(g.state, 'current'); assert.equal(g.beaten, false); assert.equal(t.beaten, 0); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
+  assert.equal(g.state, 'beaten'); assert.equal(g.beaten, true); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
   assert.match(passedLine(g), /missing 2: Apple Name, A table/); assert.equal(missingLine({ missingFeatures: [] }), '');
-  const h = towerHtml(t, (s) => String(s)); assert.match(h, /Apple Name: missing \(found by crawling 40 pages/);
-  // nothing missing: conquered as before
-  const ok = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 40, missing: [] } } }); assert.equal(ok.floors.find((x) => x.id === f.id).state, 'beaten');
+  // the crawl's noise is cut: translations, sign-in dialogs, prices, "(N: …)" tails, one line per run of country pages
+  assert.deepEqual(realGaps(['All airlines', '€ 1.99', 'Log in', 'Password', 'Tất cả các hãng hàng không', '所有航空公司', 'All aircraft (4: Flight times, Menu)', 'All aircraft', 'to France', 'to France with a stopover', 'to Spain', '← Select a date type', 'Flight Connections 2026'], 'flightconnections.com'),
+    ['All airlines', 'All aircraft', 'Select a date type', 'Flights to each country (3)']);
 });
 test('the site being taken on is not passed while a feature is missing, and the card says what the crawl found', () => {
   const f = FLOORS[0], host = new URL(f.url).hostname.replace(/^www\./, ''), ev = { [f.id]: all(f) }; delete ev[f.id][Object.keys(ev[f.id])[0]];

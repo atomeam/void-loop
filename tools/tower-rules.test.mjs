@@ -66,14 +66,14 @@ test('rule 2: the climb is closest first (by assimilation), and size never order
   assert.equal(assimOf({ beaten: false, m: 10, n: 10, measured: true }, null) <= 99, true, 'never 100 unless assimilated');
 });
 
-test('rule 3: a floor never yields on a timer; its open aspects are retried', () => {
-  assert.equal(HOLD_DAYS, Infinity);
+test('rule 3: a floor with no progress for STALL_DAYS gives way, its gaps queued', () => {
+  assert.ok(Number.isFinite(HOLD_DAYS) && HOLD_DAYS >= 1);
   const floors = [{ id: 'a', n: 2, m: 12, open: ['speed'], left: ['speed'], lost: [] }, { id: 'b', n: 11, m: 12, open: [], left: [], lost: [] }];
-  for (const today of ['2026-11-10', '2027-01-01', '2030-06-01']) {
-    assert.equal(stallCheck({ id: 'a', n: 2, since: '2026-10-01', progressAt: '2026-10-01' }, floors, today).stalled, false);
+  for (const today of ['2026-11-10', '2027-01-01']) {
+    assert.equal(stallCheck({ id: 'a', n: 2, since: '2026-10-01', progressAt: '2026-10-01' }, floors, today).stalled, true);
     const { file } = advance({ id: 'a', n: 2, since: '2026-10-01', progressAt: '2026-10-01' }, floors, today);
-    assert.equal(file.id, 'a', 'still the floor on ' + today);
-    assert.ok((file.background || []).some((x) => x.id === 'a' && /^retry: /.test(x.job)));
+    assert.equal(file.id, 'b', 'moved on by ' + today);
+    assert.ok((file.background || []).some((x) => x.id === 'a' && /^build: /.test(x.job)));
   }
 });
 

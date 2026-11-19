@@ -8,7 +8,7 @@
 import { towerArtSvg } from '../lib/tower-art.js';
 import { visitorHtml, ownerHtml } from '../lib/versus-floor.js';
 import { ownerModel } from '../versus/open.js';
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine, countsOf, assimLine, inventoryOf } from '../lib/tower.js?v=ladder-72';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine, countsOf, assimLine, inventoryOf } from '../lib/tower.js?v=ladder-73';
 import { siteSlug } from '../lib/obituary.js';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage

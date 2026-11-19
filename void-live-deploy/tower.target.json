@@ -1,9 +1,10 @@
 {
- "about": "The floor Verse is on. It is assimilated only when the gate verifies every aspect against the live site and its feature study has nothing missing; until then it stays the floor and low-confidence aspects are retried (docs/TOWER-RULES.md, tools/tower-target.mjs).",
- "id": "travel: flightconnections.com",
- "since": "2026-11-09",
+ "about": "The site Verse is working on. It counts once every check against the live site is won and Verse has its own working page for the job; the crawl's gaps go to the build queue. A site with no progress for 3 days gives way: its gaps go to the build queue and the next closest site takes over (docs/TOWER-RULES.md, tools/tower-target.mjs).",
+ "id": "nameunit",
+ "since": "2026-11-19",
  "n": 16,
- "progressAt": "2026-11-12",
+ "assim": 94,
+ "progressAt": "2026-11-19",
  "season": {
   "start": "2026-11-06",
   "why": "owner, 2026-11-06: \"clear and reset your damn verse screens\"; every op had been a giant page. From here a site is passed only in its turn, smallest first (fewest controls on its home page, then the lighter page)."
@@ -34,7 +35,14 @@
    ]
   }
  ],
- "assimilated": [],
+ "assimilated": [
+  {
+   "id": "travel: flightconnections.com",
+   "at": "2026-11-19",
+   "n": 16,
+   "m": 16
+  }
+ ],
  "passed": [
   {
    "id": "image boards: 2chan.net",
@@ -192,7 +200,7 @@
   }
  ],
  "last": {
-  "at": "2026-11-09",
-  "why": "tsundere.pw is not a floor: not a studied, real site (docs/TOWER-RULES.md rule 1)"
+  "at": "2026-11-19",
+  "why": "assimilated travel: flightconnections.com (16 of 16 aspects verified)"
  }
 }
