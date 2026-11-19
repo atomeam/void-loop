@@ -26,13 +26,13 @@
   .bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
   input, select { font: inherit; color: inherit; background: transparent; border: 1px solid #2c2938; border-radius: 8px; padding: 8px 10px; min-height: 40px; }
   table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: left; vertical-align: top; padding: 8px 6px; border-bottom: 1px solid #2c2938; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 6px; border-bottom: 1px solid #2c2938; overflow-wrap: anywhere; }
   th { font-size: 12px; color: #a3a0b3; font-weight: 600; }
   .st { white-space: nowrap; font-weight: 600; }
   .st.surpassed { color: #64d19f; } .st.passed { color: #8fd0ff; } .st.assimilated { color: #a58bff; } .st.tried { color: #a3a0b3; }
   td small { display: block; color: #a3a0b3; } td a { padding-inline: 3px; } /* a short path such as /g/ is still 24 px wide to tap */
   #rows td.wait { height: 100svh; vertical-align: top; } /* the one "Reading the list…" row holds the space the list takes, so nothing below it jumps */
-  @media (max-width: 640px) { thead { display: none; } tr { display: block; border-bottom: 1px solid #2c2938; padding: 6px 0; } td { display: block; border: 0; padding: 2px 4px; } }
+  @media (max-width: 640px) { table, tbody { display: block; } thead { display: none; } tr { display: block; border-bottom: 1px solid #2c2938; padding: 6px 0; } td { display: block; border: 0; padding: 2px 4px; } }
 </style><style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
 </head>
