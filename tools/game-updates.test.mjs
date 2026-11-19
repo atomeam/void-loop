@@ -52,11 +52,11 @@ test('a game update is due until one has shipped within the hour', () => {
 
 test('a play without pictures or a score does not ship, and a scored play records its video', () => {
   assert.equal(gatePlay({ played: { broken: 'boom', shots: ['a.png'] }, judged: { score: 80 }, attempt: 1 }).ship, false);
-  assert.equal(gatePlay({ played: { broken: '', shots: [] }, judged: { score: 80 } }).why, 'the play-bot saved no picture');
-  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { hold: true, score: null } }).ship, false);
-  const ok = gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { hold: false, score: 44 }, before: 40 });
+  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { score: 80, frames: 0 } }).why, 'the play-bot saved no picture');
+  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { hold: true, score: null, frames: 1 } }).ship, false);
+  const ok = gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { hold: false, score: 44, frames: 1 }, before: 40 });
   assert.equal(ok.ship, true); assert.equal(ok.score, 44);
-  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { score: 30 }, before: 40, attempt: 2 }).retry, false);
+  assert.equal(gatePlay({ played: { broken: '', shots: ['a.png'] }, judged: { score: 30, frames: 1 }, before: 40, attempt: 2 }).retry, false);
   assert.equal(playLink({ GITHUB_REPOSITORY: 'atomeam/void-loop', GITHUB_RUN_ID: '44536076213' }), 'https://github.com/atomeam/void-loop/actions/runs/44536076213');
   const row = applyUpdate(live, { id: 'null-waves', title: 'Null Waves', lane: 'hidden' }, { fun: 44, note: 'Update 2: a slower fall', at: 't', video: 'https://github.com/atomeam/void-loop/actions/runs/1', cents: 0 });
   assert.equal(row.scores['null-waves'].video, 'https://github.com/atomeam/void-loop/actions/runs/1');

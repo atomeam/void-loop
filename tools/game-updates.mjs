@@ -64,35 +64,36 @@ export function readScore(raw) {
 const textOf = (j) => { if (!j || typeof j !== 'object') return ''; const choice = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content; const nested = j.result && (typeof j.result === 'string' ? j.result : j.result.response || j.result.description); const t = j.response || nested || choice || ''; return typeof t === 'string' ? t.trim() : ''; };
 async function askVision(prompt, shots, { env, fetchFn }) {
   const token = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN;
-  if (!token || !env.CLOUDFLARE_ACCOUNT_ID) return '';
-  const images = [];
-  for (const p of shots.slice(0, 2)) { try { const b = readFileSync(p); if (b.length && b.length < 500000) images.push('data:image/png;base64,' + b.toString('base64')); } catch (_) { /* one frame is enough */ } }
-  if (!images.length) return '';
-  const content = [{ type: 'text', text: prompt }, ...images.map((url) => ({ type: 'image_url', image_url: { url } }))];
+  if (!token || !env.CLOUDFLARE_ACCOUNT_ID) return { text: '', frames: 0 };
+  const frames = [];
+  for (const p of (shots || []).slice(0, 2)) { try { const b = readFileSync(p); if (b.length && b.length < 500000) frames.push(b); } catch (_) { /* a missing frame is not a picture */ } }
+  if (!frames.length) return { text: '', frames: 0 };
   const base = 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/';
-  for (const model of [models('vision'), VISION_FALLBACK]) {
-    try {
-      const r = await fetchFn(base + model, { method: 'POST', headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content }], max_tokens: 300, temperature: 0, chat_template_kwargs: { enable_thinking: false } }) });
-      let j = {}; try { j = await r.json(); } catch (_) { j = {}; }
-      const text = textOf(j);
-      if (r && r.ok && text) return text;
-    } catch (_) { /* the next model */ }
-  }
-  return '';
+  const headers = { authorization: 'Bearer ' + token, 'content-type': 'application/json' };
+  const ask = async (model, body) => {
+    const r = await fetchFn(base + model, { method: 'POST', headers, body: JSON.stringify(body) });
+    let j = {}; try { j = await r.json(); } catch (_) { j = {}; }
+    return r && r.ok ? textOf(j) : '';
+  };
+  const content = [{ type: 'text', text: prompt }, ...frames.map((b) => ({ type: 'image_url', image_url: { url: 'data:image/png;base64,' + b.toString('base64') } }))];
+  let text = '';
+  try { text = await ask(models('vision'), { messages: [{ role: 'user', content }], max_tokens: 300, temperature: 0, chat_template_kwargs: { enable_thinking: false } }); } catch (_) { text = ''; }
+  if (!text) { try { text = await ask(VISION_FALLBACK, { image: frames[0].toString('base64'), prompt, max_tokens: 300 }); } catch (_) { text = ''; } }
+  return { text, frames: frames.length };
 }
 export async function judgePlay(play, { env = process.env, fetchFn = fetch, game, note } = {}) {
   const prompt = 'Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. A Debris Field bar is a phone game with a goal, danger, and an ending. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '.';
-  const shots = (play && play.shots || []).filter((p) => p && existsSync(p));
-  let raw = shots.length ? await askVision(prompt, shots, { env, fetchFn }) : '';
-  if (!raw) raw = await askFree(prompt + ' Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });
+  const seen = await askVision(prompt, (play && play.shots) || [], { env, fetchFn });
+  let raw = seen.text;
+  if (!raw && seen.frames) raw = await askFree(prompt + ' Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });
   const read = readScore(raw);
-  return read ? { hold: false, score: read.score, why: read.why || 'scored from the play', cents: 0 } : { hold: true, score: null, why: 'no score came back', cents: 0 };
+  return read ? { hold: false, score: read.score, why: read.why || 'scored from the play', cents: 0, frames: seen.frames } : { hold: true, score: null, why: 'no score came back', cents: 0, frames: seen.frames };
 }
-/** The play-bot has to run and a model has to score it. A missing score is not a pass. Pure. */
+/** The play-bot has to run and a model has to score a real frame. A missing score is not a pass. Pure. */
 export function gatePlay({ played, judged, before = null, attempt = 1 } = {}) {
   if (!played || played.broken) return { ship: false, retry: attempt < 2, why: played && played.broken ? 'the play broke: ' + played.broken : 'the play-bot did not run' };
-  if (!played.shots || !played.shots.length) return { ship: false, retry: attempt < 2, why: 'the play-bot saved no picture' };
-  if (!judged || judged.hold || !Number.isFinite(+judged.score)) return { ship: false, retry: attempt < 2, why: (judged && judged.why) || 'no score came back' };
+  if (!judged || !judged.frames) return { ship: false, retry: attempt < 2, why: 'the play-bot saved no picture' };
+  if (judged.hold || !Number.isFinite(+judged.score)) return { ship: false, retry: attempt < 2, why: judged.why || 'no score came back' };
   return decide({ before, score: +judged.score, attempt, hold: false });
 }
 export function playLink(env = process.env) {
