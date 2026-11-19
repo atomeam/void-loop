@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T13:51:13.566Z",
+ "updated": "2026-11-19T14:00:38.242Z",
  "last24h": {
-  "ticks": 81,
-  "started": 19,
+  "ticks": 82,
+  "started": 20,
   "requeued": 0,
   "setAside": 0,
   "probes": 0,
@@ -12,8 +12,8 @@
  "broken": [
   {
    "wf": "propose-fix.yml",
-   "fails": 5,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44500925706"
+   "fails": 6,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44538670187"
   },
   {
    "wf": "tower-gate.yml",
@@ -64,11 +64,11 @@
   },
   {
    "id": "mva30i2e",
-   "why": "propose-fix.yml is broken (5 failed runs); its repair is queued"
+   "why": "propose-fix.yml is broken (6 failed runs); its repair is queued"
   },
   {
    "id": "mva30j4u",
-   "why": "propose-fix.yml is broken (5 failed runs); its repair is queued"
+   "why": "propose-fix.yml is broken (6 failed runs); its repair is queued"
   },
   {
    "id": "mvvql4d9",
@@ -76,11 +76,11 @@
   },
   {
    "id": "mwa0agd2",
-   "why": "propose-fix.yml is broken (5 failed runs); its repair is queued"
+   "why": "propose-fix.yml is broken (6 failed runs); its repair is queued"
   },
   {
    "id": "mwa0ah54",
-   "why": "propose-fix.yml is broken (5 failed runs); its repair is queued"
+   "why": "propose-fix.yml is broken (6 failed runs); its repair is queued"
   },
   {
    "id": "mw3fl8fe",
@@ -100,13 +100,13 @@
   },
   {
    "id": "mwdsggtv",
-   "why": "propose-fix.yml is broken (5 failed runs); its repair is queued"
+   "why": "propose-fix.yml is broken (6 failed runs); its repair is queued"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 28,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -2244,6 +2244,37 @@
   },
   {
    "at": "2026-11-19T13:51:13.566Z",
+   "open": 488,
+   "started": [
+    {
+     "id": "want-guard-hourly-main-green",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 130
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 39,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-19T14:00:38.242Z",
    "open": 488,
    "started": [
     {
