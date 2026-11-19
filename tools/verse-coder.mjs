@@ -125,10 +125,10 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
         const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
         const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
         if (!text.trim()) { errs.push(p.name + ' empty'); continue; }
-        at = i; fn.last = p.name + ' ' + (j.model || p.model);
+        at = i; fn.last = p.name + ' ' + ((j && j.model) || p.model);
         if (j && j.paid) fn.paid = true;
         if (j && j.cents) fn.cents = (fn.cents || 0) + Number(j.cents);
-        const u = x.usage || j.usage || {};
+        const u = x.usage || (j && j.usage) || {};
         return { text, tokens: u.total_tokens || 0 };
       } catch (e) { errs.push(p.name + ' ' + String((e && e.name) || e)); }
     }

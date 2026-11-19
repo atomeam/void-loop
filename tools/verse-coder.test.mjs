@@ -394,6 +394,8 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
     return { ok: false, status: 401 }; } });
   assert.deepEqual(await odd([{ role: 'user', content: 'hi' }]), { text: call('finish'), tokens: 7 }, 'the site answers in the Workers AI shape');
   assert.equal(sent.length, 1); assert.equal(sent[0][1].authorization, 'Bearer ' + 'o'.repeat(30)); assert.match(odd.last, /^verse /);
+  const nil = await stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, json: async () => null }) })([]);
+  assert.match(nil.error, /no model answered/, 'a null JSON body moves on instead of throwing');
   const html = stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': 'text/html; charset=utf-8' }), json: async () => { throw new SyntaxError('Unexpected token <'); } }) });
   const said = (await html([])).error;
   assert.equal(said, 'no model answered (openrouter 200 text/html not JSON)'); assert.doesNotMatch(said, /Unexpected token/);
