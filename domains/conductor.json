@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T17:25:42.045Z",
+ "updated": "2026-11-19T17:35:25.819Z",
  "last24h": {
-  "ticks": 102,
-  "started": 39,
+  "ticks": 103,
+  "started": 40,
   "requeued": 1,
   "setAside": 0,
   "probes": 0,
@@ -106,11 +106,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 14,
    "cap": 90
   },
   "day": {
-   "used": 232,
+   "used": 246,
    "cap": 360
   },
   "room": true,
@@ -2907,6 +2907,37 @@
    ],
    "probe": false,
    "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 39,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-19T17:35:25.819Z",
+   "open": 497,
+   "started": [
+    {
+     "id": "mway8e3z",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 118
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
    "design": false,
    "will": false,
    "lap": false,
