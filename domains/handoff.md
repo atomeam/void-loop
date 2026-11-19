@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/game-lap-e463 · the hourly Verse loop plays one due game update · 2026-11-19 13:30 UTC
 - Cursor cloud agent · helper/game-book-e463 · the game-update book: next round, a new game after a full cycle, cost on each row · 2026-11-19 13:00 UTC
 - Cursor cloud agent · helper/house-loops-f4e9 · house loops and the What Verse is doing log on /progress/ · 2026-11-19 13:00 UTC
 - Viktor · fix/verse-conductor-event-health · successes from a different trigger cannot hide a broken scheduled audit; watch recovery infrastructure too · 2026-11-16
