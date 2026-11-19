@@ -573,9 +573,27 @@
   },
   {
    "state": "shipped",
+   "date": "2026-11-16",
+   "ask": "automation-proposal skill: propose concrete automations Verse handles for a process so the client does less manual work",
+   "from": "new idea by growth agent; helper/automation-proposal"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-17",
+   "ask": "handoff-ready skill: check if a system is ready for client handoff (ownership, status, docs, monitors, tests…",
+   "from": "new idea by growth agent; helper/handoff-ready"
+  },
+  {
+   "state": "shipped",
    "date": "2026-11-17",
    "ask": "summon-pack skill: package the asks a client types to summon status, ownership, progress and handoff so the client…",
    "from": "new idea by growth agent; helper/summon-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-18",
+   "ask": "systems-connect-pack skill: package connections between systems for a business idea so Verse owns the integration and…",
+   "from": "new idea by growth agent; helper/systems-connect-pack"
   }
  ],
  "open": [
@@ -912,6 +930,14 @@
  },
  "commits": [
   {
+   "at": "2026-11-19T00:21:07Z",
+   "subject": "Mark automation-proposal, handoff-ready and systems-connect-pack shipped (skills already on main) (#2995)"
+  },
+  {
+   "at": "2026-11-19T00:19:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-19T00:18:43Z",
    "subject": "Register ops-digest in skills/index.json"
   },
@@ -982,14 +1008,6 @@
   {
    "at": "2026-11-18T21:25:38Z",
    "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-18T21:22:43Z",
-   "subject": "Incident: the browser suite failed on d8d50c66 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-18T21:17:32Z",
-   "subject": "Tower gate: versus measured"
   }
  ],
  "builders": {
