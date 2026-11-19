@@ -1,8 +1,7 @@
-// Humble copy (house rule, 2026-11-09). Verse never brags: no win counts, no "conquered", "surpassed" or "outclassed" rivals, no "the best" or "better than X" about
-// itself, no "look what I made". This scans the copy people see (the site's pages, skills, libraries, text files) with comments taken out,
-// so a note in a comment is history, not copy. A word that is a game's own rule ("beat the level") or a data key
-// ('surpassed' as an outcome id, the /conquered/ path) is not a boast and is not matched; anything else that matches has to be rewritten
-// or named in ALLOW with the reason. Run: node tools/humble-copy.mjs (exit 1 on a boast); node --test tools/humble-copy.test.mjs.
+// Banned phrases in the copy people see. This used to be a house-rule boast filter (no "conquered", "surpassed", "the best",
+// "look what I made" and the like); that taste rule was agent-made and is gone, so Verse may say any of those. What is left is the
+// phrase the owner asked never to see: "heavy lifting". It scans the site's pages, skills, libraries and text files with comments
+// taken out, so a note in a comment is history, not copy. Run: node tools/humble-copy.mjs (exit 1 on a hit); node --test tools/humble-copy.test.mjs.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
@@ -14,30 +13,13 @@ export const PENDING = new Set([
   'lib/tower.js', 'skills/tower.js', 'skills/mini/tower.js', 'lib/tower-art.js', 'lib/tower-rank.js',
 ]);
 
-/** the boasts: each { id, re }. Words only, in prose; a data key or a path is not prose (see strip and the lookarounds). */
+/** the banned phrases: each { id, re }. Words only, in prose. */
 export const BOASTS = [
-  { id: 'conquer', re: /(?<![/\w'"-])conquer(?:s|ed|ing|or|ors)?(?![/\w'"-])/gi },
-  { id: 'outclass', re: /\boutclass(?:es|ed|ing)?\b/gi },
-  { id: 'surpassed', re: /\b(?:has|have|had|been|it|Verse|we|I|I've|we've|haven't|hasn't|every site|sites?|all|is|are|was|were|be|not yet)\s+(?:been\s+|already\s+|now\s+)?surpass(?:ed|es|ing)?\b|\bsurpassing\b|\bsurpass(?:ed|es)? (?:it|them|every|all|the (?:site|rival|competition))\b/gi },
-  { id: 'defeated', re: /\bdefeated (?:sites?|rivals?|targets?|competitors?|tools?)\b|\bevery defeated\b/gi },
-  { id: 'dominate', re: /\bdominat(?:e|es|ed|ing|ion)\b(?! the (?:board|centre|center))/gi },
-  { id: 'crush', re: /\bcrush(?:es|ed|ing)? (?:the |every |all )?(?:competition|rivals?|competitors?|sites?)\b/gi },
-  { id: 'beat-rivals', re: /\b(?:beats?|beaten|beating|outdo(?:es|ne)?|outperform(?:s|ed)?) (?:every|all|the|other|its|our) (?:sites?|rivals?|competitors?|competition|tools?)\b|\bbeaten in every way\b/gi },
-  { id: 'best', re: /\b(?:Verse|I|we|A-to-Mind)(?:'s| is| am| are|'m|'re)? (?:the )?(?:best|greatest|smartest|superior|number one|#1)\b/gi },
-  { id: 'than-rival', re: /\b\d+x faster than\b|\b(?:better|smarter|faster) than (?:the best site|every|all|any other|other sites|the competition|its rivals?)\b/gi },
-  { id: 'awe', re: /\bawe-?inspiring\b|\bin awe\b/gi },
-  { id: 'i-made', re: /\b(?:look what I made|I made [\d,]+|everything I made|I built this:)/gi },
-  { id: 'win-count', re: /\b\d[\d,]* (?:sites?|rivals?) (?:surpassed|beaten|conquered)\b|\b(?:surpassed|beaten|conquered) [\d,]+ (?:sites?|rivals?)\b/gi },
   { id: 'heavy-lifting', re: /\bheavy lifting\b/gi },
-  { id: 'does-the-work', re: /\bVerse does the work\b/gi },
 ];
 
 /** ALLOW: [file, boast id, a piece of the matched line, why]. Keep it small and explicit. */
 export const ALLOW = [
-  ['assimilated/index.html', 'conquer', "'passed, conquering in background':", 'the old data label (tools/assimilated.mjs LABEL) as a key, mapped to plain words for the page'],
-  ['lib/verse-log.js', 'conquer', "'passed, conquering in background':", 'the same old data label as a key, mapped to plain words on the log page'],
-  ['lib/autopsy.js', 'i-made', 'look what i made', 'what a person may type to open the walkthrough, matched, never shown'],
-  ['obituaries/index.html', 'beat-rivals', 'in every way', 'the memorial status the honesty check reads: said only when obituary.js marks every feature matched, beside how many are still in progress'],
 ];
 
 /** the text with comments taken out: block, HTML and line comments (a line comment needs a space or start before //, so https:// stays). Pure. */
