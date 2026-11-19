@@ -48,7 +48,7 @@ async function run(text, api) {
       + '<h3>Incident handoff</h3><p>' + esc(r.incidentHandoff) + '</p>'
       + '<h3>Next</h3><p>' + esc(r.next) + '</p>'
       + '<p class="sub">Reuse existing tools and packs. Empty stage stays empty. Nothing sent.</p>'
-      + '<div class="src">Source: A-to-Mind monitor-receipt · verse owns the heavy lifting</div>';
+      + '<div class="src">Source: A-to-Mind monitor-receipt · verse owns the hard work</div>';
   });
   return 'monitor-receipt';
 }
