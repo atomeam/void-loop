@@ -344,9 +344,12 @@ test('past the free share the treasury pays (owner, 2026-11-19: "a free limit is
   assert.equal(r.state, 'art'); assert.equal(r.paid, true); assert.equal(r.cents, 1); assert.equal(w.calls.length, 1);
   const spends = w.env.DB.raw.prepare("SELECT cents, purpose FROM void_treasury WHERE kind = 'spend'").all();
   assert.equal(spends.length, 1); assert.match(spends[0].purpose, /^card art past the free share \(/);
-  const capped = world({ extra: { ART_DAILY_CAP: '0', ART_PAID_CAP: '0' } }); await route.paidToday(capped.env);
-  capped.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', ?, 'alloc', 'infrastructure', 300, 'test', 'done')").run(new Date().toISOString());
-  assert.equal((await (await post(capped.env, 'cat')).json()).why, 'cap', 'ART_PAID_CAP bounds a day');
+  // no count limit on paid paintings: 400 already paid today and an old ART_PAID_CAP setting change nothing while the pot has money
+  const many = world({ extra: { ART_DAILY_CAP: '0', ART_PAID_CAP: '0' } }); await route.paidToday(many.env);
+  many.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', ?, 'alloc', 'infrastructure', 900, 'test', 'done')").run(new Date().toISOString());
+  for (let i = 0; i < 400; i++) many.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, 'spend', 'infrastructure', 1, 'card art past the free share (x)', 'done')").run('s' + i, new Date().toISOString());
+  const m = await (await post(many.env, 'fox', 'answer', 'common', '7.7.7.2')).json();
+  assert.equal(m.state, 'art'); assert.equal(m.paid, true);
 });
 
 test('a kept picture that fails the quality check is dropped and never shown; one that passes is looked at only once', async () => {

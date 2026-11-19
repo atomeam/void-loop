@@ -63,14 +63,13 @@ async function madeToday(env) {
 }
 // PAST THE FREE SHARE, VERSE PAYS (owner, 2026-11-19: "a free limit is never a stop"; the coder's #3009 fall-through): when the day's free Workers AI
 // share (capOf) is used, the same Workers AI models keep painting as paid usage, each painting taken from the treasury's infrastructure pot and logged
-// there with its cost (one cent, the smallest charge: a FLUX picture costs Cloudflare well under that). It stops only when the pot is empty or at
-// ART_PAID_CAP paintings a day (a runaway guard, 300 by default). Keyless Pollinations is never asked (it stamps a logo).
-export const PAID_CAP = 300, ART_CENTS = 1;
-export const paidCapOf = (env) => { const n = Math.floor(Number(env && env.ART_PAID_CAP)); return Number.isFinite(n) && n >= 0 && String((env && env.ART_PAID_CAP) ?? '').trim() !== '' ? n : PAID_CAP; };
+// there with its cost (one cent, the smallest charge: a FLUX picture costs Cloudflare well under that). There is no count limit; it stops only when the
+// pot is empty. Keyless Pollinations is never asked (it stamps a logo).
+export const ART_CENTS = 1;
 export async function paidToday(env) {
   try { await infraCents(env); const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_treasury WHERE kind = 'spend' AND purpose LIKE 'card art past the free share%' AND substr(at, 1, 10) = ?").bind(today()).first(); return Number(r && r.n) || 0; } catch (_) { return Infinity; }
 }
-export async function canPay(env) { return !!(env && env.AI) && (await paidToday(env)) < paidCapOf(env) && (await infraCents(env)) >= ART_CENTS; }
+export async function canPay(env) { return !!(env && env.AI) && (await infraCents(env)) >= ART_CENTS; }
 export async function billArt(env, model) {
   try { await env.DB.prepare('INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, ?, ?, ?, ?, ?)').bind('art-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8), new Date().toISOString(), 'spend', 'infrastructure', ART_CENTS, 'card art past the free share (' + String(model).split('/').pop().slice(0, 40) + ')', 'done').run(); return ART_CENTS; } catch (_) { return 0; }
 }
@@ -296,7 +295,7 @@ export async function onRequestPost({ request, env, internal = false }) {
   if (row && (!again || (row.day === today() && !(await weakArt(env, row.img, gateSubject(key, kind)))))) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}), ...(again ? { why: 'again-today' } : {}) }); }
   if (!on(env)) return plate('off');
   const dropWeak = async () => { if (weakAgain) { try { await env.DB.prepare('DELETE FROM void_art WHERE subject = ?').bind(key).run(); } catch (_) {} } };
-  const made = await madeToday(env), overFree = made >= capOf(env), paid = overFree && await canPay(env), overWorkers = overFree && !paid; // overWorkers: no Workers AI at all (the pot is empty or at its cap)
+  const made = await madeToday(env), overFree = made >= capOf(env), paid = overFree && await canPay(env), overWorkers = overFree && !paid; // overWorkers: no Workers AI at all (the pot is empty)
   if (overWorkers && (!pollReady(env) || made >= capOf(env) + POLL_CAP)) { await dropWeak(); return plate('cap'); }
   let spent = 0; // cents taken from the treasury for this card (logged in void_treasury, one row a painting)
   const paintOnce = async (e, model, prompt, sz) => { const r = await paintWith(e, model, prompt, sz); if (paid) spent += await billArt(e, model); return r; };
