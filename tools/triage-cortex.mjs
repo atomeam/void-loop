@@ -28,6 +28,7 @@ export function preflight(task) {
   const t = task || {};
   if (t.kind === 'fix' || t.kind === 'heal') return t.check ? { ok: true, why: 'red check: ' + t.check, files: [], tests: [t.check] } : { ok: false, why: 'a red check with no name', files: [], tests: [] };
   if (t.kind === 'probe' || t.kind === 'groom' || t.kind === 'idle') return { ok: true, why: t.kind + ' needs no scope', files: [], tests: [] };
+  if (t.kind === 'game' || t.kind === 'invent') return { ok: true, why: 'one game', files: t.game ? [t.game.file] : [], tests: [] };
   const sc = scopeOf(t.text);
   if (!sc.files.length && !sc.tests.length) {
     return { ok: false, why: 'unscoped: the task names no target file path and no failing test id (name one, e.g. tools/<name>.mjs or failing test "<label>")', ...sc };

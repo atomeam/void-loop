@@ -125,7 +125,9 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
         const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
         const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
         if (!text.trim()) { errs.push(p.name + ' empty'); continue; }
-        at = i; fn.last = p.name + ' ' + p.model;
+        at = i; fn.last = p.name + ' ' + (j.model || p.model);
+        if (j && j.paid) fn.paid = true;
+        if (j && j.cents) fn.cents = (fn.cents || 0) + Number(j.cents);
         const u = x.usage || j.usage || {};
         return { text, tokens: u.total_tokens || 0 };
       } catch (e) { errs.push(p.name + ' ' + String((e && e.name) || e)); }
@@ -697,7 +699,7 @@ function parseCli(argv) {
 
 async function main() {
   const o = parseCli(process.argv.slice(2)), env = process.env, root = resolve(o.repo);
-  const say = (r) => { console.log(JSON.stringify({ outcome: r.outcome, why: r.why, turns: r.turns || 0, tokens: r.tokens || 0, files: r.files || [], provider: r.provider || '', spent: r.spent || null })); process.exit(EXIT[r.outcome] ?? 1); };
+  const say = (r) => { console.log(JSON.stringify({ outcome: r.outcome, why: r.why, turns: r.turns || 0, tokens: r.tokens || 0, files: r.files || [], provider: r.provider || '', spent: r.spent || null, cents: r.cents || 0, paid: !!r.paid })); process.exit(EXIT[r.outcome] ?? 1); };
   const prompt = o.promptFile ? readFileSync(o.promptFile, 'utf8') : o.task;
   if (!prompt) return say({ outcome: 'error', why: 'give --prompt-file or --task' });
   const checks = o.checks ? JSON.parse(readFileSync(o.checks, 'utf8')) : existsSync(join(root, 'tools/verse-loop.checks.json')) ? JSON.parse(readFileSync(join(root, 'tools/verse-loop.checks.json'), 'utf8')) : DEFAULT_CHECKS;
@@ -709,7 +711,7 @@ async function main() {
     model = stackModel(ps); provider = ps.map((p) => p.name).join(' > ');
   }
   const r = await runCoder({ root, prompt, checks, target: o.target, model, env, limits: { ...(+o.turns ? { turns: +o.turns } : {}), ...(+o.tokens ? { tokens: +o.tokens } : {}), ...(+o.reads ? { reads: +o.reads } : {}) }, log: (s) => console.error(s) });
-  say({ ...r, provider: (model.last || provider) });
+  say({ ...r, provider: (model.last || provider), cents: (model && model.cents) || 0, paid: !!(model && model.paid) });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().catch((e) => { console.log(JSON.stringify({ outcome: 'error', why: String((e && e.message) || e).slice(0, 300) })); process.exit(1); });

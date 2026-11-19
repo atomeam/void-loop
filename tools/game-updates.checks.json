@@ -1,0 +1,1 @@
+[{ "name": "game-updates", "cmd": "node --test tools/game-updates.test.mjs", "timeoutMin": 2 }]

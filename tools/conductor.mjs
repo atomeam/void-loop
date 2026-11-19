@@ -7,7 +7,7 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { plan, probeDue, growDue, designDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, coderShort, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
+import { plan, probeDue, growDue, designDue, gameDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, coderShort, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
 import { queueBlueprints } from './watch-build.mjs'; // every blueprint Verse wrote becomes a tv: build job, a few an hour
 import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
@@ -19,7 +19,7 @@ const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
 export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-gate.yml', 'deploy.yml',
-  'pages-guard.yml', 'actions-failures.yml', 'grow-self.yml', 'design-loop.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
+  'pages-guard.yml', 'actions-failures.yml', 'grow-self.yml', 'design-loop.yml', 'game-updates.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
 const warn = (m) => { warnings.push(m); console.log('::warning title=Conductor::' + m); };
@@ -179,6 +179,8 @@ async function tick() {
   // a design pass (design-loop.yml) every 2 hours: its own schedule did not fire
   const design = wf['design-loop.yml'] || {};
   if (designDue({ exists: design.exists, busy: design.busy, lastRunMs: design.last, now }) && await act('design-loop', async () => { start('design-loop.yml'); return true; })) done.design = true;
+  const games = wf['game-updates.yml'] || {};
+  if (gameDue({ exists: games.exists, busy: games.busy, lastRunMs: games.last, now }) && await act('game-updates', async () => { start('game-updates.yml'); return true; })) done.games = true;
   // Verse's will every hour (will.yml: three fresh wants, the top one to the queue); its own schedule comes hours late
   const will = wf['will.yml'] || {};
   if (willDue({ exists: will.exists, busy: will.busy, lastRunMs: will.last, now }) && await act('will', async () => { start('will.yml'); return true; })) done.will = true;
@@ -218,7 +220,7 @@ function finish(state, now, t) {
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
     updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, sweptAt: state.sweptAt || 0, blueprintsAt: state.blueprintsAt || 0, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
-  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; design pass ${t.done.design ? 'started' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}; blueprints queued ${(t.done.blueprints || []).join(', ') || 'none'}` : 'no plan: ' + (warnings[0] || ''),
+  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; design pass ${t.done.design ? 'started' : 'not due'}; game update ${t.done.games ? 'started' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}; blueprints queued ${(t.done.blueprints || []).join(', ') || 'none'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',
     `last 24 h: ${day.started} started, ${day.requeued} put back, ${day.setAside} set aside, ${day.probes} probe runs, ${day.errors} ticks without a plan`].filter(Boolean);
   console.log(lines.join('\n'));

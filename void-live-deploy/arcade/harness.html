@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Play</title>
+<canvas id="c"></canvas>
+<script type="module">
+import { drive } from '/lib/studio-play.js';
+const file = new URLSearchParams(location.search).get('file') || '';
+if (!/^\/skills\/[a-z0-9-]+-rules\.js$/.test(file)) throw new Error('not a game');
+const game = await import(file);
+const cv = document.getElementById('c');
+cv.width = game.W; cv.height = game.H; cv.style.width = '100%';
+const stage = document.createElement('div'); stage.append(cv); document.body.append(stage);
+const again = document.createElement('button'); again.hidden = true;
+const card = { el: document.body, cv, ctx: cv.getContext('2d'), status: null, why: null, again, stage, start(fn) { const loop = () => { requestAnimationFrame(loop); fn(); }; requestAnimationFrame(loop); }, local(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * game.W / Math.max(1, r.width), y: (e.clientY - r.top) * game.H / Math.max(1, r.height) }; } };
+if (game.tick && game.draw && game.create) drive(card, game, { fly: !!game.fly, canvasHud: true });
+</script>

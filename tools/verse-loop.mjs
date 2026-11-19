@@ -22,6 +22,7 @@ import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
 import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
+import { acceptGame, gameTask, recordGame } from './game-updates.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -39,7 +40,7 @@ export const DEFAULT_CHECKS = [
 
 /** Parse argv into options. Pure. */
 export function parseArgs(argv, env = {}) {
-  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false };
+  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false, lane: '' };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = () => { const v = argv[++i]; if (v === undefined) throw new Error(a + ' needs a value'); return v; };
@@ -51,6 +52,7 @@ export function parseArgs(argv, env = {}) {
     else if (a === '--checks') o.checks = val();
     else if (a === '--base') o.base = val();
     else if (a === '--task') o.task = val();
+    else if (a === '--lane') o.lane = val();
     else if (a === '--strict') o.strict = true;
     else if (a === '-h' || a === '--help') o.help = true;
     else throw new Error('unknown flag ' + a);
@@ -125,7 +127,8 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
     '- a workflow: .github/workflows/<file> (read it, never edit it). The map of everything: docs/MAP.md.',
     '',
     '## Task',
-    task.kind === 'heal'
+    task.kind === 'game' || task.kind === 'invent' ? task.text
+      : task.kind === 'heal'
       ? `A check failed on the open pull request ${task.pr} (branch ${task.branch}); you are on that branch. Fix what it tests (never by weakening the test).\nFailed: ${task.check}\nWorkflow: ${task.cmd}\nFailure log:\n${tail(task.output || '', 6000)}`
       : task.kind === 'fix'
       ? `A check is red. Make it green by fixing what it tests (never by weakening the test).\nCheck: ${task.check}\nCommand: ${task.cmd}\nLast output:\n${tail(task.output || '', 4000)}`
@@ -285,7 +288,8 @@ export function failedLoopPr(prs, heals = {}) {
 export const DUP_HOURS = 12;
 /** The PR title a lap of this task opens. Pure. */
 export function titleFor(task, probe = null) {
-  return task.kind === 'fix' ? `Verse loop: fix ${task.check}`
+  return task.kind === 'game' || task.kind === 'invent' ? task.title
+    : task.kind === 'fix' ? `Verse loop: fix ${task.check}`
     : task.kind === 'groom' ? GROOM_TITLE
     : task.kind === 'probe' ? String((probe && probe.title) || 'Verse fixes ' + ((probe && probe.skill) || 'a skill')).slice(0, 90)
     : `Verse loop: ${task.n != null ? 'NEXT ' + task.n : 'task'}, ${String(task.text || '').replace(/\*\*/g, '').slice(0, 60)}`;
@@ -359,7 +363,7 @@ function sh(cmd, args, opts = {}) {
 
 /** One lap. Returns a report; an ordinary red, a no-op, a refusal or a pause is an outcome, not a throw. Before the lap: the pause
  *  (skip, or resume by itself after PAUSE_HOURS) and the PRs earlier laps opened. After: the streak, and a pause at BACKOFF_AFTER. */
-export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now(), judge = judgeDiff } = {}) {
+export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now(), judge = judgeDiff, play, judgePlay } = {}) {
   const git = (...a) => sh('git', a, { cwd, env });
   const gh = (...a) => sh(env.VERSE_LOOP_GH || 'gh', a, { cwd, env });
   const ghJson = (...a) => { const r = gh(...a); if (r.code) return null; try { return JSON.parse(r.out); } catch { return null; } };
@@ -446,8 +450,10 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     writeFileSync(checksCopy, JSON.stringify(checks));
     const brain = (t) => {
       report.task = t.kind === 'fix' ? { kind: 'fix', check: t.check } : t.kind === 'next' ? { kind: 'next', n: t.n, text: t.text.slice(0, 200) }
+        : t.kind === 'game' || t.kind === 'invent' ? { kind: t.kind, title: t.title }
         : t.kind === 'heal' ? { kind: 'heal', branch: t.branch, pr: t.pr, failed: t.check } : { kind: 'probe' };
-      step(t.kind === 'fix' ? 'task: fix the first red check, ' + t.check : t.kind === 'next' ? 'task: ' + (t.n != null ? 'docs/NEXT.md item ' + t.n : 'the given task')
+      step(t.kind === 'fix' ? 'task: fix the first red check, ' + t.check : t.kind === 'game' || t.kind === 'invent' ? 'task: ' + t.title
+        : t.kind === 'next' ? 'task: ' + (t.n != null ? 'docs/NEXT.md item ' + t.n : 'the given task')
         : t.kind === 'heal' ? 'task: heal ' + t.branch + ' (' + t.check + ')' : 'task: the oldest open probe job (tools/propose-fix.mjs)');
       const prompt = buildPrompt({ task: t.kind === 'probe' ? { kind: 'next', text: 'probe job', n: null } : t, tagteam: readDoc('docs/TAGTEAM.md'), gates: readDoc('docs/GATE-STANDARDS.md') });
       writeFileSync(promptFile, prompt);
@@ -508,7 +514,9 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       const g = gate(before, task);
       if (g.stop) return g;
       const diffOf = () => { git('add', '-A'); const d = git('diff', '--cached').out; git('reset', '-q'); return d; };
-      const ask = (diff) => judge(diff, { env, cwd, task: task.text || task.check || task.kind });
+      const ask = (diff) => (task.kind === 'game' || task.kind === 'invent') && task.gamePass
+        ? Promise.resolve({ pass: true, why: task.gamePass })
+        : judge(diff, { env, cwd, task: task.text || task.check || task.kind });
       let j = await ask(diffOf());
       report.judgment = j;
       if (j.pass) { step('judgment: ' + j.why); return g; }
@@ -526,7 +534,8 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     };
     // self-heal first: an open loop/* PR with a failed check is fixed on its own branch, and the lap does nothing else
     const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup,createdAt', '--limit', '100') || [];
-    const sick = failedLoopPr(open, state.heals || {});
+    const healOpen = opts.lane === 'games' ? open.filter((p) => /^Game update:/.test(p.title || '')) : open;
+    const sick = failedLoopPr(healOpen, state.heals || {});
     if (sick) {
       report.healed = sick.branch;
       const f = git('fetch', 'origin', sick.branch);
@@ -567,7 +576,10 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const next = next0 ? groomNext(next0, { gaps: readDoc('docs/PARITY.md'), red }) : next0;
     const groomOpen = open.some((p) => /^loop\//.test(p.headRefName || '') && p.title === GROOM_TITLE);
     let task;
-    if (!red.length && !opts.task && next !== next0 && !groomOpen) {
+    if (opts.lane === 'games') {
+      task = gameTask(cwd);
+      step('task: ' + task.title);
+    } else if (!red.length && !opts.task && next !== next0 && !groomOpen) {
       task = { kind: 'groom' };
       report.task = { kind: 'groom' };
       step('task: groom docs/NEXT.md (the ranked queue changed)');
@@ -580,12 +592,12 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     { const g = preflight(task); if (!g.ok) return done('skipped', 'triage-cortex: ' + g.why, { triage: g }); }
 
     // one open PR per task: a twin opened under DUP_HOURS ago is still the answer, so this lap spends no model calls on it
-    if (task.kind === 'fix' || task.kind === 'next') {
+    if (task.kind === 'fix' || task.kind === 'next' || task.kind === 'game' || task.kind === 'invent') {
       const twin = twins(open, titleFor(task), now)[0];
       if (twin && twin.ageH < DUP_HOURS) return done('skipped', `an open loop PR already does this (${twin.url}, opened ${twin.ageH.toFixed(1)} h ago); no model calls spent`, { duplicateOf: twin.url });
     }
 
-    let probe = null;
+    let probe = null, coderOut = {};
     if (task.kind !== 'groom') {
       let ar = brain(task);
       if (ar.error && ar.error.code === 'ENOENT') return done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)');
@@ -628,6 +640,21 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         if (ap.code) return done('error', 'the patch no longer applies: ' + ap.out.trim());
         report.task = { kind: 'probe', skill: probe.skill, ask: probe.ask };
       } else if (ar.code) step('the brain exited ' + ar.code + ' (its changes, if any, still face the checks)');
+      if (opts.lane === 'games') coderOut = said(ar);
+    }
+
+    if (opts.lane === 'games') {
+      const handed = { env, ...(play ? { play } : {}), ...(judgePlay ? { judge: judgePlay } : {}) };
+      let gate = await acceptGame({ cwd, task, attempt: 1, coder: coderOut, ...handed });
+      if (!gate.ship && gate.retry) {
+        step('game gate: ' + gate.why + '; one more try');
+        const fix = brain({ ...task, text: task.text + '\n\nThe last try did not ship. ' + gate.why });
+        if (!(opts.agent === 'verse' && fix.code)) gate = await acceptGame({ cwd, task, attempt: 2, coder: said(fix), ...handed });
+      }
+      if (!gate.ship) { git('reset', '--hard', 'HEAD'); git('clean', '-fd'); return done('dropped', gate.why + '; retried once, then dropped'); }
+      recordGame(cwd, gate);
+      task.gamePass = gate.why + (gate.cents ? '; treasury paid ' + gate.cents + ' cents' : '; free');
+      step('game gate: ' + task.gamePass);
     }
 
     const g = await hold(before, task);
@@ -660,7 +687,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     if (p.code) return done('error', 'push failed: ' + p.out.trim());
     step('pushed ' + branch);
     const what = task.kind === 'fix' ? 'fix the first red check, `' + task.check + '`' : task.kind === 'groom' ? 're-rank Verse\'s queue in docs/NEXT.md (easiest first)'
-      : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ', confidence ' + probe.confidence + ')' : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task');
+      : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ', confidence ' + probe.confidence + ')' : task.kind === 'game' || task.kind === 'invent' ? task.title : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task');
     const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${what}\n\nChecks after: ${v.why}.\nJudgment: ${(report.judgment && report.judgment.why) || 'not recorded'}.\nMerges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
     // no human in the loop: every PR the loop opens is labelled automerge (a low-confidence probe patch was dropped above)
     report.label = 'automerge';

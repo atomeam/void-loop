@@ -4,6 +4,7 @@
 export const BOOK = 'data/game-updates.json';
 export const PUBLIC_BOOK = 'void-live-deploy/scoreboard/game-updates.json';
 export const BAR_ID = 'debris-field';
+export const emptyBook = () => ({ cursor: 0, picks: {}, scores: {}, shown: [], bar: BAR_ID, born: [], cycle: 1, log: [] });
 export const PARTS = ['danger', 'goal', 'boss', 'juice', 'phone', 'fair', 'end', 'fun', 'polish'];
 const R = (id, title, lane, ask, play) => ({ id, title, lane, ask, play, file: 'void-live-deploy/skills/' + id + '-rules.js' });
 export const CATALOG = [
