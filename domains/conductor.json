@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T09:55:40.515Z",
+ "updated": "2026-11-19T10:05:01.558Z",
  "last24h": {
-  "ticks": 56,
+  "ticks": 57,
   "started": 16,
   "requeued": 0,
   "setAside": 0,
@@ -12,8 +12,8 @@
  "broken": [
   {
    "wf": "propose-fix.yml",
-   "fails": 4,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44454419042"
+   "fails": 5,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44500925706"
   },
   {
    "wf": "tower-gate.yml",
@@ -1648,6 +1648,30 @@
    "sweep": false,
    "blueprints": 0,
    "held": 465,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-19T10:05:01.558Z",
+   "open": 484,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 479,
    "warnings": 1
   }
  ]
