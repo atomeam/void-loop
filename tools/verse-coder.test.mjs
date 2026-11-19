@@ -439,6 +439,16 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.equal((await billed([])).tokens, 4);
   assert.equal(billed.paid, true); assert.equal(billed.cents, 2);
   assert.equal(paidBodies.filter((b) => b.pay).length, 1, 'one paid call after the free stack misses');
+  const slow = [];
+  const timed = stackModel(chain, { fetchImpl: async (url, init) => {
+    const body = JSON.parse(init.body); slow.push(!!body.pay);
+    if (body.pay) return { ok: true, json: async () => ({ result: { response: call('finish'), usage: { total_tokens: 5 } }, paid: true, cents: 3 }) };
+    if (String(url).includes('example.invalid')) { const e = new Error('aborted'); e.name = 'TimeoutError'; throw e; }
+    return { ok: false, status: 404, text: async () => 'missing' };
+  } });
+  assert.equal((await timed([])).tokens, 5);
+  assert.equal(timed.paid, true); assert.equal(timed.cents, 3);
+  assert.equal(slow.filter(Boolean).length, 1, 'a timeout falls through to the paid coder');
   assert.deepEqual(Object.keys(keyless({ PATH: '/bin', GROQ_API_KEY: 'k', CLOUDFLARE_API_TOKEN: 't', GH_TOKEN: 'g', HOME: '/h' })), ['PATH', 'HOME'], 'checks never see a key');
 });
 

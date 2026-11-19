@@ -28,6 +28,10 @@ on:
         description: "run the checks and the brain, commit and open nothing"
         type: boolean
         default: false
+      bar:
+        description: "play Debris Field, store its fun as the public bar, and stop. No coder."
+        type: boolean
+        default: false
 
 concurrency:
   group: verse-coder # shared with verse-job.yml: one coder at a time (the free model budget; both append to docs/TAGTEAM.md)
@@ -111,6 +115,7 @@ jobs:
           VERSE_LOOP_STATE: ${{ runner.temp }}/verse-loop/state.json
           VERSE_LOOP_AGENT: ${{ inputs.agent || 'verse' }}
           DRY: ${{ inputs.dry && '--dry-run' || '' }}
+          BAR: ${{ inputs.bar && '--bar' || '' }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           GH_TOKEN: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
           # unset token: the pull request's author is github-actions[bot], and its pull_request runs do not start on their own
@@ -130,7 +135,7 @@ jobs:
             DRY=--dry-run
           fi
           # the lap's output goes outside the checkout: a file in the tree is a local change, and a lap with local changes skips (2026-11-06)
-          node tools/verse-loop.mjs --once $DRY | tee "$RUNNER_TEMP/lap.txt"
+          node tools/verse-loop.mjs --once $DRY $BAR | tee "$RUNNER_TEMP/lap.txt"
           { echo '### Verse loop'; echo; echo '```'; tail -n 20 "$RUNNER_TEMP/lap.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - if: always()
         uses: actions/upload-artifact@v4

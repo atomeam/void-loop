@@ -131,20 +131,22 @@ export function recordGame(cwd, gate, at = new Date().toISOString()) {
   const book = applyUpdate(loadBook(cwd), gate.game, { fun: gate.score, note: gate.note, at, cents: gate.cents, paid: gate.paid, provider: gate.provider, dropped: !gate.ship, cursor: gate.cursor, born: gate.born, video: gate.video, parts: gate.parts });
   saveBook(book, cwd); return book;
 }
+/** Play Debris Field and store its fun. No coder. Already stored: returns that fun and writes nothing. */
+export async function scoreBar(cwd = root, { env = process.env, play = playGame, judge = judgePlay } = {}) {
+  const book = loadBook(cwd);
+  const had = funOf(book, BAR_ID);
+  if (had > 0) return { fun: had, stored: false, why: 'already stored' };
+  const game = CATALOG.find((g) => g.id === BAR_ID);
+  const played = await play(game, { cwd, ms: Number(env.GAME_PLAY_MS) || 75000, outDir: env.GAME_PLAY_DIR || '' });
+  const judged = await judge(played, { env, game, note: 'the public bar' });
+  if (!played || played.broken || !judged || !judged.frames || !Number.isFinite(+judged.score)) return { fun: 0, stored: false, why: (played && played.broken) || (judged && judged.why) || 'no score' };
+  saveBook(withBar(book, +judged.score, judged.parts), cwd);
+  return { fun: +judged.score, parts: judged.parts || null, stored: true, why: judged.why || '' };
+}
 /** Play Debris Field once when it has no fun, then name the weakest mark so the coder prompt aims at it. */
 export async function aimGame(cwd, task, { env = process.env, play = playGame, judge = judgePlay } = {}) {
-  let book = loadBook(cwd);
-  let fun = funOf(book, BAR_ID);
-  if (!(fun > 0)) {
-    const barGame = CATALOG.find((g) => g.id === BAR_ID);
-    const played = await play(barGame, { cwd, ms: Number(env.GAME_PLAY_MS) || 75000, outDir: env.GAME_PLAY_DIR || '' });
-    const judged = await judge(played, { env, game: barGame, note: 'the public bar' });
-    if (played && !played.broken && judged && judged.frames && Number.isFinite(+judged.score)) {
-      book = withBar(book, +judged.score, judged.parts);
-      saveBook(book, cwd);
-      fun = +judged.score;
-    }
-  }
+  const scored = await scoreBar(cwd, { env, play, judge });
+  const book = loadBook(cwd);
   let parts = (book.scores[task.game.id] || {}).parts;
   if (!gapOf(parts) && task.game) {
     const played = await play(task.game, { cwd, ms: Number(env.GAME_PLAY_MS) || 75000, outDir: env.GAME_PLAY_DIR || '' });
@@ -152,7 +154,12 @@ export async function aimGame(cwd, task, { env = process.env, play = playGame, j
     if (judged && judged.parts) parts = judged.parts;
   }
   const gap = gapOf(parts);
-  return { fun, gap: gap ? gap.words : '', text: promptFor(task.game, task.update, parts) };
+  return { fun: scored.fun, gap: gap ? gap.words : '', text: promptFor(task.game, task.update, parts) };
+}
+if (process.argv[1] && process.argv[1].endsWith('game-updates.mjs') && process.argv[2] === 'bar') {
+  const r = await scoreBar(root);
+  console.log(JSON.stringify(r));
+  process.exit(r.fun ? 0 : 2);
 }
 if (process.argv[1] && process.argv[1].endsWith('game-updates.mjs') && process.argv[2] === 'play') {
   const game = CATALOG.find((g) => g.id === (process.argv[3] || 'null-waves'));

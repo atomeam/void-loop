@@ -22,7 +22,7 @@ import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
 import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
-import { acceptGame, aimGame, gameDueNow, gameTask, loadBook, recordGame } from './game-updates.mjs';
+import { acceptGame, aimGame, gameDueNow, gameTask, loadBook, recordGame, scoreBar } from './game-updates.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -40,7 +40,7 @@ export const DEFAULT_CHECKS = [
 
 /** Parse argv into options. Pure. */
 export function parseArgs(argv, env = {}) {
-  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false, lane: '' };
+  const o = { once: false, every: 0, dryRun: false, agent: env.VERSE_LOOP_AGENT || 'verse', checks: null, base: 'main', strict: false, help: false, task: null, stops: false, lane: '', bar: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const val = () => { const v = argv[++i]; if (v === undefined) throw new Error(a + ' needs a value'); return v; };
@@ -53,6 +53,7 @@ export function parseArgs(argv, env = {}) {
     else if (a === '--base') o.base = val();
     else if (a === '--task') o.task = val();
     else if (a === '--lane') o.lane = val();
+    else if (a === '--bar') o.bar = true;
     else if (a === '--strict') o.strict = true;
     else if (a === '-h' || a === '--help') o.help = true;
     else throw new Error('unknown flag ' + a);
@@ -437,6 +438,29 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       step('started from origin/' + opts.base + ' ' + git('rev-parse', '--short', 'HEAD').out.trim());
     } else step('dry run: no fetch, starting from ' + git('rev-parse', '--short', 'HEAD').out.trim());
 
+    const shipBar = (fun) => {
+      const branch = 'loop/bar-' + stamp();
+      git('checkout', '-q', '-b', branch);
+      git('add', '--', 'data/game-updates.json', 'void-live-deploy/scoreboard/game-updates.json');
+      const title = 'Debris Field fun ' + fun + ' is the public bar';
+      const body = 'Played Debris Field once, with no coder. Fun ' + fun + ' is the score a hidden game has to reach.';
+      const c = git('commit', '-q', '-m', title, '-m', body);
+      if (c.code) return done('error', 'commit failed: ' + c.out.trim());
+      const p = git('push', '-u', 'origin', branch);
+      if (p.code) return done('error', 'push failed: ' + p.out.trim());
+      const pr = gh('pr', 'create', '--base', opts.base, '--head', branch, '--title', title, '--body', body, '--label', 'automerge');
+      if (pr.code) return done('pushed', 'pushed ' + branch + ' but the PR was not opened: ' + pr.out.trim());
+      report.pr = pr.out.trim().split('\n').pop();
+      return done('shipped', title + ' ' + report.pr, { pr: report.pr });
+    };
+    if (opts.bar) {
+      const r = await scoreBar(cwd, { env });
+      step('Debris Field: ' + (r.stored ? 'fun ' + r.fun : r.why));
+      if (!r.stored) return done('no-change', 'Debris Field: ' + r.why + (r.fun ? ' (fun ' + r.fun + ')' : ''));
+      if (opts.dryRun) return done('would-ship', 'Debris Field fun ' + r.fun);
+      return shipBar(r.fun);
+    }
+
     const checksFile = opts.checks || env.VERSE_LOOP_CHECKS || resolve(cwd, 'tools/verse-loop.checks.json');
     const checks = existsSync(checksFile) ? JSON.parse(readFileSync(checksFile, 'utf8')) : DEFAULT_CHECKS;
     const run = (label) => checks.map((c) => {
@@ -472,7 +496,15 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
         try { appendFileSync(join(gitDir, 'verse-loop.stops.jsonl'), JSON.stringify(stop) + '\n'); } catch (_) { /* the report still says it */ }
         step('stopped at ' + c.outcome + ': spent ' + stop.turns + ' turns, most on ' + (stop.top || 'nothing'));
       }
-      if (git('status', '--porcelain').out.trim()) return done('refused', why + '; it left changes in the tree, which stay for a look');
+      if (git('status', '--porcelain').out.trim()) {
+        const names = git('status', '--porcelain').out.trim().split('\n').filter(Boolean).map((l) => l.slice(3).trim());
+        const books = new Set(['data/game-updates.json', 'void-live-deploy/scoreboard/game-updates.json']);
+        if (names.length && names.every((n) => books.has(n))) {
+          const row = (loadBook(cwd).scores || {})['debris-field'] || {};
+          if (+row.fun > 0) return shipBar(row.fun);
+        }
+        return done('refused', why + '; it left changes in the tree, which stay for a look');
+      }
       return done(ar.code === 4 || ar.code === 6 ? 'idle' : 'no-change', why);
     };
     // the diff, the key scan, the checks again and the verdict; null means go on

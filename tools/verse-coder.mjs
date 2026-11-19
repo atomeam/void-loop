@@ -95,8 +95,8 @@ export async function readReply(r) {
   return n <= 64 && !/[<>]/.test(s) ? { notJson: bad(n).notJson + ' ' + JSON.stringify(s.replace(/[A-Za-z0-9_\-]{20,}/g, '[masked]')) } : bad(n);
 }
 
-/** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on.
- *  Verse's own free allowance answering 429 is not a stop: the other providers go first, then one paid call (pay:true on /api/coder). */
+/** a model function over the providers: each call tries them in order from the last one that answered; a 429, a timeout, or an empty answer moves on.
+ *  When none of the free providers answer, one paid call (pay:true on /api/coder) runs and its cents are kept on the function. */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
   let at = 0;
   const fn = async (messages) => {
@@ -124,7 +124,6 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
       return { text, tokens: u.total_tokens || 0 };
     };
     const post = (p, body) => fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
-    let verseCapped = false;
     for (let k = 0; k < providers.length; k++) {
       const i = (at + k) % providers.length, p = providers[i];
       try {
@@ -132,15 +131,12 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
           ? { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false } }
           : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
         const r = await post(p, body);
-        if (!r.ok) {
-          if (p.name === 'verse' && r.status === 429) verseCapped = true;
-          errs.push(p.name + ' ' + r.status + await noteOf(r)); continue;
-        }
+        if (!r.ok) { errs.push(p.name + ' ' + r.status + await noteOf(r)); continue; }
         const got = accept(p, await readReply(r), i);
         if (got) return got;
       } catch (e) { errs.push(p.name + ' ' + String((e && e.name) || e)); }
     }
-    const verse = verseCapped && providers.find((p) => p.name === 'verse');
+    const verse = errs.length && providers.find((p) => p.name === 'verse');
     if (verse) {
       try {
         const r = await post(verse, { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false }, pay: true });
