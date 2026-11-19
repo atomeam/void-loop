@@ -225,7 +225,7 @@ test('past the Workers AI cap, or when it fails, Pollinations paints for free (u
     assert.equal((await (await post(w.env, 'cat')).json()).state, 'art'); assert.equal(w.calls.length, 1); assert.equal(seen.length, 0, 'under the cap: Workers AI paints');
     const over = await (await post(w.env, 'dog', 'animal', 'common', '2.2.2.2')).json();
     assert.equal(over.state, 'art'); assert.equal(w.calls.length, 1, 'over the cap: Workers AI is not asked'); assert.equal(seen.length, 1);
-    assert.match(seen[0].u, /^https:\/\/image\.pollinations\.ai\/prompt\/.+width=1024&height=576&seed=\d+&nologo=true&model=flux$/); assert.equal(seen[0].auth, '');
+    assert.match(seen[0].u, /^https:\/\/image\.pollinations\.ai\/prompt\/.+width=1024&height=576&seed=\d+&nologo=true&private=true&referrer=a-to-mind\.com&model=flux$/); assert.equal(seen[0].auth, '');
     assert.ok(!/<|>|;/.test(decodeURIComponent(seen[0].u)), 'only the fixed or directed prompt');
     const k = world({ extra: { POLLINATIONS_KEY: 'test-only-not-a-key', ART_POLLINATIONS: '' } }); k.env.AI.run = async () => { throw new Error('3040: capacity'); }; // secret-scan: ok
     assert.equal((await (await post(k.env, 'owl')).json()).state, 'art', 'Workers AI failing: Pollinations paints');
@@ -320,4 +320,14 @@ test('the background repaint stops while visitors still have the last REPAINT_RE
   const { env } = world({ extra: { ART_DAILY_CAP: String(route.REPAINT_RESERVE) } });
   const a = await (await route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': '7.7.7.7' }, body: JSON.stringify({ repaint: true }) }) })).json();
   assert.equal(a.state, 'reserve', 'a cap no bigger than the reserve leaves nothing for the background');
+});
+
+test('the quality gate: a painting whose subject is lost or carries a logo is painted again as a hero shot, and never kept when that fails too', async () => {
+  const { heroPrompt, gateSubject } = await import('../void-live-deploy/lib/art-rules.js');
+  assert.equal(gateSubject('scene1 pancake', 'answer'), 'pancake'); assert.equal(gateSubject('weather1 paris france rain', 'weather'), 'a view of paris france');
+  assert.match(heroPrompt('scene1 pancake', 'answer'), /^a close-up hero shot of pancake, the pancake large/);
+  assert.match(route.weakAsk('pancake'), /watermark, logo/); assert.match(route.pollinationsUrl('x', 'k'), /nologo=true&private=true&referrer=a-to-mind\.com/);
+  // the vision model says every picture is weak: nothing is kept
+  const bad = world({ vision: 'YES' }); const r = await (await post(bad.env, 'pancake', 'answer', 'common', '6.6.6.1')).json();
+  assert.equal(r.state, 'plate'); assert.ok(/weak|text/.test(r.why), r.why); assert.equal(rows(bad.env).length, 0, 'a weak painting is never kept');
 });

@@ -251,14 +251,26 @@ export const staleKeyOf = (key, kind) => (/^(?:cartoon|poster|backdrop|weather|s
 export const sizeOfKind = (kind) => (kindWordOf(kind) === 'poster' ? [POSTER_W, POSTER_H] : kindWordOf(kind) === 'backdrop' ? [BACKDROP_W, BACKDROP_H] : [ART_W, ART_H]);
 /** a kind painted from its fixed template alone, with no Art Director scene (a cartoon has its look, a poster and a backdrop their own style). Pure. */
 export const undirected = (kind) => /^(?:cartoon|poster|backdrop|weather)$/.test(kindWordOf(kind));
+// a real-setting card is lit like a good photo of the thing (owner, 2026-11-19: the Pancakes card was a dark, blurry kitchen with a tiny plate):
+// the rarity's mood light (indigo mist for a common card) stays on the galaxy skill art only
+export const SCENE_LIGHT = 'bright clear natural light, the subject large, well lit and in crisp focus';
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
   if (kindWordOf(kind) === 'cartoon') return cartoonPrompt(key);
   if (kindWordOf(kind) === 'poster') return posterPrompt(key);
   if (kindWordOf(kind) === 'backdrop') return backdropPrompt(key);
   if (kindWordOf(kind) === 'weather') return weatherScenePrompt(key);
-  return String(key).replace(/^scene\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + (kindWordOf(kind) === 'skill' ? SKILL_STYLE : ART_STYLE) + ', ' + STYLE_LOCK + ', ' + FRAMING;
+  return String(key).replace(/^scene\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + (kindWordOf(kind) === 'skill' ? RARITY_STYLE[rarityOf(rarity)] : SCENE_LIGHT) + ', ' + (kindWordOf(kind) === 'skill' ? SKILL_STYLE : ART_STYLE) + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 
+/** what the quality gate looks for in a painting: the subject's own words ("pancake"; a weather card's place, "paris france"). Pure. */
+export const gateSubject = (key, kind) => (kindWordOf(kind) === 'weather' ? 'a view of ' + weatherParts(key).place : String(key || '').replace(/^(?:scene|cartoon|poster|backdrop)\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60));
+/** the retry after a weak painting: the subject as the large, sharp, well-lit hero of the frame, then the kind's usual prompt. Pure. */
+export function heroPrompt(key, kind = 'answer', rarity = 'common') {
+  const k = kindWordOf(kind);
+  if (k === 'weather' || k === 'cartoon' || k === 'poster' || k === 'backdrop') return artPrompt(key, kind, rarity);
+  const subj = gateSubject(key, kind);
+  return 'a close-up hero shot of ' + subj + ', the ' + subj + ' large and filling most of the frame, in crisp sharp focus, bright warm natural light, ' + artPrompt(key, kind, rarity);
+}
 /** the model's reply -> a data URL, or '' when it is not a small jpeg or png. The reply is { image: '<base64>' } (or the base64 itself). The quality gate
  *  (owner, 2026-10-18: "if the image API fails or returns an image that triggers a basic safety/blur filter, discard it"): a picture under IMG_MIN
  *  characters of base64 (about 6 KB) is a flat, blank or blacked-out frame (a filtered answer comes back as one), so it is not kept and costs no

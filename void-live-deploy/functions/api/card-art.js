@@ -26,7 +26,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, staleKeyOf, sizeOfKind, drawableLook, undirected, TEXT_GATE_ASK, textGateYes } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, staleKeyOf, sizeOfKind, heroPrompt, gateSubject, drawableLook, undirected, TEXT_GATE_ASK, textGateYes } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 import { json } from '../../lib/http.js'; // one copy (lib/http.js, convergence step 3)
@@ -91,6 +91,12 @@ export async function textInArt(env, img, ask = TEXT_GATE_ASK) {
   } catch (_) { return false; }
 }
 
+// THE QUALITY GATE (owner, 2026-11-19: a Pancakes card was a dark, blurry empty kitchen with a tiny plate and a provider's logo in the corner):
+// the vision model looks at each new painting once. A painting whose subject is missing, tiny, blurry or too dark, or that carries a watermark or
+// logo, is not kept: one retry with the hero template (lib/art-rules.js heroPrompt), then the plate. A vision model that fails lets the picture through.
+export const weakAsk = (subject) => 'Look at this picture. It should show ' + String(subject || 'the subject').replace(/[^a-z0-9 ]/gi, ' ').replace(/\s+/g, ' ').trim().slice(0, 60)
+  + ' as its large, clear main subject. Answer YES if ANY of these is true: that subject is missing, small, hidden, blurry, or too dark to see clearly; or there is a watermark, logo, signature or website name anywhere, even small in a corner. Otherwise answer NO. Answer only YES or NO.';
+export async function weakArt(env, img, subject) { return textInArt(env, img, weakAsk(subject)); }
 // a cartoon's look (lib/art-rules.js LOOK_SYSTEM): { look, why } where why says, when there is no look, what happened: 'error <name>', 'empty'
 // (the reply had no text), 'unknown' or 'refused' (the cleaned reply failed lookOf), with the reply's first words cleaned to plain letters, so a
 // builder can see it (the art-look workflow). The reply is the model's words about the subject, never what a person typed.
@@ -162,7 +168,7 @@ export async function asImage(r) {
 export const pollOn = (env) => !/^(0|false|no|off)$/i.test(String((env && env.ART_POLLINATIONS) || '').trim());
 export function pollinationsUrl(prompt, key, token = '', [w, h] = [ART_W, ART_H]) {
   let seed = 0; for (const ch of String(key)) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
-  const q = 'width=' + w + '&height=' + h + '&seed=' + (seed % 1000000) + '&nologo=true';
+  const q = 'width=' + w + '&height=' + h + '&seed=' + (seed % 1000000) + '&nologo=true&private=true&referrer=a-to-mind.com'; // referrer: Pollinations drops its corner logo only for a named app (lib/image-gen.js does the same); the quality gate below catches one that slips through
   return token ? 'https://gen.pollinations.ai/image/' + encodeURIComponent(prompt) + '?' + q : 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?' + q + '&model=flux';
 }
 export async function pollinations(env, prompt, key, fetchFn = (u, o) => fetch(u, o), size = [ART_W, ART_H]) {
@@ -244,7 +250,8 @@ export async function onRequestPost({ request, env, internal = false }) {
   const row = await cached(env, key), again = !!(body && body.again === true);
   // a new painting of a subject already painted (owner, 2026-10-18: "each card could have a regenerate card art button"): at most once a day per
   // subject (the row's day says when it was last painted), counted in the same daily cap and rate limit; the old picture stays if the new one fails
-  if (row && (!again || row.day === today())) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}), ...(again ? { why: 'again-today' } : {}) }); }
+  // a kept picture that fails the quality gate (below) may be painted again the same day
+  if (row && (!again || (row.day === today() && !(await weakArt(env, row.img, gateSubject(key, kind)))))) { const name = await nameOf(env, key); return json({ ...hit(row, key), ...(name ? { name } : {}), ...(again ? { why: 'again-today' } : {}) }); }
   if (!on(env)) return plate('off');
   const made = await madeToday(env), overWorkers = made >= capOf(env);
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
@@ -278,6 +285,15 @@ export async function onRequestPost({ request, env, internal = false }) {
       if (!img2 && pollOn(env)) { try { img2 = await pollinations(env, retry, key, undefined, size); } catch (_) {} }
     } catch (_) { img2 = ''; }
     if (img2 && !(await textInArt(env, img2))) img = img2; else { await noteMiss(env, 'text in art again'); return plate('text'); }
+  }
+  if (kind !== 'cartoon' && await weakArt(env, img, gateSubject(key, kind))) {
+    await noteMiss(env, 'weak art');
+    const hero = heroPrompt(key, kind, rarity); let img3 = '';
+    try {
+      if (!overWorkers) { try { img3 = imageOf(await asImage(await Promise.race([paintOnce(env, models('art'), hero, size), new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS))]))); } catch (_) {} }
+      if (!img3 && pollOn(env)) { try { img3 = await pollinations(env, hero, key + ' hero', undefined, size); } catch (_) {} }
+    } catch (_) { img3 = ''; }
+    if (img3 && !(await weakArt(env, img3, gateSubject(key, kind))) && !(await textInArt(env, img3))) img = img3; else { await noteMiss(env, 'weak art again'); return plate('weak'); }
   }
   const told = kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {};
   // a cartoon painted without a look because the look failed (no photo, and the text model erred or said nothing; 'unknown' is an answer and is kept) is a guess at the subject: shown once, never kept, so the next ask tries
