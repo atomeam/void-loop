@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { layout, MAX_LABELS, AHEAD_SHOWN, FLOOR_H, MIN_FLOOR_H, TOWER_H, GAP, BASE_H } from '../void-live-deploy/skills/mini/tower.js';
 import { tower, FLOORS, aspectsOf, passingRows } from '../void-live-deploy/lib/tower.js';
-import { miniFloors } from '../void-live-deploy/skills/tower.js';
+import { miniFloors } from '../void-live-deploy/versus/card.js';
 
 const fake = (beaten, ahead = 4) => [...Array.from({ length: beaten }, (_, i) => ({ id: 'b' + i, site: 'site' + i + '.example', state: 'beaten', n: 11, m: 11, page: '/p' + i + '/' })),
   { id: 'cur', site: 'now.example', state: 'current', n: 4, m: 11, page: '/now/' }, ...Array.from({ length: ahead }, (_, i) => ({ id: 'a' + i, site: 'ahead' + i + '.example', state: 'ahead', n: 0, m: 9 }))];

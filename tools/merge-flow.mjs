@@ -37,6 +37,7 @@ export function fixTask(mode, why) {
 export function isTowerPath(file) {
   const f = String(file || '').replace(/\\/g, '/');
   return /(^|\/)skills\/tower\.js$/.test(f)
+    || /(^|\/)versus\/card\.js$/.test(f)
     || /(^|\/)lib\/tower[^/]*$/.test(f)
     || /(^|\/)tools\/tower[^/]*$/.test(f)
     || /(^|\/)docs\/TOWER[^/]*$/.test(f);

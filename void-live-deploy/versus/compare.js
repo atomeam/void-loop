@@ -1,7 +1,7 @@
 // The side-by-side view inside Versus (owner only; it used to be its own page at /compare/): Verse's page for a floor beside the site it is measured
 // against, with where each aspect stands. /versus/?view=compare&floor=<id>. Only /versus/ loads this file, and only once the owner gate has answered.
 import { FLOORS, tower, noShotOf } from '/lib/tower.js';
-import { matchupHtml } from '/skills/tower.js';
+import { matchupHtml } from '/versus/card.js';
 
 const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const CSS = `<style>
@@ -57,7 +57,7 @@ export function renderCompare(root, search) {
   img.onload = () => { img.hidden = false; fetch(img.src, { method: 'HEAD' }).then((r) => { const d = r.headers.get('last-modified'); $('cap').textContent = f.site + ' as the gate saw it' + (d ? ' on ' + new Date(d).toLocaleDateString() : '') + ', at phone width. It does not allow itself inside another page, so this is a picture.'; }).catch(() => { $('cap').textContent = f.site + ' as the gate saw it, at phone width.'; }); };
   img.onerror = () => { img.hidden = true; $('cap').textContent = 'No picture of ' + f.site + ' yet: the gate takes one at its next measurement. It does not allow itself inside another page.'; };
   $('beside').onclick = () => { const w = Math.floor(screen.availWidth / 2), h = screen.availHeight; try { window.resizeTo(w, h); window.moveTo(0, 0); } catch (_) {} window.open(site, 'verse-compare', 'noopener,noreferrer,width=' + w + ',height=' + h + ',left=' + w + ',top=0'); };
-  // where each aspect stands, from the gate's last verdicts, and the matchup (skills/tower.js matchupHtml, the same as the Versus card)
+  // where each aspect stands, from the gate's last verdicts, and the matchup (versus/card.js matchupHtml, the same as the Versus card)
   fetch('/tower.evidence.json').then((r) => r.json()).then((e) => {
     const t = tower([], e.floors || e, null, e.icons || null), fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
     if (fl.icon && /^tower\.icons\/[\w.-]+$/.test(fl.icon)) $('sn').innerHTML = '<img src="/' + fl.icon + '" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle"> ' + esc(f.site);

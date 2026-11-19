@@ -5,7 +5,8 @@
 import { ownerOk, ownerSessionOk, OWNER_SESSION_PREFIX } from './guard.js';
 
 export const COOKIE = 'verse_owner';
-const EXACT = new Set(['/assimilated.json', '/versus/compare.js', '/versus/rivals.js']);
+const EXACT = new Set(['/assimilated.json', '/lib/tower.js', '/lib/tower-weight.js', '/lib/tower-journeys.js', '/lib/versus-floor.js',
+  '/versus/card.js', '/versus/compare.js', '/versus/rivals.js']);
 /** true for a path only the owner may read. Pure. */
 export function ownerOnlyPath(pathname) {
   const p = String(pathname || '');

@@ -24,7 +24,7 @@ ok(!buildable({ ...bank, stage: 2 }) && !buildable({ gate: 'Partner', regulated:
 ok(badgeOf({ id: 'weather', url: 'https://weather.gov/' }).gate === 'Code' && !badgeOf({ id: 'weather', url: 'https://weather.gov/' }).regulated, 'an open-data government forecast is plain Code');
 ok(badgeText({ gate: 'Partner', stage: 1 }) === '[Gate: Partner] · Stage 1' && badgeText({ gate: 'Code', stage: null }) === '[Gate: Code]', 'badge text');
 ok(pickCandidates({ sites: [{ host: 'mybank.com', rank: 1 }, { host: 'usa.gov', rank: 2 }, { host: 'spotify.com', rank: 3 }] }, {}, { floors: [] }).every((x) => buildable(badgeOf({ id: x.host, url: 'https://' + x.host + '/' }))), 'the self-run picks only buildable sites');
-const card = fs.readFileSync(path.join(root, 'void-live-deploy/skills/tower.js'), 'utf8');
+const card = fs.readFileSync(path.join(root, 'void-live-deploy/versus/card.js'), 'utf8');
 ok(/gateTag\(f, esc\)/.test(card) && /badgeText/.test(card), 'the tower card shows each floor\'s badge');
 const next = fs.readFileSync(path.join(root, 'docs/NEXT.md'), 'utf8');
 ok(/\[Gate: Code\]/.test(next) && /\[Gate: Partner\]/.test(next) && /\[Gate: License\]/.test(next) && /Stage 1/.test(next) && /only Code work/i.test(next), 'docs/NEXT.md records the badges, the stages and the queue rule');

@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { tower, towerArgs, FLOORS, passingRows, notFloorOf, assimOf, pageGroups, countsOf, towerLine, outclassLine, MIN_FEATURES } from '../void-live-deploy/lib/tower.js';
-import { towerHtml, attemptLogOf } from '../void-live-deploy/skills/tower.js';
+import { towerHtml, attemptLogOf } from '../void-live-deploy/versus/card.js';
 import { siteSlug } from '../void-live-deploy/lib/obituary.js';
 import { buildable } from '../void-live-deploy/lib/gate-badge.js';
 import { advance, stallCheck, HOLD_DAYS } from './tower-target.mjs';

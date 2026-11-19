@@ -1,6 +1,6 @@
 // skills/tower.js historyOf / historyHtml: the card's site history, read from the same ledger (tower.target.json) /conquered/ reads
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { historyOf, historyHtml } from '../void-live-deploy/skills/tower.js';
+import { historyOf, historyHtml } from '../void-live-deploy/versus/card.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ledger = {

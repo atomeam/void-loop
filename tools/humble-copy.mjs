@@ -10,7 +10,7 @@ const EXT = /\.(?:html|js|mjs|txt|md|xml|webmanifest)$/;
 const SKIP_DIR = /^(?:vendor|node_modules|incidents|podcast|sounds|tower-evidence|tower\.shots|tower\.icons|data|history)$/;
 // the tower card is being rebuilt by another worker (docs/TAGTEAM.md, 2026-11-09 humble copy): its files are checked once it lands
 export const PENDING = new Set([
-  'lib/tower.js', 'skills/tower.js', 'skills/mini/tower.js', 'lib/tower-art.js', 'lib/tower-rank.js',
+  'lib/tower.js', 'skills/tower.js', 'versus/card.js', 'skills/mini/tower.js', 'lib/tower-art.js', 'lib/tower-rank.js',
 ]);
 
 /** the banned phrases: each { id, re }. Words only, in prose. */
