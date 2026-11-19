@@ -16,7 +16,7 @@ const today = new Date().toISOString().slice(0, 10), yesterday = new Date(Date.n
 function world({ ai = true, extra = {} } = {}) {
   store.clear(); resetGuard(); route.resetReady(); const calls = [];
   const AI = ai ? { run: async (m, input) => { calls.push(input); if (ai === 'fail') throw new Error('down'); return { image: JPEG }; } } : undefined;
-  return { env: { DB: d1(), SALT: 'test-salt', READ_TOKEN: KEY, ...(AI ? { AI } : {}), ...extra }, calls }; // secret-scan: ok
+  return { env: { DB: d1(), SALT: 'test-salt', POLLINATIONS_KEY: 'test-only-not-a-key', READ_TOKEN: KEY, ...(AI ? { AI } : {}), ...extra }, calls }; // secret-scan: ok
 }
 const poll = []; const freeOk = async (u) => { poll.push(u); return new Response(Buffer.from(JPEG, 'base64'), { headers: { 'content-type': 'image/jpeg' } }); };
 const freeDown = async (u) => { poll.push(u); return new Response('no', { status: 503, headers: { 'content-type': 'text/plain' } }); };

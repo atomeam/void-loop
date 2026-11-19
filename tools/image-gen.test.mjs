@@ -20,7 +20,7 @@ const JPEG = '/9j/' + 'A'.repeat(12000); // a picture-shaped base64 (imageOf's s
 function world({ ai = true, extra = {} } = {}) {
   store.clear(); resetGuard(); route.resetReady(); const calls = [];
   const AI = ai ? { run: async (model, input) => { calls.push({ model, input }); if (ai === 'fail') throw new Error('down'); return { image: JPEG }; } } : undefined;
-  return { env: { DB: d1(), SALT: 'test-salt', ...(AI ? { AI } : {}), ...extra }, calls }; // secret-scan: ok (a made-up salt for the test)
+  return { env: { DB: d1(), SALT: 'test-salt', POLLINATIONS_KEY: 'test-only-not-a-key', ...(AI ? { AI } : {}), ...extra }, calls }; // secret-scan: ok (a made-up salt for the test)
 }
 const freeOk = async () => new Response(Uint8Array.from(atob(JPEG), (c) => c.charCodeAt(0)), { headers: { 'content-type': 'image/jpeg' } });
 const freeDown = async () => new Response('no', { status: 502, headers: { 'content-type': 'text/plain' } });
@@ -238,4 +238,9 @@ test('the route: "Fill in my words" has its own day cap per connection', async (
   env.DB.raw.prepare("UPDATE void_image_days SET n = ? WHERE k LIKE 'w:%'").run(I.WORDS_PER_CONN);
   const r = await post(env, { act: 'words', prompt: 'a cat on a roof' });
   assert.equal(r.status, 429); assert.equal((await r.json()).why, 'wordsmine');
+});
+
+test('no watermark ever (owner, 2026-11-19): without a Pollinations key the free painter is never asked, since its keyless endpoint stamps a logo', async () => {
+  const { paintFree } = await import('../void-live-deploy/functions/api/image.js'); let asked = 0;
+  assert.equal(await paintFree({}, 'a fox', [512, 512], 1, async () => { asked++; return new Response(''); }), ''); assert.equal(asked, 0);
 });

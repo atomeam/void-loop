@@ -172,7 +172,9 @@ export function pollinationsUrl(prompt, key, token = '', [w, h] = [ART_W, ART_H]
   return token ? 'https://gen.pollinations.ai/image/' + encodeURIComponent(prompt) + '?' + q : 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?' + q + '&model=flux';
 }
 export async function pollinations(env, prompt, key, fetchFn = (u, o) => fetch(u, o), size = [ART_W, ART_H]) {
-  const token = String((env && env.POLLINATIONS_KEY) || '').trim(), ac = new AbortController(), t = setTimeout(() => ac.abort(), TIMEOUT_MS);
+  const token = String((env && env.POLLINATIONS_KEY) || '').trim();
+  if (!token) throw new Error('no key'); // NO WATERMARK EVER (owner, 2026-11-19): the keyless endpoint stamps its logo in the corner whatever nologo says, so only the keyed one paints
+  const ac = new AbortController(), t = setTimeout(() => ac.abort(), TIMEOUT_MS);
   try {
     const res = await fetchFn(pollinationsUrl(prompt, key, token, size), { headers: token ? { authorization: 'Bearer ' + token } : {}, signal: ac.signal });
     const type = (res.headers.get('content-type') || '').toLowerCase();

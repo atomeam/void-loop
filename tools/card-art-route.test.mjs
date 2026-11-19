@@ -221,18 +221,20 @@ test('past the Workers AI cap, or when it fails, Pollinations paints for free (u
   const real = globalThis.fetch, seen = [];
   globalThis.fetch = async (u, o) => { seen.push({ u: String(u), auth: (o && o.headers && o.headers.authorization) || '' }); return new Response(Uint8Array.from(Buffer.from('/9j/' + 'A'.repeat(9000), 'base64')), { headers: { 'content-type': 'image/jpeg' } }); };
   try {
-    const w = world({ extra: { ART_DAILY_CAP: '1', ART_POLLINATIONS: '' } });
+    const anon = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); // no key: the keyless endpoint stamps a logo, so it is never asked
+    assert.equal((await (await post(anon.env, 'cat')).json()).state, 'plate'); assert.equal(seen.length, 0, 'no watermark ever: no keyless Pollinations');
+    const w = world({ extra: { ART_DAILY_CAP: '1', ART_POLLINATIONS: '', POLLINATIONS_KEY: 'test-only-not-a-key' } }); // secret-scan: ok
     assert.equal((await (await post(w.env, 'cat')).json()).state, 'art'); assert.equal(w.calls.length, 1); assert.equal(seen.length, 0, 'under the cap: Workers AI paints');
     const over = await (await post(w.env, 'dog', 'animal', 'common', '2.2.2.2')).json();
     assert.equal(over.state, 'art'); assert.equal(w.calls.length, 1, 'over the cap: Workers AI is not asked'); assert.equal(seen.length, 1);
-    assert.match(seen[0].u, /^https:\/\/image\.pollinations\.ai\/prompt\/.+width=1024&height=576&seed=\d+&nologo=true&private=true&referrer=a-to-mind\.com&model=flux$/); assert.equal(seen[0].auth, '');
+    assert.match(seen[0].u, /^https:\/\/gen\.pollinations\.ai\/image\/.+width=1024&height=576&seed=\d+&nologo=true&private=true&referrer=a-to-mind\.com$/); assert.equal(seen[0].auth, 'Bearer test-only-not-a-key');
     assert.ok(!/<|>|;/.test(decodeURIComponent(seen[0].u)), 'only the fixed or directed prompt');
     const k = world({ extra: { POLLINATIONS_KEY: 'test-only-not-a-key', ART_POLLINATIONS: '' } }); k.env.AI.run = async () => { throw new Error('3040: capacity'); }; // secret-scan: ok
     assert.equal((await (await post(k.env, 'owl')).json()).state, 'art', 'Workers AI failing: Pollinations paints');
     assert.match(seen[1].u, /^https:\/\/gen\.pollinations\.ai\/image\//); assert.equal(seen[1].auth, 'Bearer test-only-not-a-key');
     const off = world({ extra: { ART_DAILY_CAP: '0' } }); assert.equal((await (await post(off.env, 'cat')).json()).why, 'cap', 'ART_POLLINATIONS=0 keeps the old cap');
     globalThis.fetch = async () => new Response('<html>busy</html>', { status: 503, headers: { 'content-type': 'text/html' } });
-    const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); const b = await (await post(bad.env, 'fox')).json();
+    const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '', POLLINATIONS_KEY: 'test-only-not-a-key' } }); const b = await (await post(bad.env, 'fox')).json();
     assert.equal(b.state, 'plate'); assert.equal(rows(bad.env).length, 0, 'a refusal is never kept');
   } finally { globalThis.fetch = real; }
 });
