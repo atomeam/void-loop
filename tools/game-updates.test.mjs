@@ -77,7 +77,12 @@ test('Debris Field fun is the public bar, and the coder is aimed at the lowest r
   assert.equal(gap.words, 'a boss or climax');
   const text = promptFor(live && nextTask(live).game, 1, { danger: 8, goal: 7, boss: 2, juice: 6, phone: 5, end: 4 });
   assert.match(text, /a boss or climax lowest, 2 of 10/);
+  assert.match(text, /Fix that first, in what the player feels/);
+  assert.match(text, /Do not change only how Verse, the ghost, or the opponent plays/);
+  assert.match(text, /what the player now feels/);
   assert.match(text, /Do not ship a tiny tweak/);
   assert.doesNotMatch(text, /One small change/);
-  assert.match(promptFor({ id: 'cross-bus', title: 'Cross the Bus', lane: 'hidden', file: 'void-live-deploy/skills/cross-bus-rules.js' }, 1, null), /no review yet/);
+  const none = promptFor({ id: 'cross-bus', title: 'Cross the Bus', lane: 'hidden', file: 'void-live-deploy/skills/cross-bus-rules.js' }, 1, null);
+  assert.match(none, /no review yet/);
+  assert.match(none, /Do not change only how Verse, the ghost, or the opponent plays/);
 });

@@ -61,9 +61,10 @@ export function gapOf(parts) {
 export const promptFor = (game, n, parts) => {
   const gap = gapOf(parts);
   const aim = gap
-    ? 'The last review scored ' + gap.words + ' lowest, ' + gap.n + ' of 10. Raise that part. Do not ship a tiny tweak.'
-    : 'There is no review yet. Add the one the screen lacks: real danger, a goal that progresses, a boss or climax, juice, thumb controls, or a clear end screen. Do not ship a tiny tweak.';
-  return ['Ship Update ' + n + ' of ' + game.title + ' (' + game.id + ', ' + game.lane + '). Edit only ' + game.file + '.', "Add export const whatsNew = 'Update " + n + ": <one plain sentence about that part>'. Draw that sentence on the title and the end.", aim, 'Keep the rules. Do not edit the update book or a workflow.'].join('\n');
+    ? 'The last review scored ' + gap.words + ' lowest, ' + gap.n + ' of 10. Fix that first, in what the player feels.'
+    : 'There is no review yet. Add the one the player lacks: real danger, a goal that progresses, a boss or climax, juice, thumb controls, or a clear end screen.';
+  const face = 'The change is for the player. Do not change only how Verse, the ghost, or the opponent plays. Do not ship a tiny tweak.';
+  return ['Ship Update ' + n + ' of ' + game.title + ' (' + game.id + ', ' + game.lane + '). Edit only ' + game.file + '.', "Add export const whatsNew = 'Update " + n + ": <one plain sentence about what the player now feels>'. Draw that sentence on the title and the end.", aim, face, 'Keep the rules. Do not edit the update book or a workflow.'].join('\n');
 };
 /** Record Debris Field's fun as the public bar and list every hidden game that already clears it. The update number stays. Pure. */
 export function withBar(book, fun, parts) {

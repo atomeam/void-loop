@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · cursor/player-gap-e463 · a game lap fixes the player-facing gap the review names, and does not change only the ghost or the opponent · 2026-11-19 16:46 UTC
+
 - Cursor cloud agent · helper/paid-timeout-e463 · a coder timeout falls through to the paid coder, and Debris Field is scored with no coder · 2026-11-19 16:25 UTC
 
 - Cursor cloud agent · helper/game-bar-e463 · Debris Field's fun is the public bar, and a lap aims at the weakest review mark · 2026-11-19 15:20 UTC
