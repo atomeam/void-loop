@@ -1609,18 +1609,23 @@ try {
       cred && cred.left >= -1 && cred.right <= cred.w + 1 && cred.page <= cred.w + 1, JSON.stringify(cred));
     await P.ctx.close();
   }
-  if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
-    const P = await fresh(); let hits = 0;
-    await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: '{}' }); });
-    await P.ask('versus', 600);
+  if (want("tower: a visitor asking versus sees the Out of Order sign and no site names; the owner sees the plain card")) {
+    const P = await fresh();
+    await P.ask('versus', 900);
     const text = await P.p.$eval('.vpage.on', (c) => c.innerText).catch((e) => String(e));
-    // After the finished-site Tower was removed, "versus" opens the Versus card (skills/tower.js load + towerHtml). That card reads
-    // tower.evidence.json (live floor evidence, not a finished-site scorecard) and talks about assimilation; rot13.com is gone.
-    check('tower: opening Versus reads live evidence and does not list finished sites', hits >= 1 && !/rot13\.com|motherfuckingwebsite|tsundere\.pw/.test(text) && /assimilat/i.test(text) && !P.errors.length, JSON.stringify({ hits, text: text.slice(0, 200) }));
+    check('tower: a visitor gets the Out of Order sign, no rival names', /Out of Order/i.test(text) && !/flightconnections|nameunit|\.com\b/i.test(text) && !P.errors.length, JSON.stringify({ text: text.slice(0, 200) }));
     await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(400);
     const open = await P.p.$('.vpage.on.tower-card');
     check('tower: Escape closes the card', !open && !P.errors.length, JSON.stringify({ open: !!open }));
     await P.ctx.close();
+    const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    await O.ctx.route('**/api/versus-floor', (r) => r.fulfill({ contentType: 'application/json', body: '{"sites":[]}' }));
+    await O.ask('versus', 1500);
+    const ot = await until(() => O.p.$eval('.vpage.on .vp', (c) => c.innerText).catch(() => ''), 8000);
+    const lines = String(ot || '').split('\n').map((x) => x.trim()).filter(Boolean);
+    check('tower: the owner sees the plain card: working on now, what is left, next up, the link to the full Tower, no repeated line',
+      /Working on now/i.test(ot) && /of the way there/.test(ot) && /Open the full Tower/.test(ot) && new Set(lines).size === lines.length && !O.errors.length, JSON.stringify({ ot: String(ot).slice(0, 300) }));
+    await O.ctx.close();
   }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();

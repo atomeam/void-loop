@@ -380,6 +380,72 @@ let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
 const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn, pa] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json'), get('/parity.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn, pa }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; t.settled = tg && Array.isArray(tg.settled) ? tg.settled : []; t.target = tg || null; t.inventory = pa && pa.sites ? pa : null; const cur = t.floors.find((f) => f.state === 'current'); t.history = cur ? await get('/history/' + siteSlug(cur.site) + '.json') : null; return t; };
 
+// The owner's Versus card in plain words (owner, 2026-11-19, on the old card: a wall of raw lines that ran off the card). Visitors see the
+// Out of Order sign only (lib/versus-floor.js visitorHtml); the owner, once /api/versus-floor accepts the owner session (versus/open.js
+// ownerModel), sees: the site Verse is working on, what that site is, how close Verse is (one number), what Verse still can't do (top 5),
+// the next 3 sites, and a link to the full Tower. Everything here is from the same files the Tower reads. Pure, except plainCardRun.
+const PLAIN_ASPECT = { speed: 'open as fast as it does', mobile: 'fit a phone screen as well as it does', accessibility: 'name every button and field for screen readers',
+  reliability: 'answer every time it is opened', offline: 'work with no connection', accuracy: 'get every answer right', completeness: 'show everything it shows',
+  privacy: 'keep as little about you', design: 'look as polished' };
+const aspectPlain = (a) => { const s = String(a || ''); const j = /^journey:\s*(.+)$/.exec(s); return j ? j[1] : PLAIN_ASPECT[s] || s.replace(/[-_]/g, ' '); };
+const gapPlain = (g) => { const s = String(g || '').trim(); let m;
+  if ((m = /^A page:\s*(.+)$/.exec(s))) return 'its ' + m[1] + ' page';
+  if ((m = /^Pages:\s*(.+)$/.exec(s))) return 'its ' + m[1].split(',')[0].replace(/^Route map /, 'route map pages (') + (/^Route map /.test(m[1]) ? ')' : ' pages');
+  if ((m = /^(?:A|An)\s+(.+)$/.exec(s))) return 'its ' + m[1].charAt(0).toLowerCase() + m[1].slice(1);
+  return 'its \u201c' + s + '\u201d';
+};
+/** what the site Verse is working on is, in a few words, from its own label ("Travel: flightconnections.com" -> "a travel site"). Pure. */
+export function whatIs(f) {
+  const lab = String((f && f.label) || '').trim(), site = String((f && f.site) || '').toLowerCase();
+  const m = /^([^:]+):\s*(.*)$/.exec(lab);
+  if (m && (!m[2] || m[2].toLowerCase().includes(site))) return 'a ' + m[1].trim().toLowerCase() + ' site';
+  if (lab && !lab.toLowerCase().includes(site)) return 'a site for ' + lab.replace(/\s+(?:studio|page|tool)$/i, '').toLowerCase();
+  return '';
+}
+/** what Verse still can't do against the current site, top n, plain words, no repeats: what it loses on, the study's gaps, the crawl's real
+ *  gaps (lib/tower.js realGaps), then checks not won yet. Pure. */
+export function cantDoOf(f, inventory, n = 5) {
+  const row = inventoryOf(inventory, f), seen = new Set(), out = [];
+  const add = (x) => { const k = String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); if (k && !seen.has(k) && out.length < n) { seen.add(k); out.push(x); } };
+  for (const a of f.lost || []) add(aspectPlain(a));
+  for (const g of ((row && row.gaps) || []).filter((g) => !/full feature study of this site|^\(unreviewed\)/i.test(g))) add('have ' + g.replace(/^(?:A|An)\s+/, 'a ').replace(/\s*\(.*\)$/, '').toLowerCase());
+  for (const g of f.missingFeatures || []) add('have ' + gapPlain(g));
+  for (const a of (f.left || []).filter((a) => !(f.lost || []).includes(a))) add(aspectPlain(a));
+  return { list: out, total: (f.lost || []).length + (f.missingFeatures || []).length + (f.left || []).filter((a) => !(f.lost || []).includes(a)).length + ((row && row.gaps) || []).filter((g) => !/full feature study|^\(unreviewed\)/i.test(g)).length };
+}
+const PLAIN_CSS = '<style>.vpage:has(.vp) .vc-art{display:none}.vp{max-width:520px;margin:0 auto;overflow-wrap:anywhere;line-height:1.4}.vp .tw-head{text-align:left;font-size:20px;margin:0}.vp-sub{margin:2px 0 10px;font-size:13px;opacity:.78}'
+  + '.vp-art{line-height:0;border-radius:12px;overflow:hidden;margin:0 0 10px;border:1px solid #3a3550}.vp-art svg{width:100%;height:auto;max-height:180px;display:block}.vp-art svg text{display:none}'
+  + '.vp-box{margin:0 0 10px;padding:12px;border:1px solid #3a3550;border-radius:12px;background:linear-gradient(160deg,#1d1730,#14121b)}.vp-k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin:0 0 6px}'
+  + '.vp-site{font-size:20px;font-weight:800}.vp-site a{color:inherit;text-decoration:none;border-bottom:1px dotted #8a7cc0}.vp-what{margin:4px 0 8px;font-size:13px;opacity:.85}'
+  + '.vp-meter{display:flex;align-items:center;gap:10px}.vp-bar{flex:1;height:8px;border-radius:99px;background:#2a2540;overflow:hidden}.vp-bar i{display:block;height:100%;background:linear-gradient(90deg,#7d63f0,#c9b6ff)}.vp-num{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums}'
+  + '.vp ul,.vp ol{margin:0;padding-left:20px;font-size:14px}.vp li{margin:3px 0}.vp-more{font-size:12px;opacity:.7;margin:6px 0 0}.vp-next li span{opacity:.7;font-variant-numeric:tabular-nums}'
+  + '.vp-actions{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}.vp-actions a{flex:1 1 140px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #5b4a8a;background:#241f3b;color:#eee;text-decoration:none;font-weight:600;font-size:14px}.vp-actions a[data-main]{background:#5b3fd0;border-color:#7d63f0}</style>';
+/** the owner's card: plain words, one number, short lists, one link to the rest. Pure. */
+export function plainHtml(t, esc) {
+  const fl = (t && t.floors) || [], cur = fl.find((f) => f.state === 'current'), next = fl.filter((f) => f.state === 'ahead' && !f.farFuture && !f.defer).slice(0, 3);
+  const close = (f) => (Number.isFinite(+f.assim) ? Math.round(+f.assim) : 0);
+  let art = ''; try { art = towerArtSvg(miniFloors(t), { label: cur ? cur.site : '' }); } catch (_) { art = ''; }
+  const site = (f) => f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + '</a>' : esc(f.site);
+  let now = '<div class="vp-box"><div class="vp-k">Working on now</div><p class="vp-what">Nothing right now: every site on the list is done.</p></div>';
+  let cant = '';
+  if (cur) {
+    const what = whatIs(cur), c = cantDoOf(cur, t.inventory);
+    now = '<div class="vp-box vp-now" data-id="' + esc(cur.id) + '"><div class="vp-k">Working on now</div><div class="vp-site">' + site(cur) + '</div>'
+      + '<p class="vp-what">' + esc((what ? 'What it is: ' + what + '. ' : '') + (cur.page ? 'Verse\'s version: a-to-mind.com' + pageName(cur.page) + '.' : 'Verse has no page for it yet.')) + '</p>'
+      + '<div class="vp-meter"><span class="vp-num">' + close(cur) + '%</span><span class="vp-bar" aria-hidden="true"><i style="width:' + close(cur) + '%"></i></span><span style="font-size:13px;opacity:.8">of the way there</span></div></div>';
+    cant = '<div class="vp-box vp-cant"><div class="vp-k">What Verse still can\'t do</div>'
+      + (c.list.length ? '<ul>' + c.list.map((x) => '<li>' + esc(x.charAt(0).toUpperCase() + x.slice(1)) + '</li>').join('') + '</ul>' + (c.total > c.list.length ? '<p class="vp-more">' + esc((c.total - c.list.length) + ' more on the full Tower.') + '</p>' : '')
+        : '<p class="vp-what">Nothing found that it still can\'t do. It counts as soon as the next check runs.</p>') + '</div>';
+  }
+  const up = next.length ? '<div class="vp-box vp-next"><div class="vp-k">Next up</div><ol>' + next.map((f) => '<li>' + site(f) + (whatIs(f) ? ' \u2014 ' + esc(whatIs(f)) : '') + ' <span>(' + close(f) + '%)</span></li>').join('') + '</ol></div>' : '';
+  const done = fl.filter((f) => f.beaten).length;
+  return PLAIN_CSS + '<div class="vp tw"><h2 class="tw-head">Versus</h2><p class="vp-sub">' + esc('The website Verse is learning to replace right now, and what is left. ' + done + ' site' + (done === 1 ? '' : 's') + ' done so far.') + '</p>'
+    + (art ? '<div class="vp-art" aria-hidden="true" data-share-skip>' + art + '</div>' : '') + now + cant + up
+    + '<div class="vp-actions"><a data-main href="/versus/">Open the full Tower</a>' + (cur ? '<a href="/rival/?site=' + esc(encodeURIComponent(siteSlug(cur.site))) + '">Everything about ' + esc(cur.site) + '</a>' : '') + '</div></div>';
+}
+/** the spoken line for the owner, plain. Pure. */
+export const plainLine = (t) => { const cur = ((t && t.floors) || []).find((f) => f.state === 'current'); return cur ? 'Verse is working on ' + cur.site + ' and is ' + (Math.round(+cur.assim) || 0) + '% of the way there.' : 'Verse has finished every site on its list.'; };
+
 const elevatorOf = (text) => /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+|verse(?:'s)?\s+)?(?:elevator|tower)$/.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 async function run(text, api) {
   if (elevatorOf(text)) {
@@ -392,10 +458,18 @@ async function run(text, api) {
     return 'tower';
   }
   if (!towerOf(text)) return 'none';
+  // visitors see the Out of Order sign only; the owner's card (rival names and links) shows once the owner session is accepted
   const { showPage, esc, say } = api;
-  const t = await load();
-  showPage((el) => { el.classList.add('tower-card'); el.innerHTML = towerHtml(t, esc); });
-  if (say) say(towerLine(t));
+  showPage((el) => {
+    el.classList.add('tower-card');
+    el.innerHTML = visitorHtml() + '<p class="tw-head" hidden>Versus</p>'; // void-review: ok (visitorHtml is fixed markup from this repo, and the hidden heading is a fixed string)
+    ownerModel().then(async (m) => {
+      if (!m || !el.isConnected) return;
+      const t = await load(); if (!el.isConnected) return;
+      el.innerHTML = plainHtml(t, esc); // void-review: ok (plainHtml runs every value through esc; the picture is lib/tower-art.js, which escapes its own text)
+      if (say) say(plainLine(t));
+    }).catch(() => {});
+  });
   return 'tower';
 }
 
@@ -405,5 +479,5 @@ export default {
   examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'elevator', 'the elevator', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
   match(lower, text) { const t = text || lower; return towerOf(t) || elevatorOf(t); },
-  run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
+  run, towerOf, towerHtml, plainHtml, plainLine, whatIs, cantDoOf, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
 };

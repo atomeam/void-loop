@@ -313,3 +313,19 @@ test('the site being taken on is not passed while a feature is missing, and the 
   const t = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 9, templates: 2, features: 4, missing: ['Emoji keyboard'] } } }), g = t.floors.find((x) => x.id === f.id);
   assert.notEqual(g.state, 'passed'); assert.match(towerHtml(t, (s) => String(s)), /Missing 1 feature/);
 });
+
+test('the owner\'s Versus card is plain: what Verse is working on, one number, at most 5 things left, 3 next, one link to the full Tower, no repeated line', async () => {
+  const sk = (await import('../void-live-deploy/skills/tower.js')).default;
+  const ev = Object.fromEntries(FLOORS.slice(0, 6).map((x) => [x.id, all(x)])); delete ev[FLOORS[0].id];
+  const host = new URL(FLOORS[0].url).hostname.replace(/^www\./, '');
+  const t = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 9, missing: ['All airlines', 'All aircraft', 'Log in', '€ 1.99', 'A page: Airport codes', 'to France', 'to Spain', 'Prices', 'Alliances'] } } });
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const h = sk.plainHtml(t, esc), text = h.replace(/<style>[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<\/(?:li|p|div|h2|a)>/g, '\n').replace(/<[^>]+>/g, '');
+  const lines = text.split('\n').map((x) => x.trim()).filter(Boolean);
+  assert.match(text, /Working on now/); assert.match(text, /of the way there/); assert.match(text, /Open the full Tower/); assert.match(h, /href="\/versus\/"/);
+  assert.ok((h.match(/<li>/g) || []).length <= 8, 'short lists');
+  assert.equal(new Set(lines).size, lines.length, 'no line twice: ' + lines.join(' / '));
+  assert.ok(!/€|Log in/.test(text), 'the crawl noise is not on the card');
+  assert.match(sk.plainLine(t), /of the way there|finished/);
+  assert.equal(sk.whatIs({ label: 'Travel: flightconnections.com', site: 'flightconnections.com' }), 'a travel site');
+});
