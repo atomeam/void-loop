@@ -13,7 +13,6 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="verse-handoff" content="in: none; out: none">
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/versus-floor.js">
 <link rel="modulepreload" href="/versus/open.js">
 <link rel="modulepreload" href="/lib/owner-link.js">
 <!-- /modulepreload -->
@@ -23,7 +22,6 @@
   <div class="elv" data-owner="0"><div class="elv-doors" aria-hidden="true"><span class="elv-door"></span><span class="elv-seam"></span><span class="elv-door"></span></div><h1 class="elv-sign"><span class="elv-tape" aria-hidden="true"></span>Out of Order</h1></div>
 </main>
 <script type="module">
-import { ownerHtml } from '/lib/versus-floor.js';
 import { ownerModel, ownerToken } from '/versus/open.js';
 const root = document.getElementById('elv-root'), q = new URLSearchParams(location.search), view = q.get('view');
 const model = await ownerModel();
@@ -31,6 +29,7 @@ const model = await ownerModel();
 if (model && view === 'rival') await (await import('/versus/rivals.js')).renderRivals(root, location.search, await ownerToken());
 else if (model && view === 'compare') (await import('/versus/compare.js')).renderCompare(root, location.search);
 else if (model) {
+  const { ownerHtml } = await import('/lib/versus-floor.js');
   root.innerHTML = ownerHtml(model) + '<nav class="elv-views" aria-label="More on Versus"><a href="/versus/?view=rival">Every rival</a> · <a href="/versus/?view=compare">Side by side</a></nav>'; // void-review: ok (ownerHtml runs every value through esc; the links are fixed)
 }
 </script>

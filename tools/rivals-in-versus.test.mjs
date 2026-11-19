@@ -40,3 +40,9 @@ test('the rival feature files answer the owner key and nobody else', async () =>
   const ok = await ask({ authorization: 'Bearer owner-test-key' });
   assert.equal(ok.status, 200); assert.equal(ok.headers.get('cache-control'), 'private, no-store'); assert.deepEqual(await ok.json(), { site: 'x' });
 });
+
+test('what /versus/ sends a visitor has no static import of the file that lists the sites; it loads after the owner gate says yes', () => {
+  for (const f of ['versus/index.html', 'versus/open.js']) assert.doesNotMatch(read(f), /^\s*import[^\n]*versus-floor\.js|modulepreload" href="\/lib\/versus-floor\.js/m, f);
+  assert.match(read('versus/open.js'), /await import\('\.\.\/lib\/versus-floor\.js'\)/);
+  assert.match(read('versus/index.html'), /await import\('\/lib\/versus-floor\.js'\)/);
+});

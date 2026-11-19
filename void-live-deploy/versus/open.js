@@ -1,6 +1,6 @@
+// (lib/versus-floor.js names the sites Versus is measured against, so it is loaded only once the owner gate has said yes.)
 // Asks the owner gate for the elevator numbers, then ranks the next fight from the exam, the open wants and the nightly pick. Visitors get nothing.
 import { ownerLink } from '../lib/owner-link.js';
-import { gapText, modelFrom } from '../lib/versus-floor.js';
 
 async function readJson(path) {
   try {
@@ -20,7 +20,7 @@ export async function ownerModel() {
   try {
     const r = await fetch('/api/versus-floor', { headers: { authorization: 'Bearer ' + token }, cache: 'no-store' });
     if (!r.ok) return null;
-    const model = await r.json();
+    const model = await r.json(), { gapText, modelFrom } = await import('../lib/versus-floor.js');
     const [exam, self, nightly] = await Promise.all([readJson('/exam/latest.json'), readJson('/self.json'), readJson('/progress/nightly.json')]);
     return modelFrom(model, gapText({ exam, nightly, wants: self && self.open }));
   } catch (_) { return null; }
