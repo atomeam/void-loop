@@ -1,0 +1,1 @@
+{"id":"coverage","name":"Test coverage","what":"Names the next library file no test mentions.","schedule":"daily at 15:23 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":3,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}

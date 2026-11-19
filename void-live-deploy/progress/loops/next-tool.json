@@ -1,0 +1,1 @@
+{"id":"next-tool","name":"Next free tool","what":"Names the oldest open row on the gaps list.","schedule":"daily at 21:53 UTC","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":2,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}
