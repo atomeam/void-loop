@@ -209,13 +209,13 @@ export async function onRequestGet({ request, env, waitUntil }) {
 
 // THE BACKGROUND REPAINT (owner, 2026-11-19: "old-style card paintings must repaint automatically"): POST { repaint: true } repaints ONE kept picture
 // still in the old space look (a bare row with no 'scene1 ' row beside it), newest first, as a card's answer painting, through the same route: the
-// same template, refusals, rate limit and daily cap. It never spends the last REPAINT_RESERVE of the day's paintings, so visitors' own cards always
+// same template, refusals, rate limit and daily cap. It spends only the Workers AI share less the last REPAINT_RESERVE of it (about 20 a day at the cap of 30), never the free fallback, so visitors' own cards always
 // have room, and a subject tried today is not tried again today. It answers with the outcome and how many are left, never a picture or a subject (a list of what people asked is nobody's business).
 // Run by the site's own reads (repaintTick, below) and callable by hand. A stranger calling it can do no more than a subject POST already can: spend the cap down to the reserve.
-export const REPAINT_RESERVE = 20, OLD_ROW = "subject NOT GLOB 'scene[0-9]* *' AND subject NOT GLOB 'weather[0-9]* *' AND subject NOT GLOB 'cartoon[0-9]* *' AND subject NOT GLOB 'poster[0-9]* *' AND subject NOT GLOB 'backdrop[0-9]* *'";
+export const REPAINT_RESERVE = 10, OLD_ROW = "subject NOT GLOB 'scene[0-9]* *' AND subject NOT GLOB 'weather[0-9]* *' AND subject NOT GLOB 'cartoon[0-9]* *' AND subject NOT GLOB 'poster[0-9]* *' AND subject NOT GLOB 'backdrop[0-9]* *'";
 export async function repaintOne(request, env, { internal = false } = {}) {
   if (!on(env)) return json({ state: 'off' });
-  const made = await madeToday(env), room = capOf(env) + (pollOn(env) ? POLL_CAP : 0) - REPAINT_RESERVE;
+  const made = await madeToday(env), room = capOf(env) - REPAINT_RESERVE; // the Workers AI share only, less the reserve: the background never pushes visitors onto the slower free fallback
   if (made >= room) return json({ state: 'reserve', made });
   let left = 0, pick = null;
   try {

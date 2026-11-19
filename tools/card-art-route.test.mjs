@@ -315,3 +315,9 @@ test('the site\'s own reads repaint an old picture in the background, at most on
   await read(); assert.equal((await jobs[1]).state, 'wait', 'the next read within two minutes waits');
   assert.equal((await route.repaintTick(new Request('https://x/'), env, Date.now() + route.REPAINT_EVERY_MS + 1000)).state, 'done', 'nothing old is left');
 });
+
+test('the background repaint stops while visitors still have the last REPAINT_RESERVE Workers AI paintings of the day', async () => {
+  const { env } = world({ extra: { ART_DAILY_CAP: String(route.REPAINT_RESERVE) } });
+  const a = await (await route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': '7.7.7.7' }, body: JSON.stringify({ repaint: true }) }) })).json();
+  assert.equal(a.state, 'reserve', 'a cap no bigger than the reserve leaves nothing for the background');
+});
