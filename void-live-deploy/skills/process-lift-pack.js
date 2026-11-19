@@ -2,7 +2,7 @@
  * process-lift-pack skill — package a business process or idea into the specific heavy lifting Verse owns
  * so the client does less: clarify the ask, design the flow, connect existing tools, test it, monitor it, and hand off the running package.
  * Rules-based, offline. Nothing is sent. Reuses existing skills and tools.
- * "process lift pack for client onboarding", "package the heavy lifting for invoice automation", "we own the lift for support routing"
+ * "process lift pack for client onboarding", "package the hard work for invoice automation", "verse does the lift for support routing"
  */
 export function isProcessLiftPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
@@ -28,7 +28,7 @@ export function liftFor(subject) {
     test: 'Suite checks and verification Verse handles so the client does not test',
     monitor: 'Status card, monitors and incident path the client can summon but does not watch',
     handoff: 'Complete package of ownership, status, docs and running automations',
-    clientDoesLess: 'The client no longer clarifies, designs, connects, tests, monitors or chases status; Verse owns the heavy lifting'
+    clientDoesLess: 'The client no longer clarifies, designs, connects, tests, monitors or chases status; Verse owns the hard work'
   };
 }
 
@@ -38,7 +38,7 @@ async function run(text, api) {
   const pack = liftFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Process lift pack: ' + esc(name) + '</h2>'
-      + '<p class="sub">What Verse owns so the client does less. We package "we own the heavy lifting."</p>'
+      + '<p class="sub">What Verse owns so the client does less. We package "verse does the hard work."</p>'
       + '<h3>Clarify</h3><p>' + esc(pack.clarify) + '</p>'
       + '<h3>Design</h3><p>' + esc(pack.design) + '</p>'
       + '<h3>Connect</h3><p>' + esc(pack.connect) + '</p>'
@@ -57,19 +57,19 @@ export default {
   name: 'process-lift-pack',
   examples: [
     'process lift pack for client onboarding',
-    'package the heavy lifting for invoice automation',
-    'we own the lift for support routing',
-    'heavy lifting pack for the sales follow-up process'
+    'package the hard work for invoice automation',
+    'verse does the lift for support routing',
+    'hard work pack for the sales follow-up process'
   ],
-  nearMisses: ['what is heavy lifting', 'lift the card', 'process map'],
+  nearMisses: ['what is hard work', 'lift the card', 'process map'],
   match(lower, text) { return isProcessLiftPack(text || lower); },
   run,
   suite() {
     const ok = isProcessLiftPack('process lift pack for client onboarding')
-      && isProcessLiftPack('package the heavy lifting for invoice automation')
-      && isProcessLiftPack('we own the lift for support routing')
-      && isProcessLiftPack('heavy lifting pack for the sales follow-up process')
-      && !isProcessLiftPack('what is heavy lifting')
+      && isProcessLiftPack('package the hard work for invoice automation')
+      && isProcessLiftPack('verse does the lift for support routing')
+      && isProcessLiftPack('hard work pack for the sales follow-up process')
+      && !isProcessLiftPack('what is hard work')
       && !isProcessLiftPack('lift the card')
       && !isProcessLiftPack('process map');
     return { ok, got: 'match works' };
