@@ -29,3 +29,19 @@ test('a recipe card about pancakes paints as an answer even after data-skill lan
   assert.equal(kindOf({ dataset: { skill: 'recipe' } }, { key: 'recipe' }), 'skill');
   assert.equal(kindOf({ dataset: { skill: 'weather', artKind: 'weather', artSubject: 'Paris France rain' } }, {}), 'weather');
 });
+
+test('a busy paint is tried again: the retry counter exists (2026-11-19: a comment swallowed "const tries", so no retry ever ran)', async () => {
+  const src = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/lib/card-forge.js', import.meta.url), 'utf8');
+  assert.match(src, /^export const RETRY_S = \[[^\]]+\]; const tries = new Map\(\);/m, 'tries is declared, not inside a comment');
+  const calls = []; let n = 0;
+  globalThis.fetch = async (u, o) => { calls.push((o && o.method) || 'GET'); n++; return { ok: true, json: async () => (n === 1 ? { state: 'none', stale: true } : { state: 'plate', why: 'busy' }) }; };
+  const realST = globalThis.setTimeout, timers = []; globalThis.setTimeout = (f, ms) => { timers.push(ms); return 0; };
+  try {
+    const F = await import('../void-live-deploy/lib/card-forge.js?retry');
+    const art = { classList: { toggle() {} }, querySelector: () => null, querySelectorAll: () => [] };
+    const el = { isConnected: true, dataset: {}, classList: { contains: () => false }, querySelector: (q) => (/vc-art/.test(q) ? art : null), querySelectorAll: () => [], children: [] };
+    F.forge(el, { key: 'dragon', kindName: 'answer', typeLine: 'Answer' }, null);
+    for (let i = 0; i < 20 && !timers.includes(25000); i++) await new Promise((ok) => realST(ok, 5));
+    assert.deepEqual(calls.slice(0, 2), ['GET', 'POST']); assert.ok(timers.includes(25000), 'a retry is set after a busy paint: ' + timers);
+  } finally { globalThis.setTimeout = realST; delete globalThis.fetch; }
+});

@@ -30,7 +30,8 @@ const subjectFor = (el, c) => {
   if (!/^(?:looking|loading|thinking|searching)\b/i.test(String(k || ''))) el._vcArtKey = k; // a "thinking ..." frame is not the subject: the answer's own words are, once they arrive
   return k;
 };
-export const RETRY_S = [25, 50, 100, 200, 400]; // backoff: the art maker allows three paintings a minute per connection, so a page opening many cards waits its turn const tries = new Map(); // a subject's retries after a busy or slow paint
+// backoff: the art maker allows three paintings a minute per connection, so a page opening many cards waits its turn
+export const RETRY_S = [25, 50, 100, 200, 400]; const tries = new Map(); // a subject's retries after a busy or slow paint
 /** a paint worth trying again later: no answer, a model timeout, a rate limit or an HTTP error; never the cap or the switch. Pure. */
 export const retryable = (got) => !got || ['busy', 'slow', 'http'].includes(got.why);
 const seen = new Map(); // folded-or-typed subject + kind -> 'art' | 'none' | 'plate' with the picture, so a card shown twice asks once
