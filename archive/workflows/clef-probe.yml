@@ -1,0 +1,30 @@
+# Frontier #9 (Clef routes every ask): what the site's Workers AI binding knows about Clef and Clef-flash (tools/clef-probe.mjs,
+# POST /api/bench { probe: true }, owner only), written to the job summary, so the router's Clef call is written to the real
+# input shape. Manual only; model metadata, nothing run, nothing spent. Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN).
+name: Clef probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: The site to ask (its /api/bench)
+        default: 'https://a-to-mind.com'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: What the binding knows about Clef
+        env:
+          READ_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          SITE: ${{ inputs.site }}
+        run: node tools/clef-probe.mjs --site "$SITE" | tee -a "$GITHUB_STEP_SUMMARY"
