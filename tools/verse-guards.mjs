@@ -86,10 +86,11 @@ export async function runGuards(ids, { dry = false, now = Date.now(), load = loa
     const g = GUARDS.find((x) => x.id === id), mod = g && await load(id);
     if (!g || !mod || typeof mod.run !== 'function') { out.push({ id, skipped: true }); continue; }
     const prev = (() => { try { return JSON.parse(read(logPath(id))); } catch { return blankGuard(g); } })();
-    const ctx = { root, site: SITE, dry, now, env, hit, loadPlaywright, revertOnBranch, editOnBranch, queueJob: (a, t) => (dry ? Promise.resolve({ queued: false, why: 'dry run' }) : queueJob(a, t, env)), save: (file, text) => { if (!dry) { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text); } }, read, prev };
+    const ctx = { root, site: SITE, dry, now, env, hit, loadPlaywright, revertOnBranch, editOnBranch, spawn: (c, a, cwd) => spawnSync(c, a, { cwd, encoding: 'utf8', timeout: 180000, maxBuffer: 64 << 20 }), queueJob: (a, t) => (dry ? Promise.resolve({ queued: false, why: 'dry run' }) : queueJob(a, t, env)), save: (file, text) => { if (!dry) { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text); } }, read, prev };
     let result;
     try { result = await mod.run(ctx); } catch (e) { result = { ok: false, last: prev.last }; log('guard ' + id + ' threw: ' + String((e && e.message) || e).slice(0, 160)); }
     const rec = recordOf(g, prev, result || { ok: false }, now);
+    if (result && result.state) rec.state = { ...rec.state, ...result.state }; // a guard's own memory (what it has already handled) rides in the same record
     const wrote = changed(prev, rec);
     if (wrote && !dry) { mkdirSync(dirname(logPath(id)), { recursive: true }); writeFileSync(logPath(id), JSON.stringify(rec) + '\n'); }
     log(rec.name + ': ' + rec.status + ' ' + rec.last + (wrote ? '' : ' (unchanged)'));

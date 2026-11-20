@@ -71,3 +71,8 @@ test('an edit goes on its own helper branch: pushed when it changed something, n
   const refuse = (a) => ({ status: a.includes('push') ? 1 : 0, stdout: '', stderr: 'refusing to allow a token without workflow scope to update workflow' });
   assert.match(editOnBranch('helper/wf', 'x', () => true, refuse).why, /cannot change workflow files/);
 });
+
+test('a guard keeps its own memory in its record and gets a spawn to run a generator', async () => {
+  const out = await runGuards(['deploy'], { dry: true, log: () => {}, load: async () => ({ run: async (ctx) => { assert.equal(typeof ctx.spawn, 'function'); assert.equal(typeof ctx.editOnBranch, 'function'); return { last: 'Looked.', ok: true, state: { handled: ['1'] } }; } }) });
+  assert.equal(out[0].status, 'Ran.');
+});
