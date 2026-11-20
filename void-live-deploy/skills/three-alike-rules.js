@@ -1,5 +1,6 @@
 /** Three Alike: swap two neighbours. Three or more of a kind clear. Verse takes the swap that clears the least. */
 export const id = 'three-alike', N = 6, CELL = 26, W = 6 * 26, H = 6 * 26, CAP = 40;
+export const whatsNew = 'Update 1: The race against Verse becomes a frantic scramble for points.';
 const rng = (s) => { s.n = (Math.imul(s.n, 1664525) + 1013904223) >>> 0; return s.n / 4294967296; };
 export function create(seed = 1) {
   const s = { n: (seed >>> 0) || 1, tick: 0, grid: [], cursor: 0, turns: 0, over: null, why: '', score: { you: 0, void: 0 }, sfx: 0 };
@@ -58,7 +59,7 @@ export function tick(s, input = {}) {
     if (straight) { swap(s.grid, s.cursor, next); resolve(s, 'you'); s.cursor = next; s.turns++; acted = true; }
   }
   if (acted) { play(s, best(s, 'least'), 'void'); s.why = 'taking the swap that clears the least'; }
-  if (s.turns >= 6) s.over = s.score.you === s.score.void ? 'draw' : s.score.you > s.score.void ? 'you' : 'void';
+  if (s.turns >= 12) s.over = s.score.you === s.score.void ? 'draw' : s.score.you > s.score.void ? 'you' : 'void';
   return s;
 }
 export function selfPlay(seed, cap = CAP) { const s = create(seed); while (!s.over && s.tick < cap) tick(s, { auto: true }); return { over: s.over, tick: s.tick, score: { ...s.score } }; }
@@ -71,4 +72,5 @@ export function draw(g, s) {
     if (i === s.cursor) { g.strokeStyle = '#f4f1ea'; g.strokeRect(c * CELL + 1, r * CELL + 1, CELL - 2, CELL - 2); }
   }
 }
-export const how = 'Move onto a neighbour with the arrows to swap the two cells. Three alike in a line clear and the column drops. Verse answers with the swap that clears the least. After six of your swaps, the higher score wins. A link hands a friend the same board.';
+export const how = 'Move onto a neighbour with the arrows to swap the two cells. Three alike in a line clear and the column drops. Verse answers with the swap that clears the least. After twelve of your swaps, the higher score wins. A link hands a friend the same board.';
+export const end = 'Update 1: The race against Verse becomes a frantic scramble for points.';

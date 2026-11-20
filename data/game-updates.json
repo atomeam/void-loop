@@ -1,12 +1,13 @@
 {
- "cursor": 4,
+ "cursor": 5,
  "picks": {
   "debris-field": 1,
   "gap-glide": 1,
   "null-waves": 1,
   "packet-maze": 1,
   "stackwell": 1,
-  "nine-grid": 1
+  "nine-grid": 1,
+  "three-alike": 1
  },
  "scores": {
   "debris-field": {
@@ -91,6 +92,27 @@
     "fun": 5,
     "polish": 4
    }
+  },
+  "three-alike": {
+   "update": 1,
+   "note": "Update 1: The race against Verse becomes a frantic scramble for points.",
+   "why": "shipped",
+   "fun": 63,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44652720911",
+   "parts": {
+    "danger": 7,
+    "goal": 8,
+    "boss": 4,
+    "juice": 6,
+    "phone": 9,
+    "fair": 5,
+    "end": 6,
+    "fun": 7,
+    "polish": 5
+   }
   }
  },
  "shown": [
@@ -153,6 +175,20 @@
    "paid": false,
    "provider": "verse @cf/google/gemma-4-26b-a4b-it",
    "video": "https://github.com/atomeam/void-loop/actions/runs/44577124263",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-20T01:30:48.095Z",
+   "id": "three-alike",
+   "title": "Three Alike",
+   "n": 1,
+   "note": "Update 1: The race against Verse becomes a frantic scramble for points.",
+   "fun": 63,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44652720911",
    "dropped": false,
    "born": false
   }
