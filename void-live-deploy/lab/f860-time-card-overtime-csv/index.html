@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0f1419; --card: #1a2332; --text: #e6edf3; --accent: #58a6ff; --ok: #3fb950; --warn: #d29922; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 1rem; }
+  h1 { font-size: 1.4rem; margin: 0 0 0.5rem; }
+  .sub { color: #8b949e; font-size: 0.9rem; margin-bottom: 1rem; }
+  .controls { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; margin-bottom: 1rem; }
+  label { display: block; font-size: 0.8rem; color: #8b949e; }
+  input[type="number"], input[type="time"] { background: var(--card); border: 1px solid #30363d; color: var(--text); padding: 0.4rem; border-radius: 6px; width: 100%; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 8px; overflow: hidden; }
+  th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #30363d; }
+  th { background: #161b22; font-weight: 600; }
+  .day { font-weight: 500; }
+  .totals { margin-top: 1rem; padding: 1rem; background: var(--card); border-radius: 8px; }
+  .totals strong { color: var(--accent); }
+  .ot { color: var(--warn); }
+  button { background: var(--accent); color: #0d1117; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+  button.secondary { background: #30363d; color: var(--text); }
+  button:hover { opacity: 0.9; }
+  .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .note { font-size: 0.8rem; color: #8b949e; margin-top: 1rem; }
+  .warn { color: var(--warn); font-size: 0.8rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Time card · Verse lab</title>
+<meta name="description" content="A practical single-page time card for tracking weekly hours. User enters start and end times plus break duration for each day.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Time card · Verse lab">
+<meta property="og:description" content="A practical single-page time card for tracking weekly hours. User enters start and end times plus break duration for each day.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f860-time-card-overtime-csv/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f860-time-card-overtime-csv/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>Time Card</h1>
+  <p class="sub">Enter daily clock-in, clock-out and breaks. Get weekly total and overtime. Saved on this device. Download CSV or copy summary.</p>
+
+  <div class="controls">
+    <div>
+      <label for="ot">Overtime after (hours/week)</label>
+      <input type="number" id="ot" value="40" min="0" step="0.5" style="width: 120px;">
+    </div>
+    <button type="button" id="clear" class="secondary">Clear week</button>
+  </div>
+
+  <table id="grid">
+    <thead>
+      <tr><th>Day</th><th>In</th><th>Out</th><th>Break (min)</th><th>Hours</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="totals" id="totals">
+    <div>Total hours: <strong id="total">0.00</strong></div>
+    <div>Regular: <strong id="reg">0.00</strong> &nbsp; Overtime: <strong id="otout" class="ot">0.00</strong></div>
+  </div>
+
+  <div class="actions">
+    <button type="button" id="download">Download CSV</button>
+    <button type="button" id="copy" class="secondary">Copy summary</button>
+  </div>
+  <p class="note" id="status">Changes save automatically.</p>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

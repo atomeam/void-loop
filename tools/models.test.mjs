@@ -32,3 +32,23 @@ test('no other file names a Workers AI model in a string', () => {
   walk(root);
   assert.deepEqual(hits, [], 'name models in lib/models.js, not here');
 });
+
+import { GEMINI_MODELS, GEMINI_RETIRED, geminiUrl } from '../void-live-deploy/lib/models.js';
+test('Gemini models are named in models.js only, none is retired, and a retired name never appears anywhere in the code', () => {
+  assert.ok(GEMINI_MODELS.length >= 2 && GEMINI_MODELS.every((m) => /^gemini-[\d.]+-flash-lite$/.test(m) && !GEMINI_RETIRED.test(m)));
+  for (const r of ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-2.5-flash', 'gemini-pro']) assert.match(r, GEMINI_RETIRED, r);
+  for (const ok of ['gemini-2.5-flash-lite', 'gemini-3.5-flash-lite']) assert.doesNotMatch(ok, GEMINI_RETIRED, ok);
+  assert.equal(geminiUrl('m'), 'https://generativelanguage.googleapis.com/v1beta/models/m:generateContent');
+  const repo = path.resolve(root, '..'), hits = [], named = [];
+  const walk = (d) => { for (const f of fs.readdirSync(d, { withFileTypes: true })) {
+    const p = path.join(d, f.name);
+    if (f.isDirectory()) { if (!['node_modules', 'archive', '.git', 'drafts'].includes(f.name)) walk(p); continue; }
+    if (!/\.(js|mjs|html)$/.test(f.name)) continue;
+    const text = fs.readFileSync(p, 'utf8'), rel = path.relative(repo, p);
+    if (GEMINI_RETIRED.test(text) && !/models\.test\.mjs$|lib[\\/]models\.js$/.test(rel)) hits.push(rel);
+    if (/['"`]gemini-[\d.]+-[\w.-]+['"`]/.test(text) && !/models\.test\.mjs$|lib[\\/]models\.js$|ai-gateway\.test\.mjs$|answer-judge\.test\.mjs$/.test(rel)) named.push(rel);
+  } };
+  walk(path.join(repo, 'tools')); walk(root);
+  assert.deepEqual(hits, [], 'a retired Gemini model is named in: ' + hits.join(', '));
+  assert.deepEqual(named, [], 'name Gemini models in void-live-deploy/lib/models.js only: ' + named.join(', '));
+});

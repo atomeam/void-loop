@@ -48,3 +48,10 @@ test('free: status lists every resource with why; the /free/ page reads /api/fre
   assert.ok(rows.every((r) => typeof r.why === 'string' && 'available' in r));
   assert.match(readFileSync(new URL('../void-live-deploy/free/index.html', import.meta.url), 'utf8'), /\/api\/free/);
 });
+
+test('an ended free tier is never reachable, even with its key set', () => {
+  const r = { id: 'x', kind: 'llm', access: 'key:X_KEY', limit: { n: 10, per: 'day' }, ended: '2026-07-30', endedWhy: 'retired' };
+  assert.equal(reachable(r, { X_KEY: 'k' }).ok, false);
+  assert.match(reachable(r, { X_KEY: 'k' }).why, /ended 2026-07-30: retired/);
+  assert.equal(candidates({ resources: [r] }, 'llm', { X_KEY: 'k' }).length, 0);
+});

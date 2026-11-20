@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { BOOK, PUBLIC_BOOK, BAR_ID, CATALOG, applyUpdate, bornFrom, decide, emptyBook, funOf, gamesOf, gapOf, inventPrompt, nextTask, promptFor, readWhatsNew, scoreFrom, withBar, PARTS } from '../void-live-deploy/lib/game-updates.js';
 import { models, VISION_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { askFree } from './judgment.mjs';
+import { charterPrompt } from './charter.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png' };
 const NOISE = /favicon|AudioContext|net::ERR|Failed to load resource|404/;
@@ -18,7 +19,12 @@ export function saveBook(book, cwd = root) {
 export function gameTask(cwd = root) {
   const task = nextTask(loadBook(cwd));
   if (task.kind === 'invent') return { kind: 'invent', title: 'Game update: a new original game, Update 1', text: inventPrompt(), update: 1 };
-  return task;
+  const aim = universeAim(task, cwd);
+  return aim ? { ...task, text: task.text + '\n\nThe Tower also wants this from the game: ' + aim + '. Work toward it in this update, and keep the game original.' } : task;
+}
+/** the Tower's plain-word aim for the game being updated (data/universe-aim.json, no names), or ''. */
+export function universeAim(task, cwd = root) {
+  try { const a = JSON.parse(readFileSync(join(cwd, 'data/universe-aim.json'), 'utf8')).games[task.game && task.game.id]; return a && a.words ? String(a.words) : ''; } catch { return ''; }
 }
 const serve = (dir) => new Promise((ok) => {
   const server = createServer((req, res) => {
@@ -82,7 +88,7 @@ async function askVision(prompt, shots, { env, fetchFn }) {
   return { text, frames: frames.length };
 }
 export async function judgePlay(play, { env = process.env, fetchFn = fetch, game, note } = {}) {
-  const prompt = 'Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. A Debris Field bar is a phone game with a goal, danger, and an ending. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '.';
+  const prompt = charterPrompt() + 'Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. A Debris Field bar is a phone game with a goal, danger, and an ending. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '.';
   const seen = await askVision(prompt, (play && play.shots) || [], { env, fetchFn });
   let raw = seen.text;
   if (!raw && seen.frames) raw = await askFree(prompt + ' Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });

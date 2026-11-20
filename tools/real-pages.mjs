@@ -537,6 +537,12 @@ SPECS['/trading-bots/arbitrage/'] = async (t) => {
   if (/^Read /.test(v)) { t.ok(/Net/.test(await t.text('#ar-rows')), 'every venue pair with its net after costs'); await t.download('#ar-csv', /^arbitrage-.*\.csv$/); }
 };
 SPECS['/emoji-combos/emoji-dictionary/'] = SPECS['/emoji-combos/']; // the family page, copied for the Versus floor
+// the 3D world: the scene draws with no errors and its parts are in it
+SPECS['/world/'] = async (t) => {
+  await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 60000 });
+  t.ok((await t.p.evaluate(() => window.__world.errors.length)) === 0, 'the scene draws with no errors');
+  t.ok((await t.p.evaluate(() => window.__world.handle().parts().length)) >= 10, 'the animal and its parts are in the scene');
+};
 // one emoji on every platform (lib/emoji-looks.js): the grid draws, a search for fire swaps it, the pictures load, the link keeps the emoji
 SPECS['/emojis/everywhere/'] = async (t) => {
   t.ok((await t.p.locator('#grid .lk-tile').count()) >= 12, 'the grid shows 12 or more platforms');

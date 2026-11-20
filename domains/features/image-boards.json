@@ -1999,5 +1999,984 @@
     ]
    }
   }
+ },
+ "crawl": {
+  "sites": {
+   "2chan.net": {
+    "floor": "image boards: 2chan.net",
+    "url": "https://www.2chan.net/",
+    "robots": true,
+    "rendered": 1,
+    "sitemaps": 0,
+    "urls_found": 0,
+    "pages": 17,
+    "fetched": 23,
+    "skipped": {
+     "robots": 0,
+     "failed": 5
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/"
+      ],
+      "features": [
+       "content table"
+      ]
+     },
+     {
+      "key": "page:/i.htm",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/i.htm"
+      ],
+      "title": "���X�}�z�ӂ��΁�",
+      "features": [
+       "button img",
+       "button dec",
+       "button jun",
+       "button may",
+       "button dat",
+       "button ڕs",
+       "button ډ",
+       "button id",
+       "button ɗe",
+       "button o",
+       "button x s o",
+       "button a",
+       "button t b j",
+       "button g",
+       "button 낰",
+       "button 싅",
+       "button f",
+       "button pc",
+       "button Rs",
+       "button 肢",
+       "button t b v",
+       "button s",
+       "button q",
+       "button webm",
+       "button 傭 ԃ",
+       "button ǂ ԃ",
+       "button j",
+       "button ɠd",
+       "button a n a",
+       "button a e g h a",
+       "button vtuber",
+       "button z c u",
+       "button 3dcg",
+       "button l h m",
+       "button r",
+       "button fgo",
+       "button a c x",
+       "button zoids",
+       "button e n",
+       "button l g q",
+       "button v q",
+       "button a c",
+       "button c v",
+       "button l b g l",
+       "button a 肫",
+       "button b",
+       "button flash",
+       "button w",
+       "button j x",
+       "button d",
+       "button r њq",
+       "button r i",
+       "button g k",
+       "button v",
+       "button gsql",
+       "button gsqlip"
+      ]
+     },
+     {
+      "key": "path:/hinan/*",
+      "kind": "list",
+      "known": 4,
+      "sampled": [
+       "https://www.2chan.net/hinan/futaba.htm",
+       "https://www.2chan.net/hinan/futaba.php?mode=cat",
+       "https://www.2chan.net/hinan/futaba.php?mode=cat&sort=1",
+       "https://www.2chan.net/hinan/futaba.php?mode=cat&sort=2"
+      ],
+      "features": [
+       "content table"
+      ]
+     },
+     {
+      "key": "page:/script",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/script/"
+      ],
+      "title": "�X�N���v�g �_�E�����[�h",
+      "features": [
+       "grid grid",
+       "button v z"
+      ]
+     },
+     {
+      "key": "page:/kiyaku.htm",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/kiyaku.htm"
+      ],
+      "title": "�ӂ��΁������˂�̗��p�K��ɂ���",
+      "features": [
+       "section ж p k ɂ",
+       "section ж ł l s ƃ c ƃ b",
+       "section o p ɋւ"
+      ]
+     },
+     {
+      "key": "page:/notice.htm",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/notice.htm"
+      ],
+      "title": "���m�点",
+      "features": [
+       "grid grid"
+      ]
+     },
+     {
+      "key": "page:/v.php",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/v.php?hinan&guid=on"
+      ],
+      "title": "��",
+      "features": [
+       "button j",
+       "button v",
+       "button i"
+      ]
+     },
+     {
+      "key": "page:/ktinv.htm",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/ktinv.htm"
+      ],
+      "title": "���X�}�z�E�g�тӂ��΁��̂��Љ�",
+      "features": [
+       "section a n"
+      ]
+     },
+     {
+      "key": "path:/hinan/res/*",
+      "kind": "list",
+      "known": 4,
+      "sampled": [
+       "https://www.2chan.net/hinan/res/299530.htm",
+       "https://www.2chan.net/hinan/res/299518.htm",
+       "https://www.2chan.net/hinan/res/298804.htm",
+       "https://www.2chan.net/hinan/res/299746.htm"
+      ],
+      "features": [
+       "button ԑm",
+       "control text box",
+       "control upload",
+       "control options",
+       "content table"
+      ]
+     },
+     {
+      "key": "path:/script/*",
+      "kind": "list",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/script/1bu.html"
+      ],
+      "features": [
+       "content table"
+      ]
+     },
+     {
+      "key": "path:/bin/*",
+      "kind": "list",
+      "known": 1,
+      "sampled": [
+       "https://www.2chan.net/bin/jump.php?https://battlenest.jp/trainers/s/htdqh26"
+      ],
+      "features": []
+     }
+    ],
+    "features": [
+     {
+      "key": "content table",
+      "name": "A table",
+      "kind": "content",
+      "templates": [
+       "home",
+       "path:/hinan/*",
+       "path:/hinan/res/*",
+       "path:/script/*"
+      ],
+      "verse": "has",
+      "found": [
+       "table"
+      ]
+     },
+     {
+      "key": "page x z ж",
+      "name": "A page: ���X�}�z�ӂ��΁�",
+      "kind": "page",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button img",
+      "name": "�񎟌���img",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button dec",
+      "name": "�񎟌���dec",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button jun",
+      "name": "�񎟌���jun",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button may",
+      "name": "�񎟌���may",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button dat",
+      "name": "�񎟌���dat",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "has",
+      "found": [
+       "dat"
+      ]
+     },
+     {
+      "key": "button ڕs",
+      "name": "�]�ڕs��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button ډ",
+      "name": "�]�ډ�",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button id",
+      "name": "�񎟌�ID",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button ɗe",
+      "name": "�񎟌��ƊE",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button o",
+      "name": "�Ö�",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button x s o",
+      "name": "�X�s�O��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button a",
+      "name": "�ǎ���",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button t b j",
+      "name": "�T�b�J�[",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button g",
+      "name": "����G��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button 낰",
+      "name": "���낰",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button 싅",
+      "name": "�싅",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button f",
+      "name": "�f��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button pc",
+      "name": "����PC",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button Rs",
+      "name": "�₨��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button 肢",
+      "name": "�肢",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button t b v",
+      "name": "�t�@�b�V����",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button s",
+      "name": "���s",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button q",
+      "name": "�q���",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button webm",
+      "name": "webm",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button 傭 ԃ",
+      "name": "���傭�Ԃ�",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button ǂ ԃ",
+      "name": "�ǂ��Ԃ�",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button j",
+      "name": "�J����",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm",
+       "page:/v.php"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button ɠd",
+      "name": "�Ɠd",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button a n a",
+      "name": "�A�N�A",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button a e g h a",
+      "name": "�A�E�g�h�A",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button vtuber",
+      "name": "VTuber",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button z c u",
+      "name": "�z�����C�u",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button 3dcg",
+      "name": "3DCG",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button l h m",
+      "name": "�l�H�m�\\",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button r",
+      "name": "�R",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button fgo",
+      "name": "FGO",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button a c x",
+      "name": "�A�C�}�X",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button zoids",
+      "name": "ZOIDS",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button e n",
+      "name": "�E���n������",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button l g q",
+      "name": "�l�g�Q",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button v q",
+      "name": "�\\�V���Q",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button a c",
+      "name": "���A�C",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button c v",
+      "name": "�C�V��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button l b g l",
+      "name": "�l�b�g�L����",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button a 肫",
+      "name": "�Ȃ肫��",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button b",
+      "name": "���B",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button flash",
+      "name": "flash",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button w",
+      "name": "���w",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button j x",
+      "name": "�j���[�X�\\",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button d",
+      "name": "���d",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button r њq",
+      "name": "���R�ЊQ",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button r i",
+      "name": "�R���i",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button g k",
+      "name": "�G�k",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button v",
+      "name": "�V���",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm",
+       "page:/v.php"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button gsql",
+      "name": "���Gsql",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button gsqlip",
+      "name": "���Gsqlip",
+      "kind": "button",
+      "templates": [
+       "page:/i.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "page x n v g e h",
+      "name": "A page: �X�N���v�g �_�E�����[�h",
+      "kind": "page",
+      "templates": [
+       "page:/script"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "grid grid",
+      "name": "A grid (6: �����͂ȂɁH, futaba.php, �摜�J�E���^, ����v�Z�������X�N���v�g�i�T���v���j, ����ڂ񕗂",
+      "kind": "grid",
+      "templates": [
+       "page:/script",
+       "page:/notice.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button v z",
+      "name": "�@�v�Z�@",
+      "kind": "button",
+      "templates": [
+       "page:/script"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "page ж p k ɂ",
+      "name": "A page: �ӂ��΁������˂�̗��p�K��ɂ���",
+      "kind": "page",
+      "templates": [
+       "page:/kiyaku.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "section ж p k ɂ",
+      "name": "�ӂ��΁������˂�̗��p�K��ɂ���",
+      "kind": "section",
+      "templates": [
+       "page:/kiyaku.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "section ж ł l s ƃ c ƃ b",
+      "name": "�ӂ��΁������˂�ł͉��L�̍s�ׂ������Ƃ��ċ֎~�Ƃ��܂��B",
+      "kind": "section",
+      "templates": [
+       "page:/kiyaku.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "section o p ɋւ",
+      "name": "���{���O����̗��p�Ɋւ���",
+      "kind": "section",
+      "templates": [
+       "page:/kiyaku.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "page m 点",
+      "name": "A page: ���m�点",
+      "kind": "page",
+      "templates": [
+       "page:/notice.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "page ",
+      "name": "A page: ��",
+      "kind": "page",
+      "templates": [
+       "page:/v.php"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button i",
+      "name": "�Ï�",
+      "kind": "button",
+      "templates": [
+       "page:/v.php"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "page x z e g тж љ",
+      "name": "A page: ���X�}�z�E�g�тӂ��΁��̂��Љ�",
+      "kind": "page",
+      "templates": [
+       "page:/ktinv.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "section a n",
+      "name": "�A�N�Z�X�̕��@",
+      "kind": "section",
+      "templates": [
+       "page:/ktinv.htm"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "button ԑm",
+      "name": "�ԐM����",
+      "kind": "button",
+      "templates": [
+       "path:/hinan/res/*"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "control text box",
+      "name": "A text box (\"com\")",
+      "kind": "control",
+      "templates": [
+       "path:/hinan/res/*"
+      ],
+      "verse": "has",
+      "found": [
+       "text",
+       "box"
+      ]
+     },
+     {
+      "key": "control upload",
+      "name": "Upload a file",
+      "kind": "control",
+      "templates": [
+       "path:/hinan/res/*"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "control options",
+      "name": "Options to tick or choose",
+      "kind": "control",
+      "templates": [
+       "path:/hinan/res/*"
+      ],
+      "verse": "missing",
+      "found": []
+     }
+    ],
+    "verse_page": "/boards/",
+    "verse_pages": 3,
+    "verse_urls": [
+     "/boards/",
+     "/members/",
+     "/credits/"
+    ],
+    "crawled": "2026-11-20"
+   }
+  },
+  "updated": "2026-11-20"
  }
 }

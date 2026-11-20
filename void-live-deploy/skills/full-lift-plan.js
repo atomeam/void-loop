@@ -67,6 +67,6 @@ export default {
     const ok = isFullLiftPlan('full lift plan for my idea: automate invoice reminders')
       && isFullLiftPlan('ownership plan for client onboarding system')
       && !isFullLiftPlan('lift weights');
-    return ok ? 'ok' : 'full-lift-plan match failed';
+    return { ok };
   }
 };

@@ -1,0 +1,41 @@
+{
+ "at": "2026-11-20T08:25:24.883Z",
+ "sha": "edbd4847150b98b484c78599e4c525c99abf8f21",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44698863278",
+ "suite": "browser suite on main",
+ "checks": [
+  "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+  "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in",
+  "suite ran to the end",
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+  "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
+  "Verse art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button"
+ ],
+ "touched": [
+  "docs/map.d/offer-open-pages.md",
+  "docs/money-playbook.md",
+  "tools/buy.test.mjs",
+  "tools/revenue-lane.mjs",
+  "tools/revenue-lane.test.mjs",
+  "void-live-deploy/blub/index.html",
+  "void-live-deploy/brain/index.html",
+  "void-live-deploy/offers/offer.js",
+  "void-live-deploy/offers/offers.json",
+  "void-live-deploy/offers/playbook.json",
+  "void-live-deploy/progress/loops/revenue-runs/2026-11-20T0733.json",
+  "void-live-deploy/progress/loops/revenue.json",
+  "void-live-deploy/starboard/index.html",
+  "void-live-deploy/team/index.html",
+  "void-live-deploy/treasury/index.html"
+ ],
+ "shards": [
+  4
+ ],
+ "passed": [
+  4
+ ],
+ "closedAt": "2026-11-20T12:01:41.785Z",
+ "closedBy": "61d82192539d87f580f55a3155151b4f29c0e354",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44724773271",
+ "minutes": 216
+}

@@ -5,6 +5,7 @@
  * is beatable. First to 7 wins. Units: the court is W x H, the ball moves in units per second.
  *   create() -> state    step(s, dt, input?) -> s (mutates)    voidAim(s) -> y    predictY(s) -> y
  */
+export const whatsNew = 'Update 1: The ball moves with more weight and momentum, making every rally feel more intense.';
 export const W = 400, H = 260, PAD_H = 46, PAD_W = 8, BALL = 7, WIN = 7, VOID_SPEED = 230, YOU_SPEED = 320;
 export function create(seed = 1) {
   const s = { you: { y: H / 2, score: 0 }, void: { y: H / 2, score: 0 }, ball: null, over: null, serve: 1, rng: seed >>> 0 || 1, rally: 0, lastWhy: '' };

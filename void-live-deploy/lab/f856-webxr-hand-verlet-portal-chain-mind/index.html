@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg:#0b0e14; --fg:#e6edf3; --accent:#58a6ff; --card:#161b22; }
+* { box-sizing:border-box; }
+html,body { margin:0; height:100%; background:var(--bg); color:var(--fg); font:14px system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100%; height:100%; }
+.portal { position:absolute; width:72px; height:48px; background:var(--card); border:1px solid #30363d; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:grab; user-select:none; transform:translate(-50%,-50%); will-change:transform; box-shadow:0 4px 12px rgba(0,0,0,.4); }
+.portal.pinned { border-color:var(--accent); background:#1c2a40; }
+#hud { position:absolute; top:12px; left:12px; background:rgba(22,27,34,.85); padding:8px 12px; border-radius:8px; z-index:10; }
+button { background:#21262d; color:var(--fg); border:1px solid #30363d; padding:4px 10px; border-radius:6px; cursor:pointer; }
+button:hover { background:#30363d; }
+#canvas { position:absolute; inset:0; pointer-events:none; }
+#status { font-size:12px; opacity:.8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Hand-controlled living portal chain · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial embodiment for The Verse canvas: a chain of absolute-positioned living DOM portals connected by pure-JS Verlet distance and angle constraints">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Hand-controlled living portal chain · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial embodiment for The Verse canvas: a chain of absolute-positioned living DOM portals connected by pure-JS Verlet distance and angle constraints">
+<meta property="og:url" content="https://a-to-mind.com/lab/f856-webxr-hand-verlet-portal-chain-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f856-webxr-hand-verlet-portal-chain-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  F856 · Living Portal Chain<br>
+  <button id="seal">Seal Genome</button> <span id="status">ready</span><br>
+  Drag portals • Tilt to stiffen • XR hands if available
+</div>
+<div id="stage"></div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Hand-controlled living portal chain</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

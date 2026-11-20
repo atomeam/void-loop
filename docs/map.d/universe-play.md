@@ -1,0 +1,1 @@
+The game scorer `universe-play.mjs` plays a game target's own entry with the video on and puts what it measured (frame rate, errors, controls, softlock) and what the judge or a reviewer saw on the Tower beyond websites; each mark says who judged it. Test: `universe-play.test.mjs`.

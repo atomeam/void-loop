@@ -3,6 +3,7 @@
 // "Method" heading, and the text a vision model read from a photo of a card (which is pasted text again). Everything is cut to a sane size and kept as plain text; an address
 // that is not https is dropped, and nothing of the page but the recipe leaves the server. Pure. Tests: tools/recipeimport.test.mjs.
 
+import { gentler } from './recipe-respect.js'; // an imported recipe reads gently too (lib/recipe-respect.js)
 const ENT = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', frac12: '½', frac14: '¼', frac34: '¾', deg: '°', ndash: '–', mdash: '—', rsquo: '’', lsquo: '‘', ldquo: '“', rdquo: '”', hellip: '…', eacute: 'é', egrave: 'è', ccedil: 'ç', ouml: 'ö', uuml: 'ü', auml: 'ä' };
 /** HTML entities in a string as the characters they name (a few names and every number); never markup. Pure. */
 export const decode = (s) => String(s == null ? '' : s).replace(/&(?:#(\d{1,6})|#x([0-9a-f]{1,5})|([a-z0-9]{2,8}));/gi, (m, d, h, n) => { const c = d ? +d : h ? parseInt(h, 16) : null; if (c != null) return c > 0 && c < 0x110000 && !(c >= 0xd800 && c < 0xe000) ? String.fromCodePoint(c) : ' '; return ENT[n.toLowerCase()] ?? m; });
@@ -34,7 +35,7 @@ const slug = (s) => String(s).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '-').rep
 const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (_) { return ''; } };
 /** the page's recipe shape from a recipe with its fields as plain text, or null when it has no name or no ingredients. Pure. */
 export function shape({ name, servings, time, ingredients, steps, image, source, author }) {
-  const n = plain(name, 120); const ing = (ingredients || []).map((x) => plain(x, 200)).filter((x) => x.length > 1).slice(0, 80); const st = (steps || []).map((x) => plain(x, 600)).filter((x) => x.length > 2).slice(0, 60);
+  const n = plain(name, 120); const ing = (ingredients || []).map((x) => plain(x, 200)).filter((x) => x.length > 1).slice(0, 80); const st = (steps || []).map((x) => gentler(plain(x, 600))).filter((x) => x.length > 2).slice(0, 60);
   if (!n || !ing.length) return null;
   const src = /^https:\/\//i.test(String(source || '')) ? String(source).slice(0, 500) : '', img = /^https:\/\/[^\s"'<>]+$/i.test(String(image || '')) ? String(image).slice(0, 500) : '';
   return { id: 'mine-' + slug(n), name: n, aliases: [n.toLowerCase()], tags: ['mine', 'imported'], servings: servings > 0 ? Math.min(200, Math.round(servings)) : 4, ...(servings > 0 ? {} : { servingsGuessed: true }), time: Math.min(2880, Math.max(0, Math.round(time || 0))), ingredients: ing, steps: st.length ? st : ['See the original recipe.'],

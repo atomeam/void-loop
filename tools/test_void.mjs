@@ -74,6 +74,10 @@ const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); 
 // and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
 const SHARED_TOOL_FILES = /^\/(visit\.js|verse\.css|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
+// a tool folded onto a family page (/photos/?mode=resize, /password/?mode=strength) first loads the family machinery: the page itself, lib/tower-family-mode.js
+// and the mode's html. Those are the folding, not the tool, so the tool's own budget (its page script and modules) leaves them out; a new file still counts.
+const FAMILY_FILES = /^(\/[a-z0-9-]+\/\?mode=|\/lib\/tower-family-mode\.js(\?|$)|\/[a-z0-9-]+\/modes\/[a-z0-9-]+\.html(\?|$))/;
+const toolLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u) && !FAMILY_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
 const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) { sweep(); SECTION = label; } return on; };
@@ -1296,8 +1300,8 @@ try {
     await pg.fill('#pw', 'password'); await pg.click('#leak'); await pg.waitForFunction(() => /leaked/.test(document.getElementById('leakmsg').textContent), null, { timeout: 8000 }); const leak = await pg.$eval('#leakmsg', (e) => e.textContent);
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
     const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
-    check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
-      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+    check('password strength: /password-strength/ loads its page script and at most four own files beyond the family page (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
+      toolLoads(reqs, loaded) <= 4 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
       && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
       JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
     const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
@@ -1327,7 +1331,7 @@ try {
     await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
     const typed = reqs.length - loaded; await pg.fill('#b10', '255'); await pg.waitForTimeout(150); const cleared = await pg.evaluate(() => [...document.querySelectorAll('input.bad')].length); if (process.env.VOID_SHOTS) { await pg.waitForTimeout(150); await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'base-converter.png') }).catch(() => {}); }
     check('base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request',
-      ownLoads(reqs, loaded) <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
+      toolLoads(reqs, loaded) <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
       && /not a base 2 number/.test(bad.note) && /bad/.test(bad.cls) && cleared === 0 && typed === 0 && !B.errors.length, JSON.stringify({ loaded, reqs, fromHex, huge, bad, cleared, typed, errors: B.errors }));
     const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
     const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
@@ -1369,11 +1373,11 @@ try {
     await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
     check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
-      ownLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      toolLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
       JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
     const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
     const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));
-    check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', href === '/resize-image/?w=3.5&h=2.5&u=cm&kb=50' && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
+    check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', /^\/(resize-image|photos)\/\?(mode=resize&)?w=3\.5&h=2\.5&u=cm&kb=50$/.test(href) && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
     await R.ctx.close(); await K.ctx.close();
   }
   // the rest of pancardresizer.com: a preset fills a portal's size, a quarter turn swaps the picture's sides, and a dragged, zoomed crop moves
@@ -1543,6 +1547,34 @@ try {
     check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
+  // owner audit 2026-11-19: on a touch phone "weather in Lakeland Florida" answered "I could not find it" and the cookie recipe came back as a loose paragraph,
+  // because the skill files were still arriving and the ask went on without them. lib/ask-shapes.js names the one file for these shapes, so it loads at once.
+  if (want("phone ask: weather in a place and a dish's recipe answer with their own cards on a touch screen, never the 'could not find' line")) { const P = await fresh({ phone: true });
+    await P.ask('weather in Lisbon', 800); await until(async () => /Lisbon/.test(await P.page()) && /Open-Meteo/.test(await P.page()), 20000); const wx = await P.page();
+    check('phone ask: "weather in Lisbon" draws the weather card on a touch screen', /Lisbon/.test(wx) && /Open-Meteo/.test(wx) && !/could not find/i.test(wx), wx.slice(0, 160));
+    await P.ask('pancakes recipe', 800); await until(async () => /Ingredients/.test(await P.page()), 20000); const rc = await P.page();
+    check('phone ask: "pancakes recipe" draws the recipe card (ingredients and steps) on a touch screen', /Ingredients/.test(rc) && /Steps/.test(rc) && !P.errors.length, rc.slice(0, 160) + ' | ' + P.errors.join(' | '));
+    await P.ctx.close(); }
+  // owner audit 2026-11-19: after "play snake" the ask box kept the keyboard and the arrows did nothing until the board was clicked.
+  if (want("arcade focus: a game just asked for takes the keyboard, so the arrow keys steer Snake with no click")) { const G = await fresh();
+    await G.ask('play snake', 1500); await until(async () => !!(await G.p.$('.snake-card')), 15000);
+    const mine = await until(() => G.p.evaluate(() => document.activeElement && document.activeElement.classList.contains('snake-card')), 4000);
+    await G.p.keyboard.press('ArrowRight'); await until(async () => !/Press an arrow key/.test(await G.page()), 4000);
+    check('arcade focus: Snake holds the keyboard when it opens, and an arrow key starts it with no click', !!mine && !/Press an arrow key/.test(await G.page()) && !G.errors.length, String(mine) + ' | ' + (await G.page()).slice(0, 120));
+    await G.ctx.close(); }
+  // owner audit 2026-11-19: a desktop visitor who only looked at the home page still pulled about 900 skill files. Now a bare address with nothing kept
+  // loads none until the page or the ask box is touched; the starfield and the corner heart are not skills and stay. (An automated browser keeps the
+  // idle start, so this case shows a real visitor by setting navigator.webdriver to false.)
+  if (want("lazy skills: a desktop visitor who only looks loads no skill file, keeps the starfield and the corner heart, and the first ask still answers")) {
+    const L = await fresh(() => { Object.defineProperty(navigator, 'webdriver', { get: () => false }); });
+    await L.p.waitForTimeout(2500);
+    const idle = await L.p.evaluate(() => ({ files: performance.getEntriesByType('resource').filter((e) => /\/skills\/[^/?]+\.js(?:\?|$)/.test(e.name) && !/\/skills\/(?:index|first|scene3d|howto|sky-rules)\./.test(e.name)).map((e) => e.name.replace(/^.*\/skills\//, '')), ready: document.documentElement.dataset.skills || '', lazy: !!window.__skillsLazy, stars: !!document.getElementById('void-stars-far'), heart: !!document.getElementById('void-anchor') && getComputedStyle(document.getElementById('void-anchor')).display !== 'none' }));
+    check('lazy skills: a desktop page that is only looked at loads no skill file, and the starfield and corner heart are there', idle.lazy && idle.files.length === 0 && idle.ready === '' && idle.stars && idle.heart && !L.errors.length, JSON.stringify(idle) + ' ' + L.errors.join('|'));
+    await L.ask('what is 12 times 12', 900); await until(async () => /144/.test(await L.page()), 20000);
+    const after = await L.p.evaluate(() => ({ ready: document.documentElement.dataset.skills || '', stars: !!document.getElementById('void-stars-far'), heart: !!document.getElementById('void-anchor') }));
+    check('lazy skills: the first ask after a look still answers, and loads the skills then', /144/.test(await L.page()) && after.stars && after.heart && !L.errors.length, JSON.stringify(after) + ' ' + L.errors.join('|'));
+    await L.ctx.close();
+  }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');
@@ -1584,6 +1616,8 @@ try {
     const lines = String(ot || '').split('\n').map((x) => x.trim()).filter(Boolean);
     check('tower: the owner sees the plain card: working on now, what is left, next up, the link to the full Tower, no repeated line',
       /Working on now/i.test(ot) && /of the way there/.test(ot) && /Open the full Tower/.test(ot) && new Set(lines).size === lines.length && !O.errors.length, JSON.stringify({ ot: String(ot).slice(0, 300) }));
+    const beyond = await O.p.$$eval('.vpage.on .vp-beyond [data-category]', (e) => e.map((x) => x.getAttribute('data-category'))).catch(() => []);
+    check('tower: the owner card shows the category and the targets beyond websites (games, shows, real things), each with its closest', /Working on now · \w+/i.test(ot) && /Beyond websites/i.test(ot) && ['game', 'creature', 'video', 'music', 'idea'].every((k) => beyond.includes(k)) && !O.errors.length, JSON.stringify({ beyond, ot: String(ot).slice(0, 200) }));
     await O.ctx.close();
   }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
@@ -6590,7 +6624,8 @@ try {
     const saved = { page: await R.page(), store: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}')) };
     await R.p.reload(); await R.p.waitForTimeout(700);
     await R.ask('my morning', 2500);
-    const ran = { page: await R.page(), asks: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')) };
+    const coinPage = await until(async () => { const t = await R.page(); return /Coin/.test(t) && t; }, 12000); // the second ask's card is drawn after its skill loads: wait for it, not a fixed time (a slow runner showed the first card)
+    const ran = { page: coinPage || await R.page(), asks: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')) };
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
@@ -6957,7 +6992,7 @@ try {
     const body = await Z.p.evaluate(() => document.body.innerText);
     check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
       linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
-      && file === 'data:image/png;base64,iVBORw==' && /sister site base64decode\.org/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, sister: /sister site base64decode\.org/.test(body), errors: Z.errors }));
+      && file === 'data:image/png;base64,iVBORw==' && /what some sites split across two addresses lives in two boxes here/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, sister: /what some sites split across two addresses lives in two boxes here/.test(body), errors: Z.errors }));
     await Z.ctx.close();
   }
   // the tower's passwordsgenerator.net floor: /password/ makes passwords the gate can read as text, follows its link, says how strong each is exactly, and makes passphrases
@@ -7084,7 +7119,7 @@ try {
     await Z.p.selectOption('#spintime', '2000'); await Z.p.check('#autoremove'); const t0 = Date.now(); await Z.p.click('#spin');
     await until(async () => (await Z.p.$eval('#winner', (e) => e.textContent)).includes('The winner is'), 6000); const took = Date.now() - t0;
     const party = await Z.p.$eval('#confetti', (c) => c.width > 0); await Z.p.waitForTimeout(2000); const left = await Z.p.$eval('#count', (e) => e.textContent);
-    await Z.p.goto(base); await Z.ask('spin a wheel with ann, bob and cat', 1500); await Z.p.waitForTimeout(1500);
+    await Z.p.goto(base); await Z.ask('spin a wheel with ann, bob and cat', 1500); await until(async () => !!(await Z.p.$('.vpage.on .wh-band-win')), 12000); await Z.p.waitForTimeout(800); // the card's wheel is drawn after its skill loads: wait for the winner band, not a fixed time
     const seen = await Z.p.evaluate(() => { const c = document.querySelector('.vpage.on'), w = c && c.querySelector('.wh-band-win'); if (!w) return null; const a = c.getBoundingClientRect(), b = w.getBoundingClientRect(); return { text: w.textContent, inside: b.top >= a.top && b.bottom <= a.bottom && b.height > 10, h: Math.round(b.height) }; });
     check("wheel: a picture becomes an entry, a 2 s spin ends with confetti and auto-removes its winner, and the stage card shows the winner inside the card at 390 px",
       /\nDora$/.test(listed) && kept.includes('Dora') && took < 4000 && party && /^3 entries/.test(left) && seen && ['ann', 'bob', 'cat'].includes(seen.text) && seen.inside && !Z.errors.length,
@@ -7094,7 +7129,7 @@ try {
   if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
     const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
     const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);
-    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/wheel\/#/); await Z.p.waitForTimeout(400);
+    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/(wheel\/|random\/\?mode=wheel&)#/); await Z.p.waitForTimeout(400);
     const onWheel = await Z.p.$eval('#entries', (e) => e.value).catch(() => '');
     await Z.p.goto(base + 'color/?c=1a7f37'); await Z.p.click('#related button.tk-hand'); await Z.p.goto(base + 'stopwatch/');
     const acc = await Z.p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()), main = await Z.p.$eval('#swgo', (e) => getComputedStyle(e).backgroundColor);
@@ -7103,7 +7138,7 @@ try {
     const related = await Z.p.$$eval('#related a', (a) => a.map((x) => x.getAttribute('href')));
     // a gradient paints the wheel: its slices wear colours from along the gradient, and the wheel still holds the names it had
     await Z.p.goto(base + 'gradient/#l90-ff0000ff.0-0000ffff.100'); await Z.p.waitForTimeout(300);
-    await Z.p.locator('#related .tk-hand', { hasText: 'Paint the wheel' }).click(); await Z.p.waitForURL(/\/wheel\//); await Z.p.waitForTimeout(500);
+    await Z.p.locator('#related .tk-hand', { hasText: 'Paint the wheel' }).click(); await Z.p.waitForURL(/\/(wheel\/|random\/\?mode=wheel)/); await Z.p.waitForTimeout(500);
     const painted = await Z.p.evaluate(() => { const pal = JSON.parse(localStorage.getItem('a2m.void.palette.v1') || '[]'), c = document.getElementById('wheel'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data, seen = new Set();
       for (let i = 0; i < d.length; i += 16) seen.add('#' + [d[i], d[i + 1], d[i + 2]].map((v) => v.toString(16).padStart(2, '0')).join(''));
       return { pal, worn: pal.filter((h) => seen.has(h)).length, entries: document.getElementById('entries').value.split('\n')[0] }; });
@@ -8795,7 +8830,7 @@ try {
     check('Verse art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind, rarity, family and Verse\'s take (they steer the Art Director), its art box glows while the paint is pending, then the picture fills the art box alone (no plate or seal left under it) and the glow stops', !!pending && glowAfter === false && !!shown && shown.img === PX && !shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'family,kind,rarity,subject,take' && typeof posts[0].family === 'string' && posts[0].family.length < 40 && typeof posts[0].take === 'string' && posts[0].take.length <= 300 && !A.errors.length, JSON.stringify({ pending, glowAfter, shown, posts, errors: A.errors }));
     await A.ask('close', 400); await A.ask('20% tip on 45', 1600);
     const sk = await until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); return e && e.querySelector('.vc-art') && e.querySelector('.vc-forge-img') ? { forge: !e.querySelector('.vc-forge-btn') } : null; }).catch(() => null), 8000);
-    check('Verse art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button', !!sk && sk.forge === true && posts.length === 2 && posts[1].kind === 'skill' && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();
+    check('Verse art forge: a skill card (a tip calculator) is painted too: one POST, of kind skill when its subject is the skill and answer when the card leads with Verse\'s take (lib/card-forge.js kindOf, owner 2026-11-19), never a button', !!sk && sk.forge === true && posts.length === 2 && ['skill', 'answer'].includes(posts[1].kind) && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();
     const C = await fresh(); await C.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody }));
     await C.ctx.route(/\/api\/card-art/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX, cached: true }) }));
     await C.ask('merge a pizza and a black hole', 900);
@@ -9279,7 +9314,7 @@ try {
       daily: { time: [0, 1, 2, 3, 4, 5, 6].map((d) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10)), temperature_2m_max: Array(7).fill(12), temperature_2m_min: Array(7).fill(5), precipitation_probability_max: Array(7).fill(5), weather_code: Array(7).fill(3), sunrise: [], sunset: [], precipitation_sum: Array(7).fill(0) } };
     await P.ctx.route(/\/api\/weather\?/, async (r) => { const paris = /paris/i.test(new URL(r.request().url()).searchParams.get('q')); await new Promise((z) => setTimeout(z, paris ? 2500 : 500));
       return r.fulfill(json({ ok: true, loc: { name: paris ? 'Paris, France' : 'Boston, Massachusetts, United States', lat: paris ? 48.85 : 42.36, lon: paris ? 2.35 : -71.06, us: false }, w: wx })); });
-    const busy = () => P.p.evaluate(() => document.querySelector('main').getAttribute('aria-busy'));
+    const busy = () => P.p.evaluate(() => { const m = document.querySelector('main'); return m ? m.getAttribute('aria-busy') : 'no main yet'; }); // a page still loading is a failed check, not a crash that stops the rest of the shard
     await P.p.fill('#q', 'Paris'); await P.p.press('#q', 'Enter'); await P.p.waitForTimeout(150);
     await P.p.fill('#q', 'Boston'); await P.p.press('#q', 'Enter');
     await until(async () => /Boston/.test(await P.p.textContent('#place').catch(() => '')), 5000);

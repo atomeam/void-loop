@@ -1,5 +1,5 @@
 {
- "at": "2026-11-19T14:47:00.398Z",
+ "at": "2026-11-20T14:26:41.184Z",
  "mode": "live",
  "pass": 53,
  "total": 54,
@@ -703,7 +703,7 @@
    "photo": true,
    "api": {
     "name": "Blue whale",
-    "desc": "Species of whale; largest animal known",
+    "desc": "A species of whale; the largest animal known.",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",

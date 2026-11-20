@@ -7,12 +7,15 @@
 //                                            Free tier only. A send, pay or delete in that note waits for a yes and nothing is sent.
 // GET ?thread=<id>                        -> the thread, live steps, the Made shelf, the inbox, the daily brief and the model tier.
 // GET ?thread=<id>&task=<id>              -> one task, so a finished one can be reopened from the Made shelf.
-// WHAT A STRANGER COULD MAKE THIS DO: 20 tasks a day per visitor (lib/daily-cap.js), 400 a day in all. A task may ask the free model,
+// WHAT A STRANGER COULD MAKE THIS DO: 100 tasks a day per visitor (lib/agent-cap.js); no flat count for everyone: answers come from Workers AI then every free provider with a key, rotated on 429 (lib/agent-providers.js), then the pot (100 a day at most) while it holds money, else a kind message with the UniVerse page. GET ?capacity=1 shows each provider's state. The house lane's owner key skips the visitor limit. A task may ask the free model,
 // its fallback, and one better bot when the first answer does not address the ask. An exact free bot answers with no model call.
 // It can read and mark only its own thread.
 import { tierFor, needsYes, brief, TIERS, inboxOf, decisionOf, planNudge, isNudge, NUDGE_LINE } from '../../lib/agent-core.js';
 import { attemptsFor, answerBrief, addressesAsk } from '../../lib/agent-answer.js';
+import { admit, capReply, billPot, potCents, LIMITS } from '../../lib/agent-cap.js';
+import { answerFree, capacityOf, parked, park, kindOf, countVia, exhausted, WORKERS } from '../../lib/agent-providers.js';
 import { cap } from '../../lib/daily-cap.js';
+import { costCents } from '../../lib/router.js';
 import { ANSWER_FALLBACK } from '../../lib/models.js';
 import { reasonOf, recordShortfall } from '../../lib/shortfall.js';
 import { planOf, routeFree, loadRegistry } from '../../lib/answer-free.js';
@@ -76,18 +79,39 @@ async function pipelineAnswer(env, origin, ask) {
   } catch (_) { return ''; }
 }
 
-// one bot, the free model then the fallback. Thinking stays off: with it on, Gemma 4 can spend the whole budget and return nothing.
-async function replyFrom(env, db, id, tier, bot, ask) {
+// one bot, answered from real capacity: Workers AI's free model then its fallback, then every free provider with a key (lib/agent-providers.js, rotating on
+// 429 or a spent quota), then, only when all of those are out and the pot holds money, the strong model paid for from the pot. Thinking stays off on Workers AI: with
+// it on, Gemma 4 can spend the whole budget and return nothing. Each answer is logged with who gave it and what it cost (a step, the task's tier, a per-provider count).
+async function replyFrom(env, db, id, tier, bot, ask, opts = {}) {
   const messages = [{ role: 'system', content: answerBrief(bot) }, { role: 'user', content: ask }];
   const runOpts = { messages, max_tokens: 700, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
-  let text = '', why = '';
-  for (const model of [tier.model, ANSWER_FALLBACK]) {
-    try { text = textOf(await env.AI.run(model, runOpts)); why = ''; } catch (e) { why = reasonOf(e); text = ''; }
-    if (text.length >= 2) return { text, why: '' };
-    if (!why) why = 'empty';
-    if (model !== ANSWER_FALLBACK) await step(db, id, 'The ' + tier.name + ' model did not answer (' + why + '); asking the second free model.');
+  const said = async (via, name, model, cents) => { await countVia(env, via); await step(db, id, 'Answered by ' + name + ' (' + model + '): ' + (cents ? 'paid from the pot, ' + cents + ' cent' + (cents === 1 ? '' : 's') : 'free, 0 cents') + '.', { tier: (cents ? 'paid' : 'free') + ' via ' + via }); };
+  let why = '';
+  if (opts.via) { // the owner's key may pin one free provider (a probe: is it reachable, are its model ids right); nothing else is tried
+    const one = await answerFree(env, messages, { owner: true, only: opts.via });
+    if (one.text.length >= 2) { await said(one.provider, one.name, one.model, 0); return { text: one.text, why: '' }; }
+    await step(db, id, opts.via + ' did not answer (' + (one.tried.map((t) => t.model + ' ' + t.why).join(', ') || 'no key here') + ').');
+    return { text: '', why: 'free limit' };
   }
-  return { text: '', why };
+  if (!(await parked(env, WORKERS.id, '')))
+    for (const model of [tier.model, ANSWER_FALLBACK]) {
+      let text = '';
+      try { text = textOf(await env.AI.run(model, runOpts)); why = ''; } catch (e) { why = reasonOf(e); if (kindOf(e && e.status, String((e && e.message) || e)) === 'day') { await park(env, WORKERS.id, '', 'day'); break; } }
+      if (text.length >= 2) { await said(WORKERS.id, WORKERS.name, model, 0); return { text, why: '' }; }
+      if (!why) why = 'empty';
+      if (model !== ANSWER_FALLBACK) await step(db, id, 'The ' + tier.name + ' model did not answer (' + why + '); asking the second free model.');
+    }
+  const free = await answerFree(env, messages, { owner: !!opts.owner });
+  if (free.text.length >= 2) { await said(free.provider, free.name, free.model, 0); return { text: free.text, why: '' }; }
+  if ((await potCents(env)) >= LIMITS.minPotCents && (await cap(env, 'agent-paid-all', LIMITS.paidAll)).ok) {
+    const strong = TIERS[TIERS.length - 1].model;
+    try {
+      const out = await env.AI.run(strong, runOpts), text = textOf(out);
+      if (text.length >= 2) { const cents = await billPot(env, costCents(strong, out, ask.length + 400, text.length), strong).catch(() => 0); await said('pot', 'the strong model', strong, cents || 1); return { text, why: '' }; }
+    } catch (e) { why = reasonOf(e); }
+  }
+  await step(db, id, 'Every free model is used up or busy right now (' + (free.tried.length ? free.tried.map((t) => t.id + ' ' + t.why).join(', ') : 'no other provider has a key here') + ').');
+  return { text: '', why: why || 'free limit' };
 }
 
 /** one note from Verse on this thread, if one is due. Free tier, no model. Null when there is nothing to say or one was written today. */
@@ -105,7 +129,7 @@ export async function considerNudge(env, thread, now = Date.now()) {
   return { id, status: plan.status, kind: plan.kind, tier: 'free' };
 }
 
-export async function run(env, origin, id, ask, thread) {
+export async function run(env, origin, id, ask, thread, opts = {}) {
   const db = env.DB;
   try {
     if (thread) { try { await considerNudge(env, thread); } catch (_) { /* a note is never required for the task itself */ } }
@@ -156,9 +180,9 @@ export async function run(env, origin, id, ask, thread) {
       await step(db, id, 'Handed it to ' + bot.name + (bot.repair ? ' again, to answer the task.' : '.'), { bot: bot.name });
       if (bot.name === 'verse' && !bot.repair) {
         const piped = await pipelineAnswer(env, origin, ask);
-        if (addressesAsk(ask, piped)) { text = piped; await step(db, id, 'Checked the result (' + piped.split(/\s+/).length + ' words). It addresses the ask.'); break; }
+        if (addressesAsk(ask, piped)) { text = piped; await countVia(env, 'free-bot'); await step(db, id, 'Answered by a free bot or open API (no model call): free, 0 cents.', { tier: 'free via free-bot' }); await step(db, id, 'Checked the result (' + piped.split(/\s+/).length + ' words). It addresses the ask.'); break; }
       }
-      const got = await replyFrom(env, db, id, tier, bot, ask);
+      const got = await replyFrom(env, db, id, tier, bot, ask, opts);
       if (addressesAsk(ask, got.text)) { text = got.text; await step(db, id, 'Checked the result (' + got.text.split(/\s+/).length + ' words). It addresses the ask.'); break; }
       text = '';
       if (got.text) { missed = true; await step(db, id, bot.name + ' did not address the ask.'); }
@@ -173,11 +197,13 @@ export async function run(env, origin, id, ask, thread) {
     if (thread) { try { await considerNudge(env, thread); } catch (_) {} }
   } catch (e) {
     try { await recordShortfall(env, 'agent', reasonOf(e)); } catch (_) {}
-    try { await step(db, id, 'Got stuck: the model did not answer. Try again in a minute.', { status: 'failed', done: Date.now() }); } catch (_) {}
+    let out = false; try { out = await exhausted(env, { owner: !!opts.owner }); } catch (_) {}
+    try { await step(db, id, out ? 'Every free model Verse can reach is used up for today and the pot cannot cover more. It resets at midnight UTC (7 PM Eastern); your task stays here, so ask again then.' : 'Got stuck: the model did not answer. Try again in a minute.', { status: 'failed', done: Date.now() }); } catch (_) {}
   }
 }
 
 export async function onRequestGet({ request, env }) {
+  if (new URL(request.url).searchParams.get('capacity')) return json({ ok: true, day: new Date().toISOString().slice(0, 10), visitorLimit: LIMITS.perIp, potCents: await potCents(env), providers: await capacityOf(env) });
   const thread = new URL(request.url).searchParams.get('thread');
   if (!okThread(thread)) return json({ ok: false, say: 'no thread' }, 400);
   if (!env.DB) return json({ ok: false, say: 'storage is off' }, 503);
@@ -222,14 +248,15 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (ask.length < 3) return json({ ok: false, say: 'tell me the task' }, 400);
   const ip = request.headers.get('cf-connecting-ip') || 'x';
   const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip + (env.SALT || '')))).slice(0, 8)].map((x) => x.toString(16).padStart(2, '0')).join('');
-  if (!(await cap(env, 'agent-all', 400)).ok || !(await cap(env, 'agent:' + h, 20)).ok) return json({ ok: false, say: 'that is today\'s free tasks; more come back tomorrow' }, 429);
+  const adm = await admit(env, request, h);
+  if (!adm.ok) return json(capReply(adm.reason), 429);
   const id = crypto.randomUUID().replace(/-/g, '').slice(0, 20);
   await env.DB.prepare('INSERT INTO void_agent_tasks (id, thread, ask, status, steps, created) VALUES (?, ?, ?, ?, ?, ?)').bind(id, b.thread, ask, 'queued', JSON.stringify([{ at: Date.now(), line: 'Got it. Queued.' }]), Date.now()).run();
   // the note is stored before the response, not only inside waitUntil. A deploy can drop the background run (Verse engineer
   // 2026-11-05: nudge-risk timed out for 95s while production was still the previous deploy, then the same ask passed in 5s).
   let nudge = null;
   try { nudge = await considerNudge(env, b.thread); } catch (_) { /* a note is never required for the task itself */ }
-  const go = run(env, new URL(request.url).origin, id, ask, b.thread);
+  const go = run(env, new URL(request.url).origin, id, ask, b.thread, { owner: !!adm.owner, via: adm.owner && /^(groq|gemini|openrouter)$/.test(String(b.via || '')) ? String(b.via) : '' });
   if (typeof waitUntil === 'function') waitUntil(go); else go.catch(() => {});
   return json({ ok: true, id, nudge: nudge || null });
 }

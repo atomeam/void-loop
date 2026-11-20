@@ -1,0 +1,28 @@
+{
+ "at": "2026-11-20T10:21:08.812Z",
+ "sha": "2cf117063aef036666cbd2cd5883ffbe3dd5f96e",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44711623679",
+ "suite": "browser suite on main",
+ "checks": [
+  "base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
+  "suite ran to the end",
+  "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so",
+  "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
+  "Verse art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button"
+ ],
+ "touched": [
+  "tools/test_void.mjs"
+ ],
+ "shards": [
+  1,
+  4
+ ],
+ "passed": [
+  1,
+  4
+ ],
+ "closedAt": "2026-11-20T12:01:41.785Z",
+ "closedBy": "61d82192539d87f580f55a3155151b4f29c0e354",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44724773271",
+ "minutes": 101
+}

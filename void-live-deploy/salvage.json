@@ -1,14 +1,14 @@
 {
- "at": "2026-11-19",
- "scanned": 553,
+ "at": "2026-11-20",
+ "scanned": 556,
  "counts": {
   "unified": 69,
   "live": 71,
-  "salvageable": 387,
+  "salvageable": 390,
   "history": 23,
   "skipped": 3
  },
- "remaining": 387,
+ "remaining": 390,
  "top10": [
   {
    "id": "archive/repos/a-to-mind.com/drafts/025-carbon-weight-badge",
@@ -282,6 +282,30 @@
    "license": "OGL-UK-3.0",
    "link": "https://data.police.uk/docs/",
    "used": "/bots/ (api-uk-police)",
+   "isolated": false
+  },
+  {
+   "name": "polyhaven.com",
+   "author": "Poly Haven",
+   "license": "CC0-1.0",
+   "link": "https://polyhaven.com/license",
+   "used": null,
+   "isolated": false
+  },
+  {
+   "name": "kenney.nl",
+   "author": "Kenney",
+   "license": "CC0-1.0",
+   "link": "https://kenney.nl/support",
+   "used": null,
+   "isolated": false
+  },
+  {
+   "name": "si.edu/openaccess",
+   "author": "Smithsonian Institution",
+   "license": "CC0-1.0",
+   "link": "https://www.si.edu/openaccess",
+   "used": null,
    "isolated": false
   }
  ],
@@ -6921,6 +6945,42 @@
    "test": "tools/api-bots.test.mjs",
    "pr": null,
    "license": "OGL-UK-3.0"
+  },
+  {
+   "id": "outside:polyhaven.com",
+   "kind": "outside",
+   "status": "salvageable",
+   "target": "data",
+   "value": 25,
+   "why": "reuse with credit; keep the license notice",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": "CC0-1.0"
+  },
+  {
+   "id": "outside:kenney.nl",
+   "kind": "outside",
+   "status": "salvageable",
+   "target": "data",
+   "value": 25,
+   "why": "reuse with credit; keep the license notice",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": "CC0-1.0"
+  },
+  {
+   "id": "outside:si.edu/openaccess",
+   "kind": "outside",
+   "status": "salvageable",
+   "target": "data",
+   "value": 25,
+   "why": "reuse with credit; keep the license notice",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": "CC0-1.0"
   }
  ]
 }

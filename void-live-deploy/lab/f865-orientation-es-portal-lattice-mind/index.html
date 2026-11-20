@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; perspective: 1200px; }
+  .portal {
+    position: absolute; width: 80px; height: 80px; border-radius: 12px;
+    background: hsl(var(--h), 70%, 55%); opacity: 0.85;
+    box-shadow: 0 0 20px hsl(var(--h), 80%, 60%);
+    transform-style: preserve-3d; transition: transform 0.05s linear;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #fff; text-shadow: 0 0 4px #000;
+  }
+  #info { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; }
+  #canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.4; }
+  button { margin-top: 6px; padding: 4px 10px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation Echo-State Portal Lattice Mind · Verse lab</title>
+<meta name="description" content="Living CSS 3D portals on The Verse canvas are the physical embodiment of nodes in a local Echo State Network (reservoir computer).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation Echo-State Portal Lattice Mind · Verse lab">
+<meta property="og:description" content="Living CSS 3D portals on The Verse canvas are the physical embodiment of nodes in a local Echo State Network (reservoir computer).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f865-orientation-es-portal-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f865-orientation-es-portal-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="info">
+  F865 Echo-State Portal Lattice<br>
+  Tilt device or move pointer · Click portal to reward<br>
+  <button id="sealBtn">Seal</button> <button id="audioBtn">Audio</button>
+  <div id="status">Reservoir adapting…</div>
+</div>
+<canvas id="canvas"></canvas>
+<div id="stage"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation Echo-State Portal Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

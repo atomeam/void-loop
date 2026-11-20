@@ -1,0 +1,94 @@
+{
+ "attempt": "live",
+ "occasion": 15,
+ "at": "2026-11-20T13:12:58.198Z",
+ "family": "make",
+ "skill": "image-gen",
+ "service": "a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them)",
+ "ask": "can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line",
+ "request": [
+  "https://a-to-mind.com/api/image",
+  "https://a-to-mind.com/image/",
+  "https://a-to-mind.com/image/app.js"
+ ],
+ "status": 200,
+ "ms": 14494,
+ "checksPass": true,
+ "ok": true,
+ "left": 153,
+ "page": {
+  "status": 200,
+  "make": false,
+  "pics": false,
+  "app": false,
+  "handoff": false,
+  "gate": true
+ },
+ "opened": {
+  "status": 200,
+  "make": true,
+  "pics": true,
+  "app": true,
+  "handoff": true,
+  "gate": false
+ },
+ "script": {
+  "status": 200,
+  "changeIt": true,
+  "sendsChange": true,
+  "shrinks": true
+ },
+ "paint": {
+  "status": 200,
+  "state": "art",
+  "why": null,
+  "sayKnown": false,
+  "painter": "workers-ai",
+  "w": 1024,
+  "h": 1024,
+  "ref": "d7e7c6abd33387e1438cf46ba2c0e5e20d18ccc62d26e8337963c5aba094d38c",
+  "cached": false,
+  "change": null,
+  "img": {
+   "type": "image/jpeg",
+   "bytes": 776436,
+   "w": 1024,
+   "h": 1024,
+   "sha256": "98eae64ba9c7f64dc501d99b248532656cb72e09071a471a9ac0f396c3f71805"
+  }
+ },
+ "copy": {
+  "ok": true,
+  "tool": "magick",
+  "type": "image/jpeg",
+  "w": 504,
+  "h": 504,
+  "bytes": 62905,
+  "why": ""
+ },
+ "change": {
+  "status": 200,
+  "state": "art",
+  "why": null,
+  "sayKnown": false,
+  "painter": "workers-ai",
+  "w": 1024,
+  "h": 1024,
+  "ref": "c75a49e3c133f5d3c0352857eae1db22d77f8afd16807a45df74b88a77e7b84b",
+  "cached": false,
+  "change": "make the sky purple",
+  "img": {
+   "type": "image/jpeg",
+   "bytes": 620776,
+   "w": 1024,
+   "h": 1024,
+   "sha256": "01dab2a322d666b06794720152c402a40894d08d603f25823d840d28262f5555"
+  }
+ },
+ "again": {
+  "state": "art",
+  "cached": true,
+  "same": true
+ },
+ "error": ""
+}

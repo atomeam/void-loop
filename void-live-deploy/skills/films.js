@@ -128,9 +128,9 @@ function run(text, api) {
   const { showPage, esc } = api;
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
-      + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
+      + '<div class="poster"><p class="kicker">' + esc('Now showing') + '</p>'
       + '<h2 aria-label="VERSE FILMS"><span class="glw">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</span></h2>'
-      + '<p class="line">' + esc('Every day Verse films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
+      + '<p class="line">' + esc('Verse films its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
       + (wantsUpload(text)
         ? '<ol><li>' + esc('Pick any film or ad clip and tap 1. Download (free)') + '</li><li>' + esc('Tap 2. Copy: title, description with the a-to-mind.com link, hashtags') + '</li><li>' + esc('Tap 3. Upload to YouTube, TikTok, Reels or X, signed in as you, and paste') + '</li></ol>'

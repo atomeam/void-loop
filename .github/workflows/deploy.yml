@@ -221,6 +221,8 @@ jobs:
           SHA: ${{ steps.target.outputs.sha }}
         run: |
           check() { # $1 = path on the site, $2 = the deployed file it must match
+            # a path that answers only the owner (void-live-deploy/lib/owner-gate.js) is never fetched here: a signed-out fetch gets a 404 by design
+            if node tools/owner-only.mjs "$1"; then echo "::notice::a-to-mind.com$1 answers only the owner, so it is not fetched"; return 0; fi
             for i in 1 2 3 4 5 6 7 8; do
               code=$(curl -s -L -o live.tmp -w '%{http_code}' "https://a-to-mind.com$1?v=$SHA") || code=000
               if [ "$code" = "200" ] && cmp -s live.tmp "$2"; then echo "a-to-mind.com$1 matches the deploy"; return 0; fi

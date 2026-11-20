@@ -43,15 +43,15 @@ test('an idea that adds passes; one that takes away, spams or carries a key is t
   assert.match(checkIdea('Remove the fan fiction page please').why, /add/i, 'a subtracting idea is told members add');
 });
 
-test('visitors see the perks with no sign-in; helping build Verse is always listed, and says it opens soon until go-live', async () => {
+test('visitors see the perks with no sign-in; helping build Verse is always listed, and says plainly it is not open yet until go-live', async () => {
   const DB = d1();
   const j = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/members'), env: { DB } })).json();
   assert.equal(j.signedIn, false); assert.equal(j.live, LIVE);
   assert.ok(j.perks.length >= 4); assert.match(j.buy, /^https:\/\/moonbeam846\.gumroad\.com\/l\/yinmj$/);
   assert.equal(perks(true).length, perks(false).length);
   assert.match(perks(false).find((p) => p.id === 'build').title, /help build verse/i);
-  assert.match(perks(false).find((p) => p.id === 'build').text, /Opens soon\.$/);
-  assert.doesNotMatch(perks(true).find((p) => p.id === 'build').text, /Opens soon/);
+  assert.match(perks(false).find((p) => p.id === 'build').text, /^Not open yet\. /);
+  assert.doesNotMatch(perks(true).find((p) => p.id === 'build').text, /Not open yet|Opens soon/);
 });
 
 test('only a signed-in paid member can send; a free account gets 402 with the way to join', async () => {

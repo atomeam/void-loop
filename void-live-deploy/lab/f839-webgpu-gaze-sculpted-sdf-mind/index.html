@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0a12; --fg: #e0e0ff; --accent: #6cf; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; }
+  button { background: var(--accent); color: #000; border: none; padding: 6px 12px; margin: 4px; border-radius: 4px; cursor: pointer; }
+  .portal {
+    position: absolute; width: 90px; height: 60px; background: rgba(100,180,255,.25);
+    border: 1px solid #6cf; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; pointer-events: auto; backdrop-filter: blur(4px); transition: transform .1s linear;
+    z-index: 5;
+  }
+  #status { font-size: 11px; opacity: .8; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Gaze-Sculpted SDF Mind · Verse lab</title>
+<meta name="description" content="Plain name: Gaze-Sculpted Signed Distance Field Portal">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Gaze-Sculpted SDF Mind · Verse lab">
+<meta property="og:description" content="Plain name: Gaze-Sculpted Signed Distance Field Portal">
+<meta property="og:url" content="https://a-to-mind.com/lab/f839-webgpu-gaze-sculpted-sdf-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f839-webgpu-gaze-sculpted-sdf-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F839 Gaze-Sculpted SDF</strong><br>
+  <button id="seal">Seal Mind</button>
+  <button id="export">Export Scene</button>
+  <button id="evolve">Force Evolve</button>
+  <div id="status">Initializing…</div>
+</div>
+<div id="portals"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Gaze-Sculpted SDF Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -198,6 +198,33 @@
       "what": "UK police force directory",
       "gap": "police force bots",
       "target": "data"
+    },
+    {
+      "id": "polyhaven.com",
+      "url": "https://polyhaven.com/license",
+      "author": "Poly Haven",
+      "license": "CC0-1.0",
+      "what": "CC0 HDRIs, textures and 3D models",
+      "gap": "3D scenes and card backdrops (the shared 3D backdrop)",
+      "target": "data"
+    },
+    {
+      "id": "kenney.nl",
+      "url": "https://kenney.nl/support",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "what": "CC0 2D and 3D game assets, icons and sounds",
+      "gap": "game kits and mini-games",
+      "target": "data"
+    },
+    {
+      "id": "si.edu/openaccess",
+      "url": "https://www.si.edu/openaccess",
+      "author": "Smithsonian Institution",
+      "license": "CC0-1.0",
+      "what": "CC0 images, 3D models and collection data",
+      "gap": "card art references, museum and nature knowledge cards",
+      "target": "data"
     }
   ]
 }

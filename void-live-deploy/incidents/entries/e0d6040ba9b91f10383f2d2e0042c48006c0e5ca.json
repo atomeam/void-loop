@@ -1,0 +1,26 @@
+{
+ "at": "2026-11-20T07:06:19.336Z",
+ "sha": "e0d6040ba9b91f10383f2d2e0042c48006c0e5ca",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44688833409",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+  "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "tools/test_void.mjs",
+  "void-live-deploy/index.html",
+  "void-live-deploy/void.html",
+  "void.html"
+ ],
+ "shards": [
+  3,
+  4
+ ],
+ "passed": [
+  4
+ ]
+}

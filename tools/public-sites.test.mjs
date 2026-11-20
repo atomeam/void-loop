@@ -31,3 +31,9 @@ test('the deploy copy of the served files names no studied site', async () => {
     assert.deepEqual(studiedHosts().filter((h) => out.includes(h)), [], f);
   }
 });
+
+test('where "another site" would read badly the site is named by what it is', () => {
+  assert.equal(scrubSites('answered the way isitchristmas.com does it, one giant word'), 'answered the way the best one-question sites do it, one giant word');
+  assert.equal(scrubSites('source 2 of 3: thesportsdb.com, wikipedia.org'), 'source 2 of 3: a public sports database, wikipedia.org');
+  assert.equal(scrubSites('espn.com'), 'a sports news site');
+});

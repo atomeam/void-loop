@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; font-size:13px; max-width:280px; z-index:10; }
+.portal { position:absolute; width:60px; height:60px; border-radius:8px; background:rgba(100,150,255,0.3); border:2px solid #88f; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; text-align:center; user-select:none; z-index:5; transition:transform 0.1s; }
+.portal:active { cursor:grabbing; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #55f; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU-Ready Cahn-Hilliard Phase Separation Mind · Verse lab</title>
+<meta name="description" content="A continuum phase-field simulation of the Cahn-Hilliard equation (∂c/∂t = ∇²(c³ − c − ε²∇²c)) runs on a 64×64 lattice.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU-Ready Cahn-Hilliard Phase Separation Mind · Verse lab">
+<meta property="og:description" content="A continuum phase-field simulation of the Cahn-Hilliard equation (∂c/∂t = ∇²(c³ − c − ε²∇²c)) runs on a 64×64 lattice.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f852-webgpu-cahn-hilliard-phase-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f852-webgpu-cahn-hilliard-phase-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <b>F852 Cahn-Hilliard Phase Mind</b><br>
+  DeviceOrientation / pointer drives bias.<br>
+  Drag portals to inject phase.<br>
+  Click portal: reward local genome.<br>
+  <button id="seal">Seal Genome</button> <button id="reset">Reset</button><br>
+  <span id="stats">params: ε=1.0 M=1.0 fit=0</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU-Ready Cahn-Hilliard Phase Separation Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

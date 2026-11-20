@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.portal { position:absolute; width:60px; height:60px; border-radius:8px; background:#223; transition:transform .15s, background .15s; display:flex; align-items:center; justify-content:center; font-size:10px; user-select:none; cursor:pointer; box-shadow:0 0 12px #0ff4; }
+#status { position:absolute; top:8px; left:8px; font-size:12px; z-index:10; background:rgba(0,0,0,.5); padding:6px; border-radius:4px; }
+button { margin:4px; padding:6px 10px; background:#224; color:#fff; border:1px solid #0ff; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand-Driven Hopfield Spatial Recall Mind · Verse lab</title>
+<meta name="description" content="A local Hopfield associative memory network whose input pattern is formed from WebXR hand joint positions (or pointer + DeviceOrientation fallback).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand-Driven Hopfield Spatial Recall Mind · Verse lab">
+<meta property="og:description" content="A local Hopfield associative memory network whose input pattern is formed from WebXR hand joint positions (or pointer + DeviceOrientation fallback).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f848-webxr-hand-hopfield-spatial-recall-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f848-webxr-hand-hopfield-spatial-recall-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">F848 Hopfield Recall | patterns:0 | energy:0 | XR:none</div>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand-Driven Hopfield Spatial Recall Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

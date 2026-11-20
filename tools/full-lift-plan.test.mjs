@@ -10,5 +10,5 @@ test('matches the examples and rejects near misses', () => {
 });
 
 test('suite reports ok', () => {
-  assert.equal(skill.suite(), 'ok');
+  assert.equal(skill.suite().ok, true);
 });

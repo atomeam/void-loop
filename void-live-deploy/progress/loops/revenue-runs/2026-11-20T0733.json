@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-20T07:33:56.252Z",
+ "income_cents": 0,
+ "sales": 0,
+ "checkouts": {
+  "live": 8,
+  "up": 8,
+  "broken": []
+ },
+ "offers_60d": {
+  "seen": 1,
+  "clicks": 0
+ },
+ "gate": {
+  "seen": 0,
+  "clicks": 0
+ },
+ "running": 2,
+ "changes": [
+  "blub: started e261120blu (offer-where-people-already-are/void-monthly vs one-click-to-checkout/void-monthly vs honest-trial/void-monthly)"
+ ]
+}

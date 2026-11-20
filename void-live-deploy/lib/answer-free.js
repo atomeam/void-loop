@@ -176,7 +176,7 @@ export async function routeFree(ask, { env = {}, registry = null, adapters = ADA
 // the other free LLM tiers (resources/free.json, kind 'llm', each only once Atom has added its one key). OpenAI-compatible chat endpoints.
 // Gemini's free tier may train on prompts, so visitor asks never go there (its registry note); Workers AI is answer.js's own direct call.
 export const LLM_ENDPOINTS = {
-  'groq-free': { url: 'https://api.groq.com/openai/v1/chat/completions', key: 'GROQ_API_KEY', model: 'llama-3.3-70b-versatile' },
+  'groq-free': { url: 'https://api.groq.com/openai/v1/chat/completions', key: 'GROQ_API_KEY', model: 'openai/gpt-oss-120b' },
   'cerebras-free': { url: 'https://api.cerebras.ai/v1/chat/completions', key: 'CEREBRAS_API_KEY', model: 'llama-3.3-70b' },
   'openrouter-free': { url: 'https://openrouter.ai/api/v1/chat/completions', key: 'OPENROUTER_API_KEY', model: 'meta-llama/llama-3.3-70b-instruct:free' },
   'mistral-free': { url: 'https://api.mistral.ai/v1/chat/completions', key: 'MISTRAL_API_KEY', model: 'mistral-small-latest' },

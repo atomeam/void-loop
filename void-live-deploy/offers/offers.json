@@ -1,0 +1,15 @@
+{
+ "about": "The live offer experiments the revenue lane runs on Verse's busiest pages (tools/revenue-lane.mjs). Written by the lane; /offers/offer.js reads it. Every line of copy is built from offers/playbook.json and checked by honestCopy.",
+ "slots": {
+  "films": {"page":"/films/","products":["void-monthly"],"running":{"exp":"e261120fil","started":"2026-11-20","days":7,"variants":[{"pattern":"free-core-paid-plus","product":"void-monthly","text":"This page is free. Verse Monthly adds every pro skill, code review, priority, for $49 a month.","cta":"See Verse Monthly","v":"a"},{"pattern":"offer-where-people-already-are","product":"void-monthly","text":"Enjoying this page? Verse Monthly gets you every pro skill, code review, priority, for $49 a month.","cta":"Get Verse Monthly","v":"b"},{"pattern":"one-click-to-checkout","product":"void-monthly","text":"Verse Monthly: every pro skill, code review, priority, for $49 a month.","cta":"Buy Verse Monthly","direct":true,"v":"c"}]},"champion":null,"free":true,"free_items":["films"]},
+  "blub": {"page":"/blub/","products":["void-monthly"],"free":true,"running":{"exp":"e261120blu","started":"2026-11-20","days":7,"variants":[{"pattern":"offer-where-people-already-are","product":"void-monthly","text":"Enjoying this page? Verse Monthly gets you every pro skill, code review, priority, for $49 a month.","cta":"Get Verse Monthly","v":"a"},{"pattern":"one-click-to-checkout","product":"void-monthly","text":"Verse Monthly: every pro skill, code review, priority, for $49 a month.","cta":"Buy Verse Monthly","direct":true,"v":"b"},{"pattern":"honest-trial","product":"void-monthly","text":"Try Verse Monthly first week free: every pro skill, code review, priority. You get an email before it renews at $49 a month, and you can cancel any time.","cta":"Start the free week","v":"c"}]},"champion":null,"free_items":["films"]},
+  "gate": {"page":"/gate","kind":"gate","products":["universe"],"note":"The UniVerse screen strangers get on a full page: its showing and its Subscribe click are counted by /api/buy (id universe, source gate.base.a). Measured only; the lane starts no experiment here yet.","running":null,"champion":null}
+ },
+ "history": [
+  {"slot":"films","exp":"e261120fil","ended":"2026-11-20","result":"restarted: the copy now says this page is free and no longer says the plan adds films, which /films/ gives away free"},
+  {"slot":"team","ended":"2026-11-20","result":"retired: /team/ is behind the UniVerse gate"},
+  {"slot":"treasury","ended":"2026-11-20","result":"retired: /treasury/ is behind the UniVerse gate"},
+  {"slot":"brain","ended":"2026-11-20","result":"retired: /brain/ is behind the UniVerse gate"},
+  {"slot":"starboard","ended":"2026-11-20","result":"retired: /starboard/ is behind the UniVerse gate"}
+ ]
+}

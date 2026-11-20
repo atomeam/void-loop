@@ -1,0 +1,21 @@
+{
+ "at": "2026-11-20T19:35:27.449Z",
+ "sha": "7b77c79bc22554eafc20222206bb391650019b27",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44799158315",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+  "the book: \"open the book\" dims the stage and fills it with the book, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), black glass set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and its number in its chapter, no picture",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "domains/growth-inbox.md",
+  "void-live-deploy/skills/order/12040-before-after-pack"
+ ],
+ "shards": [
+  3
+ ]
+}

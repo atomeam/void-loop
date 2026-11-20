@@ -1,5 +1,11 @@
 // The one place a Workers AI model is named. Every path that calls a model asks for it here (models(path)), so trying
 // another model on one path is one line, and a test (tools/models.test.mjs) fails if any other file names a model.
+// The one place a Gemini model is named (Google AI Studio, GEMINI_API_KEY). Tried in order; a 404 or 403 falls to the next. Google retires models on a
+// schedule (ai.google.dev/gemini-api/docs/deprecations): gemini-2.0-flash went on 2026-06-01 and gemini-2.5-flash goes on 2026-12-01. tools/models.test.mjs
+// fails if a retired name appears anywhere, or any Gemini model is named outside this file, so a retirement is one line here.
+export const GEMINI_MODELS = Object.freeze(['gemini-3.5-flash-lite', 'gemini-2.5-flash-lite']);
+export const GEMINI_RETIRED = /gemini-(?:1\.[\w.-]+|2\.0[\w.-]*|2\.5-flash(?!-lite)\b|pro\b|3(?:\.0)?-flash-preview)/;
+export const geminiUrl = (model) => 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
 export const EMBED_MODEL = '@cf/baai/bge-m3';
 export const CLEF_MODEL = '@cf/cloudflare/clef-flash'; // the decision model beside the router (lib/clef.js, frontier #9)
 export const FREE_MODEL = '@cf/google/gemma-4-26b-a4b-it'; // the free chat model

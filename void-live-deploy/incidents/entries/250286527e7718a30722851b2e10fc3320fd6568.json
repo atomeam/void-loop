@@ -1,0 +1,28 @@
+{
+ "at": "2026-11-20T20:44:30.692Z",
+ "sha": "250286527e7718a30722851b2e10fc3320fd6568",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44808348294",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+  "the book: \"open the book\" dims the stage and fills it with the book, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), black glass set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and its number in its chapter, no picture",
+  "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "tools/payer-secret.test.mjs",
+  "void-live-deploy/brain/index.html",
+  "void-live-deploy/lib/payer-secret.js",
+  "void-live-deploy/lib/team.js",
+  "void-live-deploy/members/members.js",
+  "void-live-deploy/store/index.html",
+  "void-live-deploy/store/receipt/index.html"
+ ],
+ "shards": [
+  3
+ ]
+}

@@ -21,6 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
+import { charterPrompt } from './charter.mjs';
 import { preflight, changedLines, CAPS } from './triage-cortex.mjs';
 import { acceptGame, aimGame, gameDueNow, gameTask, loadBook, recordGame, scoreBar } from './game-updates.mjs';
 
@@ -116,6 +117,7 @@ export function pickTask({ before, agent, next, task, probe = true }) {
 export function buildPrompt({ task, tagteam = '', gates = '' }) {
   const tail = (s, n) => (s.length > n ? '…\n' + s.slice(-n) : s);
   return [
+    charterPrompt(),
     'You are working on Verse (the atomeam/void-loop repo) as one lap of the Verse loop (tools/verse-loop.mjs). Do exactly one item, then stop.',
     'Rules: fix bugs, never weaken, skip or delete a test. No secrets or keys in any file. Do not commit, push or open a PR yourself: the loop does that.',
     'A normal person must see the change as real and useful: no invented jargon, no fake numbers, no filler. Green checks are not enough. The loop judges the diff and sends it back if it fails.',

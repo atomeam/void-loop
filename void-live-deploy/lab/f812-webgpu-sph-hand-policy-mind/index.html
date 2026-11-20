@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; }
+#hud { position:absolute; top:12px; left:12px; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; font-size:13px; max-width:280px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#1a3a6a; color:#fff; border:1px solid #4af; border-radius:4px; cursor:pointer; }
+.portal { position:absolute; width:90px; height:70px; background:rgba(20,60,120,0.6); border:1px solid #6cf; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; text-align:center; pointer-events:none; transition:transform 0.1s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU SPH Hand Policy Mind · Verse lab</title>
+<meta name="description" content="True WebXR hand joints (with pointer fallback) act as dynamic solid boundaries and fluid injectors inside a WebGPU Smoothed Particle Hydrodynamics (SPH) simulation">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU SPH Hand Policy Mind · Verse lab">
+<meta property="og:description" content="True WebXR hand joints (with pointer fallback) act as dynamic solid boundaries and fluid injectors inside a WebGPU Smoothed Particle Hydrodynamics (SPH) simulation">
+<meta property="og:url" content="https://a-to-mind.com/lab/f812-webgpu-sph-hand-policy-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f812-webgpu-sph-hand-policy-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <b>F812 SPH Hand Policy</b><br>
+  Pointer / hand pushes fluid. MLP modulates viscosity from orientation.<br>
+  <button id="seal">Seal Genome</button>
+  <button id="xr">Enter WebXR</button>
+  <div id="status">init</div>
+</div>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU SPH Hand Policy Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

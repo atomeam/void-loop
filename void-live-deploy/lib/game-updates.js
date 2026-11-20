@@ -1,6 +1,7 @@
 // The game-update book. data/game-updates.json already records Debris Field and Gap Glide Update 1; this reads that shape.
 // A lap updates the next round (lowest fun, and every round still comes up). When every round has an update this cycle, the lap
 // makes one new original game. It stays hidden until its fun is at least Debris Field's, then it is listed and stays in the walk.
+import { charterBlock } from './charter.js';
 export const BOOK = 'data/game-updates.json';
 export const PUBLIC_BOOK = 'void-live-deploy/scoreboard/game-updates.json';
 export const BAR_ID = 'debris-field';
@@ -64,7 +65,7 @@ export const promptFor = (game, n, parts) => {
     ? 'The last review scored ' + gap.words + ' lowest, ' + gap.n + ' of 10. Fix that first, in what the player feels.'
     : 'There is no review yet. Add the one the player lacks: real danger, a goal that progresses, a boss or climax, juice, thumb controls, or a clear end screen.';
   const face = 'The change is for the player. Do not change only how Verse, the ghost, or the opponent plays. Do not ship a tiny tweak.';
-  return ['Ship Update ' + n + ' of ' + game.title + ' (' + game.id + ', ' + game.lane + '). Edit only ' + game.file + '.', "Add export const whatsNew = 'Update " + n + ": <one plain sentence about what the player now feels>'. Draw that sentence on the title and the end.", aim, face, 'Keep the rules. Do not edit the update book or a workflow.'].join('\n');
+  return [charterBlock(), 'Ship Update ' + n + ' of ' + game.title + ' (' + game.id + ', ' + game.lane + '). Edit only ' + game.file + '.', "Add export const whatsNew = 'Update " + n + ": <one plain sentence about what the player now feels>'. Draw that sentence on the title and the end.", aim, face, 'Keep the rules. Do not edit the update book or a workflow.'].join('\n');
 };
 /** Record Debris Field's fun as the public bar and list every hidden game that already clears it. The update number stays. Pure. */
 export function withBar(book, fun, parts) {
@@ -77,7 +78,7 @@ export function withBar(book, fun, parts) {
   if (n > 0) for (const g of gamesOf({ ...base, scores })) if (g.lane === 'hidden' && funOf({ scores }, g.id) >= n) shown.add(g.id);
   return { ...base, scores, shown: [...shown] };
 }
-export const inventPrompt = () => ['Make one new original game. Write void-live-deploy/skills/<id>-rules.js only.', "export const id = '<id>'; export const title = '<Original Name>'; export const whatsNew = 'Update 1: <one plain sentence>'; export function create, tick, and draw; export const W and H.", 'An original idea: a goal, something that can go wrong, an ending, and controls a thumb can use. Do not name or copy a commercial game. Do not edit the update book.'].join('\n');
+export const inventPrompt = () => [charterBlock(), 'Make one new original game. Write void-live-deploy/skills/<id>-rules.js only.', "export const id = '<id>'; export const title = '<Original Name>'; export const whatsNew = 'Update 1: <one plain sentence>'; export function create, tick, and draw; export const W and H.", 'An original idea: a goal, something that can go wrong, an ending, and controls a thumb can use. Do not name or copy a commercial game. Do not edit the update book.'].join('\n');
 export function bornFrom(source, file, known) {
   const id = (String(source).match(/export const id = '([a-z][a-z0-9-]{2,30})'/) || [])[1];
   const title = (String(source).match(/export const title = '([^'\n]{3,40})'/) || [])[1];

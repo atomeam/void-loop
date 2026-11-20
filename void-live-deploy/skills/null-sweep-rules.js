@@ -86,9 +86,10 @@ export function botMove(s) {
     const p = chance[i] >= 0 ? chance[i] : density;
     if (p < bestP - 1e-9) { bestP = p; best = i; }
   }
-  return best < 0 ? null : { kind: 'open', i: best, why: 'no sure move: the safest guess, about ' + Math.round(bestP * 100) + '% a bad commit' };
+  return best < 0 ? null : { kind: 'open', i: best, why: 'the safest chance: ' + (bestP === density ? 'playing the density' : 'the lowest risk') };
 }
-/** play a move from botMove (or a person) on a board. */
+
+export const whatsNew = 'Update 1: The tension of a hidden disaster is replaced by the satisfying rhythm of clearing the field.';
 export function apply(s, m) { if (!m) return s; if (m.kind === 'flag') flag(s, m.i); else open(s, m.i); s.why = m.why || ''; return s; }
 
 /** a whole game by Verse alone, for tests and for the self-play arena: returns { over, moves }. */

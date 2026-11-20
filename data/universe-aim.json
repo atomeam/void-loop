@@ -1,0 +1,27 @@
+{
+ "about": "Plain-word aims from the Tower beyond websites; no names (tools/universe.mjs aim).",
+ "games": {
+  "debris-field": {
+   "check": "rules",
+   "side": "correct",
+   "words": "rules and physics that behave the same every time (not measured yet)"
+  },
+  "gap-glide": {
+   "check": "rules",
+   "side": "correct",
+   "words": "rules and physics that behave the same every time (not measured yet)"
+  },
+  "null-sweep": {
+   "check": "rules",
+   "side": "correct",
+   "words": "rules and physics that behave the same every time (not measured yet)"
+  }
+ },
+ "things": {
+  "snail": {
+   "check": "performance",
+   "side": "correct",
+   "words": "a steady 60 frames a second with nothing in the error log (now 17, needs more than 92)"
+  }
+ }
+}
