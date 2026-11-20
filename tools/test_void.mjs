@@ -1543,6 +1543,12 @@ try {
     check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
+  // owner audit 2026-11-19: "show me a snail" got the band Snail Mail. A card is free: a small live 3D snail with a link to the full /world/ page.
+  if (want("snail card: show me a snail opens a free card with the animal's name, one line, and a link to the full World page")) { const N = await fresh();
+    await N.ask('show me a snail', 1500); await until(async () => !!(await N.p.$('.snail-card')), 15000);
+    const sc = await N.p.evaluate(() => { const c = document.querySelector('.snail-card'); return c ? { name: (c.querySelector('.g-title') || {}).textContent, line: (c.querySelector('.snail-line') || {}).textContent || '', href: (c.querySelector('a.snail-more') || {}).getAttribute && c.querySelector('a.snail-more').getAttribute('href') } : null; });
+    check('snail card: the card is the garden snail, names Cornu aspersum and links to /world/', !!sc && sc.name === 'Garden snail' && /Cornu aspersum/.test(sc.line) && sc.href === '/world/' && !N.errors.length, JSON.stringify(sc) + ' | ' + N.errors.join(' | '));
+    await N.ctx.close(); }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');
