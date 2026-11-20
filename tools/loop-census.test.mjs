@@ -33,3 +33,8 @@ test('the owner reads the census; anyone else gets a missing page', async () => 
   const r = await onRequestGet({ request: new Request('https://a-to-mind.com/api/loops'), env: {} }, async () => { throw new Error('not reached'); });
   assert.equal(r.status, 404);
 });
+
+test('a loop started only by hand is "by hand only", not "never ran"; one with a push trigger and no run still never ran', () => {
+  assert.equal(rowOf({ file: 'h.yml', yaml: 'name: h\non:\n  workflow_dispatch:\n    inputs:\n      site:\n        default: x\n', runs: [], now: NOW }).status, 'by hand only');
+  assert.equal(rowOf({ file: 'p.yml', yaml: 'name: p\non:\n  workflow_dispatch:\n  push:\n    branches: [x]\n', runs: [], now: NOW }).status, 'never ran');
+});
