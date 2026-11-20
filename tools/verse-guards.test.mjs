@@ -8,11 +8,11 @@ import { runGuards, revertOnBranch, editOnBranch } from './verse-guards.mjs';
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 
-test('five guards ride the house lanes: the cards on four of them, the rest on every one', () => {
-  assert.deepEqual(GUARDS.map((g) => g.id), ['leaks', 'cards', 'tower', 'deploy', 'home']);
+test('six guards ride the house lanes: the cards on four of them, the rest on every one', () => {
+  assert.deepEqual(GUARDS.map((g) => g.id), ['leaks', 'cards', 'tower', 'deploy', 'quality', 'home']);
   assert.deepEqual(HOUSE_HOURS, LOOPS.map((l) => l.hourUtc));
-  assert.deepEqual(guardsFor(1).map((g) => g.id), ['leaks', 'tower', 'deploy', 'home']);
-  assert.deepEqual(guardsFor(3).map((g) => g.id), ['leaks', 'cards', 'tower', 'deploy', 'home']);
+  assert.deepEqual(guardsFor(1).map((g) => g.id), ['leaks', 'tower', 'deploy', 'quality', 'home']);
+  assert.deepEqual(guardsFor(3).map((g) => g.id), ['leaks', 'cards', 'tower', 'deploy', 'quality', 'home']);
   for (const g of GUARDS) for (const h of g.hours || []) assert.ok(HOUSE_HOURS.includes(h), g.id + ' rides an hour no lane runs');
 });
 

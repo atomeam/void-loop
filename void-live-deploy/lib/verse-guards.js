@@ -10,6 +10,7 @@ export const GUARDS = Object.freeze([
   { id: 'cards', name: 'Card art and copies', what: 'Asks for a spread of cards, checks each has art that matches its subject (no placeholder, no watermark) and that a copied card carries its full text. A bad picture is painted again.', minutes: 8, hours: [3, 9, 15, 21] },
   { id: 'tower', name: 'Tower climb', what: 'Checks the Tower is still moving. A site with no progress for 3 days gives way, and the guard does it itself when the scheduled run did not.', minutes: 1, hours: null },
   { id: 'deploy', name: 'Deploy check', what: 'Reads why a main deploy failed or rolled back and queues the fix for the coder, or says the exact change.', minutes: 1, hours: null },
+  { id: 'quality', name: 'Quality engine', what: 'Measures the weakest thing people see (looks, 3D, speed, phone, and whether it is right), ships one fix, re-scores the live page, and keeps the change only if the score rose. It makes new things too, and upgrades itself when its rate of improvement flattens.', minutes: 6, hours: null },
   { id: 'home', name: 'Starfield and heart', what: 'Checks the home page still has the starfield and the corner heart. If a change hides one, the change is put back.', minutes: 1, hours: null },
 ]);
 

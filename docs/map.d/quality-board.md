@@ -1,0 +1,1 @@
+- **Quality board (`void-live-deploy/scoreboard/quality.js`, `void-live-deploy/quality/board.json`, the `quality` self-guard in `lib/verse-guards.js`, `progress/app.js`, 2026-11-19):** the public board on /scoreboard/: each surface's score over time, the improvement rate, what each cycle cost. Ids and numbers only. The guard runs it on the house lanes about eleven times a day.
