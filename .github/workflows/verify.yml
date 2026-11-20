@@ -32,6 +32,14 @@ on:
 permissions:
   contents: read
 
+# One whole run at a time per branch (2026-11-20). The groups used to sit on each job, so when main moved every few minutes
+# a newer push replaced each waiting job on its own: every run kept a random few shards and lost the rest, and no run of
+# main finished whole from 2026-11-17 to 2026-11-20 (29 of 60 cancelled). Now the running suite always finishes, and the
+# newest push waits behind it (an older waiting run is replaced whole), so main is verified at least every ~30 minutes.
+concurrency:
+  group: void-verify-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   # Ship now, test after: the browser suite on this head of main (live within minutes, or replaced by a newer deploy). Red means the commit that broke the failed
   # checks is reverted on main and main is deployed again, so a breaking merge stays live only for the length of the suite
@@ -45,9 +53,6 @@ jobs:
     timeout-minutes: 30 # the first run, plus one rerun when it fails (tools/flake-rerun.mjs)
     permissions:
       contents: write # a passing rerun records the flake on main
-    concurrency:
-      group: void-verify-fast-${{ github.ref }} # one group for this branch: a newer push replaces the waiting run
-      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -114,9 +119,6 @@ jobs:
       fail-fast: false
       matrix:
         check: [perf3d, glyphs]
-    concurrency:
-      group: void-verify-slow-${{ matrix.check }}-${{ github.ref }}
-      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -188,9 +190,6 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
-    concurrency:
-      group: void-verify-v2-${{ matrix.shard }}-${{ github.ref }} # bumped 2026-11-11 to escape stuck zombie run 43093884842; fresh queue
-      cancel-in-progress: false
     permissions:
       contents: write # push the revert
       actions: write # start the deploy of the reverted main
