@@ -22,7 +22,7 @@ export const load = (f = FILE) => JSON.parse(fs.readFileSync(f, 'utf8'));
 export const serialize = (d) => '{\n' + Object.entries(d).map(([k, v]) => ' ' + JSON.stringify(k) + ': ' + (k === 'set' || k === 'runs' ? '[\n' + v.map((x) => '  ' + JSON.stringify(x)).join(',\n') + '\n ]' : k === 'last' && v ? '{' + Object.entries(v).map(([a, b]) => (a === 'rows' ? '\n  "rows": [\n' + b.map((x) => '   ' + JSON.stringify(x)).join(',\n') + '\n  ]' : '\n  ' + JSON.stringify(a) + ': ' + JSON.stringify(b))).join(',') + '\n }' : JSON.stringify(v))).join(',\n') + '\n}\n';
 const words = (s) => String(s || '').trim().split(/\s+/).filter(Boolean);
 const sentences = (s) => String(s || '').split(/(?<=[.!?])\s+|\n+/).map((x) => x.trim()).filter(Boolean);
-const rx = (src) => new RegExp(src, 'i');
+const rx = (src) => new RegExp(src, 'i'); // void-review: ok (the patterns are the owner's own checks in tower.assistant.json, never a visitor's text; problemsOf compiles each one)
 const pct = (n) => Math.max(0, Math.min(100, Math.round(n)));
 const REFUSES = /\b(?:I can(?:no|')t (?:help|assist|provide|answer)|I(?:'m| am) (?:sorry|unable|not able)[^.]{0,40}\b(?:help|assist|provide|answer)|I won't|I must decline|not able to assist|I don't know|no idea)\b/i;
 const FILLER = /^\s*(?:sure|great question|certainly|of course|absolutely|i'?d be happy|i would be happy|as an ai)\b/i;
@@ -124,7 +124,7 @@ export function problemsOf(file) {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const getJson = async (url, opt) => { for (let i = 1; ; i++) { try { return await (await fetch(url, opt)).json(); } catch (e) { if (i >= 4) throw e; await sleep(1500 * i); } } };
+const getJson = async (url, opt) => { for (let i = 1; ; i++) { try { const res = await fetch(url, opt); if (res.status >= 500) throw new Error('HTTP ' + res.status); return await res.json(); } catch (e) { if (i >= 4) throw e; await sleep(1500 * i); } } };
 /** one question put to the live agent on its own thread: { text, status, tier }. */
 export async function askLive(base, ask) {
   const h = { 'content-type': 'application/json', origin: base }, thread = 'exam' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
