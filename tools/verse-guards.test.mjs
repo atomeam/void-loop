@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { GUARDS, HOUSE_HOURS, guardsFor, recordOf, changed, blankGuard } from '../void-live-deploy/lib/verse-guards.js';
 import { LOOPS } from '../void-live-deploy/lib/house-loops.js';
-import { runGuards, revertOnBranch } from './verse-guards.mjs';
+import { runGuards, revertOnBranch, editOnBranch } from './verse-guards.mjs';
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 
@@ -60,4 +60,14 @@ test('a revert goes on its own helper branch and is pushed only when it applies 
   assert.match(revertOnBranch('abc12345', 'helper/x', 'w', () => true, mk({ revert: 1 })).why, /conflicts/);
   assert.match(revertOnBranch('abc12345', 'helper/x', 'w', () => false, mk()).why, /would not bring it back/);
   assert.equal(calls.filter((c) => /worktree remove/.test(c)).length >= 3, true);
+});
+
+test('an edit goes on its own helper branch: pushed when it changed something, never when it did not', () => {
+  const calls = [];
+  const run = (a) => { calls.push(a.join(' ')); return { status: 0, stdout: '', stderr: '' }; };
+  assert.deepEqual(editOnBranch('helper/regen-1', 'Regenerate', () => true, run), { pushed: true, branch: 'helper/regen-1' });
+  assert.ok(calls.some((c) => /commit -q -m Regenerate/.test(c)));
+  assert.equal(editOnBranch('helper/regen-2', 'x', () => false, run).pushed, false);
+  const refuse = (a) => ({ status: a.includes('push') ? 1 : 0, stdout: '', stderr: 'refusing to allow a token without workflow scope to update workflow' });
+  assert.match(editOnBranch('helper/wf', 'x', () => true, refuse).why, /cannot change workflow files/);
 });

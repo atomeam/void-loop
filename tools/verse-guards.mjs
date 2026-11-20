@@ -61,6 +61,20 @@ export function revertOnBranch(sha, branch, why, check = () => true, run = (a, o
   } finally { git(['worktree', 'remove', '--force', wt]); }
 }
 
+/** one change on its own helper branch: `edit(worktree, git)` makes it and returns true when something changed. The push starts helper-pr.yml, which opens the pull request. */
+export function editOnBranch(branch, message, edit, run = (a, o) => spawnSync('git', a, { cwd: root, encoding: 'utf8', timeout: 120000, ...o })) {
+  const wt = join(tmpdir(), 'verse-guard-wt-' + branch.replace(/\W+/g, '-'));
+  const git = (a, cwd) => run(a, cwd ? { cwd } : {});
+  const who = ['-c', 'user.name=verse-guard', '-c', 'user.email=verse-guard@users.noreply.github.com'];
+  try {
+    if (git(['worktree', 'add', '-q', '-B', branch, wt, 'origin/main']).status !== 0) return { pushed: false, why: 'could not make a worktree' };
+    if (!edit(wt, (a) => git(a, wt))) return { pushed: false, why: 'nothing to change on current main' };
+    if (git(['add', '-A'], wt).status !== 0 || git([...who, 'commit', '-q', '-m', message], wt).status !== 0) return { pushed: false, why: 'could not commit' };
+    const p = git(['push', '-q', 'origin', 'HEAD:refs/heads/' + branch], wt);
+    return p.status === 0 ? { pushed: true, branch } : { pushed: false, why: 'the push to ' + branch + ' was refused' + (/workflow/i.test(String(p.stderr || '')) ? ' (the token cannot change workflow files)' : '') };
+  } finally { git(['worktree', 'remove', '--force', wt]); }
+}
+
 export async function loadGuard(id) {
   const f = join(root, 'tools/guards', id + '.mjs');
   return existsSync(f) ? import(pathToFileURL(f).href) : null;
@@ -72,7 +86,7 @@ export async function runGuards(ids, { dry = false, now = Date.now(), load = loa
     const g = GUARDS.find((x) => x.id === id), mod = g && await load(id);
     if (!g || !mod || typeof mod.run !== 'function') { out.push({ id, skipped: true }); continue; }
     const prev = (() => { try { return JSON.parse(read(logPath(id))); } catch { return blankGuard(g); } })();
-    const ctx = { root, site: SITE, dry, now, env, hit, loadPlaywright, revertOnBranch, queueJob: (a, t) => (dry ? Promise.resolve({ queued: false, why: 'dry run' }) : queueJob(a, t, env)), save: (file, text) => { if (!dry) { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text); } }, read, prev };
+    const ctx = { root, site: SITE, dry, now, env, hit, loadPlaywright, revertOnBranch, editOnBranch, queueJob: (a, t) => (dry ? Promise.resolve({ queued: false, why: 'dry run' }) : queueJob(a, t, env)), save: (file, text) => { if (!dry) { mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, text); } }, read, prev };
     let result;
     try { result = await mod.run(ctx); } catch (e) { result = { ok: false, last: prev.last }; log('guard ' + id + ' threw: ' + String((e && e.message) || e).slice(0, 160)); }
     const rec = recordOf(g, prev, result || { ok: false }, now);
