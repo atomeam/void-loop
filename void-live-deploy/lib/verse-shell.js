@@ -11,7 +11,7 @@ export const NAV = Object.freeze([
   { href: '/arcade/', label: 'Arcade' },
   { href: '/tools/', label: 'Tools' }, // every tool page, one click from any page (owner, 2026-11-20: could not get to the tools pages)
   { href: '/podcast/', label: 'Podcast' }, // Verse's daily podcast (owner, 2026-11-06: "where is my daily verse podcast")
-  { href: '/treasury/', label: 'Treasury' }, { href: '/starboard/', label: 'Starboard' },
+  { href: '/treasury/', label: 'Treasury' }, { href: '/starboard/', label: 'Dashboard', also: ['/dashboard/'] },
   { href: '/scoreboard/', label: 'Scoreboard' },
   { href: '/security/', label: 'Security' },
   { href: '/limits/', label: 'Limits' },

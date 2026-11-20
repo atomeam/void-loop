@@ -17,7 +17,6 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** pages left alone for now, with why (handoff.md: who is on it) */
 export const SKIP = Object.freeze({
   '/weather/': 'the tower session\'s current fight (handoff.md, 2026-10-25); its row in lib/seo.js waits for it',
-  '/color/': 'house PRs #3187 and #3182 also change this file (a verse-scene script tag); titles wait for a follow-up',
 });
 export const HEAD = ['<!-- seo -->', '<!-- /seo -->'];
 export const ASKS = ['<!-- asks -->', '<!-- /asks -->'];

@@ -162,3 +162,6 @@
 /rap-generator/ /rap/ 301
 /videos /films/ 301
 /videos/ /films/ 301
+# standard name for Starboard
+/dashboard /starboard/ 301
+/dashboard/ /starboard/ 301

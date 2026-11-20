@@ -21,6 +21,8 @@ test('the nav names the shell pages, and the current page is the longest match',
   assert.equal(currentNav('/bots/').label, 'Bots');
   assert.equal(currentNav('/agent').label, 'Agent');
   assert.equal(currentNav('/films/').label, 'Videos');
+  assert.equal(currentNav('/starboard/').label, 'Dashboard');
+  assert.equal(currentNav('/dashboard/').label, 'Dashboard');
   assert.equal(currentNav('/nope'), null);
 });
 

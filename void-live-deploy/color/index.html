@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Colour codes: hex, RGB, HSL, CMYK, shades and schemes · Verse</title>
+<title>Color Picker: hex, RGB, HSL, CMYK, shades and palettes · Verse</title><!-- void-review: ok (RGB, HSL and CMYK are colour-model names in the title, not JS identifiers) -->
 <meta name="description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Colour codes, shades and schemes · Verse">
+<meta property="og:title" content="Color Picker · Verse">
 <meta property="og:description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
 <meta property="og:url" content="https://a-to-mind.com/color/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -51,7 +51,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/color/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Colour codes, shades and schemes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour shades and tints, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Colour codes, shades and schemes","item":"https://a-to-mind.com/color/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Color Picker: hex, RGB, HSL, CMYK, shades and palettes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour shades and tints, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Color Picker: hex, RGB, HSL, CMYK, shades and palettes","item":"https://a-to-mind.com/color/"}]}]}</script><!-- void-review: ok (RGB, HSL and CMYK are colour-model names in the title, not JS identifiers) -->
 <!-- /seo -->
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
@@ -72,10 +72,10 @@
 <script type="module" src="/lib/verse-scene.js"></script></head>
 <body>
 <!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
-<nav class="v-modes" aria-label="Colour modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/" aria-current="page">Colour codes</a><a href="/color/?mode=gradient">Gradient</a></nav>
+<nav class="v-modes" aria-label="Color modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/" aria-current="page">Color Picker</a><a href="/color/?mode=gradient">Gradient Generator</a></nav>
 
 <main>
-  <h1>Colour codes, shades and schemes</h1>
+  <h1>Color Picker</h1>
   <p class="lede" style="margin:0 0 10px;font-size:13px;opacity:.75">Every colour model, the nearest name, WCAG contrast, tints, shades and schemes, worked out on this device and kept for offline use.</p>
   <div class="pick"><input id="in" type="text" autocomplete="off" spellcheck="false" aria-label="A colour: hex, rgb, hsl or a name" placeholder="#ff5733, rgb(255 87 51), tomato" autofocus><input id="wheel" type="color" aria-label="Pick a colour" value="#6d4aff"></div>
   <nav id="jobs" class="tk-row" aria-label="What is the colour for?"><span class="tk-label">For:</span> <a href="?c=1a5fb4&amp;for=read#ratio" data-for="read">Readable text pairs</a> <a href="?c=e4572e&amp;for=brand#palh" data-for="brand">Brand palette</a> <a href="?c=00a19a&amp;for=print#modt" data-for="print">Print vs screen</a></nav>

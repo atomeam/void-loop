@@ -1,5 +1,5 @@
 // Verse's films and podcast on the live site, the way a visitor meets them (owner, 2026-11-20: "podcast and vids are still broken").
-// In a real browser at a desktop and a phone size: /films/ shows its heading as written (HOLOVIDS), lists no retired film
+// In a real browser at a desktop and a phone size: /films/ shows its heading as written (Videos), lists no retired film
 // (lib/films-retired.js), and every film tile it shows really loads and plays with sound; the watch page of the newest film plays.
 // Verse Out Loud: every public episode in /podcast/episodes.json streams as audio, the hidden ones are not in the feed, and the newest
 // one plays in a browser <audio> element. /podcasts/ (the show page, behind UniVerse for visitors) answers, and with VOID_OWNER_TOKEN set
@@ -57,7 +57,7 @@ async function main() {
     await page.goto(SITE + '/films/', { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForFunction(() => document.querySelector('.film') || /No films yet/.test(document.body.innerText), null, { timeout: 45000 }).catch(() => {});
     const h1 = await page.locator('h1').first().evaluate((el) => { const c = el.cloneNode(true); c.querySelectorAll('.gl i').forEach((g) => g.remove()); return c.textContent; }).catch(() => ''); // the glitch's stand-in glyph flickers over the letter; read the word
-    if (!/HOLOV.?DS/.test(h1.replace(/\s/g, '')) || /HOLOVIDIS/.test(h1.replace(/\s/g, ''))) fails.push(size + ': films heading reads "' + h1 + '"');
+    if (!/\bVideos\b/.test(h1)) fails.push(size + ': films heading reads "' + h1 + '"');
     const tiles = await page.locator('.film.thumb').count();
     for (let i = 0; i < Math.min(tiles, 4); i++) {
       const t = page.locator('.film.thumb').nth(i);
