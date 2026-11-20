@@ -1,6 +1,7 @@
 // The owner's Versus card, beyond websites (owner, 2026-11-19: "games and everything else in the universe goes on the versus tower"). Loaded by
 // versus/card.js for the owner only (lib/owner-gate.js); it reads tower.universe.json, which names what each target is measured against.
 // Plain words, the category always shown. Pure except load().
+import { sayRow } from '../lib/compound.js';
 import { rowOf, readChecks, gapsOf, sidesOf, closeness, climbOrder, categories, kindOf, SIDES } from '../lib/universe.js';
 
 const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
@@ -44,3 +45,12 @@ export function beyondBox(m, esc) {
 /** one line for the next-up list. Pure. */
 export const nextLine = (o, esc, siteHtml) => o.floor ? siteHtml(o.floor) + ' <span>(' + pct(o.assim) + '%)</span>' : esc(o.row.site) + ' \u2014 ' + esc(o.row.category.toLowerCase()) + ' <span>(' + pct(o.assim) + '%)</span>';
 export { closeness, sidesOf, kindOf, SIDES };
+
+/** the compounding file for the owner, or null (lib/compound.js, tools/tower-compound.mjs). */
+export const loadCompound = () => get('/tower.compound.json');
+/** the compounding box: the last pass in plain words and what went back, each with its failed checks. Pure. */
+export function compoundHtml(c, esc) {
+  const r = c && c.last; if (!r) return '';
+  const back = (r.requeued || []).slice(0, 6).map((x) => '<li>' + esc(x.id) + ': ' + esc((x.failed || []).concat((x.features || []).map((f) => 'feature ' + f)).join('; ') || 'a check') + '</li>').join('');
+  return '<div class="vp-box vp-compound" data-at="' + esc(r.at) + '"><div class="vp-k">Compounding \u00b7 ' + esc(r.at) + '</div><p class="vp-what">' + esc(sayRow(r)) + '</p>' + (back ? '<ul class="vp-gaps">' + back + '</ul>' : '') + '</div>';
+}

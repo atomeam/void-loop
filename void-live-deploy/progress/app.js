@@ -89,3 +89,8 @@ Promise.all(LANES.map((id) => fetch('/progress/loops/' + id + '.json', { cache: 
     body.appendChild(tr);
   }
 }).catch(() => {});
+// the owner's compounding row (tools/tower-compound.mjs): the file is owner-only, so a visitor gets a 404 and the box stays hidden
+fetch('/tower.compound.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((c) => import('/lib/compound.js').then((m) => {
+  const box = document.getElementById('compound'); if (!c || !c.last || !box) return;
+  box.querySelector('p').textContent = c.last.at + ': ' + m.sayRow(c.last); box.hidden = false;
+})).catch(() => {});

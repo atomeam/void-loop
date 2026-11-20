@@ -69,8 +69,10 @@ export function advance(old, floors, today, gone = {}) {
   const resting = restingOf(skipped, today);
   const away = new Set([...assimilated.map((r) => r.id), ...settled.map((x) => x.id), ...resting]);
   const open = (f) => !f.beaten && !f.held && !away.has(f.id) && !isGone(f.id, gone);
-  const keep = old.id && !why && cur && open(cur);
-  let next = keep ? old.id : (floors.find((f) => f.state === 'current' && open(f)) || floors.find(open) || {}).id || null;
+  // the floors the compounding pass sent back (tools/tower-compound.mjs) come ahead of every new one, the target in progress included
+  const rq = (old.requeue || []).find((id) => by.has(id) && open(by.get(id)));
+  const keep = old.id && !why && cur && open(cur) && (!rq || rq === old.id);
+  let next = keep ? old.id : (rq || (floors.find((f) => f.state === 'current' && open(f)) || floors.find(open) || {}).id) || null;
   // floors the gate already verified on every aspect are assimilated in their turn, in this same run (at most PASS_RUN)
   for (let i = 0; !keep && next && i < PASS_RUN; i++) {
     const f = by.get(next); if (!f || !f.gateBeaten) break;
@@ -81,15 +83,19 @@ export function advance(old, floors, today, gone = {}) {
   const nf = by.get(next) || {};
   const about = 'The site Verse is working on. It counts once every check against the live site is won and Verse has its own working page for the job; the crawl\'s gaps go to the build queue. A site with no progress for ' + STALL_DAYS + ' days gives way: its gaps go to the build queue and the next closest site takes over (docs/TOWER-RULES.md, tools/tower-target.mjs).';
   const base = { about, id: next, since: next === old.id ? old.since || today : today, n: next === old.id && st.n !== undefined ? st.n : nf.n || 0, assim: next === old.id && st.assim !== undefined ? st.assim : nf.assim || 0, progressAt: next === old.id ? st.progressAt || old.progressAt || today : today };
+  const rest = (old.requeue || []).filter((id) => by.has(id) && !(by.get(id).beaten || by.get(id).gateBeaten)); if (rest.length) base.requeue = rest;
   if (old.season) base.season = old.season; if (old.archived) base.archived = old.archived;
   return { file: { ...base, assimilated, ...(passed.length ? { passed } : {}), ...(background.length ? { background: background.slice(-300) } : {}), ...(skipped.length ? { skipped } : {}), ...(settled.length ? { settled: settled.slice(-40) } : {}), ...(why ? { last: { at: today, why } } : old.last ? { last: old.last } : {}) }, why };
 }
 /** one settle from the files on disk: the old target file, the new one and why it moved. Used by the run below and by the Tower guard (tools/guards/tower.mjs). */
-export function settleTarget(today = new Date().toISOString().slice(0, 10)) {
-  const old = rd('tower.target.json') || {}, ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
+export function floorsNow(old = rd('tower.target.json') || {}) {
+  const ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
   const args = towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: { assimilated: [], ...old, id: null }, ft: rd('tower.features.json'), gn: rd('tower.gone.json'), pa: rd('parity.json') });
-  const unlocked = tower(...args);
-  return { old, today, ...advance(old, unlocked.floors, today, readGone()) };
+  return tower(...args).floors;
+}
+export function settleTarget(today = new Date().toISOString().slice(0, 10)) {
+  const old = rd('tower.target.json') || {};
+  return { old, today, ...advance(old, floorsNow(old), today, readGone()) };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // the evidence the site serves (tools/tower-files.mjs assemble: the aggregate with each floor's own file over it), never the bare aggregate:
