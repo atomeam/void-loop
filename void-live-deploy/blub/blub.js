@@ -157,7 +157,8 @@ if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 
   let scale = soft ? .3 : saver ? .5 : phone ? .8 : 1, mx = 0, my = 0, tx = 0, ty = 0, blub = 0, turn = 0, turnTo = 0, last = performance.now(), slow = 0, fast = 0, frames = 0, t0 = last, blinkAt = 3;
   const steps = soft ? 36 : phone || saver ? 44 : 80;
   window.__blub = { frames: 0, scale, steps, tier: soft ? 'software' : phone ? 'phone' : 'desktop' };
-  function size() { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 3); // the device's own pixel ratio (a phone is 3): the picture is no longer drawn small and stretched canvas.width = Math.max(64, Math.round(r.width*dpr*scale)); canvas.height = Math.max(64, Math.round(r.height*dpr*scale)); gl.viewport(0, 0, canvas.width, canvas.height); }
+  /* the device's own pixel ratio (a phone is 3): the picture is no longer drawn small and stretched */
+  function size() { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 3); canvas.width = Math.max(64, Math.round(r.width*dpr*scale)); canvas.height = Math.max(64, Math.round(r.height*dpr*scale)); gl.viewport(0, 0, canvas.width, canvas.height); }
   size(); addEventListener('resize', size);
   stage.addEventListener('pointermove', (e) => { const r = stage.getBoundingClientRect(); tx = ((e.clientX - r.left)/r.width - .5)*2; ty = -((e.clientY - r.top)/r.height - .5)*2; });
   stage.addEventListener('pointerleave', () => { tx = 0; ty = 0; });

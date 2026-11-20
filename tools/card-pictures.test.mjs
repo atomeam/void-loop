@@ -2,7 +2,9 @@
 // "service" cards drew a colour 🛠, and the VoidQuest Miniatures card showed the chess set). Run: node --test tools/card-pictures.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const dep = resolve(dirname(fileURLToPath(import.meta.url)), '../void-live-deploy');
@@ -35,3 +37,6 @@ test('no product borrows another product\'s 3D preview', async () => {
   const still = products.filter((p) => KNOWN_REUSE.has(p.id) && p.preview && (by.get(p.preview) || []).length < 2);
   assert.equal(still.length, 0, 'KNOWN_REUSE lists ' + still.map((p) => p.id) + ' but it no longer reuses a preview: remove it from the list');
 });
+
+// /blub/ once shipped with a line comment inside its one-line size() and the page script died ("Unexpected end of input"): the script must parse
+test('blub.js parses as a module', () => { const f = resolve(mkdtempSync(resolve(tmpdir(), 'blub-')), 'blub.mjs'); writeFileSync(f, read('blub/blub.js')); execFileSync(process.execPath, ['--check', f], { stdio: 'pipe' }); });
