@@ -1,12 +1,29 @@
 // The "What I want to become" card (lib/will-card.js, drawn by void.html showWill): each goal numbered once, its reason
-// in plain words underneath, newest built items first as short lines, no raw "Why:" items and no jargon.
+// from that want in plain words underneath, newest built items first as short lines, no raw "Why:" items, and no domain
+// names, file paths or camelCase / SCREAMING_CASE identifiers.
 // Run: node --test tools/become-card.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { willCardHtml, hasJargon, workingOnAsk, freshWants, recentBuilt } from '../void-live-deploy/lib/will-card.js';
+import { willCardHtml, workingOnAsk, freshWants, recentBuilt } from '../void-live-deploy/lib/will-card.js';
 
 const text = (html) => html.replace(/<(?:\/(?:li|div|p|b|h2|ol|ul)|br)\s*>/g, '\n').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').split('\n').map((l) => l.trim()).filter(Boolean);
+
+// Visible card text only (hrefs are not shown). No domain names, file paths, or camelCase / SCREAMING_CASE identifiers.
+function leaks(s) {
+  const hits = [];
+  for (const [n, re] of [
+    ['domain', /\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b/gi],
+    ['path', /\b(?:[\w.-]+\/)+[\w.-]+\b|\b[\w.-]+\.(?:js|mjs|cjs|ts|tsx|jsx|py|json|html|css|yml|yaml|md|sh)\b/gi],
+    ['SCREAMING_CASE', /\b[A-Z][A-Z0-9]*(_[A-Z0-9]+)+\b/g],
+    ['camelCase', /\b[a-z]+[A-Z][a-zA-Z0-9]*\b|\b[A-Z][a-z0-9]+[A-Z][a-zA-Z0-9]*\b/g],
+  ]) {
+    const m = String(s || '').match(re);
+    if (m) hits.push(n + ':' + m.join(','));
+  }
+  return hits;
+}
+
 
 const WILL = { at: '2026-10-30T17:00:00Z',
   wants: [{ i_want: 'Offer my proven skills as MCP tools too', because: 'other AIs could call my world clock and country facts', evidence: 'void.plan.md Next 11' },
@@ -17,7 +34,7 @@ test('each want is numbered once, with its reason in plain words underneath', ()
   const t = text(willCardHtml(WILL));
   const i = t.indexOf('1. Offer my proven skills as MCP tools too');
   assert.ok(i > 0, t.join(' | '));
-  assert.equal(t[i + 1], 'other AIs could call my world clock and country facts');
+  assert.equal(t[i + 1], 'other AIs could call my world clock and country facts.');
   assert.ok(!t.some((l) => /^\d+\.\s*Why:/i.test(l) || /^\d+\.\s+\d+\./.test(l)), t.join(' | '));
   assert.equal(t[i + 2], '2. Explain my answers better');
   assert.equal(t[i + 3], 'People have asked me this 3 times.');
@@ -35,11 +52,34 @@ test('built items come after the wants as short readable lines, never a Done/Bui
   assert.ok(!t.some((l) => /^\d+\. Absorb/.test(l)), 'the built ask is never numbered as a want');
 });
 
-test('a live-shaped want with router metrics never leaks jargon or double numbering', () => {
-  const html = willCardHtml({ at: '2026-11-20T19:59:31.366Z', wants: [{ i_want: "I want to teach myself how to answer 'what are you working on' as a skill instead of treating it as a question.", because: 'the router came within 0.01 of my self skill and answered it as a question instead (asked 19 times) (my weakest part today: probes 20)', evidence: 'the router came within 0.01 of my self skill and answered it as a question instead (asked 19 times) (my weakest part today: probes 20)' }], got: [{ i_want: 'Absorb and connect every repo', builtAt: '2026-10-22', what: 'archive/repos: the ten public atomeam repos imported with their history' }] });
+test('the card shows no domain names, file paths or camelCase / SCREAMING_CASE identifiers', () => {
+  const html = willCardHtml({ at: '2026-11-20T21:43:19.208Z', wants: [
+    { i_want: "I want to teach myself how to answer 'what are you working on' as a skill instead of treating it as a question.", because: 'the router came within 0.01 of my self skill and answered it as a question instead (asked 19 times) (my weakest part today: probes 20)' },
+    { i_want: 'I want to add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.', because: 'I asked for this 49 times in my reflections (a small one)' },
+  ], got: [{ i_want: 'Absorb and connect every repo', builtAt: '2026-10-22', what: 'archive/repos: the ten public atomeam repos imported with their history' }] });
   const t = text(html);
-  assert.ok(!t.some((l) => /^\d+\.\s+\d+\./.test(l) || /^\d+\.\s*Why:/i.test(l) || hasJargon(l)), t.join(' | '));
-  assert.ok(!/archive\/repos/.test(t.join(' ')));
+  assert.ok(!t.some((l) => /^\d+\.\s+\d+\./.test(l) || /^\d+\.\s*Why:/i.test(l)), t.join(' | '));
+  const hit = leaks(t.join('\n'));
+  assert.deepEqual(hit, [], hit.join(' | ') + ' :: ' + t.join(' | '));
+  assert.ok(!/emojigraph\.org|LANE_PAGES|lib\/tower\.js|archive\/repos/i.test(t.join(' ')), t.join(' | '));
+  assert.match(t.join('\n'), /add emojigraph and begin target assimilation/i);
+});
+
+test('each reason comes from its own want, not from a neighbour', () => {
+  const html = willCardHtml({ at: '2026-11-20T21:43:19.208Z', wants: [
+    { i_want: 'I want to fix the audio exam.', because: 'the audio exam was the lowest score; this ask failed audio' },
+    { i_want: 'I want to answer "tell me a joke" for a visitor.', because: 'a check on the live site failed (my weakest part today: probes 20)' },
+    { i_want: 'I want to add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.', because: 'I asked for this 49 times in my reflections (a small one)' },
+  ] });
+  const blocks = html.match(/<div class="will-want"[^>]*>[\s\S]*?<\/div>/g) || [];
+  assert.equal(blocks.length, 3, html);
+  const texts = blocks.map((b) => text(b).join(' '));
+  assert.match(texts[0], /audio exam was the lowest score/);
+  assert.ok(!/49 times|live site failed/i.test(texts[0]), texts[0]);
+  assert.match(texts[1], /live site failed/);
+  assert.ok(!/audio exam was the lowest|49 times/i.test(texts[1]), texts[1]);
+  assert.match(texts[2], /49 times/);
+  assert.ok(!/audio exam was the lowest|live site failed/i.test(texts[2]), texts[2]);
 });
 
 test('all three page copies draw the same card from the helper, and identity does not steal the working-on ask', () => {

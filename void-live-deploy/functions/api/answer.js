@@ -24,7 +24,7 @@ import { keeperOf, scrubOut } from '../../lib/keeper.js';
 import { redactPersonal } from '../../lib/privacy.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 import { nearOf } from '../../lib/near-miss.js';
-import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
+import { clefRoute, clefOn, mergeRoute, clefYesNo, closeCall, tieBreak } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, isOwnCardNote, readSelf, selfFacts, cardLists, SELF_RULE, OWN_CARD_RULE } from '../../lib/self-context.js';
 import { ownCardAnswer, fetchPulls, keptCards } from '../../lib/own-card.js';
@@ -599,7 +599,9 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   let src = self || isPaste(ask) || note || aboutMe ? [] : await sources(ask);
   if (earlierP) src = mergeSources([await earlierP, src]);
   const srcAt = Date.now();
-  const route = await settle(routeP, t0 + BUDGET_MS);
+  let route = await settle(routeP, t0 + BUDGET_MS);
+  // a close call (lib/clef.js tieBreak): Clef, already running beside the router, breaks it; it waits at most CLEF_TIMEOUT_MS from its own start
+  if (clefOn(env) && closeCall(route)) route = tieBreak(route, await clefP.catch(() => null));
   // the skill the ask nearly was (lib/near-miss.js, asked by Verse): the page offers that skill's first example when it ends up with no answer
   const near = nearOf(route, SKILLS), nearOut = near ? { near } : {};
   const waited = Date.now() - srcAt;
@@ -651,8 +653,9 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     }
   }
   const log = async (extra) => { try { await clefP.then((c) => {
-    const r = mergeRoute(route, c), rec = { ask, masked, route: r.kind, skill: r.skill, score: r.score, scores: r.scores, ms: route.ms, waited, model, outcome, would, ...extra };
+    const r = route.by === 'tie-break' ? route : mergeRoute(route, c), rec = { ask, masked, route: r.kind, skill: r.skill, score: r.score, scores: r.scores, ms: route.ms, waited, model, outcome, would, ...extra };
     if (r.by === 'clef' && !(extra && extra.outcome)) rec.outcome = r.kind === 'skill' ? String(outcome).replace(/^(default|skill missed: \w+)/, 'skill missed: ' + r.skill + ' (Clef)') : String(outcome).replace(/^skill missed: \w+/, 'default (Clef: no skill)');
+    if (r.by === 'tie-break') rec.outcome = String(rec.outcome) + '; tie-break: Clef chose ' + r.skill + ' at ' + r.score;
     if (r.unsure) rec.outcome = String(rec.outcome) + '; Clef unsure: ' + r.unsure + ' ' + r.clefP;
     return logRoute(env, rec);
   }, () => logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra })); } catch (_) {} };
@@ -745,7 +748,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // a real place, animal, event or work of art gets a real, licensed picture with its credit (lib/free-pics.js), searched by the fetched source's own title, never the visitor's words;
   // a fictional character or a person keeps Verse's own drawing or neutral plate. Bounded: one picture, a few seconds, and the answer never waits longer.
   const pic = lead && lead.desc ? await picFor(env, lead) : null;
-  const out = { answer, sources: linked(pub), at, route: route.kind, source: sourceOf(model), ...nearOut, ...(pic ? { pic } : {}), ...(guess ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) };
+  const out = { answer, sources: linked(pub), at, route: route.kind, ...(route.kind === 'skill' && route.skill ? { skill: route.skill } : {}), ...(route.by === 'tie-break' ? { tie: 'clef' } : {}), source: sourceOf(model), ...nearOut, ...(pic ? { pic } : {}), ...(guess ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) };
   // the edge copy goes where the D1 row goes, and only for a free model's answer (a paid escalation is never served again for free, lib/answer-edge.js)
   if (edgeKeep && !masked && !self && !told && !before && !talk && storable(out, { paid: model !== MODEL && model !== ANSWER_FALLBACK })) edgeKeep(out, at);
   return Response.json(out);

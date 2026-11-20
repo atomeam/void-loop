@@ -43,7 +43,7 @@ senses -> attention -> working memory -> planning (the will) -> action (crew, co
 | Action | does it | the crew, `tools/verse-loop.mjs`, `tools/verse-coder.mjs`, pull requests | `/api/crew`, GitHub |
 | Evaluation | checks the result | a want closes only when its number improves; `tools/will-outcome.mjs` settles a job when its PR ends; the exam | `/api/crew`, queue states |
 | Lessons | keeps what it learned | `void.knowledge.json` and `lib/brain-recall.js`; a lesson from every settled job (planned: item 4) | assets + D1 |
-| Sleep | consolidates overnight | planned (item 6): the day's events into one note, stale wants and duplicate lessons pruned | D1 `void_kv` sleep |
+| Sleep | consolidates overnight | once a night (lib/brain-sleep.js, woken by any /api/brain read or the hourly will run): the day's events into one note, duplicate and stale lessons pruned | D1 `void_kv` sleep |
 | Drives | why it acts | curiosity, competence, care, integrity (`lib/self-model.js`) and the charter's identity lines (`lib/charter.js`), each tied to a measured number | computed in `/api/brain` |
 
 `GET /api/brain` (`functions/api/brain.js`, pure part `lib/brain-live.js`) returns every region with its true current state, its recent

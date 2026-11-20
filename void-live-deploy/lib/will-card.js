@@ -18,8 +18,21 @@ const WEAK = {
   self: 'One of my weak spots today is that I am not driving enough of my own changes.',
 };
 
-export function hasJargon(text) {
-  return /\b(router|self skill|probes\s+\d+|came within\s+[\d.]+|weakest part today)\b/i.test(String(text || ''));
+// Public card text: no domain names, no file paths, no camelCase or SCREAMING_CASE identifiers.
+const PATH = /\b(?:[\w.-]+\/)+[\w.-]+\b/g;
+const FILE = /\b[\w.-]+\.(?:js|mjs|cjs|ts|tsx|jsx|py|json|html|css|yml|yaml|md|sh)\b/gi;
+const DOMAIN = /\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b/gi;
+const SCREAM = /\b[A-Z][A-Z0-9]*(_[A-Z0-9]+)+\b/g;
+const CAMEL = /\b[a-z]+[A-Z][a-zA-Z0-9]*\b/g;
+const PASCAL = /\b[A-Z][a-z0-9]+[A-Z][a-zA-Z0-9]*\b/g;
+const siteName = (d) => { const p = String(d).toLowerCase().split('.').filter((x) => x && x !== 'www'); return p[0] ? p[0].replace(/-/g, ' ') : 'that site'; };
+
+export function plainPublic(text) {
+  let s = String(text || '').replace(PATH, '').replace(FILE, '').replace(DOMAIN, siteName).replace(SCREAM, '').replace(CAMEL, '').replace(PASCAL, '');
+  s = s.replace(/\s+/g, ' ').replace(/\s*([,;:])\s*/g, '$1 ');
+  for (let i = 0; i < 4; i++) s = s.replace(/\b(in|to|into|on|at|of|for|from|with)\s+(in|to|into|on|at|of|and|for|from|with)\b/gi, '$2');
+  s = s.replace(/\s+(in|to|into|on|at|of|from|with)\s*([.,;]|$)/gi, '$2').replace(/,\s*,/g, ',').replace(/ \./g, '.').trim();
+  return s;
 }
 
 export function plainReason(text) {
@@ -33,9 +46,13 @@ export function plainReason(text) {
   if (near) bits.push('I almost knew this was something I should handle myself, but I treated it like a regular question instead.');
   else if (heard) bits.push('I heard this as something I should handle myself, but I did not catch this wording.');
   if (asked) bits.push(+asked[1] === 1 ? 'Someone asked me this once.' : 'People have asked me this ' + asked[1] + ' times.');
+  // keep this want's own remaining reason (not only a shared weak-spot line)
+  let rest = raw.replace(/(?:the )?router came within [\d.]+ of my \S+ skill and answered it as a question instead/gi, '').replace(/(?:the )?router heard \S+:/gi, '').replace(/\(?asked \d+ times\)?/gi, '').replace(/\(my weakest part today:[^)]*\)/gi, '').replace(/my weakest part today:\s*\w+\s+[\d.]+/gi, '').replace(/\(\s*\)/g, '');
+  rest = plainPublic(rest);
+  if (rest && !/^[.,;:]+$/.test(rest)) { if (!/[.!?]$/.test(rest)) rest += '.'; bits.push(rest); }
   if (weak && WEAK[weak[1].toLowerCase()]) bits.push(WEAK[weak[1].toLowerCase()]);
-  if (bits.length) return bits.join(' ');
-  return raw.replace(/\(my weakest part today:[^)]*\)/gi, '').replace(/\brouter\b/gi, 'how I pick an answer').replace(/\bself skill\b/gi, 'my own answers').replace(/\bprobes\b/gi, 'my own checks').replace(/\s{2,}/g, ' ').trim();
+  if (bits.length) return bits.join(' ').replace(/\s{2,}/g, ' ').trim();
+  return plainPublic(raw.replace(/\(my weakest part today:[^)]*\)/gi, '').replace(/\brouter\b/gi, 'how I pick an answer').replace(/\bself skill\b/gi, 'my own answers').replace(/\bprobes\b/gi, 'my own checks'));
 }
 
 const dayOf = (at) => {
@@ -45,7 +62,7 @@ const dayOf = (at) => {
 
 export function shortBuiltLine(x) {
   if (!x) return '';
-  if (x.show && String(x.show).trim()) return String(x.show).trim();
+  if (x.show && String(x.show).trim()) return plainPublic(String(x.show).trim());
   let raw = String(x.what || x.i_want || '').replace(/^I want to\s+/i, '').replace(/\.+$/, '').trim();
   if (!raw) return '';
   raw = raw.split(/(?<=\.)\s+/)[0] || raw;
@@ -53,7 +70,8 @@ export function shortBuiltLine(x) {
   raw = raw.replace(/\s+at \d{4,}\b.*/, '').replace(/\s+under \.[\w./-]+.*/, '');
   if (raw.includes(',') && raw.split(',')[0].trim().length >= 40) raw = raw.split(',')[0].trim();
   if (raw.length > 90) raw = raw.slice(0, 89).replace(/\s+\S*$/, '').replace(/[.,;:]+$/, '') + '…';
-  return raw.charAt(0).toUpperCase() + raw.slice(1);
+  raw = raw.charAt(0).toUpperCase() + raw.slice(1);
+  return plainPublic(raw);
 }
 
 const sameLine = (a, b) => String(a || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() === String(b || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -135,7 +153,7 @@ export function willCardHtml(will, esc = escDef, ledger) {
   const goals = wants.length
     ? '<div class="vh">What I want next</div><div class="will-list" style="padding:0;margin:6px 0 10px">' + wants.map((x, i) => {
       const reason = plainReason(x.because || x.evidence || '');
-      return '<div class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><p class="will-goal" style="margin:0;font-weight:600"><span class="will-n">' + (i + 1) + '. </span>' + esc(x.i_want || x.title || '') + '</p>'
+      return '<div class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><p class="will-goal" style="margin:0;font-weight:600"><span class="will-n">' + (i + 1) + '. </span>' + esc(plainPublic(x.i_want || x.title || '')) + '</p>'
         + (reason ? '<p class="will-why" style="color:#8a8a8a;margin:6px 0 0">' + esc(reason) + '</p>' : '') + '</div>';
     }).join('') + '</div>'
     : '<p>Everything I last chose is built. I choose again within the hour.</p>';
@@ -148,7 +166,7 @@ export function workingOnHtml(will, esc = escDef, ledger) {
   const built = recentBuilt({ got: w.got, ledger, recent: w.recent }, 5);
   const top = wants[0], reason = top && plainReason(top.because || top.evidence || '');
   const body = top
-    ? '<p class="will-goal" style="margin:8px 0 0;font-weight:600">' + esc(top.i_want || top.title || '') + '</p>' + (reason ? '<p class="will-why" style="color:#8a8a8a;margin:6px 0 0">' + esc(reason) + '</p>' : '')
+    ? '<p class="will-goal" style="margin:8px 0 0;font-weight:600">' + esc(plainPublic(top.i_want || top.title || '')) + '</p>' + (reason ? '<p class="will-why" style="color:#8a8a8a;margin:6px 0 0">' + esc(reason) + '</p>' : '')
     : '<p>I just finished what I was working on, or I have not picked the next thing yet. I choose again within the hour.</p>';
   return '<h2>What I\'m working on</h2><div class="sub">This is what I am doing now, from my own records, not a guess.</div>'
     + body

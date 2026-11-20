@@ -11,7 +11,7 @@ export const NONE = 'none';
 export const CLEF_TIMEOUT_MS = 3000;
 
 const ABOUT = {
-  self: 'About Verse itself: what it can do, its menu, its board, what it wants',
+  self: 'About Verse itself: what it can do, its menu, its board, what it wants, what it is working on or doing now',
   act: 'Doing something for the person in the world: sending a message or email, booking, buying, paying, scheduling',
 };
 // the one question: which skill should take this ask, or none of them
@@ -79,4 +79,25 @@ export function mergeRoute(embed, clef) {
   if (clef.kind === 'skill' && mine(clef.skill)) return { ...e, kind: 'skill', skill: clef.skill, score: clef.p, by: 'clef' };
   if (clef.kind === NONE && e.kind === 'skill' && mine(e.skill)) return { ...e, kind: 'simple', skill: undefined, score: clef.p, by: 'clef' };
   return e;
+}
+
+// The tie-break (docs/brain.md item 5; Verse's own want, 2026-11-20: "the router came within 0.01 of my self skill and answered it as a
+// question instead (asked 19 times)"): when the embedding router's best skill is within TIE_BAND of its bar, or it ran out of time, the
+// close call goes to Clef, which runs beside it on every ask already (Workers AI, no extra call). Clef naming that same skill at TIE_P or
+// more makes it the skill; Clef saying none keeps the answer in words. Anything else keeps the embedding guess. Pure.
+export const TIE_BAND = 0.05, TIE_P = 0.5;
+/** is this embedding route a close call? -> the skill it nearly was, or null ('any' when the router gave no score: a timeout) */
+export function closeCall(route) {
+  const r = route || {};
+  if (r.kind === 'skill') return null;
+  if (r.kind === 'fallback') return 'any';
+  const n = r.nearest;
+  return n && n.skill && n.held !== 'hard-signs' && Number(n.score) >= Number(n.bar) - TIE_BAND ? n.skill : null;
+}
+export function tieBreak(route, clef) {
+  const e = route || { kind: 'fallback', why: 'no route' }, close = closeCall(e);
+  if (!close || !clef || clef.kind !== 'skill' || !(Number(clef.p) >= TIE_P)) return e;
+  if (close !== 'any' && clef.skill !== close) return e;
+  if (close === 'any' && clef.skill !== 'self') return e; // with no score of its own, only Verse's own card is taken on Clef's word
+  return { ...e, kind: 'skill', skill: clef.skill, score: clef.p, by: 'tie-break', tie: { was: e.kind, nearest: e.nearest || null } };
 }
