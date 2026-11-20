@@ -49,3 +49,13 @@ test('the target is on the Tower as an answers target, beaten only when every ch
   assert.ok(protectedNames(SEEDS).includes("Atom's assistant"));
   assert.ok(ownerOnlyPath('/tower.assistant.json'), 'the questions and the answer key are served to the owner only');
 });
+
+import { assistantHtml } from '../void-live-deploy/versus/universe.js';
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+test('the owner card box says the score, the bar and the weakest questions, and is empty before a first run', () => {
+  assert.equal(assistantHtml({ set: file.set, last: null }, esc), '');
+  const rows = [scoreOne(by('binary-search'), 'I am a note-search bot.'), scoreOne(by('percent-chain'), '15% of 240 is 36, and 36 plus 12 is 48.')];
+  const html = assistantHtml({ set: file.set, last: { at: '2026-11-20T10:00:00Z', ...summarize(rows), rows } }, esc);
+  assert.match(html, /A top AI assistant/); assert.match(html, /more than 94 on each/); assert.match(html, /time complexity of binary search/);
+  assert.ok(!/percent/i.test(html), 'a question with no gap is not listed');
+});

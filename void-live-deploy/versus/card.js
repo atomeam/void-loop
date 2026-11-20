@@ -459,6 +459,7 @@ export async function ownerCard(el, { esc, say }) {
   let u = null; try { const px = await import('./universe.js'), data = await px.load(); if (data) u = { px, m: px.modelOf(data, t.floors) }; } catch (_) { u = null; } // the universe is extra: the card still draws without it
   el.innerHTML = plainHtml(t, esc, u); // void-review: ok (plainHtml runs every value through esc; the picture is lib/tower-art.js, which escapes its own text)
   try { const px = u ? u.px : await import('./universe.js'), c = await px.loadCompound(); if (c && el.isConnected) el.insertAdjacentHTML('beforeend', px.compoundHtml(c, esc)); } catch (_) {} // void-review: ok (compoundHtml runs every value through esc)
+  try { const px = u ? u.px : await import('./universe.js'), a = await px.loadAssistant(); if (a && el.isConnected) el.insertAdjacentHTML('beforeend', px.assistantHtml(a, esc)); } catch (_) {} // void-review: ok (assistantHtml runs every value through esc)
   if (say) say(plainLine(t));
 }
 

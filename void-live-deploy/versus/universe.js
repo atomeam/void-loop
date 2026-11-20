@@ -54,3 +54,15 @@ export function compoundHtml(c, esc) {
   const back = (r.requeued || []).slice(0, 6).map((x) => '<li>' + esc(x.id) + ': ' + esc((x.failed || []).concat((x.features || []).map((f) => 'feature ' + f)).join('; ') || 'a check') + '</li>').join('');
   return '<div class="vp-box vp-compound" data-at="' + esc(r.at) + '"><div class="vp-k">Compounding \u00b7 ' + esc(r.at) + '</div><p class="vp-what">' + esc(sayRow(r)) + '</p>' + (back ? '<ul class="vp-gaps">' + back + '</ul>' : '') + '</div>';
 }
+
+/** the assistant exam file for the owner, or null (tools/assistant-exam.mjs). */
+export const loadAssistant = () => get('/tower.assistant.json');
+const DIMS = { right: 'right', useful: 'useful', clear: 'clear' };
+/** the assistant box: the last score in plain words and the weakest questions with what each lacks. Pure. */
+export function assistantHtml(a, esc) {
+  const r = a && a.last; if (!r) return '';
+  const ask = new Map((a.set || []).map((q) => [q.id, q.ask]));
+  const gaps = (r.rows || []).flatMap((x) => Object.keys(DIMS).filter((d) => x[d] < 90).map((d) => ({ id: x.id, d, s: x[d], why: (x.gaps && x.gaps[d] || []).slice(0, 2).join('; ') }))).sort((p, q) => p.s - q.s).slice(0, 6);
+  const li = gaps.map((g) => '<li>' + esc(String(ask.get(g.id) || g.id).slice(0, 70)) + ': ' + esc(DIMS[g.d]) + ' ' + esc(g.s) + (g.why ? ' \u2014 ' + esc(g.why) : '') + '</li>').join('');
+  return '<div class="vp-box vp-assistant" data-at="' + esc(r.at) + '"><div class="vp-k">A top AI assistant \u00b7 ' + esc(String(r.at).slice(0, 10)) + '</div><p class="vp-what">Verse scored ' + esc(r.overall) + ' of 100 on ' + esc(r.questions) + ' real questions: right ' + esc(r.right) + ', useful ' + esc(r.useful) + ', clear ' + esc(r.clear) + '. It needs more than 94 on each to win.</p>' + (li ? '<ul class="vp-gaps">' + li + '</ul>' : '') + '</div>';
+}
