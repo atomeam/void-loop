@@ -34,6 +34,7 @@ export const CHECK = Object.freeze({
   right: C('right', 'correct', 'Right answers', 'measure', 'every fact a right answer holds, on a fixed set of real questions'),
   useful: C('useful', 'plus', 'Useful answers', 'measure', 'a real answer with the practical parts and the shape the ask wanted, never a dodge'),
   clear: C('clear', 'beauty', 'Clear answers', 'measure', 'plain and short: no rambling, filler, raw data or cut-off endings'),
+  heldout: C('heldout', 'correct', 'Beats the reference on fresh questions', 'measure', 'beats the reference on unseen questions, judged blind, in 3 runs in a row'),
   agency: C('agency', 'plus', 'Does, not just answers', 'probe', 'it takes the action, not only gives the answer'),
 });
 const SET = (...ids) => Object.freeze(ids);
@@ -44,7 +45,7 @@ export const KINDS = Object.freeze({
   music: { label: 'Music', checks: SET('graphics', 'polish', 'theory', 'performance', 'interactivity', 'insight') },
   art: { label: 'Art and images', checks: SET('graphics', 'polish', 'faithful', 'performance', 'interactivity', 'insight') },
   app: { label: 'App or tool', checks: SET('graphics', 'polish', 'works', 'results', 'performance', 'depth', 'insight') },
-  answers: { label: 'Assistant answers', checks: SET('graphics', 'right', 'useful', 'clear', 'performance') },
+  answers: { label: 'Assistant answers', checks: SET('graphics', 'right', 'useful', 'clear', 'heldout', 'performance') },
   assistant: { label: 'AI assistant', checks: SET('graphics', 'polish', 'results', 'facts', 'performance', 'agency', 'insight') },
   writing: { label: 'Writing', checks: SET('graphics', 'polish', 'story', 'facts', 'performance', 'interactivity', 'insight') },
   creature: { label: 'Animal', checks: REAL }, nature: { label: 'Nature', checks: REAL }, object: { label: 'Object', checks: REAL },

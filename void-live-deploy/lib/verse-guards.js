@@ -11,7 +11,7 @@ export const GUARDS = Object.freeze([
   { id: 'tower', name: 'Tower climb', what: 'Checks the Tower is still moving. A site with no progress for 3 days gives way, and the guard does it itself when the scheduled run did not.', minutes: 1, hours: null },
   { id: 'deploy', name: 'Deploy check', what: 'Reads why a main deploy failed or rolled back and queues the fix for the coder, or says the exact change.', minutes: 1, hours: null },
   { id: 'quality', name: 'Quality engine', what: 'Measures the weakest thing people see (looks, 3D, speed, phone, and whether it is right), ships one fix, re-scores the live page, and keeps the change only if the score rose. It makes new things too, and upgrades itself when its rate of improvement flattens.', minutes: 6, hours: null },
-  { id: 'assistant', name: 'Assistant exam', what: 'Puts 20 fixed real questions to the live agent once a day, scores the answers on correctness, usefulness and clarity, logs the score, and puts every weak answer on the build list.', minutes: 3, hours: [13] },
+  { id: 'assistant', name: 'Assistant exam', what: 'Puts 20 fixed real questions to the live agent once a day and a fresh sample of 20 unseen ones (from a pool of 100+) three times a day, scores the answers on correctness, usefulness and clarity with pattern checks and a blind model judge, logs each score, and puts the weak areas on the build list.', minutes: 6, hours: [9, 13, 19] },
   { id: 'home', name: 'Starfield and heart', what: 'Checks the home page still has the starfield and the corner heart. If a change hides one, the change is put back.', minutes: 1, hours: null },
 ]);
 

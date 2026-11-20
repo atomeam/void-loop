@@ -10,10 +10,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { scoreOne, summarize, GAP_BELOW, examine, askLive } from './assistant-exam.mjs';
+import { judge, compare } from './answer-judge.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const FILE = path.join(ROOT, 'void-live-deploy/tower.heldout.json');
-export const SIZE = 20, POOL_MIN = 100, PER_AREA_MIN = 10;
+export const TARGET_ID = 'top-assistant';
+export const SIZE = 20, POOL_MIN = 100, PER_AREA_MIN = 10, BAR = 94, MIN_JUDGED = 15, STREAK = 3;
 export const AREAS = ['health', 'money', 'writing', 'coding', 'how-to', 'local', 'current events'];
 export const load = (f = FILE) => JSON.parse(fs.readFileSync(f, 'utf8'));
 /** one line per question, per run and per row. Pure. */
@@ -46,18 +48,35 @@ export function problemsOf(file, fixed = []) {
   return out;
 }
 /** build-list rows by area, never by question: what the answers in that area lacked, in the plain labels. Pure. */
-export function jobsOf(set, rows, today, target = 'top-assistant') {
+export function jobsOf(set, rows, today, target = TARGET_ID) {
   const area = new Map(set.map((q) => [q.id, q.area])), by = new Map();
-  for (const r of rows) for (const d of ['right', 'useful', 'clear']) if (r[d] < GAP_BELOW) { const a = area.get(r.id); if (!by.has(a)) by.set(a, new Map()); for (const m of r.gaps[d]) by.get(a).set(m, (by.get(a).get(m) || 0) + 1); }
+  const add = (r, m) => { const a = area.get(r.id); if (!by.has(a)) by.set(a, new Map()); by.get(a).set(m, (by.get(a).get(m) || 0) + 1); };
+  for (const r of rows) {
+    for (const d of ['right', 'useful', 'clear']) if (r[d] < GAP_BELOW) for (const m of r.gaps[d]) add(r, m);
+    if (r.jr) for (const d of ['right', 'useful', 'clear']) if (r.jr.answer[d] <= r.jr.reference[d] - 10) add(r, 'the judge found it weaker than a top answer on being ' + d);
+  }
   return [...by].map(([a, ms]) => ({ id: target, aspect: 'heldout:' + a, side: 'correct', since: today, job: 'build: Verse answers in "' + a + '" fell short on unseen questions. Improve how it answers this kind of question in general. Lacked: ' + [...ms].sort((x, y) => y[1] - x[1]).slice(0, 3).map(([m]) => m).join('; ') }));
 }
-/** a run's whole effect, pure: the pool file with the asked counts, the run and the last rows (answers kept short). */
-export function applyRun({ file, picked, answers, base, at, keep = 60 }) {
-  const rows = picked.map((q, i) => ({ ...scoreOne(q, answers[i].text, answers[i].status), area: q.area })), sum = summarize(rows);
-  const seen = { ...(file.seen || {}) }; for (const q of picked) seen[q.id] = (seen[q.id] || 0) + 1;
-  const last = { at, base, ...sum, rows: rows.map((r, i) => ({ ...r, answer: String(answers[i].text || '').slice(0, 400), bot: answers[i].bot || '' })) };
-  return { file: { ...file, seen, last, runs: (file.runs || []).concat({ at, ...sum }).slice(-keep) }, rows, sum };
+/** the judge on every answer, four at a time: one { answer, reference, by } or null per question. `judgeFn` is injectable. */
+export async function judgeAll(picked, answers, env = process.env, judgeFn = judge) {
+  const out = new Array(picked.length); let next = 0;
+  await Promise.all(Array.from({ length: 4 }, async () => { for (;;) { const i = next++; if (i >= picked.length) return; const t = String((answers[i] && answers[i].text) || ''); out[i] = t ? await judgeFn(picked[i].ask, t, picked[i].reference, env).catch(() => null) : null; } }));
+  return out;
 }
+/** a run's whole effect, pure: the asked counts, the run with the judge's verdict, the streak of runs that beat the reference, and the last rows.
+ *  A run beats the reference when the pattern marks are each above the bar and the blind judge rates Verse at least equal (compare()); a run with fewer than
+ *  15 answers judged (no key, no reply) is neither a win nor a loss: the streak stays where it was. */
+export function applyRun({ file, picked, answers, judged = [], base, at, keep = 60 }) {
+  const rows = picked.map((q, i) => ({ ...scoreOne(q, answers[i].text, answers[i].status), area: q.area, ...(judged[i] ? { jr: { answer: judged[i].answer, reference: judged[i].reference } } : {}) })), sum = summarize(rows);
+  const seen = { ...(file.seen || {}) }; for (const q of picked) seen[q.id] = (seen[q.id] || 0) + 1;
+  const cmp = compare(judged), pattern = sum.right > BAR && sum.useful > BAR && sum.clear > BAR;
+  const beat = cmp && cmp.judged >= MIN_JUDGED ? pattern && cmp.beats : null, streak = beat === true ? (file.streak || 0) + 1 : beat === false ? 0 : (file.streak || 0);
+  const verdict = cmp ? { judged: cmp.judged, by: cmp.by, verse: cmp.answer.overall, reference: cmp.reference.overall } : null;
+  const last = { at, base, ...sum, judge: verdict, beat, streak, rows: rows.map((r, i) => ({ ...r, answer: String(answers[i].text || '').slice(0, 400), bot: answers[i].bot || '' })) };
+  return { file: { ...file, seen, streak, last, runs: (file.runs || []).concat({ at, ...sum, judge: verdict, beat, streak }).slice(-keep) }, rows, sum, beat, streak, verdict };
+}
+/** the Tower mark: 100 once the streak is 3, else the pattern overall held under the bar so the target is not beaten early. Pure. */
+export const markOf = (sum, streak) => (streak >= STREAK ? 100 : Math.min(BAR - 1, sum.overall));
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), file = load();
@@ -69,8 +88,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (args.includes('--sample')) for (const q of picked) console.log(q.area.padEnd(15) + q.ask);
   if (args.includes('--live')) {
     const base = (args.find((a) => /^https?:/.test(a)) || 'https://a-to-mind.com').replace(/\/$/, ''), answers = await examine(base, picked, askLive, console.log);
-    const out = applyRun({ file, picked, answers, base, at: new Date().toISOString() });
-    console.log(JSON.stringify(out.sum)); for (const r of out.rows) console.log(r.area.padEnd(15) + r.id.padEnd(16) + ' right ' + String(r.right).padStart(3) + ' useful ' + String(r.useful).padStart(3) + ' clear ' + String(r.clear).padStart(3));
+    const judged = await judgeAll(picked, answers), out = applyRun({ file, picked, answers, judged, base, at: new Date().toISOString() });
+    console.log(JSON.stringify({ ...out.sum, judge: out.verdict, beat: out.beat, streak: out.streak })); for (const r of out.rows) console.log(r.area.padEnd(15) + r.id.padEnd(16) + ' right ' + String(r.right).padStart(3) + ' useful ' + String(r.useful).padStart(3) + ' clear ' + String(r.clear).padStart(3));
     if (args.includes('--write')) { fs.writeFileSync(FILE, serialize(out.file)); console.log('written'); }
   }
 }

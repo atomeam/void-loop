@@ -8,11 +8,11 @@ import { runGuards, revertOnBranch, editOnBranch } from './verse-guards.mjs';
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 
-test('seven guards ride the house lanes: the cards on four of them, the assistant exam on one, the rest on every one', () => {
+test('seven guards ride the house lanes: the cards on four of them, the assistant exam on three, the rest on every one', () => {
   assert.deepEqual(GUARDS.map((g) => g.id), ['leaks', 'cards', 'tower', 'deploy', 'quality', 'assistant', 'home']);
   assert.deepEqual(HOUSE_HOURS, LOOPS.map((l) => l.hourUtc));
   assert.deepEqual(guardsFor(1).map((g) => g.id), ['leaks', 'tower', 'deploy', 'quality', 'home']);
-  assert.deepEqual(guardsFor(13).map((g) => g.id).filter((i) => i === 'assistant'), ['assistant'], 'the exam runs at the 13:00 lane only');
+  for (const h of [9, 13, 19]) assert.deepEqual(guardsFor(h).map((g) => g.id).filter((i) => i === 'assistant'), ['assistant'], 'the exam rides the ' + h + ':00 lane');
   assert.ok(!guardsFor(15).some((g) => g.id === 'assistant'));
   assert.deepEqual(guardsFor(3).map((g) => g.id), ['leaks', 'cards', 'tower', 'deploy', 'quality', 'home']);
   for (const g of GUARDS) for (const h of g.hours || []) assert.ok(HOUSE_HOURS.includes(h), g.id + ' rides an hour no lane runs');
