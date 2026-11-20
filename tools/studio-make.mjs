@@ -33,20 +33,29 @@ export const AVOID = /\b(died|death|killed|murder|massacre|war|battle|bomb|attac
 
 const clean = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
 let groqList = null;
+const STRONG = /gpt-oss-120b|kimi-k2|llama-4-maverick|qwen3-32b|llama-3\.3-70b/;
+/** the preferred models Groq still serves, then any other strong chat model it serves now (models retire). Pure. */
+export function groqModels(prefer, list) {
+  if (!list) return prefer;
+  const have = prefer.filter((m) => list.has(m));
+  return [...have, ...[...list].filter((m) => STRONG.test(m) && !/guard|whisper|tts|compound/.test(m) && !have.includes(m)).sort()];
+}
 /** one completion from the strongest free model that answers. Throws when none does: the studio never falls back to a weak one. */
 export async function llm(messages, { max = 4000, temperature = 0.8, prefer = WRITE_PREF, env = process.env, fetchImpl = fetch } = {}) {
   const tried = [];
   if (env.GROQ_API_KEY) {
     const auth = { authorization: 'Bearer ' + env.GROQ_API_KEY, 'content-type': 'application/json' };
     if (!groqList) groqList = await fetchImpl('https://api.groq.com/openai/v1/models', { headers: auth }).then((r) => r.json()).then((j) => new Set((j.data || []).map((m) => m.id))).catch(() => null);
-    for (const model of groqList ? prefer.filter((m) => groqList.has(m)) : prefer) {
+    for (const model of groqModels(prefer, groqList)) {
+      let room = /gpt-oss|qwen3/.test(model) ? 3000 : 0;
       for (let t = 0; t < 4; t++) {
-        const body = { model, messages, temperature, max_completion_tokens: max, ...(/gpt-oss/.test(model) ? { reasoning_effort: temperature === 0 ? 'low' : 'medium', include_reasoning: false } : {}) };
+        const body = { model, messages, temperature, max_completion_tokens: max + room, ...(/gpt-oss/.test(model) ? { reasoning_effort: temperature === 0 ? 'low' : 'medium', include_reasoning: false } : {}) };
         const r = await fetchImpl('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: auth, body: JSON.stringify(body), signal: AbortSignal.timeout(180000) }).catch((e) => ({ ok: false, status: String(e.name) }));
         if (r.status === 429) { await sleep(1000 * Math.min(60, Number(r.headers.get('retry-after')) || 20)); continue; }
         const j = r.json ? await r.json().catch(() => ({})) : {};
         const text = clean(j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content);
         if (r.ok && text) return { text, via: 'Groq ' + model };
+        if (r.ok && room && room < 12000) { room *= 2; continue; } // the thinking used up the room: give it more
         tried.push('Groq ' + model + ' ' + r.status); break;
       }
     }

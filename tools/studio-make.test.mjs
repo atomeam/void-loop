@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { llm, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
+import { llm, groqModels, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
 import { JOURNAL, OLD34, PAGE } from './show-judge.mjs';
 const res = (status, body, headers = {}) => ({ ok: status < 400, status, headers: { get: (k) => headers[k] }, json: async () => body });
 test('the writer reads only the source, asks for real numbers and a call-back, and never a visitor', () => {
@@ -24,6 +24,14 @@ test('Groq first; a busy minute waits and asks again; no key at all fails closed
   const got = await llm([{ role: 'user', content: 'x' }], { env: { GROQ_API_KEY: 'k' }, fetchImpl: f, prefer: ['openai/gpt-oss-120b'] });
   assert.equal(got.text, 'hi'); assert.equal(got.via, 'Groq openai/gpt-oss-120b'); assert.equal(calls, 2);
   await assert.rejects(llm([{ role: 'user', content: 'x' }], { env: {}, fetchImpl: f }), /no strong model answered/);
+});
+test('a retired model is skipped for one Groq still serves; thinking that eats the room gets more room, not a fail', async () => {
+  assert.deepEqual(groqModels(['gone/model', 'openai/gpt-oss-120b'], new Set(['openai/gpt-oss-120b', 'qwen/qwen3-32b', 'llama-guard-4', 'whisper-large-v3'])), ['openai/gpt-oss-120b', 'qwen/qwen3-32b']);
+  assert.deepEqual(groqModels(['a'], null), ['a']);
+  const rooms = [];
+  const f = async (url, opt) => { if (/models$/.test(url)) return res(200, { data: [{ id: 'openai/gpt-oss-120b' }] }); rooms.push(JSON.parse(opt.body).max_completion_tokens); return res(200, { choices: [{ message: { content: rooms.length === 1 ? '' : '3' }, finish_reason: rooms.length === 1 ? 'length' : 'stop' }] }); };
+  const got = await llm([{ role: 'user', content: 'x' }], { max: 400, temperature: 0, env: { GROQ_API_KEY: 'k' }, fetchImpl: f, prefer: ['openai/gpt-oss-120b'] });
+  assert.equal(got.text, '3'); assert.equal(rooms.length, 2); assert.ok(rooms[1] > rooms[0] && rooms[0] > 400);
 });
 const groqSaying = (say) => async (url, opt) => url.endsWith('/models') ? res(200, { data: [{ id: 'openai/gpt-oss-120b' }] }) : res(200, { choices: [{ message: { content: say(JSON.parse(opt.body).messages[0].content) } }] });
 const show = { lines: [{ who: 'Critic', text: 'Would you drink from a well?' }, { who: 'Verse', text: 'Yes.' }] };
