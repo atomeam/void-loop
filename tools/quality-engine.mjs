@@ -149,25 +149,30 @@ export async function settle(browser, rec, { env = process.env, undo = true } = 
 }
 
 /** the next fix, applied in the tree: the weakest surface, the fixes that apply, the pages like it that take the same fix */
-export function startNext(rec, details, { max = 3 } = {}) {
+export function startNext(rec, details, { max = 3, tries = 8, dir = root } = {}) {
+  const html = (r) => { const f = fileOf(dir, r.path); return f ? fs.readFileSync(f, 'utf8') : ''; };
   const rows = rowsOf(rec).filter((r) => r.path && !HANDS_OFF.test(r.id));
-  const tried = rec.tried || {};
-  let pool = rows.filter((r) => !tried[r.id] || Date.now() - tried[r.id] > 6 * 3600e3);
-  const weakest = pickWeakest(pool.map((r) => ({ ...r, triedAt: 0 })), { gaps: gapsNow() });
-  if (!weakest) return null;
-  const html = (r) => { const f = fileOf(root, r.path); return f ? fs.readFileSync(f, 'utf8') : ''; };
-  const cand = candidates(weakest, html(weakest), weakest.path, details[weakest.id], rec.improvers, rankImprovers);
-  if (!cand.length) { rec.tried = { ...tried, [weakest.id]: Date.now() }; return { skipped: weakest.id }; }
-  const id = cand[0], I = IMPROVERS[id], targets = [];
-  const family = [weakest, ...pool.filter((r) => r.id !== weakest.id && r.score.criteria[I.criterion] < PINNACLE && I.applies(r, html(r), r.path, details[r.id])).sort((a, b) => a.score.total - b.score.total)];
-  for (const r of family) {
-    if (targets.length >= max) break;
-    const d = details[r.id] || (r.id === weakest.id ? details[weakest.id] : null);
-    if (I.criterion === 'layout' && r !== weakest) continue; // the design fix is measured per page
-    const hit = applyTo(root, r.path, id, d); if (hit) targets.push({ id: r.id, file: hit.file, before: r.score });
+  const tried = rec.tried || {}, skipped = [];
+  // a surface with no file in this tree (a dead route, or a page the server builds) cannot be fixed here: it is skipped, not stopped on
+  let pool = rows.filter((r) => (!tried[r.id] || Date.now() - tried[r.id] > 6 * 3600e3) && fileOf(dir, r.path));
+  for (let n = 0; n < tries; n++) {
+    const weakest = pickWeakest(pool.map((r) => ({ ...r, triedAt: 0 })), { gaps: gapsNow() });
+    if (!weakest) break;
+    const cand = candidates(weakest, html(weakest), weakest.path, details[weakest.id], rec.improvers, rankImprovers);
+    const pass = () => { rec.tried = { ...(rec.tried || {}), [weakest.id]: Date.now() }; pool = pool.filter((r) => r.id !== weakest.id); skipped.push(weakest.id); };
+    if (!cand.length) { pass(); continue; }
+    const id = cand[0], I = IMPROVERS[id], targets = [];
+    const family = [weakest, ...pool.filter((r) => r.id !== weakest.id && r.score.criteria[I.criterion] < PINNACLE && I.applies(r, html(r), r.path, details[r.id])).sort((x, y) => x.score.total - y.score.total)];
+    for (const r of family) {
+      if (targets.length >= max) break;
+      const d = details[r.id] || (r.id === weakest.id ? details[weakest.id] : null);
+      if (I.criterion === 'layout' && r !== weakest) continue; // the design fix is measured per page
+      const hit = applyTo(dir, r.path, id, d); if (hit) targets.push({ id: r.id, file: hit.file, before: r.score });
+    }
+    if (!targets.length) { pass(); continue; }
+    return { id, what: I.what, signature: I.signature, targets };
   }
-  if (!targets.length) return null;
-  return { id, what: I.what, signature: I.signature, targets };
+  return skipped.length ? { skipped: skipped[0], skippedAll: skipped } : null;
 }
 
 const tally = (rec) => Object.entries(rec.improvers).map(([improver, s]) => ({ improver: IMPROVERS[improver] ? IMPROVERS[improver].what.split(' (')[0] : improver, gain: s.n ? s.gain / s.n : 0, n: s.n }));
