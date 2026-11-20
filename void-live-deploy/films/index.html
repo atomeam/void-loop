@@ -95,6 +95,31 @@
   <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
        the films. A sign-in this browser already holds (the owner's, a member's from Verse) still brings the owner's YouTube steps
        and the review box, without asking. -->
+  <section id="maker" aria-labelledby="mkH">
+    <style>
+      #maker { border: 1px solid #2c2938; border-radius: 16px; padding: 16px; margin: 14px 0 22px; background: #14121c; }
+      #maker h2 { margin: 0 0 4px; font-size: 20px; } #maker p { margin: 4px 0; }
+      #maker textarea, #maker select { font: inherit; font-size: 16px; color: inherit; background: #0b0a10; border: 1px solid #2c2938; border-radius: 10px; padding: 8px 10px; box-sizing: border-box; }
+      #maker textarea { width: 100%; min-height: 70px; resize: vertical; }
+      #maker .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+      #maker .go, #maker #mkShare { font: inherit; font-weight: 600; border: 0; border-radius: 999px; padding: 0 22px; min-height: 48px; background: #a58bff; color: #15131c; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+      #maker .go:disabled { opacity: .55; } #maker .note { font-size: 14px; color: #aaa7ba; min-height: 1.4em; }
+      #maker video, #maker canvas { width: min(100%, 320px); aspect-ratio: 9/16; border-radius: 14px; display: block; margin: 12px auto; background: #000; }
+    </style>
+    <h2 id="mkH">Make a video</h2>
+    <p class="note">Type a topic or paste your own script. You get a vertical short with real photos, a voice, music and captions, made on your device. Free.</p>
+    <label for="mkText" class="note">A topic (we read its Wikipedia article) or your own script</label>
+    <textarea id="mkText" maxlength="2000" placeholder="the Wow! signal"></textarea>
+    <div class="row"><label for="mkVoice" class="note">Voice</label><select id="mkVoice"><option value="af_heart">Heart (warm)</option><option value="am_michael">Michael (calm)</option><option value="bf_emma">Emma (British)</option><option value="am_fenrir">Fenrir (deep)</option></select>
+      <button type="button" class="go" id="mkGo">Make the video</button></div>
+    <p class="note" id="mkNote" role="status" aria-live="polite">A video takes a minute or two; keep this tab open.</p>
+    <canvas id="mkCanvas" hidden></canvas>
+    <div id="mkOut" hidden>
+      <video id="mkVideo" controls playsinline></video>
+      <div class="row" style="justify-content:center"><a class="go" id="mkDl" href="#" download>Download</a><button type="button" id="mkShare" hidden>Share</button></div>
+      <p class="note" id="mkCredits"></p>
+    </div>
+  </section>
   <div id="watch"></div>
   <p id="status">Loading the films…</p>
   <div id="films"></div>
@@ -287,6 +312,7 @@
   load();
 })();
 </script>
+<script type="module" src="/video/maker.js"></script>
 <script type="module" src="/verse-shell.js"></script>
 </body>
 </html>

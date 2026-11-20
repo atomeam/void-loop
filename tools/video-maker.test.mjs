@@ -50,3 +50,11 @@ test('the page: the maker first, a clean end card, no false claim, the voice off
   assert.match(maker, /'Verse'/); assert.match(maker, /'a-to-mind\.com'/);
   assert.match(maker, /new Worker\('\/video\/voice-worker\.js'/);
 });
+
+test('the maker is on the Videos page too, which strangers can open (the other full pages are behind UniVerse)', () => {
+  const films = readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
+  assert.ok(films.indexOf('id="maker"') < films.indexOf('id="films"'));
+  for (const id of ['mkText', 'mkVoice', 'mkGo', 'mkNote', 'mkCanvas', 'mkOut', 'mkVideo', 'mkDl', 'mkShare', 'mkCredits']) assert.match(films, new RegExp('id="' + id + '"'));
+  assert.match(films, /<script type="module" src="\/video\/maker\.js"><\/script>/);
+  assert.doesNotMatch(films, /make any video|any video free/i);
+});
