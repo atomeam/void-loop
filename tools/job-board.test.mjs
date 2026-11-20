@@ -88,7 +88,7 @@ test('the snapshot keeps a source\'s old jobs when it does not answer, and is sc
 });
 test('the pages: a row for the hub and each lane site, and the asks that reach them', () => {
   assert.equal(JOB_SITES[0].path, '/jobs/'); for (const r of JOB_SITES) { assert.ok(r.de && r.de.h1 && r.de.intro, r.path + ' has German'); assert.ok(fs.existsSync(new URL('../void-live-deploy' + r.path + 'index.html', import.meta.url)), r.path); }
-  assert.equal(jobAskOf('job search'), '/jobs/'); assert.equal(jobAskOf('job alerts'), '/jobs/alerts/'); assert.equal(jobAskOf('jobs in germany'), '/jobs/europe/'); assert.equal(jobAskOf('remote companies hiring'), '/jobs/companies/'); assert.equal(jobAskOf('good job'), ''); assert.equal(jobAskOf('steve jobs'), '');
+  assert.equal(jobAskOf('job search'), '/jobs/'); assert.equal(jobAskOf('job alerts'), '/jobs/?mode=alerts'); assert.equal(jobAskOf('jobs in germany'), '/jobs/?region=europe'); assert.equal(jobAskOf('remote companies hiring'), '/jobs/?mode=companies'); assert.equal(jobAskOf('good job'), ''); assert.equal(jobAskOf('steve jobs'), '');
 });
 test('every English string of the screen has its German', () => {
   const src = fs.readFileSync(new URL('../void-live-deploy/lib/jobs-ui.js', import.meta.url), 'utf8'), missing = [];

@@ -38,7 +38,7 @@ export const CALCULATOR_SITES = Object.freeze([
     links: [] },
 ]);
 
-export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...JOB_SITES, ...SELF_SITES, ...CALCULATOR_SITES]);
+export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...JOB_SITES, ...SELF_SITES, ...CALCULATOR_SITES].filter((p) => p && p.path && !/[?#]/.test(p.path)));
 
 // ---- the asks that reach these pages (skills/pdf-tools.js, skills/kanban-board.js and the ask bar in lib/toolkit.js read them) ----
 const T = String.raw`(?:pdfs?|\.pdf)`, THE = String.raw`(?:(?:a|an|my|the|this|these|some|two|several|multiple|a few)\s+)*`;
