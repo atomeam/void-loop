@@ -50,7 +50,7 @@ export async function onRequestGet({ request, env }) {
   return Response.json(will, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   if (!(await ok(request, env))) return new Response('no', { status: 401 });
   let b = {}; try { b = JSON.parse(await request.text()); } catch (_) {}
   if (+b.schema !== WILL_SCHEMA) return new Response('out of date writer: update the checkout (tools/will.py sends schema ' + WILL_SCHEMA + ')', { status: 409 });
@@ -152,5 +152,8 @@ export async function onRequestPost({ request, env }) {
     const stepped = selfTick(prev ? JSON.parse(prev) : blank(at), { better: betterPair(better), exam, will: { open: will.wants.length }, goals: will.wants.map((w) => w.i_want || w.title) }, at);
     await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('self-model', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(stepped.self)).run();
   } catch (_) { /* the will is already saved */ }
+  // the hourly will run also wakes the brain's sleep (functions/api/brain.js readBrain sleeps when the last note is 20+ hours old), so a
+  // note is written every night even when nobody opens /brain/; a failed sleep never touches this answer
+  if (waitUntil) waitUntil(import('./brain.js').then((m) => m.readBrain(request, env)).catch(() => null));
   return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}), ...(chosenWant.overCap ? { overCap: chosenWant.overCap } : {}) });
 }

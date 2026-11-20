@@ -10,6 +10,7 @@ import { onRequestGet as willGet } from './will.js';
 import { onRequestGet as selfcheckGet } from './selfcheck.js';
 import { KEY as UNBIDDEN } from '../../lib/unbidden.js';
 import { jsonOkCached } from '../../lib/http.js';
+import { sleepIfDue, due, LOG as SLEEP_LOG } from '../../lib/brain-sleep.js';
 
 export const TTL = 60;
 const parse = (v) => { try { return v ? JSON.parse(v) : null; } catch (_) { return null; } };
@@ -32,6 +33,10 @@ export async function readBrain(request, env, now = Date.now()) {
     env.DB ? safe(async () => (await env.DB.prepare(ROUTES_SQL).bind(new Date(now - 864e5).toISOString()).all()).results || []) : null,
   ]);
   const routes = Array.isArray(routeRows) ? routeRows.reduce((a, r) => { a.today += r.c; a[r.route] = (a[r.route] || 0) + r.c; a.close += r.close || 0; return a; }, { today: 0, close: 0 }) : null;
+  // sleep (lib/brain-sleep.js): once a night the last day becomes one note and the lessons are consolidated; a failed sleep never breaks the read
+  let slept = sleep;
+  if (env.DB && due(sleep, now)) slept = (await safe(async () => sleepIfDue(env, { now, crew, routes, exam, lessons: Array.isArray(lessons) ? lessons : [], last: sleep, log: await kv(SLEEP_LOG),
+    voice: Array.isArray(voice) ? voice : [], unbidden: unb && Array.isArray(unb.lines) ? unb.lines : [] }))) || sleep;
   const L = Array.isArray(knowledge) ? knowledge : [];
   const newest = L.slice().sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')))[0] || null;
   const skillCount = Array.isArray(skills) ? skills.length : skills && typeof skills === 'object' ? (Array.isArray(skills.skills) ? skills.skills.length : Object.keys(skills).length) : null;
@@ -41,7 +46,7 @@ export async function readBrain(request, env, now = Date.now()) {
     knowledge: L.length ? { count: L.length, newest } : null, skills: skillCount != null ? { count: skillCount } : null,
     voice: Array.isArray(voice) ? voice.slice(0, 6).map((v) => ({ at: v.at, kind: v.kind, shipped: v.shipped, thoughts: v.thoughts, question: v.question })) : [],
     unbidden: unb && Array.isArray(unb.lines) ? unb.lines.slice(-6).map((l) => ({ at: l.at, say: l.say })) : [],
-    lessons: Array.isArray(lessons) ? lessons.slice(0, 20) : [], sleep, chainRow: chainRow && !chainRow.private ? chainRow : chainRow ? { ...chainRow, note: '' } : null,
+    lessons: Array.isArray(lessons) ? lessons.slice(0, 20) : [], sleep: slept, chainRow: chainRow && !chainRow.private ? chainRow : chainRow ? { ...chainRow, note: '' } : null,
     prs: null,
   });
 }
