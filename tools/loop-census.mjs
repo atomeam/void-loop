@@ -44,7 +44,8 @@ export function rowOf({ file, yaml, runs = [], now, unread = false }) {
   let streak = 0; for (const r of done) { if (r.conclusion === 'success' || r.conclusion === 'neutral') break; streak++; }
   const full = runs.length >= 30 && day.length === runs.length; // every run read is from today: it ran at least this often
   const prOnly = !runs.length && /^\s*pull_request(_target)?:/m.test(yaml);
-  const status = unread ? 'unread' : prOnly ? 'on pull requests' : !runs.length ? 'never ran' : streak >= 3 ? 'failing' : lastDone && lastDone.conclusion === 'failure' ? 'last run failed'
+  const handOnly = !runs.length && !crons.length && /^\s*workflow_dispatch:/m.test(yaml) && !/^\s*(push|pull_request(_target)?|workflow_run|schedule|issues|issue_comment|release):/m.test(yaml); // started only by a person or another loop
+  const status = unread ? 'unread' : prOnly ? 'on pull requests' : handOnly ? 'by hand only' : !runs.length ? 'never ran' : streak >= 3 ? 'failing' : lastDone && lastDone.conclusion === 'failure' ? 'last run failed'
     : now - Date.parse(last.created_at) > 30 * 24 * H ? 'idle' : crons.length && expected >= 2 && !full && day.length < expected / 2 ? 'behind' : 'working';
   return {
     wf: file, name: nameOf(yaml, file), what: whatOf(yaml), crons, onClock: CATCHUP.some((c) => c.wf === file),
@@ -54,13 +55,13 @@ export function rowOf({ file, yaml, runs = [], now, unread = false }) {
     minutesPerRun: Math.round(avg * 10) / 10, minutesPerDay: Math.round(avg * day.length), costCentsPerDay: 0, status,
   };
 }
-const ORDER = { unread: 7, failing: 0, 'last run failed': 1, behind: 2, 'never ran': 3, working: 4, 'on pull requests': 5, idle: 6 };
+const ORDER = { unread: 7, failing: 0, 'last run failed': 1, behind: 2, 'never ran': 3, working: 4, 'on pull requests': 5, 'by hand only': 6, idle: 6 };
 /** the census: rows sorted problems first, and totals. Pure. */
 export function census(rows, now) {
   const sorted = [...rows].sort((a, b) => (ORDER[a.status] ?? 9) - (ORDER[b.status] ?? 9) || b.ran24 - a.ran24);
   const count = (s) => rows.filter((r) => r.status === s).length;
   return {
-    at: new Date(now).toISOString(), loops: rows.length, working: count('working'), failing: count('failing') + count('last run failed'), behind: count('behind'), idle: count('idle') + count('never ran'),
+    at: new Date(now).toISOString(), loops: rows.length, working: count('working'), failing: count('failing') + count('last run failed'), behind: count('behind'), idle: count('idle') + count('never ran') + count('by hand only'),
     runs24: rows.reduce((n, r) => n + r.ran24, 0), minutes24: rows.reduce((n, r) => n + r.minutesPerDay, 0), costCents24: rows.reduce((n, r) => n + r.costCentsPerDay, 0),
     note: 'GitHub Actions on a public repository: standard runner minutes are not billed, so each run costs $0. Models are the free ones first; a paid call is logged by the treasury.',
     rows: sorted,
@@ -79,6 +80,8 @@ export async function readCensus({ repo = process.env.GITHUB_REPOSITORY || 'atom
       const i = next++, f = files[i], yaml = readFileSync(resolve(dir, f), 'utf8');
       let runs = [], unread = false;
       try { runs = JSON.parse(await gh('api', `repos/${repo}/actions/workflows/${f}/runs?branch=main&per_page=30`)).workflow_runs || []; } catch (_) { unread = true; } // void-review: ok (one read per workflow, 6 at once, every 3 hours: GitHub has no one call for every workflow's runs)
+      // a loop that runs on other branches (helper-pr.yml on helper/*): no run on main is not "never ran"
+      if (!unread && !runs.length) { try { runs = JSON.parse(await gh('api', `repos/${repo}/actions/workflows/${f}/runs?per_page=30`)).workflow_runs || []; } catch (_) { /* main's empty answer stands */ } } // void-review: ok (only for a workflow with no run on main)
       rows[i] = rowOf({ file: f, yaml, runs, now, unread });
     }
   }));
