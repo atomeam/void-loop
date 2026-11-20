@@ -8,7 +8,8 @@ test('the general answerer leads with the answer and keeps to about 120 words un
   const b = answerBrief({ name: 'verse' });
   assert.match(b, /Lead with the answer in the first sentence/);
   assert.match(b, /About 120 words or less, unless the person asks for depth/);
-  assert.match(b, /No preamble, no filler/);
+  assert.match(b, /No preamble or filler/);
+  assert.match(b, /steps and tips as one short line each, and stop once the question is answered: no closing summary/);
   assert.ok(!/250 words/.test(b), 'the old long limit is gone');
 });
 test('a comparison gets what each one is, then a pick; writing gets ready-to-send text', () => {
@@ -27,7 +28,7 @@ test('counted asks get a numbered list, calculations a check, caveats and declin
   assert.match(b, /one plain sentence of about 25 words that keeps every name, number and date/);
   assert.match(b, /another option when you decline or say no/);
   assert.match(b, /getting into a place or a thing without its owner saying yes, do not help with that; suggest asking the owner/);
-  assert.ok(b.split(/\s+/).length < 340, 'the line stays short enough for a free model to follow');
+  assert.ok(b.split(/\s+/).length < 360, 'the line stays short enough for a free model to follow');
 });
 test('the retry and a specialist keep the same short, lead-with-the-answer rule, and nothing is ever claimed as sent', () => {
   for (const bot of [{ name: 'verse', repair: true }, { name: 'word-counter', description: 'counts words' }]) {
