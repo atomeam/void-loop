@@ -138,26 +138,35 @@ export async function askLive(base, ask) {
   return { text: '', status: 'timed out', tier: '' };
 }
 
+/** put the whole set to the live agent, four at a time: the answers in the set's order. */
+export async function examine(base, set, ask = askLive, say = () => {}) {
+  const answers = new Array(set.length); let next = 0;
+  await Promise.all(Array.from({ length: 4 }, async () => { for (;;) { const i = next++; if (i >= set.length) return; answers[i] = await ask(base, set[i].ask).catch((e) => ({ text: '', status: 'error: ' + e.message, tier: '' })); say((i + 1) + '/' + set.length + ' ' + set[i].id + ': ' + answers[i].status); } }));
+  return answers;
+}
+/** a run's whole effect, pure: the answer file with the run logged, the Tower file with the three marks and the build-list jobs for every question with a gap. */
+export function applyRun({ file, universe, answers, base, at, mark, keep = 60 }) {
+  const rows = file.set.map((q, i) => scoreOne(q, answers[i].text, answers[i].status)), sum = summarize(rows), gaps = gapsOf(rows), today = String(at).slice(0, 10), jobs = jobsOf(file.set, rows, today);
+  const last = { at, base, ...sum, rows: rows.map((r, i) => ({ ...r, answer: String(answers[i].text || '').slice(0, 500), tier: answers[i].tier || '', bot: answers[i].bot || '' })) };
+  const nextFile = { ...file, last, runs: (file.runs || []).concat({ at, ...sum, gaps: gaps.length }).slice(-keep) };
+  let u = universe;
+  for (const [k, v] of Object.entries(marksOf(sum))) u = mark(u, TARGET, k, v, { judge: 'assistant-exam', at: today });
+  const bg = (u.background || []).filter((b) => !(b.id === TARGET && String(b.aspect).startsWith('q:'))).concat(jobs);
+  return { file: nextFile, universe: { ...u, background: bg.slice(-600) }, rows, sum, gaps, jobs };
+}
+/** how many of the answers were refused outright (a daily cap, an agent that is off): a run with many is not a score. */
+export const refusedCount = (answers) => answers.filter((a) => /^(refused|error|timed out)/.test(String((a && a.status) || ''))).length;
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), file = load();
   if (args.includes('--check')) {
     const p = problemsOf(file); console.log(p.length ? p.join('\n') : 'ok: ' + file.set.length + ' questions, every reference scores 100'); process.exit(p.length ? 1 : 0);
   }
   if (args.includes('--live')) {
-    const base = (args.find((a) => /^https?:/.test(a)) || 'https://a-to-mind.com').replace(/\/$/, ''), today = new Date().toISOString().slice(0, 10);
-    const answers = new Array(file.set.length); let next = 0;
-    await Promise.all(Array.from({ length: 4 }, async () => { for (;;) { const i = next++; if (i >= file.set.length) return; answers[i] = await askLive(base, file.set[i].ask).catch((e) => ({ text: '', status: 'error: ' + e.message, tier: '' })); console.log((i + 1) + '/' + file.set.length + ' ' + file.set[i].id + ': ' + answers[i].status); } }));
-    const rows = file.set.map((q, i) => scoreOne(q, answers[i].text, answers[i].status)), sum = summarize(rows), gaps = gapsOf(rows);
-    console.log(JSON.stringify(sum)); for (const r of rows) console.log(r.id.padEnd(24) + ' right ' + String(r.right).padStart(3) + ' useful ' + String(r.useful).padStart(3) + ' clear ' + String(r.clear).padStart(3) + (r.status !== 'done' ? '  [' + r.status + ']' : ''));
-    if (args.includes('--write')) {
-      const last = { at: new Date().toISOString(), base, ...sum, rows: rows.map((r, i) => ({ ...r, answer: answers[i].text.slice(0, 500), tier: answers[i].tier, bot: answers[i].bot || '' })) };
-      file.last = last; file.runs = (file.runs || []).concat({ at: last.at, ...sum, gaps: gaps.length }).slice(-60);
-      fs.writeFileSync(FILE, serialize(file));
-      const U = await import('./universe.mjs'); let u = U.load();
-      for (const [k, v] of Object.entries(marksOf(sum))) u = U.markOf(u, TARGET, k, v, { judge: 'assistant-exam' });
-      const bg = (u.background || []).filter((b) => !(b.id === TARGET && String(b.aspect).startsWith('q:'))).concat(jobsOf(file.set, rows, today));
-      u = { ...u, background: bg.slice(-600) }; U.save(u);
-      console.log('written: ' + gaps.length + ' gaps, ' + jobsOf(file.set, rows, today).length + ' questions queued');
-    }
+    const base = (args.find((a) => /^https?:/.test(a)) || 'https://a-to-mind.com').replace(/\/$/, '');
+    const answers = await examine(base, file.set, askLive, console.log), U = await import('./universe.mjs');
+    const out = applyRun({ file, universe: U.load(), answers, base, at: new Date().toISOString(), mark: U.markOf });
+    console.log(JSON.stringify(out.sum)); for (const r of out.rows) console.log(r.id.padEnd(24) + ' right ' + String(r.right).padStart(3) + ' useful ' + String(r.useful).padStart(3) + ' clear ' + String(r.clear).padStart(3) + (r.status !== 'done' ? '  [' + r.status + ']' : ''));
+    if (args.includes('--write')) { fs.writeFileSync(FILE, serialize(out.file)); U.save(out.universe); console.log('written: ' + out.gaps.length + ' gaps, ' + out.jobs.length + ' questions queued'); }
   }
 }
