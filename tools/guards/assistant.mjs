@@ -54,7 +54,7 @@ async function runHeld(ctx, { ask, judgeFn, check }, universe) {
   return { line: heldLineOf(out) + queued, ok: true, universe: u };
 }
 
-export async function run(ctx, { ask = askLive, check = (a) => refusedCount(a), judgeFn, heldout = true, fixed = new Date(ctx.now).getUTCHours() === 13 } = {}) {
+export async function run(ctx, { ask = (b, t) => askLive(b, t, ctx.env || {}), check = (a) => refusedCount(a), judgeFn, heldout = true, fixed = new Date(ctx.now).getUTCHours() === 13 } = {}) {
   const parts = []; let universe = loadUniverse(join(ctx.root, 'void-live-deploy/tower.universe.json'));
   if (fixed) { const r = await runFixed(ctx, { ask, check }); parts.push(r); if (r.universe) universe = r.universe; }
   if (heldout) { const r = await runHeld(ctx, { ask, judgeFn, check }, universe).catch((e) => ({ line: 'Held-out exam could not run (' + String((e && e.message) || e).slice(0, 80) + ').', ok: false })); parts.push(r); if (r.universe) universe = r.universe; }

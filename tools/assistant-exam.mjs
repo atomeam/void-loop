@@ -126,8 +126,9 @@ export function problemsOf(file) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const getJson = async (url, opt) => { for (let i = 1; ; i++) { try { const res = await fetch(url, opt); if (!res.ok && res.status >= 500) throw new Error('HTTP ' + res.status); return await res.json(); } catch (e) { if (i >= 4) throw e; await sleep(1500 * i); } } }; // void-review: ok (a 4xx from the agent is JSON with ok:false, read as the answer; a 5xx is tried again)
 /** one question put to the live agent on its own thread: { text, status, tier }. */
-export async function askLive(base, ask) {
-  const h = { 'content-type': 'application/json', origin: base }, thread = 'exam' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+export async function askLive(base, ask, env = process.env) {
+  // the house lane signs with the owner's key so a test run takes nothing from a visitor's free tasks (functions/api/agent.js, lib/agent-cap.js); the key is sent to a-to-mind.com and nowhere else
+  const h = { 'content-type': 'application/json', origin: base, ...(env && env.VOID_OWNER_TOKEN && /^([a-z0-9-]+\.)*a-to-mind\.com$/.test(new URL(base).hostname) ? { authorization: 'Bearer ' + env.VOID_OWNER_TOKEN } : {}) }, thread = 'exam' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   const r = await getJson(base + '/api/agent', { method: 'POST', headers: h, body: JSON.stringify({ thread, ask }) });
   if (!r || !r.ok) return { text: '', status: 'refused: ' + JSON.stringify(r || {}).slice(0, 120), tier: '' };
   for (let i = 0; i < 60; i++) {

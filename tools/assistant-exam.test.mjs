@@ -41,9 +41,9 @@ test('summary and gaps: the means, the worst gap first, one job per question wit
 });
 test('the target is on the Tower as an answers target, beaten only when every check beats the bar (the three answer marks plus graphics and 60 fps, like every kind), and its names stay owner-only', () => {
   const seed = SEEDS.find((s) => s.id === TARGET); assert.ok(seed); assert.equal(seed.kind, 'answers'); assert.equal(seed.bar, 94);
-  assert.deepEqual(readChecks(seed).map((c) => c.id), ['graphics', 'right', 'useful', 'clear', 'performance']);
+  assert.deepEqual(readChecks(seed).map((c) => c.id), ['graphics', 'right', 'useful', 'clear', 'heldout', 'performance']);
   assert.ok(!beaten(seed));
-  assert.ok(beaten({ ...seed, marks: { graphics: { verse: 95 }, performance: { verse: 95 }, right: { verse: 95 }, useful: { verse: 95 }, clear: { verse: 95 } } }));
+  assert.ok(beaten({ ...seed, marks: { graphics: { verse: 95 }, performance: { verse: 95 }, right: { verse: 95 }, useful: { verse: 95 }, clear: { verse: 95 }, heldout: { verse: 95 } } }));
   assert.ok(!beaten({ ...seed, marks: { graphics: { verse: 95 }, performance: { verse: 95 }, right: { verse: 95 }, useful: { verse: 95 }, clear: { verse: 94 } } }));
   assert.equal(kindOf('answers').label, 'Assistant answers');
   assert.ok(protectedNames(SEEDS).includes("Atom's assistant"));

@@ -12,6 +12,7 @@ import { runGuards } from './verse-guards.mjs';
 const file = load();
 const mkRoot = () => { const root = fs.mkdtempSync(path.join(os.tmpdir(), 'exam-')); fs.mkdirSync(path.join(root, 'void-live-deploy'), { recursive: true });
   for (const f of ['tower.assistant.json', 'tower.universe.json', 'tower.heldout.json']) fs.copyFileSync(new URL('../void-live-deploy/' + f, import.meta.url), path.join(root, 'void-live-deploy', f));
+  const hf = path.join(root, 'void-live-deploy/tower.heldout.json'); fs.writeFileSync(hf, JSON.stringify({ ...JSON.parse(fs.readFileSync(hf, 'utf8')), seen: {}, runs: [], last: null, streak: 0 })); // the lane keeps the real file's streak and counts moving; a test starts from nothing
   const af = path.join(root, 'void-live-deploy/tower.assistant.json'); fs.writeFileSync(af, JSON.stringify({ ...JSON.parse(fs.readFileSync(af, 'utf8')), last: null, runs: [] })); return root; };
 const ctxOf = (root, saved, jobs) => ({ root, site: 'https://x.test', now: Date.UTC(2026, 10, 21, 13, 13), save: (f, t) => { saved[path.basename(f)] = t; }, queueJob: async (a, t) => { jobs.push({ a, t }); return { queued: true }; } });
 // an answer per question: the reference for the ones in `good`, a refusal for the rest

@@ -52,6 +52,7 @@
 <main>
 <h1>Verse, your envoy</h1>
 <form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
+<p id="capnote" role="status" hidden style="margin:.6rem 0;padding:.6rem .8rem;border-left:3px solid #f5c542;background:rgba(245,197,66,.08);border-radius:6px;line-height:1.5"></p>
 <p class="lead">Send a task. Verse hands it to one of its own bots and keeps working while you're away. It can also write first: a job that finished in the background, a check you asked for, or a next step from what you already asked. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
 <div class="card brief" id="brief">Loading your brief…</div>
 <p class="soft" id="away">Close this tab if you want. When you come back, the inbox lists what finished or needs your yes, and a notification if you turned those on. While it stays open, the title counts what waits. <button type="button" id="notify" hidden>Tell me when it needs me</button><span id="notifyNote"></span></p>
@@ -110,8 +111,10 @@ import { statusesOf, tellOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
       $('tier').textContent = 'Model tiers: ' + j.tiers.map((t) => t.name + (t.month_cents ? ' ($' + (t.month_cents / 100).toFixed(2) + '/mo from earnings)' : ' (free)')).join(', ') + '.';
     } catch (_) {}
   }
-  const post = (b) => fetch('/api/agent', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ thread, ...b }) }).then((r) => r.json());
-  $('f').addEventListener('submit', async (e) => { e.preventDefault(); const ask = $('ask').value.trim(); if (!ask) return; $('ask').value = ''; const j = await post({ ask }); if (!j.ok) alert(j.say || 'try again'); load(); });
+  const post = (b) => fetch('/api/agent', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ thread, ...b }) }).then((r) => r.json()).catch(() => ({ ok: false, say: 'I could not reach Verse just now. Your task is still in the box; try again in a moment.' }));
+  // a refusal is never an alert and never loses the task: the words stay in the box and a kind note says why and what happens next (a capped day also offers UniVerse)
+  const note = (j) => { const n = $('capnote'); n.hidden = !j; if (!j) return; n.textContent = ''; n.append(j.say || 'Try again in a moment.'); if (j.offer && /^\/[a-z]/.test(j.offer.url || '')) { const a = document.createElement('a'); a.href = j.offer.url; a.textContent = ' ' + (j.offer.label || 'See UniVerse'); n.append(a); } };
+  $('f').addEventListener('submit', async (e) => { e.preventDefault(); const ask = $('ask').value.trim(); if (!ask) return; const j = await post({ ask }); if (j.ok) { $('ask').value = ''; note(null); } else note(j); load(); });
   $('thread').addEventListener('click', async (e) => { const b = e.target.closest('button[data-id]'); if (!b) return; await post({ id: b.dataset.id, decision: b.dataset.d }); load(); });
   $('inbox').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openTask(b.dataset.open); });
   // every 2 s while you watch; hidden, every 10 s while a task is working, and every 60 s when a past ask is a check Verse might write about
