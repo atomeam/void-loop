@@ -66,7 +66,7 @@ export async function run(ctx) {
     if (r.status === 200) { asked++; const h = studiedIn(r.text); if (h.length) seen.set('/api/answer ask "' + ask + '"', h); }
   }
   const leaks = [...seen].filter(([, h]) => h.length);
-  const read1 = 'Read ' + seen.size + ' files and ' + asked + ' answers signed out, against ' + studiedHosts().length + ' sites.';
+  const read1 = 'Read the public pages, data files and answers signed out.'; // no counts: a figure that changes every run would ship a pull request every run
   if (!leaks.length) return { last: read1 + ' None names a site the Tower measures against.', ok: true, note: 'No model call. Plain page reads.' };
   const extraFile = join(root, 'void-live-deploy/lib/scrub-extra.json');
   let extra = { files: [], at: {} }; try { extra = JSON.parse(ctx.read(extraFile)); } catch { /* none yet */ }
