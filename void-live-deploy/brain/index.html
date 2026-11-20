@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen"><link rel="stylesheet" href="/brain/live.css">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -178,6 +178,7 @@
 <link rel="modulepreload" href="/lib/member-keep.js">
 <link rel="modulepreload" href="/brain/knows.js">
 <link rel="modulepreload" href="/lib/brain-knows.js">
+<link rel="modulepreload" href="/brain/live.js">
 <link rel="modulepreload" href="/team/wants.js">
 <link rel="modulepreload" href="/lib/team.js">
 <link rel="modulepreload" href="/lib/job-guide.js">
@@ -199,7 +200,14 @@
   </div>
 </section>
 <section id="knows" hidden aria-label="What Verse knows">
-  <h1>What Verse knows</h1>
+  <section id="liveBrain" aria-labelledby="lbTitle">
+    <div class="lb-head"><h1 id="lbTitle">Verse's brain, live</h1><p class="lb-lede">Every part below is a real part of Verse. It lights up when that part really does something: a want chosen, a job done, a page checked, a lesson kept. Click a part to see what it holds right now.</p></div>
+    <div class="lb-body"><svg id="lbMap" viewBox="0 0 800 500" role="group" aria-label="The parts of Verse's brain and how they feed each other"></svg><aside id="lbSide" aria-live="polite"></aside></div>
+    <h2 class="lb-h">The newest real chain: what it sensed, wanted, did, and learned</h2><ol id="lbChain" class="lb-chain"></ol>
+    <h2 class="lb-h">Drives, with the number behind each</h2><ul id="lbDrives" class="lb-drives"></ul>
+    <p class="note" id="lbAt">Reading the live brain…</p>
+  </section>
+  <h2 class="k-h1">What Verse knows</h2>
   <p class="lede">Its wants right now, every skill and the page it powers, every tool page, every site it took on and what that taught it, the lessons it recalls when it proposes a fix, and what it did lately. Search it, or ask Verse.</p>
   <form id="kForm" role="search"><label class="vh" for="kFind">Search what Verse knows</label><input id="kFind" type="search" maxlength="120" autocomplete="off" placeholder="Search: pdf, baggage, convert, weather…"><a class="tb" id="kAsk" href="/">Ask Verse</a></form>
   <div id="kChips" role="toolbar" aria-label="Kinds"></div>
@@ -216,7 +224,8 @@
   <button type="button" class="tb" id="numBtn" aria-controls="live" aria-expanded="true">Hide numbers</button>
   <button type="button" class="tb" id="fs" aria-pressed="false">Fill the screen</button>
   <button type="button" class="tb" id="panelBtn" aria-controls="panel" aria-expanded="true">Hide panel</button>
-  <button type="button" class="tb" id="watchBtn" aria-pressed="false">Watch it think</button>
+  <a class="tb" id="liveBtn" href="/brain/?view=watch">Watch it think</a>
+  <button type="button" class="tb" id="watchBtn" aria-pressed="false" title="A model of a mind running in your browser. It is not Verse's own thinking.">Simulation</button>
   <a class="tb" id="exit" href="/">Leave</a>
 </header>
 <section id="live" aria-label="Live numbers from the brain" aria-live="off">
@@ -244,8 +253,9 @@
 </main>
 <script type="module">
   // the page is whole before this runs. Knows (what Verse knows, searchable) is the first view; the simulation, /brain/app.js,
-  // /brain/map.js and /brain/dreams.js, loads only on "Watch it think", ?view=watch or ?t= (brain/knows.js)
+  // /brain/map.js and /brain/dreams.js, loads only on "Simulation", ?view=sim or ?t= (brain/knows.js); the live brain is /brain/live.js
   import '/brain/knows.js';
+  import '/brain/live.js';
   import '/team/wants.js';
   import '/brain/unbidden.js';
 </script>

@@ -49,11 +49,11 @@ test('knows.json is current and every item has a kind, an id and a title', () =>
   assert.equal(lined.items.find((i) => i.id === 'drive-share').withLine, 'Built with the calculator and the unit converter.');
 });
 
-test('the page: Knows first, searchable, the simulation only on Watch, ?view=watch or ?t=', () => {
+test('the page: Knows first, searchable, the live brain first, the simulation only on Simulation, ?view=sim or ?t=', () => {
   const html = read('void-live-deploy/brain/index.html'), js = read('void-live-deploy/brain/knows.js');
   for (const id of ['knows', 'kFind', 'kChips', 'kList', 'kAsk', 'watchBtn']) assert.match(html, new RegExp('id="' + id + '"'), id);
   assert.doesNotMatch(html, /import '\/brain\/app\.js';/, 'the simulation is not a static import of the page');
-  assert.match(js, /params\.get\('view'\) === 'watch' \|\| params\.has\('t'\)/);
+  assert.match(js, /params\.get\('view'\) === 'sim' \|\| params\.has\('t'\)/);
   assert.match(js, /fetch\('\/brain\/knows\.json'/); assert.match(js, /fetch\('\/api\/will'\)/);
   assert.match(js, /withLine/); assert.match(js, /skills built with skills/);
   assert.match(html, /k-with/);

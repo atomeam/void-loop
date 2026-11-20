@@ -1,8 +1,9 @@
 // /brain/'s first view (owner, 2026-11-03: "make it into a more functional usable brain"): what Verse knows, searchable, light and 2D. The
 // wants it holds now (/api/will, live), every skill with what it does and the page it powers, every tool page, every site Versus took on and
 // what came of it, the lessons its model recalls when it proposes a fix, and what it did lately: brain/knows.json (tools/brain-knows.mjs).
-// The simulation (app.js, map.js, dreams.js: twenty-nine organs, a canvas and a map) loads only when asked for, with "Watch it think",
-// ?view=watch or ?t=words, so the first view costs one small module and one file instead of 50 modules and two animation loops.
+// Above it, the live brain (brain/live.js, GET /api/brain): every region a real part of Verse, lit by real events ("Watch it think", ?view=watch).
+// The simulation (app.js, map.js, dreams.js: a model of a mind, not Verse's own thinking) loads only when asked for, with "Simulation",
+// ?view=sim or ?t=words, so the first view costs two small modules instead of 50 modules and two animation loops.
 import { KINDS, LABEL, wantsOf, search, countsOf, hrefOf } from '/lib/brain-knows.js';
 
 const $ = (s) => document.querySelector(s);
@@ -17,8 +18,8 @@ if (!KINDS.some(([k]) => k === kind)) kind = 'all';
 const watch = () => {
   if (watching) return; watching = true;
   document.body.classList.remove('knows-on'); knows.hidden = true;
-  watchBtn.textContent = 'What it knows'; watchBtn.setAttribute('aria-pressed', 'true');
-  const u = new URL(location.href); if (!u.searchParams.has('t')) u.searchParams.set('view', 'watch'); u.searchParams.delete('find'); u.searchParams.delete('k'); history.replaceState(null, '', u);
+  watchBtn.textContent = 'Live brain'; watchBtn.setAttribute('aria-pressed', 'true');
+  const u = new URL(location.href); if (!u.searchParams.has('t')) u.searchParams.set('view', 'sim'); u.searchParams.delete('find'); u.searchParams.delete('k'); history.replaceState(null, '', u);
   import('/brain/app.js').then(() => import('/brain/map.js')).then(() => import('/brain/dreams.js')).then(() => { document.body.dataset.ready = '1'; }).catch((e) => { document.body.dataset.watchError = String(e && e.message || e).slice(0, 120); });
 };
 watchBtn.addEventListener('click', () => { if (watching) location.assign('/brain/'); else watch(); }); // back to Knows is a fresh page: the simulation's loops end with it
@@ -73,9 +74,10 @@ box.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { qu
 $('#kForm').addEventListener('submit', (e) => { e.preventDefault(); query = box.value.trim(); sync(); draw(); const first = list.querySelector('a.k-t'); if (first && search(items, query, kind).length === 1) location.assign(first.href); });
 more.addEventListener('click', () => { shown += PAGE; draw(); });
 
-if (params.get('view') === 'watch' || params.has('t')) watch();
+if (params.get('view') === 'sim' || params.has('t')) watch();
 else {
   document.body.classList.add('knows-on'); knows.hidden = false; draw();
+  if (params.get('view') === 'watch') document.getElementById('liveBrain')?.classList.add('lb-full');
   const file = fetch('/brain/knows.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const will = fetch('/api/will').then((r) => (r.ok ? r.json() : null)).catch(() => null);
   file.then((j) => {
