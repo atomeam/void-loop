@@ -47,6 +47,7 @@ import { quoteBody, batch } from './markets.js';
 import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
 import { kindOf as subjectKind } from '../../lib/card-kinds.js';
 import * as FP from '../../lib/free-pics.js';
+import { unsafeText, unsafeImage } from '../../lib/image-safety.js';
 import { edgeCache, edgeGate, buildId, edgeKeyUrl, edgeGet, edgePut, edgeTtl, marked, storable, HIT, MISS, BYPASS, REFRESH } from '../../lib/answer-edge.js';
 import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE, noteReading, setupFacts, noteFinish } from '../../lib/note-ask.js';
 import { telemetryOf } from '../../lib/telemetry.js';
@@ -102,6 +103,7 @@ async function picFor(env, lead) {
   try {
     const got = await Promise.race([FP.findPictures(lead.name, { kind, fromAnswer: true, max: 1, env, fetch: (u, o) => fetch(u, o), cap: (k, l) => dayCap(env, k, l), timeoutMs: 3000, deadlineMs: 3500 }), new Promise((r) => setTimeout(() => r([]), 3800))]);
     const p = got && got[0]; if (!p || !/^https:\/\//.test(p.thumb || p.url || '')) return null;
+    if (unsafeImage({ url: p.thumb || p.url, alt: p.alt || '', title: lead.name, desc: lead.desc, context: [String(lead.text || '').slice(0, 800)] })) return null;
     return { url: p.thumb || p.url, alt: String(p.alt || lead.name).slice(0, 140), credit: [{ t: 'Photo: ' }, p.credit.author ? (p.authorUrl ? { t: p.credit.author, href: p.authorUrl } : { t: p.credit.author }) : { t: 'author not stated' }, { t: ', ' }, { t: p.credit.licence, href: p.credit.licenceUrl }, { t: ', via ' }, { t: p.credit.source, href: p.credit.sourceUrl }], archive: true, source: p.source };
   } catch (_) { return null; }
 }
@@ -751,7 +753,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   } catch (_) {}
   // a real place, animal, event or work of art gets a real, licensed picture with its credit (lib/free-pics.js), searched by the fetched source's own title, never the visitor's words;
   // a fictional character or a person keeps Verse's own drawing or neutral plate. Bounded: one picture, a few seconds, and the answer never waits longer.
-  const pic = lead && lead.desc ? await picFor(env, lead) : null;
+  // lib/image-safety.js: an ask, a title or a text about nudity, the explicit body or minors in such a context gets no picture at all (fail closed)
+  const pic = lead && lead.desc && !unsafeText(ask, lead.name, lead.desc, String(lead.text || '').slice(0, 800), answer.slice(0, 800)) ? await picFor(env, lead) : null;
   const out = { answer, sources: linked(pub), at, route: route.kind, ...(route.kind === 'skill' && route.skill ? { skill: route.skill } : {}), ...(route.by === 'tie-break' ? { tie: 'clef' } : {}), source: sourceOf(model), ...nearOut, ...(pic ? { pic } : {}), ...(guess ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) };
   // the edge copy goes where the D1 row goes, and only for a free model's answer (a paid escalation is never served again for free, lib/answer-edge.js)
   if (edgeKeep && !masked && !self && !told && !before && !talk && storable(out, { paid: model !== MODEL && model !== ANSWER_FALLBACK })) edgeKeep(out, at);

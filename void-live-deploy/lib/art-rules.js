@@ -5,6 +5,7 @@
 // before a model is asked, so the card keeps Verse's own ink plate.
 import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
+import { unsafeText } from './image-safety.js';
 
 export const SUBJECT_RAW_MAX = 120, IMG_MAX = 1400000, IMG_MIN = 8000, ART_W = 1024, ART_H = 576; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
 export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon', poster: 'a poster', backdrop: 'a backdrop', weather: 'a place under its weather' };
@@ -42,6 +43,7 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
   if (isSecret(r)) return 'secret';
   if (/\d{6,}/.test(k.replace(/ /g, '')) || /[a-z0-9]{28,}/i.test(r) || (/\d/.test(r) && /[a-z0-9]{28,}/i.test(r.replace(/\s/g, '')))) return 'secret'; // a long run is a key; a long phrase of plain words ("Lakeland United States overcast night") is a subject, so only joined text with a digit in it counts
   if (SEXUAL.test(k)) return 'unsuitable';
+  if (unsafeText(r)) return 'unsuitable'; // lib/image-safety.js: nudity, the explicit body or minors in such a context get no picture, painted or photographed
   if (HATE.test(k)) return 'unsuitable';
   return '';
 }
