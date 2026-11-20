@@ -17,3 +17,7 @@ The rules for the Versus tower: the card on the stage, /conquered/ and the /riva
 13. **Gaps are queued.** Every gap on the current floor goes into the build queue automatically.
 
 The card layout: the assimilated count, the inventoried count, the average assimilation, the top 3 closest, the current floor with its gaps and its history, the next floors and the far floors.
+
+## Beyond websites
+
+The climb is not only sites: games, shows, music, art, apps, assistants, writing and real things (a snail, a city, a law of physics) are targets too (`lib/universe.js`, `tower.universe.json`). Each is measured against the best in the world on real checks in three groups: beauty, correctness (faithful to reality or to its own rules; 60 fps with no errors) and the plus (what reality cannot give: slow time, see inside, play with the variables). Verse beats one only when its own entry outscores the best on every check. The order is closest first across sites and targets; the stall rule (3 days) applies; names are shown only inside Versus. Targets are for measuring, never for copying.
