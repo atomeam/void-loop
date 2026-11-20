@@ -1,4 +1,4 @@
-# Deploy the standalone Workers (email-worker, share-worker) on merge, with a token scoped to Workers Scripts edit
+# Deploy the standalone Workers (email-worker, share-worker, clock-worker) on merge, with a token scoped to Workers Scripts edit
 # only (CLOUDFLARE_WORKERS_TOKEN) — the Pages deploy keeps its own narrower token, and neither can do the other's job.
 # HANDOFF_TOKEN is pushed to void-email as a worker secret from the repo secret of the same name, so the worker can
 # POST a buyer's reply to /api/handoff. Missing secrets skip loudly instead of failing the merge.
@@ -6,7 +6,7 @@ name: deploy workers
 on:
   push:
     branches: [main]
-    paths: ['email-worker/**', 'share-worker/**', '.github/workflows/deploy-workers.yml']
+    paths: ['email-worker/**', 'share-worker/**', 'clock-worker/**', '.github/workflows/deploy-workers.yml']
   workflow_dispatch: {}
 permissions: {}
 concurrency: deploy-workers
@@ -45,3 +45,18 @@ jobs:
           else
             cd email-worker && printf '%s' "$HANDOFF_TOKEN" | npx wrangler@3.114.17 secret put HANDOFF_TOKEN
           fi
+      # void-clock, the backstop for Verse's clock (clock-worker/index.js, docs/systems.md): restarts grow-clock.yml when the conductor's
+      # last tick is over 30 minutes old, and knocks /api/automations/tick. Each secret is passed from the repo secret of the same name;
+      # without one, the Worker skips that step.
+      - name: deploy void-clock
+        if: steps.tok.outputs.have == 'yes'
+        run: cd clock-worker && npx wrangler@3.114.17 deploy
+      - name: give void-clock its tokens
+        if: steps.tok.outputs.have == 'yes'
+        env:
+          CLOCK_GITHUB_TOKEN: ${{ secrets.CLOCK_GITHUB_TOKEN }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          cd clock-worker
+          if [ -n "$CLOCK_GITHUB_TOKEN" ]; then printf '%s' "$CLOCK_GITHUB_TOKEN" | npx wrangler@3.114.17 secret put CLOCK_GITHUB_TOKEN; else echo "::warning title=Clock restart off::repo secret CLOCK_GITHUB_TOKEN (fine-grained, this repo, Actions read and write) is not set, so void-clock cannot restart the conductor."; fi
+          if [ -n "$VOID_OWNER_TOKEN" ]; then printf '%s' "$VOID_OWNER_TOKEN" | npx wrangler@3.114.17 secret put VOID_OWNER_TOKEN; fi
