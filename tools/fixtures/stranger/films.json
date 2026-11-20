@@ -1,0 +1,15 @@
+{
+  "about": "The films the stranger test is calibrated on. scene is the 2026-11-10 breaking-news film the owner asked about on 2026-11-20 ('why in the world would this even get made?'); it passed the old video gate at 100. Its lines are the film's own captions.",
+  "scene": { "id": "20261110-news-scene", "kind": "video", "topic": "Scene (2026 film)", "name": "Scene", "hook": "Why is everyone talking about Scene?", "source": "Wikipedia",
+    "footage": { "kind": "studio", "source": "https://en.wikipedia.org/wiki/Scene_(2026_film)" },
+    "captions": [{ "kind": "hook", "text": "Why is everyone talking about Scene?" }, { "kind": "kicker", "text": "BREAKING" }, { "kind": "title", "text": "The whole internet just found out about Scene" },
+      { "kind": "title", "text": "We asked one question: what is Scene?" }, { "kind": "fact", "text": "Scene is a 2026 Indian Tamil-language film." }, { "kind": "title", "text": "More at 11. Or right now in your group chat." }, { "kind": "cta", "text": "Make any video free a-to-mind.com" }],
+    "beats": [{ "kind": "kicker" }, { "kind": "title" }, { "kind": "title" }, { "kind": "fact" }, { "kind": "title" }] },
+  "nba": { "id": "20261109-news-nba-starting-lineups", "kind": "video", "topic": "nba starting lineups", "hook": "Why is everyone talking about nba starting lineups?", "source": "Google Trends",
+    "captions": [{ "kind": "hook", "text": "Why is everyone talking about nba starting lineups?" }, { "kind": "kicker", "text": "BREAKING" }, { "kind": "title", "text": "The whole internet just found out about nba starting lineups" },
+      { "kind": "title", "text": "We asked one question: what is nba starting lineups?" }, { "kind": "fact", "text": "The headline: tonight's starters are out." }, { "kind": "title", "text": "More at 11. Or right now in your group chat." }] },
+  "good": { "id": "explainer-tides", "kind": "video", "topic": "tides", "hook": "Why does the sea rise twice a day?", "source": "NOAA",
+    "captions": [{ "kind": "hook", "text": "Why does the sea rise twice a day?" }, { "kind": "fact", "text": "The Moon pulls the ocean toward it." }, { "kind": "fact", "text": "The far side bulges too, because Earth is pulled away from that water." },
+      { "kind": "fact", "text": "Earth turns through both bulges every 24 hours and 50 minutes." }, { "kind": "title", "text": "So most coasts get two high tides a day." }],
+    "beats": [{ "kind": "fact" }, { "kind": "fact" }, { "kind": "fact" }] }
+}
