@@ -38,17 +38,16 @@ async function main() {
   const fails = [], notes = [];
   let films, eps, rssText;
   try {
-    films = (await (await fetch(SITE + '/api/films')).json()).films || [];
-    eps = await (await fetch(SITE + '/podcast/episodes.json')).json();
-    rssText = await (await fetch(SITE + '/podcast/rss.xml')).text();
+    const get = async (path) => { const r = await fetch(SITE + path); if (!r.ok) throw new Error(path + ' answered HTTP ' + r.status); return r; };
+    films = (await (await get('/api/films')).json()).films || [];
+    eps = await (await get('/podcast/episodes.json')).json();
+    rssText = await (await get('/podcast/rss.xml')).text();
   } catch (e) { console.error('site not reached: ' + e.message); process.exit(3); }
   fails.push(...filmListIssues(films), ...episodeIssues(eps, rssText));
   const pub = (eps.episodes || []).filter((e) => !e.hidden).sort((a, b) => b.n - a.n);
   notes.push(films.length + ' films listed, ' + pub.length + ' public episodes');
-  for (const e of pub) {
-    const r = await fetch(SITE + '/podcast/' + e.file, { headers: { range: 'bytes=0-1023' } });
-    if (![200, 206].includes(r.status) || !/audio\/mpeg/.test(r.headers.get('content-type') || '')) fails.push('episode ' + e.n + ' audio answered ' + r.status);
-  }
+  const heads = await Promise.all(pub.map((e) => fetch(SITE + '/podcast/' + e.file, { headers: { range: 'bytes=0-1023' } }).catch(() => ({ status: 'no answer', headers: new Headers() }))));
+  heads.forEach((r, i) => { if (![200, 206].includes(r.status) || !/audio\/mpeg/.test(r.headers.get('content-type') || '')) fails.push('episode ' + pub[i].n + ' audio answered ' + r.status); });
   const exe = chrome();
   const browser = await chromium.launch({ ...(exe ? { executablePath: exe } : {}), args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
   for (const [size, viewport] of Object.entries(SIZES)) {
