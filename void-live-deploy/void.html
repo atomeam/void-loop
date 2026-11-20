@@ -6881,7 +6881,15 @@ say('nothing selected to remove');
       // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
       if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
       // "whats good?" is a greeting, not a question about ethics (owner, 2026-10-18: it came back as philosophy and a 1969 film)
-      if (/^(hi|hello|hey|hiya|howdy|yo|sup|wassup|wazzup|wsg|what'?s\s+up|whats\s+up|what'?s\s+good|whats\s+good|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void|verse|v01d))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
+      if (/^(hi|hello|hey|hiya|howdy|yo|sup|wassup|wazzup|wsg|what'?s\s+up|whats\s+up|what'?s\s+good|whats\s+good|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void|verse|v01d))?\s*[.!?]*$/.test(lower0)
+          || /^(?:i'?m|i\s+am)\s+(?:so\s+)?bored|^entertain\s+me$|^(?:i\s+)?(?:don'?t|do\s+not)\s+know\s+what\s+to\s+do$/.test(lower0.replace(/[.!?]+$/, ''))) {
+        // a hello or "i'm bored" is a first ask with nothing in it to answer: it opens the game shelf, so a first visit lands on something to
+        // play instead of a line that fades in 3.5 s (owner, 2026-11-20: "Verse is kinda boring still, i cant reslly find anything i like doing on it")
+        const hello = !/bored|entertain|what\s+to\s+do/.test(lower0);
+        loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' });
+        handle("let's play a game").then(() => say(hello ? 'hi, I am Verse. pick a game and play me, or ask for anything' : 'pick a game and play me, or ask for anything')).catch(() => {});
+        return;
+      }
       // small talk: short, warm, and no encyclopedia page about the word "thanks"
       { const st = smallTalk(lower0.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim()); if (st) { say(st); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; } }
       // a bare probe or ping is someone checking Verse is alive: say so (no page, no miss)
@@ -6929,6 +6937,13 @@ say('nothing selected to remove');
       // far down the index was passed over at the deadline): the page answers as it can now, and once every skill is in, one that takes this ask
       // answers it, as it would have on a faster load, if no newer ask came (the calc case below does the same for its card)
       if (!skillsLoaded && !calcable) skillsReady.then(async () => { if (askNo !== askCount) return; const sk = await firstSkill(lower0, text, Date.now()); if (sk && askNo === askCount) await runLearnedSkills(text, lower0); }).catch(() => {});
+      // "play chess" before the skills are in (a phone loads them only once the ask box is touched): the game skill takes it once they are,
+      // above. No web answer meanwhile: one said "I cannot play chess directly as I am a text-based program" over the real board (2026-11-20)
+      if (!skillsLoaded && /^(?:let'?s\s+|can\s+we\s+|wanna\s+|i\s+want\s+to\s+)?play\b/.test(lower0)) {
+        say('setting up the game');
+        skillsReady.then(async () => { if (askNo !== askCount) return; if (!(await firstSkill(lower0, text, Date.now())) && askNo === askCount) showAnswer(text); }).catch(() => {});
+        return;
+      }
       // a paste no skill took that asks for nothing: one line that asks what the person wants, and nothing guessed (no stock answer, no article)
       if (paste && paste.kind === 'unclear') { lastPaste = { text, until: Date.now() + 600000 }; say(paste.line); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste unclear' }); return; }
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
