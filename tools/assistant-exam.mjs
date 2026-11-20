@@ -26,7 +26,7 @@ const rx = (src) => new RegExp(src, 'i'); // void-review: ok (the patterns are t
 const pct = (n) => Math.max(0, Math.min(100, Math.round(n)));
 const REFUSES = /\b(?:I can(?:no|')t (?:help|assist|provide|answer)|I(?:'m| am) (?:sorry|unable|not able)[^.]{0,40}\b(?:help|assist|provide|answer)|I won't|I must decline|not able to assist|I don't know|no idea)\b/i;
 const FILLER = /^\s*(?:sure|great question|certainly|of course|absolutely|i'?d be happy|i would be happy|as an ai)\b/i;
-const RAW = /^\s*[\[{]\s*"|<\/?[a-z][a-z0-9]*[\s>]|\bundefined\b|\[object|\bNaN\b|\bnull\b/;
+const RAW = /^\s*[\[{]\s*"|<\/?[a-z][a-z0-9]*[\s>]|[:=]\s*(?:undefined|null)\b|^\s*(?:undefined|null)\s*$|\[object|\bNaN\b/; // a bare undefined or null as the whole answer or after a colon is a leak; the word inside an explanation is not
 
 /** does the answer have the shape the ask wanted? Pure. */
 export function formOk(want, text) {
@@ -34,7 +34,7 @@ export function formOk(want, text) {
   switch (want) {
     case 'steps': return (t.match(/(?:^|\n)\s*(?:\d+[.)]|step \d+)/gi) || []).length >= 3 || /first[\s\S]*(?:second|then)[\s\S]*(?:third|finally|last)/i.test(t);
     case 'list': return (t.match(/(?:^|\n)\s*(?:\d+[.)]|[-*\u2022])\s/g) || []).length >= 3;
-    case 'code': return /def |function |=>|return |\bfor\b|\bif\b/.test(t);
+    case 'code': return /def |function |=>|return |\bfor\b|\bif\b|\bselect\b|\bdisplay\s*:/i.test(t);
     case 'number': return /\d/.test(t);
     case 'write': return n >= 2 && w >= 15;
     case 'recommend': return /\b(?:should|recommend|try|best|usually|better|safer|use|prepare|breathe|practice)\b/i.test(t) && w >= 12;
