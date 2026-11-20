@@ -5,7 +5,7 @@
 //   node tools/public-sites.mjs          rewrite the deploy copy (deploy.yml)
 //   node tools/public-sites.mjs --dry    print what it would change
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { deepScrub, scrubSites } from '../void-live-deploy/lib/scrub-sites.js';
+import { deepScrub, scrubSites, scrubCode } from '../void-live-deploy/lib/scrub-sites.js';
 
 export const SERVED = ['self.json', 'void.asks.json', 'void.growth.json', 'void.knowledge.json', 'skills/what.json', 'skills/families.json', 'skills/guide.json'];
 
@@ -22,6 +22,7 @@ export function extraServed(read = () => readFileSync(new URL('../void-live-depl
 }
 /** one file's text after the scrub: a JSON file string by string, anything else as plain text. Pure. */
 export function scrubFile(name, src) {
+  if (/\.m?js$/.test(name)) return scrubCode(src); // code: only its comments are rewritten; a site the page really links to or reads stays
   if (!/\.json$/.test(name)) return scrubSites(src);
   const j = JSON.parse(src);
   return JSON.stringify(name === 'self.json' ? publicSelf(j) : deepScrub(j), null, 1) + '\n';

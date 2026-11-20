@@ -42,3 +42,12 @@ export function studiedIn(text) {
   for (const m of text.match(pattern()) || []) { const h = m.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/[/?#].*$/, ''); if (h) found.add(h); }
   return [...found];
 }
+/** a script with the studied sites taken out of its comments only (a whole-line comment, or the tail after ' // '). A site named in code, a link or a feed
+ *  the page really uses, is left: rewriting it would break the feature. Pure. */
+export function scrubCode(src) {
+  return String(src).split('\n').map((l) => {
+    if (/^\s*(\/\/|\/\*|\*)/.test(l)) return scrubSites(l);
+    const i = l.lastIndexOf(' // ');
+    return i >= 0 && !/['"`]/.test(l.slice(i + 4)) ? l.slice(0, i) + scrubSites(l.slice(i)) : l;
+  }).join('\n');
+}

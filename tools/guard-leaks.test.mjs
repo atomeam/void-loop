@@ -49,3 +49,22 @@ test('a sweep that finds a name scrubs the file and logs it; a clean sweep says 
   assert.match(clean.last, /None names a site/);
   assert.equal(jobs.length, 0);
 });
+
+test('a script has its comments scrubbed and its code left: a link the page uses is not rewritten', async () => {
+  const { scrubCode } = await import('../void-live-deploy/lib/scrub-sites.js');
+  const src = '// like ' + H + ' does it\nconst url = "https://' + H + '/x"; // see ' + H + '\n/* ' + H + ' */\n';
+  const out = scrubCode(src);
+  assert.match(out, /^\/\/ like another site does it\n/);
+  assert.ok(out.includes('"https://' + H + '/x"'), 'the code string stays');
+  assert.match(out, /\/\/ see another site\n/);
+  assert.match(out, /\/\* another site \*\//);
+  assert.equal(scrubFile('lib/a.js', src), out);
+});
+test('a script is scrubbed when a comment names a site, and only counted when its code does', () => {
+  const ex = (r) => r === 'void-live-deploy/lib/a.js' || r === 'void-live-deploy/lib/b.js';
+  const withComment = '// ' + H + '\nconst x = 1;';
+  const codeOnly = 'const u = "https://' + H + '/";';
+  assert.equal(planFor('/lib/a.js', [H], { exists: ex, listed: [], text: withComment }).kind, 'scrub');
+  assert.equal(planFor('/lib/b.js', [H], { exists: ex, listed: [], text: codeOnly }).kind, 'code');
+  assert.equal(planFor('/lib/a.js', [H], { exists: ex, listed: ['lib/a.js'], text: withComment + '\nconst u = "' + H + '";' , at: {}, now: 0 }).kind, 'code');
+});
