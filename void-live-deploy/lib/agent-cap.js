@@ -1,14 +1,16 @@
-// The agent's daily allowance (functions/api/agent.js), in one place. Atom's standing rule: a free cap is not a stop. Past the free tasks a
-// visitor still gets an answer when Verse's own pot (the infrastructure bucket of the treasury) can pay for it, billed there like the coder's
-// paid path (functions/api/coder.js, #3009), inside a smaller paid overflow of its own so a stranger cannot drain the pot. When the pot cannot pay,
-// the visitor is told so kindly, with what happens next and the UniVerse page, never an alert or a blank. The house lane that tests the agent
-// is let past every count with the owner's key (a signed Authorization header, lib/guard.js ownerOk), so a test run never eats a visitor's tasks.
+// The agent's allowance (functions/api/agent.js), in one place. Atom's rule (2026-11-20): Verse is not capped by a number it made up. Capacity is real
+// capacity: Workers AI, then every free provider with a key, rotated until each is out (lib/agent-providers.js). What stays here is one per-visitor abuse limit,
+// generous for a real person, and the pot as the last resort: when every free provider is out and Verse's own pot (the infrastructure bucket of the
+// treasury) holds money, the task is paid from it like the coder's paid path (#3009), inside a daily paid ceiling that protects the money. When nothing can answer,
+// the visitor is told so kindly, with what happens next and the UniVerse page, never an alert or a blank. The house lane that tests the agent is let past the
+// visitor limit with the owner's key (a signed Authorization header, lib/guard.js ownerOk), so a test run never eats a visitor's tasks.
 // Tests: tools/agent-cap.test.mjs.
-import { cap, capAll, dayOf } from './daily-cap.js';
+import { cap, uncap, dayOf } from './daily-cap.js';
+import { exhausted } from './agent-providers.js';
 import { balances } from './treasury.js';
 import { ownerOk } from './guard.js';
 
-export const LIMITS = Object.freeze({ perIp: 20, all: 400, paidPerIp: 10, paidAll: 100, minPotCents: 2 });
+export const LIMITS = Object.freeze({ perIp: 100, paidAll: 100, minPotCents: 2 });
 export const OFFER = Object.freeze({ label: 'See UniVerse', url: '/gate' });
 const TREASURY = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
 
@@ -30,15 +32,17 @@ export async function billPot(env, cents, model) {
 }
 /** the next UTC midnight, when the free tasks come back. Pure. */
 export const resetsAt = (now = Date.now()) => new Date(Date.parse(dayOf(now) + 'T00:00:00Z') + 864e5).toISOString();
-/** what a visitor gets when nothing can pay for their task: a clear, kind message and where to go. Pure. */
-export function capReply(now = Date.now()) {
-  return { ok: false, capped: true, say: 'You have used today\'s free tasks, and Verse\'s own pot cannot cover more right now. Nothing is lost: your task is still in the box, the free tasks come back at midnight UTC (7 PM Eastern), and UniVerse is what funds more.', offer: OFFER, resets: resetsAt(now) };
+/** what a visitor gets when nothing can take their task: a clear, kind message and where to go. reason 'visitor' = this visitor's own day limit; 'exhausted' = every free provider and the pot are out. Pure. */
+export function capReply(reason = 'exhausted', now = Date.now()) {
+  const say = reason === 'visitor'
+    ? 'You have sent ' + LIMITS.perIp + ' tasks today, which is the most one visitor can ask in a day so everyone gets a turn. It resets at midnight UTC (7 PM Eastern).'
+    : 'Every free model Verse can reach is used up for today, and Verse\'s own pot cannot cover more right now. Nothing is lost: it resets at midnight UTC (7 PM Eastern), and UniVerse is what funds more.';
+  return { ok: false, capped: true, reason, say, offer: OFFER, resets: resetsAt(now) };
 }
-/** may this request take a task? { ok, owner } for the lane's signed key, { ok, paid: false } inside the free tasks, { ok, paid: true } when the pot pays, { ok: false } when nothing can. */
+/** may this request take a task? { ok, owner } for the lane's key; { ok } when a provider can answer or the pot can pay; { ok: false, reason } when the visitor is over their own limit or everything is out. */
 export async function admit(env, request, h, now = Date.now()) {
-  if (await ownerOk(request, env)) return { ok: true, owner: true, paid: false };
-  if ((await capAll(env, [['agent:' + h, LIMITS.perIp], ['agent-all', LIMITS.all]], now)).ok) return { ok: true, paid: false };
-  if ((await potCents(env)) < LIMITS.minPotCents) return { ok: false };
-  if ((await capAll(env, [['agent-paid:' + h, LIMITS.paidPerIp], ['agent-paid-all', LIMITS.paidAll]], now)).ok) return { ok: true, paid: true };
-  return { ok: false };
+  if (await ownerOk(request, env)) return { ok: true, owner: true };
+  if (!(await cap(env, 'agent:' + h, LIMITS.perIp, now)).ok) return { ok: false, reason: 'visitor' };
+  if (await exhausted(env, { now }) && (await potCents(env)) < LIMITS.minPotCents) { await uncap(env, 'agent:' + h, now); return { ok: false, reason: 'exhausted' }; }
+  return { ok: true };
 }

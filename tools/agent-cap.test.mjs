@@ -1,9 +1,10 @@
-// The agent's allowance (lib/agent-cap.js, functions/api/agent.js): inside the free tasks, past them with the pot paying, past them with nothing to pay (a kind
-// message with the UniVerse page), and the house lane's key skipping every count. Run: node --test tools/agent-cap.test.mjs
+// The agent's allowance (lib/agent-cap.js, functions/api/agent.js): a generous per-visitor limit, no flat count for everyone, refusal only when every provider and the pot are out (a kind
+// message with the UniVerse page), and the house lane's key skipping the visitor limit. Run: node --test tools/agent-cap.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { admit, capReply, potCents, billPot, resetsAt, LIMITS, OFFER } from '../void-live-deploy/lib/agent-cap.js';
+import { park, exhausted, WORKERS } from '../void-live-deploy/lib/agent-providers.js';
 import * as agent from '../void-live-deploy/functions/api/agent.js';
 import { askLive } from './assistant-exam.mjs';
 import fs from 'node:fs';
@@ -12,41 +13,43 @@ const d1 = () => { const db = new DatabaseSync(':memory:'); const stmt = (sql, a
 const req = (token) => new Request('https://x.test/api/agent', { method: 'POST', headers: token ? { authorization: 'Bearer ' + token } : {} });
 const fund = async (env, cents) => { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)').run(); await env.DB.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents) VALUES ('f', '2026-11-20', 'alloc', 'infrastructure', ?)").bind(cents).run(); };
 
-test('inside the free tasks nothing is paid; the twenty-first of a visitor and the four-hundred-and-first of the day are the edges', async () => {
-  const env = { DB: d1() };
-  for (let i = 0; i < LIMITS.perIp; i++) assert.deepEqual(await admit(env, req(), 'ip1'), { ok: true, paid: false });
-  assert.equal((await admit(env, req(), 'ip1')).ok, false, 'past twenty with an empty pot: no');
-  assert.deepEqual(await admit(env, req(), 'ip2'), { ok: true, paid: false }, 'another visitor still has theirs');
+test('a visitor has a generous day of their own; nobody is stopped by a flat count for everyone', async () => {
+  const env = { DB: d1(), AI: {} };
+  for (let i = 0; i < LIMITS.perIp; i++) assert.deepEqual(await admit(env, req(), 'ip1'), { ok: true });
+  assert.deepEqual(await admit(env, req(), 'ip1'), { ok: false, reason: 'visitor' }, 'past their own day: refused with a reason');
+  for (let v = 0; v < 30; v++) for (let i = 0; i < 20; i++) assert.equal((await admit(env, req(), 'v' + v)).ok, true, 'thirty visitors, six hundred tasks, no global stop');
+  assert.ok(LIMITS.perIp >= 100 && !('all' in LIMITS));
 });
-test('past the free tasks the pot pays when it has money, inside a smaller paid overflow, and stops when it is empty again', async () => {
-  const env = { DB: d1() }; await fund(env, 500);
-  for (let i = 0; i < LIMITS.perIp; i++) await admit(env, req(), 'ip1');
-  for (let i = 0; i < LIMITS.paidPerIp; i++) assert.deepEqual(await admit(env, req(), 'ip1'), { ok: true, paid: true });
-  assert.equal((await admit(env, req(), 'ip1')).ok, false, 'ten paid a day for one visitor, then the kind message');
-  assert.equal(await potCents(env), 500); assert.equal(await billPot(env, 0.2, 'm'), 1, 'the smallest bill is one cent'); assert.equal(await potCents(env), 499);
+test('everything out and an empty pot is the only way a visitor is refused for capacity; the pot paying, or any free provider left, lets them in', async () => {
+  const day = { AI: {}, DB: d1() }, now = Date.now();
+  assert.equal((await admit(day, req(), 'a')).ok, true, 'nothing parked');
+  await park(day, WORKERS.id, '', 'day', now);
+  assert.deepEqual(await admit(day, req(), 'a'), { ok: false, reason: 'exhausted' }, 'Workers AI out, no other key, empty pot');
+  assert.equal(await exhausted({ ...day, GROQ_API_KEY: 'k' }, { now }), false, 'a free provider with a key is still open');
+  await fund(day, 500); assert.equal((await admit(day, req(), 'a')).ok, true, 'the pot can pay');
+  assert.equal(await potCents(day), 500); assert.equal(await billPot(day, 0.2, 'm'), 1, 'the smallest bill is one cent'); assert.equal(await potCents(day), 499);
+  const e2 = { AI: {}, DB: d1() }; await fund(e2, 1); await park(e2, WORKERS.id, '', 'day', now);
+  assert.equal((await admit(e2, req(), 'b')).ok, false, 'a pot under two cents cannot pay');
 });
-test('a pot under two cents cannot pay: capped, with the UniVerse page and when the tasks come back', async () => {
-  const env = { DB: d1() }; await fund(env, 1);
-  for (let i = 0; i < LIMITS.perIp; i++) await admit(env, req(), 'ip1');
-  assert.equal((await admit(env, req(), 'ip1')).ok, false);
-  const r = capReply(Date.UTC(2026, 10, 20, 15)); assert.equal(r.ok, false); assert.equal(r.capped, true); assert.deepEqual(r.offer, OFFER); assert.equal(r.resets, '2026-11-21T00:00:00.000Z'); assert.equal(resetsAt(Date.UTC(2026, 10, 20, 23, 59)), '2026-11-21T00:00:00.000Z');
-  assert.match(r.say, /used today's free tasks/); assert.match(r.say, /Nothing is lost/); assert.match(r.say, /midnight UTC/); assert.match(r.say, /UniVerse/); assert.ok(!/error|fail|alert/i.test(r.say));
+test('the refusals are kind and clear, with the UniVerse page and when it resets', () => {
+  const r = capReply('exhausted', Date.UTC(2026, 10, 20, 15)); assert.equal(r.ok, false); assert.equal(r.capped, true); assert.deepEqual(r.offer, OFFER); assert.equal(r.resets, '2026-11-21T00:00:00.000Z'); assert.equal(resetsAt(Date.UTC(2026, 10, 20, 23, 59)), '2026-11-21T00:00:00.000Z');
+  assert.match(r.say, /used up for today/); assert.match(r.say, /Nothing is lost/); assert.match(r.say, /midnight UTC/); assert.match(r.say, /UniVerse/); assert.ok(!/error|fail|alert/i.test(r.say));
+  const v = capReply('visitor'); assert.match(v.say, /most one visitor/); assert.equal(v.reason, 'visitor');
 });
-test('the owner key skips every count (and is checked, not just present); a wrong key is a visitor', async () => {
+test('the owner key skips the visitor limit (and is checked, not just present); a wrong key is a visitor', async () => {
   const env = { DB: d1(), READ_TOKEN: 'owner-key-123456' };
-  for (let i = 0; i < LIMITS.perIp + 5; i++) assert.deepEqual(await admit(env, req('owner-key-123456'), 'lane'), { ok: true, owner: true, paid: false });
-  assert.equal(await (async () => { const rows = await env.DB.prepare("SELECT n FROM void_daily_cap WHERE key = 'agent-all'").all().catch(() => ({ results: [] })); return (rows.results || []).length; })(), 0, 'the lane took no place from the visitors');
+  for (let i = 0; i < LIMITS.perIp + 5; i++) assert.deepEqual(await admit(env, req('owner-key-123456'), 'lane'), { ok: true, owner: true });
   for (let i = 0; i < LIMITS.perIp; i++) await admit(env, req('wrong-key'), 'ip9');
   assert.equal((await admit(env, req('wrong-key'), 'ip9')).ok, false);
 });
-test('POST /api/agent past the cap answers 429 with the kind message and the offer, never a blank, and a lane key still gets a task', async () => {
+test('POST /api/agent: a visitor over their limit gets 429 with the kind message and the offer, never a blank; a lane key still gets a task', async () => {
   const env = { DB: d1(), AI: { run: async () => ({ response: 'ok' }) }, READ_TOKEN: 'owner-key-123456' }, waits = [];
   const post = (token, ip) => agent.onRequestPost({ env, waitUntil: (p) => waits.push(p), request: new Request('https://x.test/api/agent', { method: 'POST', headers: { 'content-type': 'application/json', 'cf-connecting-ip': ip, ...(token ? { authorization: 'Bearer ' + token } : {}) }, body: JSON.stringify({ thread: 'abcdefghijklmnop' + ip.replace(/\D/g, ''), ask: 'what is two plus two' }) }) });
   const realFetch = globalThis.fetch; globalThis.fetch = async () => new Response('{}', { status: 404 });
   try {
     for (let i = 0; i < LIMITS.perIp; i++) assert.equal((await post(null, '1.1.1.1')).status, 200);
     const capped = await post(null, '1.1.1.1'), j = await capped.json();
-    assert.equal(capped.status, 429); assert.equal(j.capped, true); assert.equal(j.offer.url, '/gate'); assert.match(j.say, /Nothing is lost/);
+    assert.equal(capped.status, 429); assert.equal(j.capped, true); assert.equal(j.offer.url, '/gate'); assert.match(j.say, /most one visitor/);
     const lane = await post('owner-key-123456', '1.1.1.1'); assert.equal(lane.status, 200); assert.equal((await lane.json()).ok, true);
     await Promise.allSettled(waits);
   } finally { globalThis.fetch = realFetch; }
