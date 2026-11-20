@@ -1,0 +1,8 @@
+# void-clock (clock-worker/index.js): the backstop for Verse's clock, outside GitHub (docs/systems.md). One cron trigger, every 10 minutes.
+name = "void-clock"
+main = "index.js"
+compatibility_date = "2026-11-01"
+workers_dev = false
+
+[triggers]
+crons = ["*/10 * * * *"]
