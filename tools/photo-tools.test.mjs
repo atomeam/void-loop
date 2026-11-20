@@ -30,9 +30,9 @@ test('which tab or page each ask opens', () => {
 });
 test('the card: heading, the tools it names, the on-device line, its kind', () => {
   const el = card('photo editor');
-  assert.equal(el.dataset.cardKind, 'Photo tools');
-  assert.match(el.innerHTML, /^<h2>Photo tools<\/h2>/);
+  assert.equal(el.dataset.cardKind, 'Photo Editor');
+  assert.match(el.innerHTML, /^<h2>Photo Editor<\/h2>/);
   assert.match(el.innerHTML, /Compress and convert a photo \(JPEG, PNG, WebP, AVIF\)/);
-  assert.match(el.innerHTML, />Open the photo tools<\/a>/);
+  assert.match(el.innerHTML, />Open the photo editor<\/a>/);
   assert.match(el.innerHTML, /the picture is never uploaded, and the page opens offline/);
 });

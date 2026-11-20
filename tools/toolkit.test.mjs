@@ -60,7 +60,7 @@ test('every tool page links to its own card on the stage, and every page has a c
     assert.ok(PAGE_PATHS[p], p + ' is linked from a card (PAGE_OF)');
   }
   assert.equal(cardLinkOf('/nope/'), '');
-  assert.deepEqual(pageOfCard('', '/color/'), ['/color/', 'Colour codes']);
+  assert.deepEqual(pageOfCard('', '/color/'), ['/color/', 'Color Picker']);
   assert.equal(pageOfCard('', 'https://evil.example/'), null, 'only a known page is linked');
   assert.deepEqual(pageOfCard('calendar', ''), ['/calendar/', 'Calendar']);
   // the row puts the card link first
@@ -199,7 +199,7 @@ test('the random page\'s card draws from the range on the page, not 1 to 100, an
     assert.equal(await firstSkill(ask), null, 'no skill takes it before the stage\'s own random number: ' + ask);
   }
   for (const [a, b, d] of [['1.5', '3', '0'], ['1', '100', '2'], ['', '5', '0'], ['1', '1e3', '0'], ['1', '1234567890', '0']]) assert.equal(R.cardAsk(a, b, d), '', 'no whole-number range keeps the example: ' + [a, b, d]);
-  assert.deepEqual(pageOfCard('', '/random/?min=-5&max=5'), ['/random/?min=-5&max=5', 'Random number'], 'the card links back to the page on its range');
+  assert.deepEqual(pageOfCard('', '/random/?min=-5&max=5'), ['/random/?min=-5&max=5', 'Random Number Generator'], 'the card links back to the page on its range');
   assert.equal(pageOfCard('', '/random/?min="><b>'), null, 'only a plain query is linked'); assert.equal(pageOfCard('', 'https://evil.example/?a=1'), null, 'only a known page is linked');
   assert.ok(src.includes("p.dataset.page = '/random/?min=' + c.lo + '&max=' + c.hi"), 'the stage card names the page with its range');
   assert.ok(/card: \(\) => cardAsk\(/.test(fs.readFileSync(new URL('../void-live-deploy/random/index.html', import.meta.url), 'utf8')), 'the page gives the stage its range');
@@ -269,7 +269,7 @@ test('the made-up people page\'s card shows the people on the page: its count, c
     const el = { dataset: {}, innerHTML: '' }; assert.equal(S.run(ask, { showPage: (f) => f(el), esc }), 'fakeuser');
     for (const p of F.people({ seed, n: Math.min(+n, 3), nats, gender: g })) assert.ok(el.innerHTML.includes(esc(p.name)) && el.innerHTML.includes(esc(p.email)), 'the card shows the page\'s person ' + p.name);
     const want = '/random/people/?' + new URLSearchParams({ n, nat: nats.join(','), ...(g ? { g } : {}), seed });
-    assert.equal(el.dataset.page, want, 'the card\'s page link opens these same people'); assert.deepEqual(pageOfCard('fakeuser', el.dataset.page), [want, 'Made-up people']);
+    assert.equal(el.dataset.page, want, 'the card\'s page link opens these same people'); assert.deepEqual(pageOfCard('fakeuser', el.dataset.page), [want, 'Random User Generator']);
   }
   // a seed the ask cannot carry still gives the count, countries and gender; settings it cannot say keep the example
   assert.deepEqual(F.askFake(C.cardAsk('33', ['nz', 'gb'], '', 'bad seed!')), { n: 33, nats: ['nz', 'gb'], gender: '' });
@@ -535,7 +535,7 @@ test('the emoji and snippet pages: the stage ask goes to the skill whose card op
     assert.equal(await firstSkill(CARD_ASK[page]), skill, page + ': ' + CARD_ASK[page]); assert.equal(PAGE_OF[skill][0], page, skill + ' links back to ' + page);
   }
   const { ghFileOf, ghFilePage } = await import('../void-live-deploy/lib/gist.js'), f = ghFileOf('https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/gist.js#L5-L12');
-  assert.deepEqual(pageOfCard('gh-file', ghFilePage(f)), [ghFilePage(f), 'Snippet / Note in a link'], 'the card\'s page link opens that same file');
+  assert.deepEqual(pageOfCard('gh-file', ghFilePage(f)), [ghFilePage(f), 'Note in a Link'], 'the card\'s page link opens that same file');
   assert.match(fs.readFileSync(new URL('../void-live-deploy/skills/gh-file.js', import.meta.url), 'utf8'), /card\.dataset\.page = ghFilePage\(f\)/);
   assert.match(fs.readFileSync(new URL('../void-live-deploy/g/index.html', import.meta.url), 'utf8'), /card: \(\) => \(gh \? gh\.page/, 'the page gives the stage the GitHub file open on it');
 });

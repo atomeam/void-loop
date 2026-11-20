@@ -108,7 +108,7 @@ test('a copied chat is read as a chat, with ⏎ or new lines; an ordinary ask is
   assert.equal(isNote(CHAT), true);
   for (const q of ['what is a black hole', WHOLE, 'Today 3:27 AM I ate soup and it was good, then I went for a walk in the park with my dog and we saw a heron by the pond.', 'My zap is broken: it fails with a 401 error every time it runs, since yesterday. How do I fix it?'])
     assert.equal(isChatLog(q), false, q);
-  assert.deepEqual(relatedPage(CHAT), { path: '/rap/', name: 'Verse raps' });
+  assert.deepEqual(relatedPage(CHAT), { path: '/rap/', name: 'Rap Generator' });
 });
 
 test('the setup facts come from the names Verse reads, never a guess', () => {
@@ -131,17 +131,17 @@ test('the model is given the facts and told never to guess or ask a name; the re
   const r = noteReading(CHAT);
   assert.ok(r.includes(REAL_MODAL));
   assert.match(noteReading(CHAT, relatedPage(CHAT), setupFacts(CHAT, NONE)), /No Verse code reads a Modal secret yet/);
-  assert.match(r, /https:\/\/a-to-mind\.com\/rap\/ \(Verse raps\)\.$/);
+  assert.match(r, /https:\/\/a-to-mind\.com\/rap\/ \(Rap Generator\)\.$/);
 });
 
 test('the model answer is made true: a guessed name, a question back and "broken automation" go; the cut line and the facts are added', () => {
-  const live = 'This looks like a broken automation. Save MODAL_TOKEN in your Cloudflare settings. What is the variable called in your code? The chat says Verse now plays every genre live.\nhttps://a-to-mind.com/rap/ (Verse raps)';
+  const live = 'This looks like a broken automation. Save MODAL_TOKEN in your Cloudflare settings. What is the variable called in your code? The chat says Verse now plays every genre live.\nhttps://a-to-mind.com/rap/ (Rap Generator)';
   const out = noteFinish(live, CHAT);
   assert.doesNotMatch(out, /\bMODAL_TOKEN\b|broken automation|\?/);
   assert.match(out, /The chat says Verse now plays every genre live\./);
   assert.ok(out.includes(REAL_MODAL));
   assert.match(noteFinish(live, CHAT, setupFacts(CHAT, NONE), NONE), /No Verse code reads a Modal secret yet/);
-  assert.match(out, /\nhttps:\/\/a-to-mind\.com\/rap\/ \(Verse raps\)$/, 'the page line stays last');
+  assert.match(out, /\nhttps:\/\/a-to-mind\.com\/rap\/ \(Rap Generator\)$/, 'the page line stays last');
   // the cut note of 2026-10-30, as the live model read it: no word that it was cut
   const cutLive = 'The note states that Beam has the item and that the sender is checking #1795. It asks you to create a Modal account and add two repository secrets.\nhttps://a-to-mind.com/music/ (Music tools)';
   const c = noteFinish(cutLive, CUT);

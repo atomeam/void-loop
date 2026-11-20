@@ -17,14 +17,15 @@ test('the asks: its examples and hand-written ones on both sides', () => {
 test('the card: one link per tool name, the count in the title, /tools/ as the page it opens', () => {
   const { r, el } = card('all tools'), seen = new Set();
   const list = allTools().filter(([, label]) => !seen.has(label.toLowerCase()) && seen.add(label.toLowerCase()));
-  assert.ok(list.length < allTools().length, 'a tool built twice is in the list twice: ' + allTools().length);
+  assert.equal(list.length, new Set(allTools().map(([, l]) => l.toLowerCase())).size, 'the card never repeats a name');
+  assert.ok(list.length <= allTools().length, 'two pages with one name become one chip');
   assert.ok(!el.innerHTML.includes('href="/convert/unit-converter-2/"'), 'the second unit converter is not a second chip');
   assert.equal(r, 'toolkit'); assert.equal(el.dataset.page, '/tools/');
   assert.ok(el.innerHTML.startsWith('<h2>' + list.length + ' tools</h2>'), el.innerHTML.slice(0, 40));
   assert.equal((el.innerHTML.match(/<a href=/g) || []).length, list.length);
   for (const [href, label] of list) assert.ok(el.innerHTML.includes('<a href="' + esc(href) + '" style="display:inline-block;padding:5px 12px;border:1px solid #8884;border-radius:999px;text-decoration:none">' + esc(label) + '</a>'), href);
   assert.ok(!el.innerHTML.includes('href="/tools/"'));
-  assert.ok(el.innerHTML.includes('<a href="/photos/" ') && el.innerHTML.includes('>Photo tools</a>'));
+  assert.ok(el.innerHTML.includes('<a href="/photos/" ') && el.innerHTML.includes('>Photo Editor</a>'));
   assert.match(el.innerHTML, /<div class="src">Each is a full page that works on this device; ask any of them here too, like "flip a coin" or "100 c to f"\.<\/div>$/);
 });
 test('the card and the Tools page list the same pages: the card once missed the eleven the page lists by hand', () => {

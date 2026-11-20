@@ -14,6 +14,7 @@
 import { ownerOk } from '../../lib/guard.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { realized, balances, bucketWeights, split, queueSpends, review } from '../../lib/treasury.js';
+import POLICY from '../../treasury/policy.json' with { type: 'json' };
 import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
 import { SERVICES, usdcText } from '../../lib/x402.js';
 import { sponsorView } from './sponsors.js';
@@ -28,11 +29,8 @@ async function ensure(env) {
   await env.DB.prepare(TABLE).run();
 }
 
-async function policyOf(request, env) {
-  const u = new URL('/treasury/policy.json', request.url);
-  const r = env.ASSETS ? await env.ASSETS.fetch(u) : await fetch(u);
-  if (!r.ok) throw new Error('policy unavailable');
-  return r.json();
+async function policyOf(_request, _env) {
+  return POLICY;
 }
 
 const ledger = async (env) => (await env.DB.prepare('SELECT id, at, kind, bucket, cents, purpose, expected, actual, status, needs, ref, data FROM void_treasury ORDER BY at, id').all()).results || [];
@@ -121,7 +119,7 @@ function publicView(policy, s, env, owner = false) {
   };
   if (owner) {
     return { ...base, pots: b.pots, split_cents: b.split_cents, weights: s.weights, learned: s.learned,
-      policy: { owner_cut: policy.owner_cut, reserve: policy.reserve, buckets: policy.buckets, spending: { rule: policy.spending.rule }, review: policy.review, history: policy.history, version: policy.version, decided_by: policy.decided_by, giving: policy.giving },
+      policy: { owner_cut: policy.owner_cut, paid_first: { ...policy.owner_cut, label: "Atom's cut" }, reserve: policy.reserve, buckets: policy.buckets, spending: { rule: policy.spending.rule }, review: policy.review, history: policy.history, version: policy.version, decided_by: policy.decided_by, giving: policy.giving },
       entries, reviews, owner_view: true };
   }
   const pots = { ...b.pots }; delete pots.owner;

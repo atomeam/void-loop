@@ -26,16 +26,20 @@ const BEST = 'a2m.void.arcade.best.v1';
 const SOUND = 'a2m.void.arcade.sound.v1';
 const readBest = () => { try { return JSON.parse(localStorage.getItem(BEST) || '{}') || {}; } catch (_) { return {}; } };
 const writeBest = (id, n) => { try { const b = readBest(); if (!(n > (b[id] || 0))) return b[id] || 0; b[id] = n; localStorage.setItem(BEST, JSON.stringify(b)); return n; } catch (_) { return n; } };
-const soundOn = () => { try { return localStorage.getItem(SOUND) === '1'; } catch (_) { return false; } };
+const soundOn = () => { try { return localStorage.getItem(SOUND) !== '0'; } catch (_) { return true; } }; // on unless you turned it off (2026-11-20 fun audit: silent games felt dead)
 
-function beep(bag) {
+/** one sound per cue a game sets (s.cue): a soft shot, a crunchy boom, a rising win, a two-note wave; anything else is a short blip. */
+function beep(bag, cue = '') {
   try {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
-    bag.ac = bag.ac || new AC();
-    const o = bag.ac.createOscillator(), g = bag.ac.createGain();
-    o.frequency.value = 520; g.gain.value = 0.03; o.connect(g); g.connect(bag.ac.destination);
-    o.start(); o.stop(bag.ac.currentTime + 0.04);
+    const ac = bag.ac = bag.ac || new AC(); if (ac.state === 'suspended') ac.resume();
+    const tone = (f, d, type = 'square', vol = 0.03, at = 0, slide = 0) => { const t = ac.currentTime + at, o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(f * slide, t + d); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + d + 0.02); };
+    if (cue === 'shot') { if ((bag.n = (bag.n || 0) + 1) % 2) tone(1100, 0.035, 'square', 0.012, 0, 0.6); return; }
+    if (cue === 'boom') { const n = ac.sampleRate * 0.18 | 0, buf = ac.createBuffer(1, n, ac.sampleRate), d = buf.getChannelData(0); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 2; const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); f.type = 'lowpass'; f.frequency.value = 1400; g.gain.value = 0.09; src.buffer = buf; src.connect(f); f.connect(g); g.connect(ac.destination); src.start(); tone(120, 0.2, 'sine', 0.08, 0, 0.5); return; }
+    if (cue === 'win') { [0, 4, 7, 12].forEach((k, i) => tone(523 * Math.pow(2, k / 12), 0.16, 'triangle', 0.06, i * 0.08)); return; }
+    if (cue === 'wave') { tone(330, 0.12, 'square', 0.035); tone(495, 0.18, 'square', 0.035, 0.12); return; }
+    tone(520, 0.04, 'square', 0.03);
   } catch (_) { /* a browser with no audio keeps the game silent */ }
 }
 
@@ -161,7 +165,7 @@ export function drive(card, game, opt = {}) {
     if (!paused && s.over && (stick || fly || tap) && (firing || edge.dash) && (s.anim || 0) > 50) restart(seed);
     else if (!paused && !s.over) {
       game.tick(s, { flap: edge.flap || (stick && heldFire), fire: firing, hold: fly ? (mouseAim ? heldFire : Number.isFinite(ax)) : firing, mouse: fly && (mouseAim || Number.isFinite(ax)), step: !!edge.dir, left: held.left || edge.dir === 'left', right: held.right || edge.dir === 'right', up: held.up, down: held.down, dir, dash: !!edge.dash, x: stick ? (heldFire ? edge.x : undefined) : edge.x, sx, sy, ax: Number.isFinite(ax) ? ax : undefined, ay: Number.isFinite(ay) ? ay : undefined, bot: named || undefined });
-      if (s.sfx && sound) beep(bag);
+      if (s.sfx && sound) beep(bag, s.cue);
       edge = { flap: false, fire: false, dir: '', dash: false, x: edge.x };
     }
     game.draw(card.ctx, s);

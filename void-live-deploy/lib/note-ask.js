@@ -67,8 +67,8 @@ export function isNote(ask) {
 // the Verse pages a note can point to: a word in the note -> the page that does that thing (each path is in sitemap.xml: tools/note-ask.test.mjs)
 export const PAGES = [
   [/\b(?:songs?|music|melod(?:y|ies)|metronome|tuner|setlists?|piano)\b/i, '/music/', 'Music tools'],
-  [/\b(?:rap|raps|rapping|rhymes?|bars)\b/i, '/rap/', 'Verse raps'],
-  [/\b(?:photos?|pictures?|images?)\b/i, '/photos/', 'Photo tools'],
+  [/\b(?:rap|raps|rapping|rhymes?|bars)\b/i, '/rap/', 'Rap Generator'],
+  [/\b(?:photos?|pictures?|images?)\b/i, '/photos/', 'Photo Editor'],
   [/\b(?:colou?rs?|palettes?)\b/i, '/color/', 'Colour tools'],
   [/\bpdfs?\b/i, '/pdf/', 'PDF tools'],
   [/\b(?:convert|converter|conversion)\b/i, '/converter/', 'Converter'],
@@ -78,7 +78,7 @@ export const PAGES = [
   [/\b(?:recipes?|cook(?:ing)?)\b/i, '/recipes/', 'Recipes'],
   [/\b(?:code\s+review|pull\s+requests?)\b/i, '/code-review/', 'Code review'],
   [/\bcalendar\b/i, '/calendar/', 'Calendar'],
-  [/\b(?:films?|movies?)\b/i, '/films/', 'Holovids'],
+  [/\b(?:films?|movies?)\b/i, '/films/', 'Videos'],
   [/\b(?:fanfic|fan\s+fiction)\b/i, '/fanfic/', 'Fanfic'],
 ];
 /** the one Verse page that does the thing the note is about: { path, name } or null. Pure. */

@@ -3155,7 +3155,11 @@ say('nothing selected to remove');
       say('which time machine?');
       loopLog({ domain: 'void.page', ask: q, score: 'pass', note: 'time machine disambiguation' });
     }
+    // a question about what they said earlier in this tab ("what is my name") is answered from this tab's talk (lib/talk-memory.js), never
+    // looked up as an article: "what is my name" was answered with songs called My Name
+    const ABOUT_ME = /\b(my name|about me|who am i|what did i (?:say|ask|tell)|do you remember|what do you know about me)\b/i;
     async function showArticle(query, fromAnswer = false) {
+      if (!fromAnswer && ABOUT_ME.test(query) && talkRead().length) return showAnswer(query);
       const topic = topicFrom(query);
       lookedIn = [];
       let named = false; // Wikipedia named a page for this topic (its search, the person search or the page that bears the name)

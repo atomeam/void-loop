@@ -136,3 +136,32 @@
 # a reading list with no tool opens its Echo Vault entry
 /reading-list /echo-vault/?entry=paper-notes 301
 /reading-list/ /echo-vault/?entry=paper-notes 301
+
+# standard searchable names for tools (owner, 2026-11-20: call tools by the names people already search)
+/image-resizer /photos/?mode=resize 301
+/image-resizer/ /photos/?mode=resize 301
+/color-picker /color/ 301
+/color-picker/ /color/ 301
+/pdf-editor /pdf/ 301
+/pdf-editor/ /pdf/ 301
+/unit-converter /convert/ 301
+/unit-converter/ /convert/ 301
+/password-generator /password/ 301
+/password-generator/ /password/ 301
+/random-number-generator /random/ 301
+/random-number-generator/ /random/ 301
+/random-user-generator /random/?mode=people 301
+/random-user-generator/ /random/?mode=people 301
+/photo-editor /photos/ 301
+/photo-editor/ /photos/ 301
+/word-counter /word-count/ 301
+/word-counter/ /word-count/ 301
+/file-converter /converter/ 301
+/file-converter/ /converter/ 301
+/rap-generator /rap/ 301
+/rap-generator/ /rap/ 301
+/videos /films/ 301
+/videos/ /films/ 301
+# standard name for Starboard
+/dashboard /starboard/ 301
+/dashboard/ /starboard/ 301

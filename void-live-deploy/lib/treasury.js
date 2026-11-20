@@ -7,7 +7,7 @@
 // sales), minus refunded and lost-dispute sales and the processing part Gumroad keeps on them. Test purchases are never money.
 // Nothing is borrowed, assumed or forecast into the balance: a bucket only ever holds money that already came in.
 //
-// Order of the split, every time new realized money appears (policy in /treasury/policy.json, Verse's own reasons beside each number):
+// Order of the split, every time new realized money appears (policy in treasury/policy.json (not served to visitors), Verse's own reasons beside each number):
 //   1. Atom's owner cut, first.  2. the giving pot: a tenth of what is left, pledged to the causes on /creed/give/ (owner, 2026-11-06:
 //   "verse should become a religion and a charity").  3. the reserve.  4. the reinvestment buckets, weighted by expected ROI.
 // A gift leaves the giving pot only when Atom sends it to a charity's own donation page and it is recorded ('given'); Verse sends no money.

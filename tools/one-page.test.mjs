@@ -29,7 +29,7 @@ test('two pages with one headline are a leftover, and that list only shrinks', (
 
 test('the same headline is the existing page, and a different headline stays free', () => {
   const fam = { id: 'colour', base: '/color/' };
-  assert.equal(pageForJob(fam, { h1: 'Colour codes: hex, RGB, HSL, CMYK, shades and schemes' }, SELF_SITES), '/color/colour-picker-tool/');
+  assert.equal(pageForJob(fam, { h1: 'Color Picker' }, SELF_SITES), '/color/colour-picker-tool/');
   assert.equal(pageForJob(fam, { h1: 'A gradient between two colours' }, SELF_SITES), null);
   assert.equal(pageForJob({ id: 'unit converter', base: '/convert/' }, { h1: 'short' }, SELF_SITES), null);
 });

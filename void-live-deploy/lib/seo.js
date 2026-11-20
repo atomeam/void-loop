@@ -15,15 +15,15 @@ export const SITE = 'https://a-to-mind.com';
 // (the calculator floor, Versus job mvoxrtv8, names /calculator/ too)
 const firstOfEach = (rows) => rows.filter((r, i) => rows.findIndex((q) => q.path === r.path) === i);
 export const PAGES = Object.freeze(firstOfEach([
-  { path: '/photos/', name: 'Photo tools: compress, convert, edit, strip EXIF', does: 'Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.',
+  { path: '/photos/', name: 'Photo Editor: compress, convert, edit, strip EXIF', does: 'Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.',
     asks: ['compress image online', 'convert png to webp', 'photo editor online', 'crop photo online', 'remove exif data from photo', 'image compressor no upload', 'compress images in bulk to zip'],
     action: { template: '/photos/?tab={tab}', input: 'tab' },
     links: [['Compress images', '/photos/?tab=out'], ['Crop a photo', '/photos/?tab=crop'], ['Brightness and filters', '/photos/?tab=adj'], ['Check a photo for GPS', '/photos/?tab=info'], ['Deutsch', '/photos/?lang=de']] },
-  { path: '/color/', name: 'Colour codes, shades and schemes', does: 'Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.',
-    asks: ['hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour shades and tints', 'colour scheme generator'],
+  { path: '/color/', name: 'Color Picker: hex, RGB, HSL, CMYK, shades and palettes', does: 'Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.',
+    asks: ['color picker', 'hex color picker', 'hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour scheme generator'],
     action: { template: '/color/?c={color}', input: 'color' },
     links: [['#ff5733', '/color/?c=ff5733'], ['#6d4aff', '/color/?c=6d4aff'], ['#ff0000', '/color/?c=ff0000'], ['#00ff00', '/color/?c=00ff00'], ['#0000ff', '/color/?c=0000ff'], ['#ffa500', '/color/?c=ffa500'], ['#808080', '/color/?c=808080']] },
-  { path: '/random/', name: 'Random number', does: 'A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.',
+  { path: '/random/', name: 'Random Number Generator', does: 'A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.',
     asks: ['random number generator', 'random number between 1 and 100', 'random number picker', 'random numbers no repeats', 'lottery number generator'],
     links: [['1 to 100', '/random/?min=1&max=100'], ['1 to 10', '/random/?min=1&max=10'], ['Roll a die (1 to 6)', '/random/?min=1&max=6'], ['6 lottery numbers from 1 to 49', '/random/?min=1&max=49&n=6&unique=1&sort=1'], ['5 numbers from 1 to 100, no repeats', '/random/?min=1&max=100&n=5&unique=1'], ['A number from 0 to 1', '/random/?min=0&max=1&dec=2']],
     action: { template: '/random/?min=1&max={max}', input: 'max' } },
@@ -212,7 +212,7 @@ export const PAGES = Object.freeze(firstOfEach([
     asks: ['verse arcade', 'play a game against verse', 'debris field', 'daily arcade game', 'play debris field'],
     action: { template: '/arcade/?play={play}', input: 'play' },
     links: [['Debris Field', '/arcade/?play=debris-field'], ['Daily Debris Field', '/arcade/?play=debris-field&daily=1'], ['Debris Field, seed 4', '/arcade/?play=debris-field&seed=4'], ['Debris Field, seed 9', '/arcade/?play=debris-field&seed=9'], ['Debris Field, seed 2', '/arcade/?play=debris-field&seed=2']] },
-  { path: '/tools/', name: 'Every Verse tool', does: 'Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.',
+  { path: '/tools/', name: 'Tools', does: 'Every tool Verse has built, each a page of its own, and they work together: color, chance, time, words and numbers, passwords and images. Free, private, offline after one visit.',
     asks: ['free online tools', 'online utilities', 'web tools without ads', 'tools that work offline', 'converter and generator tools'] },
 ]));
 

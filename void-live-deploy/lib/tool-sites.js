@@ -7,7 +7,7 @@
  */
 const ALL_PDF = ['merge', 'split', 'pages', 'extract', 'order', 'rotate', 'compress', 'img2pdf', 'pdf2img', 'numbers', 'watermark', 'crop', 'info'];
 export const PDF_SITES = Object.freeze([
-  { path: '/pdf/', card: 'pdf tools', lane: 'pdf', name: 'PDF tools: merge, split, compress and edit pages', h1: 'PDF tools: merge, split, compress and edit pages', tools: ALL_PDF,
+  { path: '/pdf/', card: 'pdf tools', lane: 'pdf', name: 'PDF Editor', h1: 'PDF Editor: merge, split, compress and edit pages', tools: ALL_PDF,
     intro: 'Join, split, tidy, shrink and stamp a PDF on this one page, and the file never leaves this device.',
     does: 'Merge, split, reorder, rotate, delete and extract pages, compress, turn images into a PDF and pages into images, add page numbers and a watermark, crop, and edit the title and author. No task or page limit, no account, nothing uploaded, and the page works offline after one visit.',
     asks: ['merge pdf', 'split pdf', 'compress pdf', 'jpg to pdf', 'reorder pdf pages', 'watermark pdf', 'crop pdf', 'pdf tools offline'],

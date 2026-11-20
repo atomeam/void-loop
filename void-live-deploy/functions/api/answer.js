@@ -52,6 +52,7 @@ import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE,
 import { telemetryOf } from '../../lib/telemetry.js';
 import { planOf, runBot, routeFree, freeLlm, loadRegistry } from '../../lib/answer-free.js';
 import { beforeOf, points, FOLLOW_RULE, beforeBlock, mergeSources } from '../../lib/follow-ask.js';
+import { recentLines, byMeaning, mergeRecall } from '../../lib/meaning-recall.js';
 import { talkOf, talkBlock, TALK_RULE, introOf, introAnswer } from '../../lib/talk-memory.js';
 import { askWords, grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
@@ -435,7 +436,10 @@ export async function toldMe(request, env, ask) {
     if (!who || who.free || !env.DB) return null;
     await ensureMemory(env);
     const { hits } = await memoryLookup(env, ask, TOLD_MAX, who.scope, 0.5, 2);
-    const lines = hits.slice(0, TOLD_MAX).map((r) => redact(r.kind === 'note' ? r.summary : r.name + (r.links.length ? ' (' + r.links.slice(0, 4).join(', ') + ')' : '') + (r.summary ? ': ' + r.summary : '')).replace(/\s+/g, ' ').trim().slice(0, TOLD_LINE)).filter(Boolean);
+    const lineOf = (r) => redact(r.kind === 'note' ? r.summary : r.name + (r.links.length ? ' (' + r.links.slice(0, 4).join(', ') + ')' : '') + (r.summary ? ': ' + r.summary : '')).replace(/\s+/g, ' ').trim().slice(0, TOLD_LINE);
+    const words = hits.slice(0, TOLD_MAX).map(lineOf).filter(Boolean);
+    // by meaning too (lib/meaning-recall.js): their recent records ranked with bge-m3, for this answer only
+    const lines = words.length >= TOLD_MAX ? words : mergeRecall(words, await byMeaning(env, ask, (await recentLines(env, who.scope, lineOf)).filter((l) => !words.includes(l)), TOLD_MAX), TOLD_MAX);
     return lines.length ? lines : null;
   } catch (_) { return null; }
 }

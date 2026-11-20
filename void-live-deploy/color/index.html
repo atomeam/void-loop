@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Colour codes: hex, RGB, HSL, CMYK, shades and schemes · Verse</title>
+<title>Color Picker: hex, RGB, HSL, CMYK, shades and palettes · Verse</title><!-- void-review: ok (RGB, HSL and CMYK are colour-model names in the title, not JS identifiers) -->
 <meta name="description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Colour codes, shades and schemes · Verse">
+<meta property="og:title" content="Color Picker · Verse">
 <meta property="og:description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
 <meta property="og:url" content="https://a-to-mind.com/color/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -51,7 +51,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/color/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Colour codes, shades and schemes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour shades and tints, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Colour codes, shades and schemes","item":"https://a-to-mind.com/color/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Color Picker: hex, RGB, HSL, CMYK, shades and palettes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"color picker, hex color picker, hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Color Picker: hex, RGB, HSL, CMYK, shades and palettes","item":"https://a-to-mind.com/color/"}]}]}</script>
 <!-- /seo -->
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
@@ -72,10 +72,10 @@
 <script type="module" src="/lib/verse-scene.js"></script></head>
 <body>
 <!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
-<nav class="v-modes" aria-label="Colour modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/" aria-current="page">Colour codes</a><a href="/color/?mode=gradient">Gradient</a></nav>
+<nav class="v-modes" aria-label="Color modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/" aria-current="page">Color Picker</a><a href="/color/?mode=gradient">Gradient Generator</a></nav>
 
 <main>
-  <h1>Colour codes, shades and schemes</h1>
+  <h1>Color Picker</h1>
   <p class="lede" style="margin:0 0 10px;font-size:13px;opacity:.75">Every colour model, the nearest name, WCAG contrast, tints, shades and schemes, worked out on this device and kept for offline use.</p>
   <div class="pick"><input id="in" type="text" autocomplete="off" spellcheck="false" aria-label="A colour: hex, rgb, hsl or a name" placeholder="#ff5733, rgb(255 87 51), tomato" autofocus><input id="wheel" type="color" aria-label="Pick a colour" value="#6d4aff"></div>
   <nav id="jobs" class="tk-row" aria-label="What is the colour for?"><span class="tk-label">For:</span> <a href="?c=1a5fb4&amp;for=read#ratio" data-for="read">Readable text pairs</a> <a href="?c=e4572e&amp;for=brand#palh" data-for="brand">Brand palette</a> <a href="?c=00a19a&amp;for=print#modt" data-for="print">Print vs screen</a></nav>
@@ -110,7 +110,7 @@
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/color/?c=ff5733">#ff5733</a><a href="/color/?c=6d4aff">#6d4aff</a><a href="/color/?c=ff0000">#ff0000</a><a href="/color/?c=00ff00">#00ff00</a><a href="/color/?c=0000ff">#0000ff</a><a href="/color/?c=ffa500">#ffa500</a><a href="/color/?c=808080">#808080</a></nav>
 <!-- /asks -->
 <!-- lab-tools --><section id="lab-here" aria-label="Tools from the Verse lab" style="margin:14px 0"><details class="lab-here"><summary><b>Photo palette</b>: pull the colours out of a photo, as codes to copy</summary><iframe src="/lab/photo-palette/" title="Photo palette" loading="lazy" allow="microphone; clipboard-write" style="display:block;width:100%;height:560px;margin-top:8px;border:1px solid rgba(127,127,127,.35);border-radius:10px;background:#fff"></iframe><p style="margin:6px 0 0"><a href="/lab/photo-palette/">Open Photo palette on its own page</a></p></details></section><!-- /lab-tools -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/photo-palette/">Palette from a photo</a> <a href="/random/">Random number</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/photo-palette/">Color Palette from Photo</a> <a href="/random/">Random Number Generator</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Type a colour any way: <code>#f53</code>, <code>ff5733</code>, <code>rgb(255 87 51)</code>, <code>hsl(11 100% 60%)</code> or one of the 148 CSS names. Click any swatch to make it the colour. The nearest name is the nearest to the eye (CIE Lab), not to the numbers. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
   </div>
 </main>
