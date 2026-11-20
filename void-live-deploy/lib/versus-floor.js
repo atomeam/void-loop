@@ -13,8 +13,9 @@ export const ASPECTS = Object.freeze([
 
 /** the three Versus pages. A floor only once the rebuilt page is live and does the job. The gate still measures them. */
 export const TOOLS = Object.freeze([
-  { id: 'readable', name: 'Lightweight Page', page: '/our-motherfucking-version/', rival: 'motherfuckingwebsite.com', url: 'https://motherfuckingwebsite.com/', kind: 'page', works: true, checked: true, features: ['plain page', 'weigh markup'] },
-  { id: 'tracks', name: 'Album Track Time Adder', page: '/track-times/', rival: 'tsundere.pw', url: 'https://tsundere.pw/', kind: 'page', works: true, checked: true, features: ['track list', 'start times'] },
+  // A one-page manifesto and a silent album track list had nothing to use, so their stories are Echo Vault entries
+  // (/echo-vault/?entry=light-page and ?entry=album-list). The page-weight tool and the track-time adder stay as
+  // ordinary Verse tools, the way the hosting calculator stayed when its brochure moved. Comparisons stay owner-only.
   { id: 'letters', name: 'ROT13 Text Scrambler', page: '/rotate-letters/', rival: 'rot13.com', url: 'https://rot13.com/', kind: 'page', works: true, checked: true, features: ['letter shift'], extras: ['share link', 'read it back', 'scripts off'] },
 ]);
 

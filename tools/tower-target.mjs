@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readGone, isGone } from './tower-alive.mjs';
 import { tower, towerArgs } from '../void-live-deploy/lib/tower.js';
+import { echoVaultOf } from '../void-live-deploy/lib/echo-vault.js';
 import { overlay, readFloorDir } from './tower-files.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), SITE = path.join(ROOT, 'void-live-deploy'), OUT = path.join(SITE, 'tower.target.json');
@@ -55,6 +56,15 @@ export function advance(old, floors, today, gone = {}) {
   const settled = (old.settled || []).slice();
   for (const [h, g] of Object.entries(gone)) if (g && g.status === 'non-site' && !settled.some((x) => x.id === h)) settled.push({ id: h, at: today, as: 'non-site', kind: g.kind || 'a non-site', why: g.why });
   if (!why && old.id && isGone(old.id, gone)) { const g = gone[Object.keys(gone).find((h) => isGone(old.id, { [h]: 1 }))]; skipped.push({ id: old.id, at: today, why: g.status === 'non-site' ? 'settled ' + old.id + ' as a non-site (' + (g.kind || 'nothing on it to use') + '): ' + g.why : old.id + ' is ' + g.status + ': ' + g.why }); why = skipped[skipped.length - 1].why; }
+  // a site with no tool to rebuild is not a floor: it becomes an Echo Vault entry and the climb moves on
+  if (!why && old.id) {
+    const ev = echoVaultOf(cur || { id: old.id, site: old.id, host: old.id });
+    if (ev) {
+      if (!settled.some((x) => x.id === old.id)) settled.push({ id: old.id, at: today, as: 'echo-vault', why: ev });
+      skipped.push({ id: old.id, at: today, why: old.id + ' has no tool to rebuild, so it becomes an Echo Vault entry: ' + ev });
+      why = skipped[skipped.length - 1].why;
+    }
+  }
   // a target that is no floor any more (a stub or unstudied site the old smallest-first queue picked) is replaced by the closest real floor
   if (!why && old.id && !cur) { skipped.push({ id: old.id, at: today, why: old.id + ' is not a floor: not a studied, real site (docs/TOWER-RULES.md rule 1)' }); why = skipped[skipped.length - 1].why; }
   // a gone site never counts: it leaves the assimilated list and the old passed record
@@ -68,7 +78,7 @@ export function advance(old, floors, today, gone = {}) {
   }
   const resting = restingOf(skipped, today);
   const away = new Set([...assimilated.map((r) => r.id), ...settled.map((x) => x.id), ...resting]);
-  const open = (f) => !f.beaten && !f.held && !away.has(f.id) && !isGone(f.id, gone);
+  const open = (f) => !f.beaten && !f.held && !away.has(f.id) && !isGone(f.id, gone) && !echoVaultOf(f);
   // the floors the compounding pass sent back (tools/tower-compound.mjs) come ahead of every new one, the target in progress included
   const rq = (old.requeue || []).find((id) => by.has(id) && open(by.get(id)));
   const keep = old.id && !why && cur && open(cur) && (!rq || rq === old.id);

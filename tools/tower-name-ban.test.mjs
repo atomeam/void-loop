@@ -1,5 +1,4 @@
-// The internet-history museum may name rival sites in plain text (no logos).
-// Everywhere else on a family floor page, rival hostnames are banned.
+// Rival hostnames stay off public family pages. The old internet-history museum redirects to Echo Vault.
 // The Versus card and /rival/ pages stay under docs/TOWER-RULES.md.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -15,7 +14,7 @@ const hosts = [...new Set(FLOORS.map((f) => (hostOf(f.url) || hostOf(f.site) || 
 
 const strip = (html) => String(html || '').replace(/<!--[\s\S]*?-->/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
 
-test('no family floor page names a rival host in visible markup, except /internet-history/', () => {
+test('no family floor page names a rival host in visible markup', () => {
   const hits = [];
   for (const f of FAMILIES) {
     const file = join(DIR, f.page.replace(/^\//, '').replace(/\/$/, ''), 'index.html');
@@ -26,13 +25,8 @@ test('no family floor page names a rival host in visible markup, except /interne
   assert.deepEqual(hits, [], 'rival names on family pages:\n' + hits.join('\n'));
 });
 
-test('the name-ban allows only /internet-history/ to name studied sites', () => {
+test('the old internet-history museum opens Echo Vault, and is not a family tool page', () => {
   assert.ok(FAMILIES.every((f) => f.page !== '/internet-history/'), 'the museum is not a family tool page');
-});
-
-test('the internet history page may name sites in plain text and does not use logos', () => {
-  const html = readFileSync(join(DIR, 'internet-history/index.html'), 'utf8');
-  assert.match(html, /Internet history/);
-  assert.ok(!/<img\b/i.test(html), 'no logos or images on the history page');
-  assert.ok(hosts.some((h) => html.toLowerCase().includes(h)), 'the history page names at least one studied site');
+  const redirects = readFileSync(join(DIR, '_redirects'), 'utf8');
+  assert.match(redirects, /\/internet-history\/? \/echo-vault\/ 301/);
 });

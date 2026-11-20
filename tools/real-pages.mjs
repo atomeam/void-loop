@@ -496,6 +496,8 @@ export const SPECS = {
     t.ok(/Echo Vault: Internet History Archive/.test(await t.text('h1')), 'the archive is named');
     t.ok(/translated AI research reports/.test(await t.text('#paper-notes')), 'the reading collection is an entry');
     t.ok(/exclusive-hosting brochure/.test(await t.text('#hosting-brochure')), 'the brochure is an entry');
+    t.ok(/keeping websites light/.test(await t.text('#light-page')), 'the manifesto is an entry');
+    t.ok(/silent album track list/.test(await t.text('#album-list')), 'the silent list is an entry');
     t.ok((await t.p.locator('a[href*="thunit"], a[href*="randomarea"]').count()) === 0, 'no link to either site');
     await t.fill('#find', 'brochure');
     await t.p.waitForTimeout(50);

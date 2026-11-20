@@ -23,9 +23,7 @@ test('rows need a real reading of the other page', () => {
 
 test('a page that works is a floor, and a worse measurement does not take it away', () => {
   const rows = rowsFromMeasures(full, full);
-  assert.equal(isFloor(TOOLS[0]), false);
-  assert.equal(isFloor(TOOLS[1]), false);
-  assert.equal(isFloor(TOOLS[2]), false);
+  assert.equal(TOOLS.some((s) => s.id === 'readable' || s.id === 'tracks'), false, 'reading-only sites are Echo Vault entries, not floors');
   assert.equal(isFloor(NEXT[0]), false);
   assert.equal(isFloor({ kind: 'page', page: '/x/', works: true }, rows), true);
   assert.equal(isFloor({ kind: 'page', page: '/x/', works: false }, rows), false);
@@ -63,29 +61,29 @@ test('visitors get the sign and nothing else; the owner gets the floors, the nex
   const pub = visitorHtml();
   assert.match(pub, /Out of Order/);
   assert.doesNotMatch(pub, /motherfuckingwebsite|rot13|tsundere|better|worse|equal|podcastindex|livescore/);
-  const model = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
+  const model = viewModel({ tools: { letters: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
   assert.equal(model.floor, 0);
-  assert.equal(model.fight, 'motherfuckingwebsite.com');
+  assert.equal(model.fight, 'rot13.com');
   const own = ownerHtml(model);
   assert.doesNotMatch(own, /Out of Order/);
   assert.match(own, /still open/);
-  assert.match(own, /href="https:\/\/motherfuckingwebsite\.com\/" target="_blank" rel="noopener noreferrer"/);
+  assert.match(own, /href="https:\/\/rot13\.com\/" target="_blank" rel="noopener noreferrer"/);
   assert.match(own, /100 ms/);
   assert.match(own, /400 ms/);
-  assert.match(own, /plain page/);
+  assert.match(own, /letter shift/);
   assert.match(own, /elv-shots/);
-  assert.match(own, /href="\/our-motherfucking-version\/"/);
+  assert.match(own, /href="\/rotate-letters\/"/);
   assert.equal(SITES.some((s) => s.works), false);
   assert.doesNotMatch(pub, /target="_blank"/);
   assert.doesNotMatch(own + pub, /\b(grab|steal|absorb|conquer)\b/i);
 });
 
 test('the owner model keeps the measured rows and follows the gap notes', () => {
-  const api = viewModel({ tools: { readable: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
+  const api = viewModel({ tools: { letters: { at: '2026-11-12T00:00:00.000Z', ...rowsFromMeasures(full, slow) } } }, '');
   const again = modelFrom(api, '');
   assert.equal(again.floor, 0);
-  assert.equal(again.fight, 'motherfuckingwebsite.com');
-  assert.equal(again.sites.find((s) => s.id === 'readable').rows.speed.verdict, 'better');
+  assert.equal(again.fight, 'rot13.com');
+  assert.equal(again.sites.find((s) => s.id === 'letters').rows.speed.verdict, 'better');
   const scored = modelFrom(api, gapText({ exam: { domains: { sports: { score: 1, fails: [{ ask: 'yankees score', failed: ['board'] }] } } } }));
   assert.equal(scored.fight, 'livescore.com');
 });

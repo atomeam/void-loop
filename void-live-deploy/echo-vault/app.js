@@ -14,7 +14,7 @@ function apply() {
   none.hidden = shown > 0;
 }
 
-const entry = new URLSearchParams(location.search).get('entry');
+const entry = new URLSearchParams(location.search).get('entry') || location.hash.replace(/^#/, '');
 if (entry) {
   const el = document.getElementById(entry);
   if (el) el.scrollIntoView({ block: 'start' });
