@@ -1,0 +1,44 @@
+# The compounding pass (tools/tower-compound.mjs, lib/compound.js): every site and target that ever counted is measured again against its live
+# original, and one that no longer wins every check, or whose original gained a feature Verse lacks, goes back to the front of the build list.
+# It used to run only by hand (first pass 2026-11-20, #3119). Now the conductor (tools/conductor.mjs, tools/tower-watch.mjs) starts it once each
+# time Tower moves to a new target, so nothing that counted goes stale while the new one is built. Passive page loads only, as tower-gate.yml.
+name: Tower compound
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write # commit the target, the compound row and the evidence
+  actions: write # start the deploy after the commit (a GITHUB_TOKEN push starts no workflow)
+
+concurrency:
+  group: tower-compound
+  cancel-in-progress: false
+
+jobs:
+  compound:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Measure every counted site again, and scan its original for new features
+        env:
+          TOWER_PRIVATE: ${{ runner.temp }}/tower-private
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/tower-compound.mjs --live --features
+      - name: Commit and deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.target.json void-live-deploy/tower.compound.json void-live-deploy/tower.evidence.json domains/features void-live-deploy/versus || true
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower gate: compounding pass on a new target"
+          for i in 1 2 3 4 5; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 4)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true
