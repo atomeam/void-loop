@@ -142,7 +142,7 @@ const VERT = '#version 300 es\nin vec2 a; void main(){ gl_Position = vec4(a, 0.,
 const gl = canvas.getContext('webgl2', { antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: true });
 const note = q('#note');
 function sh(type, src) { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
-let ok = false, prog, U = {};
+let ok = false, prog, U = {}, soft = false;
 try {
   if (!gl) throw new Error('no webgl2');
   prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fixed)); gl.linkProgram(prog);
@@ -150,12 +150,13 @@ try {
   gl.useProgram(prog); const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   const a = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
   for (const n of ['R', 'T', 'M', 'BLUB', 'BLINK', 'TURN', 'STEPS']) U[n] = gl.getUniformLocation(prog, n);
+  try { const x = gl.getExtension('WEBGL_debug_renderer_info'); soft = !!x && /swiftshader|llvmpipe|software|basic render/i.test(String(gl.getParameter(x.UNMASKED_RENDERER_WEBGL))); } catch (_) { /* unknown renderer: assume a real one */ }
   ok = true;
 } catch (e) { console.warn('blub: the 3D picture is not available here (' + e.message + '); showing the photo'); }
 if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 'This browser cannot draw the 3D blobfish, so here is a real one.'; } else {
-  let scale = phone || saver ? .5 : .85, mx = 0, my = 0, tx = 0, ty = 0, blub = 0, turn = 0, turnTo = 0, last = performance.now(), slow = 0, fast = 0, frames = 0, t0 = last, blinkAt = 3;
-  const steps = phone || saver ? 44 : 80;
-  window.__blub = { frames: 0, scale, steps, tier: phone ? 'phone' : 'desktop' };
+  let scale = soft ? .3 : phone || saver ? .5 : .85, mx = 0, my = 0, tx = 0, ty = 0, blub = 0, turn = 0, turnTo = 0, last = performance.now(), slow = 0, fast = 0, frames = 0, t0 = last, blinkAt = 3;
+  const steps = soft ? 36 : phone || saver ? 44 : 80;
+  window.__blub = { frames: 0, scale, steps, tier: soft ? 'software' : phone ? 'phone' : 'desktop' };
   function size() { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); canvas.width = Math.max(64, Math.round(r.width*dpr*scale)); canvas.height = Math.max(64, Math.round(r.height*dpr*scale)); gl.viewport(0, 0, canvas.width, canvas.height); }
   size(); addEventListener('resize', size);
   stage.addEventListener('pointermove', (e) => { const r = stage.getBoundingClientRect(); tx = ((e.clientX - r.left)/r.width - .5)*2; ty = -((e.clientY - r.top)/r.height - .5)*2; });
@@ -171,7 +172,7 @@ if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 
     gl.uniform2f(U.R, canvas.width, canvas.height); gl.uniform1f(U.T, T); gl.uniform2f(U.M, mx, my); gl.uniform1f(U.BLUB, Math.sin(Math.min(1, blub)*Math.PI)); gl.uniform1f(U.BLINK, blink); gl.uniform1f(U.TURN, turn); gl.uniform1i(U.STEPS, steps);
     gl.drawArrays(gl.TRIANGLES, 0, 3); window.__blub.frames = ++frames;
     if (dt > .024) { slow++; fast = 0; } else if (dt < .0185) { fast++; slow = Math.max(0, slow - 1); }
-    if (slow > 20 && scale > .3) { scale = Math.max(.3, scale*.8); slow = 0; size(); } else if (fast > 240 && scale < (phone ? .7 : 1)) { scale = Math.min(phone ? .7 : 1, scale*1.15); fast = 0; size(); }
+    if (slow > 8 && scale > .25) { scale = Math.max(.25, scale*.8); slow = 0; size(); } else if (fast > 240 && scale < (phone ? .7 : 1)) { scale = Math.min(phone ? .7 : 1, scale*1.15); fast = 0; size(); }
     window.__blub.scale = +scale.toFixed(2);
     if (!reduced) requestAnimationFrame(frame);
   }
