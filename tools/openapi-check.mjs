@@ -18,6 +18,7 @@ export const INTERNAL = {
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
   '/api/buy': "Verse's own offer clicks (functions/api/buy.js): counts one click on an offer card and redirects to the catalog's own checkout, or counts a showing; no input is echoed; not a public API",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
+  '/api/loops': "every loop Verse runs, for the owner's /progress/ (functions/api/loops.js, tools/loop-census.mjs): owner only, GET, no input; anyone else gets a 404",
   '/api/credits/claim': "internal credits for a signed-in member (functions/api/credits/claim.js, lib/credits.js): earned for real use, spent on allowances, no money moves",
   '/api/credits/latest': "the public credit feed (functions/api/credits/latest.js): masked names, no email, no account id",
   '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",

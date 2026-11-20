@@ -2,7 +2,8 @@
 // are broken, and when Verse writes new probe asks. Run: node --test tools/conductor.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import './catchup.test.mjs'; // the catch-up clock the tick runs (tools/catchup-core.mjs)
+import './catchup.test.mjs';
+import './loop-census.test.mjs'; // the census the tick writes every 3 hours (tools/loop-census.mjs) // the catch-up clock the tick runs (tools/catchup-core.mjs)
 import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, designDue, willDue, lapDue, dailyDue, sweepDue, coderShort, CODER_RUN_CALLS, DAILY, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
 
 const H = 3600000, NOW = Date.parse('2026-10-26T08:00:00Z');

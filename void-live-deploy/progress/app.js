@@ -94,3 +94,29 @@ fetch('/tower.compound.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json(
   const box = document.getElementById('compound'); if (!c || !c.last || !box) return;
   box.querySelector('p').textContent = c.last.at + ': ' + m.sayRow(c.last); box.hidden = false;
 })).catch(() => {});
+// every loop Verse runs (GET /api/loops, owner only; tools/loop-census.mjs every 3 hours): a visitor gets a 404 and the box stays hidden
+const SAY = { success: 'passed', failure: 'failed', in_progress: 'running', queued: 'waiting', pending: 'waiting', waiting: 'waiting', cancelled: 'cancelled', skipped: 'skipped', neutral: 'passed', timed_out: 'timed out' };
+const dollars = (c) => (c ? '$' + (c / 100).toFixed(2) : '$0');
+const ago = (iso) => { const m = Math.round((Date.now() - Date.parse(iso)) / 60000); return !Number.isFinite(m) ? '' : m < 90 ? m + ' min ago' : m < 2880 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
+fetch('/api/loops', { cache: 'no-store', credentials: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+  const box = document.getElementById('all-loops'), body = document.getElementById('all-loops-rows'), sum = document.getElementById('all-loops-sum');
+  const c = j && j.census; if (!box || !body || !c || !Array.isArray(c.rows)) return;
+  sum.textContent = c.loops + ' loops, counted ' + ago(c.at) + ': ' + c.working + ' working, ' + c.failing + ' failing, ' + c.behind + ' behind, ' + c.idle + ' idle. '
+    + c.runs24 + ' runs and about ' + c.minutes24 + ' runner minutes in the last 24 hours, ' + dollars(c.costCents24) + ' spent. '
+    + 'The clock started ' + ((j.clock && j.clock.caughtUp24) || 0) + ' late loops on time today. ' + (c.note || '');
+  body.textContent = '';
+  for (const r of c.rows) {
+    const tr = document.createElement('tr');
+    const late = r.lateMin != null && r.lateMin >= 30 ? ' GitHub started it ' + (r.lateMin >= 90 ? Math.round(r.lateMin / 60) + ' h' : r.lateMin + ' min') + ' late.' : '';
+    const runs = r.expected24 ? r.ran24 + ' of ' + r.expected24 + ' planned' : String(r.ran24);
+    const cells = [[r.name, r.what], [r.status + (r.onClock ? ' (kept on time)' : ''), (r.rate != null ? r.rate + '% of the last ' + (r.ok + r.fail) + ' passed.' : '') + late], [runs, ''], [r.last ? ago(r.last.at) + ', ' + (SAY[r.last.result] || r.last.result) : 'never', ''], [dollars(r.costCentsPerDay), r.minutesPerDay + ' runner min']];
+    for (const [main, small] of cells) {
+      const td = document.createElement('td'); td.textContent = main;
+      if (small) { const s2 = document.createElement('div'); s2.className = 'note'; s2.textContent = small; td.appendChild(s2); }
+      if (/failing|failed/.test(r.status) && main === cells[1][0]) td.className = 'low';
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+  box.hidden = false;
+}).catch(() => {});
