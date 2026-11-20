@@ -145,13 +145,24 @@ export const regressed = (prev, item, v) => !!(prev && (prev.pass || prev.lastSi
 
 /** the job a failure files into the will engine (domains/inputs/stranger-test/records.jsonl): an improve job, or an invent job when the
  *  same check has failed INVENT_AFTER times after improve jobs, or when nothing free reaches the bar (the rival is far ahead). Pure. */
+// a rendered film or episode cannot be patched: when its purpose or its look fails, the way it is made has to change, so it is an invent job at once
+export const NO_PATCH = Object.freeze({ video: ['purpose', 'looks'], podcast: ['purpose', 'looks'] });
+// where each invent job starts: what nothing free does yet, and the new approach to prototype (owner, 2026-11-20: "we may have to build and invent things that dont exist yet")
+export const INVENT_START = Object.freeze({
+  'video:purpose': 'a film pipeline of Verse\'s own: a subject people asked about (the miss list, the cards people open), three or more sourced facts that answer its hook, a script written to pay that hook off, and a template-overlap score under 20% against every earlier film',
+  'video:looks': 'pictures that match the subject (licensed photos from the subject\'s own page and Wikimedia Commons, checked by the vision model, generated art only when none fits) and a voice picked by ear: each candidate voice read back by the hearing model and judged for natural pace before a film uses it',
+  'podcast:looks': 'two natural voices instead of one synthetic reader: each line voiced by the best of the speech models, scored by the hearing model for how human it sounds, with the music ducked under it',
+  'podcast:purpose': 'an episode built around one question listeners asked, answered with sources, instead of a log of the week',
+  'card:looks': 'card art that is the subject: a licensed photo found by the subject\'s own page, checked by the vision model for a match, painted only when no photo fits, never a generic scene',
+  'card:claims': 'sources chosen by meaning: each source must mention the subject, ranked by how directly it answers, and a card that cannot find one says so',
+});
 export function jobFor(item, v, prev = {}) {
   if (!v.fail) return null;
-  const stuck = v.failed.filter((k) => ((prev.stuck || {})[k] || 0) + 1 >= INVENT_AFTER);
+  const stuck = v.failed.filter((k) => (NO_PATCH[item.kind] || []).includes(k) || ((prev.stuck || {})[k] || 0) + 1 >= INVENT_AFTER);
   const invent = stuck.length > 0;
   const what = v.checks.filter((c) => c.ok === false).map((c) => c.name.toLowerCase() + ': ' + c.why).join('; ');
   if (!invent) return { type: 'stranger-improve', item: item.id, kind: item.kind, failed: v.failed, want: { title: 'make ' + item.id + ' pass the stranger test', why: what, weight: 9 } };
   return { type: 'stranger-invent', item: item.id, kind: item.kind, failed: v.failed,
     want: { title: 'invent a new way to make ' + item.kind + 's like ' + item.id + ' good: ' + stuck.join(', '), why: 'improve jobs did not reach the bar (' + what + '); design Verse\'s own approach, combining models and tools in a new way or a new interface', weight: 11 },
-    invent: { key: item.kind + ':' + stuck.join(','), spec: 'what professional looks like for this ' + item.kind + ', measured by the stranger test checks ' + stuck.join(', ') + '; what no existing free tool does', prototype: 'one working version on a helper/* branch', measure: { before: v.score, after: null, bar: 100 } } };
+    invent: { key: item.kind + ':' + stuck.join(','), spec: (stuck.map((k) => INVENT_START[item.kind + ':' + k]).filter(Boolean).join('; ') || 'what professional looks like for this ' + item.kind + ', and what no existing free tool does') + '; passing means the stranger test checks ' + stuck.join(', ') + ' pass', prototype: 'one working version on a helper/* branch', measure: { before: v.score, after: null, bar: 100 } } };
 }

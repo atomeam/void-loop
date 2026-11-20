@@ -57,11 +57,13 @@ const l2 = { items: { a: { score: 70, hash: 'x', at: '2026-11-19' }, b: { score:
 assert.deepEqual(pickNext([c, a, b], l2).map((x) => x.id), ['b', 'a', 'c']);
 
 // jobs: a first failure is an improve job; the same check failing again after that is an invent job with a spec, a prototype and a measure
-const it2 = { id: '20261110-news-scene', kind: 'video', hash: 'h' };
+const it2 = { id: '20261110-news-scene', kind: 'video', hash: 'h' }, itp = { ...it2, kind: 'page' };
 let led2 = record({}, it2, v);
-assert.equal(jobFor(it2, v, {}).type, 'stranger-improve');
+assert.equal(jobFor({ ...it2, kind: 'page' }, v, {}).type, 'stranger-improve');
+// a rendered film cannot be patched: a purpose failure is an invent job at once, with where to start
+const now1 = jobFor(it2, v, {}); assert.equal(now1.type, 'stranger-invent'); assert.match(now1.invent.spec, /template-overlap score under 20%/);
 for (let i = 1; i < INVENT_AFTER; i++) led2 = record(led2, it2, v);
-const inv = jobFor(it2, v, led2.items[it2.id]);
+const inv = jobFor(it2, v, led2.items[it2.id]); assert.equal(jobFor(itp, v, led2.items[it2.id]).type, 'stranger-invent');
 assert.equal(inv.type, 'stranger-invent'); assert.equal(inv.invent.key, 'video:purpose'); assert.ok(inv.invent.spec && inv.invent.prototype && inv.invent.measure.bar === 100);
 assert.equal(jobFor(it2, pass, {}), null);
 console.log('stranger: ok');
