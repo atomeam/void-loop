@@ -1,0 +1,93 @@
+{
+ "about": "Money patterns Verse copies, each from a documented real business, each with the source that was read. The revenue lane (tools/revenue-lane.mjs) only tests copy built from these; every finished experiment adds its result here, and the pattern's score decides how often it is tried next. docs/money-playbook.md.",
+ "patterns": [
+  {
+   "id": "free-core-paid-plus",
+   "what": "Keep the product free and name, plainly, what the paid plan adds on top.",
+   "proof": "Read the Docs: a free community service plus a paid Business plan; donations alone did not work for them. Photopea: free editor, paid Premium alongside.",
+   "sources": [
+    "https://about.readthedocs.com/blog/2024/08/10-year-anniversary/",
+    "https://www.failory.com/interview/photopea"
+   ],
+   "template": "Everything here is free. {name} adds {blurb_lc}, {price}.",
+   "cta": "See {name}",
+   "results": {
+    "tries": 0,
+    "wins": 0,
+    "seen": 0,
+    "clicks": 0
+   }
+  },
+  {
+   "id": "offer-where-people-already-are",
+   "what": "Put one quiet offer on the pages that already get the most time, instead of waiting for people to find the store.",
+   "proof": "Photopea earns from the hours people already spend in the editor; Read the Docs runs a single non-tracking ad on the docs readers already read.",
+   "sources": [
+    "https://www.failory.com/interview/photopea",
+    "https://about.readthedocs.com/blog/2024/08/10-year-anniversary/"
+   ],
+   "template": "Enjoying this page? {name} gets you {blurb_lc}, {price}.",
+   "cta": "Get {name}",
+   "results": {
+    "tries": 0,
+    "wins": 0,
+    "seen": 0,
+    "clicks": 0
+   }
+  },
+  {
+   "id": "one-click-to-checkout",
+   "what": "Send the button straight to the payment form, one step fewer.",
+   "proof": "Gumroad documents ?wanted=true for opening the payment form directly from a creator's own site.",
+   "sources": [
+    "https://gumroad.com/help/article/144-send-customers-directly-to-your-payment-form"
+   ],
+   "template": "{name}: {blurb_lc}, {price}.",
+   "cta": "Buy {name}",
+   "direct": true,
+   "results": {
+    "tries": 0,
+    "wins": 0,
+    "seen": 0,
+    "clicks": 0
+   }
+  },
+  {
+   "id": "honest-trial",
+   "what": "Lead with the free week when checkout really has one, and say the reminder and cancel terms out loud.",
+   "proof": "Plausible grew to $1M ARR with no popups or dark patterns, cancel any time, and a reminder before renewals.",
+   "sources": [
+    "https://plausible.io/blog/open-source-saas"
+   ],
+   "needs": "trial",
+   "template": "Try {name} {trial}: {blurb_lc}. You get an email before it renews at {price_bare}, and you can cancel any time.",
+   "cta": "Start the free week",
+   "results": {
+    "tries": 0,
+    "wins": 0,
+    "seen": 0,
+    "clicks": 0
+   }
+  },
+  {
+   "id": "pay-per-use-for-builders",
+   "what": "Sell the tool builders already use here, priced small and per month or per call.",
+   "proof": "x402 is an open standard for charging per API request over HTTP, for people and agents, with no accounts; Verse already sells calls that way.",
+   "sources": [
+    "https://docs.x402.org/"
+   ],
+   "template": "Builders: {name} gives you {blurb_lc}, {price}.",
+   "cta": "Add {name}",
+   "results": {
+    "tries": 0,
+    "wins": 0,
+    "seen": 0,
+    "clicks": 0
+   },
+   "kinds": [
+    "license",
+    "service"
+   ]
+  }
+ ]
+}

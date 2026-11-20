@@ -1,0 +1,11 @@
+{
+ "about": "The live offer experiments the revenue lane runs on Verse's busiest pages (tools/revenue-lane.mjs). Written by the lane; /offers/offer.js reads it. Every line of copy is built from offers/playbook.json and checked by honestCopy.",
+ "slots": {
+  "team": {"page":"/team/","products":["void-monthly","big-board"],"running":null,"champion":null},
+  "treasury": {"page":"/treasury/","products":["void-monthly","join-the-team"],"running":null,"champion":null},
+  "brain": {"page":"/brain/","products":["void-monthly"],"running":null,"champion":null},
+  "films": {"page":"/films/","products":["void-monthly"],"running":null,"champion":null},
+  "starboard": {"page":"/starboard/","products":["code-review-pro","void-monthly"],"running":null,"champion":null}
+ },
+ "history": []
+}
