@@ -1,5 +1,9 @@
 {
  "about": "Public files the deploy copy runs through the scrub (tools/public-sites.mjs): a studied site named in one becomes \"another site\". Written by the leak guard.",
- "files": [],
- "at": {}
+ "files": [
+  "films/index.html"
+ ],
+ "at": {
+  "films/index.html": "2026-11-20T02:49:31.642Z"
+ }
 }

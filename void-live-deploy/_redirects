@@ -130,3 +130,6 @@
 /emoji-combos/emoji-dictionary /emoji-combos/ 301
 /emoji-combos/emoji-dictionary/ /emoji-combos/ 301
 # /rival/ and /compare/ moved into Versus: lib/versus-moved.js answers them (it keeps the query; this file would drop it)
+# a reading list with no tool opens its Echo Vault entry
+/reading-list /echo-vault/?entry=paper-notes 301
+/reading-list/ /echo-vault/?entry=paper-notes 301
