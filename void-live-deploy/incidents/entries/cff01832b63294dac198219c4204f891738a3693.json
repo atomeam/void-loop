@@ -1,0 +1,43 @@
+{
+ "at": "2026-11-20T00:52:13.345Z",
+ "sha": "cff01832b63294dac198219c4204f891738a3693",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44642908635",
+ "suite": "browser suite on main",
+ "checks": [
+  "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
+  "base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+  "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in",
+  "suite ran to the end",
+  "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
+  "Verse art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "tools/real-pages.mjs",
+  "tools/rivals-in-versus.test.mjs",
+  "tools/sitemap.mjs",
+  "tools/test_void.mjs",
+  "void-live-deploy/_routes.json",
+  "void-live-deploy/echo-vault/index.html",
+  "void-live-deploy/lib/owner-gate.js",
+  "void-live-deploy/lib/toolkit.js",
+  "void-live-deploy/lib/versus-moved.js",
+  "void-live-deploy/obituaries/index.html",
+  "void-live-deploy/speculation-rules.json",
+  "void-live-deploy/sw.js",
+  "void-live-deploy/tools/index.html",
+  "void-live-deploy/versus/index.html"
+ ],
+ "shards": [
+  1,
+  3,
+  4
+ ],
+ "passed": [
+  1,
+  4
+ ]
+}

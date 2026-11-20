@@ -1,0 +1,30 @@
+{
+ "at": "2026-11-20T12:32:51.061Z",
+ "sha": "3c3e06e3ad772016ddbcbc0429da03689eb06d04",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44729033198",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go, with a quiet \"calming the field\" pill showing while it is held back and gone after (asked by Verse)",
+  "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+  "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "void-live-deploy/progress/loops/assistant.json",
+  "void-live-deploy/progress/loops/cards.json",
+  "void-live-deploy/progress/loops/quality.json",
+  "void-live-deploy/progress/loops/revenue-runs/2026-11-20T1111.json",
+  "void-live-deploy/quality/board.json",
+  "void-live-deploy/tower.heldout.json",
+  "void-live-deploy/tower.universe.json"
+ ],
+ "shards": [
+  3,
+  4
+ ],
+ "passed": [
+  4
+ ]
+}

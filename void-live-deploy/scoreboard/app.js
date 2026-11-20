@@ -86,5 +86,6 @@ async function main() {
     box.append(list);
   }
   document.getElementById('cards').after(box);
+  try { const q = await import('/scoreboard/quality.js'); await q.draw(box); } catch (_) { /* the board is optional: the cards above stand without it */ }
 }
 main();

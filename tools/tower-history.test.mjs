@@ -1,6 +1,6 @@
 // skills/tower.js historyOf / historyHtml: the card's site history, read from the same ledger (tower.target.json) /conquered/ reads
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { historyOf, historyHtml } from '../void-live-deploy/skills/tower.js';
+import { historyOf, historyHtml } from '../void-live-deploy/versus/card.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ledger = {
@@ -37,7 +37,7 @@ test('history html: the current target first, a link to each Verse page that exi
   assert.match(h, /<a href="\/emoji-combos\/">emojicombos\.com<\/a>/);
   assert.doesNotMatch(h, /<a href="[^"]*">id5-sync\.com/);
   assert.match(h, /Show all 5/);
-  assert.match(h, /href="\/assimilated\/"/);
+  assert.match(h, /href="\/versus\/\?view=assimilated"/);
 });
 test('history html: nothing to show, nothing drawn', () => {
   assert.equal(historyHtml({ target: {}, floors: [] }, esc), '');

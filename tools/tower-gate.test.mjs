@@ -339,7 +339,7 @@ test('the image boards floor and its lane are never pictured (noShot): no screen
   const p = probeFor('image boards: lainchan.org'); assert.match(p.ask.verse, /^\/boards\/\?preview=/); assert.deepEqual(Object.keys(p.parts), leader.extra);
   const shown = 'Anonymous Oct 25 No. 1\n>be me\n>>2 quoted\nhello hidden words\nReport'; assert.equal(score(shown, p.truth).n, 5);
   assert.equal(score('>be me\n>>2 quoted\nhello [spoiler]hidden words[/spoiler]', p.truth).n < 5, true, 'the raw text alone is not a right answer');
-  const fs = await import('node:fs'); const page = fs.readFileSync(new URL('../void-live-deploy/compare/index.html', import.meta.url), 'utf8');
+  const fs = await import('node:fs'); const page = fs.readFileSync(new URL('../void-live-deploy/versus/compare.js', import.meta.url), 'utf8');
   assert.match(page, /noShotOf\(f\)/); assert.match(page, /No picture kept for this kind of site/);
   const boards = fs.readFileSync(new URL('../void-live-deploy/boards/index.html', import.meta.url), 'utf8').replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<template[\s\S]*?<\/template>|<[^>]+>/g, ' ');
   for (const [a, items] of Object.entries(p.parts)) assert.equal(score(boards, items).n, items.length, a + ': the page says it before any board exists');

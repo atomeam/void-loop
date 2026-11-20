@@ -474,7 +474,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const sites = FLOORS.concat(frontierOf(frontier).filter(floorable).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], frontier: true, ...frontierPage(x), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), ...crawlFields(crawlOf(f)), gateBeaten: g.beaten && !f.held && !missOf(crawlOf(f)).length, gateCleared: !f.held && ((g.cleared && !missOf(crawlOf(f)).length) || g.beaten), beaten: inSeason(f) && g.beaten && !f.held && !missOf(crawlOf(f)).length, cleared: inSeason(f) && !f.held && !(g.beaten && !missOf(crawlOf(f)).length) && kept.has(f.id), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), ...crawlFields(crawlOf(f), hostOf(f.url) || hostOf(f.site)), gateBeaten: countable(f, g), gateCleared: !f.held && (g.cleared || g.beaten), beaten: inSeason(f) && countable(f, g), cleared: inSeason(f) && !f.held && !countable(f, g) && kept.has(f.id), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   // the queue ranks on measured rows only (2026-10-29): a loss against the default bar (the site turned the gate away, barRow) stays a loss on the
@@ -506,9 +506,39 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f.cleared ? 'passed' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten && !f.cleared; });
   return { floors, marker: won.length + past.length + 1, beaten: won.length, passed: past.length, total: floors.length, open: true, candidates: skipped.length, notFloors: skipped };
 }
-const missOf = (c) => (c && Array.isArray(c.missing) ? c.missing : []);
+// A site counts (owner, 2026-11-12: a site counts once Verse has a full working page for it live and it works, then the climb moves on): every
+// check the gate runs against the live site is won AND Verse has its own page for the job. Until 2026-11-19 a site also needed its whole-site
+// crawl to find nothing missing; the crawl lists every heading, button and translation it sees (flightconnections.com: 604 "missing", most of
+// them its own menus in Vietnamese and Chinese and one "to <country>" line per country), so the list never reached zero and the Tower sat on
+// one site for ten days. The crawl's real gaps now go to the build queue (feature-scan, docs/TOWER-RULES.md rule 13) and never hold a site.
+const countable = (f, g) => !!(g && g.beaten && !f.held && f.page);
+// the crawl's noise, not a feature: sign-in and payment dialogs, buttons, prices, ad-blocker notices, the language menu
+const CHROME_RE = /^(?:log ?in|log ?out|sign ?(?:in|up|out)\b.*|e-?mail|password|new password|confirm password|pay|cancel|save|delete\b.*|yes\b.*|continue\b.*|menu|language|languages|privacy\b.*|cookie\b.*|send reset\b.*|reset password|on this page|subscribe|create (?:an |your )?account|adblocker detected|(?:new )?features are coming!?|get premium\b.*|choose your premium\b.*|in \d+ languages)$/i;
+/** the crawl's "missing" list cut down to real, different gaps: no translations of the same menu, no buttons, prices or sign-in dialogs, no
+ *  "(N: …)" tails, and one line for a run of per-country or per-place pages ("to France", "to France with a stopover" → "Flights to each
+ *  country (N)"). Order kept. Pure. */
+export function realGaps(list, host = '') {
+  const out = [], seen = new Set(), site = String(host || '').toLowerCase().replace(/^www\./, '').replace(/\.[a-z.]+$/, '').replace(/[^a-z]/g, ''); let places = 0, froms = 0;
+  for (const raw of list || []) {
+    let x = String(raw || '').replace(/\s*\(\d+:.*$/, '').replace(/^[←→↑↓\s]+/, '').replace(/\s+/g, ' ').trim();
+    if (!x || x.length < 3) continue;
+    if (/[^\u0000-\u024f\u2010-\u2027\u2190-\u21ff'’“”]/.test(x)) continue; // another language's copy of a menu already listed
+    if (/[$€£¥]\s?\d|\d\s?[$€£¥]/.test(x) || /^[\d\s.,:%-]+$/.test(x) || CHROME_RE.test(x) || /\?\s*'?\s*'?\??$/.test(x) && /^delete /i.test(x)) continue;
+    if (/[ăâđêôơưĂÂĐÊÔƠƯ\u1ea0-\u1ef9]/.test(x)) continue; // Vietnamese copy
+    if (/[^\u0000-\u007f]/.test(x.replace(/[‘’“”—–…←→]/g, '')) && x.split(' ').length <= 3) continue; // a short menu word in another language
+    if (/^to [A-Z]/.test(x) || /^to\. /.test(x)) { places++; continue; }
+    if (/^(?:A page|Pages): Flights from /.test(x)) { froms++; continue; }
+    if (site && x.toLowerCase().replace(/[^a-z]/g, '').replace(/\d+$/, '').startsWith(site) && x.length <= site.length + 8) continue; // the site's own name
+    const k = x.toLowerCase().replace(/\d[\d,]*/g, '#');
+    if (seen.has(k)) continue; seen.add(k); out.push(x);
+  }
+  if (froms) out.push('Flights from each country (' + froms + ' pages)');
+  if (places) out.push('Flights to each country (' + places + ')');
+  return out;
+}
+const missOf = (c, host) => (c && Array.isArray(c.missing) ? realGaps(c.missing, host) : []);
 /** a site's crawl on a floor: missingFeatures (names) and crawled ({ pages, templates, features, verse_pages, verse_features, crawled }), or {}. Pure. */
-function crawlFields(c) { return c ? { missingFeatures: missOf(c), crawled: { pages: c.pages || 0, templates: c.templates || 0, features: c.features || 0, verse_pages: c.verse_pages || 0, verse_features: c.verse_features || 0, at: c.crawled || null } } : { missingFeatures: [] }; }
+function crawlFields(c, host) { return c ? { missingFeatures: missOf(c, host), rawMissing: Array.isArray(c.missing) ? c.missing.length : 0, crawled: { pages: c.pages || 0, templates: c.templates || 0, features: c.features || 0, verse_pages: c.verse_pages || 0, verse_features: c.verse_features || 0, at: c.crawled || null } } : { missingFeatures: [] }; }
 /** the missing features of a site in a few words: "missing 3: Apple Name, Also Called, A table". Pure. */
 export const missingLine = (f, max = 3) => { const m = (f && f.missingFeatures) || []; return m.length ? 'missing ' + m.length + ': ' + m.slice(0, max).join(', ') + (m.length > max ? '…' : '') : ''; };
 /** the one set of counts (docs/TOWER-RULES.md rule 5): assimilated (every aspect verified), the current floor, floors remaining. Pure. */

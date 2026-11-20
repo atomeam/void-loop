@@ -16,23 +16,31 @@ export function nextTarget({ lock, floors }) {
   if (lock && by.has(lock) && !by.get(lock).beaten && !by.get(lock).held) return lock;
   return (floors.find((f) => f.state === 'current') || floors.find((f) => !f.beaten) || {}).id || null;
 }
-// No timed give-way (docs/TOWER-RULES.md rule 3): the floor Verse is on stays the floor until the gate verifies EVERY aspect
-// (lib/tower.js gate().beaten) and its study has nothing missing; then it is assimilated and the next closest floor takes over in the same run.
-// Until 2026-11-09 a target gave way after HOLD_DAYS (3 days from 2026-11-03, then 1 day), and a site "passed" with aspects still open; both
-// put unverified wins and stub pages on the card. A floor with no progress for RETRY_DAYS is retried (its open aspects re-queued for the gate
-// and the build queue), never dropped. The old `passed` and `skipped` lists stay in the file as records.
-export const HOLD_DAYS = Infinity;
+// A site counts once the gate wins every check against the live site and Verse has its own working page for the job (lib/tower.js countable;
+// owner, 2026-11-12). The crawl's gaps never hold a site: they go to the build queue (feature-scan, rule 13).
+// No stall (owner, 2026-11-19: "the tower obviously doesn't work, it's been on that for a month"): from 2026-11-09 to 2026-11-19 a floor never
+// gave way (HOLD_DAYS was Infinity) and flightconnections.com sat on the Tower for ten days at 16 of 16 checks won, held by 604 crawl lines.
+// Now a floor with no progress (no more checks won, no closer) for STALL_DAYS gives way: its open checks and its crawl gaps go to the build
+// queue (`background`), it rests for REST_DAYS so the climb does not pick it straight back, and the next closest floor takes over.
+export const STALL_DAYS = 3;
+export const HOLD_DAYS = STALL_DAYS; // the old name
+export const REST_DAYS = 14;
 export const RETRY_DAYS = 1;
 export const PASS_RUN = 40;
-export const STALL_DAYS = HOLD_DAYS; // the old name
-/** the hold check: never stalled (no timed give-way); { stalled: false, n, progressAt, retry } where retry says a floor with no progress for
- *  RETRY_DAYS gets its open aspects re-measured. Pure. */
-export function stallCheck(old, floors, today, days = RETRY_DAYS) {
+/** the hold check: { stalled, n, assim, progressAt, retry }. Progress is one more check won or a higher closeness. Pure. */
+export function stallCheck(old, floors, today, days = STALL_DAYS) {
   const f = floors.find((x) => x.id === old.id); if (!f || f.beaten) return { stalled: false };
-  const n = f.n || 0, since = old.since || old.progressAt || today, progressAt = !Number.isFinite(+old.n) || n > +old.n ? today : old.progressAt || since;
+  const n = f.n || 0, assim = Number.isFinite(+f.assim) ? +f.assim : 0, since = old.since || old.progressAt || today;
+  const moved = !Number.isFinite(+old.n) || n > +old.n || (Number.isFinite(+old.assim) && assim > +old.assim);
+  const progressAt = moved ? today : old.progressAt || since;
   const idle = (Date.parse(today) - Date.parse(progressAt)) / 864e5;
-  return { stalled: false, n, progressAt, retry: idle >= days };
+  return { stalled: idle >= days, n, assim, progressAt, retry: idle >= RETRY_DAYS };
 }
+/** the sites resting after a stall (skipped with `stalled`, within REST_DAYS of today). Pure. */
+export const restingOf = (skipped, today) => new Set((skipped || []).filter((r) => r && r.stalled && (Date.parse(today) - Date.parse(r.at)) / 864e5 < REST_DAYS).map((r) => r.id));
+/** a stalled floor's build jobs: each open check and each real crawl gap (lib/tower.js realGaps), one row each. Pure. */
+export const stallJobsOf = (f, today) => backgroundOf(f, today).map((r) => ({ ...r, job: 'build: ' + r.job }))
+  .concat((f.missingFeatures || []).slice(0, 40).map((g) => ({ id: f.id, aspect: 'feature: ' + g, since: today, job: 'build: add ' + g + ' to ' + (f.page || 'Verse\'s page') })));
 /** the background work a passed site leaves: one row per aspect still open (questions to write for accuracy and completeness, the journeys to
  *  script). Pure. */
 export const backgroundOf = (f, today) => (f.open || f.left || []).filter((a) => !(f.lost || []).includes(a)).map((a) => ({ id: f.id, aspect: a, since: today, job: /^journey/.test(a) ? 'script the journey with steps and negative controls' : a === 'accuracy' ? 'write the question and work out its answer (tools/tower-probes.mjs truth)' : a === 'completeness' ? 'list what the best sites in the category show (tools/tower-probes.mjs facts)' : 'measure it in tools/tower-gate.mjs' }));
@@ -53,10 +61,18 @@ export function advance(old, floors, today, gone = {}) {
   const passed = (old.passed || []).filter((r) => !isGone(r.id, gone));
   for (let i = assimilated.length - 1; i >= 0; i--) if (isGone(assimilated[i].id, gone)) assimilated.splice(i, 1);
   const st = old.id && !why ? stallCheck(old, floors, today) : { stalled: false };
-  const away = new Set([...assimilated.map((r) => r.id), ...settled.map((x) => x.id)]);
+  if (st.stalled && cur && !cur.beaten && !cur.gateBeaten) {
+    for (const r of stallJobsOf(cur, today)) if (!background.some((b) => b.id === r.id && b.aspect === r.aspect)) background.push(r);
+    skipped.push({ id: old.id, at: today, stalled: true, why: old.id + ' made no progress for ' + STALL_DAYS + ' days (' + (cur.n || 0) + ' of ' + (cur.m || 0) + ' checks won, ' + (cur.missingFeatures || []).length + ' gaps), so its gaps went to the build queue and the climb moved on' });
+    why = skipped[skipped.length - 1].why;
+  }
+  const resting = restingOf(skipped, today);
+  const away = new Set([...assimilated.map((r) => r.id), ...settled.map((x) => x.id), ...resting]);
   const open = (f) => !f.beaten && !f.held && !away.has(f.id) && !isGone(f.id, gone);
-  const keep = old.id && !why && cur && open(cur);
-  let next = keep ? old.id : (floors.find((f) => f.state === 'current' && open(f)) || floors.find(open) || {}).id || null;
+  // the floors the compounding pass sent back (tools/tower-compound.mjs) come ahead of every new one, the target in progress included
+  const rq = (old.requeue || []).find((id) => by.has(id) && open(by.get(id)));
+  const keep = old.id && !why && cur && open(cur) && (!rq || rq === old.id);
+  let next = keep ? old.id : (rq || (floors.find((f) => f.state === 'current' && open(f)) || floors.find(open) || {}).id) || null;
   // floors the gate already verified on every aspect are assimilated in their turn, in this same run (at most PASS_RUN)
   for (let i = 0; !keep && next && i < PASS_RUN; i++) {
     const f = by.get(next); if (!f || !f.gateBeaten) break;
@@ -65,19 +81,27 @@ export function advance(old, floors, today, gone = {}) {
   // a retry (no progress for RETRY_DAYS): the open aspects go back to the gate and the build queue, the floor stays
   if (keep && st.retry && cur) for (const r of backgroundOf(cur, today)) if (!background.some((b) => b.id === r.id && b.aspect === r.aspect)) background.push({ ...r, job: 'retry: ' + r.job });
   const nf = by.get(next) || {};
-  const about = 'The floor Verse is on. It is assimilated only when the gate verifies every aspect against the live site and its feature study has nothing missing; until then it stays the floor and low-confidence aspects are retried (docs/TOWER-RULES.md, tools/tower-target.mjs).';
-  const base = { about, id: next, since: next === old.id ? old.since || today : today, n: next === old.id && st.n !== undefined ? st.n : nf.n || 0, progressAt: next === old.id ? st.progressAt || old.progressAt || today : today };
+  const about = 'The site Verse is working on. It counts once every check against the live site is won and Verse has its own working page for the job; the crawl\'s gaps go to the build queue. A site with no progress for ' + STALL_DAYS + ' days gives way: its gaps go to the build queue and the next closest site takes over (docs/TOWER-RULES.md, tools/tower-target.mjs).';
+  const base = { about, id: next, since: next === old.id ? old.since || today : today, n: next === old.id && st.n !== undefined ? st.n : nf.n || 0, assim: next === old.id && st.assim !== undefined ? st.assim : nf.assim || 0, progressAt: next === old.id ? st.progressAt || old.progressAt || today : today };
+  const rest = (old.requeue || []).filter((id) => by.has(id) && !(by.get(id).beaten || by.get(id).gateBeaten)); if (rest.length) base.requeue = rest;
   if (old.season) base.season = old.season; if (old.archived) base.archived = old.archived;
-  return { file: { ...base, assimilated, ...(passed.length ? { passed } : {}), ...(background.length ? { background } : {}), ...(skipped.length ? { skipped } : {}), ...(settled.length ? { settled: settled.slice(-40) } : {}), ...(why ? { last: { at: today, why } } : old.last ? { last: old.last } : {}) }, why };
+  return { file: { ...base, assimilated, ...(passed.length ? { passed } : {}), ...(background.length ? { background: background.slice(-300) } : {}), ...(skipped.length ? { skipped } : {}), ...(settled.length ? { settled: settled.slice(-40) } : {}), ...(why ? { last: { at: today, why } } : old.last ? { last: old.last } : {}) }, why };
+}
+/** one settle from the files on disk: the old target file, the new one and why it moved. Used by the run below and by the Tower guard (tools/guards/tower.mjs). */
+export function floorsNow(old = rd('tower.target.json') || {}) {
+  const ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
+  const args = towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: { assimilated: [], ...old, id: null }, ft: rd('tower.features.json'), gn: rd('tower.gone.json'), pa: rd('parity.json') });
+  return tower(...args).floors;
+}
+export function settleTarget(today = new Date().toISOString().slice(0, 10)) {
+  const old = rd('tower.target.json') || {};
+  return { old, today, ...advance(old, floorsNow(old), today, readGone()) };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // the evidence the site serves (tools/tower-files.mjs assemble: the aggregate with each floor's own file over it), never the bare aggregate:
   // a target worked out from older evidence than the card reads disagreed with the card, so the fight on the screen changed from load to load
   // and after each deploy (owner, 2026-11-06: "the whole tower keeps resetting")
-  const old = rd('tower.target.json') || {}, ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
-  const args = towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: { assimilated: [], ...old, id: null }, ft: rd('tower.features.json'), gn: rd('tower.gone.json'), pa: rd('parity.json') });
-  const unlocked = tower(...args);
-  const today = new Date().toISOString().slice(0, 10), { file, why } = advance(old, unlocked.floors, today, readGone());
+  const { old, file, why } = settleTarget();
   if (why) console.log(why);
   if (JSON.stringify(file) !== JSON.stringify(old)) fs.writeFileSync(OUT, JSON.stringify(file, null, 1) + '\n');
   console.log('target: ' + (file.id || 'none') + (file.id === old.id ? ' (kept)' : ' (new)'));

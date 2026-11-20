@@ -2,6 +2,7 @@
  * arcade-card — the shared card for Verse's arcade games (skills/pong.js, skills/snake.js): a title bar, a canvas, a status
  * line with Verse's reason, and New game. The game loop runs only while the card is on the page and the tab is visible.
  */
+import { takeFocus } from '../lib/card-focus.js';
 export function arcadeCard(th, stageApi, { cls, title, sub, w, h }) {
   const el = document.createElement('div');
   el.className = 'thing kept-card game-card ' + cls; el.dataset.id = th.id; el.tabIndex = 0; el.setAttribute('aria-label', 'Arcade game: ' + title);
@@ -17,6 +18,7 @@ export function arcadeCard(th, stageApi, { cls, title, sub, w, h }) {
   for (const n of [cv, again]) n.addEventListener('pointerdown', (e) => e.stopPropagation());
   el.append(cv, status, why, again);
   stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
+  takeFocus(el);
   let raf = 0, last = 0, onFrame = null;
   const loop = (t) => { raf = 0; if (!el.isConnected) return; const dt = last ? (t - last) / 1000 : 0.016; last = t; if (!document.hidden && onFrame) onFrame(dt, ctx); raf = requestAnimationFrame(loop); };
   return { el, cv, ctx, status, why, again, start(fn) { onFrame = fn; if (!raf) raf = requestAnimationFrame(loop); }, local(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * w / r.width, y: (e.clientY - r.top) * h / r.height }; } };

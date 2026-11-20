@@ -1,16 +1,33 @@
 {
- "cursor": 2,
+ "cursor": 7,
  "picks": {
   "debris-field": 1,
   "gap-glide": 1,
   "null-waves": 1,
-  "packet-maze": 1
+  "packet-maze": 1,
+  "stackwell": 1,
+  "nine-grid": 1,
+  "three-alike": 1,
+  "pong": 1,
+  "null-sweep": 1
  },
  "scores": {
   "debris-field": {
    "update": 1,
    "note": "Update 1: the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges.",
-   "why": "shipped"
+   "why": "shipped",
+   "fun": 76,
+   "parts": {
+    "danger": 8,
+    "goal": 7,
+    "boss": 6,
+    "juice": 7,
+    "phone": 9,
+    "fair": 8,
+    "end": 7,
+    "fun": 8,
+    "polish": 8
+   }
   },
   "gap-glide": {
    "update": 1,
@@ -35,6 +52,111 @@
    "paid": false,
    "cycle": 1,
    "video": "https://github.com/atomeam/void-loop/actions/runs/44550618957"
+  },
+  "stackwell": {
+   "update": 1,
+   "note": "Update 1: Verse now plays smarter by scanning the board to find the best position.",
+   "why": "shipped",
+   "fun": 66,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44566598990",
+   "parts": {
+    "danger": 7,
+    "goal": 8,
+    "boss": 2,
+    "juice": 6,
+    "phone": 9,
+    "fair": 7,
+    "end": 5,
+    "fun": 8,
+    "polish": 7
+   }
+  },
+  "nine-grid": {
+   "update": 1,
+   "note": "Update 1: Every second you delay, Verse grows more restless.",
+   "why": "shipped",
+   "fun": 50,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44577124263",
+   "parts": {
+    "danger": 6,
+    "goal": 7,
+    "boss": 2,
+    "juice": 3,
+    "phone": 9,
+    "fair": 5,
+    "end": 4,
+    "fun": 5,
+    "polish": 4
+   }
+  },
+  "three-alike": {
+   "update": 1,
+   "note": "Update 1: The race against Verse becomes a frantic scramble for points.",
+   "why": "shipped",
+   "fun": 63,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44652720911",
+   "parts": {
+    "danger": 7,
+    "goal": 8,
+    "boss": 4,
+    "juice": 6,
+    "phone": 9,
+    "fair": 5,
+    "end": 6,
+    "fun": 7,
+    "polish": 5
+   }
+  },
+  "pong": {
+   "update": 1,
+   "note": "Update 1: The ball moves with more weight and momentum, making every rally feel more intense.",
+   "why": "shipped",
+   "fun": 62,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44666567667",
+   "parts": {
+    "danger": 3,
+    "goal": 7,
+    "boss": 4,
+    "juice": 5,
+    "phone": 8,
+    "fair": 10,
+    "end": 7,
+    "fun": 6,
+    "polish": 6
+   }
+  },
+  "null-sweep": {
+   "update": 1,
+   "note": "Update 1: The tension of a hidden disaster is replaced by the satisfying rhythm of clearing the field.",
+   "why": "shipped",
+   "fun": 68,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44673119041",
+   "parts": {
+    "danger": 1,
+    "goal": 8,
+    "boss": 7,
+    "juice": 6,
+    "phone": 9,
+    "fair": 10,
+    "end": 5,
+    "fun": 7,
+    "polish": 8
+   }
   }
  },
  "shown": [
@@ -69,6 +191,76 @@
    "paid": false,
    "provider": "verse @cf/google/gemma-4-26b-a4b-it",
    "video": "https://github.com/atomeam/void-loop/actions/runs/44550618957",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-19T16:35:51.287Z",
+   "id": "stackwell",
+   "title": "Stackwell",
+   "n": 1,
+   "note": "Update 1: Verse now plays smarter by scanning the board to find the best position.",
+   "fun": 66,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44566598990",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-19T17:32:29.226Z",
+   "id": "nine-grid",
+   "title": "Nine Grid",
+   "n": 1,
+   "note": "Update 1: Every second you delay, Verse grows more restless.",
+   "fun": 50,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44577124263",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-20T01:30:48.095Z",
+   "id": "three-alike",
+   "title": "Three Alike",
+   "n": 1,
+   "note": "Update 1: The race against Verse becomes a frantic scramble for points.",
+   "fun": 63,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44652720911",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-20T03:22:24.073Z",
+   "id": "pong",
+   "title": "Verse Pong",
+   "n": 1,
+   "note": "Update 1: The ball moves with more weight and momentum, making every rally feel more intense.",
+   "fun": 62,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44666567667",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-20T04:21:08.724Z",
+   "id": "null-sweep",
+   "title": "Null Sweep",
+   "n": 1,
+   "note": "Update 1: The tension of a hidden disaster is replaced by the satisfying rhythm of clearing the field.",
+   "fun": 68,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44673119041",
    "dropped": false,
    "born": false
   }

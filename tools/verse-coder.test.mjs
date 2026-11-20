@@ -8,6 +8,9 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, symlin
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
+import { charterPrompt } from './charter.mjs';
+import { charterBlock, MAX_GROWN } from '../void-live-deploy/lib/charter.js';
+import { withoutCharter, SYSTEM } from './verse-coder.mjs';
 import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, toolTally, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE, nearMiss, searchShape, nameTokens } from './verse-coder.mjs';
 import { scanDiff, buildPrompt } from './verse-loop.mjs';
 
@@ -163,17 +166,27 @@ test('each turn sends the task and the newest results whole, and older results c
 
 test('a lap with its whole brief, reading big files and checking, counting a token as 3 characters, lasts the 30 turns (#2234)', async () => {
   // three laps in a row stopped at the token cap after 20 to 28 turns of reading: the 11,000-character brief and two 16,000-character reads rode along every turn
-  const prompt = buildPrompt({ task: { kind: 'next', n: 1, text: 'Make the tower lane pages answer.' }, tagteam: readFileSync('docs/TAGTEAM.md', 'utf8'), gates: readFileSync('docs/GATE-STANDARDS.md', 'utf8') });
+  // fixed notes, not the live docs: docs/TAGTEAM.md grows with every game update, and this test must not move with it
+  const notes = (name) => Array.from({ length: 400 }, (_, i) => '- ' + name + ' note ' + i + ': a line long enough to look like a real entry in the file').join('\n');
+  const prompt = buildPrompt({ task: { kind: 'next', n: 1, text: 'Make the tower lane pages answer.' }, tagteam: notes('tagteam'), gates: notes('gates') });
   assert.ok(prompt.length > 8000, 'the real brief is long: ' + prompt.length);
   const s = repo();
   for (const f of ['a', 'b', 'c']) writeFileSync(join(s.work, 'src/' + f + '.mjs'), Array.from({ length: 900 }, (_, i) => '  const line' + i + ' = ' + JSON.stringify('z'.repeat(80)) + ';').join('\n'));
+  // the system message holds the charter, which Verse may grow by up to MAX_GROWN lines of 240 characters: count it at that worst size, so this test
+  // does not move with the live charter either, and fails if the room is ever used up
+  const worstCharter = charterBlock({ added: Array.from({ length: MAX_GROWN }, () => ({ line: 'x'.repeat(240) })) });
+  const worstSystem = SYSTEM(CHECKS, '').length - charterPrompt().length + worstCharter.length;
   // a check every 4th turn: a check is progress, so it clears the read-only count and the run is not stopped at the read cap (2026-11-17)
   let i = 0;
-  const model = async (msgs) => { i++; const text = i % 4 === 0 ? call('check', { name: 'add' }) : call('read', { path: 'src/' + 'abc'[i % 3] + '.mjs', from: 1 + (i * 37) % 400 }); return { text, tokens: Math.ceil(msgs.reduce((n, x) => n + x.content.length, 0) / 3) + 60 }; };
+  const model = async (msgs) => { i++; const text = i % 4 === 0 ? call('check', { name: 'add' }) : call('read', { path: 'src/' + 'abc'[i % 3] + '.mjs', from: 1 + (i * 37) % 400 }); return { text, tokens: Math.ceil(msgs.reduce((n, x) => n + (x.role === 'system' ? worstSystem : x.content.length), 0) / 3) + 60 }; };
   const r = await runCoder({ root: s.work, prompt, checks: CHECKS, model, limits: { turns: LIMITS.turns, tokens: LIMITS.tokens } });
   assert.equal(r.outcome, 'turn-cap', 'it ran out of tokens after ' + r.turns + ' turns (' + r.tokens + ' tokens)');
+  assert.ok(r.tokens < LIMITS.tokens * 0.99, 'under the cap with the charter at its largest: ' + r.tokens + ' of ' + LIMITS.tokens + ' tokens used in 30 turns');
   const w = windowOf([{ role: 'system', content: 's' }, { role: 'user', content: prompt }, ...Array.from({ length: 4 }, () => [{ role: 'assistant', content: 'n'.repeat(9000) }, { role: 'user', content: 'r' }]).flat()]);
-  assert.ok(w[1].content.startsWith(prompt.slice(0, WINDOW.task)) && w[1].content.length < WINDOW.task + 200 && /Make the tower lane pages answer/.test(w[1].content), 'past the first turns the task stays, the reference notes go');
+  assert.ok(w[1].content.length < WINDOW.task + 200 && /Make the tower lane pages answer/.test(w[1].content) && /Do exactly one item/.test(w[1].content), 'past the first turns the rules and the task stay');
+  assert.ok(!/GATE-STANDARDS|tagteam note|gates note/.test(w[1].content.split('\n[... ')[0]), 'the reference notes go, however long they are');
+  assert.ok(!w[1].content.startsWith(charterPrompt()), 'the brief\'s second copy of the charter goes (the system message has it)');
+  assert.ok(w[1].content.length < 3000, 'with the charter and the notes gone the task head is small: ' + w[1].content.length);
   assert.match(w[2].content, /characters cut from an older turn of yours/, 'an old long edit of its own is cut too');
   assert.equal(windowOf([{ role: 'system', content: 's' }, { role: 'user', content: prompt }, { role: 'assistant', content: 'a' }, { role: 'user', content: 'r' }])[1].content, prompt, 'the first turns get the whole brief');
 });
@@ -484,4 +497,10 @@ test('nearMiss: the lines a missed replace nearly matched, so the next turn copi
   assert.equal(nearMiss(file, ''), '');
   const long = Array.from({ length: 60 }, (_, i) => 'line ' + i).join('\n');
   assert.ok(nearMiss(long, Array.from({ length: 40 }, (_, i) => 'line ' + i).join('\n')).split('\n').length <= 23, 'at most max lines and a margin');
+});
+
+test('withoutCharter drops only an opening copy of the charter', () => {
+  assert.equal(withoutCharter('C\n\nrules', 'C\n'), 'rules');
+  assert.equal(withoutCharter('rules C', 'C'), 'rules C');
+  assert.equal(withoutCharter('rules', ''), 'rules');
 });

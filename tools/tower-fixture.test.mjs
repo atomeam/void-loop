@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FLOORS, passingRows, tower, towerArgs } from '../void-live-deploy/lib/tower.js';
-import { towerHtml, changes } from '../void-live-deploy/skills/tower.js';
+import { towerHtml, changes } from '../void-live-deploy/versus/card.js';
 import { seasonTarget, featuresWithout, towerFixture, conquerable } from './tower-fixture.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
@@ -67,7 +67,7 @@ test('check "Google Flights names /flights/": travel is assimilated, its row is 
   assert.equal(t.floors.find((f) => f.id === 'travel').state, 'beaten');
   const html = towerHtml(t, esc, { enter: false });
   const after = html.split('<div class="tower-floor" role="button" tabindex="0" data-id="travel"')[1] || '', ln = (after.match(/<\/div>(<div class="tw-links"[\s\S]*?<\/div>)/) || [])[1] || '';
-  assert.match(text(ln), /Google Flights ↗/); assert.match(text(ln), /Verse's page \/flights\//); assert.match(text(ln), /side by side/); assert.match(ln, /\/rival\/\?site=google-flights/);
+  assert.match(text(ln), /Google Flights ↗/); assert.match(text(ln), /Verse's page \/flights\//); assert.match(text(ln), /side by side/); assert.match(ln, /\/versus\/\?view=rival&amp;site=google-flights/);
   assert.match(ln, /<a class="tw-page" href="\/flights\/"/);
   const links = [...html.matchAll(/<div class="tw-links"[\s\S]*?<\/div>/g)].map((m) => m[0]);
   assert.ok(links.length >= 2 && links.every((l) => /class="tw-page"/.test(l)), 'every entry names its page');

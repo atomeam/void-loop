@@ -1,0 +1,7 @@
+/* Verse's shared polish (the quality engine's component: one file, every page that links it): eased feedback on every control, a clear focus ring,
+   a pressed state, and reduced motion respected. It changes no layout and no colour of the page's own text. */
+a, button, [role="button"], summary, input, select, textarea { transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease, filter .18s ease; }
+a:hover, button:hover, [role="button"]:hover, summary:hover { filter: brightness(1.14); }
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #b6a9ff; outline-offset: 2px; }
+button:active, [role="button"]:active { transform: scale(.97); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; } }

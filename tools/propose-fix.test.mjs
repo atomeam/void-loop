@@ -127,7 +127,9 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /console\.log\("automerge"\)/, 'confidence is recorded; it does not hold the merge (Atom, 2026-11-04)'); assert.match(pr, /git push -q origin HEAD:main/, 'a passing fix goes onto main: its review ran in the propose job (2026-10-19: Actions may not open pull requests here)');
   // the one outside key (owner, 2026-10-16: Claude as the builder brain): the propose job only, and only on a run that picked Claude;
   // the job that holds the write token never sees it
-  assert.doesNotMatch(wf, /OPENROUTER|secrets\.(?!VOID_OWNER_TOKEN|ANTHROPIC_API_KEY\b)/);
+  assert.doesNotMatch(wf, /OPENROUTER|secrets\.(?!VOID_OWNER_TOKEN|ANTHROPIC_API_KEY\b|VERSE_BOT_TOKEN\b)/);
+  // the bot token (#2966) opens the PR so its checks start: the job that opens it, never the one a model ran in
+  assert.doesNotMatch(propose, /VERSE_BOT_TOKEN/);
   assert.equal(propose.match(/secrets\.ANTHROPIC_API_KEY/g).length, 1);
   assert.match(propose, /ANTHROPIC_API_KEY: \$\{\{ inputs\.brain == 'claude' && secrets\.ANTHROPIC_API_KEY \|\| '' \}\}/);
   assert.doesNotMatch(pr, /ANTHROPIC/);

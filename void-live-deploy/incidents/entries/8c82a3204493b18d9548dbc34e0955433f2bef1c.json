@@ -1,0 +1,43 @@
+{
+ "at": "2026-11-19T22:45:09.794Z",
+ "sha": "8c82a3204493b18d9548dbc34e0955433f2bef1c",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44627476088",
+ "suite": "browser suite on main",
+ "checks": [
+  "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
+  "base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
+  "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+  "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in",
+  "suite ran to the end",
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it"
+ ],
+ "touched": [
+  "docs/HANDOFF-GAPS.md",
+  "docs/MAP.md",
+  "tools/real-pages.mjs",
+  "tools/rivals-in-versus.test.mjs",
+  "tools/seo.test.mjs",
+  "tools/sitemap.mjs",
+  "tools/sitemap.test.mjs",
+  "tools/test_void.mjs",
+  "tools/tower-gate.test.mjs",
+  "tools/tower-rules.test.mjs",
+  "tools/tower.test.mjs",
+  "void-live-deploy/_redirects",
+  "void-live-deploy/_routes.json",
+  "void-live-deploy/compare/index.html",
+  "void-live-deploy/lib/rival-page.js"
+ ],
+ "shards": [
+  1,
+  4
+ ],
+ "passed": [
+  1,
+  4
+ ],
+ "closedAt": "2026-11-20T12:01:41.785Z",
+ "closedBy": "61d82192539d87f580f55a3155151b4f29c0e354",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/44724773271",
+ "minutes": 797
+}

@@ -1,11 +1,12 @@
 // Free-agent clock. Limits: docs/agents-scouted.md (2026-11-10). A 429 parks until the reset. Three misses drop a source.
+import { GEMINI_MODELS } from './models.js';
 export const DROP_AFTER = 3;
 const DAY = 864e5;
 
 const day = (id, name, rank, key, cap, limit, url, model, endpoint, extra = {}) => ({ id, name, kind: 'self', rank, key, cap, window: extra.window || 'day', zone: extra.zone || 'UTC', runs: extra.runs !== false, limit, reset: extra.reset || 'the next UTC day', url, model, endpoint, windowMs: extra.windowMs });
 export const SOURCES = Object.freeze([
-  day('groq', 'Groq', 1, 'GROQ_API_KEY', 1000, '30 requests a minute, 1,000 a day, about 8,000 tokens a minute on the free plan', 'https://console.groq.com/docs/rate-limits', 'llama-3.3-70b-versatile', 'https://api.groq.com/openai/v1/chat/completions'),
-  day('gemini', 'Google AI Studio', 2, 'GEMINI_API_KEY', null, 'per model, shown in AI Studio; the daily cap resets at midnight Pacific', 'https://ai.google.dev/gemini-api/docs/rate-limits', 'gemini-2.5-flash', 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', { zone: 'America/Los_Angeles', reset: 'midnight Pacific' }),
+  day('groq', 'Groq', 1, 'GROQ_API_KEY', 1000, '30 requests a minute, 1,000 a day, about 8,000 tokens a minute on the free plan', 'https://console.groq.com/docs/rate-limits', 'openai/gpt-oss-120b', 'https://api.groq.com/openai/v1/chat/completions'),
+  day('gemini', 'Google AI Studio', 2, 'GEMINI_API_KEY', null, 'per model, shown in AI Studio; the daily cap resets at midnight Pacific', 'https://ai.google.dev/gemini-api/docs/rate-limits', GEMINI_MODELS[0], 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', { zone: 'America/Los_Angeles', reset: 'midnight Pacific' }),
   day('cerebras', 'Cerebras', 3, 'CEREBRAS_API_KEY', null, 'trial tier; public pages disagree on the exact request cap, so a 429 is the limit', 'https://inference-docs.cerebras.ai/support/rate-limits', 'llama-3.3-70b', 'https://api.cerebras.ai/v1/chat/completions', { reset: 'the next UTC day, or the Retry-After' }),
   day('openrouter', 'OpenRouter free models', 4, 'OPENROUTER_API_KEY', 50, '20 requests a minute; 50 a day until the account has bought credits, then 1,000', 'https://openrouter.ai/blog/tutorials/free-llm-apis-compared/', 'qwen/qwen3-coder:free', 'https://openrouter.ai/api/v1/chat/completions'),
   day('mistral', 'Mistral', 5, 'MISTRAL_API_KEY', null, '1 request a second, 500,000 tokens a minute, 1 billion tokens a month on the free tier', 'https://docs.mistral.ai/', 'mistral-small-latest', 'https://api.mistral.ai/v1/chat/completions', { window: 'month', reset: 'the first UTC day of the month' }),

@@ -215,3 +215,16 @@ test('the screen-reader line reads the card\'s own words, not its frame (2026-10
   assert.match(fn, /const name = h \? h\.textContent\.trim\(\) : \(d && d\.b \? d\.b\.split\('\\n'\)\[0\]/, 'a card with no heading is named by its first line');
   assert.match(fn, /if \(name\) el\.setAttribute\('aria-label', name\)/);
 });
+
+test('a copied or shared card carries its full page: the Full card line, the link and a longer body in the #vc link', async () => {
+  const S = await import('../void-live-deploy/lib/card-share.js');
+  const body = 'Ingredients\n\n' + Array.from({ length: 30 }, (_, i) => 'Item number ' + i + ' of the recipe.').join('\n');
+  const d = S.dataOf({ title: 'Guacamole', kind: 'Skill — Body and mind', body, page: 'https://a-to-mind.com/recipes/?q=guacamole' });
+  const t = S.shareText(d);
+  assert.match(t, /\nFull card: https:\/\/a-to-mind\.com\/recipes\/\?q=guacamole\n/); assert.ok(t.includes('Item number 29 of the recipe.'), 'every line rides in the text');
+  assert.equal(S.shareUrl(d), 'https://a-to-mind.com/recipes/?q=guacamole', 'a card with a page shares the page');
+  const back = S.fromHash('#' + S.linkOf({ ...d, p: '' }).split('#')[1]);
+  assert.ok(back.b.length > 600, 'the #vc link carries far more than 200 letters: ' + back.b.length);
+  assert.equal(S.parse(t).p, 'https://a-to-mind.com/recipes/?q=guacamole', 'a pasted card keeps its page');
+  assert.equal(S.dataOf({ title: 'x', page: 'javascript:alert(1)' }).p, undefined, 'only an https page rides');
+});

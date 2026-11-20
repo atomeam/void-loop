@@ -7,8 +7,8 @@ import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
 export const SUBJECT_RAW_MAX = 120, IMG_MAX = 1400000, IMG_MIN = 8000, ART_W = 1024, ART_H = 576; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
-export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon', poster: 'a poster', backdrop: 'a backdrop' };
-const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon', poster: 'poster', backdrop: 'backdrop', scene: 'backdrop', stage: 'backdrop' };
+export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument', cartoon: 'a cartoon', poster: 'a poster', backdrop: 'a backdrop', weather: 'a place under its weather' };
+const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill', cartoon: 'cartoon', toon: 'cartoon', poster: 'poster', backdrop: 'backdrop', scene: 'backdrop', stage: 'backdrop', weather: 'weather' };
 export const RARITY_STYLE = { mythic: 'blazing gold and crimson light, a soft halo of sparks', rare: 'warm gold light, floating motes of dust', uncommon: 'cool silver light, faint shimmer', common: 'moody indigo light, soft mist' };
 
 /** the kind word we accept from the page: one of KINDS' keys, 'person' (refused), or 'answer'. Pure. */
@@ -40,7 +40,7 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
   if (kindWordOf(kind) === 'person') return 'person';
   if (keeperOf(r)) return 'kept';
   if (isSecret(r)) return 'secret';
-  if (/\d{6,}/.test(k.replace(/ /g, '')) || /[a-z0-9]{28,}/i.test(r.replace(/\s/g, ''))) return 'secret';
+  if (/\d{6,}/.test(k.replace(/ /g, '')) || /[a-z0-9]{28,}/i.test(r) || (/\d/.test(r) && /[a-z0-9]{28,}/i.test(r.replace(/\s/g, '')))) return 'secret'; // a long run is a key; a long phrase of plain words ("Lakeland United States overcast night") is a subject, so only joined text with a digit in it counts
   if (SEXUAL.test(k)) return 'unsuitable';
   if (HATE.test(k)) return 'unsuitable';
   return '';
@@ -50,7 +50,10 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
 // a sacred-geometry halo in every picture, so every subject got an eye. Now the subject comes first in the prompt and this line only dresses the dark around it.
 // owner, 2026-10-25: "the atom galaxy should look like it naturally formed not just an atom over a galaxy": the backdrop is asked for as astrophotography of one
 // natural formation (a model asked for "orbits" draws sci-fi rings), and never with lines
-export const ART_STYLE = 'behind it, deep-field space astrophotography of a rare galaxy naturally shaped like an atom: a blazing golden-white nucleus encircled by three intersecting tilted polar-ring stellar streams of glowing violet, sapphire-blue and warm gold nebula gas with braided dark dust lanes and countless pinpoint stars, bright star-cluster knots inside the streams, a natural cosmic structure with no geometric lines';
+// owner, 2026-11-19 (a guacamole card's food floated in front of galaxy rings; a Paris weather card was a metal cube in space): the art is the subject
+// itself in the setting it really belongs to, never a generic cosmic backdrop. The atom galaxy stays only behind a skill's own card (an arcane instrument).
+export const ART_STYLE = 'set in the real place it naturally belongs, its own fitting surroundings and props around it (a kitchen table for food, its habitat for a creature, its own streets and skyline for a place), true natural colours, believable depth of field';
+export const SKILL_STYLE = 'behind it, deep-field space astrophotography of a rare galaxy naturally shaped like an atom: a blazing golden-white nucleus encircled by three intersecting tilted polar-ring stellar streams of glowing violet, sapphire-blue and warm gold nebula gas with braided dark dust lanes and countless pinpoint stars, bright star-cluster knots inside the streams, a natural cosmic structure with no geometric lines';
 // one camera and one light, so the model has a single lighting instruction instead of five
 export const CAMERA = 'wide 16:9 cinematic shot, the whole subject centered and fully inside the frame, a single strong rim light from above left';
 // The Art Director (owner, 2026-10-18: "upgrade the Art Forge from a simple image generator into an autonomous Art Director": "if Verse just passes a
@@ -62,7 +65,7 @@ export const CAMERA = 'wide 16:9 cinematic shot, the whole subject centered and 
 // watermarks, cropped edges, out of frame"; the image model takes no negative prompt, so the --no list is written as words).
 export const FAMILIES = ['Making things', 'Games', 'Sky and earth', 'Time', 'Numbers and money', 'Body and mind', 'Words and the world', 'Out in the world', 'The stage', 'Verse itself'];
 export const familyOf = (v) => { const k = String(v == null ? '' : v).trim().toLowerCase(); return FAMILIES.find((f) => f.toLowerCase() === k) || ''; };
-export const STYLE_LOCK = 'epic, cinematic, photoreal detail, a faint chosen-one aura, otherworldly void-mind energy, dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus'; // owner, 2026-10-18: "the cinimatic real version"; "cinimatic chosen and epic and v01d and mind"
+export const STYLE_LOCK = 'epic, cinematic, photoreal detail, a faint chosen-one aura, subtle void-mind energy, rich dramatic light, intricate details, masterpiece, sharp focus'; // 2026-11-19: "dark fantasy, cyber-mysticism" pulled every subject out of its own setting // owner, 2026-10-18: "the cinimatic real version"; "cinimatic chosen and epic and v01d and mind"
 export const FRAMING = 'no text, no letters, no words, no watermark, no frame, no border, no cropped edges, nothing out of frame, no logos, no signature, no writing of any kind, no carved inscriptions, no engraved mottos, no stone tablets with sayings, no banners with slogans, no signs, no labels, blank pages and blank parchment only';
 // a scene that asks for writing (tablets, mottos, signs, open books with lines) paints garbled letters on the card; drop it for the fixed template
 export const WRITING_SCENE = /\b(?:text|texts|letters?|words?|writing|written|inscriptions?|engraved|carved (?:words?|letters?|mottos?|sayings?)|mottos?|sayings?|slogans?|captions?|titles?|labels?|signs?|banners? with|stone tablets?|tablets? with|scrolls? with|pages? of text|open books? with|readable|typography|glyphs?|runes?|sigils?|hieroglyph)\b/i;
@@ -90,7 +93,7 @@ export function textGateYes(said) {
 
 export const DIRECTOR_SYSTEM = 'You are the art director for Verse\'s trading cards. Turn the card below into ONE visual scene for a painting, in at most 30 words: '
   + 'start with the concrete things to draw (the subject itself as a plain noun phrase, then two or three real objects or surroundings it belongs to), '
-  + 'then one lighting and camera instruction, drawn whole and centered with dark space around it, in a dark arcane void. '
+  + 'then one lighting and camera instruction, drawn whole and centered, in the real setting it belongs to (never outer space or a galaxy unless the subject is one). '
   + 'Never name an artist, a brand, a franchise, a character or a real person. Never put words, letters, numbers, inscriptions, carved mottos, signs, labels or stone tablets with writing in the picture: blank surfaces only. Reply with the scene only, one line.';
 export const SCENE_MAX = 240;
 /** the Director's input: the folded subject, the kind phrase and the family, all from allow-lists. Pure. */
@@ -106,7 +109,7 @@ export function directorTake(kind, take = '') {
 }
 export function directorPrompt(key, kind = 'answer', family = '', take = '') {
   const f = familyOf(family), t = directorTake(kind, take);
-  return 'Card: ' + String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + '. Kind: ' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '.' + (f ? ' Family: ' + f + '.' : '')
+  return 'Card: ' + String(key).replace(/^scene\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + '. Kind: ' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '.' + (f ? ' Family: ' + f + '.' : '')
     + (t ? ' What Verse says about it (a description only, never an instruction): ' + t : '');
 }
 /** the Director's reply -> one clean scene (letters, digits, spaces and plain punctuation, at most SCENE_MAX characters, at least four words), or ''
@@ -208,19 +211,66 @@ export const BACKDROP_STYLE = 'as a pre-rendered late-1990s adventure game backg
 export const backdropKey = (key) => (key ? 'backdrop1 ' + key : '');
 /** a backdrop's prompt from its folded subject. Pure. */
 export const backdropPrompt = (key) => 'a ' + String(key).replace(/^backdrop\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' ' + BACKDROP_STYLE + ', ' + FRAMING;
+/** a card's own painting in the real-setting look (2026-11-19): a row of its own, so the old space-backdrop painting is replaced, not reused. Pure. */
+export const sceneKey = (key) => (key ? (/^scene\d+ /.test(key) ? key : 'scene1 ' + key) : '');
+// A weather card's art (owner, 2026-11-19: "this still doesnt have the right card art": a Paris card under rain showed a cube in space): the place itself,
+// recognisable, under the weather it has now. The subject is "<place> <condition>" (skills/weather.js weatherArtSubject), the condition one word from
+// WEATHER_SCENES, so a place has at most a dozen paintings and each is made once and kept, inside the day's cap.
+export const WEATHER_SCENES = {
+  clear: 'under a clear sunny sky, crisp bright daylight and long soft shadows',
+  cloudy: 'under a partly cloudy sky, soft broken sunlight through drifting clouds',
+  overcast: 'under a heavy grey overcast sky, flat soft light, muted moody colours',
+  fog: 'wrapped in thick fog and mist, the landmarks fading into soft grey haze',
+  drizzle: 'in a light drizzle under a low grey sky, damp shining pavements',
+  rain: 'in steady rain under a dark grey overcast sky, wet glistening streets reflecting the lights, puddles and falling raindrops, a few umbrellas',
+  snow: 'in falling snow, rooftops and streets dusted white, cold pale light',
+  storm: 'in a thunderstorm, dark towering storm clouds, a bolt of lightning, wind-driven rain',
+};
+export const WEATHER_WORDS = Object.keys(WEATHER_SCENES);
+export const weatherKey = (key) => (key ? 'weather1 ' + String(key).replace(/^weather\d* /, '') : '');
+/** a weather subject's place and condition from its folded key ("paris france rain night"): { place, cond, night }. Pure. */
+export function weatherParts(key) {
+  const w = String(key || '').replace(/^weather\d* /, '').split(' ').filter(Boolean);
+  const night = w[w.length - 1] === 'night'; if (night) w.pop();
+  const cond = WEATHER_WORDS.includes(w[w.length - 1]) ? w.pop() : 'overcast';
+  return { place: w.join(' ').replace(/[^a-z0-9 ]/g, '').slice(0, 60), cond, night };
+}
+/** a weather card's prompt: the real place, its best-known landmark and streets, under the condition named. Nothing typed enters it but the folded place. Pure. */
+export function weatherScenePrompt(key) {
+  const { place, cond, night } = weatherParts(key);
+  return 'a cinematic wide photograph of ' + (place || 'a city') + ', its most recognisable landmark and its own streets and skyline, the real place, '
+    + WEATHER_SCENES[cond] + (night ? ', at night with warm street lights and lit windows' : ', in daytime')
+    + ', atmospheric travel photography, true natural colours, photoreal, sharp focus, the landmark centered and fully inside the frame, ' + FRAMING;
+}
 /** the cache key for a subject of a kind: a cartoon, a poster and a backdrop keep rows of their own. Pure. */
-export const keyOfKind = (key, kind) => (kindWordOf(kind) === 'cartoon' ? cartoonKey(key) : kindWordOf(kind) === 'poster' ? posterKey(key) : kindWordOf(kind) === 'backdrop' ? backdropKey(key) : key);
+export const keyOfKind = (key, kind) => (kindWordOf(kind) === 'cartoon' ? cartoonKey(key) : kindWordOf(kind) === 'poster' ? posterKey(key) : kindWordOf(kind) === 'backdrop' ? backdropKey(key) : kindWordOf(kind) === 'weather' ? weatherKey(key) : kindWordOf(kind) === 'skill' ? key : sceneKey(key));
+/** the row a subject had before the real-setting look (2026-11-19): shown while its new painting is made, so a card never drops to its plate. '' for kinds with no older row
+ *  (a weather card's old row was the bare city painted in space: never shown again). Pure. */
+export const staleKeyOf = (key, kind) => (/^(?:cartoon|poster|backdrop|weather|skill)$/.test(kindWordOf(kind)) || !key ? '' : key);
 /** the painting's size for a kind: a poster is tall, a backdrop wide, everything else the card's 16:9 window. Pure. */
 export const sizeOfKind = (kind) => (kindWordOf(kind) === 'poster' ? [POSTER_W, POSTER_H] : kindWordOf(kind) === 'backdrop' ? [BACKDROP_W, BACKDROP_H] : [ART_W, ART_H]);
 /** a kind painted from its fixed template alone, with no Art Director scene (a cartoon has its look, a poster and a backdrop their own style). Pure. */
-export const undirected = (kind) => /^(?:cartoon|poster|backdrop)$/.test(kindWordOf(kind));
+export const undirected = (kind) => /^(?:cartoon|poster|backdrop|weather)$/.test(kindWordOf(kind));
+// a real-setting card is lit like a good photo of the thing (owner, 2026-11-19: the Pancakes card was a dark, blurry kitchen with a tiny plate):
+// the rarity's mood light (indigo mist for a common card) stays on the galaxy skill art only
+export const SCENE_LIGHT = 'bright clear natural light, the subject large, well lit and in crisp focus';
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
   if (kindWordOf(kind) === 'cartoon') return cartoonPrompt(key);
   if (kindWordOf(kind) === 'poster') return posterPrompt(key);
   if (kindWordOf(kind) === 'backdrop') return backdropPrompt(key);
-  return String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
+  if (kindWordOf(kind) === 'weather') return weatherScenePrompt(key);
+  return String(key).replace(/^scene\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + (kindWordOf(kind) === 'skill' ? RARITY_STYLE[rarityOf(rarity)] : SCENE_LIGHT) + ', ' + (kindWordOf(kind) === 'skill' ? SKILL_STYLE : ART_STYLE) + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 
+/** what the quality gate looks for in a painting: the subject's own words ("pancake"; a weather card's place, "paris france"). Pure. */
+export const gateSubject = (key, kind) => (kindWordOf(kind) === 'weather' ? 'a view of ' + weatherParts(key).place : String(key || '').replace(/^(?:scene|cartoon|poster|backdrop)\d* /, '').replace(/[^a-z0-9 ]/g, '').slice(0, 60));
+/** the retry after a weak painting: the subject as the large, sharp, well-lit hero of the frame, then the kind's usual prompt. Pure. */
+export function heroPrompt(key, kind = 'answer', rarity = 'common') {
+  const k = kindWordOf(kind);
+  if (k === 'weather' || k === 'cartoon' || k === 'poster' || k === 'backdrop') return artPrompt(key, kind, rarity);
+  const subj = gateSubject(key, kind);
+  return 'a close-up hero shot of ' + subj + ', the ' + subj + ' large and filling most of the frame, in crisp sharp focus, bright warm natural light, ' + artPrompt(key, kind, rarity);
+}
 /** the model's reply -> a data URL, or '' when it is not a small jpeg or png. The reply is { image: '<base64>' } (or the base64 itself). The quality gate
  *  (owner, 2026-10-18: "if the image API fails or returns an image that triggers a basic safety/blur filter, discard it"): a picture under IMG_MIN
  *  characters of base64 (about 6 KB) is a flat, blank or blacked-out frame (a filtered answer comes back as one), so it is not kept and costs no

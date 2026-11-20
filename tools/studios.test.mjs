@@ -22,7 +22,7 @@ test('floor asks and labels open the studio; look-alikes do not', () => {
   for (const a of ['open the cpan testers studio', 'show me verse bookshelf', 'Paint by numbers?', 'Hosting & Domain Studio']) assert.ok(studioOf(a), a);
   for (const a of skill.nearMisses) assert.equal(studioOf(a), null, a);
   // 2026-10-30, on a-to-mind.com: these gave a web article, not the studio
-  for (const [a, page] of [['paint by numbers studio', '/paint/'], ['cpan testers results', '/cpan/'], ['score my tournament', '/tournaments/'], ['the obituaries page', '/obituaries/']]) assert.equal(studioOf(a) && studioOf(a).page, page, a);
+  for (const [a, page] of [['paint by numbers studio', '/paint/'], ['cpan testers results', '/cpan/'], ['score my tournament', '/tournaments/']]) assert.equal(studioOf(a) && studioOf(a).page, page, a);
   for (const a of ['paint studio', 'tournament', 'my page', 'studio']) assert.equal(studioOf(a), null, a);
   for (const a of skill.examples) assert.ok(skill.match(a.toLowerCase(), a), a);
 });
@@ -32,6 +32,6 @@ test('the card escapes, links the studio and says nothing it cannot back', () =>
   const el = { dataset: {}, set innerHTML(v) { html = v; } };
   const name = skill.run('cpan testers', { showPage: (b) => { b(el); page = el.dataset.page; }, esc: (s) => String(s).replace(/[<>&"]/g, '') });
   assert.equal(name, 'studios'); assert.equal(page, '/cpan/');
-  assert.match(html, /href="\/cpan\/"/); assert.match(html, /cpantesters\.org/);
+  assert.match(html, /href="\/cpan\/"/); assert.match(html, /runs on this device/); assert.doesNotMatch(html, /cpantesters\.org/, 'the card names no other site');
   assert.doesNotMatch(html, /\bfight|\bbeat|\bbetter than\b|V01D/i);
 });

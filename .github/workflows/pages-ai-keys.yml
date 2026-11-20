@@ -1,0 +1,44 @@
+# Give the live site (Cloudflare Pages project a-to-mind) the free AI keys that already sit in this repo's Actions secrets, so /api/agent
+# can rotate past Workers AI to Groq (lib/agent-providers.js). Gemini is copied too but is used only for owner-signed calls unless
+# AGENT_PRIVATE_FREE=on, because its free tier may train on prompts. Values are piped straight to wrangler and never printed.
+# A Pages secret reaches the live site with its next deploy (the next merge to main); this workflow deploys no site.
+# Runs: when this file changes on main, once a day (a rotated key is picked up), and by hand.
+name: pages ai keys
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/pages-ai-keys.yml']
+  schedule:
+    - cron: '41 9 * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency: pages-ai-keys
+jobs:
+  keys:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      WRANGLER: npx --yes wrangler@3.114.17
+      PROJECT: a-to-mind
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: copy the keys that exist
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::warning title=No Cloudflare access::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is missing"; exit 0
+          fi
+          done_list=""
+          for name in GROQ_API_KEY GEMINI_API_KEY; do
+            value="${!name}"
+            if [ -z "$value" ]; then echo "::notice::$name is not a repo secret, skipped"; continue; fi
+            printf '%s' "$value" | $WRANGLER pages secret put "$name" --project-name="$PROJECT" >/dev/null
+            done_list="$done_list $name"
+          done
+          echo "### Pages AI keys set:${done_list:- none}" >> "$GITHUB_STEP_SUMMARY"

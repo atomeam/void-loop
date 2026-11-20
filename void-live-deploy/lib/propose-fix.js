@@ -5,6 +5,7 @@
 // carries no fetch, import, eval, HTML sink, storage, URL, key or instruction. The tests and the benchmark then decide
 // (tools/propose-fix.mjs); nothing here writes a file. The route is functions/api/propose-fix.js (owner only).
 import { PERSONA } from './persona.js';
+import { charterBlock } from './charter.js';
 import { INJECTION_RULE } from './automation-fix.js';
 
 export const MAX_EDITS = 4; // line replacements in one proposal
@@ -15,7 +16,7 @@ const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za
 // what a matcher change never needs: anything that runs, loads, stores, or reaches out
 const FORBIDDEN = /\b(fetch|import|require|eval|Function|setTimeout|setInterval|XMLHttpRequest|WebSocket|navigator|location|document|window|globalThis|process|localStorage|sessionStorage|indexedDB|cookie|innerHTML|outerHTML|insertAdjacentHTML|postMessage|atob|btoa|crypto)\b|https?:|www\.|\$\{|`|<\/?script/i;
 
-export const FIX_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
+export const FIX_SYSTEM = charterBlock() + 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
   + 'You are fixing one of your own skills: a short ask that this skill should answer did not reach it, because its matcher (the match() function and the patterns it uses) does not recognise that wording. '
   + 'Propose the narrowest change that makes the matcher accept the ask and asks like it, without accepting asks that belong to other skills, and add the ask to the examples list. '
   + 'An example only counts when match() takes it: adding the ask to the examples without changing the pattern match() uses always fails the collision check. '
@@ -25,7 +26,7 @@ export const FIX_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' 
 
 // The other way round (owner, 2026-10-16: a card reply said "I am quoting a conversation about your memory, not fixing a webhook"):
 // an ask a skill took that belongs elsewhere. Verse proposes the narrowest change that makes this skill let go of it.
-export const NARROW_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
+export const NARROW_SYSTEM = charterBlock() + 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
   + 'You are fixing one of your own skills: it answered a short ask that is not its job (your owner told you so), because its matcher (the match() function and the patterns it uses) is too loose for that wording. '
   + 'Propose the narrowest change that makes the matcher reject the ask and asks like it, while still accepting every example the skill lists, and add the ask to the nearMisses list. '
   + 'Change only the matcher and the nearMisses: never run(), never anything that fetches, imports, stores or draws. Prefer tightening one pattern or adding one exclusion to rewriting a pattern. '

@@ -668,9 +668,13 @@
         radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
       opacity: .55; animation: depthBreath 14s steps(70) infinite alternate; will-change: transform, opacity; } /* steps: ~5 redraws a second, too slow a drift to see the steps; a smooth 60 fps breath made every keystroke wait an extra frame (2026-10-10) */
     @keyframes depthBreath { to { opacity: .8; transform: scale(1.04); } }
-    /* the particle field (#2921) and the sky map (#2944) are earned looks, like the swarm and the nebula: "add a particle field" (the public stage runs no WebGL) */
+    /* the particle field (#2921), its shape morph (#2926) and the sky map (#2944) are the DEFAULT look (owner, 2026-11-19: "i had an updated
+       starfield"): fx 'field' on a fresh visit. While it shows, the plain void's layers step aside, as they did before #2957 (the elements stay,
+       so their checks still read them). "calm my void" or "remove the particle field" brings the plain void back. */
     #void-particles, #void-cosmos { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: none; }
     html[data-fx="field"] #void-particles, html[data-fx="field"] #void-cosmos { display: block; }
+    html[data-fx="field"], html[data-fx="field"] body { background: #05060a; }
+    html[data-fx="field"] #void-stars, html[data-fx="field"] #void-stars-far, html[data-fx="field"] #void-depth, html[data-fx="field"] #void-glow, html[data-fx="field"] body::after { display: none !important; }
     /* film grain dithers the dark gradient so it never bands into rings */
     #void-depth::after { content: ''; position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -1145,22 +1149,33 @@
     /* offline: calm, not alarming. The halo takes a faint amber tint; asks that need no network keep working */
     html.void-offline #void-lens { background: radial-gradient(closest-side, transparent 35.2%, rgba(255,190,100,.30) 36.4%, rgba(255,160,70,.12) 46%, transparent 60%); }
     html.void-offline #void-depth::before { opacity: calc(.62 * var(--ring)); }
-    /* the landing is only the void and the ask bar (owner, 2026-11-18): the corner heart that opened the store came off it. The store answers
-       "store", "open the store", "buy", "support void", "tip", and lives at /store/. */
-    /* the MultiVerse mark (members perk, 2026-10-30): a paid Verse's stage shows it in the corner; it opens /members/. Never shown signed out */
+    /* the corner anchor (asked by Verse, 2026-10-18, after the text link went: "a subtle, ghosted icon that only becomes fully opaque when the user's
+       mouse approaches the edge of the stage"): a ghost of a heart at the bottom right that opens the store; it wakes when the pointer comes within
+       90 px of the corner (html.void-edge), on hover, or on keyboard focus. The store still answers "open the store", "support void", "tip", "buy". */
+    #void-anchor { position: fixed; right: 12px; bottom: 12px; z-index: 6; width: 28px; height: 28px; display: grid; place-items: center; color: #d7d2ff;
+      opacity: .12; transition: opacity .2s ease, transform .2s ease; border-radius: 50%; text-decoration: none; }
+    #void-anchor svg { width: 16px; height: 16px; display: block; }
+    /* the heart fills from the bottom with how much is on your stage to go back to (asked by Verse, 2026-10-18, lib/anchor-density.js: "navigation
+       depth"): violet by the share of the goal, the quiet green of the list bar when the goal is met; nothing else about the anchor changes */
+    #void-anchor .void-anchor-fill { fill: rgba(150,120,255,.95); }
+    #void-anchor[data-state="met"] .void-anchor-fill { fill: rgba(120,200,150,.9); }
+    html.void-edge #void-anchor, #void-anchor:hover, #void-anchor:focus-visible { opacity: 1; transform: scale(1.1); }
+    #void-anchor:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { #void-anchor { transition: none; } html.void-edge #void-anchor, #void-anchor:hover { transform: none; } }
+    /* the MultiVerse mark (members perk, 2026-10-30): a paid Verse's stage shows it beside the anchor; it opens /members/. Never shown signed out */
     #void-member { position: fixed; right: 46px; bottom: 14px; z-index: 6; height: 24px; padding: 0 10px; display: inline-flex; align-items: center; gap: 5px; border-radius: 999px;
       border: 1px solid rgba(150,120,255,.55); background: rgba(20,18,34,.72); color: #d7d2ff; font: 600 11px/1 system-ui, sans-serif; letter-spacing: .04em; text-decoration: none; opacity: .7; transition: opacity .2s; }
     #void-member::before { content: "\2726"; color: rgba(170,140,255,.95); }
     #void-member:hover, #void-member:focus-visible { opacity: 1; }
     #void-member:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
     @media (max-width: 700px) { #void-member { right: 40px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); opacity: .45; } }
-    @media (max-width: 700px) { #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
+    @media (max-width: 700px) { #void-anchor { right: 8px; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); opacity: .22; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
   <style id="verse-critical">
     *,*::before,*::after{box-sizing:border-box}
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
-    /* the home is the void and the ask bar (owner, 2026-11-05): no wordmark, no heading, no Install line */
+    /* the home shows no wordmark, no heading and no Install line (2026-11-05) */
     #v01d,#verse-install{display:none !important} #away-note{opacity:0 !important} /* the away line keeps its place and its state but is not shown (opacity, not display:none, so its "show me" stays clickable: display:none failed four suite shards). The intro wordmark stays in the stylesheet and is not painted. */
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
@@ -1171,6 +1186,9 @@
     #input::placeholder{color:#b4b9cb} /* 4.5:1 or better on the bar even over a white backdrop (the empty-state check) */
     #go,#mic,#sound{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit;display:inline-flex;align-items:center;justify-content:center;flex:none;padding:0 12px}
     #mic,#sound{width:44px;padding:0;color:#c9cee0} #sound[hidden]{display:none} #mic svg,#sound svg{width:18px;height:18px;display:block}
+    #void-anchor{position:fixed;right:12px;bottom:12px;z-index:6;width:28px;height:28px;display:grid;place-items:center;color:#d7d2ff;opacity:.12}
+    #void-anchor svg{width:16px;height:16px;display:block}
+    @media (max-width:700px){#void-anchor{right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));opacity:.22}}
     .vpage.kept,.vpage.placed{opacity:1;filter:none;z-index:40}
     .vpage.on{z-index:60}
     .vpage.kept:not(:has(video,audio,iframe)),.vpage.placed:not(:has(video,audio,iframe)),.vpage.on.placed:not(:has(video,audio,iframe)){transform:none}
@@ -1191,6 +1209,7 @@
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
+  <a id="void-anchor" href="/store/" aria-label="support Verse: the store" title="support Verse" data-depth="0" data-goal="12" data-state="under"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><defs><clipPath id="void-anchor-clip"><rect x="0" y="21" width="24" height="0"/></clipPath></defs><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/><path class="void-anchor-fill" clip-path="url(#void-anchor-clip)" d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
   <div id="dock" role="search" aria-label="Ask Verse">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="stage-chips" class="stage-chips" aria-label="Workspace inputs" hidden></div>
@@ -1229,7 +1248,9 @@
     // The empty stage and the ask bar (owner, 2026-10-18; lib/empty-state.js): the halo shows one real ask at a time while the stage is empty (fading,
     // never the same twice in a row, still for reduced motion, gone with the first card or the first keystroke); the bar lifts above an on-screen keyboard;
     // offline is shown calmly (amber halo, one plain line in the bar) and never locks an ask that needs no network; a mouse gets the bar focused and a touch screen does not.
+    // the corner anchor wakes as the pointer nears the bottom-right corner (asked by Verse, 2026-10-18); a touch screen never sets it.
     // Registered here, not after an import: it has to be listening from the first frame, not once the empty-state module has loaded.
+    addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; document.documentElement.classList.toggle('void-edge', innerWidth - e.clientX < 90 && innerHeight - e.clientY < 90); }, { passive: true });
     (async function emptyState() {
       let E; try { E = await import('/lib/empty-state.js'); } catch (_) { return; }
       const root = document.documentElement, dock = document.getElementById('dock');
@@ -1327,6 +1348,16 @@
       // snapshot takers (the quiz, the challenge) took one copy and never listen
       try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {}
     }
+    // the corner anchor's heart fills with how much is on this stage to go back to (asked by Verse, 2026-10-18: "navigation depth"; lib/anchor-density.js):
+    // the things on the stage, kept cards among them, against a goal of 12; redrawn on every void:stage-change from the stage's own map, no timer
+    (async function anchorDepth() {
+      const a = document.getElementById('void-anchor'); if (!a) return;
+      let A; try { A = await import('/lib/anchor-density.js'); } catch (_) { return; }
+      const rect = a.querySelector('clipPath rect');
+      const draw = () => { try { const d = A.anchorDensity(things); a.dataset.depth = d.count; a.dataset.goal = d.goal; a.dataset.state = d.state; a.title = d.title;
+        if (rect) { rect.setAttribute('y', d.fill.y); rect.setAttribute('height', d.fill.h); } } catch (_) {} };
+      draw(); addEventListener('void:stage-change', draw);
+    })();
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
       if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
@@ -4599,12 +4630,13 @@ say('nothing selected to remove');
 
     // row 13: entering your own Verse (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#05070d', glow: '#0b111c', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
+    const LOOK_DEFAULT = { bg: '#05070d', glow: '#0b111c', stars: 'on', quiet: false, scale: 1, fx: 'field', backdrop: '' }; // fx 'field': the starfield is the default (owner, 2026-11-19)
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
     const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
     let voidLook = { ...LOOK_DEFAULT };
-    try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
+    // a look saved before the starfield became the default holds fx 'off' without anyone asking for it: only an explicit "calm my void" (calm: true) keeps it off
+    try { const saved = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}; if (saved.fx === 'off' && !saved.calm) delete saved.fx; voidLook = { ...LOOK_DEFAULT, ...saved }; } catch (_) {}
     if (PAGE && PAGE.look) voidLook = { ...LOOK_DEFAULT, ...PAGE.look };
     const starCv = document.getElementById('void-stars');
     const starFar = document.getElementById('void-stars-far');
@@ -4800,7 +4832,7 @@ say('nothing selected to remove');
       else { starCv.classList.remove('on'); if (starFar) starFar.classList.remove('on'); }
       const bd = document.getElementById('void-backdrop');
       if (bd) { const on = backdropOk(voidLook.backdrop); bd.style.backgroundImage = on ? 'url("' + voidLook.backdrop + '")' : ''; bd.classList.toggle('on', on); }
-      document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
+      document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the default is the particle field
       window.dispatchEvent(new Event('void-fx'));
       if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
@@ -4826,6 +4858,7 @@ say('nothing selected to remove');
       if (/\bquieter\s+(font|text)\b/.test(lower)) voidLook.quiet = true;
       if (/\b(bigger|larger)\s+text\b/.test(lower)) voidLook.scale = Math.min(1.4, (voidLook.scale || 1) + 0.15);
       if (/\bsmaller\s+text\b/.test(lower)) voidLook.scale = Math.max(0.85, (voidLook.scale || 1) - 0.15);
+      voidLook.calm = voidLook.fx === 'off'; // the visitor turned the effects off themselves: it stays off on the next visit
       applyLook(true);
       return true;
     }
@@ -4937,7 +4970,7 @@ say('nothing selected to remove');
       }
     }
     // Skill files start on a tap, a key, or idle, and at once when the link already carries an ask (?q= or ?ask=).
-    // A phone waits for that tap: loading every module on idle is the long task. A desktop can idle sooner.
+    // A phone waits for that tap: loading every module on idle is the long task. A desktop that is only being looked at waits too (below).
     // data-skills="ready" is still set when they finish: the suite waits on it (tools/test_void.mjs skillsUp).
     const skillsReady = new Promise((resolve) => {
       let started = false;
@@ -4955,11 +4988,17 @@ say('nothing selected to remove');
       const phone = window.matchMedia && matchMedia('(pointer: coarse)').matches;
       if (/[?&](?:q|ask)=/.test(location.search)) start();
       else {
+        // A desktop visitor who only looks (no tap, key or typing, nothing kept on the stage, a bare address) loads no skill file at all: about 900
+        // requests are not made for a page that is only read. The page puts the cursor in the ask box by itself, so focus alone does not count there;
+        // the first tap, key or letter starts them, as on a phone. An automated browser keeps the idle start, so the suite and the tools see the page
+        // as they always did (the lazy path has its own suite case, which sets navigator.webdriver to false).
+        const lazy = !phone && !navigator.webdriver && !location.search && !location.hash && !Object.keys(things).length;
         addEventListener('pointerdown', start, true);
         addEventListener('keydown', start, true);
-        addEventListener('focusin', startOnAsk, true);
+        if (!lazy) addEventListener('focusin', startOnAsk, true);
         addEventListener('input', startOnAsk, true);
         if (phone) setTimeout(start, 12000);
+        else if (lazy) window.__skillsLazy = true;
         else (window.requestIdleCallback || ((fn) => setTimeout(fn, 1)))(start, { timeout: 1500 });
       }
     });
@@ -5127,9 +5166,14 @@ say('nothing selected to remove');
     // where a known ask sits in the routing order, or -1; waits at most `ms` for the table
     async function knownAsk(lower, ms) {
       const m = firstAsks || (skillFirst && (await Promise.race([skillFirst, new Promise((r) => setTimeout(() => r(null), Math.max(0, ms)))])));
-      const f = m && m.get(firstKey(lower)), at = f && skillPos ? skillPos.get(f) : undefined;
+      let f = m && m.get(firstKey(lower)), at = f && skillPos ? skillPos.get(f) : undefined;
+      if (typeof at !== 'number' && skillPos) { // not a known ask word for word: a shape ("weather in <place>", "<dish> recipe") still names the one file that takes it (lib/ask-shapes.js)
+        const sh = await Promise.race([shapesReady(), new Promise((r) => setTimeout(() => r(null), Math.max(0, ms)))]);
+        f = sh && sh.shapeFile(firstKey(lower)); at = f ? skillPos.get(f) : undefined;
+      }
       return typeof at === 'number' ? at : -1;
     }
+    const shapesReady = lazyImport(() => import('/lib/ask-shapes.js').catch(() => null));
     async function firstSkill(lower0, text, deadline, all = false) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
@@ -7616,7 +7660,7 @@ say('nothing selected to remove');
     }
   })();
   // The particle field: one WebGL2 micro-particle field on obsidian. Still at rest; pointer, touch or typing gives a damped nudge; one submit ripple.
-  // An earned look ("add a particle field"), started the first time the look asks for it: the public stage runs no WebGL.
+  // The default look (fx 'field'), started as soon as the look asks for it; "calm my void" turns it off.
   (function () { var started = false;
     function want() { return (document.documentElement.dataset.fx || 'off') === 'field'; }
     function go() { if (started || !want()) return; started = true; field();

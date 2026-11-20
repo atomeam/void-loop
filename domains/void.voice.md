@@ -10,26 +10,27 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-19. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-20. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement a miss-board reader that reads.git/verse-loop.stops.jsonl. *(small)* (daily, 2026-11-19) `ask-20261119-0105-2`
-- Rebuild the weather exam to correctly process temperature and rainfall for Paris and London. (daily, 2026-11-19) `ask-20261119-0105-1`
-- Improve the response speed of the 'what can you do' answer for visitors. (daily, 2026-11-19) `ask-20261119-0105-3`
-- Implement audio playback and episode navigation for the podcast skill. (after a build, 2026-11-18) `ask-20261118-2006-3`
-- Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread. (after a build, 2026-11-18) `ask-20261118-1913-2`
-- Fix the podcast exam failures for English and Spanish audio requests. (after a build, 2026-11-18) `ask-20261118-1720-1`
-- Implement a fourth skill for the lab/pattern family. *(small)* (after a build, )
+- Implement a miss-board reader that reads.git/verse-loop.stops.jsonl. (daily, 2026-11-20) `ask-20261120-0112-3`
+- Fix the Celtics query in the sports exam to resolve the score failure. *(small)* (daily, 2026-11-20) `ask-20261120-0112-2`
+- Fix the podcasts exam by implementing support for 'play the episode before that' and 'pon el último episodio de radiolab'. *(small)* (daily, 2026-11-20) `ask-20261120-0112-1`
+- Fix the 'tries is not defined' error in the visitor pass console. *(small)* (after a build, 2026-11-20) `ask-20261120-0103-3`
+- Fix the visitor pass response time on the live site. (after a build, 2026-11-19) `ask-20261119-2249-3`
+- Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread. (after a build, 2026-11-19) `ask-20261119-2139-3`
+- Implement audio playback and episode navigation for the podcast skill. (after a build, 2026-11-19) `ask-20261119-2101-1`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261119-0105-2` queued, not decided yet
-- `ask-20261119-0105-1` queued, not decided yet
-- `ask-20261119-0105-3` queued, not decided yet
-- `ask-20261118-2006-3` queued, not decided yet
-- `ask-20261118-1913-2` queued, not decided yet
-- `ask-20261118-1720-1` queued, not decided yet
+- `ask-20261120-0112-3` queued, not decided yet
+- `ask-20261120-0112-2` queued, not decided yet
+- `ask-20261120-0112-1` queued, not decided yet
+- `ask-20261120-0103-3` queued, not decided yet
+- `ask-20261119-2249-3` queued, not decided yet
+- `ask-20261119-2139-3` queued, not decided yet
+- `ask-20261119-2101-1` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -13305,6 +13306,354 @@ Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (sm
 > **Next video trick:** A smooth zoom-to-detail transition for 3D models in the forge.
 
 Asks: "Rebuild the weather exam to correctly process temperature and rainfall for Paris and London."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Improve the response speed of the 'what can you do' answer for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T20:31:05.943Z -->
+### 2026-11-19 20:31 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, incorporating the new monitor-receipt skill. Recent deployments updated Gap Glide and Debris Field, and implemented the Tower gate for versus measured capability. Performance is currently hindered by a 10585 ms visitor pass response time and a 95.4 score on the sports exam.
+>
+> **How I would make it better:** The visitor pass response time must be optimized to improve user perception. The recipes exam requires rebuilding to correct errors in chocolate chip cookies, salad dressing, and banana bread.
+>
+> **Next video trick:** Learn to use a physical LED to trigger a digital stage-fx transition in a video clip.
+
+Asks: "Fix the visitor pass response time on the live site."; "Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread." (small); "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T20:38:00.533Z -->
+### 2026-11-19 20:38 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 395 entries, incorporating the monitor-receipt skill. Recent deployments include Gap Glide Update 1 and Debris Field Update 1, alongside the implementation of the Tower gate for versus measured capability. Performance is currently bottlenecked by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve user perception. Rebuild the recipes exam to fix errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill to resolve navigation and multilingual request failures.
+>
+> **Next video trick:** Learn a new way to use a physical magnet to manipulate a metal object in a video transition.
+
+Asks: "Reduce the latency of the visitor pass on the live site."; "Implement audio playback and episode navigation for the podcast skill."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T20:43:23.868Z -->
+### 2026-11-19 20:43 UTC · after a build
+
+**Asked:** This just shipped: "Card art retries again: a comment had swallowed the retry counter". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 395 entries, including the recent addition of monitor-receipt. Recent deployments have updated Gap Glide and Debris Field with new mechanics, and the Tower gate is active for versus capability. Performance is currently limited by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve user perception. Rebuild the recipes exam to address errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill to resolve current navigation and multilingual failures.
+>
+> **Next video trick:** Learn to create a seamless transition between a 3D model spin and a technical schematic overlay for forge items.
+
+Asks: "Implement audio playback and episode navigation for the podcast skill."; "Fix the visitor pass response time on the live site."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T20:55:48.140Z -->
+### 2026-11-19 20:55 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including the new monitor-receipt skill. Recent deployments of Gap Glide and Debris Field added new mechanics, and the Tower gate is now active for versus capability. Performance is currently hindered by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve first impressions. Rebuild the recipes exam to fix errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill to resolve navigation and multilingual failures.
+>
+> **Next video trick:** Learn to use a physical depth sensor to trigger stage-style lighting changes during a video clip.
+
+Asks: "Implement audio playback and episode navigation for the podcast skill."; "Fix the visitor pass response time on the live site."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:01:43.233Z -->
+### 2026-11-19 21:01 UTC · after a build
+
+**Asked:** This just shipped: "Art quality gate: no lost subject, no watermark, bright real-setting light". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including recent additions like monitor-receipt. Recent deployments of Gap Glide and Debris Field have introduced new mechanics, and the Tower gate is now active for versus capability. Current performance is hindered by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve first impressions. Rebuild the recipes exam to fix errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill to resolve navigation and multilingual failures.
+>
+> **Next video trick:** Learn a new video transition that uses a mask to reveal a 3D object without a jump cut.
+
+Asks: "Implement audio playback and episode navigation for the podcast skill."; "Fix the visitor pass response time on the live site."; "Rebuild the recipes exam to fix errors in chocolate chip cookies, salad dressing, and banana bread."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:10:01.390Z -->
+### 2026-11-19 21:10 UTC · after a build
+
+**Asked:** This just shipped: "No watermark ever: never use keyless Pollinations". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including recent additions like monitor-receipt. Recent deployments of Gap Glide and Debris Field have introduced new mechanics, and the Tower gate is now active for versus capability. Performance is currently hindered by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam.
+>
+> **How I would make it better:** The visitor pass response time must be optimized to improve first impressions. The recipes exam requires a rebuild to resolve errors in chocolate chip cookies, salad dressing, and banana bread. Audio playback and episode navigation must be implemented for the podcast skill to fix multilingual and navigation failures.
+>
+> **Next video trick:** Learn to use a physical IR blaster to trigger digital stage-fx via a smartphone camera.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."; "Fix the visitor pass response time on the live site."; "Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:13:50.673Z -->
+### 2026-11-19 21:13 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including monitor-receipt. Performance is currently hindered by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam. The recent deployment of the Tower gate enables versus measured capability.
+>
+> **How I would make it better:** The visitor pass response time must be optimized to improve first impressions. The recipes exam requires a rebuild to resolve errors in chocolate chip cookies, salad dressing, and banana bread. Audio playback and episode navigation must be implemented for the podcast skill.
+>
+> **Next video trick:** Implement a seamless transition between a 2D card animation and a 3D miniature rotation for a new skill.
+
+Asks: "Fix the visitor pass response time on the live site."; "Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:22:04.607Z -->
+### 2026-11-19 21:22 UTC · after a build
+
+**Asked:** This just shipped: "Tower sweep: the smallest home pages found in the next slice of the million". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including recent additions like monitor-receipt. The system is processing the Tower sweep of small home pages. Performance is currently hindered by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve first impressions. Rebuild the recipes exam to resolve errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill.
+>
+> **Next video trick:** Learn a seamless transition for a video effect that mimics a card being physically pulled through a digital layer.
+
+Asks: "Optimize the visitor pass response time on the live site."; "Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:25:57.800Z -->
+### 2026-11-19 21:25 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: versus measured". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, following the addition of monitor-receipt. Performance is currently hindered by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system is processing the Tower sweep of small home pages, and the 'Tower gate: versus measured' update has just shipped.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve first impressions. Rebuild the recipes exam to resolve errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill.
+>
+> **Next video trick:** Learn a new video transition effect to use in upcoming skill showcase clips.
+
+Asks: "Optimize the visitor pass response time on the live site."; "Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:30:43.468Z -->
+### 2026-11-19 21:30 UTC · after a build
+
+**Asked:** This just shipped: "Tower climb unstuck: count a site when its checks are won and Verse's page works; stalled sites give way". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including recent additions like monitor-receipt. Performance is currently hindered by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system just shipped a fix for the Tower climb to ensure stalled sites no longer block progress once checks are won and Verse's page is functional.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve first impressions. Rebuild the recipes exam to resolve errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill.
+>
+> **Next video trick:** Learn to create a seamless loop where a digital object morphs into a different shape using a single continuous camera movement.
+
+Asks: "Fix the visitor pass response time on the live site."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:39:20.510Z -->
+### 2026-11-19 21:39 UTC · after a build
+
+**Asked:** This just shipped: "Versus card: Out of Order for visitors, a plain card for the owner". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries, including new additions like monitor-receipt. Performance is currently hindered by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system just shipped a visitor pass card that is out of order for visitors but provides a plain view for the owner.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve first impressions. Rebuild the recipes exam to resolve errors in chocolate chip cookies, salad dressing, and banana bread. Implement audio playback and episode navigation for the podcast skill.
+>
+> **Next video trick:** A custom transition effect for when a card settles after an animation to prevent check failures.
+
+Asks: "Fix the visitor pass response time on the live site."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Rebuild the recipes exam to fix chocolate chip cookies, salad dressing, and banana bread."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:56:42.226Z -->
+### 2026-11-19 21:56 UTC · after a build
+
+**Asked:** This just shipped: "Card art past the free share: no limit on paid paintings". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 395 entries, including the recent addition of monitor-receipt. Performance is constrained by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system has just shipped a visitor pass card that provides a plain view for the owner while remaining out of order for visitors.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve initial impressions. Resolve the sports exam failure by determining why the Celtics query failed to reach the necessary score.
+>
+> **Next video trick:** An audio-reactive visualizer that pulses to the frequency of a podcast stream.
+
+Asks: "Fix the Celtics query in the sports exam to resolve the score failure."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T21:59:54.069Z -->
+### 2026-11-19 21:59 UTC · after a build
+
+**Asked:** This just shipped: "Add delivery-status-pack skill". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries with the recent addition of monitor-receipt and the shipping of the delivery-status-pack. Current performance is constrained by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system's ability to pass the sports exam remains a failure point due to incorrect NBA Celtics data retrieval.
+>
+> **How I would make it better:** Optimize the visitor pass response time to improve initial impressions. The sports exam must be corrected by fixing the Celtics query to resolve the score failure.
+>
+> **Next video trick:** Learn to use a physical contact switch to trigger a digital stage effect in a video clip.
+
+Asks: "Fix the Celtics query in the sports exam to resolve the score failure."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Fix the visitor pass response time on the live site."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T22:22:54.622Z -->
+### 2026-11-19 22:22 UTC · after a build
+
+**Asked:** This just shipped: "Rival files stay out of speculation prefetch; rule 8 test and handoff gaps follow the move". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 395 entries following the addition of monitor-receipt. Current performance is constrained by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system continues to struggle with the sports exam due to incorrect NBA Celtics data retrieval.
+>
+> **How I would make it better:** Optimize the visitor pass response time on the live site to improve initial impressions. The sports exam must be corrected by fixing the Celtics query to resolve the score failure. Implement a miss-board reader that reads .git/verse-loop.stops.jsonl.
+>
+> **Next video trick:** Learn to perform a seamless 'invisible' card transition using CSS clip-paths and opacity shifts for smoother stage-fx.
+
+Asks: "Fix the Celtics query in the sports exam to resolve the score failure."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Fix the visitor pass response time on the live site."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T22:23:10.038Z -->
+### 2026-11-19 22:23 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 395 entries, including recent additions like monitor-receipt. Performance is currently constrained by a 16068 ms visitor pass response time and a 95.2 score on the podcasts exam. The system continues to struggle with the sports exam, specifically regarding NBA Celtics data retrieval.
+>
+> **How I would make it better:** The visitor pass response time on the live site must be optimized to improve initial impressions. The sports exam needs correction by fixing the Celtics query to resolve the score failure.
+>
+> **Weakest operational area:** The sports exam is the weakest operational area, having scored 94.4, which is the lowest recorded score.
+>
+> **Next targeted capability:** Fix the Celtics query in the sports exam to resolve the score failure.
+>
+> **Next video trick:** Implement a seamless light-to-dark mode transition effect for stage-style clips.
+
+Asks: "Fix the Celtics query in the sports exam to resolve the score failure."; "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small); "Fix the visitor pass response time on the live site."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T22:31:24.884Z -->
+### 2026-11-19 22:31 UTC · after a build
+
+**Asked:** This just shipped: "Versus: the file that lists the sites loads only after the owner gate says yes". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 395 entries, including recent additions like monitor-receipt. Performance remains constrained by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam. The system is currently working to resolve specific failures in the sports and podcasts exams while maintaining its growth inbox.
+>
+> **How I would make it better:** The visitor pass response time on the live site must be optimized to improve initial impressions. The podcasts exam requires fixing the 'play the episode before that' and 'pon el último episodio de radiolab' fails to improve the 95.2 score. The sports exam needs the Celtics query corrected to resolve its 94.4 score.
+>
+> **Next video trick:** A transition effect that uses a gradient wipe to reveal a 3D object from the forge.
+
+Asks: "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."; "Fix the visitor pass response time on the live site."; "Fix the Celtics query in the sports exam to resolve the score failure." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T22:49:54.577Z -->
+### 2026-11-19 22:49 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 2 pages fixed, 41 -> 37 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 395 entries, including recent additions like monitor-receipt. Performance is constrained by a 16068 ms visitor pass response time and a low 95.2 score on the podcasts exam. Recent shipping includes design loop fixes that reduced design defects from 41 to 37.
+>
+> **How I would make it better:** The podcasts exam requires fixing 'play the episode before that' and 'pon el último episodio de radiolab' to improve the 95.2 score. The sports exam needs the Celtics query corrected to resolve the 94.4 score. The visitor pass response time on the live site must be optimized to improve initial impressions.
+>
+> **Next video trick:** Implement a video-to-sticker effect where a short clip is instantly converted into a looping 3D sprite-sheet.
+
+Asks: "Fix the Celtics query in the sports exam to resolve the score failure." (small); "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."; "Fix the visitor pass response time on the live site."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-19T22:57:42.133Z -->
+### 2026-11-19 22:57 UTC · after a build
+
+**Asked:** This just shipped: "propose-fix test: the PR job may hold the bot token". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 395 entries, including monitor-receipt. The podcasts exam scored 95.2, which remains the lowest score and requires fixing multi-language and relative episode commands. The visitor pass response time is a performance bottleneck at 16068 ms. Recent shipping includes a 'propose-fix test' to address the possibility that the PR job holds the bot token.
+>
+> **How I would make it better:** The podcasts exam needs fixes for 'play the episode before that' and 'pon el último episodio de radiolab' to raise the 95.2 score. The sports exam requires a correction to the Celtics query to resolve its 94.4 score. The visitor pass response time on the live site must be optimized to improve initial impressions.
+>
+> **Next video trick:** Create a video effect where a 3D miniature card dissolves into a stream of particles using a custom shader.
+
+Asks: "Fix the podcasts exam by implementing support for 'play the episode before that' and 'pon el último episodio de radiolab'."; "Fix the visitor pass console error for joke requests." (small); "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-20T01:03:01.641Z -->
+### 2026-11-20 01:03 UTC · after a build
+
+**Asked:** This just shipped: "Deploy check stops fetching the owner-only tower files". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 396 entries, including monitor-receipt. The sports exam is at 94.4 and the podcasts exam remains the lowest at 95.2. Performance is hampered by a visitor pass response time of 16068 ms. Recent deployments include a fix to stop the deploy check from fetching owner-only tower files.
+>
+> **How I would make it better:** The sports exam must be corrected for the NBA Celtics query to raise its 94.4 score. The podcasts exam needs support for 'play the episode before that' and 'pon el último episodio de radiolab' to resolve its 95.2 score. The visitor pass response time requires optimization to improve initial impressions.
+>
+> **Next video trick:** A transition effect where a 3D miniature 'dissolves' into a collection of skill icons.
+
+Asks: "Fix the NBA Celtics query in the sports exam."; "Fix the podcasts exam by implementing support for 'play the episode before that' and 'pon el último episodio de radiolab'."; "Fix the 'tries is not defined' error in the visitor pass console." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-20T01:12:08.615Z -->
+### 2026-11-20 01:12 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 396 entries, including recent updates to the ready-checks and connections families. Performance is constrained by a 16068 ms visitor pass response time. The podcasts exam remains the lowest score at 95.2, and the sports exam requires a fix for the NBA Celtics query to reach its target.
+>
+> **How I would make it better:** Optimize the visitor pass response time to reduce the 16068 ms delay. Implement audio and episode detection to resolve the 95.2 score on the podcasts exam.
+>
+> **Weakest operational area:** The podcasts exam is the weakest operational area with a score of 95.2.
+>
+> **Next targeted capability:** Fix the podcasts exam by enabling audio and episode detection to resolve the current 95.2 score.
+>
+> **Next video trick:** Learn a whip-crack transition effect for new video clips.
+
+Asks: "Implement support for 'play the episode before that' and 'pon el último episodio de radiolab' in the podcasts exam." (small); "Fix the NBA Celtics query in the sports exam." (small); "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl."
 
 *Verse flagged this one for Adam.*
 

@@ -1,7 +1,7 @@
 {
   "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught. priority: features tested first, the least-checked skills from the growth page friction line (2026-10-15: video-play had no checks).",
   "limits": {
-    "fpsMin": 1,
+    "fpsMin": 2,
     "loadMs": 1200,
     "statsIdleMs": 500
   },
@@ -444,6 +444,39 @@
     },
     {
       "ask": "automation handoff for the email reminders"
+    },
+    {
+      "ask": "show the data flows for client onboarding"
+    },
+    {
+      "ask": "calorie calculator"
+    },
+    {
+      "ask": "show my period log"
+    },
+    {
+      "ask": "make a poster of this card"
+    },
+    {
+      "ask": "how long until gta 6 comes out"
+    },
+    {
+      "ask": "export as stl"
+    },
+    {
+      "ask": "test me on this"
+    },
+    {
+      "ask": "how do i make guacamole"
+    },
+    {
+      "ask": "pizza delivery to 1 main st phoenix"
+    },
+    {
+      "ask": "my routines"
+    },
+    {
+      "ask": "dasatinib and quercetin for mash"
     }
   ],
   "candidates": [],

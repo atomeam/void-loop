@@ -116,3 +116,10 @@ test('a painting that keeps showing writing becomes a plate and is never stored'
   assert.equal(j.why, 'text');
   assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM void_art').get().n, 0);
 });
+
+test('a long phrase of plain words is a subject, a long key is still refused (live: the Lakeland weather card was refused as a secret)', async () => {
+  const { refusal } = await import('../void-live-deploy/lib/art-rules.js');
+  assert.equal(refusal('Lakeland United States overcast night', 'weather'), '');
+  assert.equal(refusal('abcdefghijklmnopqrstuvwxyz0123456789', 'weather'), 'secret');
+  assert.equal(refusal('sk 1234 abcd efgh ijkl mnop qrst uvwx', 'weather'), 'secret');
+});

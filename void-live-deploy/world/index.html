@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="verse-handoff" content="in: none; out: none">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>The world in 3D · Verse</title>
+<meta name="description" content="Real things as live 3D scenes you can explore: a garden snail with its real anatomy, how it crawls, and a way to slow time, look inside and change the weather around it.">
+<link rel="canonical" href="https://a-to-mind.com/world/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="The world in 3D · Verse">
+<meta property="og:description" content="Real things as live 3D scenes you can explore: a garden snail with its real anatomy and how it crawls.">
+<meta property="og:url" content="https://a-to-mind.com/world/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<script type="importmap">{"imports":{"three":"/vendor/three-r180a/build/three.webgpu.min.js","three/webgpu":"/vendor/three-r180a/build/three.webgpu.min.js","three/tsl":"/vendor/three-r180a/build/three.tsl.min.js","three/addons/":"/vendor/three-r180a/addons/"}}</script>
+<style>
+  html,body{margin:0;height:100%;background:#0b0f0a;color:#eef2e6;font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+  #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+  #top{position:fixed;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:max(10px,env(safe-area-inset-top)) 12px 0;pointer-events:none}
+  #top>*{pointer-events:auto}
+  h1{margin:0;font-size:18px;font-weight:700;text-shadow:0 1px 8px #000}
+  #sub{font-size:12px;opacity:.8;text-shadow:0 1px 6px #000}
+  #chip{font-size:11px;padding:3px 8px;border-radius:99px;background:#0008;border:1px solid #fff3;white-space:nowrap}
+  #dock{position:fixed;left:0;right:0;bottom:0;padding:8px 10px max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;max-height:46vh;pointer-events:none}
+  #dock>*{pointer-events:auto}
+  .row{display:flex;flex-wrap:wrap;gap:6px}
+  button,.sl{font:inherit;color:#eef2e6;background:#14201aE6;border:1px solid #9fd69b66;border-radius:10px;min-height:44px;padding:0 12px;cursor:pointer;backdrop-filter:blur(8px)}
+  button[aria-pressed=true]{background:#2d5a36;border-color:#b8f5a8}
+  .sl{display:flex;align-items:center;gap:8px;padding:0 12px;flex:1 1 200px;cursor:default}
+  .sl label{font-size:12px;white-space:nowrap}
+  .sl input{flex:1;min-width:80px;accent-color:#b8f5a8;height:32px}
+  .sl output{font-size:12px;min-width:64px;text-align:right;font-variant-numeric:tabular-nums}
+  #card{background:#0f1a14ee;border:1px solid #9fd69b44;border-radius:14px;padding:10px 12px;overflow:auto;max-height:26vh;backdrop-filter:blur(10px)}
+  #card h2{margin:0 0 4px;font-size:14px}
+  #card p{margin:2px 0;font-size:13px}
+  #card ul{margin:4px 0 0;padding-left:18px;font-size:12.5px}
+  #card small{opacity:.7}
+  #tags{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .tag{position:absolute;transform:translate(-50%,-120%);font-size:12px;background:#0b1410ee;border:1px solid #b8f5a8aa;border-radius:8px;padding:2px 7px;white-space:nowrap;pointer-events:none}
+  #msg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px}
+  #msg.on{display:flex;background:#0b0f0a}
+</style>
+</head>
+<body>
+<canvas id="c" tabindex="0" aria-label="Interactive 3D scene. Drag to turn it, pinch or scroll to zoom, tap a part to learn about it."></canvas>
+<div id="tags"></div>
+<div id="top"><div><h1 id="title">The world in 3D</h1><div id="sub">Loading</div></div><span id="chip" role="status">starting</span></div>
+<div id="dock"><div id="card" hidden></div><div class="row" id="vars"></div><div class="row" id="btns"></div></div>
+<div id="msg"><p>This scene needs WebGL 2 or WebGPU, and this browser has neither.</p></div>
+<script type="module" src="/world/engine.js"></script>
+</body>
+</html>

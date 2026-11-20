@@ -1,0 +1,20 @@
+{
+ "at": "2026-11-20T14:16:08.349Z",
+ "income_cents": 0,
+ "sales": 0,
+ "checkouts": {
+  "live": 8,
+  "up": 8,
+  "broken": []
+ },
+ "offers_60d": {
+  "seen": 1,
+  "clicks": 0
+ },
+ "gate": {
+  "seen": 0,
+  "clicks": 0
+ },
+ "running": 2,
+ "changes": []
+}

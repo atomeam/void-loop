@@ -72,7 +72,7 @@ Not buyer, not letter family, not company brand. Navigation only — still **one
 
 | Surface | Path | Job |
 | --- | --- | --- |
-| **Face** | `void.html` → a-to-mind.com | Blank Verse. Capabilities only. Never brags. |
+| **Face** | `void.html` → a-to-mind.com | Verse, the front door. |
 | **Books** | Venture files in The Books below | Money and field ops. Invisible on the Face. |
 | **Agents** | `../STANDING.md` + `void.growth.md` + `void.agents.log.md` (+ surface QA) | Roles, Have/Next cadence, append-only log |
 

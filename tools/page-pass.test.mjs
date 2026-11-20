@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, suiteOpen, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/page-pass.js';
+import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, suiteOpen, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT, GATE_SRC } from '../void-live-deploy/lib/page-pass.js';
 import { onRequest as gate } from '../void-live-deploy/functions/_middleware.js';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/page-pass.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
@@ -29,21 +29,22 @@ const stripe = (opt = {}) => async (url, init) => {
 async function withFetch(fn, impl) { resetLive(); const real = globalThis.fetch; globalThis.fetch = impl; try { return await fn(); } finally { globalThis.fetch = real; resetLive(); } }
 
 test('open paths stay open, full pages are Uni, and a missing key does not lock them', async () => {
-  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/api/versus-floor', '/exam/latest.json', '/self.json', '/progress/nightly.json', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/', '/films/rss', '/versus/', '/versus/index.html']) assert.equal(openPath(p), true, p);
+  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/api/versus-floor', '/exam/latest.json', '/self.json', '/progress/nightly.json', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/', '/films/rss', '/blub/', '/versus/', '/versus/index.html']) assert.equal(openPath(p), true, p);
   for (const p of ['/flights/', '/emojis/', '/books/', '/podcasts/', '/brain/', '/studies.html', '/@sam']) assert.equal(gatedPath(p), true, p);
   assert.equal(gatedPath('/versus/'), false);
   assert.equal(backPath('https://evil.example/x'), '/'); assert.equal(money(CENTS), '$20 a month');
   const page = screen({ cents: CENTS }, '/flights/');
-  assert.match(page, /<h1>Uni<\/h1>/); assert.match(page, /Subscribe/); assert.match(page, /href="\/">Free cards/); assert.match(page, /href="\/members\/">Multi/);
-  assert.equal(/UniVerse|MultiVerse|Premium|4242/.test(page), false);
+  assert.match(page, /<h1>UniVerse<\/h1>/); assert.match(page, /Subscribe/); assert.match(page, /href="\/">Free cards/); assert.match(page, /href="\/members\/">MultiVerse/);
+  assert.equal(/\bUni\b|Premium|4242/.test(page), false, 'the plan is spelled UniVerse, never Uni'); assert.match(page, /Subscribe to UniVerse/); assert.match(page, /<canvas id="s"/); assert.match(page, /href="\/credits\/"/);
+  const arcade = screen({ cents: CENTS }, '/arcade/'); assert.match(arcade, /\/gate\/arcade\.webp/); assert.match(arcade, /href="\/\?q=open%20the%20arcade"/); assert.equal(gatedPath('/credits/'), false, 'credits are public: licenses require it');
   assert.equal(await (await gate({ request: ask('/flights/'), env: {}, next: html('FLIGHTS') })).text(), 'FLIGHTS');
   await withFetch(async () => { assert.equal(await (await gate({ request: ask('/books/'), env: { STRIPE_SECRET_KEY: KEY }, next: html('BOOKS') })).text(), 'BOOKS'); }, async () => new Response('{}', { status: 401, headers: { 'content-type': 'application/json' } }));
   await withFetch(async () => {
     const stranger = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
-    assert.match(await stranger.text(), /<h1>Uni<\/h1>/); assert.equal(stranger.headers.get('x-verse-gate'), 'uni');
+    assert.match(await stranger.text(), /<h1>UniVerse<\/h1>/); assert.equal(stranger.headers.get('x-verse-gate'), 'uni');
     assert.equal(await (await gate({ request: ask('/versus/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('Out of Order') })).text(), 'Out of Order');
     assert.equal(await (await gate({ request: ask('/films/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('VERSE FILMS') })).text(), 'VERSE FILMS');
-    assert.match(await (await gate({ request: ask('/podcasts/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('PODS') })).text(), /<h1>Uni<\/h1>/);
+    assert.match(await (await gate({ request: ask('/podcasts/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('PODS') })).text(), /<h1>UniVerse<\/h1>/);
     resetLive();
     const owner = await gate({ request: ask('/flights/', { authorization: 'Bearer suite-owner-token' }), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt', READ_TOKEN: 'suite-owner-token' }, next: html('FLIGHTS') });
     assert.equal(await owner.text(), 'FLIGHTS'); assert.equal(owner.headers.get('x-verse-gate'), 'open');
@@ -95,10 +96,32 @@ test('loopback builds see full pages with no token; production stays gated', asy
       assert.equal(res.headers.get('x-verse-gate'), 'open', origin);
     }
     const res = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
-    assert.match(await res.text(), /<h1>Uni<\/h1>/, 'production stays gated');
+    assert.match(await res.text(), /<h1>UniVerse<\/h1>/, 'production stays gated');
   }, stripe());
 });
 
 async function grantFirst(DB) {
   assert.equal(await applyStripeEvent({ DB }, { type: 'checkout.session.completed', data: { object: { metadata: { plan: 'universe' }, subscription: 'sub_abc123' } } }), true);
 }
+
+test('the gate\'s Subscribe goes through /api/buy: the form says so, a showing and a click are counted, and the answer is the same Stripe Checkout', async () => {
+  const { onRequestPost: buyPost } = await import('../void-live-deploy/functions/api/buy.js');
+  const page = screen({ cents: CENTS }, '/flights/');
+  assert.equal(GATE_SRC, 'gate.base.a');
+  assert.match(page, /<form method="post" action="\/api\/buy\?go=gate&amp;from=gate\.base\.a">/);
+  assert.match(page, /\/api\/buy\?seen=gate\.base\.a&id=universe/);
+  assert.equal(page.includes('action="/api/page-pass"'), false);
+  const db = d1(), env = { STRIPE_SECRET_KEY: KEY, SALT: 'salt', DB: db };
+  const ua = { 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36', origin: 'https://a-to-mind.com' };
+  const post = (qs, body) => new Request('https://a-to-mind.com/api/buy?' + qs, { method: 'POST', headers: { ...ua, 'content-type': 'application/x-www-form-urlencoded' }, body });
+  await withFetch(async () => {
+    let r = await buyPost({ request: post('seen=gate.base.a&id=universe'), env }); assert.equal(r.status, 204);
+    r = await buyPost({ request: post('seen=team.e1.a&id=universe'), env }); assert.equal(r.status, 400, 'universe is the gate\'s alone');
+    r = await buyPost({ request: post('go=gate&from=gate.base.a', 'back=%2Fflights%2F'), env });
+    assert.equal(r.status, 303); assert.equal(r.headers.get('location'), 'https://checkout.stripe.com/c/pay/cs_test_page');
+    r = await buyPost({ request: post('go=gate&from=team.e1.a', 'back=%2F'), env }); assert.equal(r.status, 400, 'only a gate source');
+    r = await buyPost({ request: new Request('https://a-to-mind.com/api/buy?go=gate&from=gate.base.a', { method: 'POST', headers: { origin: 'https://evil.example' }, body: 'back=/' }), env }); assert.equal(r.status, 403);
+  }, stripe());
+  const rows = db.raw.prepare("SELECT kind, id, src, n FROM void_buy ORDER BY kind").all().map((x) => ({ ...x }));
+  assert.deepEqual(rows, [{ kind: 'click', id: 'universe', src: 'gate.base.a', n: 1 }, { kind: 'seen', id: 'universe', src: 'gate.base.a', n: 1 }]);
+});

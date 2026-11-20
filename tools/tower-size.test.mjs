@@ -113,7 +113,7 @@ test('the rendered count is the page after its scripts ran, not its shell; a pag
 });
 
 test('the target stands first and the card names it as the current floor, never as the easiest site left', async () => {
-  const sk = (await import('../void-live-deploy/skills/tower.js')).default, rank = { ranks: {}, order: {}, list: {} };
+  const sk = (await import('../void-live-deploy/versus/card.js')).default, rank = { ranks: {}, order: {}, list: {} };
   const size = { sites: { 'isitchristmas.com': { bytes: 700, controls: 3, scripts: 0, nodes: 20, routes: 0 }, 'calculator.net': { bytes: 2.4e6, controls: 400, scripts: 40, nodes: 9000, routes: 600 } } };
   const free = tower([], {}, null, null, rank, size), c0 = free.floors.find((f) => f.state === 'current');
   assert.equal(c0.pinned, false);

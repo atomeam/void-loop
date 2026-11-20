@@ -20,7 +20,7 @@ export function sitesHtml(a, esc) {
   const n = (a.sites || []).length;
   return '<details class="vs-sec" data-sec="sites"><summary class="vs-sum"><h3 class="vs-h">Sites Versus tried <span class="vs-n">(' + esc(n) + ')</span></h3></summary><ul class="vs-list v-sites">'
     + rows.map((r) => { const p = safePage(r.page); return '<li data-bullet="1"><b>' + esc(day(r.at)) + '</b> · ' + esc(r.site) + ' · ' + esc(said(r.status || r.outcome || '')) + (p ? ' · <a href="' + esc(p) + '">' + esc(p.split('?')[0]) + '</a>' : '') + '</li>'; }).join('')
-    + '</ul>' + (n > rows.length ? '<div class="sub vs-note"><a href="/assimilated/">All ' + esc(n) + ' sites</a></div>' : '') + '</details>';
+    + '</ul>' + (n > rows.length ? '<div class="sub vs-note"><a href="/versus/?view=assimilated">All ' + esc(n) + ' sites</a></div>' : '') + '</details>';
 }
 
 /** the whole log body: { sections } from SB.selfCard (the stage keeps only the words section), then the ledger, the charts and the sites. Pure. */

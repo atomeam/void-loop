@@ -54,7 +54,7 @@ fetch('/progress/nightly.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.jso
   else p.textContent = String(j.at || '').slice(0, 10) + ': Verse\'s loop authored ' + (j.share.share == null ? 'no measured share of' : j.share.share + '% of') + ' merged pulls against outside agents. Next: ' + ((j.pick && j.pick.why) || 'nothing picked') + '.';
   main.append(h, p);
 }).catch(() => {});
-const LANES = ['links', 'health', 'speed', 'twins', 'plain', 'fresh', 'seo', 'coverage', 'deps', 'handoff', 'next-tool'];
+const LANES = ['revenue', 'links', 'health', 'speed', 'twins', 'plain', 'fresh', 'seo', 'coverage', 'deps', 'handoff', 'next-tool', 'leaks', 'cards', 'tower', 'deploy', 'quality', 'assistant', 'home'];
 const money = (c) => c === null ? 'Treasury, not metered per call.' : (c > 0 ? c + ' cents from the treasury.' : 'Nothing from the treasury.');
 function mountLoops() {
   const main = document.querySelector('main');
@@ -89,3 +89,8 @@ Promise.all(LANES.map((id) => fetch('/progress/loops/' + id + '.json', { cache: 
     body.appendChild(tr);
   }
 }).catch(() => {});
+// the owner's compounding row (tools/tower-compound.mjs): the file is owner-only, so a visitor gets a 404 and the box stays hidden
+fetch('/tower.compound.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((c) => import('/lib/compound.js').then((m) => {
+  const box = document.getElementById('compound'); if (!c || !c.last || !box) return;
+  box.querySelector('p').textContent = c.last.at + ': ' + m.sayRow(c.last); box.hidden = false;
+})).catch(() => {});

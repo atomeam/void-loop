@@ -73,4 +73,7 @@ export function draw(g, s) {
   paint(g, s.board.void, s.piece.void, 4);
   paint(g, s.board.you, s.piece.you, COLS * CELL + 12);
 }
+export const whatsNew = 'Update 1: Verse now plays smarter by scanning the board to find the best position.';
 export const how = 'The right well is yours. Move a piece with the arrows. It falls on its own. Verse fills the left well with the same kinds of piece and aims for the lowest column. Pieces are a short bar, a domino, a square and a hook. A full row clears. The higher line score wins. A link hands a friend the same pieces.';
+
+// Update 1: Verse now plays smarter by scanning the board to find the best position.

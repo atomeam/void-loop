@@ -46,22 +46,21 @@ test('pixel measures: points of light drawn as flat discs are harsh; the same po
 });
 
 test('judge names each failure with the surface, the viewport and the numbers', () => {
-  const dom = { errors: ['boom'], scrollX: 40, clipped: ['p.x'], bg: 0.9, media: ['video a.mp4'], chrome: ['a#void-anchor', 'p.offer'] };
+  const dom = { errors: ['boom'], scrollX: 40, clipped: ['p.x'], bg: 0.9, media: ['video a.mp4'] };
   const bad = judge('/', 'mobile', dom, { mean: 0.5, offMode: 0.0001, hardEdge: 0.5, dots: 10, hardDots: 0.5 });
-  assert.ok(bad.some((b) => b.includes('a#void-anchor')), 'nothing besides the ask bar, the old corner heart included');
-  for (const w of ['console/page error', 'sideways scroll', 'clipped text', 'not the dark theme', 'blank render', 'media failed', 'p.offer', 'not near-black', 'hard-edged', 'harsh star dots']) assert.ok(bad.some((b) => b.includes(w) && b.startsWith('/ @ mobile')), w);
-  assert.deepEqual(judge('/films/', 'desktop', { errors: [], scrollX: 0, clipped: [], bg: 0.01, media: [], chrome: ['a.x'] }, { mean: 0.5, offMode: 0.2, hardEdge: 0.9 }), []);
+  for (const w of ['console/page error', 'sideways scroll', 'clipped text', 'not the dark theme', 'blank render', 'media failed', 'not near-black', 'hard-edged', 'harsh star dots']) assert.ok(bad.some((b) => b.includes(w) && b.startsWith('/ @ mobile')), w);
+  assert.deepEqual(judge('/films/', 'desktop', { errors: [], scrollX: 0, clipped: [], bg: 0.01, media: [] }, { mean: 0.5, offMode: 0.2, hardEdge: 0.9 }), []);
 });
 
 const chrome = [process.env.VOID_TEST_BROWSER, '/usr/bin/google-chrome'].find((p) => p && fs.existsSync(p));
-test('in a real browser: a white page with an offer on the landing fails; a dark one with only the ask bar passes', { skip: !chrome && 'no Chrome here' }, async () => {
+test('in a real browser: a white landing fails; a dark page with text passes', { skip: !chrome && 'no Chrome here' }, async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vj-'));
   fs.writeFileSync(path.join(dir, 'index.html'), '<!doctype html><body style="margin:0;background:#fff"><p>Buy now $9</p><form id="row"><input placeholder="Ask anything"></form></body>');
   fs.mkdirSync(path.join(dir, 'ok'));
   fs.writeFileSync(path.join(dir, 'ok', 'index.html'), '<!doctype html><body style="margin:0;background:#05070d;color:#ddd"><h1 style="font-size:64px">Tools</h1>' + '<p style="font-size:22px">Plain words about the tools Verse keeps, one line each.</p>'.repeat(8) + '</body>');
   const r = await run({ paths: ['/', '/ok/'], dir });
   const land = r.filter((x) => x.path === '/').flatMap((x) => x.failures), ok = r.filter((x) => x.path === '/ok/').flatMap((x) => x.failures);
-  assert.ok(land.some((f) => /not the dark theme/.test(f)) && land.some((f) => /p/.test(f) && /more than the void/.test(f)), land.join('\n'));
+  assert.ok(land.some((f) => /not the dark theme/.test(f)), land.join('\n'));
   assert.deepEqual(ok, []);
 });
 

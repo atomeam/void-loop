@@ -2,6 +2,7 @@
 // (what player two did and why), and New game. The game's pure rules live in skills/<game>-rules.js; the card only draws them and sends the person's moves.
 // Same look as skills/arcade-card.js, but made of buttons (reachable by keyboard and a screen reader) instead of a canvas.
 import { keepOut } from './stage-pack.js';
+import { takeFocus } from './card-focus.js';
 
 export function studioCard(th, stageApi, { cls, title, sub, width = 300 }) {
   const el = document.createElement('div');
@@ -19,6 +20,7 @@ export function studioCard(th, stageApi, { cls, title, sub, width = 300 }) {
   tools.append(again); el.append(head, body, status, why, tools);
   for (const n of [body, again]) keepOut(n);
   stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
+  takeFocus(el); // a game just asked for takes the keyboard (lib/card-focus.js)
   const button = (label, fn, extra = '') => { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn ' + extra; b.textContent = label; keepOut(b); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); tools.insertBefore(b, again); return b; };
   return { el, body, status, why, again, tools, button };
 }

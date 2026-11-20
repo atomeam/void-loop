@@ -18,15 +18,21 @@ test('a locked floor stays first while a closer site appears, and the next close
   assert.equal(nextTarget({ lock: null, floors: t0.floors }), 'random number');
 });
 
-test('no timed give-way: a floor with no progress for days stays the floor, and its open aspects are retried', async () => {
-  const { stallCheck, advance, HOLD_DAYS } = await import('./tower-target.mjs');
-  assert.equal(HOLD_DAYS, Infinity);
-  const floors = [{ id: 'a', n: 2, m: 12, open: ['speed'], left: ['speed'], lost: [] }, { id: 'b', n: 11, m: 12 }];
-  const st = stallCheck({ id: 'a', n: 2, since: '2026-10-01', progressAt: '2026-10-01' }, floors, '2026-11-09');
-  assert.equal(st.stalled, false); assert.equal(st.retry, true);
-  const { file } = advance({ id: 'a', n: 2, since: '2026-10-01', progressAt: '2026-10-01' }, floors, '2026-11-09');
-  assert.equal(file.id, 'a', 'it never gives way on a timer');
-  assert.ok(file.background.some((b) => b.id === 'a' && /^retry: /.test(b.job)), 'the open aspects go back to the gate');
+test('a floor with no progress for STALL_DAYS gives way: its gaps go to the build queue, it rests, and the next closest takes over (owner, 2026-11-19)', async () => {
+  const { stallCheck, advance, STALL_DAYS, REST_DAYS } = await import('./tower-target.mjs');
+  assert.ok(STALL_DAYS >= 1 && STALL_DAYS < 30); assert.ok(REST_DAYS > STALL_DAYS);
+  const floors = [{ id: 'a', n: 2, m: 12, assim: 40, open: ['speed'], left: ['speed'], lost: [], missingFeatures: ['All airlines'], page: '/a/' }, { id: 'b', n: 11, m: 12, assim: 30 }];
+  const fresh = advance({ id: 'a', n: 2, assim: 40, since: '2026-11-08', progressAt: '2026-11-08' }, floors, '2026-11-09').file;
+  assert.equal(fresh.id, 'a', 'one quiet day: it stays');
+  const st = stallCheck({ id: 'a', n: 2, assim: 40, since: '2026-10-01', progressAt: '2026-10-01' }, floors, '2026-11-09');
+  assert.equal(st.stalled, true);
+  const { file, why } = advance({ id: 'a', n: 2, assim: 40, since: '2026-10-01', progressAt: '2026-10-01' }, floors, '2026-11-09');
+  assert.equal(file.id, 'b', 'the climb moves on'); assert.match(why, /no progress/);
+  assert.ok(file.background.some((r) => r.id === 'a' && r.aspect === 'feature: All airlines' && /^build: /.test(r.job)), 'its crawl gaps are queued');
+  assert.ok(file.background.some((r) => r.id === 'a' && r.aspect === 'speed'), 'its open checks are queued');
+  const again = advance(file, floors, '2026-11-10').file; assert.equal(again.id, 'b', 'it rests and is not picked straight back');
+  const progress = stallCheck({ id: 'a', n: 2, assim: 35, since: '2026-10-01', progressAt: '2026-10-01' }, floors, '2026-11-09');
+  assert.equal(progress.stalled, false, 'getting closer is progress');
 });
 
 // the two levels: PASSED moves on (all measured ahead or equal, none behind, the bar met, better on one), CONQUERED is 12 of 12

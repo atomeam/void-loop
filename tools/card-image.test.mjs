@@ -119,3 +119,53 @@ test('condition-matched weather art beats a static Art Forge painting on a weath
   const film = cardSvg({ ...d, art, painting: true });
   assert.match(film, /<image[^>]*href="data:image\/png;base64,AAAA"/, 'other cards still keep their painting');
 });
+
+// owner, 2026-11-19 ("this still doesnt have the right card art"): a Paris weather card under rain showed the skill's generic painting (a cube in space)
+test('a weather card for a place and condition never falls back to the generic skill painting when its condition art exists', async () => {
+  const { weatherArtSubject } = await import('../void-live-deploy/skills/weather.js');
+  const { keyOfKind, artPrompt, subjectKey, ART_STYLE, SKILL_STYLE } = await import('../void-live-deploy/lib/art-rules.js');
+  const sub = weatherArtSubject('Paris, Île-de-France Region, France', 3, [30, 20, 95], true);
+  assert.equal(sub, 'Paris France rain', 'overcast now with rain on the way: the place and rain');
+  assert.equal(weatherArtSubject('Paris, France', 0, [0, 0, 0], false), 'Paris France clear night');
+  const key = keyOfKind(subjectKey(sub), 'weather'), p = artPrompt(key, 'weather');
+  assert.equal(key, 'weather1 paris france rain', 'its own row: never the skill\'s "weather" row or the bare city\'s');
+  assert.match(p, /paris france/); assert.match(p, /rain/); assert.match(p, /landmark/);
+  assert.ok(!/galaxy|space|arcane|cube/i.test(p), 'no cosmic backdrop or skill object: ' + p);
+  assert.ok(!ART_STYLE.includes('galaxy') && SKILL_STYLE.includes('galaxy'), 'the atom galaxy stays only behind a skill\'s own card');
+  const skillArt = 'data:image/png;base64,CUBEART', wxArt = 'data:image/png;base64,PARISRAIN';
+  const base = { ...d, title: 'Paris, Île-de-France Region, France', kind: 'Skill — Sky and earth', typeLine: 'Skill — Sky and earth', text: 'Overcast · rain chance 95%', weatherCard: true };
+  // the skill's painting handed in as the art and the photo (lib/card-share.js artPicture): never drawn on a weather card
+  const old = cardSvg({ ...base, art: skillArt, photo: skillArt, painting: true });
+  assert.ok(!old.includes('CUBEART'), 'the generic skill painting is not on the weather card');
+  // the condition painting (data-art-subject, kind weather) is the art
+  const now = cardSvg({ ...base, art: wxArt, photo: wxArt, painting: true, wxArt: true });
+  assert.ok(now.includes('PARISRAIN'), 'the place-and-weather painting is the art');
+  // a recipe whose steps say "clear" keeps its painting
+  const recipe = cardSvg({ ...d, kind: 'Skill — Body and mind', typeLine: 'Skill — Body and mind', text: 'Stir until the syrup is clear', art: 'data:image/png;base64,FOOD', painting: true });
+  assert.ok(recipe.includes('FOOD'), 'other cards keep their painting');
+});
+
+// owner, 2026-11-19: "the card when copied barely sends you any of it": the guacamole picture stopped at "Halve the..."
+test('a copied recipe card holds every ingredient and step, set like the card, and says where the full card is', async () => {
+  const { bodyLayout } = await import('../void-live-deploy/lib/card-image.js');
+  const text = '4 servings · US measures\n\nIngredients\n\n3 ripe avocados\n1 lime, juiced\n½ small red onion, finely diced\n1 small tomato, diced\n1 jalapeño, minced (optional)\n2 tablespoons chopped coriander (cilantro)\n½ teaspoon salt\n\nSteps\n\nHalve the avocados, scoop the flesh into a bowl and mash it roughly with the lime juice.\nFold in the onion, tomato, jalapeño and coriander.\nSeason with the salt, taste, and add more lime or salt as you like.\nServe within 30 minutes, before it browns; a layer of lime juice on top keeps it green a little longer.';
+  const s = cardSvg({ ...d, title: 'Guacamole', kind: 'Skill — Body and mind', text, link: 'https://a-to-mind.com/recipes/?q=guacamole&units=us' });
+  for (const w of ['3 ripe avocados', '½ teaspoon salt', 'INGREDIENTS', 'STEPS', '>1.<', '>4.<', 'keeps it green a little longer.', 'a-to-mind.com/recipes/?q=guacamole<']) assert.ok(s.includes(w), 'the picture holds ' + w);
+  assert.ok(!/Halve the…|…<\/text>/.test(s), 'nothing cut');
+  const r = bodyLayout(text, 246); assert.equal(r.cut, false); assert.ok(r.els.every((e) => e.fs >= 13), 'readable type');
+  // weather: the hourly strip as one tidy line, the temperature large
+  const wx = bodyLayout('Overcast · feels 9° · wind 18 km/h\n\n12°\n\nToday 14° / 10° · rain chance 95%\n\nNext hours: 8 PM 12° 30% rain · 9 PM 12° 20% rain · 10 PM 11° 8% rain · 11 PM 11° 5% rain', 246);
+  assert.ok(wx.els.some((e) => e.text === '12°' && e.fs > 30), 'the temperature now is large'); const h8 = wx.els.find((e) => e.text === '8 PM'), h9 = wx.els.find((e) => e.text === '9 PM'); assert.ok(h8 && h9 && h8.y === h9.y && h9.x > h8.x, 'the hours run side by side in one strip, not a word per line'); assert.equal(wx.extra, 0, 'a weather card fits the standard card');
+  // truly huge: cut, and the last line says where the rest is
+  const huge = bodyLayout(Array.from({ length: 400 }, (_, i) => 'Paragraph ' + i + ' says a good deal about something worth reading in full.').join('\n\n'), 246, { link: 'https://a-to-mind.com/x/' });
+  assert.equal(huge.cut, true); assert.match(huge.els[huge.els.length - 1].text, /full card continues at a-to-mind\.com\/x/);
+});
+
+test('the Full card line is a short readable link that never runs past the text box', async () => {
+  const { bodyLayout, shortLink } = await import('../void-live-deploy/lib/card-image.js');
+  const u = 'https://a-to-mind.com/weather/?q=Paris%2C%20%C3%8Ele-de-France%20Region%2C%20France&ll=48.85341%2C2.3488';
+  assert.equal(shortLink(u), 'a-to-mind.com/weather/?q=Paris');
+  assert.equal(shortLink('https://a-to-mind.com/recipes/?q=guacamole&units=us'), 'a-to-mind.com/recipes/?q=guacamole');
+  const r = bodyLayout('Overcast', 246, { link: 'https://a-to-mind.com/' + 'x'.repeat(300) });
+  for (const e of r.els) assert.ok(e.x + e.text.length * e.fs * 0.5 <= 624, 'inside the box: ' + e.text);
+});

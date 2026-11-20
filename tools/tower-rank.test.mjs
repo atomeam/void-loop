@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { regDomain, bySize, sizeOf, rankLabel, nextUnsurpassed, words } from '../void-live-deploy/lib/tower-rank.js';
 import { FLOORS, tower } from '../void-live-deploy/lib/tower.js';
-import { towerHtml, readBySize } from '../void-live-deploy/skills/tower.js';
+import { towerHtml, readBySize } from '../void-live-deploy/versus/card.js';
 import { buildRank, domainsOf } from './tower-rank.mjs';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
 
@@ -48,7 +48,7 @@ test('next un-surpassed: skips surpassed floors and follows the size order', () 
   assert.deepEqual(nextUnsurpassed(fl, { a: null, b: 10, c: 5000, d: null }, {}, 2).map((f) => f.id), ['d', 'c']);
 });
 test('the card has no size view: size never orders the climb (docs/TOWER-RULES.md rule 2); the size list itself still renders for a page that wants it', async () => {
-  const { sizeListHtml } = await import('../void-live-deploy/skills/tower.js');
+  const { sizeListHtml } = await import('../void-live-deploy/versus/card.js');
   const t = tower([], {}, null, null);
   const ranks = Object.fromEntries(t.floors.map((f, i) => [f.id, i % 5 ? 1000 + i : null]));
   t.rank = { list: { date: 'd' }, ranks, order: {} };

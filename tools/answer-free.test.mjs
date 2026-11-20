@@ -97,12 +97,12 @@ test('answer-free: research fails over OpenAlex key -> OpenAlex keyless -> Cross
   } finally { globalThis.fetch = realFetch; }
 });
 
-test('answer-free: LLM failover only reaches keyed free tiers, in registry order, and never Gemini', async () => {
+test('answer-free: LLM failover only reaches keyed free tiers that still exist, in registry order, and never Gemini', async () => {
   const db = fakeDb(); const calls = [];
-  const adapters = { 'groq-free': async () => { calls.push('groq'); const e = new Error('quota'); e.status = 429; throw e; }, 'cerebras-free': async (job) => { calls.push('cerebras'); return 'cerebras says ' + job.messages[0].content; }, 'gemini-free': async () => { calls.push('gemini'); return 'no'; } };
+  const adapters = { 'groq-free': async () => { calls.push('groq'); const e = new Error('quota'); e.status = 429; throw e; }, 'cerebras-free': async () => { calls.push('cerebras'); return 'an ended tier must never answer'; }, 'openrouter-free': async (job) => { calls.push('openrouter'); return 'openrouter says ' + job.messages[0].content; }, 'gemini-free': async () => { calls.push('gemini'); return 'no'; } };
   assert.equal(await freeLlm([{ role: 'user', content: 'hi' }], { env: { DB: db }, registry, adapters }), null, 'no keys: nothing to fail over to');
-  const out = await freeLlm([{ role: 'user', content: 'hi' }], { env: { DB: db, GROQ_API_KEY: 'k', CEREBRAS_API_KEY: 'k', GEMINI_API_KEY: 'k' }, registry, adapters });
-  assert.equal(out.source, 'free:cerebras-free'); assert.equal(out.answer, 'cerebras says hi'); assert.deepEqual(calls, ['groq', 'cerebras']);
+  const out = await freeLlm([{ role: 'user', content: 'hi' }], { env: { DB: db, GROQ_API_KEY: 'k', CEREBRAS_API_KEY: 'k', OPENROUTER_API_KEY: 'k', GEMINI_API_KEY: 'k' }, registry, adapters });
+  assert.equal(out.source, 'free:openrouter-free'); assert.equal(out.answer, 'openrouter says hi'); assert.deepEqual(calls, ['groq', 'openrouter'], 'Cerebras ended its free tier (resources/free.json marks it) and is never called');
   assert.equal(out.tried[0].why, 'provider quota');
 });
 

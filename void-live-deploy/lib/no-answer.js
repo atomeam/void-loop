@@ -11,6 +11,12 @@ export function isNoAnswer(text) {
   if (NO_ANSWER.test(t.slice(0, 220))) return true;
   return t.length < 900 && /not (?:contained|covered|mentioned) (?:within|in) the (?:provided |given )?sources?|sources? (?:do|does) not (?:contain|cover|mention)/i.test(t);
 }
+/** true when the answer itself says the sources it was given do not hold it ("The sources provided do not contain instructions for changing a flat tire"): the body is
+ *  the model's own words, and a "Sourced" badge or "from 2 sources" over it would be false (owner audit, 2026-11-19). Anywhere in the body, any length. Pure. */
+const DISCLAIM = /\b(?:the |these |those |all )?(?:sources?|passages?|articles?|pages?|excerpts?|documents?|results?)(?: (?:provided|given|above|supplied|retrieved|found))?(?: (?:do|does|did)(?: not|n'?t)| (?:are|is) not| (?:have|has) no) (?:contain|cover|mention|include|describe|address|say|specif|about|relevant|helpful|related)|\bnot (?:contained|covered|mentioned|found|addressed) (?:within |in )the (?:provided |given |supplied )?(?:sources?|passages?|articles?|excerpts?)\b|\bno (?:relevant |useful )?(?:sources?|passages?) (?:contain|cover|mention|describe|address)/i;
+export const disclaimsSources = (text) => DISCLAIM.test(String(text || '').replace(/\s+/g, ' '));
+/** the plain line that replaces a source list the answer itself says does not cover the ask. Pure. */
+export const UNSOURCED_LINE = 'No source covers this. Verse wrote the answer from general knowledge, so check it before you rely on it.';
 /** the sources worth listing: those with an https link. A source with no URL is not a source (it cannot be checked). Pure. */
 export const linked = (sources) => (Array.isArray(sources) ? sources : []).filter((s) => s && /^https:\/\/[^\s"'<>]+$/i.test(String(s.url || s.u || '')));
 const STOPQ = new Set('a an the of and or to in on for is are was were what who whom whose where when why how which about tell me please define meaning'.split(' '));

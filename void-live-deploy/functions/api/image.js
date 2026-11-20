@@ -76,7 +76,9 @@ async function noteMiss(env, painter, e) {
     await env.DB.prepare('INSERT INTO void_image_miss (day, why, n) VALUES (?, ?, 1) ON CONFLICT(day, why) DO UPDATE SET n = n + 1').bind(dayOf(), painter + ': ' + why(e)).run(); } catch (_) {}
 }
 export async function paintFree(env, prompt, size, seed, fetchFn = (u, o) => fetch(u, o)) {
-  const token = String((env && env.POLLINATIONS_KEY) || '').trim(), ac = new AbortController(), t = setTimeout(() => ac.abort(), POLL_MS);
+  const token = String((env && env.POLLINATIONS_KEY) || '').trim();
+  if (!token) { if (env && env.DB) await noteMiss(env, 'pollinations', 'no key: the keyless endpoint stamps a logo'); return ''; } // NO WATERMARK EVER (owner, 2026-11-19)
+  const ac = new AbortController(), t = setTimeout(() => ac.abort(), POLL_MS);
   try {
     const res = await fetchFn(pollUrl(prompt, size, seed, token), { headers: token ? { authorization: 'Bearer ' + token } : {}, signal: ac.signal });
     const type = (res.headers.get('content-type') || '').toLowerCase();

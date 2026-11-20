@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { parsePlan, problems, render, OUT } from './tower-plan.mjs';
 import { tower, FLOORS, passingRows } from '../void-live-deploy/lib/tower.js';
-import { towerHtml, planOf } from '../void-live-deploy/skills/tower.js';
+import { towerHtml, planOf } from '../void-live-deploy/versus/card.js';
 
 const md = fs.readFileSync(new URL('../docs/NEXT.md', import.meta.url), 'utf8');
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);

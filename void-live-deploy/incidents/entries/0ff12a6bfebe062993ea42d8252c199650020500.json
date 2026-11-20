@@ -1,0 +1,19 @@
+{
+ "at": "2026-11-20T09:12:33.502Z",
+ "sha": "0ff12a6bfebe062993ea42d8252c199650020500",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44703737927",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "suite ran to the end",
+  "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so"
+ ],
+ "touched": [
+  "tools/agent-brief.test.mjs",
+  "void-live-deploy/lib/agent-answer.js"
+ ],
+ "shards": [
+  3
+ ]
+}

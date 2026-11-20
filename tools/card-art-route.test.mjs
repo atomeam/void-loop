@@ -16,7 +16,7 @@ const JPEG = '/9j/4AAQSkZJRgABAQ' + 'A'.repeat(9000); // above the quality gate'
 
 function d1() {
   const db = new DatabaseSync(':memory:');
-  const stmt = (sql, a = []) => ({ bind: (...b) => stmt(sql, b), run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; }, first: async () => db.prepare(sql).get(...a) || null });
+  const stmt = (sql, a = []) => ({ bind: (...b) => stmt(sql, b), run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; }, first: async () => db.prepare(sql).get(...a) || null, all: async () => ({ results: db.prepare(sql).all(...a) }) });
   return { prepare: (sql) => stmt(sql), raw: db };
 }
 // the art model gets multipart form data (FLUX.2 [klein]) or JSON (schnell): read both as { prompt, width, height, steps }
@@ -43,7 +43,7 @@ const rows = (env) => { try { return env.DB.raw.prepare('SELECT * FROM void_art'
 
 test('a miss paints once and keeps the picture; the next person (any spelling) gets it without the model', async () => {
   const { env, calls } = world();
-  assert.deepEqual(await (await get(env, 'a cat')).json(), { state: 'none', key: 'cat' });
+  assert.deepEqual(await (await get(env, 'a cat')).json(), { state: 'none', key: 'scene1 cat' }); // the real-setting look's own row (lib/art-rules.js sceneKey)
   const a = await (await post(env, 'A Cat!', 'animal', 'rare')).json();
   assert.equal(a.state, 'art'); assert.equal(a.cached, false); assert.match(a.img, /^data:image\/jpeg;base64,/);
   assert.equal(calls.length, 1); assert.equal(calls[0].model, models('art'));
@@ -52,7 +52,17 @@ test('a miss paints once and keeps the picture; the next person (any spelling) g
   const g = await (await get(env, 'cat')).json(); assert.equal(g.state, 'art'); assert.equal(g.img, a.img);
   assert.equal(rows(env).length, 1);
   assert.deepEqual(Object.keys(rows(env)[0]).sort(), ['day', 'img', 'subject'], 'no text, no person, no address is kept');
-  assert.equal(rows(env)[0].subject, 'cat');
+  assert.equal(rows(env)[0].subject, 'scene1 cat');
+});
+
+test('a subject painted in the old space look never shows its old picture (stale) and is painted again; until the real-setting one is painted; a weather card never gets the bare city', async () => {
+  const { env, calls } = world();
+  const old = await (await post(env, 'guacamole', 'skill', 'common')).json(); assert.equal(old.state, 'art'); // a skill row keeps its bare key
+  const g = await (await get(env, 'guacamole', 'answer')).json();
+  assert.equal(g.state, 'none'); assert.equal(g.stale, true, 'marked stale'); assert.ok(!g.img, 'the old space-look picture is never sent'); assert.equal(g.key, 'scene1 guacamole');
+  const n = calls.length, p = await (await post(env, 'guacamole', 'answer', 'common')).json();
+  assert.equal(p.state, 'art'); assert.equal(calls.length > n, true, 'the new look is painted'); assert.ok(!p.stale);
+  const w = await (await get(env, 'guacamole', 'weather')).json(); assert.equal(w.state, 'none', 'a weather row is its own: ' + JSON.stringify(w).slice(0, 80));
 });
 
 test('a GET never calls the model', async () => {
@@ -211,18 +221,20 @@ test('past the Workers AI cap, or when it fails, Pollinations paints for free (u
   const real = globalThis.fetch, seen = [];
   globalThis.fetch = async (u, o) => { seen.push({ u: String(u), auth: (o && o.headers && o.headers.authorization) || '' }); return new Response(Uint8Array.from(Buffer.from('/9j/' + 'A'.repeat(9000), 'base64')), { headers: { 'content-type': 'image/jpeg' } }); };
   try {
-    const w = world({ extra: { ART_DAILY_CAP: '1', ART_POLLINATIONS: '' } });
+    const anon = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); // no key: the keyless endpoint stamps a logo, so it is never asked
+    assert.equal((await (await post(anon.env, 'cat')).json()).state, 'plate'); assert.equal(seen.length, 0, 'no watermark ever: no keyless Pollinations');
+    const w = world({ extra: { ART_DAILY_CAP: '1', ART_POLLINATIONS: '', POLLINATIONS_KEY: 'test-only-not-a-key' } }); // secret-scan: ok
     assert.equal((await (await post(w.env, 'cat')).json()).state, 'art'); assert.equal(w.calls.length, 1); assert.equal(seen.length, 0, 'under the cap: Workers AI paints');
     const over = await (await post(w.env, 'dog', 'animal', 'common', '2.2.2.2')).json();
     assert.equal(over.state, 'art'); assert.equal(w.calls.length, 1, 'over the cap: Workers AI is not asked'); assert.equal(seen.length, 1);
-    assert.match(seen[0].u, /^https:\/\/image\.pollinations\.ai\/prompt\/.+width=1024&height=576&seed=\d+&nologo=true&model=flux$/); assert.equal(seen[0].auth, '');
+    assert.match(seen[0].u, /^https:\/\/gen\.pollinations\.ai\/image\/.+width=1024&height=576&seed=\d+&nologo=true&private=true&referrer=a-to-mind\.com$/); assert.equal(seen[0].auth, 'Bearer test-only-not-a-key');
     assert.ok(!/<|>|;/.test(decodeURIComponent(seen[0].u)), 'only the fixed or directed prompt');
     const k = world({ extra: { POLLINATIONS_KEY: 'test-only-not-a-key', ART_POLLINATIONS: '' } }); k.env.AI.run = async () => { throw new Error('3040: capacity'); }; // secret-scan: ok
     assert.equal((await (await post(k.env, 'owl')).json()).state, 'art', 'Workers AI failing: Pollinations paints');
     assert.match(seen[1].u, /^https:\/\/gen\.pollinations\.ai\/image\//); assert.equal(seen[1].auth, 'Bearer test-only-not-a-key');
     const off = world({ extra: { ART_DAILY_CAP: '0' } }); assert.equal((await (await post(off.env, 'cat')).json()).why, 'cap', 'ART_POLLINATIONS=0 keeps the old cap');
     globalThis.fetch = async () => new Response('<html>busy</html>', { status: 503, headers: { 'content-type': 'text/html' } });
-    const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); const b = await (await post(bad.env, 'fox')).json();
+    const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '', POLLINATIONS_KEY: 'test-only-not-a-key' } }); const b = await (await post(bad.env, 'fox')).json();
     assert.equal(b.state, 'plate'); assert.equal(rows(bad.env).length, 0, 'a refusal is never kept');
   } finally { globalThis.fetch = real; }
 });
@@ -284,4 +296,68 @@ test('a frame word is not a subject (2026-11-06: every sum card is titled "Calcu
   route.resetReady(); await post(env, 'moon'); env.DB.raw.prepare("INSERT INTO void_art (subject, img, day) VALUES ('calculated', ?, '2026-11-01')").run(rows(env)[0].img);
   const g = await (await get(env, 'Calculated')).json(); assert.deepEqual([g.state, g.why], ['plate', 'frame'], 'the garbled picture already kept is never shown again');
   assert.equal((await (await post(env, 'calculator')).json()).state, 'art', 'a real subject near the word still paints');
+});
+
+test('the background repaint redoes one old space-look picture at a time, newest first, and keeps a reserve for visitors', async () => {
+  const { env } = world();
+  for (const k of ['pancake', 'hummus']) assert.equal((await (await post(env, k, 'skill', 'common', '9.9.9.' + k.length)).json()).state, 'art'); // two old bare rows
+  const rp = (ip) => route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ repaint: true }) }) });
+  const a = await (await rp('5.5.5.1')).json(); assert.equal(a.state, 'repainted'); assert.ok(!a.img, 'no picture in the answer'); assert.equal(a.left, 1);
+  const b = await (await rp('5.5.5.2')).json(); assert.equal(b.state, 'repainted'); assert.equal(a.subject, undefined, 'no subject is told to a caller');
+  const c = await (await rp('5.5.5.3')).json(); assert.equal(c.state, 'done');
+  assert.equal(rows(env).filter((r) => r.subject.startsWith('scene1 ')).length, 2, 'each has its real-setting row');
+  assert.ok(route.REPAINT_RESERVE > 0);
+});
+
+test('the site\'s own reads repaint an old picture in the background, at most once every two minutes for the whole site', async () => {
+  const { env } = world();
+  assert.equal((await (await post(env, 'waffle', 'skill', 'common', '8.8.8.1')).json()).state, 'art');
+  const jobs = [], read = () => route.onRequestGet({ env, waitUntil: (p) => jobs.push(p), request: new Request('https://x/api/card-art?key=cat&kind=animal') });
+  await read(); const first = await jobs[0]; assert.equal(first.state, 'repainted'); assert.equal(first.subject, 'waffle');
+  await read(); assert.equal((await jobs[1]).state, 'wait', 'the next read within two minutes waits');
+  assert.equal((await route.repaintTick(new Request('https://x/'), env, Date.now() + route.REPAINT_EVERY_MS + 1000)).state, 'done', 'nothing old is left');
+});
+
+test('the background repaint stops while visitors still have the last REPAINT_RESERVE Workers AI paintings of the day', async () => {
+  const { env } = world({ extra: { ART_DAILY_CAP: String(route.REPAINT_RESERVE) } });
+  const a = await (await route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': '7.7.7.7' }, body: JSON.stringify({ repaint: true }) }) })).json();
+  assert.equal(a.state, 'reserve', 'a cap no bigger than the reserve leaves nothing for the background');
+});
+
+test('the quality gate: a painting whose subject is lost or carries a logo is painted again as a hero shot, and never kept when that fails too', async () => {
+  const { heroPrompt, gateSubject } = await import('../void-live-deploy/lib/art-rules.js');
+  assert.equal(gateSubject('scene1 pancake', 'answer'), 'pancake'); assert.equal(gateSubject('weather1 paris france rain', 'weather'), 'a view of paris france');
+  assert.match(heroPrompt('scene1 pancake', 'answer'), /^a close-up hero shot of pancake, the pancake large/);
+  assert.match(route.weakAsk('pancake'), /watermark, logo/); assert.match(route.pollinationsUrl('x', 'k'), /nologo=true&private=true&referrer=a-to-mind\.com/);
+  // the vision model says every picture is weak: nothing is kept
+  const bad = world({ vision: 'YES' }); const r = await (await post(bad.env, 'pancake', 'answer', 'common', '6.6.6.1')).json();
+  assert.equal(r.state, 'plate'); assert.ok(/weak|text/.test(r.why), r.why); assert.equal(rows(bad.env).length, 0, 'a weak painting is never kept');
+});
+
+test('past the free share the treasury pays (owner, 2026-11-19: "a free limit is never a stop"): Workers AI keeps painting, one cent a painting logged in the infrastructure pot; an empty pot is the plate', async () => {
+  const w = world({ extra: { ART_DAILY_CAP: '0' } });
+  assert.equal((await (await post(w.env, 'cat')).json()).why, 'cap', 'an empty pot: the plate');
+  await route.paidToday(w.env); // makes the treasury table
+  w.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', ?, 'alloc', 'infrastructure', 3, 'test', 'done')").run(new Date().toISOString());
+  const g = await (await get(w.env, 'dog')).json(); assert.equal(g.state, 'none', 'a GET past the free share offers to paint while the pot pays');
+  const r = await (await post(w.env, 'dog', 'answer', 'common', '7.7.7.1')).json();
+  assert.equal(r.state, 'art'); assert.equal(r.paid, true); assert.equal(r.cents, 1); assert.equal(w.calls.length, 1);
+  const spends = w.env.DB.raw.prepare("SELECT cents, purpose FROM void_treasury WHERE kind = 'spend'").all();
+  assert.equal(spends.length, 1); assert.match(spends[0].purpose, /^card art past the free share \(/);
+  // no count limit on paid paintings: 400 already paid today and an old ART_PAID_CAP setting change nothing while the pot has money
+  const many = world({ extra: { ART_DAILY_CAP: '0', ART_PAID_CAP: '0' } }); await route.paidToday(many.env);
+  many.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', ?, 'alloc', 'infrastructure', 900, 'test', 'done')").run(new Date().toISOString());
+  for (let i = 0; i < 400; i++) many.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, 'spend', 'infrastructure', 1, 'card art past the free share (x)', 'done')").run('s' + i, new Date().toISOString());
+  const m = await (await post(many.env, 'fox', 'answer', 'common', '7.7.7.2')).json();
+  assert.equal(m.state, 'art'); assert.equal(m.paid, true);
+});
+
+test('a kept picture that fails the quality check is dropped and never shown; one that passes is looked at only once', async () => {
+  const w = world(); await post(w.env, 'pancake'); assert.equal(rows(w.env).length, 1);
+  w.env.DB.raw.prepare('DELETE FROM void_art_ok').run(); // as if kept before the gate
+  const seen0 = w.vcalls.length; assert.equal((await (await get(w.env, 'pancake')).json()).state, 'art', 'vision says NO: shown');
+  assert.equal(w.vcalls.length, seen0 + 1); await get(w.env, 'pancake'); assert.equal(w.vcalls.length, seen0 + 1, 'checked once');
+  const b = world(); await post(b.env, 'waffle'); b.env.DB.raw.prepare('DELETE FROM void_art_ok').run();
+  b.env.AI.run = async () => ({ response: 'YES' });
+  const g = await (await get(b.env, 'waffle')).json(); assert.equal(g.state, 'none'); assert.equal(g.dropped, true); assert.equal(rows(b.env).length, 0, 'the weak row is gone');
 });

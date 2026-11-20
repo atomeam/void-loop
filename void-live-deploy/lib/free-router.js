@@ -26,6 +26,7 @@ export function dailyLimit(r) {
 /** can Verse reach it today with what is set up (no new account, no spend)? { ok, why } */
 export function reachable(r, env = {}) {
   const a = String((r && r.access) || '');
+  if (r && r.ended) return { ok: false, why: 'ended ' + r.ended + ': ' + (r.endedWhy || 'the offer is gone') }; // a retired free tier is never routed to (data/free-resources.json says why)
   if (a === 'none') return { ok: true, why: 'keyless public API' };
   if (a === 'program') return { ok: false, why: 'a program to apply for or claim: Atom acts, never routed' };
   const [type, name] = a.split(':');

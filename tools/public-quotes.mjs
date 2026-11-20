@@ -10,6 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { quoteFree, quotesOwner, deepQuoteFree } from './private.mjs';
 import { splitServedHome } from './split-void-page.mjs';
+import { cleanServed } from './public-sites.mjs';
 
 const CODE = new Set(['.js', '.mjs', '.html', '.css', '.svg', '.txt', '.xml', '.md', '.webmanifest']);
 /** a code file's text with the owner's quotes left out of its comments only (//, /* … *\/, <!-- … -->); code and strings unchanged. Pure. */
@@ -50,6 +51,7 @@ if (process.argv[1] && new URL(import.meta.url).pathname === new URL('file://' +
     if (out !== src) { files++; if (!dry) writeFileSync(f, out); }
   }
   console.log(`public quotes: ${files} served file${files === 1 ? '' : 's'} ${dry ? 'would lose' : 'lost'} the owner's quoted words`);
+  cleanServed(dry); // no rival names on public pages: the studied sites in the served ledger, asks, knowledge and self.json (tools/public-sites.mjs)
   // after the quotes are stripped, pull the home style and the main script out of the served HTML (tools/split-void-page.mjs)
   if (!dry) { const sizes = splitServedHome(root); if (sizes) console.log('home split: html ' + sizes.html + ' bytes'); }
 }

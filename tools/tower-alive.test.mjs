@@ -1,7 +1,7 @@
 // tools/tower-alive.mjs: rivals that redirect off their own domain, error out or are parked are dropped; fixture redirects served locally
 import test from 'node:test'; import assert from 'node:assert/strict'; import http from 'node:http'; import fs from 'node:fs';
 import { judge, judgeOne, rivalHost, ownHost, fold, isGone, check, nonSiteOf, nonSiteKind, refusedOf } from './tower-alive.mjs';
-import { settledHtml } from '../void-live-deploy/skills/tower.js';
+import { settledHtml } from '../void-live-deploy/versus/card.js';
 import { advance } from './tower-target.mjs';
 import { historyOf, fileOf } from './assimilated.mjs';
 

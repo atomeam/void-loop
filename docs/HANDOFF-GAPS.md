@@ -874,7 +874,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /tuner/ | text | number | yes | handoff-types.json |
 | /under-the-hood/ | - | - | no | its tag |
 | /vat/ | number | - | yes | its tag |
-| /versus/ | - | - | no | its tag |
+| /versus/ | - | - | yes | its tag |
 | /video/ | text, image | video | yes | its tag |
 | /weather/ | location, date | table, text | yes | handoff-types.json |
 | /word-count/ | text | number, text, table | yes | handoff-types.json |

@@ -1,189 +1,41 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 137,
+ "cases": 148,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 228,
-  "file": 26,
-  "grow": 42,
-  "tighten": 2,
-  "none": 2
+  "visitor": 226,
+  "grow": 43,
+  "file": 28,
+  "none": 2,
+  "tighten": 1
  },
  "runs": [
   {
-   "at": "2026-11-19T13:51:48Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-19T03:50:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-19T00:21:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T22:19:03Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T21:26:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T21:00:18Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T20:34:08Z",
+   "at": "2026-11-20T13:34:26Z",
    "passed": 0,
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
   },
   {
-   "at": "2026-11-18T20:08:01Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T19:39:17Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T19:13:23Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T18:46:17Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T18:20:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T17:49:21Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T17:17:24Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T16:50:36Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T16:35:17Z",
-   "passed": 136,
-   "of": 139,
+   "at": "2026-11-20T13:17:03Z",
+   "passed": 133,
+   "of": 149,
    "kind": "file",
-   "ms": 608,
-   "note": "fix: \"how do i magnetize this?\" only \"waking up\" appeared, never the answer",
+   "ms": 417,
+   "note": "fix: \"make a poster of this card\" only \"waking up\" appeared, never the answer; console: Failed to load resource: the server responded with a status of 429 ()",
    "failed": [
     {
-     "ask": "film meatdata for ikiru",
+     "ask": "are you web4",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "stlye like mickey mouse",
+     "ask": "film metadata for Ikiru",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "how do i magnetize this?",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-18T16:25:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-18T16:11:47Z",
-   "passed": 136,
-   "of": 138,
-   "kind": "grow",
-   "ms": 610,
-   "note": "new ground passed, kept as a regression case: \"automation handoff for the email reminders\" (skill:automation-handoff)",
-   "failed": [
-    {
-     "ask": "film meatdata for ikiru",
+     "ask": "fimls by kurosawa",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-18T16:02:02Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-18T14:42:37Z",
-   "passed": 134,
-   "of": 138,
-   "kind": "file",
-   "ms": 535,
-   "note": "fix: \"toss it off the screen\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
     },
     {
      "ask": "film meatdata for ikiru",
@@ -192,87 +44,465 @@
     {
      "ask": "redner a cartoon dragon",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "make a vase",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "adaptive flow canvas",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "show the data flows for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "calorie calculator",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "make a poster of this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "how long until gta 6 comes out",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
+  },
+  {
+   "at": "2026-11-20T13:01:36Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T12:49:18Z",
+   "passed": 143,
+   "of": 148,
+   "kind": "grow",
+   "ms": 362,
+   "note": "new ground passed, kept as a regression case: \"dasatinib and quercetin for mash\" (skill:senolytic)",
+   "failed": [
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "missing text /News about me/"
+    },
+    {
+     "ask": "test me on that",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "yo play despacito",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T12:39:36Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T12:26:27Z",
+   "passed": 120,
+   "of": 148,
+   "kind": "file",
+   "ms": 511,
+   "note": "fix: \"what are the figures doing\" nothing appeared",
+   "failed": [
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "what are the figures doing",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "test me on that",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "film metadata for Ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for ikiru pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "dim the void",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo make a 2d toon dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "make a 2d toon dog pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T12:09:23Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T11:21:26Z",
+   "passed": 139,
+   "of": 147,
+   "kind": "grow",
+   "ms": 393,
+   "note": "new ground passed, kept as a regression case: \"my routines\" (skill:routine)",
+   "failed": [
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "missing text /News about me/"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "is waymo in austin",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show the days until a date",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T11:09:41Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T10:56:55Z",
+   "passed": 143,
+   "of": 146,
+   "kind": "grow",
+   "ms": 313,
+   "note": "new ground passed, kept as a regression case: \"pizza delivery to 1 main st phoenix\" (skill:rides)",
+   "failed": [
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T10:46:16Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T09:37:30Z",
+   "passed": 126,
+   "of": 146,
+   "kind": "file",
+   "ms": 454,
+   "note": "fix: \"update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list\" missing text /News about me/",
+   "failed": [
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "missing text /News about me/"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo automations",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play reversi",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "echo this",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "build a hut",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "open folder recipes",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "three alike",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "token stand",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T09:21:32Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T08:51:22Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T08:00:46Z",
+   "passed": 144,
+   "of": 145,
+   "kind": "grow",
+   "ms": 309,
+   "note": "new ground passed, kept as a regression case: \"how do i make guacamole\" (skill:recipe)",
+   "failed": [
+    {
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T07:50:18Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T06:58:54Z",
+   "passed": 140,
+   "of": 145,
+   "kind": "file",
+   "ms": 279,
+   "note": "fix: \"export as stl\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "send it away",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "films by Kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "export as stl",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T06:48:39Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T06:31:52Z",
+   "passed": 141,
+   "of": 145,
+   "kind": "file",
+   "ms": 342,
+   "note": "fix: \"show the days until a date\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "show the days until a date",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T06:21:07Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-27",
+   "from": "2026-08-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-03",
+   "from": "2026-09-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-10",
+   "from": "2026-09-11",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-17",
+   "from": "2026-09-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-24",
+   "from": "2026-09-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-01",
+   "from": "2026-10-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-08",
+   "from": "2026-10-09",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-15",
+   "from": "2026-10-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-22",
+   "from": "2026-10-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-29",
+   "from": "2026-10-30",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-05",
-   "runs": 174,
-   "passed": 3799,
-   "of": 5439,
-   "broken": 14,
-   "brokenOf": 1491,
-   "brokenPassed": 135,
+   "from": "2026-11-06",
+   "runs": 131,
+   "passed": 2281,
+   "of": 2882,
+   "broken": 5,
+   "brokenOf": 544,
+   "brokenPassed": 44,
    "ms": 393
   },
   {
-   "from": "2026-11-12",
-   "runs": 126,
-   "passed": 2795,
-   "of": 2875,
-   "ms": 438
+   "from": "2026-11-13",
+   "runs": 169,
+   "passed": 6381,
+   "of": 6746,
+   "ms": 425
   }
  ],
  "seen": {
@@ -347,34 +577,34 @@
   "skill:memory": "2026-11-12T08:50:40Z",
   "skill:moon": "2026-11-18T04:51:14Z",
   "skill:motorbody": "2026-11-18T16:35:17Z",
-  "skill:news": "2026-10-17T10:26:08Z",
+  "skill:news": "2026-11-19T20:51:47Z",
   "skill:nightsky": "2026-10-17T10:32:13Z",
-  "skill:notepad": "2026-10-17T10:32:13Z",
-  "skill:nutrition": "2026-10-17T10:32:13Z",
-  "skill:ovulation": "2026-10-17T11:03:56Z",
-  "skill:part": "2026-10-17T11:03:56Z",
-  "skill:pdf-card": "2026-10-17T11:03:56Z",
-  "skill:period": "2026-10-17T11:11:24Z",
+  "skill:notepad": "2026-11-19T21:19:04Z",
+  "skill:nutrition": "2026-11-19T21:46:27Z",
+  "skill:ovulation": "2026-11-19T22:52:12Z",
+  "skill:part": "2026-11-19T23:27:14Z",
+  "skill:pdf-card": "2026-11-20T00:08:19Z",
+  "skill:period": "2026-11-20T01:05:56Z",
   "skill:place": "2026-10-17T11:11:24Z",
-  "skill:pong": "2026-10-17T11:11:24Z",
-  "skill:poster": "2026-10-17T11:17:08Z",
-  "skill:pregnancy": "2026-10-17T11:17:08Z",
-  "skill:print-download": "2026-10-17T11:17:08Z",
-  "skill:print-file": "2026-10-17T11:23:07Z",
-  "skill:printedmotor": "2026-10-17T11:23:07Z",
+  "skill:pong": "2026-11-20T02:06:02Z",
+  "skill:poster": "2026-11-20T02:50:21Z",
+  "skill:pregnancy": "2026-11-20T03:14:14Z",
+  "skill:print-download": "2026-11-20T03:46:21Z",
+  "skill:print-file": "2026-11-20T04:43:02Z",
+  "skill:printedmotor": "2026-11-20T05:11:39Z",
   "skill:proposal": "2026-10-17T11:28:39Z",
-  "skill:quiz": "2026-10-17T11:28:39Z",
-  "skill:rebuild-map": "2026-10-17T11:28:39Z",
-  "skill:recent": "2026-10-17T11:36:13Z",
-  "skill:recipe": "2026-10-17T11:36:13Z",
-  "skill:releasenotes": "2026-10-17T11:36:13Z",
-  "skill:rides": "2026-10-17T11:42:36Z",
+  "skill:quiz": "2026-11-20T06:08:02Z",
+  "skill:rebuild-map": "2026-11-20T06:31:52Z",
+  "skill:recent": "2026-11-20T06:58:54Z",
+  "skill:recipe": "2026-11-20T08:00:46Z",
+  "skill:releasenotes": "2026-11-20T09:37:30Z",
+  "skill:rides": "2026-11-20T10:56:55Z",
   "skill:room": "2026-10-17T11:42:36Z",
-  "skill:routine": "2026-10-17T11:42:36Z",
-  "skill:savings": "2026-10-17T11:53:29Z",
-  "skill:senolytic": "2026-10-17T11:53:29Z",
+  "skill:routine": "2026-11-20T11:21:26Z",
+  "skill:savings": "2026-11-20T12:26:27Z",
+  "skill:senolytic": "2026-11-20T12:49:18Z",
   "skill:services": "2026-10-17T11:53:29Z",
-  "skill:shape": "2026-10-17T12:21:39Z",
+  "skill:shape": "2026-11-20T13:17:03Z",
   "skill:share": "2026-10-17T12:21:39Z",
   "skill:show": "2026-10-17T12:21:39Z",
   "skill:show-countdown": "2026-10-17T13:52:50Z",
@@ -430,7 +660,7 @@
   "skill:repo": "2026-11-09T19:33:30Z",
   "skill:incident-autopsy": "2026-11-09T19:33:30Z",
   "skill:flow-canvas": "2026-11-18T05:37:01Z",
-  "skill:event-countdown": "2026-10-17T11:23:07Z",
+  "skill:event-countdown": "2026-11-20T04:08:22Z",
   "skill:living-cards-mind": "2026-10-17T14:29:51Z",
   "skill:service-health": "2026-10-17T21:02:03Z",
   "skill:attention-field-mind": "2026-10-18T03:06:28Z",
@@ -722,6 +952,12 @@
   "skill:summon-pack": "2026-11-17T23:17:03Z",
   "skill:system-design": "2026-11-18T02:55:48Z",
   "skill:connect-flows": "2026-11-18T14:42:37Z",
-  "skill:automation-handoff": "2026-11-18T16:11:47Z"
+  "skill:automation-handoff": "2026-11-18T16:11:47Z",
+  "skill:connections": "2026-11-19T19:55:06Z",
+  "skill:monitor-receipt": "2026-11-19T19:55:06Z",
+  "skill:process-lift-pack": "2026-11-19T19:55:06Z",
+  "skill:ready-checks": "2026-11-19T20:22:55Z",
+  "skill:delivery-status-pack": "2026-11-19T22:25:16Z",
+  "skill:full-lift-plan": "2026-11-20T00:31:48Z"
  }
 }

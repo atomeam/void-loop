@@ -1,6 +1,7 @@
 // /members/ (functions/api/members.js, lib/members.js): what paid Verse gives, the idea form for members, their ideas and the wall.
 // The perks come from lib/members.js itself, so the page reads right even when the API is out; the tier comes from the server only.
 import { perks as perksOf, LIVE, BUY } from '/lib/members.js';
+import { withSecret } from '/lib/payer-secret.js'; // what every payer is told
 import { parseKeep, recordOf, PENDING } from '/lib/member-keep.js';
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
@@ -51,7 +52,7 @@ async function load() {
   const paid = j && j.signedIn && j.tier === 'paid';
   $('claim').hidden = !(j && j.signedIn && !paid); // a purchase that did not carry this Verse's id is linked with the receipt
   if (paid) saveKept();
-  if (paid) { $('buy').hidden = true; $('how').textContent = 'You are a member. Thank you for building Verse.'; }
+  if (paid) { $('buy').hidden = true; $('how').textContent = withSecret('You are a member. Thank you for building Verse.'); }
   const open = j && (j.live || PILOT);
   $('lab').hidden = !(paid && open);
   $('soon').hidden = !(paid && !open);

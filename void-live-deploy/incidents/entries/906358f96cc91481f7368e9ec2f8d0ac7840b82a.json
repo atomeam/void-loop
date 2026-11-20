@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-20T13:41:13.581Z",
+ "sha": "906358f96cc91481f7368e9ec2f8d0ac7840b82a",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44740215876",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+  "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so"
+ ],
+ "touched": [
+  "tools/agent-providers.test.mjs",
+  "tools/assistant-exam.mjs",
+  "tools/assistant-guard.test.mjs",
+  "tools/guards/assistant.mjs",
+  "void-live-deploy/functions/api/agent.js",
+  "void-live-deploy/lib/agent-providers.js"
+ ],
+ "shards": [
+  3
+ ]
+}

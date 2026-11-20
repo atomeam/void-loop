@@ -31,6 +31,7 @@
   svg { width: 100%; height: 72px; }
   .note { color: var(--soft); font-size: 14px; }
   #when { min-height: 42px; } #chart:empty { min-height: 113px; } @media (max-width: 700px) { #when { min-height: 63px; } #chart:empty { min-height: 134px; } } #rows td.wait { height: 100svh; } /* the run line, the chart and the rows fill in from the ledger: hold their space so the table does not jump */
+  td, th { overflow-wrap: anywhere; } @media (max-width: 700px) { th, td { padding: 8px 4px; font-size: 14px; } } /* a long loop name or result wraps; the page never scrolls sideways on a phone */
   nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 22px; }
 </style>
 </head>
@@ -39,6 +40,7 @@
   <h1>What Verse can actually do</h1>
   <p class="note">Each score is the share of objective checks a real ask passed on a phone-width page: the right skill, a result in 12 seconds, the thing the ask named, and — where a free source has an answer — that source's answer, not a different one. Ambiguous asks have to say there is more than one. A song counts when an audio file plays and the title and artist match iTunes. A holdout set, rotated each week and not published, is scored beside the public one. A new scale is a new baseline. Counts of skills, pull requests and lesson sentences are not a score.</p>
   <p id="when" class="note">Loading the latest run…</p>
+  <section id="compound" hidden><h2>Compounding</h2><p></p></section>
   <div id="chart"></div>
   <table>
     <thead><tr><th>Domain</th><th>Public</th><th>Holdout</th><th>Measured</th><th>Failing asks</th></tr></thead>

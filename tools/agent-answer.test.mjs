@@ -88,3 +88,61 @@ test('the Savannah keyword line is not kept; the next try has to answer the ask'
     assert.doesNotMatch(rows.get('t4').result, /Savannah \/ Free/);
   } finally { globalThis.fetch = realFetch; }
 });
+
+// Routing in general: a narrow bot claims an ask only when the ask carries the input it works on. These asks are not the Tower exam's.
+import { isKnowledgeAsk, hasPayload, canTake, staysInLane } from '../void-live-deploy/lib/agent-answer.js';
+const named = (ask) => botChoices(ask, registry).map((b) => b.name).filter((n) => n !== 'verse');
+test('a question or a writing request with nothing to work on is the general answerer\'s, however many words it shares with a bot', () => {
+  for (const ask of [
+    'What is the difference between a stock and a bond?',
+    'Why do cats purr when they are happy?',
+    'Explain how a vaccine trains the immune system.',
+    'How does a refrigerator keep food cold, and why does the back feel warm?',
+    'Which is better for a beginner, a road bike or a mountain bike?',
+    'Write a friendly note thanking a coworker for covering my shift.',
+    'Is it okay to run every day, and what happens between runs?',
+    'What are the days between solstices called, and why do they differ?',
+    'Can you describe how a search engine finds a page?',
+  ]) { assert.ok(isKnowledgeAsk(ask), ask); assert.deepEqual(named(ask), [], ask + ' went to ' + named(ask)); assert.equal(pick(ask, registry), 'verse', ask); }
+});
+test('a bot that needs input does not take an ask with none, and does take one that has it', () => {
+  const days = { id: 'days-between', job: 'Days between two dates', probe: { in: '2026-11-04 to 2026-12-25', out: '51 days' }, status: 'live' };
+  const coin = { id: 'coin-flip', job: 'Flip a coin and say heads or tails', status: 'live' };
+  assert.equal(canTake('What is the difference between two stars?', days), false);
+  assert.equal(canTake('how many days are there between the equinoxes?', days), false);
+  assert.equal(canTake('how many days between 2026-03-01 and 2026-03-09', days), true);
+  assert.equal(canTake('Should I flip a coin to decide?', coin), true);
+  assert.equal(botChoices('how many days between 2026-03-01 and 2026-03-09', [days])[0].name, 'days-between');
+});
+test('what carries input: digits, quoted text, a link, a line after a colon', () => {
+  for (const t of ['add 4 and 9', 'reverse "hello there"', 'shorten https://example.com/a/b', 'summarize: the council met on tuesday and agreed', 'fix this\nfoo bar']) assert.ok(hasPayload(t), t);
+  for (const t of ['what is a prime number?', 'write a thank you note']) assert.ok(!hasPayload(t), t);
+});
+test('a short reply that says what the bot is for, or asks for other input, does not address the ask; a real answer that says "I cannot" does', () => {
+  for (const r of [
+    'I am a unit-conversion bot. I can only convert units. Please provide a length if you would like a conversion.',
+    'I was designed solely to count words, so I cannot provide information regarding history.',
+    'That is outside of my scope. Please provide two numbers and I will add them.',
+  ]) { assert.ok(staysInLane(r), r); assert.equal(addressesAsk('What caused the fall of Rome and how long did it take?', r), false, r); }
+  const real = 'The fall of Rome had many causes: economic trouble, overreach, and invasions. The western empire ended in 476, after about a century of decline. I cannot give one single cause, because historians weigh them differently, but most agree the slow loss of money and soldiers mattered most.';
+  assert.ok(!staysInLane(real)); assert.equal(addressesAsk('What caused the fall of Rome and how long did it take?', real), true);
+});
+test('the old picks stay: a calculator, a percent, a word count, key words, a conversion', () => {
+  assert.equal(pick('what percent is 45 of 60', registry), 'percent-bot');
+  assert.equal(pick('count the words in this note', registry), 'word-counter');
+  assert.equal(pick('find the key words in rain rain cloud sun', registry), 'keyword-finder');
+});
+
+// A quoted or pasted text is the thing worked on: its words never pick a bot.
+import { instructionTerms } from '../void-live-deploy/lib/agent-answer.js';
+test('words inside quoted text do not pick a bot; the instruction does', () => {
+  const lane = [{ id: 'gap-check', job: 'A gap between two marked lanes: the handoff sentence is counted and discarded', status: 'live' }, { id: 'summarizer', job: 'Summarizes a text in one sentence', status: 'live' }];
+  const ask = 'Give me a one-line recap of this: "Two lanes were marked on the road, and the gap between the sentence and the marked lane was counted." Keep it short.';
+  assert.ok(!instructionTerms(ask).includes('lane'));
+  assert.ok(!botChoices(ask, lane).some((b) => b.name === 'gap-check'), 'the quoted lane does not claim it');
+  assert.ok(botChoices('Marked lane gap: the handoff sentence is counted', lane).some((b) => b.name === 'gap-check'), 'the same words as an instruction still do');
+  assert.deepEqual(instructionTerms('reverse "hello there friend"'), ['reverse']);
+  assert.ok(instructionTerms('"only a quote of some length here"').length > 0, 'an ask that is only a quote still has terms');
+  assert.equal(pick('what percent is 45 of 60', registry), 'percent-bot');
+  assert.equal(pick('count the words in this note', registry), 'word-counter');
+});

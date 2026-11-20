@@ -11,27 +11,8 @@
    "blurb": "MultiVerse: every pro skill, films, code review, priority.",
    "status": "live",
    "origin": "v01d",
-   "published": "2026-10-15"
-  },
-  {
-   "id": "one-time-fix",
-   "name": "One-Time Fix",
-   "cents": 9900,
-   "kind": "service",
-   "blurb": "I'll fix one annoying bug or setup one feature.",
-   "status": "live",
-   "origin": "v01d",
-   "published": "2026-11-10"
-  },
-  {
-   "id": "full-stack-audit",
-   "name": "Full-Stack Audit",
-   "cents": 49900,
-   "kind": "service",
-   "blurb": "Deep dive into your stack, architecture, and code.",
-   "status": "live",
-   "origin": "v01d",
-   "published": "2026-11-10"
+   "published": "2026-10-15",
+   "trial": "first week free"
   },
   {
    "id": "code-review-pro",
@@ -49,7 +30,7 @@
    "published": "2026-10-15"
   },
   {
-   "id": "one-time-fix-automation",
+   "id": "one-time-fix",
    "name": "Automation Cleanup (One-Time Fix)",
    "cents": 2500,
    "kind": "service",
@@ -102,7 +83,8 @@
    "blurb": "Real jobs that pay real money.",
    "status": "live",
    "origin": "v01d",
-   "published": "2026-10-15"
+   "published": "2026-10-15",
+   "trial": "first week free"
   },
   {
    "id": "join-the-team",

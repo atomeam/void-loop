@@ -1,5 +1,6 @@
 /** Nine Grid: a 4 by 4 number grid in four boxes. Verse already knows the fill and waits. */
 export const id = 'nine-grid', N = 4, CELL = 36, W = 4 * 36, H = 4 * 36, CAP = 4000;
+export const whatsNew = 'Update 1: Every second you delay, Verse grows more restless.';
 const BASE = [1, 2, 3, 4, 3, 4, 1, 2, 2, 1, 4, 3, 4, 3, 2, 1];
 export function create(seed = 1) {
   const k = ((seed >>> 0) % 3) + 1;

@@ -78,3 +78,15 @@ test('the word "time" in a title does not pick a clock', () => {
   assert.equal(sealPlan('happy time harry', { nouns: [] }).motif || '', '');
   assert.deepEqual(motifsFor(['clock']), ['clock']);
 });
+
+// owner audit 2026-11-19: "how do I change a flat tire" was badged "from 2 sources" and Sourced while its own last line said the sources do not hold it
+const FLAT = "To change a flat tire, follow these steps: Find a safe, flat location away from traffic and engage your parking brake. Retrieve your spare tire, jack, and lug wrench. Loosen the lug nuts. The sources provided do not contain instructions for changing a flat tire; they cover tire-pressure monitoring systems [1], tire maintenance and wear [2], and airless tires.";
+test('an answer that says its sources do not hold it is not sourced', async () => {
+  const { disclaimsSources, UNSOURCED_LINE } = await import('../void-live-deploy/lib/no-answer.js');
+  assert.equal(disclaimsSources(FLAT), true);
+  for (const t of ['The sources do not cover that.', 'This is not contained within the provided sources.', 'These articles do not mention a recipe.', 'No relevant sources contain this.']) assert.equal(disclaimsSources(t), true, t);
+  for (const t of ['The Eiffel Tower is 330 metres tall [1] and opened in 1889 [2].', 'Steps: loosen the lug nuts, then jack the car up.', '']) assert.equal(disclaimsSources(t), false, t);
+  assert.match(UNSOURCED_LINE, /No source covers this/);
+  const withSources = cardOf({ kind: 'Answer', sources: 2 }), without = cardOf({ kind: 'Answer', sources: null });
+  assert.match(withSources.typeLine, /from 2 sources/); assert.doesNotMatch(without.typeLine, /source/); assert.equal(without.fetched, false);
+});

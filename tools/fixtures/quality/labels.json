@@ -1,0 +1,7 @@
+{
+  "about": "How the reference screenshots read to a strict human judge, out of 10 (graphics, layout, typography, motion, art). A vision judge is calibrated when it keeps these apart: the fails low, each fix above its fail, nothing at the pinnacle.",
+  "paris-before": { "graphics": 3, "layout": 5, "typography": 5, "motion": 4, "art": 2 },
+  "paris-after": { "graphics": 4, "layout": 6, "typography": 6, "motion": 4, "art": 6 },
+  "versus-before": { "graphics": 3, "layout": 3, "typography": 3, "motion": 3, "art": 3 },
+  "versus-after": { "graphics": 4, "layout": 6, "typography": 7, "motion": 4, "art": 5 }
+}

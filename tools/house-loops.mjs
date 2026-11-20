@@ -1,6 +1,6 @@
 // Run one house lane. The last stdout line is JSON. --dry writes nothing.
 //   node tools/house-loops.mjs list
-//   node tools/house-loops.mjs run <lane> [--dry]
+//   node tools/house-loops.mjs run <lane> [--dry]   (every run starts with the revenue lane; `run revenue` runs only that)
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
@@ -149,9 +149,14 @@ async function runNext() {
 const JOBS = { links: runLinks, health: runHealth, speed: runSpeed, twins: runTwins, plain: runPlain, fresh: runFresh, seo: runSeo, coverage: runCoverage, deps: runDeps, handoff: runHandoff, 'next-tool': runNext };
 
 export async function main(argv = process.argv.slice(2)) {
-  const [cmd, lane] = argv, dry = argv.includes('--dry'), job = JOBS[lane];
+  const [cmd, lane] = argv, dry = argv.includes('--dry'), job = lane === 'revenue' ? () => ({}) : JOBS[lane];
   if (cmd === 'list') { for (const l of LOOPS) console.log(l.id + '\t' + l.hourUtc + ':' + String(l.minuteUtc).padStart(2, '0')); return 0; }
   if (cmd !== 'run' || !job) { console.error('usage: node tools/house-loops.mjs list | run <lane> [--dry]'); return 2; }
+  // the revenue lane is the top priority (tools/revenue-lane.mjs): it runs first in every house run, fenced so it never fails the lane
+  try { const { runLane } = await import('./revenue-lane.mjs'); const r = await runLane({ dry }); console.log('Revenue: ' + r.last); } catch (e) { console.log('revenue: ' + String((e && e.message) || e).slice(0, 160)); }
+  if (lane === 'revenue') return 0;
+  // a lane branch left over from a merged pull request cannot take today's patch: make it fresh (tools/house-branch.mjs; Actions only, never one with an open pull request)
+  if (!dry) { try { const { freshLaneBranch } = await import('./house-branch.mjs'); await freshLaneBranch(lane); } catch (e) { console.log('house branch: ' + String((e && e.message) || e).slice(0, 160)); } }
   const loop = LOOPS.find((l) => l.id === lane), prev = loadOne(loop), now = Date.now(), gate = backoff(prev.state, now);
   save = (file, text) => { if (!dry) writeFileSync(file, text); };
   const result = gate.run ? await job() : { last: prev.last, ok: true };
@@ -159,6 +164,8 @@ export async function main(argv = process.argv.slice(2)) {
   const wrote = put(rec, dry);
   console.log(rec.name + ': ' + rec.status + ' ' + rec.last + (wrote ? '' : ' (unchanged)'));
   console.log(JSON.stringify({ id: rec.id, status: rec.status, last: rec.last, wrote, cost: rec.cost }));
+  // Verse's self-guards ride the lane (tools/verse-guards.mjs): each one is fenced, so a guard that breaks never fails the lane
+  try { const { runRides } = await import('./verse-guards.mjs'); await runRides(lane, { dry }); } catch (e) { console.log('guards: ' + String((e && e.message) || e).slice(0, 160)); }
   return 0;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().then((c) => process.exit(c)).catch((e) => { console.error(String(e && e.message || e)); process.exit(1); });

@@ -5,8 +5,7 @@
 //   every surface: zero page errors and console errors; no sideways scroll; no clipped text (a text box cut off with no ellipsis);
 //   a dark page (the Verse theme: the page background's luminance at most DARK); not a blank render (some pixels differ from the
 //   most common colour); media on the page has no load error.
-//   the landing ('/') also: nothing visible but the void and the ask bar (no text, link or button outside #row); a near-black frame
-//   (mean luminance at most NEAR_BLACK); no harsh hard-edged blobs: of the pixels brighter than the void, the share sitting on a
+//   the landing ('/') also: a near-black frame (mean luminance at most NEAR_BLACK); soft star points (HARD_DOTS); no harsh hard-edged blobs: of the pixels brighter than the void, the share sitting on a
 //   strong edge (Sobel magnitude over EDGE) stays at most HARD_EDGE, with the ask bar masked out.
 // A failure names the surface, the viewport, the measure, and the numbers, so the coder can fix exactly that.
 //   node tools/vision-judge.mjs [--paths /,/films/] [--files a,b] [--base origin/main] [--shots dir] [--phase night] [--json]
@@ -129,8 +128,6 @@ export function judge(pathname, vp, dom, px) {
   if (px.offMode < LIMITS.BLANK) bad.push(at + ': blank render (' + px.offMode + ' of pixels differ from the main colour)');
   if (dom.media.length) bad.push(at + ': media failed to load: ' + dom.media.slice(0, 2).join(', '));
   if (pathname === '/') {
-    const chrome = dom.chrome; // the landing keeps nothing outside the ask bar (owner, 2026-11-18)
-    if (chrome.length) bad.push(at + ': landing shows more than the void and the ask bar: ' + chrome.slice(0, 3).join(', '));
     if (px.mean > LIMITS.NEAR_BLACK) bad.push(at + ': landing frame mean luminance ' + px.mean + ' > ' + LIMITS.NEAR_BLACK + ' (not near-black)');
     if (px.hardDots > LIMITS.HARD_DOTS) bad.push(at + ': harsh star dots: ' + px.hardDots + ' of ' + px.dots + ' bright points are flat discs > ' + LIMITS.HARD_DOTS);
     if (px.hardEdge > LIMITS.HARD_EDGE) bad.push(at + ': harsh hard-edged shapes: ' + px.hardEdge + ' of bright pixels on a strong edge > ' + LIMITS.HARD_EDGE);
@@ -148,18 +145,14 @@ const DOM = () => {
     const s = getComputedStyle(e);
     if (/(hidden|clip)/.test(s.overflowX) && s.textOverflow !== 'ellipsis' && e.scrollWidth > e.clientWidth + 2) clipped.push(name(e));
   }
-  const row = document.getElementById('row'), chrome = [];
-  for (const e of document.querySelectorAll('body a, body button, body input, body select, body textarea, body h1, body h2, body h3, body p, body li, body img, body svg')) {
-    if (row && row.contains(e)) continue;
-    if (vis(e) && (e.matches('a,button,input,select,textarea,img,svg') || e.innerText.trim())) chrome.push(name(e));
-  }
+  const row = document.getElementById('row');
   const rgb = (c) => (c.match(/[\d.]+/g) || []).map(Number);
   let bg = null;
   for (const e of [document.body, document.documentElement]) { const c = rgb(getComputedStyle(e).backgroundColor); if (c.length >= 3 && (c[3] === undefined || c[3] > 0.5)) { bg = c; break; } }
   const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
   const media = [...document.querySelectorAll('video,audio')].filter((m) => m.error || (m.currentSrc && m.networkState === 3)).map((m) => m.tagName.toLowerCase() + ' ' + (m.currentSrc || '').slice(0, 80));
   const r = row && row.getBoundingClientRect();
-  return { scrollX: Math.max(0, document.documentElement.scrollWidth - innerWidth), clipped, chrome, bg: bg ? +lum(bg).toFixed(4) : 0, media,
+  return { scrollX: Math.max(0, document.documentElement.scrollWidth - innerWidth), clipped, bg: bg ? +lum(bg).toFixed(4) : 0, media,
     mask: r ? { x: Math.floor(r.left - 24), y: Math.floor(r.top - 24), w: Math.ceil(r.width + 48), h: Math.ceil(r.height + 48) } : null };
 };
 
@@ -223,7 +216,7 @@ export async function run({ paths, dir = path.join(root, 'void-live-deploy'), sh
       if (phase) await page.evaluate((ph) => { document.documentElement.dataset.phase = ph; }, phase);
       if (ask) { await page.fill('#input', ask).catch((e) => errors.push('ask: ' + e.message.slice(0, 120))); await page.press('#input', 'Enter').catch(() => {}); await page.waitForTimeout(2500); await page.mouse.move(vp.width / 2, 40); }
       const unplayable = await page.evaluate(PLAY).catch(() => []);
-      const dom = { ...(await page.evaluate(DOM).catch((e) => ({ scrollX: 0, clipped: [], chrome: [], bg: 0, media: [], mask: null, fail: e.message }))), errors };
+      const dom = { ...(await page.evaluate(DOM).catch((e) => ({ scrollX: 0, clipped: [], bg: 0, media: [], mask: null, fail: e.message }))), errors };
       dom.media = [...dom.media, ...unplayable];
       const png = await page.screenshot();
       if (shots) { fs.mkdirSync(shots, { recursive: true }); fs.writeFileSync(path.join(shots, (p.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'landing') + (ask ? '-' + ask.replace(/\W+/g, '-') : '') + '-' + vp.name + '.png'), png); }

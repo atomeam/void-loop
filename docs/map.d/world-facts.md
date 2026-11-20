@@ -1,0 +1,1 @@
+`world-facts.mjs` checks every fact a /world/ scene states against its source page (the exact words must be on the page) and prints a score; `void-live-deploy/world/` holds the real-time 3D engine (WebGPU, WebGL 2 fallback, light tier first) and the facts for Verse's own 3D version of a real thing, the garden snail first. Tests: `world-facts.test.mjs`.

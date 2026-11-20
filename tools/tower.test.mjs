@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { tower, gate, FLOORS, aspectsOf, towerLine, passingRows, sizeTier, easeLine } from '../void-live-deploy/lib/tower.js';
-import { towerHtml, heroHtml, chipsHtml, actionsHtml } from '../void-live-deploy/skills/tower.js';
+import { towerHtml, heroHtml, chipsHtml, actionsHtml } from '../void-live-deploy/versus/card.js';
 import { verdict, record } from './tower-gate.mjs';
 // every aspect passing; journey rows carry their steps and negative controls (the gate's standards, 2026-10-28)
 const all = (f) => passingRows(f);
@@ -43,12 +43,12 @@ test('verdicts come from numbers only', () => {
   assert.equal(verdict(100, 200), 'better'); assert.equal(verdict(3, 3, true), 'equal'); assert.equal(verdict(NaN, 1), 'unverified');
 });
 test('the tower skill answers its asks and not near misses; the card is headed Versus (owner, 2026-10-25) and every old "tower" ask still opens it', async () => {
-  const { default: sk } = await import('../void-live-deploy/skills/tower.js');
-  for (const a of sk.examples) assert.equal(sk.match(a.toLowerCase(), a), true, a);
-  for (const a of ['versus', 'Verse versus', 'the versus', 'show me versus', 'open versus', 'Versus?', 'the tower', 'verse tower', 'show me the tower']) assert.equal(sk.match(a.toLowerCase(), a), true, a);
-  for (const a of sk.nearMisses) assert.equal(sk.match(a.toLowerCase(), a), false, a);
+  const { default: skill } = await import('../void-live-deploy/skills/tower.js'), { default: sk } = await import('../void-live-deploy/versus/card.js');
+  for (const a of skill.examples) assert.equal(skill.match(a.toLowerCase(), a), true, a);
+  for (const a of ['versus', 'Verse versus', 'the versus', 'show me versus', 'open versus', 'Versus?', 'the tower', 'verse tower', 'show me the tower']) assert.equal(skill.match(a.toLowerCase(), a), true, a);
+  for (const a of skill.nearMisses) assert.equal(skill.match(a.toLowerCase(), a), false, a);
   const t = tower([], {}), h = sk.towerHtml(t, (s) => String(s));
-  assert.match(h, /<h2 class="tw-head">Versus<\/h2>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(sk.about, /^Versus: /);
+  assert.match(h, /<h2 class="tw-head">Versus<\/h2>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(skill.about, /^Versus: /);
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
   assert.equal((h.match(/class="tw-cur"/g) || []).length, 1); assert.doesNotMatch(h, /FINAL BOSS|YOU ARE HERE|data-boss/);
   assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.doesNotMatch(h, /s2\/favicons|tower\.icons\//, 'no logos (docs/TOWER-RULES.md)');
@@ -61,7 +61,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   for (const f of FLOORS.slice(0, 3)) assert.ok(list.includes(f.site), f.site + ' is listed as assimilated');
 });
 test('the live card tells what moved between two polls', async () => {
-  const sk = (await import('../void-live-deploy/skills/tower.js')).default;
+  const sk = (await import('../void-live-deploy/versus/card.js')).default;
   const a = tower([], {}), first = a.floors[0], ev = { [first.id]: passingRows(first, { evidence: 'e' }) }, b = tower([], ev);
   assert.deepEqual(sk.changes(a, a), []);
   const said = sk.changes(a, b).join(' ');
@@ -79,19 +79,19 @@ test('a tie at the ideal score passes as equal-and-better; any other tie, or spe
   assert.equal(r.mobile.verdict, 'equal-and-better'); assert.equal(r.reliability.verdict, 'equal-and-better'); assert.equal(r.speed.verdict, 'worse'); assert.equal(r.history.verdict, 'better');
 });
 test('every floor with a fatality says it in plain words, and the card detail carries it; no site sends Verse down any more', async () => {
-  const { detailText } = await import('../void-live-deploy/skills/tower.js');
+  const { detailText } = await import('../void-live-deploy/versus/card.js');
   const withKill = FLOORS.filter((f) => f.fatality); assert.ok(withKill.length >= 4);
   for (const f of withKill) { assert.ok(f.fatality.length > 20 && f.fatality.length < 200, f.id); assert.match(detailText({ ...f, n: 1, m: 9, left: [], lost: [] }), new RegExp('Verse\'s edge: ' + f.fatality.slice(0, 20).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))); }
   assert.doesNotMatch(detailText({ site: 'x', n: 0, m: 9, left: [], lost: [], page: '' }), /Verse's edge/);
   assert.equal((await import('node:fs')).existsSync(new URL('../void-live-deploy/tower.sentdown.json', import.meta.url)), false);
 });
 test('a floor may name its fatality as `killshot` too: the same word for the same thing', async () => {
-  const { fatalityOf } = await import('../void-live-deploy/lib/tower.js'), { detailText } = await import('../void-live-deploy/skills/tower.js');
+  const { fatalityOf } = await import('../void-live-deploy/lib/tower.js'), { detailText } = await import('../void-live-deploy/versus/card.js');
   assert.equal(fatalityOf({ killshot: 'a thing it cannot do' }), 'a thing it cannot do'); assert.equal(fatalityOf({ fatality: 'a', killshot: 'b' }), 'a'); assert.equal(fatalityOf({}), '');
   assert.match(detailText({ site: 'x', n: 1, m: 9, left: [], lost: [], killshot: 'a thing it cannot do' }), /Verse's edge: a thing it cannot do\./);
 });
 test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"): the VS splash, one row per aspect with the gate\'s numbers, when it was measured, what is next', async () => {
-  const { vsHtml, matchupHtml, matchRows, metaLine, nums, ago, siteFace } = await import('../void-live-deploy/skills/tower.js');
+  const { vsHtml, matchupHtml, matchRows, metaLine, nums, ago, siteFace } = await import('../void-live-deploy/versus/card.js');
   const { hashOf } = await import('../void-live-deploy/lib/avatar.js'); const esc = (s) => String(s);
   const f = FLOORS.find((x) => x.id === 'calculator');
   const ev = { [f.id]: { speed: { verdict: 'equal-and-better', verse: 95, best: 132, evidence: 'Verse (/calculator/) 95 ms to the load event (median of 3, phone width) vs calculator.net 132 ms to the load event', at: '2026-10-25T05:46:54.276Z' },
@@ -127,7 +127,7 @@ test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"
 });
 
 test('a row the gate scored against its default bar (the site turned it away) says "not measured" and is not credited to either side (2026-10-29)', async () => {
-  const { vsHtml, matchRows, onBar } = await import('../void-live-deploy/skills/tower.js'); const esc = (s) => String(s);
+  const { vsHtml, matchRows, onBar } = await import('../void-live-deploy/versus/card.js'); const esc = (s) => String(s);
   const at = '2026-10-29T05:59:18.672Z', b = (verdict, verse, best, what) => ({ verdict, verse, best, at, evidence: 'Verse (/fanfic/) ' + verse + what + ' vs the bar (sycophanthex.com unreachable) ' + best + what });
   const ev = { speed: b('worse', 261, 200, ' ms to the load event'), mobile: b('equal-and-better', 0, 0, ' px sideways overflow at 390 px'), offline: b('worse', 0, 1, ' (1: the page shows itself again with the network cut)'),
     reliability: { verdict: 'incomplete', incomplete: true, verse: 3, best: null, evidence: 'Verse (/fanfic/) 3 of 3 loads answered; sycophanthex.com turned the gate away', at },
@@ -146,7 +146,7 @@ test('a row the gate scored against its default bar (the site turned it away) sa
 
 test('every assimilated site is on the card, visible and copyable, by name with its own page; what it taught stays in the data', async () => {
   const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
-  const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');
+  const { towerHtml, verseTake } = await import('../void-live-deploy/versus/card.js');
   const good = (a) => ({ verdict: 'better', evidence: 'x' }), ev = {};
   const { passingRows } = await import('../void-live-deploy/lib/tower.js');
   const lane = FLOORS.find((f) => f.lane === 'translate');
@@ -163,16 +163,16 @@ test('every assimilated site is on the card, visible and copyable, by name with 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const html = towerHtml(t, esc);
   const list = html.slice(html.indexOf('class="tw-won"'));
-  assert.ok(list.includes(esc(won.site)) && list.includes('/rival/?site='), 'an assimilated site is listed with its rival page');
+  assert.ok(list.includes(esc(won.site)) && list.includes('/versus/?view=rival'), 'an assimilated site is listed with its rival page');
   assert.ok(html.includes('<b>Assimilated (1)</b>')); assert.doesNotMatch(html, /Conquered|surpassed|taught me/);
-  const { siteFace } = await import('../void-live-deploy/skills/tower.js');
+  const { siteFace } = await import('../void-live-deploy/versus/card.js');
   assert.doesNotMatch(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /<img|favicons/, 'no logos: plain text only');
   assert.equal(tower([], ev, null, { [won.site]: 'tower.icons/x.png' }).floors.find((f) => f.id === lane.id).icon, 'tower.icons/x.png');
 });
 
 test('a page older than the evidence file knows it: the sites the file names that its floors do not', async () => {
   const { tower } = await import('../void-live-deploy/lib/tower.js');
-  const { staleOf } = await import('../void-live-deploy/skills/tower.js');
+  const { staleOf } = await import('../void-live-deploy/versus/card.js');
   const t = tower([], {});
   assert.equal(staleOf({ floors: { 'translate: deepl.com': {}, 'calculator': {} } }, t), 0);
   assert.equal(staleOf({ floors: { 'translate: nope.example': {}, 'another: x.example': {}, 'calculator': {} } }, t), 2);
@@ -260,7 +260,7 @@ test('a held site says why in the Versus line', () => {
 
 test('a default-bar score is never a lead: it is not counted ahead, it keeps the floor open, and it cannot make a site surpassed (owner card, 2026-10-29)', async () => {
   const { gate, passes, barRow } = await import('../void-live-deploy/lib/tower.js');
-  const { matchRows, vsHtml, verseTake } = await import('../void-live-deploy/skills/tower.js'); const esc = (s) => String(s);
+  const { matchRows, vsHtml, verseTake } = await import('../void-live-deploy/versus/card.js'); const esc = (s) => String(s);
   const at = '2026-10-29T05:59:18.672Z', bar = (verdict, what) => ({ verdict, verse: 0, best: 0, at, evidence: 'Verse (/fanfic/) 0' + what + ' vs the bar (sycophanthex.com unreachable) 0' + what });
   const ev = { mobile: bar('equal-and-better', ' px sideways overflow at 390 px'), design: bar('better', ' design faults'), speed: { verdict: 'better', verse: 90, best: 200, at, evidence: 'Verse (/fanfic/) 90 ms vs sycophanthex.com 200 ms' } };
   assert.equal(barRow(ev.mobile), true); assert.equal(barRow(ev.speed), false);
@@ -294,17 +294,17 @@ test('the queue ranks on measured rows only: a loss against the default bar (the
   const j = judgeRows({ id: 'away.test', site: 'away.test', url: 'https://away.test/', extra: [] }, ev['away.test']);
   assert.deepEqual(j.jobs.find((x) => x.aspect === first), { aspect: first, evidence: 'not measured yet: away.test turned the gate away, so only the default bar was scored' });
 });
-test('a site with a feature Verse lacks is never assimilated: it stays on the climb and the card names what is missing (tools/site-crawl.mjs)', async () => {
-  const { passedLine, missingLine } = await import('../void-live-deploy/lib/tower.js');
-  const f = FLOORS[0], ev = { [f.id]: all(f) }, host = new URL(f.url).hostname.replace(/^www\./, '');
+test('a site counts once every check is won and Verse has its page; the crawl\'s gaps are listed and queued, never a hold (owner, 2026-11-12)', async () => {
+  const { passedLine, missingLine, realGaps } = await import('../void-live-deploy/lib/tower.js');
+  const f = FLOORS.find((x) => x.page), ev = { [f.id]: all(f) }, host = new URL(f.url).hostname.replace(/^www\./, '');
   assert.equal(tower([], ev).floors.find((x) => x.id === f.id).state, 'beaten');
   const ft = { sites: { [host]: { pages: 40, templates: 5, features: 12, verse_pages: 6, verse_features: 10, missing: ['Apple Name', 'A table'] } } };
   const t = tower([], ev, null, null, null, null, null, null, ft), g = t.floors.find((x) => x.id === f.id);
-  assert.equal(g.state, 'current'); assert.equal(g.beaten, false); assert.equal(t.beaten, 0); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
+  assert.equal(g.state, 'beaten'); assert.equal(g.beaten, true); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
   assert.match(passedLine(g), /missing 2: Apple Name, A table/); assert.equal(missingLine({ missingFeatures: [] }), '');
-  const h = towerHtml(t, (s) => String(s)); assert.match(h, /Apple Name: missing \(found by crawling 40 pages/);
-  // nothing missing: conquered as before
-  const ok = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 40, missing: [] } } }); assert.equal(ok.floors.find((x) => x.id === f.id).state, 'beaten');
+  // the crawl's noise is cut: translations, sign-in dialogs, prices, "(N: …)" tails, one line per run of country pages
+  assert.deepEqual(realGaps(['All airlines', '€ 1.99', 'Log in', 'Password', 'Tất cả các hãng hàng không', '所有航空公司', 'All aircraft (4: Flight times, Menu)', 'All aircraft', 'to France', 'to France with a stopover', 'to Spain', '← Select a date type', 'Flight Connections 2026'], 'flightconnections.com'),
+    ['All airlines', 'All aircraft', 'Select a date type', 'Flights to each country (3)']);
 });
 test('the site being taken on is not passed while a feature is missing, and the card says what the crawl found', () => {
   const f = FLOORS[0], host = new URL(f.url).hostname.replace(/^www\./, ''), ev = { [f.id]: all(f) }; delete ev[f.id][Object.keys(ev[f.id])[0]];
@@ -312,4 +312,20 @@ test('the site being taken on is not passed while a feature is missing, and the 
   if (base.state !== 'passed') return; // the gate does not clear it with an aspect left; nothing to check
   const t = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 9, templates: 2, features: 4, missing: ['Emoji keyboard'] } } }), g = t.floors.find((x) => x.id === f.id);
   assert.notEqual(g.state, 'passed'); assert.match(towerHtml(t, (s) => String(s)), /Missing 1 feature/);
+});
+
+test('the owner\'s Versus card is plain: what Verse is working on, one number, at most 5 things left, 3 next, one link to the full Tower, no repeated line', async () => {
+  const sk = (await import('../void-live-deploy/versus/card.js')).default;
+  const ev = Object.fromEntries(FLOORS.slice(0, 6).map((x) => [x.id, all(x)])); delete ev[FLOORS[0].id];
+  const host = new URL(FLOORS[0].url).hostname.replace(/^www\./, '');
+  const t = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 9, missing: ['All airlines', 'All aircraft', 'Log in', '€ 1.99', 'A page: Airport codes', 'to France', 'to Spain', 'Prices', 'Alliances'] } } });
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const h = sk.plainHtml(t, esc), text = h.replace(/<style>[\s\S]*?<\/style>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<\/(?:li|p|div|h2|a)>/g, '\n').replace(/<[^>]+>/g, '');
+  const lines = text.split('\n').map((x) => x.trim()).filter(Boolean);
+  assert.match(text, /Working on now/); assert.match(text, /of the way there/); assert.match(text, /Open the full Tower/); assert.match(h, /href="\/versus\/"/);
+  assert.ok((h.match(/<li>/g) || []).length <= 8, 'short lists');
+  assert.equal(new Set(lines).size, lines.length, 'no line twice: ' + lines.join(' / '));
+  assert.ok(!/€|Log in/.test(text), 'the crawl noise is not on the card');
+  assert.match(sk.plainLine(t), /of the way there|finished/);
+  assert.equal(sk.whatIs({ label: 'Travel: flightconnections.com', site: 'flightconnections.com' }), 'a travel site');
 });

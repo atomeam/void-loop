@@ -7,6 +7,7 @@
  * "download motelet" (or the STL button under it) saves the same body as a print file, in the pose it has on the stage.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), stageKinds }. No network, no libraries.
  */
+import { snailOf, mountSnail } from '../lib/snail-card.js';
 import { cleanLower } from '../lib/ask-text.js';
 const CLEAN = cleanLower; // shared: lib/ask-text.js
 
@@ -42,6 +43,7 @@ export function parseAsk(text) {
   const t = CLEAN(text);
   let m;
   if (FORGET_RE.test(t)) return { act: 'forget' };
+  if (snailOf(t.replace(/[?!.]+$/, ''))) return { act: 'snail' }; // the free snail card (lib/snail-card.js)
   // the animals are the low poly ones only ("low poly dog"): a plain "bring a dog" or "summon a fox" is a living figure (skills/figures.js)
   if ((m = t.match(OBJECT_RE)) && (!/^(?:wolf|fox|dog)$/.test(m[1]) || /\blow poly\b/.test(t))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
@@ -330,6 +332,12 @@ async function run(text, api) {
   const S = api.stage, things = S && S.things();
   if (!S || !api.summon) return 'none';
   const W = S.stage.clientWidth || innerWidth, Hh = S.stage.clientHeight || innerHeight;
+  if (ask.act === 'snail') { // the free snail card: one on the stage at a time; asking again brings it to the middle
+    const have = Object.values(things).find((t) => t.kind === 'snail3d');
+    if (have) { if (S.center) S.center(have.id); else S.render(); } else { const phone = Math.min(innerWidth, innerHeight) < 560; api.summon('snail3d', { x: Math.max(10, Math.round((innerWidth - (phone ? Math.min(innerWidth - 20, 360) : 380)) / 2)), y: phone ? 56 : 50 }); }
+    api.say('a garden snail in 3D \u00b7 drag to look around; the full World page has the rest');
+    return 'figure:snail';
+  }
   // the first free spot, from the middle outwards, so a new thing never lands on top of one already there
   const spot = () => {
     const taken = Object.values(S.things()).filter((t) => t.kind === 'fig3d' && !t.heldBy).map((t) => anchorOf(t, S.things()));
@@ -418,6 +426,8 @@ export default {
     'a figure that sits on the chair',
     'motelet, forget me',
     'forget my name',
+    'show me a snail',
+    'garden snail in 3d',
   ],
   nearMisses: [
     'world cup',
@@ -429,8 +439,11 @@ export default {
     'forget me',
     'sam',
     'my name is sam',
+    'snail mail',
+    'what do snails eat',
+    'how fast is a snail',
   ],
   match(lower, text) { const a = parseAsk(text); if (asking && (!a || a.act !== 'name')) asking = false; return !!a; },
   run,
-  stageKinds: { fig3d: { mount, dropped, thrown, throwable: true } },
+  stageKinds: { fig3d: { mount, dropped, thrown, throwable: true }, snail3d: { mount: mountSnail } },
 };
