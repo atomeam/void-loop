@@ -23,12 +23,17 @@ const E = loadEpisodes().episodes;
 assert.ok(E.length >= 1, 'episode 1 is committed');
 for (const e of E) { assert.ok(existsSync(DIR + '/' + e.file) && statSync(DIR + '/' + e.file).size === e.bytes && e.bytes < 25e6, e.file); assert.ok(existsSync(DIR + '/' + e.transcript), e.transcript); }
 assert.equal(readFileSync(DIR + '/rss.xml', 'utf8'), rss(E), 'podcast/rss.xml is stale: node tools/podcast.mjs --rss');
-const h = cardHtml(E[E.length - 1], E, (s) => String(s).replace(/[<>&"']/g, (c) => '&#' + c.charCodeAt(0) + ';'));
+// an episode marked hidden is off the public show and the feed (owner, 2026-11-20); its file stays and is still checked above
+const V = E.filter((e) => !e.hidden);
+assert.ok(!rss(E).includes('<itunes:episode>' + (E.find((e) => e.hidden) || { n: 'none' }).n + '<'), 'a hidden episode is not in the feed');
+if (V.length) {
+const h = cardHtml(V[V.length - 1], V, (s) => String(s).replace(/[<>&"']/g, (c) => '&#' + c.charCodeAt(0) + ';'));
 assert.match(h, /download/); assert.match(h, /\/podcast\/rss\.xml/); assert.match(h, /Full transcript/);
 // with the page's origin the player's address is whole (the outcome exam and a share both need https://, not a path), and it is the feed's own enclosure
-const last = E[E.length - 1], whole = cardHtml(last, E, (s) => String(s), 'https://a-to-mind.com/');
+const last = V[V.length - 1], whole = cardHtml(last, V, (s) => String(s), 'https://a-to-mind.com/');
 assert.match(whole, new RegExp('<audio class="vpod-audio"[^>]* src="https://a-to-mind\\.com/podcast/' + last.file.replace(/\./g, '\\.') + '"'));
 assert.ok(rss(E).includes('<enclosure url="https://a-to-mind.com/podcast/' + last.file + '"'), 'the card plays the address the feed lists');
+}
 // the show card names the directory that found the show: fyyd.de when Apple did not answer, never Apple then
 assert.match(sourceLine('fyyd'), /fyyd\.de/); assert.doesNotMatch(sourceLine('fyyd'), /found through <a href="https:\/\/podcasts\.apple\.com/);
 assert.match(sourceLine(undefined), /Apple’s podcast directory/);

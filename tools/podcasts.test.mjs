@@ -119,7 +119,10 @@ test('share words and links, OPML-free: a show, an episode, a moment; and the as
 });
 test('Verse Out Loud is the pinned first show, read from its own episode file, with its transcript lines', () => {
   const j = JSON.parse(fs.readFileSync(path.join(root, 'podcast', 'episodes.json'), 'utf8')), v = P.verseShow(j);
-  assert.equal(v.title, 'Verse Out Loud'); assert.ok(v.episodes.length >= 1); assert.equal(v.episodes[0].id, 'ep' + Math.max(...j.episodes.map((e) => e.n))); assert.match(v.episodes[0].audio, /^\/podcast\/verse-out-loud-\d+\.mp3$/); assert.ok(v.episodes[0].transcriptLines.length > 10);
+  const shown = j.episodes.filter((e) => !e.hidden); // a hidden episode is off the public show (owner, 2026-11-20); its file stays
+  assert.equal(v.title, 'Verse Out Loud'); assert.equal(v.episodes.length, shown.length); assert.ok(v.episodes.every((e) => !j.episodes.find((x) => 'ep' + x.n === e.id).hidden));
+  if (!shown.length) return;
+  assert.equal(v.episodes[0].id, 'ep' + Math.max(...shown.map((e) => e.n))); assert.match(v.episodes[0].audio, /^\/podcast\/verse-out-loud-\d+\.mp3$/); assert.ok(v.episodes[0].transcriptLines.length > 10);
   for (const e of v.episodes) { assert.ok(fs.existsSync(path.join(root, e.audio)), e.audio); assert.ok(e.dur > 0); }
   assert.ok(fs.existsSync(path.join(root, 'podcast', 'cover-256.jpg')));
 });
