@@ -4,11 +4,10 @@
 // model family from the one that answers), then the free Workers AI review model; no key or no readable answer is "unjudged", never a pass.
 // Keys come from the environment of the house lane and are never printed or kept.
 import { models } from '../void-live-deploy/lib/models.js';
+import { geminiText } from './gemini.mjs';
 
 /** why each judge did not answer in this process, for the log line: { gemini: 'HTTP 429', 'workers-ai': 'no key' }; empty when one did. Never holds a key. */
 export const judgeWhy = {};
-/** Gemini models tried in order (gemini-2.0-flash was shut down on 2026-06-01 and answers 404): the low-cost current one, then the 2.5 one still served to earlier users. */
-export const GEMINI_MODELS = ['gemini-3.5-flash-lite', 'gemini-2.5-flash-lite'];
 const cut = (s, n = 1200) => String(s || '').trim().slice(0, n);
 /** the prompt: the rubric, the question and the two answers as A and B. Pure. */
 export const judgePrompt = (ask, a, b) => 'You are a strict, fair grader of answers to a question a real person asked. Score each answer from 0 to 100 on three things:\n'
@@ -31,16 +30,9 @@ export async function judge(ask, answer, reference, env = process.env, fetchFn =
   for (const k of Object.keys(judgeWhy)) delete judgeWhy[k]; // the reason is the latest call's
   const done = (v, by) => v && { answer: flip ? v.B : v.A, reference: flip ? v.A : v.B, by };
   try {
-    if (!env.GEMINI_API_KEY) judgeWhy.gemini = 'no key';
-    if (env.GEMINI_API_KEY) {
-      for (const m of GEMINI_MODELS) {
-        const r = await fetchFn('https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent', { method: 'POST', headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'content-type': 'application/json' },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0 } }), signal: AbortSignal.timeout(40000) });
-        const j = await r.json().catch(() => ({})), v = done(readJudge(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0].text), 'gemini'); if (v) { judgeWhy.gemini = ''; return v; }
-        judgeWhy.gemini = r.ok ? 'answer unreadable' : 'HTTP ' + r.status + ' (' + m + ')';
-        if (r.ok) break; // a model that answers badly is not retried on the next one; a 404 or 403 is
-      }
-    }
+    const g = await geminiText([{ text: prompt }], env, fetchFn), v = g.text && done(readJudge(g.text), 'gemini');
+    if (v) { judgeWhy.gemini = ''; return v; }
+    judgeWhy.gemini = g.why || 'answer unreadable';
     if (!(cf && env.CLOUDFLARE_ACCOUNT_ID)) judgeWhy['workers-ai'] = 'no key';
     if (cf && env.CLOUDFLARE_ACCOUNT_ID) {
       const r = await fetchFn('https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + models('review'), { method: 'POST', headers: { authorization: 'Bearer ' + cf, 'content-type': 'application/json' },

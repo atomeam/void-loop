@@ -1,4 +1,5 @@
 // The blind pairwise judge (tools/answer-judge.mjs). Run: node --test tools/answer-judge.test.mjs
+import { GEMINI_MODELS } from '../void-live-deploy/lib/models.js';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { judgePrompt, readJudge, judge, compare } from './answer-judge.mjs';
@@ -15,18 +16,18 @@ test('a reply is read when it is the JSON asked for (even with words around it) 
 });
 test('the order is shuffled and the marks go back to the right side either way', async () => {
   const seen = [];
-  const fetchFn = async (url, o) => { const t = JSON.parse(o.body).contents[0].parts[0].text; seen.push(t.indexOf('MINE') < t.indexOf('REF') ? 'answer first' : 'reference first'); const first = t.indexOf('MINE') < t.indexOf('REF'); return { json: async () => ({ candidates: [{ content: { parts: [{ text: first ? marks(95, 60) : marks(60, 95) }] } }] }) }; };
+  const fetchFn = async (url, o) => { const t = JSON.parse(o.body).contents[0].parts[0].text; seen.push(t.indexOf('MINE') < t.indexOf('REF') ? 'answer first' : 'reference first'); const first = t.indexOf('MINE') < t.indexOf('REF'); return { ok: true, json: async () => ({ candidates: [{ content: { parts: [{ text: first ? marks(95, 60) : marks(60, 95) }] } }] }) }; };
   for (const r of [0.1, 0.9]) { const j = await judge('q?', 'MINE', 'REF', { GEMINI_API_KEY: 'x' }, fetchFn, () => r); assert.equal(j.answer.right, 95); assert.equal(j.reference.right, 60); assert.equal(j.by, 'gemini'); }
   assert.deepEqual(seen.sort(), ['answer first', 'reference first']);
 });
 test('Gemini first, then Workers AI; no key, a failed call or an unreadable reply is unjudged and never a pass', async () => {
   assert.equal(await judge('q', 'a', 'b', {}, async () => { throw new Error('no network'); }), null);
-  const bad = async () => ({ json: async () => ({ candidates: [{ content: { parts: [{ text: 'sorry' }] } }] }) });
+  const bad = async () => ({ ok: true, json: async () => ({ candidates: [{ content: { parts: [{ text: 'sorry' }] } }] }) });
   assert.equal(await judge('q', 'a', 'b', { GEMINI_API_KEY: 'x' }, bad), null);
   const calls = [];
-  const both = async (url) => { calls.push(String(url).includes('generativelanguage') ? 'gemini' : 'cf'); return String(url).includes('generativelanguage') ? bad() : { json: async () => ({ result: { response: marks(80, 70) } }) }; };
+  const both = async (url) => { calls.push(String(url).includes('generativelanguage') ? 'gemini' : 'cf'); return String(url).includes('generativelanguage') ? bad() : { ok: true, json: async () => ({ result: { response: marks(80, 70) } }) }; };
   const j = await judge('q', 'a', 'b', { GEMINI_API_KEY: 'x', CLOUDFLARE_API_TOKEN: 't', CLOUDFLARE_ACCOUNT_ID: 'acct' }, both, () => 0.9);
-  assert.deepEqual([...new Set(calls)], ['gemini', 'cf']); assert.equal(calls.filter((c) => c === 'gemini').length, 2, 'both Gemini models were tried before the fallback'); assert.equal(j.by, 'workers-ai'); assert.equal(j.answer.right, 80);
+  assert.deepEqual(calls, ['gemini', 'cf']); assert.equal(j.by, 'workers-ai'); assert.equal(j.answer.right, 80);
 });
 test('Verse beats the reference when its judged overall is at least equal and no mark is more than 5 behind', () => {
   const j = (a, b) => ({ answer: { right: a, useful: a, clear: a }, reference: { right: b, useful: b, clear: b }, by: 'gemini' });
@@ -42,7 +43,7 @@ test('when no judge answers, the reason for each (a status, no key, unreadable) 
   for (const k of Object.keys(judgeWhy)) delete judgeWhy[k];
   const res = (ok, status, body) => async () => ({ ok, status, json: async () => body });
   await judge('q', 'a', 'b', { GEMINI_API_KEY: 'SECRET-KEY', CLOUDFLARE_API_TOKEN: 't', CLOUDFLARE_ACCOUNT_ID: 'acct' }, async (url) => (String(url).includes('generativelanguage') ? res(false, 429, {})() : res(false, 403, {})()), () => 0.9);
-  assert.equal(whyLine(), 'gemini HTTP 429 (gemini-2.5-flash-lite), workers-ai HTTP 403'); assert.ok(!whyLine().includes('SECRET'));
+  assert.equal(whyLine(), 'gemini HTTP 429 (' + GEMINI_MODELS[1] + '), workers-ai HTTP 403'); assert.ok(!whyLine().includes('SECRET'));
   await judge('q', 'a', 'b', {}, async () => { throw new Error('x'); }); assert.equal(whyLine(), 'gemini no key, workers-ai no key');
   await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, async () => { throw new Error('boom'); }); assert.match(whyLine(), /gemini Error/);
   await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, res(true, 200, { candidates: [{ content: { parts: [{ text: marks(80, 70) }] } }] }), () => 0.9); assert.ok(!/gemini (HTTP|Error|answer)/.test(whyLine()), 'a success clears the reason');

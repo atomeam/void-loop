@@ -27,7 +27,7 @@ import { resolve, join, relative, sep, dirname, isAbsolute } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { guardPatch, kindOf } from '../void-live-deploy/lib/patch-guard.js';
-import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
+import { FREE_MODEL, GEMINI_MODELS } from '../void-live-deploy/lib/models.js';
 import { scanDiff, DEFAULT_CHECKS } from './verse-loop.mjs';
 import { BUILD_OUTPUTS } from './generated.mjs';
 import { charterPrompt } from './charter.mjs';
@@ -62,7 +62,7 @@ export function providersFrom(env = process.env) {
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
   oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'llama-3.3-70b-versatile');
-  oa('gemini', 'GEMINI_API_KEY', 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', env.VERSE_CODER_GEMINI_MODEL || 'gemini-2.5-flash');
+  oa('gemini', 'GEMINI_API_KEY', 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', env.VERSE_CODER_GEMINI_MODEL || GEMINI_MODELS[0]);
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }

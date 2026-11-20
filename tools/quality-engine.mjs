@@ -17,6 +17,7 @@ import { launch, measure, SITE } from './quality-measure.mjs';
 import { IMPROVERS, candidates, applyTo, undoOn, fileOf, HANDS_OFF } from './quality-improve.mjs';
 import { charterPrompt, grow } from './charter.mjs';
 import { models } from '../void-live-deploy/lib/models.js';
+import { geminiText } from './gemini.mjs';
 import { sitePages } from './design-loop.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -64,11 +65,9 @@ export async function visionJudge(png, surface, env = process.env, fetchFn = fet
       const v = read(typeof text === 'string' ? text : JSON.stringify(text)); if (v) { judgeWhy.cf = ''; return { ...v, by: 'workers-ai' }; }
     }
     if (env.GEMINI_API_KEY) {
-      const r = await fetchFn('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', { method: 'POST', headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: b64 } }] }], generationConfig: { temperature: 0 } }), signal: AbortSignal.timeout(40000) });
-      judgeWhy.gemini = r.ok ? 'answer unreadable' : 'HTTP ' + r.status;
-      const j = await r.json().catch(() => ({})), v = read(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0].text);
-      if (v) { judgeWhy.gemini = ''; return { ...v, by: 'gemini' }; }
+      const g = await geminiText([{ text: prompt }, { inline_data: { mime_type: mime, data: b64 } }], env, fetchFn), v = g.text && read(g.text);
+      judgeWhy.gemini = v ? '' : g.why || 'answer unreadable';
+      if (v) return { ...v, by: 'gemini' };
     }
   } catch (e) { judgeWhy.error = String(e && e.name || 'error'); /* an unjudged run is capped, never passed */ }
   return null;

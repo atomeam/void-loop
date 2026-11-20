@@ -4,6 +4,7 @@
 // not judged, never passed. The cards guard (tools/guards/cards.mjs) runs it on the recipe cards it asks for on the live site.
 import { charterPrompt } from './charter.mjs';
 import { models } from '../void-live-deploy/lib/models.js';
+import { geminiText } from './gemini.mjs';
 import { GUIDE } from '../void-live-deploy/lib/recipe-respect.js';
 
 export const MIN_GENTLE = 7, MIN_ACCURATE = 7, MAX_PREACHY = 5;
@@ -50,12 +51,8 @@ export async function toneJudge(text, env = process.env, fetchFn = fetch) {
       const j = await r.json().catch(() => ({})), t = (j.result && (j.result.response || j.result)) || (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
       const v = readTone(typeof t === 'string' ? t : JSON.stringify(t)); if (v) return { ...v, by: 'workers-ai' };
     }
-    if (env.GEMINI_API_KEY) {
-      const r = await fetchFn('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', { method: 'POST', headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0 } }), signal: AbortSignal.timeout(40000) });
-      const j = await r.json().catch(() => ({})), v = readTone(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0].text);
-      if (v) return { ...v, by: 'gemini' };
-    }
+    const g = await geminiText([{ text: prompt }], env, fetchFn), v = g.text && readTone(g.text);
+    if (v) return { ...v, by: 'gemini' };
   } catch (_) { /* an unjudged run is reported as not judged, never passed */ }
   return null;
 }

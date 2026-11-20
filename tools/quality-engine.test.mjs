@@ -45,3 +45,11 @@ test('the lane says whether a vision model judged, and why not, without ever hol
   const good = async () => ({ ok: true, status: 200, json: async () => ({ result: { response: JSON.stringify({ graphics: 6, layout: 7, typography: 7, motion: 5, art: 5, fits: 6, nonsense: [] }) } }) });
   const v = await visionJudge(Buffer.from('x'), '/x/', env, good); assert.equal(v.by, 'workers-ai'); assert.equal(judgeWhy.cf, '');
 });
+
+test('the vision judge answers through Gemini when Workers AI refuses, and falls past a retired Gemini model (404) to the next', async () => {
+  const env = { CLOUDFLARE_API_TOKEN: 't', CLOUDFLARE_ACCOUNT_ID: 'acct', GEMINI_API_KEY: 'k' }, urls = [];
+  const marks = JSON.stringify({ graphics: 6, layout: 7, typography: 7, motion: 5, art: 5, fits: 6, nonsense: [] });
+  const fetchFn = async (url) => { urls.push(String(url)); if (/cloudflare/.test(url)) return { ok: false, status: 401, json: async () => ({}) }; return /3\.5/.test(url) ? { ok: false, status: 404, json: async () => ({}) } : { ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: marks }] } }] }) }; };
+  const v = await visionJudge(Buffer.from('x'), '/x/', env, fetchFn); assert.equal(v.by, 'gemini'); assert.equal(judgeWhy.gemini, '');
+  assert.equal(urls.filter((u) => /generativelanguage/.test(u)).length, 2); assert.ok(!urls.some((u) => /gemini-2\.0/.test(u)));
+});
