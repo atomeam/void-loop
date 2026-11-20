@@ -54,10 +54,19 @@ async function runHeld(ctx, { ask, judgeFn, check }, universe) {
   return { line: heldLineOf(out) + queued, ok: true, universe: u };
 }
 
-export async function run(ctx, { ask = (b, t) => askLive(b, t, ctx.env || {}), check = (a) => refusedCount(a), judgeFn, heldout = true, fixed = new Date(ctx.now).getUTCHours() === 13 } = {}) {
+/** the free providers' health, asked with the owner's key (the agent lets it pin one provider): one short line, e.g. "groq answered (Groq (llama-3.3-70b-versatile))". Pure given `probe`. */
+export async function probeLine(ctx, probe) {
+  if (!probe) return '';
+  const out = [];
+  for (const via of ['groq', 'gemini']) { const a = await probe(ctx.site, 'Name three primary colors in one short sentence.', via).catch((e) => ({ text: '', status: 'error: ' + String((e && e.message) || e).slice(0, 40) })); out.push(via + (a.text ? ' answered (' + String(a.by || a.tier || '').replace(/^Answered by /, '').slice(0, 70) + ')' : ' gave no answer (' + String(a.status || '').slice(0, 60) + ')')); }
+  return 'Provider probe: ' + out.join('; ') + '.';
+}
+
+export async function run(ctx, { ask = (b, t) => askLive(b, t, ctx.env || {}), probe = ctx.env && ctx.env.VOID_OWNER_TOKEN ? (b, t, via) => askLive(b, t, ctx.env, via) : null, check = (a) => refusedCount(a), judgeFn, heldout = true, fixed = new Date(ctx.now).getUTCHours() === 13 } = {}) {
   const parts = []; let universe = loadUniverse(join(ctx.root, 'void-live-deploy/tower.universe.json'));
   if (fixed) { const r = await runFixed(ctx, { ask, check }); parts.push(r); if (r.universe) universe = r.universe; }
   if (heldout) { const r = await runHeld(ctx, { ask, judgeFn, check }, universe).catch((e) => ({ line: 'Held-out exam could not run (' + String((e && e.message) || e).slice(0, 80) + ').', ok: false })); parts.push(r); if (r.universe) universe = r.universe; }
   if (parts.some((x) => x.universe)) ctx.save(join(ctx.root, 'void-live-deploy/tower.universe.json'), serializeUniverse(universe));
-  return { last: parts.map((x) => x.last || x.line).join(' '), ok: parts.some((x) => x.ok), note: 'Live questions to the agent on the free tier, judged by a free model; no paid model.' };
+  const probed = await probeLine(ctx, probe).catch(() => '');
+  return { last: parts.map((x) => x.last || x.line).concat(probed || []).join(' '), ok: parts.some((x) => x.ok), note: 'Live questions to the agent on the free tier, judged by a free model; no paid model.' };
 }

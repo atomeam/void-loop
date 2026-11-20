@@ -120,3 +120,10 @@ test('heldLineOf says the streak in plain words', () => {
   const out = { sum: { questions: 20, right: 90, useful: 90, clear: 90 }, verdict: null, beat: null, streak: 2 };
   assert.match(heldLineOf(out), /No judge answered[^.]*, so this run is not counted\. In a row: 2 of 3\.$/);
 });
+test('the provider probe names who answered through the owner key, and says so plainly when one gives nothing', async () => {
+  const { probeLine } = await import('./guards/assistant.mjs');
+  const seen = [];
+  const line = await probeLine({ site: 'https://a-to-mind.com' }, async (b, q, via) => { seen.push(via); return via === 'groq' ? { text: 'x', by: 'Answered by Groq (llama-3.3-70b-versatile): free, 0 cents.' } : { text: '', status: 'done' }; });
+  assert.deepEqual(seen, ['groq', 'gemini']); assert.match(line, /groq answered \(Groq \(llama-3\.3-70b-versatile\)/); assert.match(line, /gemini gave no answer/);
+  assert.equal(await probeLine({ site: 'x' }, null), '', 'no key, no probe');
+});

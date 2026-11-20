@@ -87,6 +87,12 @@ async function replyFrom(env, db, id, tier, bot, ask, opts = {}) {
   const runOpts = { messages, max_tokens: 700, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
   const said = async (via, name, model, cents) => { await countVia(env, via); await step(db, id, 'Answered by ' + name + ' (' + model + '): ' + (cents ? 'paid from the pot, ' + cents + ' cent' + (cents === 1 ? '' : 's') : 'free, 0 cents') + '.', { tier: (cents ? 'paid' : 'free') + ' via ' + via }); };
   let why = '';
+  if (opts.via) { // the owner's key may pin one free provider (a probe: is it reachable, are its model ids right); nothing else is tried
+    const one = await answerFree(env, messages, { owner: true, only: opts.via });
+    if (one.text.length >= 2) { await said(one.provider, one.name, one.model, 0); return { text: one.text, why: '' }; }
+    await step(db, id, opts.via + ' did not answer (' + (one.tried.map((t) => t.model + ' ' + t.why).join(', ') || 'no key here') + ').');
+    return { text: '', why: 'free limit' };
+  }
   if (!(await parked(env, WORKERS.id, '')))
     for (const model of [tier.model, ANSWER_FALLBACK]) {
       let text = '';
@@ -250,7 +256,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   // 2026-11-05: nudge-risk timed out for 95s while production was still the previous deploy, then the same ask passed in 5s).
   let nudge = null;
   try { nudge = await considerNudge(env, b.thread); } catch (_) { /* a note is never required for the task itself */ }
-  const go = run(env, new URL(request.url).origin, id, ask, b.thread, { owner: !!adm.owner });
+  const go = run(env, new URL(request.url).origin, id, ask, b.thread, { owner: !!adm.owner, via: adm.owner && /^(groq|gemini|openrouter)$/.test(String(b.via || '')) ? String(b.via) : '' });
   if (typeof waitUntil === 'function') waitUntil(go); else go.catch(() => {});
   return json({ ok: true, id, nudge: nudge || null });
 }

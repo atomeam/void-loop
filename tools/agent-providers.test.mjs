@@ -64,3 +64,17 @@ test('a task is answered by the next provider when Workers AI says its day is sp
     const cap = await capacityOf(env); assert.equal(cap.find((r) => r.id === 'groq').answeredToday, 1);
   } finally { globalThis.fetch = realFetch; }
 });
+test('the owner key may pin one provider (Workers AI is skipped); a visitor\'s "via" is ignored', async () => {
+  const mk = () => ({ DB: d1(), AI: { run: async () => ({ response: 'from workers' }) }, GROQ_API_KEY: 'k', READ_TOKEN: 'owner-key-123456' });
+  const realFetch = globalThis.fetch; globalThis.fetch = async (url) => (String(url).includes('groq') ? ok('The three primary colors are red, yellow and blue.') : new Response('{}', { status: 404 }));
+  const go = async (env, token, i) => {
+    await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER, seen INTEGER NOT NULL DEFAULT 0)').run();
+    const waits = [], res = await agent.onRequestPost({ env, waitUntil: (p) => waits.push(p), request: new Request('https://x.test/api/agent', { method: 'POST', headers: { 'content-type': 'application/json', 'cf-connecting-ip': '9.9.9.9', ...(token ? { authorization: 'Bearer ' + token } : {}) }, body: JSON.stringify({ thread: 'abcdefghijklmnop' + i, ask: 'name three primary colors', via: 'groq' }) }) });
+    const j = await res.json(); await Promise.allSettled(waits);
+    return env.DB.prepare('SELECT status, tier, result FROM void_agent_tasks WHERE id = ?').bind(j.id).first();
+  };
+  try {
+    const owner = await go(mk(), 'owner-key-123456', 1); assert.equal(owner.tier, 'free via groq'); assert.match(owner.result, /red, yellow and blue/);
+    const visitor = await go(mk(), '', 2); assert.equal(visitor.tier, 'free via workers-ai', 'no key, no pin');
+  } finally { globalThis.fetch = realFetch; }
+});

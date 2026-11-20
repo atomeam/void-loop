@@ -39,9 +39,9 @@ export async function ask(p, model, env, messages, fetchFn = fetch) {
   return text;
 }
 /** rotate through the usable providers and their models, skipping the parked, parking the ones that say they are out. { text, provider, model, tried } or { text: '', tried }. */
-export async function answerFree(env, messages, { owner = false, now = Date.now(), fetchFn = fetch } = {}) {
+export async function answerFree(env, messages, { owner = false, only = '', now = Date.now(), fetchFn = fetch } = {}) {
   const tried = [];
-  for (const p of usable(env, { owner })) for (const model of p.models) {
+  for (const p of usable(env, { owner }).filter((u) => !only || u.id === only)) for (const model of p.models) {
     if (await parked(env, p.id, model, now)) { tried.push({ id: p.id, model, why: 'parked' }); continue; }
     try { const text = await ask(p, model, env, messages, fetchFn); return { text, provider: p.id, name: p.name, model, tried }; } catch (e) {
       const kind = e.kind || kindOf(e.status, e.message); tried.push({ id: p.id, model, why: kind });
