@@ -66,7 +66,7 @@ function wireShows(el, listHtml, esc) {
       const show = el._podShow, ep = show && show.episodes.filter((e) => e && e.title && /^https:\/\//.test(e.audio || ''))[+a.dataset.i];
       const au = el.querySelector('[data-pod="player"]'), say = el.querySelector('[data-pod="say"]');
       if (!ep || !au) return;
-      say.textContent = 'Loading ' + ep.title + '…';
+      say.textContent = 'Loading ' + ep.title + '…'; // ellipsis-ok: a progress line, the title is whole
       au.onerror = () => { say.textContent = 'This episode did not play here. ' + (show.link ? 'The show\'s own site has it.' : 'Try another one.'); };
       au.onplaying = () => { say.textContent = 'Playing: ' + ep.title; };
       au.src = ep.audio; au.play().catch(() => { if (!au.error) say.textContent = 'Press play on the player to start ' + ep.title + '.'; });

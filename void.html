@@ -2646,9 +2646,19 @@ say('nothing selected to remove');
       say(); let tm = 0; const mo = new MutationObserver(() => { clearTimeout(tm); tm = setTimeout(say, 400); });
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
     }
+    function sameAsk(a, b) {
+      const n = (s) => String(s || '').toLowerCase().replace(/[?.!\s]+$/g, '').replace(/\s+/g, ' ').trim();
+      return !!n(a) && n(a) === n(b);
+    }
     function showPage(build) {
       warmAskLibs();
       const prev = vpageEl;
+      // the same ask already has a card (the article page bouncing to the answer): fill that one, so one typed line never opens two
+      if (prev && prev.isConnected && sameAsk(prev._ask, currentAsk)) {
+        build(prev);
+        stampSources(prev); keepTail(prev); keepRead(prev); keepTell(prev); keepCard(prev);
+        return prev;
+      }
       if (prev && prev.isConnected) { // a new card keeps the ones already open (they used to be replaced)
         prev.classList.remove('on'); prev.classList.add('kept');
         try { trailKeep(prev); } catch (_) {}

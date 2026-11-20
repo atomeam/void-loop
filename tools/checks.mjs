@@ -364,6 +364,7 @@ for (const [name, file] of [
   ['country-wikidata', 'country-wikidata.test.mjs'], // the country card's live source is Wikidata since REST Countries retired its keyless API (issue #1063)
   ['words-family', 'words-family.test.mjs'], // Words and the world: joke, news, book, show, sport, senolytic, video-play checked like a person meets them (Verse's ask)
   ['sky-skills', 'sky-skills.test.mjs'],
+  ['sky-app-skills', 'sky-app-skills.test.mjs'],
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],
   ['take', 'take.test.mjs'],

@@ -69,7 +69,7 @@ export function shortBuiltLine(x) {
   raw = raw.replace(/\s*\([^)]*\)\s*$/, '').replace(/^[^:]{0,40}:\s+/, (m) => (/^[a-z0-9./_-]+:\s+/i.test(m) ? '' : m));
   raw = raw.replace(/\s+at \d{4,}\b.*/, '').replace(/\s+under \.[\w./-]+.*/, '');
   if (raw.includes(',') && raw.split(',')[0].trim().length >= 40) raw = raw.split(',')[0].trim();
-  if (raw.length > 90) raw = raw.slice(0, 89).replace(/\s+\S*$/, '').replace(/[.,;:]+$/, '') + '…';
+  // the whole line, never cut with an ellipsis (owner, 2026-10-21: "i need to see the whole sentences"; tools/no-ellipsis.mjs)
   raw = raw.charAt(0).toUpperCase() + raw.slice(1);
   return plainPublic(raw);
 }

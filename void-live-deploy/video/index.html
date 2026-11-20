@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI video generator: text to video, picture to video · Verse</title>
-<meta name="description" content="Describe a short clip, or animate a picture from Verse's AI image generator: 2, 3 or 5 seconds, landscape, portrait or square. The page turns on only after a real test clip; until then it says so. No sign-up.">
+<title>Make a short video from a topic or script · Verse</title>
+<meta name="description" content="Type a topic or paste a script and get a vertical short video with real photos, a natural voice, music and captions, made in your browser. Free, no sign-up; download or share it.">
 <meta name="verse-handoff" content="in: text, image; out: video">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="AI video generator · Verse">
-<meta property="og:description" content="Text to video and picture to video: short clips, three shapes, no sign-up.">
+<meta property="og:title" content="Make a short video · Verse">
+<meta property="og:description" content="A topic or your script in; a short with photos, a voice, music and captions out. Free, in your browser.">
 <meta property="og:url" content="https://a-to-mind.com/video/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -59,7 +59,7 @@
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/video/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI video generator","url":"https://a-to-mind.com/video/","description":"Text to video and picture to video: describe a short clip (2, 3 or 5 seconds, landscape, portrait or square) or press Animate this on a picture from the AI image generator, and a partner video model on Workers AI makes it. The page turns on only after Verse has made a real test clip; until then it says so plainly. No sign-up; real people and adult clips are not made.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"ai video generator, text to video, image to video, free ai video generator, animate a picture, ai video generator no sign up","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/video/?prompt={prompt}"},"prompt-input":"required name=prompt"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"AI video generator","item":"https://a-to-mind.com/video/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI video generator","url":"https://a-to-mind.com/video/","description":"Make a short video from a topic or your own script: real photos from Wikimedia Commons, a natural voice, a piano bed and captions, made in your browser, to download or share. Below it, text to video and picture to video: describe a short clip (2, 3 or 5 seconds, landscape, portrait or square) or press Animate this on a picture from the AI image generator, and a partner video model on Workers AI makes it. The page turns on only after Verse has made a real test clip; until then it says so plainly. No sign-up; real people and adult clips are not made.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"ai video generator, text to video, image to video, free ai video generator, animate a picture, ai video generator no sign up","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/video/?prompt={prompt}"},"prompt-input":"required name=prompt"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"AI video generator","item":"https://a-to-mind.com/video/"}]}]}</script>
 <!-- /seo -->
 <link rel="modulepreload" href="/video/app.js">
 <link rel="modulepreload" href="/lib/toolkit.js">
@@ -72,7 +72,24 @@
 </head>
 <body>
 <main>
-  <h1 id="title">AI video generator</h1>
+  <h1>Make a short video</h1>
+  <p class="sub">Type a topic or paste your own script. You get a vertical short with real photos, a natural voice, music and captions, made on your device. Free, no sign-up.</p>
+  <section id="maker" aria-labelledby="mkL">
+    <label class="f" for="mkText" id="mkL">A topic (we read its Wikipedia article) or your own script</label>
+    <textarea id="mkText" maxlength="2000" placeholder="the Wow! signal"></textarea>
+    <div class="row"><label class="f" for="mkVoice" style="margin:0">Voice</label>
+      <select id="mkVoice" style="width:auto"><option value="af_heart">Heart (warm)</option><option value="am_michael">Michael (calm)</option><option value="bf_emma">Emma (British)</option><option value="am_fenrir">Fenrir (deep)</option></select></div>
+    <div class="row" style="margin-top:14px"><button type="button" class="go" id="mkGo">Make the video</button></div>
+    <p class="note" id="mkNote" role="status" aria-live="polite">The first video loads the voice once (about 90 MB). A video takes a minute or two; keep this tab open.</p>
+    <canvas id="mkCanvas" hidden style="width:min(100%,270px);aspect-ratio:9/16;border-radius:14px;display:block;margin:10px auto"></canvas>
+    <div id="mkOut" hidden>
+      <video id="mkVideo" controls playsinline style="width:min(100%,360px);aspect-ratio:9/16;border-radius:14px;display:block;margin:10px auto;background:#000"></video>
+      <div class="row" style="justify-content:center"><a class="go" id="mkDl" href="#" download style="display:inline-flex;align-items:center;min-height:48px;padding:0 22px;border-radius:999px;background:var(--accent);color:var(--on-accent);text-decoration:none;font-weight:600">Download</a><button type="button" id="mkShare" hidden>Share</button></div>
+      <p class="note" id="mkCredits"></p>
+    </div>
+  </section>
+
+  <h2 id="title" style="margin-top:28px">Short AI clips</h2>
   <p class="sub" id="sub">Describe a short clip, or press Animate this on a picture from the <a href="/image/">image generator</a>. Free, no sign-up.</p>
   <p class="state" id="state" role="status">Checking whether the video maker is on…</p>
 
@@ -100,5 +117,6 @@
   <footer id="foot">Your words go to the video model and nowhere else; nothing typed is stored. A first frame is always a picture Verse made on the image page today or yesterday, never an upload. Clips come from a partner video model on Cloudflare Workers AI, inside a small daily budget. Real people and adult clips are not made.</footer>
 </main>
 <script type="module" src="/video/app.js"></script>
+<script type="module" src="/video/maker.js"></script>
 </body>
 </html>
