@@ -23,7 +23,7 @@ async function article(topic) {
   const t = encodeURIComponent(hit.title);
   const [ex, im] = await Promise.all([
     json(WIKI + 'action=query&prop=extracts&explaintext=1&exsectionformat=plain&exchars=9000&redirects=1&titles=' + t),
-    json(WIKI + 'action=query&generator=images&gimlimit=40&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=1280&redirects=1&titles=' + t),
+    json(WIKI + 'action=query&generator=images&gimlimit=40&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=1080&redirects=1&titles=' + t),
   ]);
   const page = Object.values((ex.query && ex.query.pages) || {})[0] || {};
   const photos = Object.values((im.query && im.query.pages) || {}).map((p) => p.imageinfo && p.imageinfo[0]).filter(photoOk)
@@ -34,7 +34,7 @@ async function article(topic) {
 /** more photos from Commons for words the article had no picture of */
 async function commons(words, n = 6) {
   const j = await json('https://commons.wikimedia.org/w/api.php?format=json&origin=*&action=query&generator=search&gsrnamespace=6&gsrlimit=' + n * 2
-    + '&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=1280&gsrsearch=' + encodeURIComponent(words + ' filetype:bitmap'));
+    + '&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=1080&gsrsearch=' + encodeURIComponent(words + ' filetype:bitmap'));
   return Object.values((j.query && j.query.pages) || {}).map((p) => p.imageinfo && p.imageinfo[0]).filter(photoOk).slice(0, n)
     .map((i) => ({ src: i.thumburl || i.url, credit: creditOf(i.extmetadata) }));
 }
@@ -46,7 +46,8 @@ let worker = null;
 function voices(lines, voiceName) {
   worker = worker || new Worker('/video/voice-worker.js', { type: 'module' });
   return new Promise((ok, no) => {
-    worker.onmessage = ({ data }) => { if (data.progress) say(data.progress); else if (data.error) no(new Error(data.error)); else ok(data.clips); };
+    const end = () => { worker.terminate(); worker = null; }; // the model's memory goes back before filming (phones)
+    worker.onmessage = ({ data }) => { if (data.progress) say(data.progress); else if (data.error) { end(); no(new Error(data.error)); } else { end(); ok(data.clips); } };
     worker.onerror = (e) => no(new Error('The voice could not start in this browser' + (e && e.message ? ': ' + e.message : '')));
     worker.postMessage({ lines, voice: voiceName });
   });
@@ -165,7 +166,7 @@ async function make() {
     }
     if (!photos.length) throw new Error('No free photos found for that. Try other words.');
     say('Fetching the photos…');
-    const pics = (await Promise.all(photos.slice(0, 10).map(async (p) => ({ ...p, im: await load(p.src) })))).filter((p) => p.im);
+    const pics = (await Promise.all(photos.slice(0, 7).map(async (p) => ({ ...p, im: await load(p.src) })))).filter((p) => p.im);
     if (!pics.length) throw new Error('The photos would not load. Try again.');
     const { audio, plan } = await soundtrack(script.lines, $('mkVoice').value);
     const canvas = $('mkCanvas'); canvas.width = W; canvas.height = H; canvas.hidden = false;
