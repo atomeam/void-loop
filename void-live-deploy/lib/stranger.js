@@ -8,7 +8,7 @@
 //   rival    it is not worse than the best at the same job (the Tower's gap; the compare itself stays owner-only)
 //   purpose  it has a reason to exist and pays off what it promises: no fill-in-the-blank template, no one dry encyclopedia line
 // The judge is a model (Workers AI or Groq, never a free tier that may train on what it reads) plus measures; a check the model could
-// not answer is 'unknown', which never signs an item off and never fails a pull request on its own. Pure; no model is named here.
+// not answer is 'unknown': verdict() below leaves it out of a sign-off (tools/stranger.test.mjs checks it). Pure; no model is named here.
 // Wired by tools/stranger-test.mjs: a pull-request check, a pre-publish gate for videos, podcasts and posts, and the live loop.
 
 export const CHECKS = Object.freeze([
