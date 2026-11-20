@@ -5,7 +5,8 @@
 //   node tools/public-sites.mjs          rewrite the deploy copy (deploy.yml)
 //   node tools/public-sites.mjs --dry    print what it would change
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { deepScrub, scrubSites, scrubCode } from '../void-live-deploy/lib/scrub-sites.js';
+import { deepScrub, scrubSites, scrubCode, setUniverseNames } from '../void-live-deploy/lib/scrub-sites.js';
+import { protectedNames } from '../void-live-deploy/lib/universe.js';
 
 export const SERVED = ['self.json', 'void.asks.json', 'void.growth.json', 'void.knowledge.json', 'skills/what.json', 'skills/families.json', 'skills/guide.json'];
 
@@ -30,6 +31,7 @@ export function scrubFile(name, src) {
 
 /** rewrite the deploy copy of the served files (tools/public-quotes.mjs calls this from deploy.yml; `node tools/public-sites.mjs` runs it alone). */
 export function cleanServed(dry = false) {
+  try { setUniverseNames(protectedNames(JSON.parse(readFileSync(new URL('../void-live-deploy/tower.universe.json', import.meta.url), 'utf8')).targets)); } catch (_) { /* no universe file yet: the seeds' names still apply */ }
   for (const f of [...new Set([...SERVED, ...extraServed()])]) {
     const p = new URL('../void-live-deploy/' + f, import.meta.url);
     if (!existsSync(p)) continue;

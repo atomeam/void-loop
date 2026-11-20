@@ -25,7 +25,7 @@ export function eventAsk(text) {
   return { event, unit };
 }
 
-// short names people type for long titles: "gta6" is Grand Theft Auto VI; numbers to roman numerals for game and film sequels
+// short names people type for long titles: "gta6" is a long game title; numbers to roman numerals for game and film sequels
 const ALIASES = [[/^gta\s*(\d+|[ivx]+)$/i, (m) => 'Grand Theft Auto ' + roman(m[1])], [/^gta$/i, () => 'Grand Theft Auto']];
 function roman(x) { const n = Number(x); if (!Number.isFinite(n)) return String(x).toUpperCase(); const R = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let s = '', v = n; for (const [k, r] of R) while (v >= k) { s += r; v -= k; } return s; }
 /** the words to search Wikipedia for. Pure. */

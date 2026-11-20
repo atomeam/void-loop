@@ -1584,6 +1584,8 @@ try {
     const lines = String(ot || '').split('\n').map((x) => x.trim()).filter(Boolean);
     check('tower: the owner sees the plain card: working on now, what is left, next up, the link to the full Tower, no repeated line',
       /Working on now/i.test(ot) && /of the way there/.test(ot) && /Open the full Tower/.test(ot) && new Set(lines).size === lines.length && !O.errors.length, JSON.stringify({ ot: String(ot).slice(0, 300) }));
+    const beyond = await O.p.$$eval('.vpage.on .vp-beyond [data-category]', (e) => e.map((x) => x.getAttribute('data-category'))).catch(() => []);
+    check('tower: the owner card shows the category and the targets beyond websites (games, shows, real things), each with its closest', /Working on now · \w+/i.test(ot) && /Beyond websites/i.test(ot) && ['game', 'creature', 'video', 'music', 'idea'].every((k) => beyond.includes(k)) && !O.errors.length, JSON.stringify({ beyond, ot: String(ot).slice(0, 200) }));
     await O.ctx.close();
   }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept

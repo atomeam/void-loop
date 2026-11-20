@@ -419,7 +419,7 @@ const PLAIN_CSS = '<style>.vpage:has(.vp) .vc-art{display:none}.vp{max-width:520
   + '.vp ul,.vp ol{margin:0;padding-left:20px;font-size:14px}.vp li{margin:3px 0}.vp-more{font-size:12px;opacity:.7;margin:6px 0 0}.vp-next li span{opacity:.7;font-variant-numeric:tabular-nums}'
   + '.vp-actions{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}.vp-actions a{flex:1 1 140px;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #5b4a8a;background:#241f3b;color:#eee;text-decoration:none;font-weight:600;font-size:14px}.vp-actions a[data-main]{background:#5b3fd0;border-color:#7d63f0}</style>';
 /** the owner's card: plain words, one number, short lists, one link to the rest. Pure. */
-export function plainHtml(t, esc) {
+export function plainHtml(t, esc, u = null) {
   const fl = (t && t.floors) || [], cur = fl.find((f) => f.state === 'current'), next = fl.filter((f) => f.state === 'ahead' && !f.farFuture && !f.defer).slice(0, 3);
   const close = (f) => (Number.isFinite(+f.assim) ? Math.round(+f.assim) : 0);
   let art = ''; try { art = towerArtSvg(miniFloors(t), { label: cur ? cur.site : '' }); } catch (_) { art = ''; }
@@ -435,10 +435,19 @@ export function plainHtml(t, esc) {
       + (c.list.length ? '<ul>' + c.list.map((x) => '<li>' + esc(x.charAt(0).toUpperCase() + x.slice(1)) + '</li>').join('') + '</ul>' + (c.total > c.list.length ? '<p class="vp-more">' + esc((c.total - c.list.length) + ' more on the full Tower.') + '</p>' : '')
         : '<p class="vp-what">Nothing found that it still can\'t do. It counts as soon as the next check runs.</p>') + '</div>';
   }
-  const up = next.length ? '<div class="vp-box vp-next"><div class="vp-k">Next up</div><ol>' + next.map((f) => '<li>' + site(f) + (whatIs(f) ? ' \u2014 ' + esc(whatIs(f)) : '') + ' <span>(' + close(f) + '%)</span></li>').join('') + '</ol></div>' : '';
+  // beyond websites (versus/universe.js): the climb is one list, closest first, categories taking turns; a target that is closest becomes the "now"
+  let beyond = '', mixed = null;
+  if (u && u.m && u.px) {
+    beyond = u.px.beyondBox(u.m, esc);
+    const lead = u.m.order[0];
+    if (lead && lead.row) { now = u.px.nowBox(lead.row, esc); cant = u.px.cantBox(lead.row, esc); } else now = now.replace('>Working on now<', '>Working on now \u00b7 Website<');
+    const skip = new Set([lead && lead.row ? lead.id : cur && cur.id]);
+    mixed = u.m.order.filter((x) => !skip.has(x.id)).slice(0, 3);
+  }
+  const up = mixed && mixed.length ? '<div class="vp-box vp-next"><div class="vp-k">Next up</div><ol>' + mixed.map((o) => '<li>' + u.px.nextLine(o, esc, site) + '</li>').join('') + '</ol></div>' : next.length ? '<div class="vp-box vp-next"><div class="vp-k">Next up</div><ol>' + next.map((f) => '<li>' + site(f) + (whatIs(f) ? ' \u2014 ' + esc(whatIs(f)) : '') + ' <span>(' + close(f) + '%)</span></li>').join('') + '</ol></div>' : '';
   const done = fl.filter((f) => f.beaten).length;
   return PLAIN_CSS + '<div class="vp tw"><h2 class="tw-head">Versus</h2><p class="vp-sub">' + esc('The website Verse is learning to replace right now, and what is left. ' + done + ' site' + (done === 1 ? '' : 's') + ' done so far.') + '</p>'
-    + (art ? '<div class="vp-art" aria-hidden="true" data-share-skip>' + art + '</div>' : '') + now + cant + up
+    + (art ? '<div class="vp-art" aria-hidden="true" data-share-skip>' + art + '</div>' : '') + now + cant + up + beyond
     + '<div class="vp-actions"><a data-main href="/versus/">Open the full Tower</a>' + (cur ? '<a href="/versus/?view=rival&amp;site=' + esc(encodeURIComponent(siteSlug(cur.site))) + '">Everything about ' + esc(cur.site) + '</a>' : '') + '</div></div>';
 }
 /** the spoken line for the owner, plain. Pure. */
@@ -447,7 +456,8 @@ export const plainLine = (t) => { const cur = ((t && t.floors) || []).find((f) =
 /** the owner's card for "versus": reads the current files and fills the card in plain words (the skill, skills/tower.js, calls this after the owner check). */
 export async function ownerCard(el, { esc, say }) {
   const t = await load(); if (!el.isConnected) return;
-  el.innerHTML = plainHtml(t, esc); // void-review: ok (plainHtml runs every value through esc; the picture is lib/tower-art.js, which escapes its own text)
+  let u = null; try { const px = await import('./universe.js'), data = await px.load(); if (data) u = { px, m: px.modelOf(data, t.floors) }; } catch (_) { u = null; } // the universe is extra: the card still draws without it
+  el.innerHTML = plainHtml(t, esc, u); // void-review: ok (plainHtml runs every value through esc; the picture is lib/tower-art.js, which escapes its own text)
   if (say) say(plainLine(t));
 }
 

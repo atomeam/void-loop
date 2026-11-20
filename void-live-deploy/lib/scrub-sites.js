@@ -3,6 +3,8 @@
 // here, and a studied site's name or link becomes "another site". Pure. The host list comes from the tower's floors and its sites.
 import { FLOORS, hostOf } from './tower.js';
 import { SITES } from './versus-floor.js';
+import { SEEDS } from './universe-seeds.js';
+import { protectedNames, scrubNames } from './universe.js';
 
 // services the site itself cites and links (its own repo, search, video, models, dictionaries, the weather service): kept as they are
 const KEEP = /(?:^|\.)(?:github|google|youtube|amazon|huggingface|wiktionary|wikipedia|weather|apple|cloudflare|a-to-mind)\.(?:com|org|gov|co)$/;
@@ -26,12 +28,18 @@ const NATURAL = [
   [/\bthesportsdb\.com\b/gi, 'a public sports database'],
   [/\bespn\.com\b/gi, 'a sports news site'],
 ];
-/** a text with every studied site's name or link replaced (by what it is where a rule above knows, else "another site"). Pure. */
+// what the Tower beyond websites measures against (lib/universe.js): the seeds' names always, and the generated targets' names once the deploy
+// step hands them over (tools/public-sites.mjs reads tower.universe.json); each becomes "another one"
+let extraNames = [];
+export const setUniverseNames = (names) => { extraNames = (names || []).slice(); };
+/** every protected target name: the seeds' and any handed over. Pure. */
+export const universeNames = () => [...new Set(protectedNames(SEEDS).concat(extraNames))].sort((a, b) => b.length - a.length);
+/** a text with every studied site's name or link replaced (by what it is where a rule above knows, else "another site"), and every target's benchmark name by "another one". Pure. */
 export const scrubSites = (text) => {
   if (typeof text !== 'string' || !text) return text;
   let t = text;
   for (const [re, to] of NATURAL) t = t.replace(re, to);
-  return t.replace(pattern(), 'another site');
+  return scrubNames(t.replace(pattern(), 'another site'), universeNames());
 };
 /** every string in a JSON value through scrubSites (keys untouched). Pure. */
 export const deepScrub = (v) => (typeof v === 'string' ? scrubSites(v) : Array.isArray(v) ? v.map(deepScrub) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, deepScrub(x)])) : v);
