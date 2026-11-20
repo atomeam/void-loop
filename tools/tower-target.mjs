@@ -84,14 +84,18 @@ export function advance(old, floors, today, gone = {}) {
   if (old.season) base.season = old.season; if (old.archived) base.archived = old.archived;
   return { file: { ...base, assimilated, ...(passed.length ? { passed } : {}), ...(background.length ? { background: background.slice(-300) } : {}), ...(skipped.length ? { skipped } : {}), ...(settled.length ? { settled: settled.slice(-40) } : {}), ...(why ? { last: { at: today, why } } : old.last ? { last: old.last } : {}) }, why };
 }
+/** one settle from the files on disk: the old target file, the new one and why it moved. Used by the run below and by the Tower guard (tools/guards/tower.mjs). */
+export function settleTarget(today = new Date().toISOString().slice(0, 10)) {
+  const old = rd('tower.target.json') || {}, ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
+  const args = towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: { assimilated: [], ...old, id: null }, ft: rd('tower.features.json'), gn: rd('tower.gone.json'), pa: rd('parity.json') });
+  const unlocked = tower(...args);
+  return { old, today, ...advance(old, unlocked.floors, today, readGone()) };
+}
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // the evidence the site serves (tools/tower-files.mjs assemble: the aggregate with each floor's own file over it), never the bare aggregate:
   // a target worked out from older evidence than the card reads disagreed with the card, so the fight on the screen changed from load to load
   // and after each deploy (owner, 2026-11-06: "the whole tower keeps resetting")
-  const old = rd('tower.target.json') || {}, ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
-  const args = towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: { assimilated: [], ...old, id: null }, ft: rd('tower.features.json'), gn: rd('tower.gone.json'), pa: rd('parity.json') });
-  const unlocked = tower(...args);
-  const today = new Date().toISOString().slice(0, 10), { file, why } = advance(old, unlocked.floors, today, readGone());
+  const { old, file, why } = settleTarget();
   if (why) console.log(why);
   if (JSON.stringify(file) !== JSON.stringify(old)) fs.writeFileSync(OUT, JSON.stringify(file, null, 1) + '\n');
   console.log('target: ' + (file.id || 'none') + (file.id === old.id ? ' (kept)' : ' (new)'));
