@@ -21,9 +21,11 @@ test('counted asks get a numbered list, calculations a check, caveats and declin
   assert.match(b, /give exactly that many as a numbered list, 1\. 2\. 3\., one per line/);
   assert.match(b, /give the answer first, then one line showing how it checks/);
   assert.match(b, /the one condition or caveat that changes the pick/);
+  assert.match(b, /name the one assumption or precondition the answer depends on/);
+  assert.match(b, /one plain sentence of about 25 words that keeps every name, number and date/);
   assert.match(b, /another option when you decline or say no/);
   assert.match(b, /getting into a place or a thing without its owner saying yes, do not help with that; suggest asking the owner/);
-  assert.ok(b.split(/\s+/).length < 260, 'the line stays short enough for a free model to follow');
+  assert.ok(b.split(/\s+/).length < 290, 'the line stays short enough for a free model to follow');
 });
 test('the retry and a specialist keep the same short, lead-with-the-answer rule, and nothing is ever claimed as sent', () => {
   for (const bot of [{ name: 'verse', repair: true }, { name: 'word-counter', description: 'counts words' }]) {
