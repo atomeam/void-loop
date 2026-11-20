@@ -1,5 +1,5 @@
 {
- "cursor": 6,
+ "cursor": 7,
  "picks": {
   "debris-field": 1,
   "gap-glide": 1,
@@ -8,7 +8,8 @@
   "stackwell": 1,
   "nine-grid": 1,
   "three-alike": 1,
-  "pong": 1
+  "pong": 1,
+  "null-sweep": 1
  },
  "scores": {
   "debris-field": {
@@ -135,6 +136,27 @@
     "fun": 6,
     "polish": 6
    }
+  },
+  "null-sweep": {
+   "update": 1,
+   "note": "Update 1: The tension of a hidden disaster is replaced by the satisfying rhythm of clearing the field.",
+   "why": "shipped",
+   "fun": 68,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44673119041",
+   "parts": {
+    "danger": 1,
+    "goal": 8,
+    "boss": 7,
+    "juice": 6,
+    "phone": 9,
+    "fair": 10,
+    "end": 5,
+    "fun": 7,
+    "polish": 8
+   }
   }
  },
  "shown": [
@@ -225,6 +247,20 @@
    "paid": false,
    "provider": "verse @cf/google/gemma-4-26b-a4b-it",
    "video": "https://github.com/atomeam/void-loop/actions/runs/44666567667",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-20T04:21:08.724Z",
+   "id": "null-sweep",
+   "title": "Null Sweep",
+   "n": 1,
+   "note": "Update 1: The tension of a hidden disaster is replaced by the satisfying rhythm of clearing the field.",
+   "fun": 68,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44673119041",
    "dropped": false,
    "born": false
   }
