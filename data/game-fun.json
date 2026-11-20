@@ -1,0 +1,30 @@
+{
+ "games": {
+  "void-breaker": {
+   "update": 3,
+   "pass": true,
+   "at": "2026-11-20",
+   "fails": [],
+   "metrics": {
+    "hook": true,
+    "readyMs": 194,
+    "startMs": 126,
+    "keys": true,
+    "touch": true,
+    "speedStart": 300,
+    "levelStart": 1,
+    "rises": 28,
+    "deadMs": 4842,
+    "fps": 60,
+    "speedEnd": 354,
+    "levelEnd": 1,
+    "sounds": 91,
+    "audio": true,
+    "failMs": 13582,
+    "again": true,
+    "errors": 0,
+    "errorText": ""
+   }
+  }
+ }
+}
