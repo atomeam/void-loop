@@ -6,6 +6,7 @@
 // When the model is busy nothing is saved: Verse's words are never made up for it. Each reflection is also given what its owner
 // told it (functions/api/voice-reply.js: replies and corrections, and the line Verse chose to keep from each).
 import { ownerOk } from '../../lib/guard.js';
+import { deepScrub } from '../../lib/scrub-sites.js';
 import { slug } from '../../lib/ask-text.js'; // one copy (convergence step 2)
 import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
@@ -31,7 +32,7 @@ export async function onRequestGet({ request, env }) {
     asked: done.slice(0, 200).map((g) => ({ ask: g.ask, at: g.at, times: g.times })) } : null;
   // the asks still open, every one (the card folds past the first few); without the ledger, the newest reflections' asks as before
   const open = rec ? rec.open : currentAsks(entries, 12);
-  return Response.json({ entries: entries.slice(0, 20).map((e, i) => (i < 2 || !e.given ? e : { ...e, given: undefined })), asks: holdAsks(open, answered && answered.held, tg && tg.id).slice(0, 40), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
+  return Response.json(deepScrub({ entries: entries.slice(0, 20).map((e, i) => (i < 2 || !e.given ? e : { ...e, given: undefined })), asks: holdAsks(open, answered && answered.held, tg && tg.id).slice(0, 40), ...(follow ? { follow } : {}) }), { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
 export async function onRequestPost({ request, env }) {
