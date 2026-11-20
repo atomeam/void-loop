@@ -30,6 +30,7 @@ import { guardPatch, kindOf } from '../void-live-deploy/lib/patch-guard.js';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { scanDiff, DEFAULT_CHECKS } from './verse-loop.mjs';
 import { BUILD_OUTPUTS } from './generated.mjs';
+import { charterPrompt } from './charter.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const LIMITS = { turns: 30, tokens: 250000, out: 6000, finishTries: 3, reads: 12 };
@@ -398,7 +399,8 @@ export function functionLossOk(reasons, moved) {
   return lost.length > 0 && lost.every((n) => hasWord(moved, n));
 }
 
-const SYSTEM = (checks, target) => `You are Verse's coding agent, working in a git repository through tools. You change code so the task is done and every check stays green.
+export const SYSTEM = (checks, target) => `${charterPrompt()}
+You are Verse's coding agent, working in a git repository through tools. You change code so the task is done and every check stays green.
 Answer every turn with exactly one JSON object and nothing else (an edit may put its diff in a \`\`\`diff block right after the JSON instead):
 {"tool":"list","path":"tools"}                       list a directory
 {"tool":"read","path":"tools/x.mjs","from":1,"to":200} read lines of a file (a file over ${HUGE} lines returns an outline unless from/to are set)

@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { BOOK, PUBLIC_BOOK, BAR_ID, CATALOG, applyUpdate, bornFrom, decide, emptyBook, funOf, gamesOf, gapOf, inventPrompt, nextTask, promptFor, readWhatsNew, scoreFrom, withBar, PARTS } from '../void-live-deploy/lib/game-updates.js';
 import { models, VISION_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { askFree } from './judgment.mjs';
+import { charterPrompt } from './charter.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png' };
 const NOISE = /favicon|AudioContext|net::ERR|Failed to load resource|404/;
@@ -82,7 +83,7 @@ async function askVision(prompt, shots, { env, fetchFn }) {
   return { text, frames: frames.length };
 }
 export async function judgePlay(play, { env = process.env, fetchFn = fetch, game, note } = {}) {
-  const prompt = 'Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. A Debris Field bar is a phone game with a goal, danger, and an ending. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '.';
+  const prompt = charterPrompt() + 'Score this play of ' + (game ? game.title : 'a game') + ' from 0 to 10: danger, goal, boss, juice, phone, fair, end, fun, polish. JSON only. A Debris Field bar is a phone game with a goal, danger, and an ending. New: ' + (note || '') + '. Console: ' + ((play && play.broken) || 'quiet') + '.';
   const seen = await askVision(prompt, (play && play.shots) || [], { env, fetchFn });
   let raw = seen.text;
   if (!raw && seen.frames) raw = await askFree(prompt + ' Screen: ' + ((play && play.text) || '').slice(0, 300), { env, fetchFn });
