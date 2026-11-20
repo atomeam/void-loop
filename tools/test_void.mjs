@@ -1558,6 +1558,19 @@ try {
     await G.p.keyboard.press('ArrowRight'); await until(async () => !/Press an arrow key/.test(await G.page()), 4000);
     check('arcade focus: Snake holds the keyboard when it opens, and an arrow key starts it with no click', !!mine && !/Press an arrow key/.test(await G.page()) && !G.errors.length, String(mine) + ' | ' + (await G.page()).slice(0, 120));
     await G.ctx.close(); }
+  // owner audit 2026-11-19: a desktop visitor who only looked at the home page still pulled about 900 skill files. Now a bare address with nothing kept
+  // loads none until the page or the ask box is touched; the starfield and the corner heart are not skills and stay. (An automated browser keeps the
+  // idle start, so this case shows a real visitor by setting navigator.webdriver to false.)
+  if (want("lazy skills: a desktop visitor who only looks loads no skill file, keeps the starfield and the corner heart, and the first ask still answers")) {
+    const L = await fresh(() => { Object.defineProperty(navigator, 'webdriver', { get: () => false }); });
+    await L.p.waitForTimeout(2500);
+    const idle = await L.p.evaluate(() => ({ files: performance.getEntriesByType('resource').filter((e) => /\/skills\/[^/?]+\.js(?:\?|$)/.test(e.name) && !/\/skills\/(?:index|first|scene3d|howto|sky-rules)\./.test(e.name)).map((e) => e.name.replace(/^.*\/skills\//, '')), ready: document.documentElement.dataset.skills || '', lazy: !!window.__skillsLazy, stars: !!document.getElementById('void-stars-far'), heart: !!document.getElementById('void-anchor') && getComputedStyle(document.getElementById('void-anchor')).display !== 'none' }));
+    check('lazy skills: a desktop page that is only looked at loads no skill file, and the starfield and corner heart are there', idle.lazy && idle.files.length === 0 && idle.ready === '' && idle.stars && idle.heart && !L.errors.length, JSON.stringify(idle) + ' ' + L.errors.join('|'));
+    await L.ask('what is 12 times 12', 900); await until(async () => /144/.test(await L.page()), 20000);
+    const after = await L.p.evaluate(() => ({ ready: document.documentElement.dataset.skills || '', stars: !!document.getElementById('void-stars-far'), heart: !!document.getElementById('void-anchor') }));
+    check('lazy skills: the first ask after a look still answers, and loads the skills then', /144/.test(await L.page()) && after.stars && after.heart && !L.errors.length, JSON.stringify(after) + ' ' + L.errors.join('|'));
+    await L.ctx.close();
+  }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');

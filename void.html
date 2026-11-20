@@ -4970,7 +4970,7 @@ say('nothing selected to remove');
       }
     }
     // Skill files start on a tap, a key, or idle, and at once when the link already carries an ask (?q= or ?ask=).
-    // A phone waits for that tap: loading every module on idle is the long task. A desktop can idle sooner.
+    // A phone waits for that tap: loading every module on idle is the long task. A desktop that is only being looked at waits too (below).
     // data-skills="ready" is still set when they finish: the suite waits on it (tools/test_void.mjs skillsUp).
     const skillsReady = new Promise((resolve) => {
       let started = false;
@@ -4988,11 +4988,17 @@ say('nothing selected to remove');
       const phone = window.matchMedia && matchMedia('(pointer: coarse)').matches;
       if (/[?&](?:q|ask)=/.test(location.search)) start();
       else {
+        // A desktop visitor who only looks (no tap, key or typing, nothing kept on the stage, a bare address) loads no skill file at all: about 900
+        // requests are not made for a page that is only read. The page puts the cursor in the ask box by itself, so focus alone does not count there;
+        // the first tap, key or letter starts them, as on a phone. An automated browser keeps the idle start, so the suite and the tools see the page
+        // as they always did (the lazy path has its own suite case, which sets navigator.webdriver to false).
+        const lazy = !phone && !navigator.webdriver && !location.search && !location.hash && !Object.keys(things).length;
         addEventListener('pointerdown', start, true);
         addEventListener('keydown', start, true);
-        addEventListener('focusin', startOnAsk, true);
+        if (!lazy) addEventListener('focusin', startOnAsk, true);
         addEventListener('input', startOnAsk, true);
         if (phone) setTimeout(start, 12000);
+        else if (lazy) window.__skillsLazy = true;
         else (window.requestIdleCallback || ((fn) => setTimeout(fn, 1)))(start, { timeout: 1500 });
       }
     });
