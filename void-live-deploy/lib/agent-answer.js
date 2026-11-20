@@ -33,6 +33,22 @@ export function openEnded(ask) {
   if (NOT_OPEN.test(t)) return false;
   return OPEN.test(t) || /^(?:list|name|give me|what are|tell me)\b/i.test(t);
 }
+// A narrow bot is built to turn one kind of input into one kind of output. It may claim an ask only when the ask carries that input.
+// A question or a request to write, with no numbers, quoted text or pasted text in it, is the general answerer's, however many words
+// it shares with a bot's job line ("the difference between X and Y" is not "days between two dates").
+const ASKING = /^(?:please\s+|can you\s+|could you\s+|would you\s+)?(?:what|why|how|who|when|where|which|whose|explain|describe|define|compare|contrast|tell me|should|is|are|was|were|can|could|does|do|did|will|would|write|draft|compose|give me|suggest|recommend|summari[sz]e|help me)\b/i;
+/** the ask carries something to work on: a digit, a quoted or pasted text, a link, or a line after a colon. Pure. */
+export const hasPayload = (ask) => { const t = String(ask || ''); return /\d/.test(t) || /["\u201c\u201d`]|\bhttps?:\/\/|\n/.test(t) || /:\s*\S+(?:\s+\S+){2,}/.test(t) || /'[^']{12,}'/.test(t); };
+/** a question or a writing request with nothing to work on: the general answerer's job. Pure. */
+export const isKnowledgeAsk = (ask) => { const t = String(ask || '').trim(); return !!t && !hasPayload(t) && (ASKING.test(t) || /\?\s*$/.test(t)); };
+/** the bot needs input (its probe in the registry has one). A bot with none (a coin, a joke) can answer a bare ask. Pure. */
+const needsInput = (b) => !!(b && b.probe && String(b.probe.in || '').trim());
+/** can the bot take this ask at all? Its example input has digits and the ask has none: no. A knowledge ask with no payload and a bot that needs one: no. Pure. */
+export function canTake(ask, b) {
+  if (!needsInput(b)) return true;
+  if (/\d/.test(b.probe.in) && !/\d/.test(ask)) return false;
+  return !isKnowledgeAsk(ask);
+}
 const purposeOf = (b) => new Set(askTerms([b.name || b.id || '', b.description || '', b.job || '', ...(b.examples || [])].join(' ')));
 // the name's own words, unstemmed ("percent-bot" declares percent; "word-counter" does not declare "count")
 const rawId = (b) => new Set(String(b.name || b.id || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 5));
@@ -49,15 +65,19 @@ export function botChoices(ask, bots) {
   for (const b of live) for (const w of rawId(b)) owners.set(w, (owners.get(w) || 0) + 1);
   const ranked = [];
   live.forEach((b, i) => {
+    if (!canTake(ask, b)) return;
     const hit = [...purposes[i]].filter((w) => want.has(w));
     const named = rawId(b);
     let score = 0;
     // two purpose words, or the bot's own name when that name is not shared and the ask is not an open question
     if (hit.length >= 2) score = hit.length;
     else if (hit.length === 1 && !open && named.has(hit[0]) && owners.get(hit[0]) === 1) score = 1;
-    if (score) ranked.push({ b, score, n: purposes[i].size });
+    // among bots that match, the one whose own name says the job comes first (summarize -> summarizer, not a bot that shares the word "sentence")
+    const nm = new Set(askTerms(String(b.name || b.id || '').replace(/[-_]+/g, ' ')));
+    const named2 = hit.filter((w) => [...nm].some((x) => x === w || (x.length >= 4 && w.length >= 4 && x.slice(0, 4) === w.slice(0, 4)))).length;
+    if (score) ranked.push({ b, score, named: named2, n: purposes[i].size });
   });
-  ranked.sort((a, c) => c.score - a.score || a.n - c.n || slim(a.b).name.localeCompare(slim(c.b).name));
+  ranked.sort((a, c) => c.named - a.named || c.score - a.score || a.n - c.n || slim(a.b).name.localeCompare(slim(c.b).name));
   const out = ranked.map((r) => slim(r.b));
   if (!out.some((b) => b.name === 'verse')) out.push(GENERAL);
   return out;
@@ -73,12 +93,22 @@ export function answerBrief(bot) {
   if (!bot || bot.name === 'verse' || bot.repair) return bot && bot.repair ? 'You are Verse. The last answer did not do the task. ' + direct.slice('You are Verse. '.length) : direct;
   return 'You are Verse, a helpful agent. You are acting as the bot "' + bot.name + '"' + (bot.description ? ' (' + bot.description + ')' : '') + '. Do only that bot\'s job, fully and concretely. Lead with the result. Plain text, about 120 words or less. Never claim to have sent, paid, posted or deleted anything.';
 }
+/** a short reply that says what the bot is for, or asks for other input, instead of doing the ask. A long answer is never one. Pure. */
+export function staysInLane(text) {
+  const t = String(text || '').trim();
+  if (!t || t.split(/\s+/).length > 60) return false;
+  return /\bI(?:'m| am) (?:a|an|the)\b[^.\n]{0,60}\bbot\b/i.test(t)
+    || /\bI (?:am|was) (?:designed|built|made|specialized|specialised|programmed|created|trained)\b[^.\n]{0,70}\b(?:only|solely|specifically|just)\b/i.test(t)
+    || /\bI (?:cannot|can't|can not|am unable to|am not able to|won't be able to) (?:provide|help|answer|assist|give|explain|offer|do)\b[^.\n]{0,80}\b(?:regarding|about|with|outside|beyond|other than)\b/i.test(t)
+    || /\bplease (?:provide|give|send|enter|share) (?:me )?(?:two|a|an|the|your|some)\b[^.\n]{0,70}\b(?:if you (?:would|want|like|wish)|and I (?:will|can))\b/i.test(t)
+    || /\b(?:outside|beyond) (?:of )?(?:my|the bot's) (?:scope|function|purpose|job)\b/i.test(t);
+}
 /** an open ask needs a real answer: long enough, and mostly new words, not the ask's own words joined back together. A specialist's short exact answer is its own result. Pure. */
 export function addressesAsk(ask, result) {
   const text = String(result || '').trim();
   if (text.length < 2) return false;
   // semantic step-5: refusal boilerplate never addresses the ask, even if it passes word count
-  if (/My sole function is|define the context|I am only able to|as an AI language model/i.test(text)) return false;
+  if (/My sole function is|define the context|I am only able to|as an AI language model/i.test(text) || staysInLane(text)) return false;
   if (!openEnded(ask)) return true;
   const want = new Set(askTerms(ask));
   const novel = new Set(askTerms(text).filter((w) => !want.has(w)));
