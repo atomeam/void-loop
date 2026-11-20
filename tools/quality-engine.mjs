@@ -86,11 +86,19 @@ export async function look(browser, s, { vision = true, exam = null } = {}) {
 
 /** the home keeps its starfield (a live WebGL canvas) and its heart: an improvement elsewhere must never change that. */
 export async function homeIntact(browser) {
-  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } }), p = await ctx.newPage();
-  try {
-    await p.goto(SITE + '/', { waitUntil: 'domcontentloaded', timeout: 40000 }); await p.waitForTimeout(2500);
-    return await p.evaluate(() => ({ heart: !!document.getElementById('void-anchor'), canvas: [...document.querySelectorAll('canvas')].some((c) => c.width > 100) }));
-  } catch (e) { return { heart: false, canvas: false, err: String(e.message || e).slice(0, 80) }; } finally { await ctx.close(); }
+  // the home's own HTML carries the heart and both starfield canvases: read that first (cheap, and no timeout under load), then look in a browser
+  const html = await fetch(SITE + '/', { headers: { 'user-agent': 'VerseQuality/1.0' } }).then((r) => (r.ok ? r.text() : '')).catch(() => '');
+  if (/id="void-anchor"/.test(html) && /id="void-stars"/.test(html) && /id="void-stars-far"/.test(html)) return { heart: true, canvas: true, via: 'html' };
+  let last = { heart: false, canvas: false };
+  for (let i = 0; i < 2; i++) {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } }), p = await ctx.newPage();
+    try {
+      await p.goto(SITE + '/', { waitUntil: 'domcontentloaded', timeout: 60000 }); await p.waitForTimeout(2500);
+      last = await p.evaluate(() => ({ heart: !!document.getElementById('void-anchor'), canvas: [...document.querySelectorAll('canvas')].some((c) => c.width > 100) }));
+      if (last.heart && last.canvas) return { ...last, via: 'browser' };
+    } catch (e) { last = { heart: false, canvas: false, err: String(e.message || e).slice(0, 80) }; } finally { await ctx.close(); }
+  }
+  return last;
 }
 
 function remember(rec, row) {
@@ -232,6 +240,12 @@ export async function cycle({ paths = [] } = {}) {
     if (!(await merged(p.n))) { console.log('the pull request did not merge'); rec.pending = null; return { pr: p }; }
     let res = null; for (let i = 0; i < 40 && (!res || res.state === 'waiting'); i++) { res = await settle(browser, rec, { undo: false }); if (res.state === 'waiting') await sleep(30000); }
     console.log('settled', JSON.stringify(res && res.cycle));
+    const bad = res && res.cycle ? res.cycle.results.filter((x) => !x.kept && !/could not measure|never went live/.test(x.why || '')) : [];
+    if (bad.length && flag('--ship')) {   // a change that did not hold is undone in the same run, as its own pull request
+      const ub = 'helper/quality-undo-' + Date.now().toString(36); sh('git', ['checkout', '-q', '-B', ub, 'origin/main'], { cwd: root });
+      const files = bad.map((x) => undoOn(root, x.id, res.cycle.improver)).filter(Boolean).map((x) => x.file);
+      if (files.length) { const up = await pr(rec, ub, 'Quality engine: undo ' + res.cycle.improver + ' on ' + bad.map((x) => x.id).join(' '), 'For people using the site: the quality engine undoes the change it shipped on ' + bad.map((x) => x.id + ' (' + x.why + ')').join(', ') + ', because it did not hold up when re-scored live.', files); console.log('undo PR', up && up.url); res.cycle.undoPr = up ? up.n : null; }
+    }
     if (res && res.cycle) { res.cycle.minutes = Math.round((Date.now() - t0) / 60000); }
     meta(rec);
     return { pr: p, res, rec };
