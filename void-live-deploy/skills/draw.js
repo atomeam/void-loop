@@ -78,7 +78,8 @@ export function drawOf(text) {
   const brush = t.match(/^(?:make|create|give me|new)\s+(?:me\s+)?(?:a\s+)?(?:brush|pen)\s*(?:like|that is|that's|:)?\s*(.+)$/) || t.match(/^(?:make|create|new)\s+(?:me\s+)?(?:a\s+)?(.+?)\s+brush$/);
   if (brush) { const b = brushFrom(brush[1]); return b ? { brush: b } : null; }
   if (/^(?:let me |i want to |can i |let'?s )?(?:draw|sketch|doodle|paint)(?: something| with me| a picture)?$/.test(t)) return { brush: null };
-  if (/^(?:make|create|draw|sketch|doodle|paint)(?: a | an )?(?:(?:2d|3d|simple|quick) )?(?:sketch|drawing|picture|doodle) of (.+)$/.test(t)) return { brush: null };
+  // a sketch or doodle to draw yourself. "make a picture of a bicycle" is the image generator, not a blank pad.
+  if (/^(?:make|create|draw|sketch|doodle|paint)(?: a | an )?(?:(?:2d|3d|simple|quick) )?(?:sketch|drawing|doodle) of (.+)$/.test(t)) return { brush: null };
   if (/^(?:open |show me |give me |start )?(?:a |the |my )?(?:canvas|drawing pad|drawing board|sketch ?pad|sketchbook|doodle pad|paint app|drawing app)$/.test(t)) return { brush: null };
   return null;
 }
@@ -555,7 +556,7 @@ export default {
       && printModel([{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], indices: [0, 2, 1, 0, 1, 3, 0, 3, 2, 1, 2, 3] }], 't', 50).size.join() === '50,50,50'
       && layerCommand('make it my backdrop', []).op === 'backdrop' && layerCommand('use this drawing as my background', []).op === 'backdrop' && !layerCommand('make the sky my backdrop', ['sky'])
       && layerCommand('new 3d layer for the ring', []).space === true && layerCommand('turn the ring left', ['ring']).deg === -90 && tubeRadius(8, 100) === 0.04
-      && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal')
+      && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('make a picture of a red bicycle on a hill') && !!drawOf('make a 2d sketch of a tree') && !drawOf('what is charcoal')
       && shapeAsk('draw a red circle').shape === 'circle' && shapeAsk('dessine un cercle rouge').hex === COLORS.red && !shapeAsk('draw a circle') && !shapeAsk('draw a cat');
     return { ok: !!ok, got: ok ? 'pass' : JSON.stringify({ c, i, f }) };
   }

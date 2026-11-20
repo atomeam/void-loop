@@ -28,12 +28,18 @@ test('a made picture is read from the ask: its words and its style', () => {
     'sketch a house': ['a house', 'sketch'],
     'sketch me an old oak tree please': ['an old oak tree', 'sketch'],
     'generate a drawing of a horse': ['a horse', 'none'],
+    'make a picture of a red bicycle on a hill': ['a red bicycle on a hill', 'none'],
+    'create a picture of a mountain': ['a mountain', 'none'],
+    'paint a picture of a lake': ['a lake', 'none'],
+    'make a logo for a coffee shop called Harbor Bean': ['a logo for a coffee shop called Harbor Bean', 'sticker'],
+    'design a logo for Harbor Bean': ['a logo for Harbor Bean', 'sticker'],
+    'make an anime logo for Harbor Bean': ['a logo for Harbor Bean', 'anime'],
   };
   for (const [ask, [words, style]] of Object.entries(cases)) assert.deepEqual(pictureAsk(ask), { words, style }, ask);
 });
 
 test('what is not a picture to make is left alone', () => {
-  for (const t of ['make a picture of a dog', 'create a picture of a mountain', 'paint a picture of a lake', 'picture of a cat', 'draw a cat', 'draw a red circle',
+  for (const t of ['picture of a cat', 'draw a cat', 'draw a red circle',
     'sketch a red circle', 'sketch a circle', 'sketch pad', 'sketch a plan for the week', 'make an image board', 'generate a password', 'image', 'make an image',
     'generate an image of it', 'what is an image of a function', 'show this image https://example.org/cat.png', 'make the picture bigger', 'generate an image of me', ''])
     assert.equal(pictureAsk(t), null, t);
@@ -100,5 +106,6 @@ test('when no picture comes, the card says why in the route\'s words, or that th
   globalThis.fetch = async () => { throw new Error('offline'); };
   f = fakeApi(); gen.run('generate a picture of a dog', f.api); await settle();
   assert.match(f.slot.innerHTML, /The painter did not answer just now/);
-  assert.equal(gen.run('make a picture of a dog', fakeApi().api), 'none');
+  assert.equal(gen.run('make a picture of a dog', fakeApi().api), 'image-gen');
+  assert.deepEqual(pictureAsk('make a picture of a dog'), { words: 'a dog', style: 'none' });
 });
