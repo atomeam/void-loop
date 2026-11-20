@@ -210,7 +210,7 @@ async function run(text, api) {
       el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
         + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + (Number.isFinite(c.relative_humidity_2m) ? ' · humidity ' + Math.round(c.relative_humidity_2m) + '%' : '')
         + (Number.isFinite(c.pressure_msl) ? ' · pressure ' + (f ? (c.pressure_msl * 0.0295300).toFixed(2) + ' inHg' : Math.round(c.pressure_msl) + ' hPa') : '') + (Number.isFinite(c.visibility) ? ' · visibility ' + visText(c.visibility, f) : '') + (Number.isFinite(c.dew_point_2m) ? ' · dew point ' + T(c.dew_point_2m) : '') + '</div>'
-        + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
+        + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin-top:6px;margin-bottom:4px">' + T(c.temperature_2m) + '</div>'
         + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
         + (days.length ? '<p class="wx-days">' + days.map((i) => esc(askedDayLabel(i, d.time[i])) + ' ' + T(d.temperature_2m_max[i]) + ' / ' + T(d.temperature_2m_min[i]) + (d.precipitation_probability_max && d.precipitation_probability_max[i] != null ? ' · rain chance ' + d.precipitation_probability_max[i] + '%' : '')).join('<br>') + '</p>' : '')
         + nextLine
