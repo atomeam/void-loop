@@ -16,7 +16,7 @@ const PLAIN = /^(?:(?:a|an|one|two|three|four|five|six|seven|eight|nine|ten|\d{1
 export function coinAsk(text) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
   if (/^(?:create|make|design|mint|forge)\s+(?:me\s+)?(?:a|an|my|my own|your own|a new|our)?\s*(?:own\s+)?(?:custom\s+)?coin$|^coin (?:maker|designer|creator)$/.test(t)) return { kind: 'make' };
-  if (/^(?:flip|toss)\s+(?:a|an|any)\s+(?:famous|historic|historical|ancient|old|real|rare|random)\s+coin$|^(?:which|what) coins can (?:i|you) flip$|^(?:pick|choose) a coin(?: to flip)?$|^every coin$/.test(t)) return { kind: 'pick' };
+  if (/^(?:flip|toss)\s+(?:a|an|any)\s+(?:famous|historic|historical|ancient|old|real|rare|random)\s+coin(?:\s+from\s+history)?$|^(?:flip|toss)\s+(?:a|an|any)\s+coin\s+from\s+history$|^(?:which|what) coins can (?:i|you) flip$|^(?:pick|choose) a coin(?: to flip)?$|^every coin$/.test(t)) return { kind: 'pick' };
   let m = /^(?:flip|toss)\s+my\s+(?:own\s+)?coin(?:\s+for\s+(.{1,60}))?$/.exec(t);
   if (m) return { kind: 'mine', for: m[1] || '' };
   m = REAL.exec(t);
@@ -62,6 +62,49 @@ export async function findCoin(name, get = (u) => fetch(u).then((r) => r.json())
   // one photo for both: a wide one is cut in half (obverse left, reverse right); a narrow one shows the same face twice, as it always did
   const h = { ...heads, half: heads.wide ? 'left' : null }, t = own ? { ...tails, half: tails.wide ? 'right' : null } : { ...heads, half: heads.wide ? 'right' : null };
   return { heads: h, tails: t };
+}
+
+
+// a curated Commons set, used when the live search is down, empty, or picks the wrong object (a medal, one face twice).
+// Special:FilePath keeps the thumb address stable; each photo is linked to its Commons file page (author and license live there).
+const fileOf = (file, half = null) => ({
+  src: 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(file) + '?width=360',
+  page: 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(file),
+  title: file.replace(/\.[A-Za-z0-9]+$/, ''),
+  half,
+});
+const both = (file) => ({ heads: fileOf(file, 'left'), tails: fileOf(file, 'right') });
+const sides = (h, t) => ({ heads: fileOf(h), tails: fileOf(t) });
+/** backup photos for the famous list (and close names): never leave a history flip without a real coin. */
+export const BACKUP = {
+  'lydian stater': both('Electrum trite, Alyattes, Lydia, 620-563 BC.jpg'),
+  'athenian owl tetradrachm': sides('Tetradrachm Athens 450 obverse CdM Paris.jpg', 'Tetradrachm Athens reverse CdM Paris.jpg'),
+  'alexander the great tetradrachm': both('Alexander Tetradrachm Amphipolis.jpg'),
+  'ides of march denarius': both('Brutus Eid Mar.jpg'),
+  'roman aureus': both('Aureus of Claudius.jpg'),
+  'byzantine solidus': both('Solidus of Justin II with Tiberius II Constantine.jpg'),
+  'chinese cash coin': both('1cash Kaiyuan LiYU H1599 1ar85 (8721918475).jpg'),
+  'florentine florin': both("Fiorino d'oro.jpg"),
+  'venetian ducat': both('Zecchino.jpg'),
+  'brasher doubloon': sides('1787 Brasher Doubloon (obverse).jpg', '1787 Brasher Doubloon (reverse).jpg'),
+  '1804 silver dollar': both('1804 Silver Dollar (Class III).jpg'),
+  'british sovereign': both('Sovereign George III 1817 641656.jpg'),
+  'morgan dollar': sides('1884 Morgan dollar obverse with rim tone.jpg', '1893-S Morgan dollar reverse.jpg'),
+  'buffalo nickel': sides('Buffalo Nickel Obverse.png', 'Buffalo Nickel Reverse.png'),
+  '1933 double eagle': sides('Specimen1Obv.jpg', 'Specimen1Rev.jpg'),
+  'lincoln cent': sides('1909-S VDB Lincoln cent obverse.jpg', '1909-S VDB Lincoln cent reverse.jpg'),
+};
+const normName = (name) => String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/** a backup coin for this name, or a Lydian stater when the name is not in the set. Pure. */
+export function backupCoin(name) {
+  const k = normName(name);
+  const take = (key, extra) => {
+    const c = BACKUP[key];
+    return { heads: { ...c.heads }, tails: { ...c.tails }, backup: key, ...extra };
+  };
+  if (BACKUP[k]) return take(k);
+  for (const key of Object.keys(BACKUP)) { if (k.includes(key) || key.includes(k)) return take(key); }
+  return take('lydian stater', { defaulted: true });
 }
 
 // a coin a person makes: its metal, a short word or emoji on each side, the words around the rim, and maybe a photo for a side (kept small)

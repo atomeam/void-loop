@@ -35,7 +35,7 @@ export function coinOf(text) {
 export function flip(p = 0.5, rand = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; }) { return rand() < p; }
 
 import { coinLine } from '../lib/tally.js';
-import { coinAsk, FAMOUS, findCoin, cleanMine, metalFace, METALS, MINE_KEY } from '../lib/coins.js';
+import { coinAsk, FAMOUS, findCoin, backupCoin, cleanMine, metalFace, METALS, MINE_KEY } from '../lib/coins.js';
 const KEY = 'a2m.void.coin.v1'; // this visit's tally and the sound choice, in sessionStorage / localStorage
 const tallyRead = () => { try { const v = JSON.parse(sessionStorage.getItem(KEY) || '{}'); return { h: v.h | 0, t: v.t | 0 }; } catch (_) { return { h: 0, t: 0 }; } };
 const tallyWrite = (v) => { try { sessionStorage.setItem(KEY, JSON.stringify(v)); } catch (_) {} };
@@ -95,9 +95,29 @@ function worthButton(el, getImage, note) {
 }
 
 /** the coin page on an ask, as a plain query the card frame takes (lib/card-frame.js pageOfCard), else the page itself. Pure. */
+/** the coin tool's own address, with the ask kept (never /flip/?q= or /random/coin/?q=: those redirects drop the query on the live site). Pure. */
+export function coinToolUrl(q) {
+  const t = String(q || '').trim().replace(/\s+/g, ' ');
+  return t ? '/random/?mode=coin&q=' + encodeURIComponent(t) : '/random/?mode=coin';
+}
+/** rewrite an old /flip or /random/coin address so the coin ask stays. Pure. */
+export function rewriteCoinHref(href) {
+  try {
+    const u = new URL(String(href || ''), 'https://a-to-mind.com');
+    if (!/^\/(?:flip|random\/coin)\/?$/.test(u.pathname)) return null;
+    return coinToolUrl(u.searchParams.get('q') || '');
+  } catch (_) { return null; }
+}
 export function pageOfFlip(text) {
   const q = encodeURIComponent(String(text || '').trim().replace(/\s+/g, ' '));
-  return /^[A-Za-z0-9_.%-]{1,180}$/.test(q) ? '/random/coin/?q=' + q : '/random/coin/';
+  return /^[A-Za-z0-9_.%-]{1,180}$/.test(q) ? coinToolUrl(String(text || '').trim().replace(/\s+/g, ' ')) : coinToolUrl('');
+}
+/** true on the coin tool's own page (old /flip/ and /random/coin/, or /random/?mode=coin). Pure enough for the stage card's "full page" link. */
+function onCoinPage() {
+  if (typeof location === 'undefined') return false;
+  const path = location.pathname.replace(/\/+$/, '') || '/';
+  if (path === '/flip' || path === '/random/coin') return true;
+  return path === '/random' && new URLSearchParams(location.search).get('mode') === 'coin';
 }
 
 function run(text, api) {
@@ -119,17 +139,24 @@ function runCoin(text, api) {
     const name = more.name.replace(/\b\w/g, (c) => c.toUpperCase());
     const look = { title: name, rim: '#8a6a10', h: { bg: metalFace('silver'), txt: '…', ink: '#3b4047' }, t: { bg: metalFace('silver'), txt: '…', ink: '#3b4047' }, src: 'Looking for the real ' + name + ' on Wikimedia Commons…', note: 'a ' + name + ' coin' };
     const el = flipCard(text, api, { n: 1, p: 0.5, for: more.for }, look, true);
-    findCoin(more.name).then((c) => {
+    const paintFound = (c, note) => {
       const card = typeof el === 'object' && el && el.querySelector ? el : null; if (!card || !card.isConnected) return;
       const src = card.querySelector('.src');
-      if (!c) { src.textContent = 'Wikimedia Commons has no photo of a "' + more.name + '" coin. Try its full name ("Athenian owl tetradrachm"), or flip a famous coin.'; card.querySelectorAll('.coin .fc').forEach((f) => { f.textContent = '?'; }); return; }
       card.querySelectorAll('.coin').forEach((b) => { paintFace(b.querySelector('.fc.h'), { img: c.heads.src, half: c.heads.half }); paintFace(b.querySelector('.fc.t'), { img: c.tails.src, half: c.tails.half }); });
-      src.textContent = 'Heads is its obverse, tails its reverse: real photos from Wikimedia Commons (';
+      src.textContent = (note || '') + 'Heads is its obverse, tails its reverse: real photos from Wikimedia Commons (';
       const a1 = document.createElement('a'); a1.href = c.heads.page; a1.target = '_blank'; a1.rel = 'noopener'; a1.textContent = c.heads.title;
-      src.append(a1); if (c.tails !== c.heads) { const a2 = document.createElement('a'); a2.href = c.tails.page; a2.target = '_blank'; a2.rel = 'noopener'; a2.textContent = c.tails.title; src.append(', ', a2); }
+      src.append(a1); if (c.tails.src !== c.heads.src || c.tails.page !== c.heads.page) { const a2 = document.createElement('a'); a2.href = c.tails.page; a2.target = '_blank'; a2.rel = 'noopener'; a2.textContent = c.tails.title; src.append(', ', a2); }
       src.append('). A fair flip from this device’s secure random numbers.');
       worthButton(card, () => photoData(c.heads.src), 'a ' + name + ' coin');
-    }).catch(() => {});
+    };
+    findCoin(more.name).then((c) => {
+      if (c) return paintFound(c);
+      const b = backupCoin(more.name);
+      const note = b.defaulted
+        ? 'No photo of a "' + more.name + '" coin was to hand, so this is a Lydian stater from the backup set. Try its full name, or flip a famous coin. '
+        : 'The live catalog had no photo of this coin just now, so this is a backup photo from Wikimedia Commons. ';
+      paintFound(b, note);
+    }).catch(() => { paintFound(backupCoin(more.name), 'The live catalog could not be reached, so this is a backup photo from Wikimedia Commons. '); });
     return 'coin';
   }
   return flipCard(text, api, plain, null);
@@ -197,7 +224,7 @@ function flipCard(text, api, ask, look, keepEl) {
       + '<div class="src">' + (look ? esc(look.src) : (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network') + '</div>'
       // on the stage, the way to the coin's own page (/random/coin/) and what it adds there; the page itself needs no link to itself
       + '<div class="src">Tap the coin to flip it again — the animation is drawn live, and the result is shown under the coin.</div>'
-      + (typeof location !== 'undefined' && /^\/flip\//.test(location.pathname) ? '' : '<p class="coin-full" style="text-align:center;font-size:13px;margin:8px 0"><a href="/random/coin/" style="color:inherit">The full coin flip page: Space or Enter flips again, a Share button, and it opens offline after one visit</a></p>');
+      + (typeof location !== 'undefined' && onCoinPage() ? '' : '<p class="coin-full" style="text-align:center;font-size:13px;margin:8px 0"><a href="/random/?mode=coin" style="color:inherit">The full coin flip page: Space or Enter flips again, a Share button, and it opens offline after one visit</a></p>');
   });
   if (!el || !el.querySelector) return 'coin';
   const row = el.querySelector('.coin-row'), word = el.querySelector('.coin-word'), tally = el.querySelector('.coin-tally'), snd = el.querySelector('.coin-sound');
@@ -249,10 +276,32 @@ function flipCard(text, api, ask, look, keepEl) {
 export default {
   name: 'coin',
   examples: ['flip a coin', 'heads or tails', 'coin toss', 'flip 3 coins', 'flip a coin 70% heads', 'flip a euro', 'toss a coin for who pays', 'flip a weighted coin 60% heads',
-    'flip a Lydian stater', 'flip a Morgan dollar', 'flip a famous coin', 'create a coin', 'flip my coin'],
+    'flip a Lydian stater', 'flip a Morgan dollar', 'flip a famous coin', 'flip a real coin from history', 'create a coin', 'flip my coin'],
   nearMisses: ['what is a coin', 'how much is a coin worth', 'coin collecting', 'flip the card', 'bitcoin price', 'flip a pancake'],
   coinOf,
   flip,
   match(lower, text) { return !!(coinAsk(text || lower) || coinOf(text || lower)); },
   run
 };
+
+// the footer still says /flip/?q= (and the page still pushStates that address): on the live site that redirect
+// drops the query, so "Flip a real coin from history" opened a plain flip. A click or a pushState is rewritten
+// here so the ask stays, without waiting on the shared redirect file.
+function keepCoinQuery() {
+  if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
+    document.addEventListener('click', (e) => {
+      const a = e.target && e.target.closest && e.target.closest('a[href]');
+      if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const next = rewriteCoinHref(a.getAttribute('href'));
+      if (!next) return;
+      e.preventDefault();
+      location.assign(next);
+    }, true);
+  }
+  if (typeof history !== 'undefined' && history.pushState && !history.__verseCoinKept) {
+    history.__verseCoinKept = true;
+    const orig = history.pushState.bind(history);
+    history.pushState = (s, t, url) => orig(s, t, (url != null && rewriteCoinHref(url)) || url);
+  }
+}
+keepCoinQuery();

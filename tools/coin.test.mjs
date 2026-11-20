@@ -1,7 +1,7 @@
 // coin (skills/coin.js): what a coin ask wants, and flips that are fair (or weighted as asked) over many throws.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import coin, { coinOf, flip } from '../void-live-deploy/skills/coin.js';
+import coin, { coinOf, flip, rewriteCoinHref, coinToolUrl } from '../void-live-deploy/skills/coin.js';
 
 test('the asks: one coin, several, weighted, a style, a reason', () => {
   assert.deepEqual(coinOf('flip a coin'), { n: 1, p: 0.5, style: 'gold', for: '' });
@@ -31,14 +31,23 @@ test('the Flip page card asks for the coin open on it, and the stage card opens 
   const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
   for (const ask of ['flip 3 coins', 'flip a coin 70% heads', 'flip a euro', 'flip a Morgan dollar', 'toss a coin for who pays']) {
     assert.equal(cardAsk('?q=' + encodeURIComponent(ask)), ask, ask);
-    const page = pageOfFlip(ask); assert.deepEqual(pageOfCard('coin', page), [page, 'Coin flip'], ask);
+    const page = pageOfFlip(ask); assert.equal(pageOfCard('coin', page)[0], page, ask);
     assert.equal(new URLSearchParams(page.slice(page.indexOf('?'))).get('q'), ask, 'the card opens the same coin');
+    assert.match(page, /\/random\/\?mode=coin/);
   }
   for (const s of ['', '?q=', '?q=what+is+a+coin', '?q=bitcoin+price', '?x=flip+a+coin', '?q=' + 'flip a coin '.repeat(9), null]) assert.equal(cardAsk(s), '', String(s));
-  assert.equal(pageOfFlip("flip a coin (it's mine)"), '/random/coin/', 'a query the card frame would not take opens the page itself');
+  assert.equal(pageOfFlip("flip a coin (it's mine)"), '/random/?mode=coin', 'a query the card frame would not take opens the page itself');
   const el = fake(); let shown = null, r;
   const had = 'document' in globalThis; globalThis.document = fake(); // the card draws its coins with document.createElement
   try { r = coin.run('flip 3 coins', { esc: (s) => String(s), showPage: (build) => { build(el); shown = el; return el; }, stage: { ask() {} } }); } finally { if (!had) delete globalThis.document; }
-  assert.equal(r, 'coin'); assert.equal(shown.dataset.page, '/random/coin/?q=flip%203%20coins');
+  assert.equal(r, 'coin'); assert.equal(shown.dataset.page, '/random/?mode=coin&q=flip%203%20coins');
   assert.equal(coin.run('what is a coin', { esc: String, showPage: () => { throw new Error('drew'); } }), 'none');
+});
+
+test('old /flip/?q= and /random/coin/?q= addresses are rewritten so the history ask is kept', () => {
+  assert.equal(rewriteCoinHref('/flip/?q=flip+a+famous+coin'), '/random/?mode=coin&q=flip%20a%20famous%20coin');
+  assert.equal(rewriteCoinHref('/random/coin/?q=flip+a+Lydian+stater'), '/random/?mode=coin&q=flip%20a%20Lydian%20stater');
+  assert.equal(rewriteCoinHref('/flip/?q=flip+a+real+coin+from+history'), coinToolUrl('flip a real coin from history'));
+  assert.equal(rewriteCoinHref('/random/?mode=coin&q=flip+a+famous+coin'), null);
+  assert.equal(rewriteCoinHref('/tools/'), null);
 });
