@@ -5,6 +5,7 @@
 // public on a-to-mind.com; nothing owner-only (queue, earnings, spends) is read here. Also its games and card miniatures
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
 import { lessonLines } from './brain-lessons.js';
+import { runsFact } from './verse-runs.js';
 import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
 import { PERSONA } from './persona.js';
 import { models, ANSWER_FALLBACK } from './models.js';
@@ -49,9 +50,11 @@ const OWN_WORK = /\b(?:mis-?rout(?:e|ed|es|ing)|fell\s+through|fallthrough|wrong
 const OWN_THING = /\b(?:cards?|skills?|routing|router|the\s+fix|fix(?:ed|es)?|shipped|deploy(?:ed)?|merged|regression|showcase|ledger|claims?)\b/i;
 export const isOwnWorkAsk = (ask) => { const a = String(ask || ''); return OWN_WORK.test(a) || ((Verse.test(a) || VERSE.test(a) || /\bvoid(?:'?s)?\b/i.test(a)) && OWN_THING.test(a) && !CODE_VOID.test(a)); };
 // regex only, so the cache can be skipped before anything else runs; the router's 'self' route widens this later
+const RUNS_ASK = /(?:what|which)\s+(?:scheduled\s+)?automations?\s+(?:does\s+)?(?:verse|void)\s+run\b|(?:verse|void)'?s?\s+scheduled\s+(?:automations?|runs?)\b/i;
+
 export function isSelfAsk(ask) {
   const a = String(ask || '');
-  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || IDENTITY.test(a) || WHAT_IS_US.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
+  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || IDENTITY.test(a) || WHAT_IS_US.test(a) || RUNS_ASK.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
 }
 
 // a note about one of Verse's own answer cards ("That card is wrong", "This card is the first one that speaks as itself", "it still says
@@ -90,6 +93,7 @@ export function selfFacts({ self, skills, will, voice, replies, families, lesson
   const cf = card ? cardFacts(self, { note }) : '';
   if (cf) parts.push(cf);
   if (self && self.about) parts.push('What I am: ' + self.about);
+  parts.push(runsFact());
   if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count): ' + skills.join(', '));
   const tw = towerFacts(self);
   if (tw) parts.push(tw);

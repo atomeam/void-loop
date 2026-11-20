@@ -15,3 +15,12 @@ A day, a Sunday, or a weekday hour. At most four runs at once. A run that would 
 `helper/numbers-prove` rewrote the hear skill's HTML escaping into a no-op. Do not take that diff. The proof is `tools/numbers-proof.test.mjs`.
 
 A news headline that is only a backlash ("Midterm data-center backlash hits") is not a delivery ask.
+
+## Finding them
+
+A visitor who types a public run's name, "what automations does Verse run", or "Verse's scheduled automations" opens the public list (`skills/verse-runs.js`). Personal runs are not listed and are not matched. The answer engine also treats those list asks as questions about Verse (`lib/self-context.js`).
+
+## Writing public asks
+
+`.github/workflows/verse-runs-write.yml` runs `node tools/verse-runs.mjs --write` every six hours and opens a small automerge pull request when something new is appended. A run that has nothing new changes no files.
+

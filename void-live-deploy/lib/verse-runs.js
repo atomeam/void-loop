@@ -12,21 +12,21 @@ const hourKey = (d) => d.toISOString().slice(0, 13);
 const weekKey = (d) => dayKey(d).slice(0, 7) + '-' + (d.getUTCDay() === 0 ? 'sun' : 'wk');
 
 export const RUNS = Object.freeze([
-  { id: 'capability-scout', name: 'Capability and platform scout', every: 'daily', ask: (e) => 'Name the ' + (e.skills || 'current') + ' skills Verse can run with no key, on one card' },
-  { id: 'idea-extractor', name: 'Idea and action extractor', every: 'daily', ask: (e) => 'Build the oldest open frontier item: ' + (e.open || 'the oldest open item') },
-  { id: 'calendar-pulse', name: 'Business calendar pulse', every: 'weekly', ask: () => 'A weekly pulse of the dated items on the frontier, with the next three only' },
-  { id: 'opportunity-risk', name: 'Opportunity and risk scan', every: 'daily', ask: () => 'Name the weakest proven skill family before adding another skill' },
-  { id: 'research-ships', name: 'Research that ships systems', every: 'weekly', ask: () => 'Turn one open research line into a system that has a test' },
+  { id: 'capability-scout', name: 'Capability and platform scout', every: 'daily', does: 'Names the skills Verse can run with no key, on one card', ask: (e) => 'Name the ' + (e.skills || 'current') + ' skills Verse can run with no key, on one card' },
+  { id: 'idea-extractor', name: 'Idea and action extractor', every: 'daily', does: 'Builds the oldest open item on the frontier', ask: (e) => 'Build the oldest open frontier item: ' + (e.open || 'the oldest open item') },
+  { id: 'calendar-pulse', name: 'Business calendar pulse', every: 'weekly', does: 'A weekly pulse of the dated items on the frontier, with the next three only', ask: () => 'A weekly pulse of the dated items on the frontier, with the next three only' },
+  { id: 'opportunity-risk', name: 'Opportunity and risk scan', every: 'daily', does: 'Names the weakest proven skill family before adding another skill', ask: () => 'Name the weakest proven skill family before adding another skill' },
+  { id: 'research-ships', name: 'Research that ships systems', every: 'weekly', does: 'Turns one open research line into a system that has a test', ask: () => 'Turn one open research line into a system that has a test' },
   { id: 'weekend-strategy', name: 'Weekend strategy deep dive', every: 'weekly', private: true, ask: () => 'Three Sunday blocks: a 25 minute focus, one system to hand off, then lift the shield' },
   { id: 'stamina', name: 'Execution stamina plan', every: 'daily', private: true, ask: () => 'A work block, a rest block, and a stop. Nothing is sent.' },
   { id: 'fuel', name: 'Weekly fuel plan', every: 'weekly', private: true, ask: () => 'What to eat and when to stop, for the owner only' },
-  { id: 'client-discovery', name: 'Client discovery practice', every: 'daily', ask: () => 'Practice one client discovery question on the handoff card' },
+  { id: 'client-discovery', name: 'Client discovery practice', every: 'daily', does: 'Practices one client discovery question on the handoff card', ask: () => 'Practice one client discovery question on the handoff card' },
   { id: 'heavy-day', name: 'Daily work plan', every: 'daily', private: true, ask: () => 'The owner daily plan: one system to move, then stop' },
-  { id: 'competitor-watch', name: 'Competitor and alternative watch', every: 'weekly', ask: (e) => 'Study ' + (e.floor || 'the next unbeaten floor') + ' with robots.txt first, then its sitemap' },
-  { id: 'demand-radar', name: 'Demand and idea radar', every: 'daily', ask: (e) => 'A demand line from the miss count (' + (e.misses ?? 'the count') + '), never the words people typed' },
-  { id: 'growth-delivery', name: 'Verse growth for business delivery', every: 'hourly', ask: () => 'Keep the delivery pack and the handoff cards as the path a business idea takes' },
+  { id: 'competitor-watch', name: 'Competitor and alternative watch', every: 'weekly', does: 'Studies the next unbeaten floor, robots.txt first, then its sitemap', ask: (e) => 'Study ' + (e.floor || 'the next unbeaten floor') + ' with robots.txt first, then its sitemap' },
+  { id: 'demand-radar', name: 'Demand and idea radar', every: 'daily', does: 'A demand line from missed asks, never the words people typed', ask: (e) => 'A demand line from the miss count (' + (e.misses ?? 'the count') + '), never the words people typed' },
+  { id: 'growth-delivery', name: 'Verse growth for business delivery', every: 'hourly', does: 'Keeps the delivery pack and the handoff cards as the path a business idea takes', ask: () => 'Keep the delivery pack and the handoff cards as the path a business idea takes' },
   { id: 'weekly-review', name: 'Weekly business review', every: 'weekly', private: true, ask: () => 'The owner weekly review. It does not go on a public page.' },
-  { id: 'ai-news', name: 'AI and automation news for delivery', every: 'daily', ask: (e) => actionableNews(e.news) },
+  { id: 'ai-news', name: 'AI and automation news for delivery', every: 'daily', does: 'One delivery note from public news, when the news names work', ask: (e) => actionableNews(e.news) },
 ]);
 
 /** a headline becomes a delivery ask only when it names work. A backlash headline is news and is skipped. Pure. */
@@ -97,4 +97,36 @@ export function dueReport(now = new Date(), evidence) {
 
 export function roundTrip(text) {
   return publicBlocks(blocksOf(text)).map((b) => b.ask);
+}
+
+export const EVERY_WORDS = Object.freeze({ hourly: 'every hour on weekdays', daily: 'every day', weekly: 'every week' });
+
+export const publicRuns = () => RUNS.filter((r) => !r.private);
+
+export function nameKey(s) {
+  return String(s || '').toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+/** the public run whose name is this ask, or null. Private names never match. Pure. */
+export function namedRun(text) {
+  const k = nameKey(text);
+  if (!k || k.length < 8) return null;
+  return publicRuns().find((r) => nameKey(r.name) === k) || null;
+}
+
+// List asks a stranger types to see the public scheduled runs. "my automations", "zaps", and
+// client status asks stay with those skills. Personal run names are not matched.
+const LIST_ASK = /^(?:(?:please|so|ok(?:ay)?)\s+)*(?:(?:show|open|list|name)\s+(?:me\s+)?)?(?:the\s+|your\s+|verse'?s?\s+|void'?s?\s+)?scheduled\s+(?:automations?|runs?)(?:\s+(?:verse|void)\s+runs)?(?:\s+on\s+verse)?\s*$|^(?:what|which)\s+(?:scheduled\s+)?(?:automations?|runs?)\s+(?:does\s+)?(?:verse|void)\s+run\b|^(?:what\s+are\s+)?(?:verse|void)'?s?\s+scheduled\s+(?:automations?|runs?)\s*$/i;
+
+export function isVerseRunsAsk(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '');
+  if (LIST_ASK.test(t)) return { list: true };
+  const run = namedRun(t);
+  return run ? { list: false, run } : null;
+}
+
+/** a fact the answer engine can speak, public names only. Pure. */
+export function runsFact() {
+  const names = publicRuns().map((r) => r.name + ' (' + (EVERY_WORDS[r.every] || r.every) + ')');
+  return 'The scheduled automations I run (public ones only; personal plans stay private): ' + names.join('; ') + '. A visitor can type one of those names, or "what automations does Verse run", to see the list.';
 }

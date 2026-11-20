@@ -1,0 +1,79 @@
+# Append the public asks from Verse's scheduled runs to the growth inbox and the frontier
+# (`node tools/verse-runs.mjs --write`). Private notes are never written. A change opens a
+# small automerge pull request; a run that has nothing new is a no-op.
+name: Verse runs write
+
+on:
+  schedule:
+    - cron: '12 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verse-runs-write
+  cancel-in-progress: false
+
+jobs:
+  write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Write public asks, or stop if none are new
+        id: write
+        run: |
+          echo "open=0" >> "$GITHUB_OUTPUT"
+          set -o pipefail
+          node tools/verse-runs.mjs --write 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          changed=$(git diff --name-only -- domains/void.frontier.md domains/growth-inbox.md)
+          other=$(git diff --name-only | grep -vE '^(domains/void\.frontier\.md|domains/growth-inbox\.md)$' || true)
+          if [ -n "$other" ]; then
+            echo "::error title=Unexpected change::$other"
+            exit 1
+          fi
+          if [ -z "$changed" ]; then
+            echo "No new public asks to write" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "open=1" >> "$GITHUB_OUTPUT"
+      - name: Open a pull request
+        if: steps.write.outputs.open == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="helper/verse-runs-write-$(date -u +%Y%m%d%H%M)"
+          git config user.name "verse-runs"
+          git config user.email "verse-runs@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add domains/void.frontier.md domains/growth-inbox.md
+          git commit -m "verse-runs: queue public scheduled asks on the frontier"
+          git push -u origin "$branch"
+          open=$(gh pr list --repo "${{ github.repository }}" --state open --search "verse-runs: queue public scheduled asks" --json number --jq 'length')
+          if [ "$open" != "0" ]; then
+            echo "A verse-runs write PR is already open; leaving $branch without a second PR" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          body="$RUNNER_TEMP/verse-runs-pr.md"
+          printf '%s\n' '## Brief' 'Public asks from Verse’s scheduled automations are appended to the growth inbox and the frontier so the idea engine can pick them up. Personal notes are never written.' '' \
+            '**Touched only:** domains/void.frontier.md, domains/growth-inbox.md' '' \
+            '**Source:** node tools/verse-runs.mjs --write' '' \
+            'Label for automerge when review is clean.' > "$body"
+          gh pr create --repo "${{ github.repository }}" \
+            --base main --head "$branch" \
+            --title "verse-runs: queue public scheduled asks on the frontier" \
+            --body-file "$body" \
+            --label automerge || gh pr create --repo "${{ github.repository }}" \
+            --base main --head "$branch" \
+            --title "verse-runs: queue public scheduled asks on the frontier" \
+            --body "Public scheduled asks → growth-inbox and frontier. Personal notes are never written."
+          echo "Opened verse-runs write PR" | tee -a "$GITHUB_STEP_SUMMARY"

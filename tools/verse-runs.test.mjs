@@ -48,3 +48,54 @@ test('a pasted Growth inbox item block is read, and a private one is not', () =>
   assert.equal(publicBlocks(rows).length, 1);
   assert.match(publicBlocks(rows)[0].ask, /client discovery/);
 });
+
+import { publicRuns, namedRun, isVerseRunsAsk, runsFact, nameKey } from '../void-live-deploy/lib/verse-runs.js';
+import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
+import skill from '../void-live-deploy/skills/verse-runs.js';
+
+test('public runs are findable by name, and personal names stay off the list', () => {
+  assert.equal(publicRuns().length, 10);
+  assert.equal(namedRun('Capability and platform scout').id, 'capability-scout');
+  assert.equal(namedRun('Capability & platform scout').id, 'capability-scout');
+  assert.equal(namedRun('Verse growth for business delivery').id, 'growth-delivery');
+  assert.equal(namedRun('Execution stamina plan'), null);
+  assert.equal(namedRun('Weekly fuel plan'), null);
+  assert.equal(namedRun('Morning delivery brief'), null);
+  assert.equal(nameKey('Capability & platform scout'), nameKey('Capability and platform scout'));
+  assert.ok(isVerseRunsAsk('what automations does Verse run').list);
+  assert.ok(isVerseRunsAsk("Verse's scheduled automations").list);
+  assert.ok(isVerseRunsAsk('scheduled automations').list);
+  assert.equal(isVerseRunsAsk('Capability and platform scout').run.id, 'capability-scout');
+  assert.equal(isVerseRunsAsk('my automations'), null);
+  assert.equal(isVerseRunsAsk('automations'), null);
+  assert.equal(isVerseRunsAsk('automation status for invoice reminders'), null);
+  assert.equal(isVerseRunsAsk('Execution stamina plan'), null);
+  const fact = runsFact();
+  assert.match(fact, /Capability and platform scout/);
+  assert.match(fact, /Verse growth for business delivery/);
+  assert.doesNotMatch(fact, /Execution stamina plan|Weekly fuel plan|Daily work plan|stamina|eat and when to stop/);
+});
+
+test('the answer engine treats a scheduled-runs ask as about Verse, and the card lists only public names', () => {
+  assert.equal(isSelfAsk('what automations does Verse run'), true);
+  assert.equal(isSelfAsk("Verse's scheduled automations"), true);
+  const facts = selfFacts({});
+  assert.match(facts, /Capability and platform scout/);
+  assert.doesNotMatch(facts, /Execution stamina plan/);
+  let html = '';
+  const ret = skill.run('Capability and platform scout', {
+    esc: (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
+    showPage: (fn) => { const el = { set innerHTML(v) { html = v; } }; fn(el); return el; },
+  });
+  return Promise.resolve(ret).then((name) => {
+    assert.equal(name, 'verse-runs');
+    assert.match(html, /Capability and platform scout/);
+    assert.match(html, /Verse growth for business delivery/);
+    assert.doesNotMatch(html, /Execution stamina plan|Weekly fuel plan|Daily work plan/);
+  });
+});
+
+test('verse-runs examples reach it, and near misses do not', () => {
+  for (const ex of skill.examples) assert.ok(skill.match(ex.toLowerCase(), ex), ex);
+  for (const near of skill.nearMisses) assert.equal(skill.match(near.toLowerCase(), near), false, near);
+});
