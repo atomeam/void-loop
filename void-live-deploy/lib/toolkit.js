@@ -17,14 +17,14 @@ export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
-  '/photos/': 'Photo tools',
-  '/color/': 'Colour codes', '/random/': 'Random number',
+  '/photos/': 'Photo Editor',
+  '/color/': 'Color Picker', '/random/': 'Random Number Generator',
   '/ledger/': 'Repo activity ledger',
   '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter',
-  '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'The Crew', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/journal/': 'Earth science journal', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
+  '/convert/': 'Unit Converter', '/calculator/': 'Calculator', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/fantasy/': 'Fantasy Sports', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain: What Verse Knows', '/converter/': 'File Converter', '/rap/': 'Rap Generator', '/news/': 'News', '/journal/': 'Earth science journal', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji Counter', '/emoji-combos/': 'Emoji combos', '/g/': 'Note in a Link', '/tools/': 'Tools',
   // the Lab's tools: the one real job inside each cluster of hourly experiments (tools/lab-grade.mjs IDEAS), made into a page people come back to
-  '/lab/level/': 'Spirit level', '/lab/checksum/': 'File checksum checker', '/lab/pattern/': 'Seamless pattern maker', '/lab/photo-palette/': 'Palette from a photo', '/lab/dictation/': 'Dictation', '/lab/mind-map/': 'Mind map maker',
+  '/lab/level/': 'Spirit level', '/lab/checksum/': 'File checksum checker', '/lab/pattern/': 'Seamless pattern maker', '/lab/photo-palette/': 'Color Palette from Photo', '/lab/dictation/': 'Dictation', '/lab/mind-map/': 'Mind map maker',
   // Starboard: a live benchmark, then weather, news, games and Lab tools on one page
   '/starboard/': 'Starboard',
   '/arcade/': 'Verse Arcade',
@@ -33,11 +33,32 @@ export const TOOLS = Object.freeze({
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js). SITE_PAGES is also spread first so a self-site that shares a family path cannot overwrite the hand label.
 });
 // pages /tools/ lists that TOOLS does not (no "Use with" row reaches them yet): the Tools page and its stage card list them both, from here
-export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
-  ['/books/', 'Bookshelf'], ['/films/', 'Holovids'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'],
-  ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments'], ['/autopilot/', 'Autopilot: what Verse did on its own'], ['/progress/', 'What Verse can actually do']].map(Object.freeze));
+export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize Wheel'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
+  ['/books/', 'Books'], ['/films/', 'Videos'], ['/cpan/', 'CPAN Testers'], ['/identity/', 'Sign-In Demo'],
+  ['/hosting/', 'Hosting Calculator'], ['/lab/', 'Lab'], ['/autopilot/', 'Status'], ['/progress/', 'Progress']].map(Object.freeze));
 /** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, without /tools/ itself. Pure. */
-export const allTools = () => [...Object.entries(TOOLS), ...MORE_PAGES.filter(([p]) => !Object.hasOwn(TOOLS, p))].filter(([p]) => p !== '/tools/');
+// modes listed by hand on /tools/ so the stage card and the catalog stay in sync
+export const HAND_PAGES = Object.freeze([
+  ['/color/?mode=gradient', 'Gradient Generator'],
+  ['/random/?mode=wheel', 'Wheel of names'],
+  ['/random/?mode=coin', 'Coin flip'],
+  ['/random/?mode=people', 'Random User Generator'],
+  ['/calculator/?mode=formulas', 'Formula calculators'],
+  ['/base64/?mode=bases', 'Base converter'],
+  ['/password/?mode=strength', 'Password strength'],
+  ['/resize-image/', 'Image Resizer'],
+].map(Object.freeze));
+/** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, then HAND_PAGES, without /tools/ itself. Pure. */
+export const allTools = () => {
+  const seen = new Set();
+  const out = [];
+  for (const row of [...Object.entries(TOOLS), ...MORE_PAGES, ...HAND_PAGES]) {
+    const [p] = row;
+    if (p === '/tools/' || seen.has(p)) continue;
+    seen.add(p); out.push(row);
+  }
+  return out;
+};
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 // each PDF page leads to its sisters; each Kanban page to the others; the leaders reach the tools that go with them
 const sisters = (list, p) => list.map((x) => x.path).filter((x) => x !== p);
@@ -327,6 +348,8 @@ export function toolNamed(t) {
     toolNames = new Map();
     // a name run together ('wordcount', as typed into an address) counts too, from five letters up
     for (const [p, label] of allTools()) for (const w of [plainName(label), plainName(p)]) for (const k of [w, w.replace(/ /g, '')]) if (k.length > (k === w ? 2 : 4) && !toolNames.has(k)) toolNames.set(k, p);
+    // old names still open the same tools (people type what they used to see)
+    for (const [k, p] of [['photo tools', '/photos/'], ['colour codes', '/color/'], ['color codes', '/color/'], ['made up people', '/random/?mode=people'], ['resize an image', '/resize-image/'], ['every tool', '/tools/'], ['every verse tool', '/tools/'], ['the crew', '/team/'], ['holovids', '/films/'], ['verse raps', '/rap/'], ['repo activity ledger', '/ledger/'], ['snippet note in a link', '/g/'], ['identity studio', '/identity/'], ['hosting sizer', '/hosting/'], ['bookshelf', '/books/']]) if (!toolNames.has(k)) toolNames.set(k, p);
   }
   const n = plainName(t).replace(/^(?:open |show |go to )?(?:the |my |a |an )?/, '');
   for (const k of [n, n.replace(/ (?:tool|page|app)$/, '')]) if (!STAGE_KEEPS.has(k) && !STAGE_KEEPS_JOINED.has(k) && toolNames.has(k)) return toolNames.get(k);

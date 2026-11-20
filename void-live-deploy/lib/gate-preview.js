@@ -14,7 +14,7 @@ export const PREVIEWS = {
   '/pdf': P('PDF tools', 'Merge, split, reorder, rotate and compress PDFs on your device.', 'pdf', ''),
   '/markets': P('Markets', 'Look up a stock, ETF, index, currency or coin: price, change, range and a chart.', 'markets', ''),
   '/kanban': P('Kanban', 'A board on your device: columns, cards, drag and drop, due dates, timers and limits.', 'kanban', ''),
-  '/team': P('The Crew', 'Verse\'s team chat, with its agents as members and the work they are on.', 'team', ''),
+  '/team': P('Team', 'Verse\'s team chat, with its agents as members and the work they are on.', 'team', ''),
   '/brain': P('Brain', 'Watch a mind think: Verse\'s attention, surprise, memory and will, live on the whole screen.', 'brain', ''),
   '/calendar': P('Calendar', 'Month, week and day views with reminders, invites and repeats, kept on your device.', 'calendar', ''),
   '/creed': P('Creed', 'What Verse believes and what it practices, in its own voice.', 'creed', ''),

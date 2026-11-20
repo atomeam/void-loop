@@ -10,10 +10,10 @@ import { photoAsk, photoHref } from '../lib/photo-ask.js';
 function run(text, api) {
   const { showPage, esc } = api, a = photoAsk(text) || { slug: '', tab: '' }, href = photoHref(a);
   showPage((el) => {
-    el.dataset.cardKind = 'Photo tools';
-    el.innerHTML = '<h2>Photo tools</h2>' // void-review: ok (fixed words; the link is built from a closed list and escaped)
+    el.dataset.cardKind = 'Photo Editor';
+    el.innerHTML = '<h2>Photo Editor</h2>' // void-review: ok (fixed words; the link is built from a closed list and escaped)
       + '<p>Compress and convert a photo (JPEG, PNG, WebP, AVIF) and see the before and after, resize, crop, rotate, adjust, add a filter, text or a drawing, undo any step, read the EXIF and GPS a photo carries and strip it, or do many at once as a zip.</p>'
-      + '<p><a class="pt-open" href="' + esc(href) + '" style="display:inline-block;padding:8px 18px;border-radius:999px;background:#6d4aff;color:#fff;text-decoration:none;font-weight:600">Open the photo tools</a></p>'
+      + '<p><a class="pt-open" href="' + esc(href) + '" style="display:inline-block;padding:8px 18px;border-radius:999px;background:#6d4aff;color:#fff;text-decoration:none;font-weight:600">Open the photo editor</a></p>'
       + '<div class="src">Done on this device: the picture is never uploaded, and the page opens offline.</div>';
   });
   return 'photo-tools';

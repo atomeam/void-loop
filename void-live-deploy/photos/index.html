@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <script src="/lib/tower-family-mode.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Photo tools: compress, convert, edit, strip EXIF · Verse</title>
+<title>Photo Editor: compress, convert, edit, strip EXIF · Verse</title>
 <meta name="description" content="Compress and convert photos (JPEG, PNG, WebP, AVIF) with a before and after slider, resize, crop, rotate, adjust, filters, text, draw, read and strip EXIF, and batch to a zip. Everything happens on your device: nothing is uploaded.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Photo tools · Verse">
+<meta property="og:title" content="Photo Editor · Verse">
 <meta property="og:description" content="Compress, convert, resize, crop, edit and clean photos on your device. Nothing is uploaded.">
 <meta property="og:url" content="https://a-to-mind.com/photos/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
@@ -55,7 +55,7 @@
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 </style><!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/photos/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Photo tools: compress, convert, edit, strip EXIF","url":"https://a-to-mind.com/photos/","description":"Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"compress image online, convert png to webp, photo editor online, crop photo online, remove exif data from photo, image compressor no upload, compress images in bulk to zip","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/photos/?tab={tab}"},"tab-input":"required name=tab"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Photo tools: compress, convert, edit, strip EXIF","item":"https://a-to-mind.com/photos/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Photo Editor: compress, convert, edit, strip EXIF","url":"https://a-to-mind.com/photos/","description":"Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"compress image online, convert png to webp, photo editor online, crop photo online, remove exif data from photo, image compressor no upload, compress images in bulk to zip","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/photos/?tab={tab}"},"tab-input":"required name=tab"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Photo Editor: compress, convert, edit, strip EXIF","item":"https://a-to-mind.com/photos/"}]}]}</script>
 <!-- /seo -->
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
@@ -63,7 +63,7 @@
 <body data-start="out">
 <main>
   <button type="button" id="lang" aria-label="Sprache / Language">DE</button>
-  <h1 id="h1" data-i="title">Photo tools</h1>
+  <h1 id="h1" data-i="title">Photo Editor</h1>
   <p class="sub" id="sub" data-i="sub">Compress, convert, edit and clean photos. Everything happens on this device: nothing is uploaded, and it opens offline.</p>
   <div class="drop" id="drop"><label for="file" data-i="choose">Choose photos, drop them here, or paste one</label><input id="file" type="file" accept="image/*" multiple><small data-i="drophint">JPEG, PNG, WebP, AVIF, GIF, BMP. Several at once make a batch.</small></div>
   <p style="text-align:center;margin:0 0 10px"><button type="button" id="share" data-i="share">Share this tool</button></p>
@@ -129,7 +129,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/photos/?tab=out">Compress images</a><a href="/photos/?tab=crop">Crop a photo</a><a href="/photos/?tab=adj">Brightness and filters</a><a href="/photos/?tab=info">Check a photo for GPS</a><a href="/photos/?lang=de">Deutsch</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/color/">Colour codes</a> <a href="/convert/">Unit converter</a> <a href="/lab/photo-palette/">Palette from a photo</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/color/">Color Picker</a> <a href="/convert/">Unit Converter</a> <a href="/lab/photo-palette/">Color Palette from Photo</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer><span data-i="foot">Done on this device: pictures are never uploaded, saved copies are drawn again from the pixels so they carry no camera or place data, and the page opens offline after one visit. Quality 1 to 100 is the browser's encoder; AVIF is offered where this browser can write it.</span> <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module" src="/photos/app.js"></script>

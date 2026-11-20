@@ -6,7 +6,7 @@ import { pack, entriesOf } from './wheel.js';
 import { parseSlices, labelsOf } from './prizes.js';
 
 export const KEY = 'verse_handoff';
-export const RING = Object.freeze([['/random/wheel/', 'Wheel of names'], ['/prizes/', 'Prize odds'], ['/tournaments/', 'Tournament standings'], ['/random/', 'Random number'], ['/generators/', 'Generators']]);
+export const RING = Object.freeze([['/random/wheel/', 'Wheel of names'], ['/prizes/', 'Prize odds'], ['/tournaments/', 'Tournament standings'], ['/random/', 'Random Number Generator'], ['/generators/', 'Generators']]);
 /** Game night: the point system a roster from the wheel starts under (every team on 0 until a result is typed) */
 export const GAME_NIGHT = Object.freeze({ name: 'Game night', win: 3, top5: 1, elim: 0 });
 const MAX = 200;

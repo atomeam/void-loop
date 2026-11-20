@@ -27,7 +27,7 @@ test('the stage card opens the page at the same size, and the page passes only t
   const el = { dataset: {}, innerHTML: '' };
   imgfit.run('resize a photo to 3.5 x 2.5 cm under 50 kb', { showPage: (fn) => { fn(el); return el; }, esc: (s) => String(s) });
   assert.equal(el.dataset.page, '/photos/?mode=resize&w=3.5&h=2.5&u=cm&kb=50');
-  assert.deepEqual(pageOfCard('imgfit', el.dataset.page), [el.dataset.page, 'Resize an image']);
+  assert.deepEqual(pageOfCard('imgfit', el.dataset.page), [el.dataset.page, 'Image Resizer']);
   const bare = { dataset: {}, innerHTML: '' }; imgfit.run('image resizer', { showPage: (fn) => { fn(bare); return bare; }, esc: (s) => String(s) });
   assert.equal(bare.dataset.page, undefined, 'no size: the card keeps the plain page link');
   const html = readFileSync(new URL('../void-live-deploy/photos/modes/resize.html', import.meta.url), 'utf8');
