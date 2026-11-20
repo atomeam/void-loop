@@ -27,6 +27,12 @@ test('recipe shapes: every ask lands on the recipe file, with no skill above it 
     assert.equal(sureLanding(mods, names, a), 'recipe', 'a skill above recipe takes: ' + a);
   }
 });
+test('snail shapes: every ask lands on the figure file, with no skill above it taking it', () => {
+  for (const a of ['show me a snail', 'garden snail in 3d', 'show me a garden snail']) {
+    assert.equal(shapeFile(a), 'figure', a);
+    assert.equal(sureLanding(mods, names, a), 'figure', 'a skill above figure takes: ' + a);
+  }
+});
 test('asks of no shape name no file', () => {
-  for (const a of ['', 'how do i change a flat tire', 'weather', 'recipe', 'play snake', 'x'.repeat(200) + ' recipe']) assert.equal(shapeFile(a), '', a);
+  for (const a of ['', 'how do i change a flat tire', 'weather', 'recipe', 'play snake', 'snail', 'the snail', 'x'.repeat(200) + ' recipe']) assert.equal(shapeFile(a), '', a);
 });
