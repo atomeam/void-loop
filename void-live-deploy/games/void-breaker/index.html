@@ -3,25 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="verse-handoff" content="in: none; out: none">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0618">
 <title>Verse Breaker · Verse</title>
-<meta name="description" content="Verse's own full-screen brick breaker: relaxed speed, combo multipliers, wide-paddle and multi-ball power bricks, and a best score on this device.">
+<meta name="description" content="A brick breaker: glowing bricks that shatter, combos that climb the music, five power-ups, a tougher wall every level and a daily wall with a target to beat.">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <style>
-  html,body{margin:0;background:#05050a;color:#e8e6f5;font:13px/1.4 ui-monospace,monospace;overflow:hidden}
-  #c{position:absolute;image-rendering:pixelated;background:#07060f;touch-action:none}
-  #hud{position:absolute;left:8px;top:8px;display:flex;gap:14px;background:#0b1020dd;border:2px solid #7aa7ff;padding:4px 10px;pointer-events:none}
-  #bar{position:absolute;right:8px;top:8px;display:flex;gap:6px}
-  button{font:inherit;background:#151a33;color:#e8e6f5;border:1px solid #7aa7ff;border-radius:6px;padding:6px 9px;min-height:36px;cursor:pointer}
-  #msg{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:min(92vw,560px);background:#0b1020ee;border:2px solid #a58bff;padding:6px 10px}
+  html,body{margin:0;height:100%;background:#0a0618;color:#f3eeff;font:600 14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+  #c{position:fixed;inset:0;width:100vw;height:100vh;display:block;touch-action:none;cursor:none}
+  #hud{position:fixed;left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top));display:flex;gap:12px;align-items:center;pointer-events:none;text-shadow:0 0 8px #000}
+  #hud span{background:#140c2ccc;border:1px solid #ffffff22;border-radius:10px;padding:5px 9px;letter-spacing:.02em}
+  #score{color:#fff;font-size:16px} #best{color:#ffd76a} #lives{color:#ff7aa8} #level{color:#7af5ff}
+  #bar{position:fixed;right:max(10px,env(safe-area-inset-right));top:max(10px,env(safe-area-inset-top));display:flex;gap:6px}
+  button{font:inherit;color:#f3eeff;background:#1c1238dd;border:1px solid #ffffff30;border-radius:10px;padding:7px 11px;min-height:38px;cursor:pointer}
+  button[aria-pressed="true"]{border-color:#7af5ff;background:#123a4add}
+  button:focus-visible{outline:2px solid #7af5ff;outline-offset:2px}
+  #new-note{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(92vw,560px);text-align:center;font-weight:500;font-size:13px;color:#cfc4ff;background:#140c2ccc;border:1px solid #ffffff22;border-radius:12px;padding:6px 10px;pointer-events:none;transition:opacity .6s}
+  @media (max-width:620px){#hud{top:calc(max(10px,env(safe-area-inset-top)) + 46px);gap:6px;font-size:12px}#hud span{padding:4px 7px}#score{font-size:14px}#bar button{padding:6px 8px;font-size:12px}}
 </style>
 </head>
 <body>
-<canvas id="c" width="320" height="180"></canvas>
-<div id="hud"><span id="score">Score 0</span><span id="best">Best 0</span><span id="combo">Combo ×1</span><span id="level">Level 1</span></div>
-<div id="bar"><button id="mute">Sound on</button><button id="pause">Pause</button><button id="new">New game</button></div>
-<div id="msg">Move with the arrow keys or drag on the picture. Gold bricks widen the paddle; violet bricks add a ball. The pace stays readable — chain bricks for combos.</div>
+<canvas id="c" aria-label="Verse Breaker game. Move the paddle with your finger, the mouse, or the arrow keys. Space or tap launches the ball."></canvas>
+<div id="hud"><span id="score">Score 0</span><span id="best">Best 0</span><span id="lives">♥♥♥</span><span id="level">Level 1</span></div>
+<div id="bar"><button id="daily" aria-pressed="false">Daily wall</button><button id="mute" aria-pressed="false">Sound on</button><button id="pause">Pause</button></div>
+<div id="new-note"></div>
 <script type="module" src="/games/void-breaker/app.js"></script>
 </body>
 </html>
