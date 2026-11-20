@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T03:35:52.096Z",
+ "updated": "2026-11-20T03:45:13.758Z",
  "last24h": {
-  "ticks": 47,
-  "started": 24,
+  "ticks": 48,
+  "started": 25,
   "requeued": 4,
   "setAside": 0,
   "probes": 0,
@@ -55,22 +55,6 @@
    "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mva30i2e",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mva30j4u",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mwa0agd2",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mwa0ah54",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
    "id": "mvvql4d9",
    "why": "no executor for route"
   },
@@ -91,16 +75,32 @@
    "why": "no executor for bot"
   },
   {
-   "id": "mwdsggtv",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
+   "id": "mwav1pw9",
+   "why": "no executor for retest"
   },
   {
-   "id": "mwdsgi9n",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
+   "id": "mwazktlm",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwdsgj2z",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
+   "id": "mwazktnz",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktrq",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktv3",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktv9",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwditzd8",
+   "why": "no executor for route"
   }
  ],
  "coder": {
@@ -1498,6 +1498,37 @@
    "sweep": false,
    "blueprints": 0,
    "held": 37,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T03:45:13.758Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwcm4wyk",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 117
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 22,
    "warnings": 0
   }
  ]
