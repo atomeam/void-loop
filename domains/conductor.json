@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T21:18:08.021Z",
+ "updated": "2026-11-20T21:30:52.841Z",
  "last24h": {
   "ticks": 151,
   "started": 112,
-  "requeued": 12,
+  "requeued": 11,
   "setAside": 1,
   "probes": 0,
   "errors": 0
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 3,
+   "used": 6,
    "cap": 90
   },
   "day": {
@@ -141,6 +141,79 @@
  },
  "sweptAt": 1795207495941,
  "blueprintsAt": 1795207495941,
+ "catchup": {
+  "site-test.yml": {
+   "slot": 1795207260000
+  },
+  "exam.yml": {
+   "slot": 1795166220000
+  },
+  "tower-gate.yml": {
+   "slot": 1795155420000
+  },
+  "tower-size.yml": {
+   "slot": 1795148580000
+  },
+  "review-main.yml": {
+   "slot": 1795179180000
+  },
+  "treasury.yml": {
+   "slot": 1795177380000
+  },
+  "store-check.yml": {
+   "slot": 1795172820000
+  },
+  "key-keeper.yml": {
+   "slot": 1795144620000
+  },
+  "traffic.yml": {
+   "slot": 1795151820000
+  },
+  "trialwatch.yml": {
+   "slot": 1795156860000
+  },
+  "reefwatch.yml": {
+   "slot": 1795157220000
+  },
+  "site-history.yml": {
+   "slot": 1795157220000
+  },
+  "rides-live.yml": {
+   "slot": 1795184220000,
+   "startedAt": 1795210252841
+  },
+  "baggage-live.yml": {
+   "slot": 1795182060000
+  },
+  "jobs-snapshot.yml": {
+   "slot": 1795155780000
+  },
+  "misses-snapshot.yml": {
+   "slot": 1795155780000
+  },
+  "coins-snapshot.yml": {
+   "slot": 1795153260000
+  },
+  "rea-study.yml": {
+   "slot": 1795152180000
+  },
+  "subject-eval.yml": {
+   "slot": 1795153260000
+  },
+  "better.yml": {
+   "slot": 1795157460000
+  },
+  "lab-sync.yml": {
+   "slot": 1795160220000
+  },
+  "dispatcher.yml": {
+   "slot": 1795180980000
+  },
+  "store-gap.yml": {
+   "slot": 1795207260000,
+   "startedAt": 1795210252841
+  }
+ },
  "visitorAt": "2026-11-20T21:13:13Z",
  "visitorFiled": [
   "heal:helper-book-green-main",
@@ -225,30 +298,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-19T21:23:18.798Z",
-   "open": 500,
-   "started": [],
-   "requeued": 1,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 494,
-   "warnings": 0
-  },
   {
    "at": "2026-11-19T21:32:44.804Z",
    "open": 500,
@@ -4507,6 +4556,34 @@
     "void-tick.yml"
    ],
    "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 472,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T21:30:52.841Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "rides-live.yml",
+    "store-gap.yml"
+   ],
+   "cancelled": [],
    "sweep": false,
    "blueprints": 0,
    "held": 472,
