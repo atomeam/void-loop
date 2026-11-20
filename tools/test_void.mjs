@@ -1543,6 +1543,13 @@ try {
     check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
+  // owner audit 2026-11-19: after "play snake" the ask box kept the keyboard and the arrows did nothing until the board was clicked.
+  if (want("arcade focus: a game just asked for takes the keyboard, so the arrow keys steer Snake with no click")) { const G = await fresh();
+    await G.ask('play snake', 1500); await until(async () => !!(await G.p.$('.snake-card')), 15000);
+    const mine = await until(() => G.p.evaluate(() => document.activeElement && document.activeElement.classList.contains('snake-card')), 4000);
+    await G.p.keyboard.press('ArrowRight'); await until(async () => !/Press an arrow key/.test(await G.page()), 4000);
+    check('arcade focus: Snake holds the keyboard when it opens, and an arrow key starts it with no click', !!mine && !/Press an arrow key/.test(await G.page()) && !G.errors.length, String(mine) + ' | ' + (await G.page()).slice(0, 120));
+    await G.ctx.close(); }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');
