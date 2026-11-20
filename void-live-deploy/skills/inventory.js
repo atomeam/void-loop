@@ -86,6 +86,14 @@ const WHAT = {
   'time-saved': 'client-visible estimate of hours the client no longer spends because Verse owns the systems',
   'reliability-pack': 'suggested monitors, verification checks, the live status reading and the incident path for a system, with no uptime claimed until a real check answers',
   'stage-marks': 'stage marks: folders, tags, colour labels and layouts on the stage, plus labels and arrows between things',
+  'process-lift-pack': 'turns a business process into a plan: the ask made clear, the flow, the tools to connect, the tests, the monitors and the handoff',
+  'ready-checks': 'says whether a client system is ready to hand over: who runs it, its monitors, tests, status and docs',
+  'full-lift-plan': 'a business idea as one full plan: the systems, connections, tests, monitors, handoff docs and the work the client stops doing',
+  connections: 'maps how a client\'s systems connect: the data flows, the handoff points and the automations between them',
+  'monitor-receipt': 'a receipt of what Verse watches for a client: each monitor, its last and next check, and who hears about a problem',
+  'automation-status-pack': 'a status card for the automations Verse runs for a client: what each is doing, its last check and the next step',
+  'working-on': 'what Verse is working on right now, read from its live will',
+  'before-after-pack': 'the before and after of a client job: the hours and manual steps before, and what Verse runs after',
 };
 
 /** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */
