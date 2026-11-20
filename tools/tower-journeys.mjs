@@ -58,19 +58,19 @@ async function drawLine(J) {
 
 /** per floor id, per journey name: the script. A journey with no script here is INCOMPLETE. */
 export const SCRIPTS = {
-  // flightconnections.com (/flights/routes/, lists run 20): its visitors pick the airport they leave from and see where a nonstop flight
+  // flightconnections.com (/flights/?mode=routes, lists run 20): its visitors pick the airport they leave from and see where a nonstop flight
   // goes, nearest first; then send that map on. Lisbon to Madrid is a short nonstop in the route data, so it must be listed within 3 hours,
   // and New York must not be (over 3 hours); the link must carry the airport and bring the same list back after another airport was picked
   'travel: flightconnections.com': {
     'do the main job and see the result': async (J) => {
-      await J.open('/flights/routes/'); await J.fill('#f-from', 'Lisbon', 'type Lisbon as the airport to leave from');
+      await J.open('/flights/?mode=routes'); await J.fill('#f-from', 'Lisbon', 'type Lisbon as the airport to leave from');
       await J.click('#f-from-list button >> nth=0', 'pick the first airport offered');
       await J.fill('#w-h', '3', 'set the flight time to at most 3 h');
       await J.expect((t) => /nonstop route from[^\n]*Lisbon[^\n]*up to 3 h/i.test(t) && /\bMAD\b\s+Madrid/.test(t), 'airports with a nonstop route from Lisbon within 3 h, Madrid among them');
       await J.expect((t) => !/\bJFK\b\s+New York/.test(t), 'New York left out (more than 3 hours away)');
     },
     'share the result and reopen it from the link': async (J) => {
-      await J.open('/flights/routes/'); await J.fill('#f-from', 'Lisbon', 'type Lisbon'); await J.click('#f-from-list button >> nth=0', 'pick the first airport offered');
+      await J.open('/flights/?mode=routes'); await J.fill('#f-from', 'Lisbon', 'type Lisbon'); await J.click('#f-from-list button >> nth=0', 'pick the first airport offered');
       await J.expect(/\bMAD\b\s+Madrid/, 'Madrid listed from Lisbon');
       const u = await J.shareLink('#fl-share'); if (!/[?&]from=LIS(&|$)/.test(u)) throw new Failed('the share link does not carry the airport: ' + u);
       await J.fill('#f-from', 'Singapore', 'type Singapore instead'); await J.click('#f-from-list button >> nth=0', 'pick the first airport offered');
