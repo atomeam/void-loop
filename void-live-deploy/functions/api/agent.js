@@ -174,7 +174,7 @@ export async function run(env, origin, id, ask, thread, opts = {}) {
       await step(db, id, 'Handed it to ' + bot.name + (bot.repair ? ' again, to answer the task.' : '.'), { bot: bot.name });
       if (bot.name === 'verse' && !bot.repair) {
         const piped = await pipelineAnswer(env, origin, ask);
-        if (addressesAsk(ask, piped)) { text = piped; await step(db, id, 'Checked the result (' + piped.split(/\s+/).length + ' words). It addresses the ask.'); break; }
+        if (addressesAsk(ask, piped)) { text = piped; await countVia(env, 'free-bot'); await step(db, id, 'Answered by a free bot or open API (no model call): free, 0 cents.', { tier: 'free via free-bot' }); await step(db, id, 'Checked the result (' + piped.split(/\s+/).length + ' words). It addresses the ask.'); break; }
       }
       const got = await replyFrom(env, db, id, tier, bot, ask, opts);
       if (addressesAsk(ask, got.text)) { text = got.text; await step(db, id, 'Checked the result (' + got.text.split(/\s+/).length + ' words). It addresses the ask.'); break; }
