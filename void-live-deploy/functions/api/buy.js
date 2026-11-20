@@ -2,6 +2,8 @@
 //   GET /api/buy?id=<product>&from=<slot.exp.variant>[&direct=1]   counts one click, then 302 to that product's hosted checkout
 //                                                    (direct: straight to its payment form, Gumroad's documented ?wanted=true)
 //   POST /api/buy?seen=<slot.exp.variant>                 counts one showing of an offer (the page's beacon)
+//   POST /api/buy?go=gate&from=gate.base.a  (form: back)   the UniVerse gate's Subscribe button: counts one click, then starts the same Stripe
+//                                                    Checkout /api/page-pass starts and answers 303 to it (the revenue lane's "gate" slot)
 //   GET /api/buy?stats=1&days=N                           the counts, per day, product and source (N 1..60)
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. No account, cookie or key. A caller can add 1 to a click or seen count
 // for a source name that matches SRC, and only as a person (lib/visits.js classify: our tools and bots are not counted); 30 a minute
@@ -13,6 +15,7 @@ import { bump } from '../../lib/guard.js';
 import { classify } from '../../lib/visits.js';
 import { productOf, gumroadUrl } from '../../lib/store.js';
 import { tablesReady } from '../../lib/db.js';
+import { startCheckout, backPath } from '../../lib/page-pass.js';
 
 export const SRC = /^[a-z0-9-]{1,24}(\.[a-z0-9-]{1,32}){0,2}$/;
 const ROWS_PER_DAY = 3000, PER_MINUTE = 30;
@@ -61,8 +64,20 @@ export async function onRequestGet({ request, env }) {
 export async function onRequestPost({ request, env }) {
   const u = new URL(request.url), from = request.headers.get('origin');
   if (from && from !== u.origin) return json({ ok: false, error: 'same-origin only' }, 403);
+  if (u.searchParams.get('go') === 'gate') return gateGo({ request, env, u });
   const src = u.searchParams.get('seen') || '', id = u.searchParams.get('id') || '';
-  if (!SRC.test(src) || !productOf(id)) return json({ ok: false, error: 'not an offer' }, 400);
+  if (!SRC.test(src) || !(productOf(id) || (id === 'universe' && src.startsWith('gate.')))) return json({ ok: false, error: 'not an offer' }, 400);
   await count(env, request, 'seen', id, src);
   return new Response(null, { status: 204, headers: { 'cache-control': 'no-store' } });
+}
+
+/** the gate's Subscribe: one counted click, then the Checkout /api/page-pass would have started (the server picks it; nothing from the caller is a URL). */
+async function gateGo({ request, env, u }) {
+  const src = u.searchParams.get('from') || '';
+  if (!SRC.test(src) || !src.startsWith('gate.')) return json({ ok: false, error: 'not an offer' }, 400);
+  const form = new URLSearchParams(await request.text().catch(() => '')), back = backPath(form.get('back') || '');
+  await count(env, request, 'click', 'universe', src);
+  const out = await startCheckout(env, u.origin, back);
+  if (!out.url) return json({ ok: false, missing: out.error || 'checkout' }, 503);
+  return Response.redirect(out.url, 303);
 }

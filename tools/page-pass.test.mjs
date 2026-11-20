@@ -103,3 +103,24 @@ test('loopback builds see full pages with no token; production stays gated', asy
 async function grantFirst(DB) {
   assert.equal(await applyStripeEvent({ DB }, { type: 'checkout.session.completed', data: { object: { metadata: { plan: 'universe' }, subscription: 'sub_abc123' } } }), true);
 }
+
+test('the gate\'s Subscribe goes through /api/buy: the form says so, a showing and a click are counted, and the answer is the same Stripe Checkout', async () => {
+  const { onRequestPost: buyPost } = await import('../void-live-deploy/functions/api/buy.js');
+  const page = screen({ cents: CENTS }, '/flights/');
+  assert.match(page, /<form method="post" action="\/api\/buy\?go=gate&amp;from=gate\.base\.a">/);
+  assert.match(page, /\/api\/buy\?seen=gate\.base\.a&id=universe/);
+  assert.equal(page.includes('action="/api/page-pass"'), false);
+  const db = d1(), env = { STRIPE_SECRET_KEY: KEY, SALT: 'salt', DB: db };
+  const ua = { 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36', origin: 'https://a-to-mind.com' };
+  const post = (qs, body) => new Request('https://a-to-mind.com/api/buy?' + qs, { method: 'POST', headers: { ...ua, 'content-type': 'application/x-www-form-urlencoded' }, body });
+  await withFetch(async () => {
+    let r = await buyPost({ request: post('seen=gate.base.a&id=universe'), env }); assert.equal(r.status, 204);
+    r = await buyPost({ request: post('seen=team.e1.a&id=universe'), env }); assert.equal(r.status, 400, 'universe is the gate\'s alone');
+    r = await buyPost({ request: post('go=gate&from=gate.base.a', 'back=%2Fflights%2F'), env });
+    assert.equal(r.status, 303); assert.equal(r.headers.get('location'), 'https://checkout.stripe.com/c/pay/cs_test_page');
+    r = await buyPost({ request: post('go=gate&from=team.e1.a', 'back=%2F'), env }); assert.equal(r.status, 400, 'only a gate source');
+    r = await buyPost({ request: new Request('https://a-to-mind.com/api/buy?go=gate&from=gate.base.a', { method: 'POST', headers: { origin: 'https://evil.example' }, body: 'back=/' }), env }); assert.equal(r.status, 403);
+  }, stripe());
+  const rows = db.raw.prepare("SELECT kind, id, src, n FROM void_buy ORDER BY kind").all().map((x) => ({ ...x }));
+  assert.deepEqual(rows, [{ kind: 'click', id: 'universe', src: 'gate.base.a', n: 1 }, { kind: 'seen', id: 'universe', src: 'gate.base.a', n: 1 }]);
+});
