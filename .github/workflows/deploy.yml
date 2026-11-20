@@ -241,9 +241,7 @@ jobs:
           else echo "::error::a-to-mind.com/ HTTP $code does not carry $want"; head -c 300 live.tmp; echo; ok=1; fi
           check /skills/index.json void-live-deploy/skills/index.json || ok=1
           check /skills/sorry.js void-live-deploy/skills/sorry.js || ok=1
-          # the Versus queue's data (tools/tower-size.mjs, tools/tower-target.mjs): the order on the card is only as true as these files live
-          check /tower.size.json void-live-deploy/tower.size.json || ok=1
-          check /tower.target.json void-live-deploy/tower.target.json || ok=1
+          # the Versus queue's data (tower.size.json, tower.target.json) answers only the owner since #3049, so it is not fetched here
           node tools/pages-guard.mjs check https://a-to-mind.com || ok=1 # /tools.json and /api/answer on the real domain
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
