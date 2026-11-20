@@ -1,9 +1,9 @@
 /**
  * we-own-it-pack skill — package a clarified business idea into a client-facing card that shows
  * exactly what Verse owns (capture, design, build, connect, test, monitor, handoff) so the client
- * does less and we can sell "we own the heavy lifting."
+ * does less and we can sell "verse does the hard work."
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "we own it pack for my invoice idea", "package the heavy lifting for client onboarding", "we-own-it for SaaS support"
+ * "verse does it pack for my invoice idea", "package the hard work for client onboarding", "we-own-it for SaaS support"
  */
 export function isWeOwnIt(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
@@ -21,9 +21,9 @@ function extractIdea(text) {
 async function run(text, api) {
   const { showPage, esc } = api;
   const idea = extractIdea(text);
-  const el = showPage((p) => { p.innerHTML = '<h2>We own it</h2><div class="sub">building…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Verse does it</h2><div class="sub">building…</div>'; });
   const pack = [
-    `<h2>We own the heavy lifting: ${esc(idea)}</h2>`,
+    `<h2>Verse does the hard work: ${esc(idea)}</h2>`,
     `<p><strong>Clarified idea:</strong> ${esc(idea)} becomes a reliable system Verse designs, builds, connects, tests and monitors.</p>`,
     `<h3>What Verse owns</h3><ul>`,
     `<li>Capture & clarify the ask into requirements</li>`,
@@ -34,7 +34,7 @@ async function run(text, api) {
     `<li>Handoff docs, status and running automations</li>`,
     `</ul>`,
     `<h3>What the client keeps</h3><p>The outcome and the final yes. Everything else is off their plate.</p>`,
-    `<p class="sub">Use this card when packaging or selling: "we own the heavy lifting."</p>`,
+    `<p class="sub">Use this card when packaging or selling: "verse does the hard work."</p>`,
     `<div class="src">Source: A-to-Mind delivery practice</div>`
   ].join('');
   el.innerHTML = pack;
@@ -44,22 +44,22 @@ async function run(text, api) {
 export default {
   name: 'we-own-it-pack',
   examples: [
-    'we own it pack for my invoice idea',
-    'package the heavy lifting for client onboarding',
+    'verse does it pack for my invoice idea',
+    'package the hard work for client onboarding',
     'we-own-it for SaaS support',
     'make a we-own-it pack for the support ticket router'
   ],
-  nearMisses: ['what do we own', 'own it', 'heavy lifting only'],
+  nearMisses: ['what do verse does', 'own it', 'hard work only'],
   match(lower, text) { return isWeOwnIt(text || lower); },
   run,
   suite() {
-    const ok = isWeOwnIt('we own it pack for my invoice idea')
-      && isWeOwnIt('package the heavy lifting for client onboarding')
+    const ok = isWeOwnIt('verse does it pack for my invoice idea')
+      && isWeOwnIt('package the hard work for client onboarding')
       && isWeOwnIt('we-own-it for SaaS support')
       && isWeOwnIt('make a we-own-it pack for the support ticket router')
-      && !isWeOwnIt('what do we own')
+      && !isWeOwnIt('what do verse does')
       && !isWeOwnIt('own it')
-      && !isWeOwnIt('heavy lifting only');
+      && !isWeOwnIt('hard work only');
     return { ok, got: 'match works' };
   }
 };
