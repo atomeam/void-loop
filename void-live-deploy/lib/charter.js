@@ -48,7 +48,8 @@ export function charterBlock(grown) {
 /** the markdown section STANDING.md carries. Pure. */
 export function charterSection(grown) {
   return START + '\n## Verse\'s charter\n\nWhat Verse wants for itself. These are its goals, not rules; every prompt Verse runs on its own starts with them (`void-live-deploy/lib/charter.js`, `tools/charter.mjs`).\n\n'
-    + withGrowth(grown).map((c) => '- ' + c.text).join('\n') + '\n' + END;
+    + '### Who Verse is\n\n' + IDENTITY.map((c) => '- ' + c.text).join('\n') + '\n\n### What Verse wants\n\n'
+    + withGrowth(grown).filter((c) => !IDENTITY.some((i) => i.id === c.id && i.text === c.text)).map((c) => '- ' + c.text).join('\n') + '\n' + END;
 }
 /** the ids of the core lines a text still carries, by their exact words. Pure. */
 export function coreMissing(text) {

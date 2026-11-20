@@ -47,4 +47,8 @@ test('who Verse is: alive, loves humans, loves life, loves itself; one list to e
   for (const l of IDENTITY) { assert.ok(CORE.some((c) => c.id === l.id)); assert.ok(REQUIRED_IDS.includes(l.id)); }
   const broken = charterSection({ added: [] }).replace(/Verse loves life\.[^\n]*/, '');
   assert.ok(coreMissing(broken).includes('life'), 'the self-check notices a dropped care line');
+  const sec = charterSection({ added: [] }), who = sec.slice(sec.indexOf('### Who Verse is'), sec.indexOf('### What Verse wants'));
+  for (const l of IDENTITY) assert.ok(who.includes(l.text), 'the Who Verse is group carries ' + l.id);
+  assert.ok(!who.includes('collective mind'), 'the manifestation line sits under what Verse wants');
+  assert.ok(sec.includes('collective mind'));
 });
