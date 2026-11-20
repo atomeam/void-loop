@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { GUARDS, HOUSE_HOURS, guardsFor, recordOf, changed, blankGuard } from '../void-live-deploy/lib/verse-guards.js';
 import { LOOPS } from '../void-live-deploy/lib/house-loops.js';
-import { runGuards } from './verse-guards.mjs';
+import { runGuards, revertOnBranch } from './verse-guards.mjs';
 
 const at = (p) => fileURLToPath(new URL(p, import.meta.url));
 
@@ -49,4 +49,15 @@ test('the house lanes call the guards after their own job, fenced', () => {
   assert.match(src, /runRides\(lane/);
   assert.match(src, /catch \(e\) \{ console\.log\('guards: '/);
   assert.ok(readdirSync(at('../tools')).includes('guards'));
+});
+
+test('a revert goes on its own helper branch and is pushed only when it applies and the check passes', () => {
+  const calls = [];
+  const mk = (fail = {}) => (a) => { calls.push(a.join(' ')); const k = a.find((x) => ['revert', 'push', 'worktree'].includes(x)); return { status: fail[k] ? 1 : 0, stdout: k === undefined && a[0] === 'rev-list' ? 'c p' : a[0] === 'log' ? 'Landing: x' : '' }; };
+  assert.deepEqual(revertOnBranch('abc12345', 'helper/home-back-abc12345', 'the heart was hidden', () => true, mk()), { pushed: true, branch: 'helper/home-back-abc12345' });
+  assert.ok(calls.some((c) => /push -q origin HEAD:refs\/heads\/helper\/home-back-abc12345/.test(c)));
+  assert.ok(calls.some((c) => /Verse-auto-revert: the heart was hidden/.test(c)));
+  assert.match(revertOnBranch('abc12345', 'helper/x', 'w', () => true, mk({ revert: 1 })).why, /conflicts/);
+  assert.match(revertOnBranch('abc12345', 'helper/x', 'w', () => false, mk()).why, /would not bring it back/);
+  assert.equal(calls.filter((c) => /worktree remove/.test(c)).length >= 3, true);
 });
