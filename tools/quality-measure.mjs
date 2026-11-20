@@ -68,11 +68,13 @@ const READ = () => {
 };
 
 async function entropyOf(host, png) {
-  return host.evaluate(async ({ b64, fn }) => {
+  // the pixels come back to node and are read here (no text is run as code)
+  const px = await host.evaluate(async (b64) => {
     const img = await new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = 'data:image/png;base64,' + b64; });
-    const c = new OffscreenCanvas(Math.min(img.width, 400), Math.round(img.height * Math.min(1, 400 / img.width))), g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height);
-    const d = g.getImageData(0, 0, c.width, c.height).data; return (new Function('return ' + fn))()(d, c.width, c.height, 1);
-  }, { b64: png.toString('base64'), fn: colourEntropy.toString() });
+    const c = new OffscreenCanvas(Math.min(img.width, 200), Math.round(img.height * Math.min(1, 200 / img.width))), g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height);
+    return { w: c.width, h: c.height, d: Array.from(g.getImageData(0, 0, c.width, c.height).data) };
+  }, png.toString('base64'));
+  return colourEntropy(px.d, px.w, px.h, 1);
 }
 
 async function open(browser, profile, url, { watch = true } = {}) {
@@ -121,7 +123,7 @@ export async function measure(browser, surface, { shots = true } = {}) {
       let artEntropy = 0;
       if (read.big && read.big.w > 40) { try { const clip = await page.screenshot({ clip: { x: Math.max(0, read.big.x), y: Math.max(0, read.big.y), width: Math.min(read.big.w, profile.viewport.width), height: Math.min(read.big.h, 900) }, fullPage: true }); artEntropy = await entropyOf(host, clip); } catch (_) {} }
       const gpuScripts = [];
-      for (const s of read.scripts.slice(0, 8)) { try { const t = await page.evaluate((u) => fetch(u).then((r) => r.text()).catch(() => ''), s); if (/navigator\.gpu/.test(t)) gpuScripts.push(s); } catch (_) {} }
+      for (const s of read.scripts.slice(0, 8)) { try { const t = await page.evaluate((u) => fetch(u).then((r) => r.text()).catch(() => ''), s); /* void-review: ok (browser fetch, at most 8 scripts) */ if (/navigator\.gpu/.test(t)) gpuScripts.push(s); } catch (_) {} }
       sides[name] = { nav, q, d0, read, lay, bar, entropy, artEntropy, seen, status: o.status, png, gpuPath: read.inlineGpu || gpuScripts.length > 0, dprRaf: q.raf - d0.raf };
       if (name === 'phone') sides.page = page, sides.ctx = o.ctx;
       else await o.ctx.close();
@@ -158,7 +160,7 @@ async function probeLinks(page, read) {
     if (h === '#' || h === '') { checked++; broken++; list.push(h || '(empty)'); continue; }
     if (h.startsWith('#')) { checked++; const ok = await page.evaluate((id) => !!document.getElementById(id) || !!document.querySelector('[name="' + id + '"]'), h.slice(1)); if (!ok) { broken++; list.push(h); } continue; }
     checked++;
-    const st = await page.evaluate((u) => fetch(u, { method: 'HEAD', redirect: 'follow' }).then((r) => r.status).catch(() => 0), h);
+    const st = await page.evaluate((u) => fetch(u, { method: 'HEAD', redirect: 'follow' }).then((r) => r.status).catch(() => 0), h); /* void-review: ok (browser HEAD, capped links) */
     if (st === 405) continue;
     if (st === 0 || st >= 400) { broken++; list.push(h.slice(0, 60) + ' ' + st); }
   }
