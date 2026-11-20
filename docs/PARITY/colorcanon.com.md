@@ -12,7 +12,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | All about a colour: codes and conversions | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:80 `ia-label="A colour: hex, rgb, hsl or a name" placeholder="#ff5733, rgb(255 87 51), tomato"` |
-| Shades, tints and harmonies | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:78 `<h1>Colour codes, shades and schemes</h1>` |
-| A colour picker | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:80 `" autofocus><input id="wheel" type="color" aria-label="Pick a colour" value="#6d4aff"></di` |
+| Shades, tints and harmonies | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:79 `nearest name, WCAG contrast, tints, shades and schemes, worked out on this device and kep` |
+| A colour picker | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:75 `r/" aria-current="page">Color Picker</a><a href="/color/?mode=gradient">Gradient Generator` |
 | Palettes | Colour | have | every site of this kind offers it | void-live-deploy/color/index.html:81 `#palh" data-for="brand">Brand palette</a> <a href="?c=00a19a&amp;for=print#modt" data-for=` |
 | Its live pages could not be read, so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://colorcanon.com/ | not compared yet |

@@ -7,17 +7,17 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 - Live scan: 2026-10-28, HTTP 200, page title "PDF24 Tools: Free PDF solutions for all PDF problems"
 - History: [docs/HISTORY/tools.pdf24.org.md](../HISTORY/tools.pdf24.org.md)
 
-**Match: 43%**: 12 have, 0 partial, 4 missing, 12 unreviewed, of 28 features.
+**Match: 46%**: 13 have, 0 partial, 3 missing, 12 unreviewed, of 28 features.
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Merge PDFs | Organise | have | its live page (2026-10-28): "r your search. Try a different keyword. Merge PDF files into a single PDF Merge PDF Split PDF files into piece" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
-| Split a PDF | Organise | have | its live page (2026-10-28): "e PDF files into a single PDF Merge PDF Split PDF files into pieces which creates new PDF files Split PDF PDF" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Merge PDFs | Organise | have | its live page (2026-10-28): "r your search. Try a different keyword. Merge PDF files into a single PDF Merge PDF Split PDF files into piece" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
+| Split a PDF | Organise | have | its live page (2026-10-28): "e PDF files into a single PDF Merge PDF Split PDF files into pieces which creates new PDF files Split PDF PDF" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Reorder, rotate and delete pages | Organise | have | its live page (2026-10-28): "and remove password request Unlock PDF Rotate pages in PDF files Rotate PDF pages Removes pages from PDF file" | void-live-deploy/pdf/app.js:3 `t","pages","extract","order","rotate","compress","img2pdf","pdf2img","numbers","watermark"` |
-| Compress a PDF | Files | have | its live page (2026-10-28): "ich creates new PDF files Split PDF PDF compressor to reduce the size of PDF files Compress PDF PDF editor to" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Compress a PDF | Files | have | its live page (2026-10-28): "ich creates new PDF files Split PDF PDF compressor to reduce the size of PDF files Compress PDF PDF editor to" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Convert Word, images and more to PDF | Convert | have | its live page (2026-10-28): "F Online PDF Converter to convert files to PDF and PDF to other file formats PDF Converter Create PDFs based o" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=img2pdf">Images to PDF</a><a href="/pdf/?tool=pdf2img">PDF to images<` |
 | Convert PDF to Word, Excel or images | Convert | have | its live page (2026-10-28): "t mode PDF24 Tools Free and easy to use PDF tools that make you more productive – online and offline Search No" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=pdf2img">PDF to images</a><a href="/pdf/?tool=watermark">Watermark</a` |
-| Add text, images and shapes | Edit | missing | its live page (2026-10-28): "the size of PDF files Compress PDF PDF editor to edit PDF files online Edit PDF Sign PDF files Sign PDF Onlin" | no sign of it in the source of /pdf/ |
+| Add text, images and shapes | Edit | have | its live page (2026-10-28): "the size of PDF files Compress PDF PDF editor to edit PDF files online Edit PDF Sign PDF files Sign PDF Onlin" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Sign a PDF | Edit | have | its live page (2026-10-28): "ditor to edit PDF files online Edit PDF Sign PDF files Sign PDF Online PDF Converter to convert files to PDF a" | void-live-deploy/lib/image-handoff.js:56 `: rec.blob.type }) : Object.assign(rec.blob, { name: rec.name });` |
 | Fill in forms | Edit | missing | its live page (2026-10-28): "vert files to PDF and PDF to other file formats PDF Converter Create PDFs based on JPG and other images Images" | no sign of it in the source of /pdf/ |
 | Add or remove a password | Security | have | its live page (2026-10-28): "images in PDF files Extract PDF images Protect PDF files with a password and set permissions Protect PDF Unlo" | void-live-deploy/pdf/index.html:63 `sit the page works offline. A password-protected PDF cannot be opened, and text in a PDF c` |

@@ -103,7 +103,8 @@ fetch('/api/loops', { cache: 'no-store', credentials: 'same-origin' }).then((r) 
   const c = j && j.census; if (!box || !body || !c || !Array.isArray(c.rows)) return;
   sum.textContent = c.loops + ' loops, counted ' + ago(c.at) + ': ' + c.working + ' working, ' + c.failing + ' failing, ' + c.behind + ' behind, ' + c.idle + ' idle. '
     + c.runs24 + ' runs and about ' + c.minutes24 + ' runner minutes in the last 24 hours, ' + dollars(c.costCents24) + ' spent. '
-    + 'The clock started ' + ((j.clock && j.clock.caughtUp24) || 0) + ' late loops on time today. ' + (c.note || '');
+    + 'The clock started ' + ((j.clock && j.clock.caughtUp24) || 0) + ' late loops on time today. ' + (c.note || '')
+    + (j.heldout && j.heldout.line ? ' ' + j.heldout.line : '') + (j.towerTarget ? ' Tower target: ' + j.towerTarget + '.' : '');
   body.textContent = '';
   for (const r of c.rows) {
     const tr = document.createElement('tr');

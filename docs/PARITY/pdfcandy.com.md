@@ -7,17 +7,17 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 - Live scan: 2026-10-28, HTTP 200, page title "90+ Free PDF Tools Online – PDF Candy"
 - History: [docs/HISTORY/pdfcandy.com.md](../HISTORY/pdfcandy.com.md)
 
-**Match: 41%**: 11 have, 0 partial, 4 missing, 12 unreviewed, of 27 features.
+**Match: 44%**: 12 have, 0 partial, 3 missing, 12 unreviewed, of 27 features.
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Merge PDFs | Organise | have | its live page (2026-10-28): "press PDF PDF Summarizer PDF Summarizer Merge PDF Merge PDF PDF Translator PDF Translator Chat with PDF Chat w" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
-| Split a PDF | Organise | have | its live page (2026-10-28): "Translator Chat with PDF Chat with PDF Split PDF Split PDF Unlock PDF Unlock PDF Protect PDF Protect PDF Rota" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Merge PDFs | Organise | have | its live page (2026-10-28): "press PDF PDF Summarizer PDF Summarizer Merge PDF Merge PDF PDF Translator PDF Translator Chat with PDF Chat w" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
+| Split a PDF | Organise | have | its live page (2026-10-28): "Translator Chat with PDF Chat with PDF Split PDF Split PDF Unlock PDF Unlock PDF Protect PDF Protect PDF Rota" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Reorder, rotate and delete pages | Organise | have | its live page (2026-10-28): "PDF Unlock PDF Protect PDF Protect PDF Rotate PDF Rotate PDF Crop PDF Crop PDF Sign PDF Sign PDF Edit metadat" | void-live-deploy/pdf/app.js:3 `t","pages","extract","order","rotate","compress","img2pdf","pdf2img","numbers","watermark"` |
-| Compress a PDF | Files | have | its live page (2026-10-28): "iles Manage PDF files Edit PDF Edit PDF Compress PDF Compress PDF PDF Summarizer PDF Summarizer Merge PDF Merg" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Compress a PDF | Files | have | its live page (2026-10-28): "iles Manage PDF files Edit PDF Edit PDF Compress PDF Compress PDF PDF Summarizer PDF Summarizer Merge PDF Merg" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Convert Word, images and more to PDF | Convert | have | its live page (2026-10-28): "ext All PDF Tools All PDF Tools Convert to PDF Convert to PDF Word to PDF Word to PDF JPG to PDF JPG to PDF PD" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=img2pdf">Images to PDF</a><a href="/pdf/?tool=pdf2img">PDF to images<` |
 | Convert PDF to Word, Excel or images | Convert | have | its live page (2026-10-28): "90+ Free PDF Tools Online – PDF Candy Sign in to continue Sign in with Google Sign in with Apple or Sign in u" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=pdf2img">PDF to images</a><a href="/pdf/?tool=watermark">Watermark</a` |
-| Add text, images and shapes | Edit | missing | its live page (2026-10-28): "gn Up Manage PDF files Manage PDF files Edit PDF Edit PDF Compress PDF Compress PDF PDF Summarizer PDF Summari" | no sign of it in the source of /pdf/ |
+| Add text, images and shapes | Edit | have | its live page (2026-10-28): "gn Up Manage PDF files Manage PDF files Edit PDF Edit PDF Compress PDF Compress PDF PDF Summarizer PDF Summari" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Sign a PDF | Edit | have | its live page (2026-10-28): "90+ Free PDF Tools Online – PDF Candy Sign in to continue Sign in with Google Sign in with Apple or Sign in u" | void-live-deploy/lib/image-handoff.js:56 `: rec.blob.type }) : Object.assign(rec.blob, { name: rec.name });` |
 | Fill in forms | Edit | missing | its live page (2026-10-28): "le PDF Header and footer Repair PDF PDF Filler Organize pages All PDF Tools Convert to PDF Word to PDF JPG to" | no sign of it in the source of /pdf/ |
 | Add or remove a password | Security | have | its live page (2026-10-28): "h PDF Chat with PDF Split PDF Split PDF Unlock PDF Unlock PDF Protect PDF Protect PDF Rotate PDF Rotate PDF Cr" | void-live-deploy/pdf/index.html:63 `sit the page works offline. A password-protected PDF cannot be opened, and text in a PDF c` |

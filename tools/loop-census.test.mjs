@@ -29,7 +29,7 @@ test('a row: working, behind, failing, late and its minutes', () => {
 test('the owner reads the census; anyone else gets a missing page', async () => {
   const rec = { updated: 'u', census: { loops: 1, rows: [] }, ticks: [{ at: 'a', catchup: ['x.yml'], cancelled: ['x.yml#1'] }, { at: 'b' }] };
   const v = loopsOf(rec);
-  assert.equal(v.census.loops, 1); assert.equal(v.clock.caughtUp24, 1); assert.equal(v.clock.cancelled24, 1); assert.deepEqual(loopsOf(null).clock.caught, []);
+  assert.equal(v.census.loops, 1); assert.equal(v.clock.caughtUp24, 1); assert.equal(v.clock.cancelled24, 1); assert.deepEqual(loopsOf(null).clock.caught, []); assert.equal(loopsOf({ heldout: { streak: 1 } }).heldout.streak, 1, 'the held-out streak reaches the owner');
   const r = await onRequestGet({ request: new Request('https://a-to-mind.com/api/loops'), env: {} }, async () => { throw new Error('not reached'); });
   assert.equal(r.status, 404);
 });

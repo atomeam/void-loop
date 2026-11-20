@@ -1,0 +1,33 @@
+# The performance budget (owner, 2026-11-20: phone load under 3 s on key pages): tools/perf-budget.mjs opens each key page of the live site on
+# a phone profile (390 px at 3x, a 1.6 Mbit/s link with 150 ms latency, a 4x slower CPU) and fails when one loads in more than 3 s, filing one
+# fix job per page over (auto:perf <path>, at most 5). Once a day; GitHub starts schedules late here, so the conductor's catch-up clock
+# (tools/catchup-core.mjs) starts it when the slot is missed. Passive page loads only.
+name: Perf budget
+
+on:
+  schedule:
+    - cron: '41 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: perf-budget
+  cancel-in-progress: false
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Load the key pages on a phone
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/perf-budget.mjs --post

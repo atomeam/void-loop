@@ -271,3 +271,5 @@ test('a manual Tower run cannot clear scheduled audit failures without matching 
   const runs = [runOf('workflow_dispatch', 'success', 1), runOf('schedule', 'failure', 2), runOf('schedule', 'failure', 3), runOf('schedule', 'failure', 4)];
   assert.equal(streakOf(runs, TOWER_EVENTS).fails, 3);
 });
+import './tower-watch.test.mjs'; // the held-out streak and compounding on a new target (2026-11-20)
+import './perf-budget.test.mjs'; // the phone performance budget (2026-11-20)
