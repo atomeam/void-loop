@@ -37,7 +37,7 @@ export async function run({ env = process.env, fetchFn = fetch, dry = false, now
   const c = creds(env); rec.posts = rec.posts || [];
   if (c && !dry) {   // reach first: what people did with the earlier posts
     const ids = rec.posts.filter((p) => p.id).slice(-20).map((p) => p.id);
-    if (ids.length) { const g = await call('GET', 'https://api.x.com/2/tweets?ids=' + ids.join(',') + '&tweet.fields=public_metrics', c, null, fetchFn).catch(() => null); if (g && g.ok && Array.isArray(g.j.data)) for (const t of g.j.data) { const p = rec.posts.find((x) => x.id === t.id); if (p) p.reach = t.public_metrics; } }
+    if (ids.length) { const g = await call('GET', 'https://api.x.com/2/tweets?' + new URLSearchParams({ ids: ids.join(','), 'tweet.fields': 'public_metrics' }).toString(), c, null, fetchFn).catch(() => null); if (g && g.ok && Array.isArray(g.j.data)) for (const t of g.j.data) { const p = rec.posts.find((x) => x.id === t.id); if (p) p.reach = t.public_metrics; } }
   }
   rec.reach = reachTotals(rec.posts);
   const cyc = nextPost(board.cycles || [], rec.posts);
