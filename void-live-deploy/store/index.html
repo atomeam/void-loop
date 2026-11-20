@@ -45,7 +45,6 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after the first visit</script>
 
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/payer-secret.js">
 <link rel="modulepreload" href="/lib/store-log.js">
 <link rel="modulepreload" href="/lib/store.js">
 <link rel="modulepreload" href="/lib/store-products.js">
@@ -57,7 +56,6 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <main>
 <header><a class="logo" href="/">Verse <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
 <p class="sub" id="rlead" hidden><b>Your receipt.</b> Your order code, license keys and download links show here. Keep the order code: with your email, it finds this receipt again any time, on any device.</p>
-<p class="note payer-secret" id="psecret" data-payer-secret hidden></p>
 <div id="receipt" role="status" aria-live="polite" tabindex="-1" hidden></div>
 <h1>Made by Verse. Sold by Verse.</h1>
 <p class="sub">3D models and printable minis you can spin before you buy, plus Verse's tools and the crew's hands-on help. Turn any model with your finger.</p>
@@ -75,12 +73,10 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <input id="email" type="email" placeholder="email for your receipt (optional)" style="width:100%;margin:10px 0">
 <button id="pay" style="width:100%">Checkout</button><p class="note" id="paynote"></p></aside>
 <script type="module">
-import { PAYER_SECRET } from '/lib/payer-secret.js'; // what every payer is told (lib/payer-secret.js)
 import { plainWhat } from '/lib/store-log.js'; // the changelog in plain words (lib/store-log.js)
 import { cartLines, cartTotals, usdCents, cartUrl, catalogCsv, searchProducts, kindsOf, sortProducts, DELIVERY_STEPS, deliveryDone } from '/lib/store.js';
 const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const TIP = 'https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&utm_medium=store-pwyw&utm_campaign=v01d-store';
-$('#psecret').textContent = PAYER_SECRET;
 // the picture on a card with no 3D preview: drawn line icons, one per kind (never an emoji or another product's picture: tools/card-art.test.mjs)
 const ICON = {
   membership: '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 6.4L21 12l-6.4 2.6L12 21l-2.6-6.4L3 12l6.4-2.6z"/></svg>',
@@ -168,7 +164,7 @@ $('#pay').onclick = async () => {
   $('#paynote').innerHTML = 'Checkout opened on Gumroad: it sends your files and license keys by email. ' + urls.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">link ${i + 1}</a>`).join(' · '); // void-review: ok (every url is escaped)
 };
 function showReceipt(r) {
-  const el = $('#receipt'); el.hidden = false; $('#rlead').hidden = false; if (r && r.items && r.status !== 'free') $('#psecret').hidden = false; // a paid receipt tells the secret
+  const el = $('#receipt'); el.hidden = false; $('#rlead').hidden = false;
   if (!r || !r.items) { el.innerHTML = `<b>Receipt</b><p class="note">${esc((r && r.error) || 'Not found.')}</p>`; return; }
   const marks = deliveryDone(r);
   el.innerHTML = `<b class="ok">✓ ${r.status === 'free' ? 'Yours, free' : 'Paid, thank you'}</b> <span class="note">order code <code>${esc(r.code)}</code> · links good until ${esc(new Date(r.expires).toLocaleString())}</span><ol class="note" style="padding-left:18px">` +
@@ -180,14 +176,14 @@ function showReceipt(r) {
   el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); el.focus({ preventScroll: true });
 }
 // the receipt as plain text: order code, each item and its key (download links expire, so they are left out)
-function receiptText(r) { return ['Verse receipt', 'Order code: ' + r.code, ...r.items.map((i) => i.name + ' · license key ' + i.license), ...(r.status === 'free' ? [] : [PAYER_SECRET]), 'Find it again: ' + location.origin + '/store/receipt/?code=' + r.code].join('\n'); }
+function receiptText(r) { return ['Verse receipt', 'Order code: ' + r.code, ...r.items.map((i) => i.name + ' · license key ' + i.license), 'Find it again: ' + location.origin + '/store/receipt/?code=' + r.code].join('\n'); }
 async function receipt() {
   const s = new URLSearchParams(location.search).get('session'); if (!s) return;
   for (let i = 0; i < 6; i++) { const r = await fetch('/api/store/order?session=' + encodeURIComponent(s)).then((r) => r.json()).catch(() => ({ pending: true })); if (r.items || !r.pending) { if (r.items) { cart = []; save(); } return showReceipt(r); } $('#receipt').hidden = false; $('#receipt').textContent = 'Confirming your payment…'; await new Promise((ok) => setTimeout(ok, 2000)); }
   showReceipt({ error: 'Still confirming. Use "Find my order" below in a minute.' });
 }
 $('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch('/api/store/lookup', { method: 'POST', body: JSON.stringify({ email: $('#le').value, code: $('#lc').value.trim().toUpperCase() }) }).then((r) => r.json()).catch(() => ({ error: navigator.onLine ? 'Could not reach the store. Try again in a minute.' : 'You are offline. Connect, then press Find it again.' })); if (r.items) showReceipt(r); else $('#lout').textContent = r.error || 'Not found.'; };
-{ const q = new URLSearchParams(location.search), code = q.get('code'); if (code) { $('#lc').value = code.slice(0, 8); $('#rlead').hidden = false; } if (/\/receipt\//.test(location.pathname) || q.has('session')) { $('#rlead').hidden = false; $('#psecret').hidden = false; } } // a receipt link fills the order code (never the email)
+{ const q = new URLSearchParams(location.search), code = q.get('code'); if (code) { $('#lc').value = code.slice(0, 8); $('#rlead').hidden = false; } if (/\/receipt\//.test(location.pathname) || q.has('session')) { $('#rlead').hidden = false; } } // a receipt link fills the order code (never the email)
 async function news() {
   const r = await fetch('/store/changelog.json').then((r) => r.json()).catch(() => null), l = (r && r.changelog) || [];
   if (!l.length) return; $('#new').hidden = false; // the log keeps its old lines as written (AGENTS.md); a person reads the name Verse
