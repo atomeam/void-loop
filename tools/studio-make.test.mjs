@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { llm, groqModels, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
+import { llm, groqModels, STUDIO_FIXTURES, GOOD_STORY, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
 import { JOURNAL, OLD34, PAGE } from './show-judge.mjs';
 const res = (status, body, headers = {}) => ({ ok: status < 400, status, headers: { get: (k) => headers[k] }, json: async () => body });
 test('the writer reads only the source, asks for real numbers and a call-back, and never a visitor', () => {
@@ -38,6 +38,13 @@ const show = { lines: [{ who: 'Critic', text: 'Would you drink from a well?' }, 
 test('the judge fails closed when it cannot tell the bad fixtures from the good one', async () => {
   const v = await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: groqSaying(() => 'Score 7'), gap: 0 });
   assert.equal(v.separated, false); assert.equal(v.pass, false); assert.equal(v.blind, undefined);
+});
+test('the studio ruler keeps the same three bad shows and swaps only the good one for a true-story show', async () => {
+  assert.deepEqual(STUDIO_FIXTURES.filter((f) => f.kind === 'bad').map((f) => f.text), [JOURNAL, OLD34, PAGE]);
+  assert.deepEqual(STUDIO_FIXTURES.filter((f) => f.kind === 'good').map((f) => f.text), [GOOD_STORY]);
+  const seen = [];
+  await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: groqSaying((p) => { seen.push(p); return 'Score 2'; }), gap: 0 });
+  assert.ok(seen.some((p) => p.includes('72 seconds')), 'the good ruler is the true story');
 });
 test('a judge that separates still holds the show to 6+ on every blind question, the listener and the hard checks', async () => {
   const bad = [JOURNAL, OLD34, PAGE].map((t) => t.slice(0, 60));

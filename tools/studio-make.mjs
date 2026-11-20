@@ -19,7 +19,7 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hardShow } from '../void-live-deploy/lib/show-pipe.js';
 import { GEMINI_MODELS } from '../void-live-deploy/lib/models.js';
-import { calibrate, blindMin } from './show-judge.mjs';
+import { calibrate, blindMin, FIXTURES } from './show-judge.mjs';
 import { loadScores, saveScores } from './show-pipe.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
@@ -29,6 +29,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export const VOICES = Object.freeze({ Verse: { id: 'af_heart', lang: 'en-us', speed: 1.0 }, Critic: { id: 'am_michael', lang: 'en-us', speed: 0.97 } });
 export const WRITE_PREF = ['moonshotai/kimi-k2-instruct-0905', 'moonshotai/kimi-k2-instruct', 'openai/gpt-oss-120b', 'llama-3.3-70b-versatile'];
 export const JUDGE_PREF = ['openai/gpt-oss-120b', 'llama-3.3-70b-versatile', 'moonshotai/kimi-k2-instruct-0905', 'moonshotai/kimi-k2-instruct'];
+// The judge's ruler for the studio: the same three bad shows must score under 6, and a good show of the kind the
+// studio makes (a true story, a setup and a payoff, a number from the event) must score 6 or more. The old good
+// fixture was an inside joke about response times; a strong judge rightly told a stranger would leave (3 of 10),
+// so no judge could ever calibrate. The bar for a new show is unchanged: 6+ on every blind question and the listener.
+export const GOOD_STORY = "Critic: You are telling me the most famous message from space is one word in red pen? Verse: One word. August 1977, and Jerry Ehman is reading telescope printouts at his kitchen table. Critic: At his kitchen table? The aliens call and he is eating cereal. Verse: Pretty much. The telescope had heard a signal for 72 seconds, loud and narrow, like nothing in nature. Critic: Seventy-two seconds. So they called back, right? Verse: They pointed the telescope at that spot dozens of times. Nothing, ever again. Critic: So the aliens said hi once and hung up on us. Verse: And Ehman circled the numbers and wrote Wow in the margin. Critic: Almost fifty years of science, and the official word is Wow. Verse: Honestly, still the best review anyone has written. Critic: Then I am writing Wow on my tax return.";
+export const STUDIO_FIXTURES = Object.freeze([...FIXTURES.filter((f) => f.kind === 'bad'), { id: 'good-story', kind: 'good', text: GOOD_STORY }]);
 export const AVOID = /\b(died|death|killed|murder|massacre|war|battle|bomb|attack|terror|genocide|disaster|crash|shooting|election|president|party|abuse|sex|suicide|execution|riot|invasion|assassinat)/i;
 
 const clean = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
@@ -58,6 +64,7 @@ export async function llm(messages, { max = 4000, temperature = 0.8, prefer = WR
         if (r.ok && room && room < 12000) { room *= 2; continue; } // the thinking used up the room: give it more
         tried.push('Groq ' + model + ' ' + r.status); break;
       }
+      if (!tried.some((x) => x.startsWith('Groq ' + model + ' '))) tried.push('Groq ' + model + ' busy (429 four times)');
     }
   }
   for (const key of [env.CLOUDFLARE_AI_TOKEN, env.CLOUDFLARE_API_TOKEN2, env.CLOUDFLARE_API_TOKEN].filter(Boolean)) {
@@ -167,7 +174,7 @@ export async function writeShow(kind, story, { env, fetchImpl } = {}) {
 export async function judge(show, kind, { env, fetchImpl, gap = 2500 } = {}) {
   let via = '';
   const askImpl = async (prompt) => { const r = await llm([{ role: 'user', content: prompt }], { max: 1500, temperature: 0, prefer: JUDGE_PREF, env, fetchImpl }); via = r.via; return r.text; };
-  const cal = await calibrate({ askImpl, gap, maxChars: 24000 });
+  const cal = await calibrate({ askImpl, gap, maxChars: 24000, fixtures: STUDIO_FIXTURES });
   const text = show.lines.map((l) => l.who + ': ' + l.text).join(' ');
   const out = { separated: cal.separated, calibration: cal.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })), issues: hardShow(show, { kind }) };
   if (cal.separated) {
@@ -195,7 +202,7 @@ async function makeEpisode({ dry = false, env = process.env } = {}) {
   console.log('story: ' + story.title + ' (' + story.url + ')');
   const show = await writeShow('episode', story, { env });
   const verdict = await judge(show, 'episode', { env });
-  console.log('judge: ' + JSON.stringify({ pass: verdict.pass, separated: verdict.separated, blind: verdict.blind && verdict.blind.scores, human: verdict.human, issues: verdict.issues, via: verdict.via }));
+  console.log('judge: ' + JSON.stringify({ pass: verdict.pass, separated: verdict.separated, blind: verdict.blind && verdict.blind.scores, human: verdict.human, issues: verdict.issues, via: verdict.via, ruler: (verdict.calibration || []).map((r) => r.id + ' ' + r.scores.join('/')) }));
   if (!dry) keepScore('episode', show, story, verdict);
   if (!verdict.pass) { console.log('not published: the judge did not pass it'); return 1; }
   const data = JSON.parse(readFileSync(join(POD, 'episodes.json'), 'utf8'));
@@ -222,7 +229,7 @@ async function makeShort({ out = 'media/shorts', env = process.env } = {}) {
   console.log('story: ' + story.title + ' (' + story.url + ')');
   const show = await writeShow('short', story, { env });
   const verdict = await judge(show, 'short', { env });
-  console.log('judge: ' + JSON.stringify({ pass: verdict.pass, separated: verdict.separated, blind: verdict.blind && verdict.blind.scores, human: verdict.human, issues: verdict.issues, via: verdict.via }));
+  console.log('judge: ' + JSON.stringify({ pass: verdict.pass, separated: verdict.separated, blind: verdict.blind && verdict.blind.scores, human: verdict.human, issues: verdict.issues, via: verdict.via, ruler: (verdict.calibration || []).map((r) => r.id + ' ' + r.scores.join('/')) }));
   if (!verdict.pass) { keepScore('short', show, story, verdict); console.log('not filmed: the judge did not pass it'); return 1; }
   mkdirSync(out, { recursive: true });
   const day = new Date().toISOString().slice(0, 10).replace(/-/g, ''), slug = story.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40), id = 'studio-' + day + '-' + slug;
@@ -247,7 +254,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const cmd = process.argv[2], arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
   const go = cmd === 'episode' ? () => makeEpisode({ dry: process.argv.includes('--dry') })
     : cmd === 'short' ? () => makeShort({ out: arg('--out', 'media/shorts') })
-    : cmd === 'calibrate' ? async () => { let via = ''; const c = await calibrate({ askImpl: async (p) => { const r = await llm([{ role: 'user', content: p }], { max: 1500, temperature: 0, prefer: JUDGE_PREF }); via = r.via; return r.text; }, gap: 2500, maxChars: 24000 }); console.log(JSON.stringify({ via, separated: c.separated, rows: c.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })) })); return c.separated ? 0 : 1; }
+    : cmd === 'calibrate' ? async () => { let via = ''; const c = await calibrate({ askImpl: async (p) => { const r = await llm([{ role: 'user', content: p }], { max: 1500, temperature: 0, prefer: JUDGE_PREF }); via = r.via; return r.text; }, gap: 2500, maxChars: 24000, fixtures: STUDIO_FIXTURES }); console.log(JSON.stringify({ via, separated: c.separated, rows: c.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })) })); return c.separated ? 0 : 1; }
     : null;
   if (!go) { console.error('usage: node tools/studio-make.mjs episode [--dry] | short [--out dir] | calibrate'); process.exit(2); }
   go().then((code) => process.exit(code), (e) => { console.log('not published: ' + (e && e.message || e)); process.exit(1); });

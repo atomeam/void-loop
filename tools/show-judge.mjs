@@ -53,9 +53,9 @@ if (process.argv[1] && process.argv[1].endsWith('show-judge.mjs')) {
   process.exit(live.separated ? 0 : 1);
 }
 
-export async function calibrate({ askImpl = ask, gap = 5300, maxChars = 400 } = {}) {
+export async function calibrate({ askImpl = ask, gap = 5300, maxChars = 400, fixtures = FIXTURES } = {}) {
   const rows = [];
-  for (const fixture of FIXTURES) {
+  for (const fixture of fixtures) {
     const scored = await blindMin(fixture.text, { askImpl, gap, seed: fixture.id.length * 1000, maxChars });
     rows.push({ id: fixture.id, kind: fixture.kind, ...scored });
     await sleep(gap);
