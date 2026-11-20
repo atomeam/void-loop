@@ -144,7 +144,7 @@ export async function build(ctx, detail) {
         const th = (j / M) * 6.2832, cs = Math.cos(th), sn = Math.sin(th), lower = sn < 0, side = sp.w * Math.sign(cs) * Math.pow(Math.abs(cs), lower ? 0.55 : 0.8);
         let y = lower ? -0.0 + sn * 0.0 : sp.h * Math.pow(Math.max(0, sn), 0.78);
         if (lower) y = Math.max(0, sp.h * 0.0) + (ctx.surface === 'glass' ? 0 : 0) + sn * 0.0; // the sole is flat
-        const lift = lower ? 0.07 * (0.5 + 0.5 * wave) * live * st.speedRel * (ctx.surface === 'glass' ? 1.4 : 1) : 0, n = (i * (M + 1) + j) * 3;
+        const lift = lower ? 0.07 * ((1 + wave) / 2) * live * st.speedRel * (ctx.surface === 'glass' ? 1.4 : 1) : 0, n = (i * (M + 1) + j) * 3;
         bp[n] = sp.p.x + sp.s.x * side; bp[n + 1] = sp.p.y + y + lift * (1 - Math.abs(cs)) * 0.0 + (lower ? lift * Math.abs(cs) * 0.0 : 0) + (lower ? Math.max(0, lift * (1 - Math.abs(cs))) : 0); bp[n + 2] = sp.p.z + sp.s.z * side;
       }
     }
