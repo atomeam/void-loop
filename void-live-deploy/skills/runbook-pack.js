@@ -24,7 +24,7 @@ async function run(text, api) {
   const el = showPage((p) => { p.innerHTML = '<h2>Runbook pack</h2><div class="sub">building…</div>'; });
   const pack = [
     `<h2>Runbook pack: ${esc(idea)}</h2>`,
-    `<p><strong>Purpose:</strong> Verse owns the heavy lifting. These runbooks are the procedures the client does not write or keep. Each system has a short SOP: what it does, how it runs, who owns it, and what to do if it needs attention.</p>`,
+    `<p><strong>Purpose:</strong> Verse owns the hard work. These runbooks are the procedures the client does not write or keep. Each system has a short SOP: what it does, how it runs, who owns it, and what to do if it needs attention.</p>`,
     `<h3>Standard operating procedures</h3><ul>`,
     `<li><strong>Intake & clarify:</strong> Capture the raw ask, extract requirements, confirm ownership split. Client reviews once; Verse maintains.</li>`,
     `<li><strong>Design & connect:</strong> Reuse existing tools first (see void.existing-tools.md). Document the connections and the confirm-line approvals.</li>`,
@@ -33,7 +33,7 @@ async function run(text, api) {
     `</ul>`,
     `<h3>What the client keeps</h3>`,
     `<p>The outcome and the final yes. Verse keeps the procedures, the monitors, and the running automations.</p>`,
-    `<div class="src">Source: A-to-Mind delivery practice — we own the heavy lifting</div>`
+    `<div class="src">Source: A-to-Mind delivery practice — verse does the hard work</div>`
   ].join('');
   el.innerHTML = pack;
   return 'runbook-pack';
