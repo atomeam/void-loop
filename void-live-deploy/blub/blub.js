@@ -1,7 +1,7 @@
 // blub: a real-time 3D blobfish, drawn on the graphics card by ray marching a distance field (WebGL2).
 // Wet translucent skin (thickness-based glow through the flesh, wrap light, fresnel sheen, two highlights), caustics on the sea floor and on the fish,
 // a sagging nose, a downturned mouth, sunken eyes that follow the pointer, breathing, blinking and a "blub" that opens the mouth and lets bubbles go.
-// A phone gets a lighter tier (fewer steps, smaller picture) and the picture scales itself to hold the frame rate. Reduced motion draws one still frame.
+// A phone gets a lighter tier (fewer steps) and the picture scales itself to hold the frame rate. Reduced motion draws one still frame.
 const q = (s) => document.querySelector(s);
 const canvas = q('#blub'), stage = q('#stage');
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches, saver = !!(navigator.connection && navigator.connection.saveData);
@@ -154,10 +154,10 @@ try {
   ok = true;
 } catch (e) { console.warn('blub: the 3D picture is not available here (' + e.message + '); showing the photo'); }
 if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 'This browser cannot draw the 3D blobfish, so here is a real one.'; } else {
-  let scale = soft ? .3 : phone || saver ? .5 : .85, mx = 0, my = 0, tx = 0, ty = 0, blub = 0, turn = 0, turnTo = 0, last = performance.now(), slow = 0, fast = 0, frames = 0, t0 = last, blinkAt = 3;
+  let scale = soft ? .3 : saver ? .5 : phone ? .8 : 1, mx = 0, my = 0, tx = 0, ty = 0, blub = 0, turn = 0, turnTo = 0, last = performance.now(), slow = 0, fast = 0, frames = 0, t0 = last, blinkAt = 3;
   const steps = soft ? 36 : phone || saver ? 44 : 80;
   window.__blub = { frames: 0, scale, steps, tier: soft ? 'software' : phone ? 'phone' : 'desktop' };
-  function size() { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); canvas.width = Math.max(64, Math.round(r.width*dpr*scale)); canvas.height = Math.max(64, Math.round(r.height*dpr*scale)); gl.viewport(0, 0, canvas.width, canvas.height); }
+  function size() { const r = stage.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 3); // the device's own pixel ratio (a phone is 3): the picture is no longer drawn small and stretched canvas.width = Math.max(64, Math.round(r.width*dpr*scale)); canvas.height = Math.max(64, Math.round(r.height*dpr*scale)); gl.viewport(0, 0, canvas.width, canvas.height); }
   size(); addEventListener('resize', size);
   stage.addEventListener('pointermove', (e) => { const r = stage.getBoundingClientRect(); tx = ((e.clientX - r.left)/r.width - .5)*2; ty = -((e.clientY - r.top)/r.height - .5)*2; });
   stage.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
@@ -172,7 +172,7 @@ if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 
     gl.uniform2f(U.R, canvas.width, canvas.height); gl.uniform1f(U.T, T); gl.uniform2f(U.M, mx, my); gl.uniform1f(U.BLUB, Math.sin(Math.min(1, blub)*Math.PI)); gl.uniform1f(U.BLINK, blink); gl.uniform1f(U.TURN, turn); gl.uniform1i(U.STEPS, steps);
     gl.drawArrays(gl.TRIANGLES, 0, 3); window.__blub.frames = ++frames;
     if (dt > .024) { slow++; fast = 0; } else if (dt < .0185) { fast++; slow = Math.max(0, slow - 1); }
-    if (slow > 8 && scale > .25) { scale = Math.max(.25, scale*.8); slow = 0; size(); } else if (fast > 240 && scale < (phone ? .7 : 1)) { scale = Math.min(phone ? .7 : 1, scale*1.15); fast = 0; size(); }
+    if (slow > 8 && scale > .25) { scale = Math.max(.25, scale*.8); slow = 0; size(); } else if (fast > 240 && scale < 1) { scale = Math.min(1, scale*1.15); fast = 0; size(); }
     window.__blub.scale = +scale.toFixed(2);
     if (!reduced) requestAnimationFrame(frame);
   }
