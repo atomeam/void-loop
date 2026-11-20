@@ -18,7 +18,7 @@ A news headline that is only a backlash ("Midterm data-center backlash hits") is
 
 ## Finding them
 
-A visitor who types a public run's name, "what automations does Verse run", or "Verse's scheduled automations" opens the public list (`skills/verse-runs.js`). Personal runs are not listed and are not matched. The answer engine also treats those list asks as questions about Verse (`lib/self-context.js`).
+A visitor who types a public run's name, "what automations does Verse run", or "Verse's scheduled automations" opens the public list (`skills/verse-runs.js`). Personal runs are not listed and are not matched.
 
 ## Writing public asks
 

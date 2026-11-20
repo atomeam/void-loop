@@ -50,7 +50,6 @@ test('a pasted Growth inbox item block is read, and a private one is not', () =>
 });
 
 import { publicRuns, namedRun, isVerseRunsAsk, runsFact, nameKey } from '../void-live-deploy/lib/verse-runs.js';
-import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import skill from '../void-live-deploy/skills/verse-runs.js';
 
 test('public runs are findable by name, and personal names stay off the list', () => {
@@ -76,12 +75,7 @@ test('public runs are findable by name, and personal names stay off the list', (
   assert.doesNotMatch(fact, /Execution stamina plan|Weekly fuel plan|Daily work plan|stamina|eat and when to stop/);
 });
 
-test('the answer engine treats a scheduled-runs ask as about Verse, and the card lists only public names', () => {
-  assert.equal(isSelfAsk('what automations does Verse run'), true);
-  assert.equal(isSelfAsk("Verse's scheduled automations"), true);
-  const facts = selfFacts({});
-  assert.match(facts, /Capability and platform scout/);
-  assert.doesNotMatch(facts, /Execution stamina plan/);
+test('the card lists only public names', () => {
   let html = '';
   const ret = skill.run('Capability and platform scout', {
     esc: (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])),
