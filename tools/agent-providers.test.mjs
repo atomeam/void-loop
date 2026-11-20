@@ -32,11 +32,11 @@ test('every provider is a live entry in the free registry and Gemini takes its m
 });
 test('rotation: a 429 on one model moves to the next, a daily quota parks it for the day, and the next ask skips it', async () => {
   const env = { DB: d1(), GROQ_API_KEY: 'k' }, calls = [];
-  const fetchFn = async (url, o) => { const model = JSON.parse(o.body).model; calls.push(model); return model === 'llama-3.3-70b-versatile' ? new Response('tokens per day (TPD)', { status: 429 }) : ok('hello there'); };
+  const fetchFn = async (url, o) => { const model = JSON.parse(o.body).model; calls.push(model); return model === 'openai/gpt-oss-120b' ? new Response('tokens per day (TPD)', { status: 429 }) : ok('hello there'); };
   const a = await answerFree(env, msgs, { fetchFn });
-  assert.equal(a.text, 'hello there'); assert.equal(a.provider, 'groq'); assert.equal(a.model, 'openai/gpt-oss-120b'); assert.deepEqual(calls, ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b']);
-  assert.equal(await parked(env, 'groq', 'llama-3.3-70b-versatile'), true);
-  calls.length = 0; await answerFree(env, msgs, { fetchFn }); assert.deepEqual(calls, ['openai/gpt-oss-120b'], 'the spent model is not asked again today');
+  assert.equal(a.text, 'hello there'); assert.equal(a.provider, 'groq'); assert.equal(a.model, 'openai/gpt-oss-20b'); assert.deepEqual(calls, ['openai/gpt-oss-120b', 'openai/gpt-oss-20b']);
+  assert.equal(await parked(env, 'groq', 'openai/gpt-oss-120b'), true);
+  calls.length = 0; await answerFree(env, msgs, { fetchFn }); assert.deepEqual(calls, ['openai/gpt-oss-20b'], 'the spent model is not asked again today');
 });
 test('every provider out: nothing answers, the exhausted check says so, and an empty answer counts as a miss, not a reply', async () => {
   const env = { DB: d1(), GROQ_API_KEY: 'k' };
@@ -59,7 +59,7 @@ test('a task is answered by the next provider when Workers AI says its day is sp
     await env.DB.prepare('INSERT INTO void_agent_tasks (id, thread, ask, status, steps, created) VALUES (?, ?, ?, ?, ?, ?)').bind(id, 'abcdefghijklmnop1', 'what is 2 plus 2', 'queued', '[]', Date.now()).run();
     await agent.run(env, 'https://x.test', id, 'what is 2 plus 2', 'abcdefghijklmnop1');
     const t = await env.DB.prepare('SELECT status, tier, steps FROM void_agent_tasks WHERE id = ?').bind(id).first();
-    assert.equal(t.status, 'done'); assert.equal(t.tier, 'free via groq'); assert.match(t.steps, /Answered by Groq \(llama-3\.3-70b-versatile\): free, 0 cents/);
+    assert.equal(t.status, 'done'); assert.equal(t.tier, 'free via groq'); assert.match(t.steps, /Answered by Groq \(openai\/gpt-oss-120b\): free, 0 cents/);
     assert.equal(await parked(env, 'workers-ai', ''), true, 'Workers AI is parked for the day');
     const cap = await capacityOf(env); assert.equal(cap.find((r) => r.id === 'groq').answeredToday, 1);
   } finally { globalThis.fetch = realFetch; }

@@ -5,12 +5,13 @@
 // task does not knock on a closed door; the park is one row in lib/daily-cap.js's counter, shared by every edge location. One account per service, no
 // new accounts, no stacked keys. Gemini and OpenRouter free tiers may train on prompts (resources/free.json: "never send visitor data"), so a visitor's ask
 // goes to them only when AGENT_PRIVATE_FREE is "on"; the house lane's own exam (owner-signed) may always use them.
+// Groq's free-plan models (console.groq.com/docs/models, 2026-11-20): gpt-oss-120b, gpt-oss-20b, qwen3.8-27b; llama-3.3-70b-versatile is now Contact Sales.
 // Tests: tools/agent-providers.test.mjs.
 import { cap, peek, dayOf } from './daily-cap.js';
 import { GEMINI_MODELS } from './models.js';
 
 export const PROVIDERS = Object.freeze([
-  { id: 'groq', name: 'Groq', key: 'GROQ_API_KEY', url: 'https://api.groq.com/openai/v1/chat/completions', models: ['llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'], perModelDay: 1000, private: false, registry: 'groq-free' },
+  { id: 'groq', name: 'Groq', key: 'GROQ_API_KEY', url: 'https://api.groq.com/openai/v1/chat/completions', models: ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.8-27b'], perModelDay: 1000, private: false, registry: 'groq-free' },
   { id: 'gemini', name: 'Google Gemini', key: 'GEMINI_API_KEY', url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', models: GEMINI_MODELS, perModelDay: 250, private: true, registry: 'gemini-free' },
   { id: 'openrouter', name: 'OpenRouter', key: 'OPENROUTER_API_KEY', url: 'https://openrouter.ai/api/v1/chat/completions', models: ['meta-llama/llama-3.3-70b-instruct:free'], perModelDay: 50, private: true, registry: 'openrouter-free' },
 ]);
@@ -26,7 +27,8 @@ export function kindOf(status, message = '', retryAfter = 0) {
   if (status === 404 || status === 400 || status === 403) return 'model';
   return 'error';
 }
-export async function park(env, id, model, kind, now = Date.now()) { if (kind === 'day' || kind === 'minute') await cap(env, pk(id, model, kind === 'day' ? dayOf(now) : minuteOf(now)), 1e9, now); }
+// a model id the provider does not serve (Groq's free plan lost llama-3.3-70b-versatile) is skipped for the minute, not asked on every task
+export async function park(env, id, model, kind, now = Date.now()) { if (kind === 'day' || kind === 'minute' || kind === 'model') await cap(env, pk(id, model, kind === 'day' ? dayOf(now) : minuteOf(now)), 1e9, now); }
 export async function parked(env, id, model, now = Date.now()) { return (await peek(env, pk(id, model, dayOf(now)), now)) > 0 || (await peek(env, pk(id, model, minuteOf(now)), now)) > 0; }
 /** the providers this deploy can reach and may use for this traffic: a key is set, and a prompt-training free tier only for the owner's own traffic or when switched on. Pure. */
 export const usable = (env, { owner = false } = {}) => PROVIDERS.filter((p) => env && env[p.key] && (!p.private || owner || env.AGENT_PRIVATE_FREE === 'on'));
