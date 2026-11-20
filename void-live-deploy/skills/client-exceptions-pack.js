@@ -1,7 +1,7 @@
 /**
  * client-exceptions-pack skill — package a client-facing card that lists the few exceptions or decisions
  * the client still makes against the systems Verse owns completely, so the client does less and
- * "Verse owns the heavy lifting" is clear for selling and delivery.
+ * "Verse owns the hard work" is clear for selling and delivery.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "exceptions pack for my idea: automate invoice reminders",
  * "what does the client still decide for this business system",
