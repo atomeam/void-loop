@@ -55,7 +55,7 @@ async function run(text, api) {
   const pack = packFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Client receipt: ' + esc(name) + '</h2>'
-      + '<p class="sub">One page of what Verse owns so the client does less. We package the heavy lifting.</p>'
+      + '<p class="sub">One page of what Verse owns so the client does less. We package the hard work.</p>'
       + '<h3>Systems Verse owns</h3><ul>' + pack.systems.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>Running automations</h3><ul>' + pack.automations.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>Monitors</h3><ul>' + pack.monitors.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
