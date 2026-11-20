@@ -71,7 +71,9 @@ export async function openRegenPr({ gh, run, repo, prs, log = console.log, root 
       const changed = (await regen(dir, log)).filter((p) => p !== 'node_modules');
       if (!changed.length) { log('main regen: every generated card is current'); return null; }
       const branch = BRANCH + sha.slice(0, 7);
-      execFileSync('git', ['add', '-A', '--', '.', ':!node_modules'], { cwd: dir });
+      // the node_modules link is ignored, and naming it in a pathspec makes git add fail (the 2026-11-20 sweep), so it goes first
+      rmSync(resolve(dir, 'node_modules'), { force: true });
+      execFileSync('git', ['add', '-A'], { cwd: dir });
       execFileSync('git', ['commit', '-q', '-m', 'Main regenerates its cards: unlisted skills adopted, generated files current'], { cwd: dir });
       execFileSync('git', ['push', '-q', 'origin', 'HEAD:refs/heads/' + branch], { cwd: dir });
       const body = 'Verse regenerated what main had stale (tools/main-regen.mjs): ' + changed.length + ' file(s).\n\n' + changed.slice(0, 40).map((p) => '- `' + p + '`').join('\n');
