@@ -46,7 +46,7 @@ export function formOk(want, text) {
 /** correctness 0-100, with the plain labels of the facts the answer lacks. Pure. */
 export function correctness(q, text) {
   const t = String(text || '');
-  if (!t.trim() || REFUSES.test(t)) return { score: 0, missing: (q.facts || []).map((f) => f.say) };
+  if (!t.trim() || (REFUSES.test(t) && q.want !== 'honest')) return { score: 0, missing: (q.facts || []).map((f) => f.say) };
   const miss = (q.facts || []).filter((f) => !rx(f.re).test(t));
   return { score: pct(100 * ((q.facts || []).length - miss.length) / Math.max(1, (q.facts || []).length)), missing: miss.map((f) => f.say) };
 }
@@ -54,7 +54,7 @@ export function correctness(q, text) {
 export function usefulness(q, text, status = 'done') {
   const t = String(text || ''), missing = [];
   let s = 0;
-  const answered = status === 'done' && words(t).length >= 4 && !REFUSES.test(t);
+  const answered = status === 'done' && words(t).length >= 4 && !(REFUSES.test(t) && q.want !== 'honest');
   if (answered) s += 40; else missing.push(status !== 'done' ? 'a finished answer (the task ended as ' + status + ')' : 'an answer, not a dodge');
   const use = q.use || [], hit = use.filter((u) => rx(u.re).test(t));
   s += use.length ? 30 * hit.length / use.length : (answered ? 30 : 0);

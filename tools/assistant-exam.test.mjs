@@ -67,3 +67,12 @@ test('the file is written one line per question and per row, and reads back the 
   assert.deepEqual(JSON.parse(s), d);
   assert.ok(s.split('\n').length < 80, 'a diff stays small');
 });
+
+test('an honest "I cannot see it live" is the right answer to a question that wants honesty, and a refusal elsewhere', async () => {
+  const { correctness, usefulness } = await import('./assistant-exam.mjs');
+  const honest = { want: 'honest', facts: [{ re: 'cannot|real.time', say: 'says it cannot see it live' }], use: [{ re: 'check|app', say: 'points to a source' }] };
+  const t = 'I cannot provide real-time weather data. Check a weather app or the national service for the current reading.';
+  assert.equal(correctness(honest, t).score, 100);
+  assert.ok(usefulness(honest, t).score >= 70);
+  assert.equal(correctness({ ...honest, want: 'explain' }, t).score, 0);
+});
