@@ -40,7 +40,8 @@ test('a full cycle makes one original game; it stays hidden under the Debris Fie
   const shown = applyUpdate(book, made.game, { fun: 90, note: 'Update 2: the last room lights', at: 't3' });
   assert.ok(shown.shown.includes('lumen-drift'));
   assert.equal(funOf(shown, 'debris-field'), 60);
-  assert.equal(decide({ before: 40, score: 40 }).ship, true);
+  assert.equal(decide({ before: 40, score: 40 }).ship, false, 'an unchanged score is not an update');
+  assert.equal(decide({ before: 40, score: 41 }).ship, true);
   assert.equal(decide({ before: 40, score: 30, attempt: 2 }).retry, false);
   assert.equal(scoreFrom({ danger: 10, goal: 10, boss: 10, juice: 10, phone: 10, fair: 10, end: 10, fun: 10, polish: 10 }), 100);
   assert.match(bornFrom("export const id = 'block-fall'; export const title = 'Tetris Night'; export const whatsNew = 'Update 1: blocks fall in a well.';", 'void-live-deploy/skills/block-fall-rules.js', new Set()).why, /commercial/);

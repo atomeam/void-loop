@@ -95,6 +95,8 @@ export function decide({ before = null, score = null, broken = '', attempt = 1, 
   const after = hold ? (before == null ? 50 : before) : score;
   if (after == null || !Number.isFinite(+after)) return { ship: false, retry: attempt < 2, why: 'the play had no score' };
   if (before != null && after < before) return { ship: false, retry: attempt < 2, why: 'the score dropped from ' + before + ' to ' + after };
+  // an update has to make the game better, not just keep it the same (2026-11-20: tweaks like "requests fall slightly faster" shipped at an unchanged 50)
+  if (!hold && before != null && after === before) return { ship: false, retry: attempt < 2, why: 'the score stayed at ' + after + ': an update has to be felt' };
   return { ship: true, retry: false, score: after, why: 'score ' + after + (hold ? ', the model was quiet and the play stayed clean' : '') };
 }
 /** Fold one result into the book. Debris Field and Gap Glide keep the notes they already have. Pure. */

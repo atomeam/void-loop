@@ -1,6 +1,8 @@
 import { GAMES, TITLES, ASKS } from '/lib/ladder.js';
 import { drive } from '/lib/studio-play.js';
 import { HOST } from '/arcade/host.js';
+import { listed } from '/lib/game-shelf.js';
+const PAGE = { 'void-breaker': '/games/void-breaker/' }; // rebuilt games open full screen
 const MORE = [
   ['Chess', 'play chess', 'You play white. Verse plays black.'],
   ['Checkers', 'play checkers', 'You take the light pieces. Verse takes the dark ones.'],
@@ -37,7 +39,7 @@ const MORE = [
 ];
 
 const $ = (id) => document.getElementById(id);
-const games = $('games'), play = $('play'), how = $('how');
+const games = $('games'), play = $('play'), how = $('how'), rebuild = $('rebuild');
 let round = 0;
 
 function paint(id) {
@@ -74,10 +76,11 @@ function mark(id) {
 
 for (const id of GAMES) {
   const title = HOST[id] ? HOST[id].how : 'Opens on the stage, where this game already lives.';
+  const shelf = listed(id) ? games : rebuild;
   if (!HOST[id]) {
     const a = document.createElement('a');
-    a.className = 'chip'; a.href = '/?q=' + encodeURIComponent(ASKS[id]); a.textContent = TITLES[id]; a.title = title; a.dataset.id = id;
-    games.append(a);
+    a.className = 'chip'; a.href = PAGE[id] || '/?q=' + encodeURIComponent(ASKS[id]); a.textContent = TITLES[id]; a.title = PAGE[id] ? 'Opens full screen.' : title; a.dataset.id = id;
+    shelf.append(a);
     continue;
   }
   const b = document.createElement('button');
@@ -88,7 +91,7 @@ for (const id of GAMES) {
     if (q.get('play') !== id) history.replaceState(null, '', '/arcade/?play=' + encodeURIComponent(id));
     paint(id);
   });
-  games.append(b);
+  shelf.append(b);
 }
 
 for (const [label, ask, line] of MORE) {
@@ -101,4 +104,4 @@ function moreAppend(a) { $('more').append(a); }
 
 const open = new URLSearchParams(location.search).get('play');
 if (HOST[open]) { how.textContent = HOST[open].stick ? '' : HOST[open].how; mark(open); paint(open); }
-else if (GAMES[0]) how.textContent = 'Pick a game. Debris Field plays on this page, against Verse. The others open on the stage, with every rule they already have.';
+else if (GAMES[0]) how.textContent = 'Verse Breaker opens full screen. The games being rebuilt are below: Debris Field and Gap Glide play on this page, the others open on the stage.';

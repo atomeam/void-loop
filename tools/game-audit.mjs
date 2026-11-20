@@ -8,6 +8,7 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GAMES } from '../void-live-deploy/lib/ladder.js';
+import { SHELF, MIN, listed } from '../void-live-deploy/lib/game-shelf.js';
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
@@ -38,6 +39,20 @@ export function check(manifest, ids = GAMES, extra = []) {
   return { bad, pending };
 }
 
+/** the fun gate (owner, 2026-11-20: "none of the games are good or fun"): a game on the front shelf needs a passing fun probe
+ * (tools/game-fun.mjs --write) for the update it is on now, and its shelf marks are for that same update. Pure. */
+export function checkShelf(manifest, fun, shelf = SHELF) {
+  const bad = [], rows = (manifest && manifest.games) || {}, rec = (fun && fun.games) || {};
+  for (const [id, row] of Object.entries(shelf)) {
+    if (!rows[id]) { bad.push('the shelf names ' + id + ', which has no manifest row'); continue; }
+    if (!listed(id)) continue;
+    const v = rows[id].version, r = rec[id];
+    if (row.update !== v) bad.push(id + ' is listed with marks for update ' + row.update + ' but is on update ' + v + ': mark it again');
+    if (!r || !r.pass || r.update !== v) bad.push(id + ' is listed at ' + row.score + ' (at least ' + MIN + ') without a passing fun probe for update ' + v + ': node tools/game-fun.mjs ' + id + ' --write');
+  }
+  return bad;
+}
+
 export function checkSources() {
   const arcade = need(ARCADE, ['getContext(', 'devicePixelRatio', 'requestFullscreen'], 'full-screen canvas');
   const controls = need(CONTROLS, ['keydown', 'pointerdown', 'AudioContext'], 'keyboard, touch and audio controls');
@@ -51,9 +66,11 @@ function main(argv) {
   const pages = gamePages();
   const { bad, pending } = check(JSON.parse(read('data/game-manifest.json')), GAMES, pages);
   bad.push(...checkSources());
+  const funFile = resolve(root, 'data/game-fun.json');
+  bad.push(...checkShelf(JSON.parse(read('data/game-manifest.json')), existsSync(funFile) ? JSON.parse(read('data/game-fun.json')) : {}));
   if (argv.includes('--report')) for (const id of pending) console.log('pending full-screen retrofit: ' + id);
   if (bad.length) { console.log('FAIL game-audit: ' + bad.join(', ')); return 1; }
-  console.log('ok game-audit: ' + (GAMES.length + pages.length) + ' games have a manifest' + (pending.length ? ', ' + pending.length + ' still played as cards' : ', all full-screen'));
+  console.log('ok game-audit: ' + (GAMES.length + pages.length) + ' games have a manifest, ' + Object.keys(SHELF).filter(listed).length + ' on the front shelf with a passing fun probe' + (pending.length ? ', ' + pending.length + ' still played as cards' : ', all full-screen'));
   return 0;
 }
 

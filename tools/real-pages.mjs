@@ -832,15 +832,16 @@ Object.assign(SPECS, {
   '/arcade/': async (t) => {
     await t.p.setViewportSize({ width: 1440, height: 900 });
     t.ok(/Verse Arcade/.test(await t.text('h1')), 'the title is Verse Arcade');
-    t.ok((await t.p.locator('#games button').count()) === 2, 'Debris Field and Gap Glide play on this page');
-    t.ok((await t.p.locator('#games a').count()) >= 6, 'the games already on the stage are linked');
-    await t.click('#games button[data-id="debris-field"]');
+    t.ok((await t.p.locator('#games a[href="/games/void-breaker/"]').count()) === 1, 'the rebuilt Verse Breaker is up front and opens full screen');
+    t.ok((await t.p.locator('#rebuild button').count()) === 2, 'Debris Field and Gap Glide still play on this page, under Being rebuilt');
+    t.ok((await t.p.locator('#games a, #rebuild a').count()) >= 6, 'the games already on the stage are linked');
+    await t.click('#rebuild button[data-id="debris-field"]');
     await t.p.waitForTimeout(200);
     await t.p.keyboard.press('Space');
     await t.p.waitForTimeout(400);
     t.ok(await t.p.locator('#play canvas').count() === 1, 'Debris Field draws on the page');
     t.ok(/play=debris-field&seed=/.test(await t.p.locator('#play a').first().getAttribute('href') || ''), 'the share link carries the round');
-    t.ok(/crystal/i.test(await t.p.locator('#games button[data-id="debris-field"]').getAttribute('title') || ''), 'the round says what the crystals do');
+    t.ok(/crystal/i.test(await t.p.locator('#rebuild button[data-id="debris-field"]').getAttribute('title') || ''), 'the round says what the crystals do');
     t.ok(await t.p.locator('#play button', { hasText: 'Left' }).count() === 0, 'no generic direction row on this round');
     const wide = await t.p.locator('#play canvas').boundingBox();
     const view = t.p.viewportSize();
