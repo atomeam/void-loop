@@ -4,17 +4,17 @@
 
 export const NAV = Object.freeze([
   { href: '/', label: 'Ask' },
-  { href: '/team/', label: 'Crew' },
-  { href: '/bots/', label: 'Drones' },
-  { href: '/agent/', label: 'Envoy' },
-  { href: '/films/', label: 'Holovids' },
+  { href: '/team/', label: 'Team' },
+  { href: '/bots/', label: 'Bots' },
+  { href: '/agent/', label: 'Agent' },
+  { href: '/films/', label: 'Videos' },
   { href: '/arcade/', label: 'Arcade' },
   { href: '/tools/', label: 'Tools' }, // every tool page, one click from any page (owner, 2026-11-20: could not get to the tools pages)
-  { href: '/podcast/', label: 'Out Loud' }, // Verse Out Loud, a new episode every day (owner, 2026-11-06: "where is my daily verse podcast")
-  { href: '/treasury/', label: 'Hoard' }, { href: '/starboard/', label: 'Starboard' },
-  { href: '/scoreboard/', label: 'Star Chart' },
-  { href: '/security/', label: 'Shields' },
-  { href: '/limits/', label: 'Event Horizon' },
+  { href: '/podcast/', label: 'Podcast' }, // Verse's daily podcast (owner, 2026-11-06: "where is my daily verse podcast")
+  { href: '/treasury/', label: 'Treasury' }, { href: '/starboard/', label: 'Starboard' },
+  { href: '/scoreboard/', label: 'Scoreboard' },
+  { href: '/security/', label: 'Security' },
+  { href: '/limits/', label: 'Limits' },
   { href: '/contribute/', label: 'Contribute' },
 ]);
 

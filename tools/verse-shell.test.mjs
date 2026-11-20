@@ -13,14 +13,14 @@ const read = (p) => readFileSync(resolve(root, p), 'utf8');
 test('the nav names the shell pages, and the current page is the longest match', () => {
   assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/films/', '/arcade/', '/tools/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
   assert.equal(currentNav('/arcade/').label, 'Arcade');
-  assert.equal(currentNav('/scoreboard/').label, 'Star Chart');
-  assert.equal(currentNav('/limits/').label, 'Event Horizon');
+  assert.equal(currentNav('/scoreboard/').label, 'Scoreboard');
+  assert.equal(currentNav('/limits/').label, 'Limits');
   assert.equal(currentNav('/').label, 'Ask');
-  assert.equal(currentNav('/team/').label, 'Crew');
-  assert.equal(currentNav('/team/join/abc').label, 'Crew');
-  assert.equal(currentNav('/bots/').label, 'Drones');
-  assert.equal(currentNav('/agent').label, 'Envoy');
-  assert.equal(currentNav('/films/').label, 'Holovids');
+  assert.equal(currentNav('/team/').label, 'Team');
+  assert.equal(currentNav('/team/join/abc').label, 'Team');
+  assert.equal(currentNav('/bots/').label, 'Bots');
+  assert.equal(currentNav('/agent').label, 'Agent');
+  assert.equal(currentNav('/films/').label, 'Videos');
   assert.equal(currentNav('/nope'), null);
 });
 
