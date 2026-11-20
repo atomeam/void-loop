@@ -6,5 +6,7 @@ export async function run(ctx) {
   try { const ch = await import('../charter.mjs'), c = ch.check(); if (c.standingMissing.length) ch.restore(); charter = ' Charter: ' + (c.standingMissing.length ? 'restored ' + c.standingMissing.length + ' lines' : 'whole') + (c.promptsDropped.length ? ', prompts that dropped it: ' + c.promptsDropped.join(' ') : '') + '.'; } catch (e) { charter = ' Charter check failed: ' + String(e && e.message || e).slice(0, 60); }
   const { lane } = await import('../quality-engine.mjs');
   const r = await lane({ limit: 4, dry: ctx.dry, env: ctx.env });
-  return { last: r.last + charter, ok: true, minutes: r.minutes, note: r.note, paidCents: 0 };
+  let shown = '';
+  try { const { run: show } = await import('../win-post.mjs'); const s = await show({ env: ctx.env, dry: ctx.dry }); shown = ' Showcase: ' + (s.note || s.last || ''); } catch (e) { shown = ' Showcase: ' + String(e && e.message || e).slice(0, 80); }
+  return { last: r.last + charter + shown, ok: true, minutes: r.minutes, note: r.note, paidCents: 0 };
 }
