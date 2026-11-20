@@ -19,9 +19,9 @@
  },
  "things": {
   "snail": {
-   "check": "accuracy",
+   "check": "performance",
    "side": "correct",
-   "words": "the model matches the real thing: anatomy, size, structure (not measured yet)"
+   "words": "a steady 60 frames a second with nothing in the error log (now 17, needs more than 92)"
   }
  }
 }
