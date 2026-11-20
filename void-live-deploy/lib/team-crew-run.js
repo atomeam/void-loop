@@ -337,12 +337,13 @@ export async function crewTick(env, now = Date.now()) {
 const dayKey = (now) => new Date(now).toISOString().slice(0, 10);
 /** the repairs Verse gave up on and the wants stuck at 0 (lib/team-priorities.js prioritize gaveUp) leave the queue as 'set aside', with why */
 export async function setAside(env, gone, now) {
-  for (const g of (gone || []).slice(0, 40)) {
-    try {
-      await env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(('set aside by Verse\'s attention: ' + g.why).slice(0, 300), new Date(now).toISOString(), g.id).run();
-      if (g.want) await env.DB.prepare("UPDATE void_team_wants SET state = 'set aside' WHERE key = ? AND state = 'open'").bind(g.want).run();
-    } catch (_) { /* the next run tries again */ }
-  }
+  const list = (gone || []).slice(0, 40), at = new Date(now).toISOString();
+  if (!list.length) return;
+  const stmts = list.flatMap((g) => [
+    env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(('set aside by Verse\'s attention: ' + g.why).slice(0, 300), at, g.id),
+    ...(g.want ? [env.DB.prepare("UPDATE void_team_wants SET state = 'set aside' WHERE key = ? AND state = 'open'").bind(g.want)] : []),
+  ]);
+  try { await env.DB.batch(stmts); } catch (_) { /* the next run tries again */ }
 }
 export async function prioritizeRun(env, ev, now, { force = false } = {}) {
   let jobs = [], wants = [];
