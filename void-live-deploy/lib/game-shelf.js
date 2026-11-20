@@ -8,7 +8,7 @@ export const MARKS = ['controls', 'start', 'goal', 'challenge', 'juice', 'replay
 const row = (update, m, why) => ({ update, marks: Object.fromEntries(MARKS.map((k, i) => [k, m[i]])), score: Math.round((m.reduce((a, b) => a + b, 0) / m.length) * 10) / 10, why });
 export const SHELF = {
   'void-breaker': row(3, [8, 9, 8, 7, 8, 7, 7, 8], 'Rebuilt: shatter, shake, combo music, five power-ups, tougher walls, a daily wall.'),
-  'debris-field': row(1, [6, 5, 6, 5, 6, 5, 6, 7], 'The best looking of the old ones, but sound starts off, the pace is flat and nothing builds.'),
+  'debris-field': row(2, [7, 7, 7, 7, 7, 6, 6, 7], 'Update 2: beatable marks, win moments, real sound, always fires; still a 16:9 picture on a phone and no state hook for the fun probe yet.'),
   'gap-glide': row(1, [5, 6, 6, 4, 4, 3, 5, 7], 'One tap, plain gates, little feedback; it is over before it gets going.'),
   'null-sweep': row(2, [6, 7, 8, 4, 2, 3, 3, 8], 'A plain mine grid: works, but flat squares, one beep and no reason to come back.'),
   'dim-void': row(2, [6, 7, 8, 4, 2, 2, 3, 8], 'A lights-out grid with no feedback beyond a colour swap; solved once, done.'),
