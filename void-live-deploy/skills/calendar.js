@@ -12,12 +12,14 @@ import { pickKind } from '../lib/media.js';
 import { mirror } from '../lib/chat-calendar.js';
 import * as A from '../lib/agenda.js';
 import { cleanEnd } from '../lib/ask-text.js';
+import { isSpeechAsk } from '../lib/speak.js';
 // the longest ask still read as an event to add ("lunch with Ana and Sam at the cafe on Main Street next Tuesday at noon" is 14)
 export const MAX_EVENT_WORDS = 16;
 const CLEAN = cleanEnd; // one copy in lib/ask-text.js (convergence step 2, lists run 21)
 
 function gated(text) {
   const s = CLEAN(text).replace(/^(?:please\s+)/i, '');
+  if (isSpeechAsk(text) || isSpeechAsk(s)) return true; // "read this out loud: hello, how are you today?" is text-to-speech, not an event called "Read this out loud"
   if (/^schedule\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   if (/^book\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   // "pace for a 5k in 25 minutes": running maths, not a date
@@ -244,7 +246,7 @@ function summon(stageApi, opts = {}) {
 export default {
   name: 'calendar',
   examples: ['my calendar', 'agenda', "what's next", 'call Sam next Tuesday at 4', 'dentist October 12 at 3pm', 'clear calender'],
-  nearMisses: ['make a 5 minute timer', 'what is a calendar', 'schedule a meeting with Sam', 'book a call with Sam', 'time in Tokyo', 'clear the stage'],
+  nearMisses: ['make a 5 minute timer', 'what is a calendar', 'schedule a meeting with Sam', 'book a call with Sam', 'time in Tokyo', 'clear the stage', 'read this out loud: hello, how are you today?', 'text to speech hello world', 'tts: good morning'],
   match(lower, text) { return !!parseCalendar(text); },
   run,
   stageKinds: { calendar: { mount, summon } },

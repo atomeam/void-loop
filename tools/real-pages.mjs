@@ -791,6 +791,35 @@ SPECS['/ledger/'] = async (t) => {
   await t.copies('#copycsv', 'Merge the tide tables');
   await t.share('#copylink', async (p) => { await p.waitForFunction(() => document.querySelectorAll('#rows tr').length > 0, null, { timeout: 8000 }).catch(() => {}); return (await p.inputValue('#repo')) === 'test-owner/test-repo' && (await p.getAttribute('#tab-pr', 'aria-selected')) === 'true' && /Merge the tide tables/.test(await p.locator('#rows').innerText()); });
 };
+// /games/dim-void/: a lamp puzzle on a pixel canvas; a fresh puzzle and the hint say so
+SPECS['/games/dim-void/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#level', /Level 1/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height }));
+  t.ok(cv.w === 320 && cv.h === 180, 'the pixel canvas is 320 by 180: ' + JSON.stringify(cv));
+  await t.p.click('#new'); await t.waitText('#msg', /fresh puzzle/, 5000);
+  await t.p.click('#solve'); await t.waitText('#msg', /outlined lamp/, 5000);
+  t.ok(true, 'a fresh puzzle and the hint answer in words');
+};
+// /games/null-sweep/: a mine sweep with no timer; flag mode and a fresh board say so
+SPECS['/games/null-sweep/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('#mines', /Mines \d+/, 10000);
+  const cv = await t.p.locator('#c').evaluate((e) => ({ w: e.width, h: e.height }));
+  t.ok(cv.w === 320 && cv.h === 180, 'the pixel canvas is 320 by 180: ' + JSON.stringify(cv));
+  await t.p.click('#flag'); await t.waitText('#flag', /Flag: on/, 5000);
+  await t.p.click('#new'); await t.waitText('#msg', /first tap is always safe/, 5000);
+  t.ok(true, 'flag mode and a fresh board answer in words');
+};
+// /blub/: the blobfish mascot; "Say blub" makes a word appear (or the real photo shows when the browser cannot draw 3D)
+SPECS['/blub/'] = async (t) => {
+  await t.p.reload();
+  await t.waitText('h1', /blub/, 10000);
+  const photo = await t.p.locator('#photo').evaluate((e) => !e.hidden);
+  if (!photo) { await t.p.click('#say'); await t.p.waitForSelector('.word', { timeout: 5000 }); }
+  t.ok(true, photo ? 'no 3D here: the real blobfish photo shows' : 'Say blub makes blub say a word');
+};
+SPECS['/internet-history/'] = article();
 SPECS['/kanban/'] = kanban(true);
 for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companies/', '/jobs/europe/', '/jobs/regions/', '/jobs/salary/', '/jobs/tags/']) SPECS[r] = jobs;
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();

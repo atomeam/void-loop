@@ -243,7 +243,13 @@ const beatExpr = () => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 2
   return `0.22*(${pl})+0.35*sin(2*PI*55*t)*exp(-22*mod(t,0.3))`; };
 
 /** film one script to <out>/<filmId>.mp4 and .json, then gate it */
+// Switched off for good (owner, 2026-11-20): these templates made fake breaking-news shorts about trending keywords that ended in a
+// one-line encyclopedia fact and a false free-video end card. tools/studio-make.mjs makes the films now, judged whole.
+export const RETIRED_STUDIO = 'the trend-template film studio is switched off (2026-11-20); tools/studio-make.mjs makes films';
 export async function render(script, out, { filmId, topic } = {}) {
+  throw new Error(RETIRED_STUDIO + ' (asked for ' + (filmId || (script && script.format) || 'a film') + ', ' + String(out || '') + ', ' + (topic ? 'a topic' : 'no topic') + ')');
+}
+async function renderRetired(script, out, { filmId, topic } = {}) {
   fs.mkdirSync(out, { recursive: true });
   const dir = fs.mkdtempSync(path.join(path.resolve(out), '.take-'));
   // the voice first: its lengths set the timeline

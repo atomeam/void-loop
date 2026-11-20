@@ -2,6 +2,8 @@
 
 **This is not the build list, and "no open rows here" never means there is nothing to do.** Since 2026-10-11 (cleanup step 2) every open item lives in `domains/void.frontier.md`; `node tools/next.mjs` lists them (12 open on 2026-10-12). Build from there. This file only collects new ideas (`tools/grow-ideas.mjs`) and is what Verse reads about itself (`tools/self-context.mjs`); an idea that lands here is carried onto the frontier before anyone builds it.
 
+**Fun first (owner, 2026-11-20).** Most new work is what visitors play with: games, game updates, daily challenges, cards and creative tools. Business-tool skills (client-* packs, runbooks, handoffs, delivery and status packs) are a small share: at most one in five new skills, held by `tools/fun-share.mjs` in the fast checks. A new business pack past that share fails until four fun skills land beside it.
+
 Shipped rows stay, with the main SHA. Rows are not deleted.
 
 | status | date | ask | source |
@@ -120,3 +122,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 9c15fa6 | 2026-11-18 | systems-connect-pack skill: package connections between systems for a business idea so Verse owns the integration and handoff, reducing client work | new idea by growth agent; helper/systems-connect-pack (skill on main; status correction) |
 | shipped 0133430 | 2026-11-20 | before-after-pack skill: package the before (client hours and manual steps) and after (Verse owns the systems, client does less) for a business idea so selling and delivery stay concrete and the client sees the lift | new idea by growth agent; helper/before-after-pack (skill on main; status correction) |
 | shipped 318244968 | 2026-11-20 | automation-status-pack skill: client-visible status of running automations Verse owns so the client does no watching and delivery stays reliable | new idea by growth agent; helper/automation-status-pack (skill on main; status correction) |
+| building | 2026-11-20 | we-own-it-pack skill: package a clarified business idea into a client-facing card that shows exactly what Verse owns so selling "verse does the hard work" is consistent and client work drops | new idea by growth agent; helper/we-own-it-pack |

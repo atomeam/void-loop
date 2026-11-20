@@ -21,6 +21,7 @@ import { sealArt, SEAL_CSS } from './void-seal.js';
 import { subjectOf, motifsFor, skillSubjectOf } from './card-subject.js';
 import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Verse)
 import { artSource } from './art-source.js';
+import { cardUnsafe, scrubCard } from './image-safety.js'; // fail closed: a card about nudity, sex, the explicit body or minors in such a context carries no photo (2026-11-20)
 import { sectionsOf } from './card-sections.js';
 import { badgesOf, noticeOf, themeOf } from './subject-kinds.js';
 import { isNoAnswer, disclaimsSources, UNSOURCED_LINE } from './no-answer.js'; // a refusal body is a Not found card, never a sourced answer with an "Adds to Verse" line
@@ -322,6 +323,7 @@ export function keep(el, esc, stats) {
   const h2t = el.querySelector('h2'); c.key = notFound ? 'not found' : name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
   // the art is of the subject (owner, 2026-10-17: the art should be of the subject of each card): when the answer carries a picture of the thing
   // (its source's thumbnail), the art box shows that picture in its true colour (owner, 2026-10-17: the ink filter stripped a poster's colour), under a light ink texture; with none, the plate of its kind
+  if (el.dataset.imgSafe === 'blocked' || cardUnsafe(el, el._ask || '')) scrubCard(el);
   const photoImg = [...el.querySelectorAll('img[src]')].find((i) => !i.closest('.vc-art') && /^https:\/\//.test(i.getAttribute('src') || '')), photo = photoImg ? photoImg.getAttribute('src') : '';
   // the card's subject is what its ANSWER is about (lib/card-subject.js), not the ask's words: the plate draws it, the Art Forge paints it
   const subj = own || notFound ? { nouns: [], phrase: '' } : c.isSkill ? skillSubjectOf(c.key) : subjectOf(c.key, answerText(el)); c.nouns = subj.nouns; el._vcSubject = subj.phrase;

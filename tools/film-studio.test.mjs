@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { googleTrends, wikiTop, hnStory, isPerson, summaryOf, readTrends } from './trends.mjs';
 import { topicCheck, filmWordsCheck, overlap, dayMinus } from './topic-gate.mjs';
-import { FORMATS, ORDER, fits, scriptOf, timeline, linesOf, lineChars, factsOf, nameOf, MAX_S, pageHtml, voiceCues } from './film-studio.mjs';
+import { FORMATS, ORDER, fits, scriptOf, timeline, linesOf, lineChars, factsOf, nameOf, MAX_S, pageHtml, voiceCues, render } from './film-studio.mjs';
 import { planFilms, formatOrder, scriptOk, PER_DAY, MIN_VIEWS } from './shorts-loop.mjs';
 import { toUnlist, cleanup } from './film-cleanup.mjs';
 import { hookScore, captionCheck, SAFE } from './video-gate.mjs';
@@ -121,8 +121,13 @@ assert.equal(r.listed, 1);
 
 // the workflow: a written pair of Shorts, the cleanup, a dry run that posts nothing
 const wf = fs.readFileSync(new URL('../.github/workflows/shorts.yml', import.meta.url), 'utf8');
-assert.match(wf, /node tools\/show-pipe\.mjs shorts --out media\/shorts/);
+assert.match(wf, /node tools\/studio-make\.mjs short --out media\/shorts/);
 assert.doesNotMatch(wf, /node tools\/film-studio\.mjs render --trial/);
 assert.match(wf, /node tools\/film-cleanup\.mjs/);
 assert.match(wf, /inputs\.dry/);
+// the trend-template studio is switched off: render refuses, and every film it made stays off the public list
+await assert.rejects(render({ format: 'news', beats: [] }, '/tmp/x', { filmId: '20261110-news-scene' }), /switched off/);
+const { isRetired } = await import('../void-live-deploy/lib/films-retired.js');
+assert.equal(isRetired('20261110-news-scene'), true); assert.equal(isRetired('20261201-trailer-anything'), true); assert.equal(isRetired('20261106-short-split-dinner-bill-a'), true);
+assert.equal(isRetired('studio-20261120-wow-signal'), false, 'the new studio films are judged on their own');
 console.log('film-studio: ok');

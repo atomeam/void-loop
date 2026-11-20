@@ -153,7 +153,7 @@ try {
   try { const x = gl.getExtension('WEBGL_debug_renderer_info'); soft = !!x && /swiftshader|llvmpipe|software|basic render/i.test(String(gl.getParameter(x.UNMASKED_RENDERER_WEBGL))); } catch (_) { /* unknown renderer: assume a real one */ }
   ok = true;
 } catch (e) { console.warn('blub: the 3D picture is not available here (' + e.message + '); showing the photo'); }
-if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 'This browser cannot draw the 3D blobfish, so here is a real one.'; } else {
+if (!ok) { canvas.hidden = true; q('#photo').hidden = false; q('#say').hidden = q('#turn').hidden = true; note.textContent = 'This browser cannot draw the 3D blobfish, so here is a real one.'; } else {
   let scale = soft ? .3 : saver ? .5 : phone ? .8 : 1, mx = 0, my = 0, tx = 0, ty = 0, blub = 0, turn = 0, turnTo = 0, last = performance.now(), slow = 0, fast = 0, frames = 0, t0 = last, blinkAt = 3;
   const steps = soft ? 36 : phone || saver ? 44 : 80;
   window.__blub = { frames: 0, scale, steps, tier: soft ? 'software' : phone ? 'phone' : 'desktop' };
@@ -164,7 +164,7 @@ if (!ok) { canvas.hidden = true; q('#photo').hidden = false; note.textContent = 
   stage.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
   const say = () => { blub = 1; const b = document.createElement('span'); b.className = 'word'; b.textContent = ['blub', 'blub blub', 'blub!', 'bluuub'][Math.floor(Math.random()*4)]; b.style.left = 36 + Math.random()*10 + '%'; stage.append(b); setTimeout(() => b.remove(), 2200); };
   q('#say').addEventListener('click', say); stage.addEventListener('click', say);
-  q('#turn').addEventListener('click', () => { turnTo += Math.PI*.5; });
+  q('#turn').addEventListener('click', (e) => { turnTo += Math.PI*.5; const back = Math.round(turnTo / (Math.PI*.5)) % 2 === 1; e.currentTarget.textContent = back ? 'Turn blub back' : 'Turn blub around'; });
   function frame(now) {
     const dt = Math.min(.1, (now - last)/1000); last = now;
     mx += (tx - mx)*Math.min(1, dt*6); my += (ty - my)*Math.min(1, dt*6); blub = Math.max(0, blub - dt*1.6); turn += (turnTo - turn)*Math.min(1, dt*3);

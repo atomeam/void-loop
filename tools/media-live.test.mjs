@@ -15,7 +15,7 @@ test('a retired or unlisted film shown to a visitor is a failure; a listed film 
 });
 test('the old trending-keyword films stay stored but off the public list', () => {
   assert.equal(RETIRED.size, 24);
-  assert.match(read('functions/api/films.js'), /w\.gate === 'pass' && !RETIRED\.has\(id\)/);
+  assert.match(read('functions/api/films.js'), /w\.gate === 'pass' && !isRetired\(id\)/);
 });
 test('hidden episodes are off the show, the feed and the card; their files stay', () => {
   const j = loadEpisodes();

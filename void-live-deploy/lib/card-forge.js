@@ -65,6 +65,7 @@ function painting(el, on) {
 }
 function show(el, img) {
   const art = el.querySelector(':scope > .vc-art'); if (!art) return; painting(el, false);
+  if (el.dataset && el.dataset.imgSafe === 'blocked') return;
   if (artSource({ photo: (art.querySelector('.vc-art-photo') || {}).src || '' }) === 'photo') return; // a real photo is the art: a painting never goes over it
   const url = safeImg(img); if (!url) return;
   for (const n of art.querySelectorAll('.vc-forge-btn, .vc-forge-img')) n.remove();
@@ -111,6 +112,7 @@ export function paintNow(el) {
 }
 /** the forge's turn for a card whose frame was just built: show the art it has, look for cached art, or offer the button. Never throws. */
 export function forge(el, c, photo) {
+  if (el && el.dataset && el.dataset.imgSafe === 'blocked') return; // lib/image-safety.js: no painting on a card that may carry no picture
   try {
     if (el.dataset && el.dataset.artSubject && el._vcArtFor !== el.dataset.artSubject) { el._vcForge = null; el._vcArtFor = el.dataset.artSubject; } // the weather changed: a new subject, a new picture
     if (el._vcForge) { show(el, el._vcForge); return; } // a rebuilt frame shows the picture it already has, whatever the card turned out to be

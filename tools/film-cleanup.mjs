@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { filmWordsCheck } from './topic-gate.mjs';
 import { post } from './film-post.mjs';
+import { isRetired, TEMPLATE } from '../void-live-deploy/lib/films-retired.js';
 
 /** the listed films a cleanup takes off the list: [{ id, kinds }]. Pure. */
 export function toUnlist(films) {
@@ -42,7 +43,7 @@ export async function cleanup({ site = 'https://a-to-mind.com', token, fetchImpl
     await post({ id: f.id, words: { title: w.title, description: w.description, tags: w.tags }, wordsOnly: true, site, token, fetchImpl });
     done.push(f.id);
   }
-  return { stored, seen: films.length, pages, listed: films.filter((f) => !f.unlisted).length - done.length, unlisted: dry ? [] : done, wouldUnlist: off };
+  return { stored, seen: films.length, pages, retired: films.filter((f) => isRetired(f.id)).length, template: films.filter((f) => TEMPLATE.test(f.id)).length, listed: films.filter((f) => !f.unlisted).length - done.length, unlisted: dry ? [] : done, wouldUnlist: off };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -52,6 +53,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       console.log('films stored: ' + r.stored + ', read: ' + r.seen + ' over ' + r.pages + ' pages, listed now: ' + r.listed);
       for (const f of r.wouldUnlist) console.log((dry ? 'would take off the list: ' : 'taken off the list: ') + f.id + ' (' + f.kinds.join(', ') + ')');
       if (!r.wouldUnlist.length) console.log('no listed film is a refused topic');
+      console.log('kept off the list for good: ' + r.retired + ' (' + r.template + ' made by the switched-off trend template)');
     })
     .catch((e) => { console.error('film cleanup: ' + (e.message || e)); process.exit(1); });
 }

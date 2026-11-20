@@ -1,5 +1,5 @@
 // "what are you working on": a card from the live will, never a model guess. Identity, the will card, and growth stay with those cards.
-import { workingOnAsk, workingOnHtml, recentBuilt } from '../lib/will-card.js';
+import { workingOnAsk, workingOnHtml, recentBuilt, artSubjectOf } from '../lib/will-card.js';
 
 export function isWorkingOn(text) { return workingOnAsk(text); }
 
@@ -15,6 +15,7 @@ async function run(text, api) {
   }
   if (api._pageStill && el && !api._pageStill(el)) return 'working-on';
   el.innerHTML = workingOnHtml(w, esc, ledger);
+  if (w && w.wants && w.wants[0]) el.dataset.artSubject = artSubjectOf(w.wants[0]);
   return 'working-on';
 }
 

@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { llm, groqModels, STUDIO_FIXTURES, GOOD_STORY, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
+import { llm, groqModels, judgeFeedback, baitIssues, CLICKBAIT, STUDIO_FIXTURES, GOOD_STORY, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
 import { JOURNAL, OLD34, PAGE } from './show-judge.mjs';
 const res = (status, body, headers = {}) => ({ ok: status < 400, status, headers: { get: (k) => headers[k] }, json: async () => body });
 test('the writer reads only the source, asks for real numbers and a call-back, and never a visitor', () => {
@@ -40,7 +40,7 @@ test('the judge fails closed when it cannot tell the bad fixtures from the good 
   assert.equal(v.separated, false); assert.equal(v.pass, false); assert.equal(v.blind, undefined);
 });
 test('the studio ruler keeps the same three bad shows and swaps only the good one for a true-story show', async () => {
-  assert.deepEqual(STUDIO_FIXTURES.filter((f) => f.kind === 'bad').map((f) => f.text), [JOURNAL, OLD34, PAGE]);
+  assert.deepEqual(STUDIO_FIXTURES.filter((f) => f.kind === 'bad').map((f) => f.text), [JOURNAL, OLD34, PAGE, CLICKBAIT]);
   assert.deepEqual(STUDIO_FIXTURES.filter((f) => f.kind === 'good').map((f) => f.text), [GOOD_STORY]);
   const seen = [];
   await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: groqSaying((p) => { seen.push(p); return 'Score 2'; }), gap: 0 });
@@ -52,8 +52,22 @@ test('the judge asks the thinking model to think hard', async () => {
   await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: f, gap: 0 });
   assert.ok(efforts.length >= 12 && efforts.every((e) => e === 'high'));
 });
+test('the judge refuses the breaking-news template and a show that ends on an encyclopedia line', () => {
+  const lines = CLICKBAIT.split(/ (?=(?:Critic|Verse): )/).map((x) => ({ who: x.split(':')[0], text: x.slice(x.indexOf(':') + 2) }));
+  assert.equal(lines.length, 6);
+  assert.ok(baitIssues({ lines }).some((i) => /clickbait/.test(i)));
+  const fact = [{ who: 'Critic', text: 'So what happened next?' }, { who: 'Verse', text: 'Scene is a 2026 Indian Tamil-language action thriller film.' }];
+  assert.deepEqual(baitIssues({ lines: fact }), ['ends on an encyclopedia line, not a payoff']);
+  const good = [{ who: 'Critic', text: 'So the aliens hung up on us?' }, { who: 'Verse', text: 'And he wrote Wow in the margin.' }];
+  assert.deepEqual(baitIssues({ lines: good }), []);
+  assert.ok(STUDIO_FIXTURES.some((f) => f.id === 'clickbait' && f.kind === 'bad'));
+});
+test('the judge\'s notes become the next draft\'s brief, lowest score first; the bar is the same', () => {
+  const f = judgeFeedback({ blind: { scores: [5, 3, 10], notes: ['ok', 'no joke', 'good'] }, human: 7, issues: [] });
+  assert.match(f, /a joke with a setup and a payoff 3\/10/); assert.match(f, /fixing "a joke with a setup and a payoff" first/); assert.match(f, /6 or more needed/);
+});
 test('a judge that separates still holds the show to 6+ on every blind question, the listener and the hard checks', async () => {
-  const bad = [JOURNAL, OLD34, PAGE].map((t) => t.slice(0, 60));
+  const bad = [JOURNAL, OLD34, PAGE, CLICKBAIT].map((t) => t.slice(0, 60));
   const v = await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: groqSaying((p) => (bad.some((b) => p.includes(b)) ? 'Score 2' : /Human/.test(p) ? 'Human: 8' : 'Score 8')), gap: 0 });
   assert.equal(v.separated, true); assert.equal(v.blind.min, 8); assert.equal(v.human, 8);
   assert.equal(v.pass, false, 'a two-line show fails the hard checks'); assert.ok(v.issues.includes('length'));

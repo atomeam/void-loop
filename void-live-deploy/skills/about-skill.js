@@ -107,7 +107,8 @@ export default {
   nearMisses: ['tell me about tokyo', 'what is a black hole', 'explain photosynthesis', 'define serendipity', 'tell me about yourself', 'what can you do', 'tell me about zorbleflux', 'what is a sim card', 'match history', 'chess rules', 'how good are you at chess'],
   // a named ask ("the chess skill", "your weather") is this skill's whatever the book says; a bare coined name ("what is family health") needs the book, read at idle;
   // "my chess record", "chess match history" open a game's card for its Match History block (lib/match-history.js historyAsk)
-  match(lower, text) { if (historyAsk(text || lower)) return true; const q = parseAsk(text || lower); return !!q && (q.named || !!(stats && stats.book && resolveSkill(text || lower, stats.book))); },
+  // "what is verse working on" is working-on's ask, not a question about a skill named so (tools/skill-overlap.mjs)
+  match(lower, text) { if (historyAsk(text || lower)) return true; if (/\bworking on\b/.test(lower) && !/\bskill\b/.test(lower)) return false; const q = parseAsk(text || lower); return !!q && (q.named || !!(stats && stats.book && resolveSkill(text || lower, stats.book))); },
   run,
   suite,
   prime,

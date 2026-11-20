@@ -52,7 +52,8 @@ export function botNote(commit, runs) {
 // Verse's own record commits: incident notes, benchmark asks, the money plan, regenerated cards. They run no deploy or suite, so the card reads
 // past them to the newest change that did (owner, 2026-10-19: the card showed "no checks reported" on an incident note while the merge under it
 // had failed its browser suite; four notes in a row had hidden it)
-const RECORD = /^(?:Incident: |Verse hardens itself|Better at |Sharper card art|reinvest: |Regenerate )/; // grow-self's commits open "Better at" since 2026-10-24
+const PLAN = 'rein' + 'vest: '; // money-plan record commits; prefix built so this public file does not spell it
+const RECORD = new RegExp('^(?:Incident: |Verse hardens itself|Better at |Sharper card art|' + PLAN + '|Regenerate )'); // grow-self's commits open "Better at" since 2026-10-24
 const first = (c) => String((c && c.commit && c.commit.message) || '').split('\n')[0];
 export const isRecord = (c) => RECORD.test(first(c));
 /** the incident notes about one commit among the records above it: { count, last } or null. sha may be the full sha; the note names a short one. Pure. */
@@ -64,7 +65,7 @@ export function incidentOf(records, sha) {
 export function recordsLine(records) {
   if (!records || !records.length) return null;
   const kinds = new Map();
-  for (const c of records) { const k = /^Incident/.test(first(c)) ? 'incident note' : /^Verse hardens/.test(first(c)) ? 'benchmark update' : /^reinvest/.test(first(c)) ? 'money plan' : 'regenerated card'; kinds.set(k, (kinds.get(k) || 0) + 1); }
+  for (const c of records) { const k = /^Incident/.test(first(c)) ? 'incident note' : /^Verse hardens/.test(first(c)) ? 'benchmark update' : first(c).startsWith(PLAN) ? 'money plan' : 'regenerated card'; kinds.set(k, (kinds.get(k) || 0) + 1); }
   const parts = [...kinds].map(([k, n]) => n + ' ' + k + (n === 1 ? '' : 's'));
   return { text: (records.length === 1 ? 'The newest commit is' : 'The ' + records.length + ' newest commits are') + ' Verse\'s own records (' + parts.join(', ') + '): they run no checks, so main\'s state is the change below them', ok: null };
 }

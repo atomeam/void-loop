@@ -280,7 +280,7 @@ async function run(text, api) {
 export const builtWith = ['eat'];
 export default {
   name: 'my-device',
-  examples: ['what is my ip address', 'what is my user agent', 'what is my screen resolution', 'what browser am i using', "what's my ip", 'my screen size', 'what os am i using', 'device info', 'keyboard tester', 'mouse tester', 'dead pixel test', 'battery status', 'text to speech hello world', 'text to speech'],
+  examples: ['what is my ip address', 'what is my user agent', 'what is my screen resolution', 'what browser am i using', "what's my ip", 'my screen size', 'what os am i using', 'device info', 'keyboard tester', 'mouse tester', 'dead pixel test', 'battery status', 'text to speech hello world', 'text to speech', 'read this out loud: hello, how are you today?'],
   nearMisses: ['what is an ip address', 'what is a user agent', 'best screen resolution for gaming', 'my ip camera', 'ip address lookup 8.8.8.8', 'what does ip stand for', 'screen recorder', 'what is the best browser', 'keyboard shortcuts', 'best gaming mouse', 'what is a dead pixel', 'battery', 'text to speech api', 'what is text to speech', 'text to speech in python', 'read aloud', 'mouse click test'],
   match(lower, text) { return !!deviceAsk(text || lower); },
   run

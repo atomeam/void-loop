@@ -48,4 +48,6 @@ test('the stage card\'s adds are mirrored into the page store, once', () => {
 test('a sticky is not an event: the planner\'s own "add a sticky that says draft to Sam ... by Friday" is left to the sticky skill', () => {
   for (const t of ["add a sticky that says draft to Sam (not sent): heads up, I'm aiming to ship the product page by Friday, 30 October", 'put a sticky that says call mum on Friday', 'add a sticky note for tomorrow 3pm']) assert.equal(K.parseIntent(t), null, t);
   assert.equal(K.parseIntent('put dentist on Friday at 3').op, 'add', 'a real event is still one');
+  for (const t of ['read this out loud: hello, how are you today?', 'text to speech hello, how are you today?', 'tts: good morning']) assert.equal(K.parseIntent(t), null, t);
+
 });

@@ -434,6 +434,91 @@
         "via": "Groq openai/gpt-oss-120b",
         "pass": false
       }
+    },
+    {
+      "at": "2026-11-20T23:45:28.908Z",
+      "studio": true,
+      "kind": "short",
+      "title": "Windows 1.0: Tiled Beginnings",
+      "source": {
+        "title": "Windows 1.0",
+        "url": "https://en.wikipedia.org/wiki/Windows_1.0"
+      },
+      "pass": false,
+      "writer": "Groq openai/gpt-oss-120b",
+      "judge": {
+        "separated": true,
+        "calibration": [
+          {
+            "id": "journal",
+            "kind": "bad",
+            "min": 1,
+            "scores": [
+              4,
+              1,
+              10
+            ]
+          },
+          {
+            "id": "old34",
+            "kind": "bad",
+            "min": 1,
+            "scores": [
+              7,
+              7,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "kind": "bad",
+            "min": 2,
+            "scores": [
+              4,
+              2,
+              9
+            ]
+          },
+          {
+            "id": "clickbait",
+            "kind": "bad",
+            "min": 1,
+            "scores": [
+              6,
+              2,
+              1
+            ]
+          },
+          {
+            "id": "good-story",
+            "kind": "good",
+            "min": 7,
+            "scores": [
+              7,
+              7,
+              10
+            ]
+          }
+        ],
+        "issues": [],
+        "blind": {
+          "min": 4,
+          "scores": [
+            4,
+            4,
+            9
+          ],
+          "notes": [
+            "Score 4",
+            "Score 4",
+            "Score 9"
+          ]
+        },
+        "human": 7,
+        "humanNotes": "Human: 7 and Notes: The dialogue is a continuous Q&A where each line responds to the previous one and includes the real number 1.02, meeting the Human 7 criteria.",
+        "via": "Groq openai/gpt-oss-120b",
+        "pass": false
+      }
     }
   ]
 }

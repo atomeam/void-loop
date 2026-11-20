@@ -27,3 +27,9 @@ export const RETIRED = new Set([
   "20261106-countdown-austin-simmons",
   "20261106-trailer-ramayana-part-1"
 ]);
+
+// Every film the old trend-template studio made (tools/film-studio.mjs: "BREAKING", "the whole internet just found out", a one-line
+// encyclopedia fact, then a false "make any video free" end card) is retired for good, by its id's format (owner, 2026-11-20:
+// "why would this even get made"). The studio is switched off; the files stay in R2 and the owner still sees them, marked unlisted.
+export const TEMPLATE = /^\d{8}-(news|trailer|explainer|pov|countdown|nature|review|lyric|short)-/;
+export const isRetired = (id) => RETIRED.has(id) || TEMPLATE.test(String(id || ''));

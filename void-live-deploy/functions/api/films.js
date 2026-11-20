@@ -18,7 +18,7 @@ import { bad, good } from '../../lib/void-me.js';
 import { payer } from './support.js';
 import { BUY_URL } from '../../lib/review-api.js';
 import { forFilms } from '../../lib/film-reviews.js';
-import { RETIRED } from '../../lib/films-retired.js';
+import { isRetired } from '../../lib/films-retired.js';
 
 export const WATCH_MS = 6 * 3600e3, WORDS_MAX = 6000;
 /** a page of films, and how many a request may read to fill one (the unlisted are skipped): bounded work per request, any number of films */
@@ -99,7 +99,7 @@ export async function onRequestGet({ request, env }) {
   const words = async (o) => {
     const id = o.key.slice(6, -4);
     let w = {}; try { const j = await env.FILMS.get('films/' + id + '.json'); if (j) w = JSON.parse(await j.text()); } catch (_) { w = {}; }
-    return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now), ...(w.gate === 'pass' && !RETIRED.has(id) ? {} : { unlisted: true }) };
+    return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now), ...(w.gate === 'pass' && !isRetired(id) ? {} : { unlisted: true }) };
   };
   // read a page at a time until a page of films that may show is in hand, the scan budget is spent, or the films end
   const films = []; let at = from;

@@ -5,16 +5,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { willCardHtml, workingOnAsk, freshWants, recentBuilt } from '../void-live-deploy/lib/will-card.js';
+import { willCardHtml, workingOnHtml, plainPublic, visitorGoal, artSubjectOf, workingOnAsk, freshWants, recentBuilt } from '../void-live-deploy/lib/will-card.js';
 
-const text = (html) => html.replace(/<(?:\/(?:li|div|p|b|h2|ol|ul)|br)\s*>/g, '\n').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').split('\n').map((l) => l.trim()).filter(Boolean);
+const text = (html) => html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<(?:\/(?:li|div|p|b|h2|ol|ul)|br)\s*>/g, '\n').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').split('\n').map((l) => l.trim()).filter(Boolean);
 
 // Visible card text only (hrefs are not shown). No domain names, file paths, or camelCase / SCREAMING_CASE identifiers.
 function leaks(s) {
   const hits = [];
   for (const [n, re] of [
     ['domain', /\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b/gi],
-    ['path', /\b(?:[\w.-]+\/)+[\w.-]+\b|\b[\w.-]+\.(?:js|mjs|cjs|ts|tsx|jsx|py|json|html|css|yml|yaml|md|sh)\b/gi],
+    ['path', /\b(?:[\w.-]+\/)+[\w.-]+\.[A-Za-z0-9]+\b|\b[\w.-]+\.(?:js|mjs|cjs|ts|tsx|jsx|py|json|html|css|yml|yaml|md|sh)\b/gi],
     ['SCREAMING_CASE', /\b[A-Z][A-Z0-9]*(_[A-Z0-9]+)+\b/g],
     ['camelCase', /\b[a-z]+[A-Z][a-zA-Z0-9]*\b|\b[A-Z][a-z0-9]+[A-Z][a-zA-Z0-9]*\b/g],
   ]) {
@@ -32,11 +32,12 @@ const WILL = { at: '2026-10-30T17:00:00Z',
 
 test('each want is numbered once, with its reason in plain words underneath', () => {
   const t = text(willCardHtml(WILL));
-  const i = t.indexOf('1. Offer my proven skills as MCP tools too');
+  const i = t.findIndex((l) => /^1\.\s/.test(l) && /proven skills/i.test(l));
   assert.ok(i > 0, t.join(' | '));
   assert.equal(t[i + 1], 'other AIs could call my world clock and country facts.');
   assert.ok(!t.some((l) => /^\d+\.\s*Why:/i.test(l) || /^\d+\.\s+\d+\./.test(l)), t.join(' | '));
-  assert.equal(t[i + 2], '2. Explain my answers better');
+  assert.match(t[i], /^1\. [A-Z]/);
+  assert.match(t[i + 2], /^2\. I'm working on how to explain my answers better\./);
   assert.equal(t[i + 3], 'People have asked me this 3 times.');
 });
 
@@ -65,21 +66,36 @@ test('the card shows no domain names, file paths or camelCase / SCREAMING_CASE i
   assert.match(t.join('\n'), /add emojigraph and begin target assimilation/i);
 });
 
+test('ordinary words with a slash or "on," stay; only real file paths and code names come out', () => {
+  assert.match(plainPublic('I want to fix the podcast exam failures for audio and show/episode detection.'), /show\/episode detection/);
+  assert.equal(plainPublic("what I'm working on, in plain words"), "what I'm working on, in plain words");
+  const cleaned = plainPublic('I want to add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.');
+  assert.match(cleaned, /add emojigraph and begin target assimilation/i);
+  assert.equal(leaks(cleaned).length, 0, leaks(cleaned).join(' | '));
+  const html = willCardHtml({ at: '2026-11-20T22:41:21.142Z', wants: [
+    { i_want: 'I want to fix the podcast exam failures for audio and show/episode detection.', because: 'the podcasts exam scored 91.9, the lowest; this ask failed audio' },
+  ], recent: [{ at: '2026-11-20T20:20:01Z', when: 'Nov 20', what: "what I'm working on, in plain words" }] });
+  const vis = text(html).join('\n');
+  assert.match(vis, /play the right episode, and hear the audio/);
+  assert.match(vis, /what I'm working on, in plain words/);
+  assert.deepEqual(leaks(vis), [], leaks(vis).join(' | '));
+});
+
 test('each reason comes from its own want, not from a neighbour', () => {
   const html = willCardHtml({ at: '2026-11-20T21:43:19.208Z', wants: [
-    { i_want: 'I want to fix the audio exam.', because: 'the audio exam was the lowest score; this ask failed audio' },
+    { i_want: 'I want to get better at audio.', because: 'asked 2 times' },
     { i_want: 'I want to answer "tell me a joke" for a visitor.', because: 'a check on the live site failed (my weakest part today: probes 20)' },
     { i_want: 'I want to add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.', because: 'I asked for this 49 times in my reflections (a small one)' },
   ] });
   const blocks = html.match(/<div class="will-want"[^>]*>[\s\S]*?<\/div>/g) || [];
   assert.equal(blocks.length, 3, html);
   const texts = blocks.map((b) => text(b).join(' '));
-  assert.match(texts[0], /audio exam was the lowest score/);
+  assert.match(texts[0], /asked me this 2 times/);
   assert.ok(!/49 times|live site failed/i.test(texts[0]), texts[0]);
   assert.match(texts[1], /live site failed/);
-  assert.ok(!/audio exam was the lowest|49 times/i.test(texts[1]), texts[1]);
+  assert.ok(!/2 times|49 times/i.test(texts[1]), texts[1]);
   assert.match(texts[2], /49 times/);
-  assert.ok(!/audio exam was the lowest|live site failed/i.test(texts[2]), texts[2]);
+  assert.ok(!/2 times|live site failed/i.test(texts[2]), texts[2]);
 });
 
 test('all three page copies draw the same card from the helper, and identity does not steal the working-on ask', () => {
@@ -98,6 +114,37 @@ test('freshWants moves a built want aside and fills a new one; recentBuilt is ne
   const split = (wants) => ({ open: wants.filter((w) => !/pointing arrow/i.test(w.title || w.i_want)), got: wants.filter((w) => /pointing arrow/i.test(w.title || w.i_want)) });
   const r = freshWants([{ title: 'make the pointing arrow a core skill', i_want: 'I want to make the pointing arrow a core skill.' }, { title: 'teach working-on', i_want: 'I want to teach the working-on skill.' }], [{ title: 'learn to handle "a tide chart"', why: 'asked 4 times' }], [], [], 3, split);
   assert.equal(r.got.length, 1); assert.ok(r.wants.some((w) => /working-on/.test(w.i_want)) && r.wants.some((w) => /tide chart/.test(w.title)));
-  const rows = recentBuilt({ got: [], ledger: [{ at: '2026-11-18T18:00:23Z', kind: 'build', what: 'delivery-ready and handoff-ready are one ready-checks family at 10120, aliases kept' }, { at: '2026-11-20T13:12:58Z', kind: 'finding', what: 'image-gen checked' }] }, 5);
-  assert.equal(rows[0].when, 'Nov 18'); assert.ok(!rows.some((x) => /image-gen/.test(x.what)) && !/10120/.test(rows[0].what));
+  const rows = recentBuilt({ got: [], ledger: [{ at: '2026-11-18T18:00:23Z', kind: 'build', what: 'The recipe card takes the ask in Spanish' }, { at: '2026-11-20T13:12:58Z', kind: 'finding', what: 'image-gen checked' }, { at: '2026-11-18T12:00:00Z', kind: 'build', what: 'delivery-ready and handoff-ready are one ready-checks family at 10120, aliases kept' }] }, 5);
+  assert.equal(rows[0].when, 'Nov 18'); assert.match(rows[0].what, /recipe card/);
+  assert.ok(!rows.some((x) => /image-gen|ready-checks|10120/.test(x.what)));
+});
+
+test('the working-on card is one capital sentence, no internal log jargon, and complete built titles', () => {
+  const html = workingOnHtml({ at: '2026-11-20T22:41:21.142Z', wants: [
+    { i_want: 'I want to fix the podcast exam failures for audio and show/episode detection.', because: 'the podcasts exam scored 91.9, the lowest; this ask failed audio' },
+  ], recent: [
+    { at: '2026-11-20T20:20:01Z', when: 'Nov 20', what: "what I'm working, in plain words" },
+    { at: '2026-11-18T22:51:46Z', when: 'Nov 18', what: "Verse hardened itself: 'automation handoff for the email reminders'" },
+    { at: '2026-11-18T18:00:23Z', when: 'Nov 18', what: 'A weather card no longer hangs on a slow forecast: every Open-Meteo call has a 4.5 s limit' },
+    { at: '2026-11-18T18:00:23Z', when: 'Nov 18', what: 'Delivery-ready and handoff-ready are one ready-checks family' },
+  ] });
+  const vis = text(html).join('\n');
+  assert.ok(!/from my own records, not a guess/i.test(vis), vis);
+  const goal = (html.match(/class="will-goal"[^>]*>([\s\S]*?)<\/p>/) || [])[1] || '';
+  const goalText = text(goal).join(' ');
+  assert.match(goalText, /^[A-Z]/, goalText);
+  assert.ok(!goalText.includes('</p>') && goalText.split(/[.!?]\s+(?=[A-Z])/).length === 1, 'one sentence, not two broken lines: ' + goalText);
+  assert.doesNotMatch(vis, /exam scored 91\.9|failed audio|ready-checks family|automation handoff|hardened itself|4\.5 s limit/i);
+  assert.match(vis, /what I'm working on, in plain words/);
+  assert.doesNotMatch(vis, /what I'm working,/);
+  assert.match(vis, /weather card no longer hangs on a slow forecast/i);
+  assert.ok(!/ready-checks/i.test(vis), vis);
+  for (const line of text(html).filter((l) => /—/.test(l) || /^[A-Z]/.test(l))) {
+    const body = line.replace(/^[A-Z][a-z]{2} \d+ — /, '');
+    if (body) assert.match(body, /^[A-Z]/, line);
+  }
+  assert.match(html, /data-will-quiet/);
+  assert.match(html, /vc-pt/);
+  assert.equal(artSubjectOf('I want to fix the podcast exam failures for audio and show/episode detection.'), 'podcast microphone on a wooden workbench');
+  assert.match(visitorGoal({ i_want: 'I want to fix the podcast exam failures for audio and show/episode detection.' }), /^[A-Z]/);
 });

@@ -32,6 +32,9 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
 const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/random/wheel/', '/vat/', '/arcade/']);
+const BARE_OWNED = new Set([
+  // kanban-board, gradient and fakeuser answer these with their own cards, which link the page (2026-11-20: the overlap check)
+  '/kanban/', '/color/?mode=gradient', '/random/?mode=people']);
 const OPEN = /^(?:open|show(?: me)?|go to|take me to|launch|bring up)\s+(?:the |my |a |an )?/i;
 
 /** the tool an ask names, as { href, label }, or null. Pure. */
@@ -45,7 +48,7 @@ export function toolAsk(text) {
   // a bare name with no verb must read as a tool ("word counter", "base converter"): a bare "wheel of names" or "piano" stays with its own skill
   if (!alias && (!name || (!opened && !TOOL_NOUN.test(name)))) return null;
   const href = alias || toolNamed(name);
-  if (!href || OWNED.has(href)) return null;
+  if (!href || OWNED.has(href) || (!opened && BARE_OWNED.has(href))) return null;
   const labels = { '/base64/bases/': 'Base converter' };
   const label = labels[href] || (allTools().find(([p]) => p === href) || [href, (NAV.find((n) => n.href === href) || {}).label || name])[1];
   return { href, label };

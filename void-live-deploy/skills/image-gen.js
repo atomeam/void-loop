@@ -5,18 +5,20 @@
  * own per-connection and daily caps, its refusals, its edge cache), and links to /image/ with the words, the style and the seed filled
  * in, so Make there gives the same picture first, from the cache. The style is read from the words (a watercolour, a pencil sketch, a
  * photo, pixel art). The seed is the words' own, so the same ask is the same picture and a second asker gets it from the cache, free.
- * A drawing card for you to draw on ("make a picture of a dog", "sketch pad") stays skills/draw.js, a cartoon ("draw a cat") stays
- * skills/cartoon.js, a coloured shape ("sketch a red circle") stays the draw skill's shape picture, and a real photo of a thing on the
- * free list ("picture of a cat") stays skills/image.js.
+ * A drawing card for you to draw on ("let me draw", "open a canvas", "sketch pad", "make a sketch of a tree") stays skills/draw.js,
+ * a cartoon ("draw a cat") stays skills/cartoon.js, a coloured shape ("sketch a red circle") stays the draw skill's shape picture,
+ * and a real photo of a thing on the free list ("picture of a cat") stays skills/image.js. "Make a picture of a bicycle" and
+ * "make a logo for a coffee shop" are this skill: they paint the picture, they do not open a blank pad.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { PROMPT_MAX, STYLES } from '../lib/image-gen.js';
 import { shapeAsk } from '../lib/shape-picture.js';
 
-// the words that ask for a made picture. make, create and paint take no "picture", "sketch", "drawing" or "doodle" (skills/draw.js opens
-// a canvas for those, for you to draw on); generate, render, produce and design take every one
+// the words that ask for a made picture. generate, render, produce, design, make, create and paint all take "picture" and "image"
+// (a first-time visitor who says "make a picture of a bicycle" wants the picture painted, not a blank canvas).
+// "sketch", "drawing" and "doodle" after make/create still stay with skills/draw.js ("make a sketch of a tree").
 const NOUN = '(?:image|picture|photo|photograph|pic|illustration|painting|artwork|art|render|wallpaper|portrait|drawing|sketch)';
-const MADE = '(?:image|photo|photograph|illustration|painting|artwork|art|render|wallpaper|portrait)';
+const MADE = '(?:image|picture|photo|photograph|illustration|painting|artwork|art|render|wallpaper|portrait)';
 const ADJ = '(?:(?:ai|ai-generated|ai generated|realistic|photorealistic|photo-realistic|beautiful|detailed|high quality|hd|4k|cool|nice|quick|simple|watercolou?r|oil|pencil|pixel|pixel art|anime|manga|3d|3-d|comic|neon|cyberpunk|low poly|fantasy|cinematic|sticker|digital|cartoon)\\s+){0,3}';
 const LEAD = '^(?:please\\s+)?(?:can you\\s+|could you\\s+|will you\\s+|i want you to\\s+)?';
 const ASKS = [
@@ -25,6 +27,8 @@ const ASKS = [
   /^(?:an?\s+)?ai(?:[\s-]generated)?\s+(?:art|image|picture|photo|illustration|painting)s?\s+of\s+(.+)$/,
 ];
 const SKETCH = new RegExp(LEAD + 'sketch\\s+(?:me\\s+)?((?:an?|some|two|three)\\s+(.+))$'); // not "the": "sketch the system for: automate invoices" is a plan (skills/system-blueprint.js)
+const LOGO = new RegExp(LEAD + '(?:generate|render|produce|design|make|create)\\s+(?:me\\s+|us\\s+)?(?:an?\\s+|the\\s+|some\\s+|one\\s+)?' + ADJ + 'logo\\s+(?:for|of)\\s+(.+)$');
+const LOGO_BARE = /^(?:an?\s+)?logo\s+(?:for|of)\s+(.+)$/;
 // what a sketch ask names that is not a subject to paint: a shape (the stage's, or the draw skill's coloured one), the canvas itself
 const NOT_A_SKETCH = /^(?:[a-z]+\s+){0,2}(?:circle|line|square|triangle|rectangle|rect|star|heart|oval|dot|hexagon|pentagon|diamond|shape)s?$|^(?:canvas|pad|sketch ?pad|sketchbook|brush|picture|drawing|doodle|sketch|plan|outline|draft|idea|layout|diagram|chart|graph|map|timeline|wireframe|mockup|mock-up|proposal|summary|list|card|system|architecture|process|flow|workflow|design|structure|step|schema|budget|strategy|story|plot|script|essay|song|poem|answer|reply)s?\b/;
 
@@ -47,8 +51,12 @@ export function pictureAsk(text) {
   const raw = String(text || '').replace(/\s+/g, ' ').trim().replace(/[?!.]+$/, '').replace(/\s+please$/i, '');
   const l = raw.toLowerCase();
   if (!l || shapeAsk(l)) return null; // "sketch a red circle" is the draw skill's shape picture
-  let words = '', lead = '';
-  for (const re of ASKS) { const m = re.exec(l); if (m) { words = m[1]; lead = l.slice(0, l.length - m[1].length); break; } }
+  let words = '', lead = '', logo = false;
+  const logoHit = LOGO.exec(l) || LOGO_BARE.exec(l);
+  if (logoHit) { words = logoHit[1]; lead = l.slice(0, l.length - logoHit[1].length); logo = true; }
+  if (!words) {
+    for (const re of ASKS) { const m = re.exec(l); if (m) { words = m[1]; lead = l.slice(0, l.length - m[1].length); break; } }
+  }
   if (!words) {
     const m = SKETCH.exec(l);
     if (!m || NOT_A_SKETCH.test(m[2])) return null;
@@ -56,7 +64,9 @@ export function pictureAsk(text) {
   }
   words = (raw.length === l.length ? raw.slice(raw.length - words.length) : words).trim(); // the subject in the asker's own case
   if (words.length < 2 || !/[a-z]{2}/i.test(words) || /^(?:it|this|that|me|you|yourself|verse|void|something|anything)$/i.test(words)) return null;
-  const style = lead === 'sketch' ? 'sketch' : styleFrom(lead) !== 'none' ? styleFrom(lead) : styleFrom(words);
+  let style = lead === 'sketch' ? 'sketch' : styleFrom(lead) !== 'none' ? styleFrom(lead) : styleFrom(words);
+  if (logo && style === 'none') style = 'sticker'; // a clean logo on a plain background, unless the ask named another style
+  if (logo && !/^logo (?:for|of) /i.test(words)) words = 'a logo for ' + words;
   return { words: words.slice(0, PROMPT_MAX), style };
 }
 
@@ -108,8 +118,8 @@ function run(text, api) {
 
 export default {
   name: 'image-gen',
-  examples: ['generate a picture of a lighthouse at night', 'make an image of a sunset over the sea', 'create a watercolour painting of a fox', 'generate an ai image of a red car', 'ai art of a castle', 'sketch a house'],
-  nearMisses: ['make a picture of a dog', 'picture of a cat', 'draw a cat', 'sketch a red circle', 'sketch pad', 'sketch a plan for the week', 'sketch the system for: automate invoices', 'make an image board', 'generate a password'],
+  examples: ['generate a picture of a lighthouse at night', 'make an image of a sunset over the sea', 'make a picture of a red bicycle on a hill', 'make a logo for a coffee shop called Harbor Bean', 'create a watercolour painting of a fox', 'generate an ai image of a red car', 'ai art of a castle', 'sketch a house'],
+  nearMisses: ['picture of a cat', 'draw a cat', 'sketch a red circle', 'sketch pad', 'sketch a plan for the week', 'sketch the system for: automate invoices', 'make an image board', 'generate a password', 'let me draw', 'open a canvas'],
   match(lower, text) { return !!pictureAsk(text || lower); },
   run,
 };
