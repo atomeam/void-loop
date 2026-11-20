@@ -23,7 +23,7 @@ import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: o
 import { artSource } from './art-source.js';
 import { sectionsOf } from './card-sections.js';
 import { badgesOf, noticeOf, themeOf } from './subject-kinds.js';
-import { isNoAnswer } from './no-answer.js'; // a refusal body is a Not found card, never a sourced answer with an "Adds to Verse" line
+import { isNoAnswer, disclaimsSources, UNSOURCED_LINE } from './no-answer.js'; // a refusal body is a Not found card, never a sourced answer with an "Adds to Verse" line
 
 export const RARITY = {
   proven: { name: 'Mythic', gem: '#f0852d', foil: '#ffb347,#c4561a,#ffd27a,#b8430f' }, checked: { name: 'Rare', gem: '#e3c15a', foil: '#f1dc8a,#a98a2e,#f6e7a6,#8a6d1c' },
@@ -306,7 +306,10 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined, filed: el.dataset.cardAdds || '' });
+  // an answer that itself says its sources do not hold the ask is not "sourced": no source count, no Sourced badge, and the source list says so plainly (owner audit, 2026-11-19)
+  const unsourced = !name && !own && !notFound && bodyText.length > 40 && disclaimsSources(bodyText);
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name || unsourced ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined, filed: el.dataset.cardAdds || '' });
+  if (unsourced && src && src.dataset.unsourced === undefined) { const asOf = /\bas of [^\u00b7\n]+$/i.exec(src.textContent.trim()); src.dataset.unsourced = '1'; src.textContent = UNSOURCED_LINE + (asOf ? ' \u00b7 written by Verse \u00b7 ' + asOf[0] : ''); }
   // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
   const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
   if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);

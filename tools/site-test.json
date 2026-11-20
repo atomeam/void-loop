@@ -462,6 +462,9 @@
     },
     {
       "ask": "export as stl"
+    },
+    {
+      "ask": "test me on this"
     }
   ],
   "candidates": [],

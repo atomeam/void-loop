@@ -1,15 +1,48 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 143,
+ "cases": 144,
  "runsTotal": 300,
  "kinds": {
-  "file": 27,
+  "file": 26,
   "visitor": 227,
   "tighten": 3,
-  "grow": 41,
+  "grow": 42,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-20T06:08:02Z",
+   "passed": 140,
+   "of": 144,
+   "kind": "grow",
+   "ms": 299,
+   "note": "new ground passed, kept as a regression case: \"test me on this\" (skill:quiz)",
+   "failed": [
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "yo films by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T05:57:40Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-20T05:23:12Z",
    "passed": 0,
@@ -402,43 +435,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-20T00:20:47Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-20T00:08:19Z",
-   "passed": 135,
-   "of": 140,
-   "kind": "file",
-   "ms": 368,
-   "note": "fix: \"open folder recipes\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "favorite this",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "open folder recipes",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -504,19 +500,19 @@
   },
   {
    "from": "2026-11-06",
-   "runs": 150,
+   "runs": 148,
    "passed": 2660,
-   "of": 3831,
-   "broken": 10,
-   "brokenOf": 1071,
+   "of": 3726,
+   "broken": 9,
+   "brokenOf": 966,
    "brokenPassed": 74,
    "ms": 391
   },
   {
    "from": "2026-11-13",
-   "runs": 150,
-   "passed": 5012,
-   "of": 5283,
+   "runs": 152,
+   "passed": 5152,
+   "of": 5427,
    "ms": 439
   }
  ],
@@ -608,7 +604,7 @@
   "skill:print-file": "2026-11-20T04:43:02Z",
   "skill:printedmotor": "2026-11-20T05:11:39Z",
   "skill:proposal": "2026-10-17T11:28:39Z",
-  "skill:quiz": "2026-10-17T11:28:39Z",
+  "skill:quiz": "2026-11-20T06:08:02Z",
   "skill:rebuild-map": "2026-10-17T11:28:39Z",
   "skill:recent": "2026-10-17T11:36:13Z",
   "skill:recipe": "2026-10-17T11:36:13Z",
