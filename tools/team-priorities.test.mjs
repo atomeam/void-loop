@@ -109,3 +109,35 @@ test('a bet has a title a person reads whole: a flaky check by the head of its t
   assert.equal(P.titleOf({ ask: 'make ""growth" board shows rows" robust: fix it' }), 'Steady a flaky check: "growth" board shows rows');
   const r = P.scoreOf({ id: 'f1', ask: 'make "sky / still" robust: fix the test or the code, never skip', target: 'flake:sky', state: 'queued' }, null, {}); assert.equal(r.title, 'Steady a flaky check: sky / still');
 });
+
+// Attention (2026-11-20): at most two repair bets, a repair given up after three failures, a want stuck at 0 scored down then set aside
+import { prioritize as prio2, REPAIR_BETS_MAX, GIVE_UP, repairOf, repairFails } from '../void-live-deploy/lib/team-priorities.js';
+const rep = (id, b, note = '') => ({ id, ask: 'Repair helper/' + b + ' until it lands: skills check failed', target: 'heal:helper-' + b, state: 'queued', note });
+test('attention: no more than two repairs are bets, other work gets the third', () => {
+  const jobs = [rep('r1', 'a'), rep('r2', 'b'), rep('r3', 'c'), rep('r4', 'd'), { id: 'g1', ask: 'Fix the definitions answer', target: 'gap:definitions', state: 'queued' }];
+  const p = prio2(jobs, [], {}, null, 1e12);
+  assert.equal(p.bets.filter((b) => b.repair).length, REPAIR_BETS_MAX);
+  assert.ok(p.bets.some((b) => b.id === 'g1'), 'the non-repair job is a bet');
+  assert.ok(p.order.indexOf('g1') < p.order.indexOf('r3'), 'the third repair waits behind other work');
+});
+test('attention: a repair that failed three times is given up', () => {
+  assert.equal(repairOf(rep('x', 'q')), 'helper/q');
+  assert.equal(repairFails(rep('x', 'q', 'tries 3'), [], []), 3);
+  const done = [rep('d1', 'q'), rep('d2', 'q'), rep('d3', 'q')].map((d) => ({ ...d, state: 'done' }));
+  const p = prio2([rep('x', 'q'), rep('y', 'z')], [], { done }, null, 1e12);
+  assert.ok(GIVE_UP <= 3);
+  assert.ok(!p.bets.some((b) => b.id === 'x'));
+  assert.deepEqual(p.gaveUp.map((g) => g.id), ['x']);
+  assert.match(p.gaveUp[0].why, /gave up after 3 failed repairs/);
+});
+test('attention: a want stuck at 0 is halved at a week and set aside at two', () => {
+  const now = 2e12, day = 864e5;
+  const w = (key, job, ageDays) => ({ key, job, lane: 'idea', title: 'Build ' + key, label: 'the build is live', baseline: 0, latest: 0, filed: now - ageDays * day, cite: '[]' });
+  const jobs = [{ id: 'j1', ask: 'Build a', target: 'feature:a', state: 'queued' }, { id: 'j2', ask: 'Build b', target: 'feature:b', state: 'queued' }, { id: 'j3', ask: 'Build c', target: 'feature:c', state: 'queued' }];
+  const p = prio2(jobs, [w('a', 'j1', 1), w('b', 'j2', 8), w('c', 'j3', 15)], {}, null, now);
+  const s = Object.fromEntries(p.ranked.map((r) => [r.id, r]));
+  assert.equal(s.j2.score, s.j1.score / 2);
+  assert.match(s.j2.drivers[0], /stuck at 0 for 8 days/);
+  assert.deepEqual(p.gaveUp.map((g) => [g.id, g.want]), [['j3', 'c']]);
+  assert.ok(!p.bets.some((b) => b.id === 'j3'));
+});
