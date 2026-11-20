@@ -25,6 +25,7 @@ test('Echo Vault names the archive and keeps reading-only sites off the public f
   assert.equal(FLOORS.some((f) => f.id === 'research' || f.page === '/research/'), false);
   assert.equal(FLOORS.some((f) => /tsundere|motherfuckingwebsite/i.test(f.site || '')), false);
   assert.match(redirects, /\/research\/? \/echo-vault\/\?entry=paper-notes 301/);
+  assert.match(redirects, /\/internet-history\/? \/echo-vault\/ 301/);
   assert.match(app, /location\.hash/);
 });
 
