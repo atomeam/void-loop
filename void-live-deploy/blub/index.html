@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>blub, the blobfish · A-to-Mind Verse</title>
+<meta name="description" content="blub is a real-time 3D blobfish, lovably ugly, and the messenger of A-to-Mind Verse. Say blub, turn it around, watch it blink.">
+<link rel="canonical" href="https://a-to-mind.com/blub/">
+<meta property="og:title" content="blub, the blobfish · A-to-Mind Verse">
+<meta property="og:description" content="A real-time 3D blobfish that carries the word of A-to-Mind Verse.">
+<meta property="og:url" content="https://a-to-mind.com/blub/">
+<meta property="og:image" content="https://a-to-mind.com/blub/blub.jpg">
+<link rel="stylesheet" href="/verse.css" media="screen">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #03080d; --ink: #eef6f8; --soft: #9fb8c0; --accent: #ff9fb0; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  [hidden] { display: none !important; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 56px; }
+  h1 { font-size: clamp(2rem, 6vw, 3.2rem); margin: 0; letter-spacing: -.02em; }
+  .sub { color: var(--soft); margin: 4px 0 16px; max-width: 46ch; }
+  #stage { position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 70vh; border-radius: 18px; overflow: hidden; background: #04121a; box-shadow: 0 0 0 1px #17323d, 0 24px 60px #0008; cursor: pointer; touch-action: manipulation; }
+  #blub, #photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .word { position: absolute; bottom: 38%; font-weight: 700; font-size: 1.6rem; color: #dff6ff; text-shadow: 0 0 14px #5cd0ee; pointer-events: none; animation: rise 2.2s ease-out forwards; }
+  @keyframes rise { from { opacity: 0; transform: translateY(0) scale(.8); } 15% { opacity: 1; } to { opacity: 0; transform: translateY(-160px) scale(1.2); } }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 8px; }
+  button, .row a { font: inherit; min-height: 44px; padding: 0 20px; border-radius: 999px; border: 1px solid #2c5566; background: #0b2430; color: var(--ink); display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; }
+  button:hover, .row a:hover { background: #12384a; } button:focus-visible, .row a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  button.primary { background: #ff9fb0; color: #2a0a12; border-color: #ff9fb0; font-weight: 700; }
+  .note { color: var(--soft); font-size: .95rem; max-width: 60ch; } a { color: var(--accent); }
+  @media (prefers-reduced-motion: reduce) { .word { animation: none; opacity: 1; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>blub</h1>
+  <p class="sub">The blobfish who carries the word of A-to-Mind Verse. Lovably ugly, wet, and always a little surprised.</p>
+  <div id="stage" role="img" aria-label="A 3D blobfish with a drooping pink nose, a downturned mouth and small sunken eyes, floating above a sandy sea floor">
+    <canvas id="blub" width="640" height="400"></canvas>
+    <img id="photo" src="/blub/blub.jpg" alt="A real blobfish" hidden>
+  </div>
+  <div class="row">
+    <button id="say" class="primary" type="button">Say blub</button>
+    <button id="turn" type="button">Turn blub around</button>
+    <a href="/">A-to-Mind Verse</a>
+    <a href="/scoreboard/">See how Verse is improving</a>
+  </div>
+  <p class="note" id="note">Move your pointer and blub looks at it. Tap blub and it says so. Blobfish look like this because the deep sea squeezes them; on land they sag.</p>
+</main>
+<script src="/blub/blub.js" type="module"></script>
+</body>
+</html>
