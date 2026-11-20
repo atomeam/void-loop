@@ -9314,7 +9314,7 @@ try {
       daily: { time: [0, 1, 2, 3, 4, 5, 6].map((d) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10)), temperature_2m_max: Array(7).fill(12), temperature_2m_min: Array(7).fill(5), precipitation_probability_max: Array(7).fill(5), weather_code: Array(7).fill(3), sunrise: [], sunset: [], precipitation_sum: Array(7).fill(0) } };
     await P.ctx.route(/\/api\/weather\?/, async (r) => { const paris = /paris/i.test(new URL(r.request().url()).searchParams.get('q')); await new Promise((z) => setTimeout(z, paris ? 2500 : 500));
       return r.fulfill(json({ ok: true, loc: { name: paris ? 'Paris, France' : 'Boston, Massachusetts, United States', lat: paris ? 48.85 : 42.36, lon: paris ? 2.35 : -71.06, us: false }, w: wx })); });
-    const busy = () => P.p.evaluate(() => document.querySelector('main').getAttribute('aria-busy'));
+    const busy = () => P.p.evaluate(() => { const m = document.querySelector('main'); return m ? m.getAttribute('aria-busy') : 'no main yet'; }); // a page still loading is a failed check, not a crash that stops the rest of the shard
     await P.p.fill('#q', 'Paris'); await P.p.press('#q', 'Enter'); await P.p.waitForTimeout(150);
     await P.p.fill('#q', 'Boston'); await P.p.press('#q', 'Enter');
     await until(async () => /Boston/.test(await P.p.textContent('#place').catch(() => '')), 5000);
