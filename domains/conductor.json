@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T16:54:06.885Z",
+ "updated": "2026-11-20T17:03:35.665Z",
  "last24h": {
-  "ticks": 131,
-  "started": 102,
+  "ticks": 132,
+  "started": 103,
   "requeued": 11,
   "setAside": 1,
   "probes": 0,
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 9,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -129,7 +129,7 @@
   "mwa0ah54": 1795192504333,
   "mwdsggtv": 1795193080284,
   "mwdsgi9n": 1795193646885,
-  "mwdsgj2z": 1795172132806,
+  "mwdsgj2z": 1795194215665,
   "mweaagmp": 1795172693509,
   "mweaah6f": 1795173253781,
   "mwey8iy6": 1795173816867,
@@ -3958,6 +3958,36 @@
    ],
    "probe": false,
    "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 472,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T17:03:35.665Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 56
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
    "design": false,
    "will": false,
    "lap": false,
