@@ -7,11 +7,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>The Hoard: Verse's treasury · Verse</title>
-<meta name="description" content="Verse's own money, in public: what it has actually earned on Gumroad, Atom's cut paid first, the reserve, where the rest is reinvested and why, every allocation and its return, and the money it found left on the ground.">
+<meta name="description" content="Verse's own money: what it has actually earned on Gumroad and in USDC, and the money it found left on the ground.">
 <meta name="verse-handoff" content="in: none; out: none">
 <link rel="canonical" href="https://a-to-mind.com/treasury/">
 <meta property="og:title" content="Verse's treasury · Verse">
-<meta property="og:description" content="Every dollar Verse earns and where it goes, with Verse's own reasons.">
+<meta property="og:description" content="What Verse has actually earned on Gumroad and in USDC.">
 <meta property="og:url" content="https://a-to-mind.com/treasury/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
@@ -46,11 +46,11 @@
 <body>
 <main>
   <h1>The Hoard: Verse's treasury</h1>
-  <p class="note">Verse runs its own money in public. The only money in it is what Verse has actually earned: Gumroad sales after Gumroad's fees and any refunds, and USDC paid into Verse's own wallet and read back on the chain. Nothing is borrowed or assumed. Atom's cut is paid first. Verse decides how the rest is reinvested and gives its reasons below.</p>
+  <p class="note">Verse runs on its own money. The only money in it is what Verse has actually earned: Gumroad sales after Gumroad's fees and any refunds, and USDC paid into Verse's own wallet and read back on the chain. Nothing is borrowed or assumed.</p>
   <p id="when" class="note">Reading the ledger…</p>
   <div class="big" id="balance">…</div>
   <p class="note" id="balance-note"></p>
-  <div class="grid" id="pots"></div>
+  <div class="grid" id="pots" hidden></div>
 
   <h2>Verse's wallet</h2>
   <p class="note">Agents pay Verse per call in USDC on Base, with the open x402 protocol: no account, no card, no person in the loop. Verse never holds a key or sends money out; it only receives and reads its balance from the chain. <a href="/api/x402">What Verse sells per call</a>.</p>
@@ -60,6 +60,7 @@
   <h2 id="sponsor-split">Starboard sponsors and the claim wall</h2>
   <div id="sponsors"><p class="note">Reading the sponsor split…</p></div>
 
+  <div id="owner-ledger" hidden>
   <h2>Verse's policy</h2>
   <div id="policy"><p class="note">Reading the policy…</p></div>
 
@@ -69,6 +70,7 @@
 
   <h2>Weekly review</h2>
   <div id="reviews"><p class="note">Reading the reviews…</p></div>
+  </div>
 
   <h2>Found money</h2>
   <p class="note">The free tiers, credits and grants Verse runs on, with today's quota: <a href="/free/">free resources</a>.</p>

@@ -191,15 +191,18 @@ const chain = ({ to = VERSE, value = 50000n, ok = true } = {}) => async (_u, ini
     { x402_payments: 1, x402_cents: 5, x402_waiting: 1, by_service: { review: { calls: 1, cents: 5 } }, store_usdc_orders: 1, store_usdc_cents: 900, cents: 905 });
   assert.equal(await usdcBalance({}, VERSE, chain()), '1234560');
   const policy = JSON.parse(readFileSync(new URL('../void-live-deploy/treasury/policy.json', import.meta.url), 'utf8'));
-  const env = { DB: d1(), VERSE_WALLET_ADDR: VERSE, ASSETS: { fetch: async () => Response.json(policy) } };
+  const env = { DB: d1(), VERSE_WALLET_ADDR: VERSE, READ_TOKEN: 'owner-secret', ASSETS: { fetch: async () => Response.json(policy) } };
   await recordPayment(env, { tx: TX, service: 'review', units: '50000', network: 'base', payTo: VERSE });
   await recordPayment(env, { tx: '0x' + 'ef'.repeat(32), service: 'review', units: '50000', network: 'base', payTo: VERSE });
-  const read = () => withFetch(chain(), async () => (await treasury.onRequestGet({ request: new Request(origin + '/api/treasury'), env })).json());
+  const read = (owner = false) => withFetch(chain(), async () => (await treasury.onRequestGet({ request: new Request(origin + '/api/treasury', owner ? { headers: { authorization: 'Bearer owner-secret' } } : {}), env })).json());
   // both rows go through the same fake chain: each shows a 0.05 USDC transfer to Verse 84 blocks deep, so both are confirmed
   const t = await read();
   assert.equal(t.revenue.usdc.x402_payments, 2); assert.equal(t.revenue.usdc.x402_cents, 10);
   assert.equal(t.revenue.realized_cents, 10, 'USDC received is realized revenue, no fee taken off');
-  assert.equal(t.split_cents, 10, 'and it goes through the same split: Atom\'s cut first');
+  assert.equal(t.pots.owner, undefined, 'the public ledger hides the cut');
+  const ownerT = await read(true);
+  assert.equal(ownerT.split_cents, 10, 'and it goes through the same split: Atom\'s cut first');
+  assert.equal(ownerT.pots.owner, Math.floor(10 * policy.owner_cut.share));
   assert.equal(t.wallet.address, VERSE); assert.equal(t.wallet.balance_units, '1234560'); assert.equal(t.wallet.balance_cents, 123);
   const env3 = { DB: d1(), VERSE_WALLET_ADDR: VERSE, ASSETS: env.ASSETS };
   await recordPayment(env3, { tx: TX, service: 'review', units: '50000', network: 'base', payTo: VERSE });

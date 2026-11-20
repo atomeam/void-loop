@@ -214,9 +214,10 @@ export function shareLink(origin, show, ep, at = 0) {
 }
 /** Verse's own show (public/podcast/episodes.json) in the same shape as any feed's rows, newest first. Pure. */
 export function verseShow(j) {
-  const eps = ((j && j.episodes) || []).map((e) => ({ id: 'ep' + e.n, title: e.title, audio: '/podcast/' + e.file, type: 'audio/mpeg', bytes: e.bytes || 0, dur: e.seconds || 0, pub: isoDate(e.pub), notes: String(e.summary || ''), image: '/podcast/cover-256.jpg', n: e.n,
+  // an episode marked hidden is off the public show (owner, 2026-11-20: the old episodes were pretty bad); its file stays
+  const eps = ((j && j.episodes) || []).filter((e) => e && !e.hidden).map((e) => ({ id: 'ep' + e.n, title: e.title, audio: '/podcast/' + e.file, type: 'audio/mpeg', bytes: e.bytes || 0, dur: e.seconds || 0, pub: isoDate(e.pub), notes: String(e.summary || ''), image: '/podcast/cover-256.jpg', n: e.n,
     transcriptLines: (e.lines || []).map((l) => ({ t: l.t == null ? null : l.t, text: (l.who ? l.who + ': ' : '') + l.text })) })).sort((a, b) => b.n - a.n);
-  return { verse: true, id: 'verse', title: 'Verse Out Loud', author: 'A-to-Mind', description: 'Verse, the blank stage at a-to-mind.com, reads its own week out loud: what it built, what it missed and fixed, and what it asked for next. Every line comes from its public ledger. Free to download and repost.', image: '/podcast/cover-256.jpg', link: 'https://a-to-mind.com/podcast/', language: 'en-us', feed: 'https://a-to-mind.com/podcast/rss.xml', episodes: eps, total: eps.length };
+  return { verse: true, id: 'verse', title: 'Verse Out Loud', author: 'A-to-Mind', description: 'Two hosts, one true story: Verse tells it, the Critic doubts every word, and every fact comes from a public source named in the notes. Free to download and repost.', image: '/podcast/cover-256.jpg', link: 'https://a-to-mind.com/podcast/', language: 'en-us', feed: 'https://a-to-mind.com/podcast/rss.xml', episodes: eps, total: eps.length };
 }
 /** the ask bar's text as what the page should do: a feed address, or a search. Pure. */
 export function kindOfInput(text) { const t = String(text || '').trim(); if (/^https?:\/\//i.test(t) || /^(?:feed|itpc|pcast):\/\//i.test(t)) return { feed: t.replace(/^(?:feed|itpc|pcast):\/\//i, 'https://').replace(/^http:\/\//i, 'https://') }; if (/^[\w-]+(?:\.[\w-]+)+\/\S+$/.test(t) && !/\s/.test(t)) return { feed: 'https://' + t }; return t ? { q: t.slice(0, 100) } : {}; }

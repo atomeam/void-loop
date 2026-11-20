@@ -102,9 +102,9 @@ async function run(text, api) {
   const { showPage, esc } = api, want = episodeAsked(text);
   const el = showPage((p) => { p.innerHTML = '<h2>Verse Out Loud</h2><div class="sub">\u2026</div>'; });
   let all = [];
-  try { all = (await fetch('/podcast/episodes.json', { cache: 'no-cache' }).then((r) => r.json())).episodes || []; } catch (_) {}
+  try { const r = await fetch('/podcast/episodes.json', { cache: 'no-cache' }); all = r.ok ? ((await r.json()).episodes || []).filter((e) => e && !e.hidden) : []; } catch (_) {}
   if (api._pageStill && !api._pageStill(el)) return 'podcast';
-  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the daily podcast workflow.</p>'; return 'podcast'; }
+  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>A new episode is on its way: one goes up only when it passes Verse’s own quality check.</p>'; return 'podcast'; }
   const show = (n) => {
     const ep = all.find((e) => e.n === n) || all[all.length - 1];
     el.innerHTML = cardHtml(ep, all, esc, location.origin);

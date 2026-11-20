@@ -76,7 +76,7 @@ test('4. Verse\'s take is shown only when it stands on something real, under the
   assert.equal(T.bindTake('Church treasure such as precious items was often kept in a sacristy, and royal property in a palace.', grounds, 'Treasury'), '1', 'a take about kept treasure binds to sense 2 only');
   assert.equal(T.bindTake('Most finance ministries also run taxation and the government department budget.', grounds, 'Treasury'), '0');
   assert.equal(T.bindTake(FILLER, [...grounds, { key: 'verse', text: "Verse's treasury: its own money, the reserve, the realized revenue, every allocation and its return" }], 'Treasury'), null);
-  assert.equal(T.bindTake('Verse keeps its reserve first and reinvests realized revenue by expected return.', [...grounds, { key: 'verse', text: "Verse's treasury: Verse's own money, Atom's cut paid first, the reserve, where the rest is reinvested and why, realized revenue" }], 'Treasury'), 'verse', 'Verse\'s own page is a fact a take can stand on');
+  assert.equal(T.bindTake('Verse runs on money it has actually earned, with nothing borrowed or assumed.', [...grounds, { key: 'verse', text: "Verse's treasury: Verse's own money, what it has actually earned on Gumroad and in USDC, realized revenue, found money" }], 'Treasury'), 'verse', 'Verse\'s own page is a fact a take can stand on');
   assert.equal(groundedTake(FILLER, TREASURY, 'Treasury'), '');
   assert.equal(takeHtml(esc, FILLER, [], { ground: TREASURY, title: 'Treasury' }), '', 'no grounded take and nothing to do: no block at all');
   assert.match(takeHtml(esc, 'A found-footage scare that blurs fact and fiction.', [], { ground: 'The Fourth Kind is a 2009 science fiction thriller film with archival footage.', title: 'The Fourth Kind' }), /a model’s reading/);

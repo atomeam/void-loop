@@ -16,7 +16,7 @@ export const FIXTURES = Object.freeze([
   { id: 'good', kind: 'good', text: GOOD },
 ]);
 
-const PROMPTS = [
+export const PROMPTS = [
   (s) => `A stranger is listening and can leave. Score how likely they are to stay, from 1 to 10. Reply with one line: Score N. Show: ${s}`,
   (s) => `Is there a joke with a setup and a payoff, or only information? Score from 1 to 10. Reply with one line: Score N. Show: ${s}`,
   (s) => `Does this tell one thing that happened, including a number from that event, or does it list rules? Score from 1 to 10. Reply with one line: Score N. Show: ${s}`,
@@ -30,11 +30,13 @@ export function readScore(text) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** Minimum of the prompts. A missing number counts as 0, so a silent judge cannot publish. */
-export async function blindMin(text, { askImpl = ask, gap = 5300, seed = 1 } = {}) {
+/** maxChars: how much of the prompt the judge reads. 400 is the old free endpoint's cap; a judge with a long context reads the whole show
+ *  (tools/studio-make.mjs), so a script is never judged on its first lines alone. The marks and the line stay the same. */
+export async function blindMin(text, { askImpl = ask, gap = 5300, seed = 1, maxChars = 400 } = {}) {
   const scores = [];
   const notes = [];
   for (let i = 0; i < PROMPTS.length; i++) {
-    const prompt = PROMPTS[i](text).slice(0, 400);
+    const prompt = PROMPTS[i](text).slice(0, maxChars);
     const got = await askImpl(prompt, { judge: true, seed: seed + i * 97 });
     const n = readScore(got);
     scores.push(n);
@@ -51,10 +53,10 @@ if (process.argv[1] && process.argv[1].endsWith('show-judge.mjs')) {
   process.exit(live.separated ? 0 : 1);
 }
 
-export async function calibrate({ askImpl = ask, gap = 5300 } = {}) {
+export async function calibrate({ askImpl = ask, gap = 5300, maxChars = 400 } = {}) {
   const rows = [];
   for (const fixture of FIXTURES) {
-    const scored = await blindMin(fixture.text, { askImpl, gap, seed: fixture.id.length * 1000 });
+    const scored = await blindMin(fixture.text, { askImpl, gap, seed: fixture.id.length * 1000, maxChars });
     rows.push({ id: fixture.id, kind: fixture.kind, ...scored });
     await sleep(gap);
   }

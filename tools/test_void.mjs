@@ -1600,6 +1600,41 @@ try {
       cred && cred.left >= -1 && cred.right <= cred.w + 1 && cred.page <= cred.w + 1, JSON.stringify(cred));
     await P.ctx.close();
   }
+  if (want("top bar: the nav stays on screen after load and after a scroll, with Hoard and Tools one click away, on desktop and phone, and after the owner's gate swap")) {
+    // owner, 2026-11-20: "the top bar keeps disappearing i cant get to treasury or anything". The owner's page used to be swapped in over the
+    // UniVerse screen with document.write, and the nav script (a module, run once per tab) never drew the bar on the swapped-in page.
+    const bar = (P) => P.p.evaluate(() => {
+      const n = document.getElementById('verse-nav'); if (!n) return null;
+      const r = n.getBoundingClientRect(), cs = getComputedStyle(n.closest('.vs-chrome') || n);
+      const hit = document.elementFromPoint(Math.min(innerWidth - 4, r.left + 30), r.top + r.height / 2);
+      return { pos: cs.position, top: Math.round(r.top), h: Math.round(r.height), shown: r.height > 20 && r.bottom > 0 && r.top < 80 && cs.visibility !== 'hidden' && +cs.opacity > 0.5 && !!hit && n.contains(hit),
+        hoard: !!n.querySelector('a[href="/treasury/"]'), tools: !!n.querySelector('a[href="/tools/"]') };
+    });
+    // this suite's file server sends .css as a download, so a browser drops the stylesheet; the bar's fixed place is in /verse.css
+    const asCss = (ctx) => ctx.route(/\.css(?:\?|$)/, async (r) => { const res = await r.fetch(); return r.fulfill({ response: res, headers: { ...res.headers(), 'content-type': 'text/css' } }); });
+    for (const phone of [false, true]) {
+      const P = await fresh({ phone }); await asCss(P.ctx);
+      for (const at of ['team/', 'treasury/', 'tools/', 'bots/', 'arcade/']) {
+        await P.p.goto(base + at); await P.p.waitForTimeout(2500);
+        const first = await bar(P);
+        await P.p.mouse.wheel(0, 1500); await P.p.evaluate(() => scrollTo(0, document.body.scrollHeight)); await P.p.waitForTimeout(600);
+        const later = await bar(P);
+        check(`top bar (${phone ? 'phone' : 'desktop'}) /${at}: on screen after load and after a scroll, Hoard and Tools linked`, !!(first && first.shown && later && later.shown && later.hoard && later.tools), JSON.stringify({ first, later }));
+      }
+      await P.ctx.close();
+    }
+    // the owner's swap: the gate's own screen first, then the page fetched with the owner's key and written over it
+    const { screen } = await import('../void-live-deploy/lib/page-pass.js');
+    const { dressHtml } = await import('../void-live-deploy/lib/verse-shell.js');
+    const O = await fresh(() => { try { localStorage.setItem('a2m.void.owner.v1', 'vo1.suite'); } catch (_) {} });
+    await asCss(O.ctx);
+    await O.ctx.route(/\/api\/owner-cookie/, (r) => r.fulfill({ status: 404, body: 'no' }));
+    await O.ctx.route(/\/team\/$/, (r) => (r.request().headers().authorization ? r.continue() : r.fulfill({ status: 200, contentType: 'text/html', body: dressHtml(screen({ cents: 2000 }, '/team/'), '/team/') }))); // dressed, as an older service worker dressed it: the nav script has run once already
+    await O.p.goto(base + 'team/', { waitUntil: 'commit' });
+    const swapped = await until(async () => { const b = await bar(O); const gate = await O.p.evaluate(() => !!document.querySelector('meta[name="verse-gate"]')); return !gate && b && b.shown ? b : null; }, 20000);
+    check("top bar: after the owner's page is swapped in over the UniVerse screen, the nav is drawn and on screen", !!(swapped && swapped.hoard && swapped.tools), JSON.stringify(swapped));
+    await O.ctx.close();
+  }
   if (want("tower: a visitor asking versus sees the Out of Order sign and no site names; the owner sees the plain card")) {
     const P = await fresh();
     await P.ask('versus', 900);

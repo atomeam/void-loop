@@ -3,13 +3,78 @@
  "cases": 149,
  "runsTotal": 300,
  "kinds": {
-  "file": 28,
   "visitor": 226,
+  "file": 28,
   "none": 2,
   "grow": 43,
   "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-11-20T21:13:13Z",
+   "passed": 132,
+   "of": 150,
+   "kind": "file",
+   "ms": 493,
+   "note": "fix: \"is this system handoff ready\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "flip this card",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "echo this",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "films by Kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for Ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "make a vase",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "open folder recipes",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "three alike",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "token stand",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "is this system handoff ready",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T20:56:11Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-20T20:18:57Z",
    "passed": 138,
@@ -415,43 +480,6 @@
      "why": "only \"waking up\" appeared, never the answer"
     }
    ]
-  },
-  {
-   "at": "2026-11-20T07:50:18Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-20T06:58:54Z",
-   "passed": 140,
-   "of": 145,
-   "kind": "file",
-   "ms": 279,
-   "note": "fix: \"export as stl\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "send it away",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "films by Kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "export as stl",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -519,18 +547,18 @@
    "from": "2026-11-06",
    "runs": 135,
    "passed": 2347,
-   "of": 2899,
-   "broken": 4,
-   "brokenOf": 436,
+   "of": 2790,
+   "broken": 3,
+   "brokenOf": 327,
    "brokenPassed": 0,
    "ms": 391
   },
   {
    "from": "2026-11-13",
    "runs": 165,
-   "passed": 6409,
-   "of": 6770,
-   "ms": 430
+   "passed": 6541,
+   "of": 6920,
+   "ms": 438
   }
  ],
  "seen": {
@@ -986,6 +1014,7 @@
   "skill:process-lift-pack": "2026-11-19T19:55:06Z",
   "skill:ready-checks": "2026-11-19T20:22:55Z",
   "skill:delivery-status-pack": "2026-11-19T22:25:16Z",
-  "skill:full-lift-plan": "2026-11-20T00:31:48Z"
+  "skill:full-lift-plan": "2026-11-20T00:31:48Z",
+  "skill:automation-status-pack": "2026-11-20T21:13:13Z"
  }
 }

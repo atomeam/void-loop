@@ -641,7 +641,7 @@ SPECS['/agent/'] = async (t) => {
   t.ok(nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1, 'at 390 px the current nav item is fully in the bar: ' + JSON.stringify(nav));
   await t.p.setViewportSize({ width: 1200, height: 900 });
 };
-// /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
+// /treasury/: Verse's public money page. The API is faked with one realized sale; the public view does not show the cut or the split
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },
   revenue: { sales: 1, gross_cents: 4900, fee_cents: 712, refunded_cents: 0, realized_cents: 4188 }, balance_cents: 4188, split_cents: 4188,
   pots: { owner: 1256, reserve: 586, infrastructure: 820, tools: 586, growth: 600, bounties: 340 }, weights: { infrastructure: 0.35, tools: 0.25, growth: 0.26, bounties: 0.14 }, learned: {}, committed: 0,
@@ -654,9 +654,10 @@ SPECS['/treasury/'] = async (t) => {
   await t.p.reload(); await t.waitText('#balance', /\$/, 10000);
   t.ok((await t.text('#balance')).trim() === '$41.88', 'the balance is the realized money: ' + (await t.text('#balance')));
   t.ok(/\$49\.00 gross/.test(await t.text('#balance-note')) && /\$7\.12 Gumroad fees/.test(await t.text('#balance-note')), 'gross and fees shown');
-  t.ok(/\$12\.56/.test(await t.text('#pots')), "Atom's cut has its pot");
-  t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
-  t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
+  t.ok(!(await t.p.locator('#pots').isVisible()), 'the pots (including Atom\'s cut) stay hidden for a visitor');
+  t.ok(!(await t.p.locator('#owner-ledger').isVisible()), 'the policy split stays hidden for a visitor');
+  const body = await t.text('main');
+  t.ok(!/Atom's cut/.test(body) && !/reinvested/.test(body), 'a visitor is not told the cut or the split: ' + body.slice(0, 180));
   await t.waitText('#sponsors', /\$6\.00/, 10000);
   t.ok(/\$3\.00[\s\S]*50%/.test(await t.text('#sponsors')), 'the house share is shown with its 50%: ' + (await t.text('#sponsors')).slice(0, 120));
   t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');

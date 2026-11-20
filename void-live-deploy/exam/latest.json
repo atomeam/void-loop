@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-20T18:48:29.167Z",
+  "at": "2026-11-20T20:31:00.593Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -39,7 +39,7 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of planet money",
+          "ask": "play the latest episode of freakonomics radio",
           "failed": [
             "audio"
           ],
@@ -108,25 +108,23 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 98.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -226,38 +224,10 @@
       }
     },
     "sports": {
-      "score": 92.6,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "scores",
           "failed": [
@@ -360,7 +330,7 @@
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 92.6
+    "domain": "podcasts",
+    "score": 96
   }
 }

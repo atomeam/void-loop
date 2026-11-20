@@ -31,7 +31,7 @@ export const SHOW = {
   email: 'atom@a-to-mind.com',
   link: SITE + '/podcast/',
   cover: SITE + '/podcast/cover.jpg',
-  description: 'Verse Out Loud. Verse and Critic tell a short true story about something Verse actually did, for anyone curious. Free to download and repost.',
+  description: 'Verse Out Loud. Two hosts, one true story: Verse tells it, the Critic doubts every word, and every fact comes from a public source named in the notes. Free to download and repost.',
   category: 'Technology',
   language: 'en-us',
 };
@@ -145,7 +145,7 @@ const hms = (s) => { s = Math.round(+s || 0); return [Math.floor(s / 3600), Math
 /** A podcast RSS 2.0 feed with the iTunes and Podcasting 2.0 tags Apple and Spotify read. Pure. */
 export function rss(episodes) {
   const S = SHOW;
-  const items = [...episodes].sort((a, b) => b.n - a.n).map((e) => `<item><title>${xesc(e.title)}</title><link>${S.link}?ep=${e.n}</link><guid isPermaLink="false">a-to-mind-verse-out-loud-${e.n}</guid><pubDate>${new Date(e.pub).toUTCString()}</pubDate><description>${xesc(e.summary)}</description><enclosure url="${SITE}/podcast/${e.file}" length="${e.bytes}" type="audio/mpeg"/><itunes:duration>${hms(e.seconds)}</itunes:duration><itunes:episode>${e.n}</itunes:episode><itunes:episodeType>full</itunes:episodeType><itunes:explicit>false</itunes:explicit><podcast:transcript url="${SITE}/podcast/${e.transcript}" type="text/plain"/></item>`).join('');
+  const items = [...episodes].filter((e) => e && !e.hidden).sort((a, b) => b.n - a.n).map((e) => `<item><title>${xesc(e.title)}</title><link>${S.link}?ep=${e.n}</link><guid isPermaLink="false">a-to-mind-verse-out-loud-${e.n}</guid><pubDate>${new Date(e.pub).toUTCString()}</pubDate><description>${xesc(e.summary)}</description><enclosure url="${SITE}/podcast/${e.file}" length="${e.bytes}" type="audio/mpeg"/><itunes:duration>${hms(e.seconds)}</itunes:duration><itunes:episode>${e.n}</itunes:episode><itunes:episodeType>full</itunes:episodeType><itunes:explicit>false</itunes:explicit><podcast:transcript url="${SITE}/podcast/${e.transcript}" type="text/plain"/></item>`).join('');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podcast="https://podcastindex.org/namespace/1.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>${xesc(S.title)}</title><link>${S.link}</link><atom:link href="${SITE}/podcast/rss.xml" rel="self" type="application/rss+xml"/><language>${S.language}</language><copyright>Free to download and repost. ${xesc(S.author)}</copyright><description>${xesc(S.description)}</description><itunes:summary>${xesc(S.description)}</itunes:summary><itunes:author>${xesc(S.author)}</itunes:author><itunes:owner><itunes:name>${xesc(S.author)}</itunes:name><itunes:email>${S.email}</itunes:email></itunes:owner><itunes:image href="${S.cover}"/><image><url>${S.cover}</url><title>${xesc(S.title)}</title><link>${S.link}</link></image><itunes:category text="${S.category}"/><itunes:explicit>false</itunes:explicit><itunes:type>episodic</itunes:type><podcast:locked>no</podcast:locked>${items}</channel></rss>\n`;
 }
 

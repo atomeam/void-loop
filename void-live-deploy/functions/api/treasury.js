@@ -1,4 +1,5 @@
-// Verse's treasury, public (lib/treasury.js; owner, 2026-11-03: Verse reallocates its own profits, Atom's cut first, Verse decides it).
+// Verse's treasury (lib/treasury.js; owner, 2026-11-03: Verse reallocates its own profits, Atom's cut first, Verse decides it).
+// GET is public: earnings, the wallet and found money. The cut, the pots and the policy split are only in the owner view (Bearer READ_TOKEN). The payout math is unchanged.
 // GET  -> the real balance from realized Gumroad revenue (aggregate only: no buyer, no email, no sale id), what each pot holds, every
 //         allocation and spend entry, the latest weekly review and whether Gumroad's API is reconciling. Splits any new realized
 //         money first (append-only rows in D1 void_treasury, ids keyed on the realized total so a repeat or a race writes nothing twice).
@@ -105,22 +106,28 @@ async function walletView(env) {
     services: Object.entries(SERVICES).map(([id, s]) => ({ id, path: s.path, price_usdc: usdcText(s.units), description: s.description })) };
 }
 
-function publicView(policy, s, env) {
+function publicView(policy, s, env, owner = false) {
   const b = balances(s.rows);
   const entries = s.rows.filter((r) => r.kind !== 'meta' && r.kind !== 'review').map((r) => ({ id: r.id, at: r.at, kind: r.kind, bucket: r.bucket, cents: r.cents,
     purpose: r.purpose, expected: r.expected || null, actual: r.actual || null, status: r.status, needs: r.needs || null }));
   const meta = s.rows.find((r) => r.id === 'meta:reconciled');
   const reviews = s.rows.filter((r) => r.kind === 'review').map((r) => { try { return { at: r.at, ...JSON.parse(r.data) }; } catch (_) { return null; } }).filter(Boolean);
-  return {
+  const base = {
     as_of: new Date().toISOString(),
     source: { only: 'realized revenue: Gumroad sales after fees and refunds, and USDC received on Base (x402 calls read back on chain, store orders paid in USDC)', pings: true, gumroad_api: env.GUMROAD_ACCESS_TOKEN ? (meta ? 'on, last read ' + meta.at : 'on, not read yet') : 'off (no API token on the site: pings only)', fee_source: policy.source_of_funds && policy.source_of_funds.fee_source },
     revenue: s.money, // sales, gross, Gumroad fees, refunded, realized: totals only
     balance_cents: s.money.realized_cents - s.rows.filter((r) => r.kind === 'paid').reduce((n, r) => n + r.cents, 0) - s.rows.filter((r) => r.kind === 'spend' && r.status === 'executed').reduce((n, r) => n + r.cents, 0),
-    pots: b.pots, split_cents: b.split_cents, committed_cents: b.committed_cents,
-    weights: s.weights, learned: s.learned,
-    policy: { owner_cut: policy.owner_cut, reserve: policy.reserve, buckets: policy.buckets, spending: { rule: policy.spending.rule }, review: policy.review, history: policy.history, version: policy.version, decided_by: policy.decided_by },
-    entries, reviews,
+    committed_cents: b.committed_cents,
   };
+  if (owner) {
+    return { ...base, pots: b.pots, split_cents: b.split_cents, weights: s.weights, learned: s.learned,
+      policy: { owner_cut: policy.owner_cut, reserve: policy.reserve, buckets: policy.buckets, spending: { rule: policy.spending.rule }, review: policy.review, history: policy.history, version: policy.version, decided_by: policy.decided_by, giving: policy.giving },
+      entries, reviews, owner_view: true };
+  }
+  const pots = { ...b.pots }; delete pots.owner;
+  return { ...base, pots, policy: { spending: { rule: policy.spending.rule } },
+    entries: entries.filter((e) => e.bucket !== 'owner' && !/Atom's|owner cut/i.test(e.purpose || '')),
+    reviews: [], owner_view: false };
 }
 
 /** Monday (UTC) of the week `at` falls in, as YYYY-MM-DD: one review per week, whoever asks first. */
@@ -155,7 +162,8 @@ export async function onRequestGet({ request, env, waitUntil }) {
     // Starboard's sponsor grid and claim wall (lib/sponsors.js): the house share and the visitor pool, from verified sponsor income only
     let sponsors = null;
     try { const v = await sponsorView(env); sponsors = { ...v.split, live_tiles: v.slots.filter((g) => g.tile).length, slots: v.slots.length, page: '/starboard/#sponsors', rule: v.rule }; } catch (_) {}
-    return json({ ...publicView(policy, s, env), wallet: await walletView(env), sponsors }, 200, 'public, max-age=60');
+    const owner = await ownerOk(request, env);
+    return json({ ...publicView(policy, s, env, owner), wallet: await walletView(env), sponsors }, 200, owner ? 'private, no-store' : 'public, max-age=60');
   } catch (e) { return json({ error: 'treasury unavailable' }, 503); }
 }
 

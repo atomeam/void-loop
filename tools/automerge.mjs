@@ -21,6 +21,7 @@ import { jobOfBody, moveJob } from './job-link.mjs';
 import { mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
 import { fixAge, fixNote, nextStep } from './merge-flow.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
+import { tidy } from './pr-tidy.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
@@ -159,6 +160,8 @@ if (!one) try {
 let prs;
 try { prs = one ? [gh(`repos/${repo}/pulls/${one}`)] : gh(`repos/${repo}/pulls?state=open&per_page=100`); }
 catch (e) { if (limited) stopForQuota(limited); throw e; }
+// held runs on bot pull requests are approved, and a pull request blocked for 2 days is closed with its reason (tools/pr-tidy.mjs)
+{ const t = tidy({ gh, run, repo, prs, one }); if (t.closed.length) prs = prs.filter((p) => !t.closed.includes(p.number)); }
 const stuck = process.env.STUCK === '1', STUCK_MARK = '<!-- void-stuck -->';
 function noteStuck(p, why) {
   if (!stuck || stuckDecision(p, [], Date.now()).action === 'young') return;

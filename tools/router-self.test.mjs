@@ -22,3 +22,10 @@ test('no example is also a near miss of the same skill, and no two skills share 
     seen.set(e.toLowerCase(), name);
   }
 });
+
+test('what are you working on is an example of the self skill, never a look or work example', () => {
+  for (const q of ['what are you working on', 'what are you building', 'what are you doing now']) {
+    assert.ok(SKILLS.self.examples.includes(q), 'self has: ' + q);
+    assert.ok(!Object.entries(SKILLS).some(([name, sk]) => name !== 'self' && (sk.examples || []).includes(q)), q);
+  }
+});

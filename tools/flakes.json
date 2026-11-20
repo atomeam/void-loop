@@ -278,5 +278,6 @@
   {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "3c3e06e3ad772016ddbcbc0429da03689eb06d04", "at": "2026-11-20T12:14:03Z"},
   {"check": "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, h", "sha": "3c3e06e3ad772016ddbcbc0429da03689eb06d04", "at": "2026-11-20T12:27:39Z"},
   {"check": "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so", "sha": "3c3e06e3ad772016ddbcbc0429da03689eb06d04", "at": "2026-11-20T12:32:23Z"},
-  {"check": "suite ran to the end", "sha": "906358f96cc91481f7368e9ec2f8d0ac7840b82a", "at": "2026-11-20T13:18:54Z"}
+  {"check": "suite ran to the end", "sha": "906358f96cc91481f7368e9ec2f8d0ac7840b82a", "at": "2026-11-20T13:18:54Z"},
+  {"check": "films page: every sign-in this browser holds is tried, and none is ever asked for", "sha": "250286527e7718a30722851b2e10fc3320fd6568", "at": "2026-11-20T20:28:54Z"}
 ]

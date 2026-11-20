@@ -13,3 +13,5 @@
 **How to tell it worked.** `node --test tools/verse-shell.test.mjs`. On the home page the ask bar still says Ask anything, the stage under it is empty until someone asks, and the top line names bots and tower wins only after `/api/crew` and `/self.json` answer.
 
 **Mistakes.** Do not put suggestion text back on the empty stage. Do not draw a grid floor. Do not fetch `tower.evidence.json` for the one-line count: `self.json` already has `tower.beaten`.
+
+**The owner's pages keep the bar (2026-11-20).** The nav pages carry `verse-shell.js` in their own HTML, so a first visit has the bar too. The owner's `verse_owner` cookie (`/api/owner-cookie`) opens a gated page directly (`lib/page-pass.js` `passage`); the UniVerse screen sets that cookie and reloads once. When it cannot, it swaps the page in and loads `/verse-shell.js?again=1`, since a module runs only once in a tab and the bar would be gone. `sw.js` never dresses the UniVerse screen. Browser check: `top bar:` in `tools/test_void.mjs`.

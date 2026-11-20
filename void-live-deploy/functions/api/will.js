@@ -21,6 +21,7 @@ const towerCounts = (t) => { const c = countsOf(t); return 'Versus: ' + c.assimi
 import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLine } from '../../lib/lap.js';
 import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
+import { recentBuilt, freshWants } from '../../lib/will-card.js';
 import { WILL_LAST_SQL, lastRun } from '../../lib/will-last.js';
 import { betterPair, blank, tick as selfTick, weigh } from '../../lib/self-model.js';
 const MODEL = models('will');
@@ -35,8 +36,9 @@ export async function onRequestGet({ request, env }) {
   try {
     const asset = async (path) => { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? r.json() : null; };
     const [ledger, answered] = await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]);
-    if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; }
+    if (ledger) { const s = splitBuilt(will.wants, ledger, answered && answered.links); will.wants = s.open; if (s.got.length) will.got = s.got; will.recent = recentBuilt({ got: will.got, ledger }, 5); }
   } catch (_) { /* the ledger could not be read: the will as it was chosen */ }
+  if (!Array.isArray(will.recent)) will.recent = recentBuilt({ got: will.got }, 5);
   // the will's last run (lib/will-last.js, for the growth card's today view): the newest tried will job's title, state and the PR or the
   // reason it did not ship. An open read of one queue row, cut to that public shape (its why redacted); the rest of the queue
   // stays owner only (functions/api/queue.js). It costs one indexed SELECT per read, behind the same 60-second public cache.
@@ -96,6 +98,17 @@ export async function onRequestPost({ request, env }) {
   const clip = (t, n) => { const x = String(t || '').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
   const noMoney = (t) => String(t || '').replace(/[$€£]\s?\d[\d,.]*(\s?(k|m|\/\s?mo(nth)?|a month|per month))?/gi, 'what I earned').replace(/\b(budget|earnings?|profits?|revenue|sales total)\b/gi, 'what I earned');
   const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: clip(noPaths(redact(noMoney(w.i_want))), 220), because: clip(noPaths(redact(noMoney(honestBecause(w.because, w.c.why)))), 200), evidence: clip(noPaths(redact(noMoney(w.c.why))), 200) })) };
+  // a want the ledger already names as built is not saved as current, and leftover candidates fill the list so the card stays fresh
+  try {
+    const file = async (p) => { if (!env.ASSETS) return null; const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; };
+    const [ledger, answered] = await Promise.all([file('/void.growth.json'), file('/void.asks.json')]);
+    const links = (answered && answered.links) || [];
+    const leftover = cands.filter((c) => !will.wants.some((w) => w.title === c.title)).map((c) => ({ kind: c.kind, title: c.title, why: c.why, source: c.source, because: c.why }));
+    const fresh = freshWants(will.wants, leftover, ledger, links, 3, splitBuilt);
+    will.wants = fresh.wants.map((w) => ({ kind: w.kind || '', title: w.title, ...(w.source ? { source: w.source } : {}), i_want: clip(noPaths(redact(noMoney(w.i_want))), 220), because: clip(noPaths(redact(noMoney(honestBecause(w.because, w.evidence || w.because)))), 200), evidence: clip(noPaths(redact(noMoney(w.evidence || w.because || ''))), 200) }));
+    if (fresh.got.length) will.got = fresh.got;
+    will.recent = recentBuilt({ got: will.got, ledger }, 5);
+  } catch (_) { /* the will as chosen still saves */ }
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
   // a will job nobody has touched in STALE_DAYS makes way for the newest top want: it is set aside (kept, with why), not deleted
   await env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = substr('set aside: untouched for ' || ? || ' days, a newer want takes its place · ' || COALESCE(note, ''), 1, 300), updated = ? WHERE target LIKE 'will:%' AND state IN ('queued','building') AND COALESCE(updated, at) < ?")

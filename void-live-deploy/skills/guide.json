@@ -141,7 +141,7 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 6,
+    "tested": 7,
     "checked": 6,
     "proven": 92
    },
@@ -6953,6 +6953,7 @@
     "memory-graph",
     "memory-preview",
     "wants",
+    "working-on",
     "podcast",
     "connect-pack",
     "client-intake",
@@ -10075,7 +10076,8 @@
     "connections",
     "automation-handoff",
     "delivery-pack",
-    "monitor-receipt"
+    "monitor-receipt",
+    "automation-status-pack"
    ],
    "n": 542
   },
@@ -12434,7 +12436,7 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCXCIII–CCCXCVI",
+   "title": "Rules CCCXCIII–CCCXCVII",
    "rules": [
     {
      "rank": 393,
@@ -12455,6 +12457,11 @@
      "rank": 396,
      "name": "monitor-receipt",
      "catches": "monitor receipt for the onboarding automation"
+    },
+    {
+     "rank": 397,
+     "name": "automation-status-pack",
+     "catches": "automation status pack for client onboarding"
     }
    ],
    "n": 592

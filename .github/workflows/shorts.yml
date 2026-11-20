@@ -68,17 +68,20 @@ jobs:
           mkdir -p ~/kokoro && cd ~/kokoro
           curl -fsSL -o kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx || true
           curl -fsSL -o voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin || true
-      - name: Write two Shorts and film them (tools/show-pipe.mjs)
+      # 2026-11-20 (owner: nothing new since Nov 10): this step ran a stub that made nothing. The studio writes one true story with a
+      # strong free model (Groq first; no visitor data), judges it with tools/show-judge.mjs (bar unchanged) and films only a pass.
+      - name: Write, judge and film one Short (tools/studio-make.mjs)
         env:
           KOKORO_DIR: /home/runner/kokoro
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN2: ${{ secrets.CLOUDFLARE_API_TOKEN2 }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          node tools/show-pipe.mjs shorts --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/studio-make.mjs short --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           shopt -s nullglob
-          mp4s=(media/shorts/*.mp4)
-          if [ ${#mp4s[@]} -gt 0 ]; then cp -f media/shorts/*.mp4 media/shorts/*.jpg void-live-deploy/studio/ || true; fi
-          for m in media/shorts/*.json; do node tools/shorts-loop.mjs record "$m"; done
+          for m in media/shorts/*.json; do node tools/shorts-loop.mjs record "$m" || true; done
       - name: Put each passed film on /films/
         if: ${{ !inputs.dry }}
         env:
