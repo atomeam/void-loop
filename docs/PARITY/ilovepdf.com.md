@@ -7,17 +7,17 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 - Live scan: 2026-10-28, HTTP 200, page title "iLovePDF / Online PDF tools for PDF lovers"
 - History: [docs/HISTORY/ilovepdf.com.md](../HISTORY/ilovepdf.com.md)
 
-**Match: 43%**: 13 have, 0 partial, 5 missing, 12 unreviewed, of 30 features.
+**Match: 47%**: 14 have, 0 partial, 4 missing, 12 unreviewed, of 30 features.
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Merge PDFs | Organise | have | its live page (2026-10-28): "lovers iLovePDF iLovePDF All PDF tools Merge PDF Split PDF Compress PDF Convert PDF Convert to PDF JPG to PDF" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
-| Split a PDF | Organise | have | its live page (2026-10-28): "ovePDF iLovePDF All PDF tools Merge PDF Split PDF Compress PDF Convert PDF Convert to PDF JPG to PDF WORD to P" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Merge PDFs | Organise | have | its live page (2026-10-28): "lovers iLovePDF iLovePDF All PDF tools Merge PDF Split PDF Compress PDF Convert PDF Convert to PDF JPG to PDF" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
+| Split a PDF | Organise | have | its live page (2026-10-28): "ovePDF iLovePDF All PDF tools Merge PDF Split PDF Compress PDF Convert PDF Convert to PDF JPG to PDF WORD to P" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Reorder, rotate and delete pages | Organise | have | its live page (2026-10-28): "PDF to EXCEL PDF to PDF/A All PDF tools Organize PDF Merge PDF Split PDF Remove pages Extract pages Organize P" | void-live-deploy/pdf/app.js:3 `t","pages","extract","order","rotate","compress","img2pdf","pdf2img","numbers","watermark"` |
-| Compress a PDF | Files | have | its live page (2026-10-28): "vePDF All PDF tools Merge PDF Split PDF Compress PDF Convert PDF Convert to PDF JPG to PDF WORD to PDF POWERPO" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Compress a PDF | Files | have | its live page (2026-10-28): "vePDF All PDF tools Merge PDF Split PDF Compress PDF Convert PDF Convert to PDF JPG to PDF WORD to PDF POWERPO" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Convert Word, images and more to PDF | Convert | have | its live page (2026-10-28): "it PDF Compress PDF Convert PDF Convert to PDF JPG to PDF WORD to PDF POWERPOINT to PDF EXCEL to PDF HTML to P" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=img2pdf">Images to PDF</a><a href="/pdf/?tool=pdf2img">PDF to images<` |
 | Convert PDF to Word, Excel or images | Convert | have | its live page (2026-10-28): "iLovePDF / Online PDF tools for PDF lovers iLovePDF iLovePDF All PDF tools Merge PDF Split PDF Compress PDF C" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=pdf2img">PDF to images</a><a href="/pdf/?tool=watermark">Watermark</a` |
-| Add text, images and shapes | Edit | missing | its live page (2026-10-28): "to POWERPOINT PDF to EXCEL PDF to PDF/A Edit PDF Rotate PDF Add page numbers Add watermark Crop PDF Edit PDF P" | no sign of it in the source of /pdf/ |
+| Add text, images and shapes | Edit | have | its live page (2026-10-28): "to POWERPOINT PDF to EXCEL PDF to PDF/A Edit PDF Rotate PDF Add page numbers Add watermark Crop PDF Edit PDF P" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Sign a PDF | Edit | have | its live page (2026-10-28): "rms PDF security Unlock PDF Protect PDF Sign PDF Redact PDF Compare PDF PDF Intelligence AI Summarizer Transla" | void-live-deploy/lib/image-handoff.js:56 `: rec.blob.type }) : Object.assign(rec.blob, { name: rec.name });` |
 | Fill in forms | Edit | missing | its live page (2026-10-28): "ers Add watermark Crop PDF Edit PDF PDF Forms PDF security Unlock PDF Protect PDF Sign PDF Redact PDF Compare" | no sign of it in the source of /pdf/ |
 | Add or remove a password | Security | have | its live page (2026-10-28): "rop PDF Edit PDF PDF Forms PDF security Unlock PDF Protect PDF Sign PDF Redact PDF Compare PDF PDF Intelligenc" | void-live-deploy/pdf/index.html:63 `sit the page works offline. A password-protected PDF cannot be opened, and text in a PDF c` |
