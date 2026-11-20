@@ -1,5 +1,5 @@
-# Live copy of docs/bot-factory.workflow.yml. The draft's flow-style GH_TOKEN line does not parse
-# (${{ }} inside { }), so this file writes that env as a block. Without CF_ACCOUNT_ID and CF_API_TOKEN,
+# The bot factory. This file is the one copy (its old draft, archive/workflows/bot-factory.draft.yml, did not parse: a flow-style
+# GH_TOKEN line with ${{ }} inside { }), so this file writes that env as a block. Without CF_ACCOUNT_ID and CF_API_TOKEN,
 # tools/bot-factory.mjs --grow re-checks the bots it has and adds none.
 # Every hour Verse grows new bots with free Workers AI, gates them (probe must pass), and opens a helper/* PR that automerges when green.
 name: bot-factory

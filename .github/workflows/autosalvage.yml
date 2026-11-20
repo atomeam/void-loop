@@ -1,4 +1,4 @@
-# Live copy of docs/autosalvage.workflow.yml.
+# The salvage unifier (tools/autosalvage/), daily. This file is the one copy (its old draft is archive/workflows/autosalvage.draft.yml).
 # Runs the unifier daily so /salvage/, /credits/ and docs/SALVAGE.md stay current, and opens a helper PR with the refresh.
 name: autosalvage
 on:
