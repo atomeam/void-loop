@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T00:22:26.575Z",
+ "updated": "2026-11-20T00:31:49.317Z",
  "last24h": {
-  "ticks": 27,
-  "started": 5,
+  "ticks": 28,
+  "started": 6,
   "requeued": 4,
   "setAside": 0,
   "probes": 0,
@@ -127,7 +127,8 @@
   "mveb8rsi": 1795133003663,
   "mvu167w7": 1795133576525,
   "mveb8svc": 1795133576525,
-  "mvfu4evy": 1795134146575
+  "mvfu4evy": 1795134146575,
+  "mvpuq9g6": 1795134709317
  },
  "sweptAt": 1795131871335,
  "blueprintsAt": 1795131871335,
@@ -858,6 +859,38 @@
    "started": [
     {
      "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml",
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 487,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T00:31:49.317Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvpuq9g6",
      "kind": "miss",
      "wf": "build-miss.yml",
      "score": 90
