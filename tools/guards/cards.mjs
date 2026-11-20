@@ -20,9 +20,12 @@ const flat = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').r
 /** does the picture's subject name what the card is about. Pure. */
 export const subjectOk = (words, ...subjects) => { const t = flat(subjects.join(' ')); return !!t && words.some((w) => t.includes(flat(w))); };
 const LABELS = /^(examine|copy card|save card|custom art|reset art|share|☆ save|copy text|save text|send|pause|resume)$/i;
-const FOOT = /\d+\s*\/\s*\d+|^full card|^[pri]$|^\d+$/i; // the rarity strip, the link line and the three stats are card dressing, not what is copied
-/** the words of the card a reader sees, without its buttons and dressing. Pure. */
-export const bodyWords = (visible) => [...new Set(String(visible || '').split('\n').filter((l) => !LABELS.test(l.trim()) && !FOOT.test(l.trim())).join(' ').toLowerCase().match(/[a-z]{5,}/g) || [])];
+const FOOT = /^(open the full|full card)/i;
+/** the words of the card a reader sees: its text down to the row of buttons, nothing below (the badges, stats, memory note and reply box are not copied). Pure. */
+export const bodyWords = (visible) => {
+  const lines = String(visible || '').split('\n').map((l) => l.trim()), cut = lines.findIndex((l, i) => i > 0 && LABELS.test(l));
+  return [...new Set((cut < 0 ? lines : lines.slice(0, cut)).filter((l) => !LABELS.test(l) && !FOOT.test(l)).join(' ').toLowerCase().match(/[a-z]{5,}/g) || [])];
+};
 /** does the copied text carry the card: nearly every long word, and no cut-off ellipsis. Pure. */
 export function copyOk(visible, clip) {
   const words = bodyWords(visible), c = String(clip || '').toLowerCase();

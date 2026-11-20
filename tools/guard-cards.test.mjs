@@ -45,8 +45,9 @@ test('a cause that keeps coming back goes to the coder once; one that stops is f
   assert.deepEqual(gone.memory, { counts: {}, healed: {} });
 });
 
-test('the rarity strip, the link line and the stats are not counted as missing from a copy', async () => {
+test('only the card text counts: the badges, stats, memory note and reply box below the buttons are not expected in a copy', async () => {
   const { copyOk } = await import('./guards/cards.mjs');
-  const visible = 'Guacamole\nSkill — Body and mind\nIngredients\nthree avocados mashed roughly\nFull card: a-to-mind.com/recipes\nP\n7\nMYTHIC · 209/603 · VERSE · TESTED 2026-11-19';
-  assert.equal(copyOk(visible, 'Guacamole Skill Body and mind Ingredients three avocados mashed roughly').ok, true);
+  const visible = 'Examine\nGuacamole\nSKILL — BODY AND MIND\nthree avocados mashed roughly\nOpen the full Recipes page →\nCOPY CARD\nSAVE CARD\nI keep what you ask about on this device\nPROVEN\nMYTHIC · 209/603\nReply to what I said';
+  assert.equal(copyOk(visible, 'Guacamole Skill Body and mind three avocados mashed roughly').ok, true);
+  assert.equal(copyOk(visible, 'Guacamole').ok, false);
 });
