@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { llm, groqModels, baitIssues, CLICKBAIT, STUDIO_FIXTURES, GOOD_STORY, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
+import { llm, groqModels, judgeFeedback, baitIssues, CLICKBAIT, STUDIO_FIXTURES, GOOD_STORY, jsonOf, writerPrompt, draftIssues, judge, AVOID, VOICES } from './studio-make.mjs';
 import { JOURNAL, OLD34, PAGE } from './show-judge.mjs';
 const res = (status, body, headers = {}) => ({ ok: status < 400, status, headers: { get: (k) => headers[k] }, json: async () => body });
 test('the writer reads only the source, asks for real numbers and a call-back, and never a visitor', () => {
@@ -61,6 +61,10 @@ test('the judge refuses the breaking-news template and a show that ends on an en
   const good = [{ who: 'Critic', text: 'So the aliens hung up on us?' }, { who: 'Verse', text: 'And he wrote Wow in the margin.' }];
   assert.deepEqual(baitIssues({ lines: good }), []);
   assert.ok(STUDIO_FIXTURES.some((f) => f.id === 'clickbait' && f.kind === 'bad'));
+});
+test('the judge\'s notes become the next draft\'s brief, lowest score first; the bar is the same', () => {
+  const f = judgeFeedback({ blind: { scores: [5, 3, 10], notes: ['ok', 'no joke', 'good'] }, human: 7, issues: [] });
+  assert.match(f, /a joke with a setup and a payoff 3\/10/); assert.match(f, /fixing "a joke with a setup and a payoff" first/); assert.match(f, /6 or more needed/);
 });
 test('a judge that separates still holds the show to 6+ on every blind question, the listener and the hard checks', async () => {
   const bad = [JOURNAL, OLD34, PAGE, CLICKBAIT].map((t) => t.slice(0, 60));

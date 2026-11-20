@@ -165,8 +165,8 @@ export function draftIssues(show, kind) {
   if (lines.some((l) => !['Verse', 'Critic'].includes(l.who))) out.push('who must be Verse or Critic');
   return out;
 }
-export async function writeShow(kind, story, { env, fetchImpl } = {}) {
-  let fix = '', last = null;
+export async function writeShow(kind, story, { env, fetchImpl, fix: first = '' } = {}) {
+  let fix = first, last = null;
   for (let i = 0; i < 4; i++) {
     const r = await llm(writerPrompt(kind, story, fix), { max: kind === 'episode' ? 6000 : 3000, temperature: 0.85, env, fetchImpl });
     const j = jsonOf(r.text);
@@ -182,12 +182,33 @@ export async function writeShow(kind, story, { env, fetchImpl } = {}) {
   throw new Error('not published: no draft passed the hard checks (' + (last ? last.issues.join(', ') : 'no draft') + ')');
 }
 
+/** what the judge said, as the writer's next brief: the scores, the notes, and the lowest score to fix first. Pure. */
+export function judgeFeedback(v) {
+  const s = (v.blind && v.blind.scores) || [], names = ['would a stranger stay', 'a joke with a setup and a payoff', 'one true event with its number'];
+  const low = s.length ? names[s.indexOf(Math.min(...s))] : '';
+  return 'A strict listener scored your last draft ' + s.map((n, i) => names[i] + ' ' + n + '/10').join(', ') + (v.human != null ? ', each line answers the last ' + v.human + '/10' : '') + ' (6 or more needed on every one).'
+    + (v.blind && v.blind.notes ? ' Their notes: ' + v.blind.notes.join(' | ').slice(0, 600) : '') + (v.issues && v.issues.length ? ' Hard checks failed: ' + v.issues.join(', ') + '.' : '')
+    + (low ? ' Rewrite it, fixing "' + low + '" first, keeping the true facts.' : '');
+}
+
+/** write, judge, and rewrite from the judge's notes, up to `tries` drafts; the judge is calibrated once. The bar never moves. */
+export async function writeAndJudge(kind, story, { env, fetchImpl, tries = 3 } = {}) {
+  const round = async (i, fix, cal) => {
+    const show = await writeShow(kind, story, { env, fetchImpl, fix });
+    const v = await judge(show, kind, { env, fetchImpl, cal });
+    console.log('judge ' + (i + 1) + ': ' + JSON.stringify({ pass: v.pass, separated: v.separated, blind: v.blind && v.blind.scores, human: v.human, issues: v.issues, via: v.via, ruler: (v.calibration || []).map((r) => r.id + ' ' + r.scores.join('/')) }));
+    if (v.pass || !v.separated || i + 1 >= tries) return { show, verdict: v };
+    return round(i + 1, judgeFeedback(v), v.cal);
+  };
+  return round(0, '', null);
+}
+
 /** the strict judge: calibration first, then the blind minimum and the listener, all on the whole script. */
-export async function judge(show, kind, { env, fetchImpl, gap = 2500 } = {}) {
+export async function judge(show, kind, { env, fetchImpl, gap = 2500, cal: made = null } = {}) {
   let via = '';
   // the judge thinks hard: at low effort it scored a true story 3 and a list of rules 6 on 'would a stranger stay'
   const askImpl = async (prompt) => { const r = await llm([{ role: 'user', content: prompt }], { max: 1500, temperature: 0, prefer: JUDGE_PREF, env, fetchImpl, think: 'high' }); via = r.via; return r.text; };
-  const cal = await calibrate({ askImpl, gap, maxChars: 24000, fixtures: STUDIO_FIXTURES });
+  const cal = made || await calibrate({ askImpl, gap, maxChars: 24000, fixtures: STUDIO_FIXTURES });
   const text = show.lines.map((l) => l.who + ': ' + l.text).join(' ');
   const out = { separated: cal.separated, calibration: cal.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })), issues: [...hardShow(show, { kind }), ...baitIssues(show)] };
   if (cal.separated) {
@@ -197,7 +218,7 @@ export async function judge(show, kind, { env, fetchImpl, gap = 2500 } = {}) {
     const m = String(h).match(/human\D{0,8}(10|[1-9])/i);
     out.human = m ? +m[1] : 0; out.humanNotes = String(h).replace(/\s+/g, ' ').slice(0, 220);
   }
-  out.via = via;
+  out.via = via; Object.defineProperty(out, 'cal', { value: cal, enumerable: false });
   out.pass = !!(out.separated && out.blind && out.blind.min >= 6 && out.human >= 6 && !out.issues.length);
   return out;
 }
@@ -213,8 +234,7 @@ async function makeEpisode({ dry = false, env = process.env } = {}) {
   const av = await import('./studio-av.mjs');
   const story = await pickStory({ env, used: usedTitles() });
   console.log('story: ' + story.title + ' (' + story.url + ')');
-  const show = await writeShow('episode', story, { env });
-  const verdict = await judge(show, 'episode', { env });
+  const { show, verdict } = await writeAndJudge('episode', story, { env });
   console.log('judge: ' + JSON.stringify({ pass: verdict.pass, separated: verdict.separated, blind: verdict.blind && verdict.blind.scores, human: verdict.human, issues: verdict.issues, via: verdict.via, ruler: (verdict.calibration || []).map((r) => r.id + ' ' + r.scores.join('/')) }));
   if (!dry) keepScore('episode', show, story, verdict);
   if (!verdict.pass) { console.log('not published: the judge did not pass it'); return 1; }
@@ -240,8 +260,7 @@ async function makeShort({ out = 'media/shorts', env = process.env } = {}) {
   const { gate } = await import('./video-gate.mjs');
   const story = await pickStory({ env, used: usedTitles() });
   console.log('story: ' + story.title + ' (' + story.url + ')');
-  const show = await writeShow('short', story, { env });
-  const verdict = await judge(show, 'short', { env });
+  const { show, verdict } = await writeAndJudge('short', story, { env });
   console.log('judge: ' + JSON.stringify({ pass: verdict.pass, separated: verdict.separated, blind: verdict.blind && verdict.blind.scores, human: verdict.human, issues: verdict.issues, via: verdict.via, ruler: (verdict.calibration || []).map((r) => r.id + ' ' + r.scores.join('/')) }));
   if (!verdict.pass) { keepScore('short', show, story, verdict); console.log('not filmed: the judge did not pass it'); return 1; }
   mkdirSync(out, { recursive: true });
