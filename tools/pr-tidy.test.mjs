@@ -34,7 +34,7 @@ test('tidy: approves, closes the expired one with a comment, and never throws', 
   const calls = [];
   const prs = [pr(5, 'a'), pr(6, 'b', { created_at: new Date(now - 1 * H).toISOString() })];
   const gh = (path) => {
-    if (path.includes('/actions/runs?')) return { workflow_runs: [{ id: 77, conclusion: 'action_required', head_sha: 'b', head_repository: { full_name: repo } }] };
+    if (path.includes('/actions/runs?')) return { workflow_runs: path.endsWith('head_sha=b') ? [{ id: 77, conclusion: 'action_required', head_sha: 'b', head_repository: { full_name: repo } }] : [] };
     if (path.endsWith('/pulls/5')) return { ...prs[0], mergeable_state: 'clean' };
     if (path.endsWith('/commits/a')) return { commit: { committer: { date: new Date(now - 40 * H).toISOString() } } };
     if (path.includes('/check-runs')) return { check_runs: [{ id: 3, name: 'void-review', status: 'completed', conclusion: 'failure' }] };

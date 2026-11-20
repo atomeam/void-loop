@@ -39,9 +39,10 @@ export function tidy({ gh, run, repo, prs, one = '', log = console.log, now = Da
   const open = (prs || []).filter((p) => p && p.state === 'open');
   let approved = 0;
   try {
-    const shas = one ? open.map((p) => p.head?.sha).filter(Boolean) : [''];
+    // one small read per open head: the repository-wide list of held runs is megabytes (539 runs on 2026-11-20) and overflows the reader
+    const shas = open.map((p) => p.head?.sha).filter(Boolean);
     for (const sha of shas) {
-      const page = gh(`repos/${repo}/actions/runs?status=action_required&per_page=100${sha ? '&head_sha=' + sha : ''}`) || {};
+      const page = gh(`repos/${repo}/actions/runs?status=action_required&per_page=100&head_sha=${sha}`) || {};
       for (const id of approvable(page.workflow_runs || [], open, repo)) {
         try { run(['api', '-X', 'POST', `repos/${repo}/actions/runs/${id}/approve`]); approved++; }
         catch (e) { log('could not approve held run ' + id + ': ' + String(e.stderr || e.message || e).slice(0, 160)); break; }
