@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T23:00:04.938Z",
+ "updated": "2026-11-20T23:10:31.347Z",
  "last24h": {
   "ticks": 149,
   "started": 119,
@@ -14,93 +14,88 @@
    "wf": "tower-gate.yml",
    "fails": 8,
    "url": "https://github.com/atomeam/void-loop/actions/runs/44763837012"
-  },
-  {
-   "wf": "deploy.yml",
-   "fails": 4,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44832192186"
   }
  ],
  "held": [
   {
-   "id": "want-guard-hourly-deploy-green",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvbl52gd",
+   "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "want-guard-hourly-main-green",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvu167w7",
+   "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "want-exam-definitions",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwcuue69",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwe1sh8c",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwe46i1x",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwe4pvdh",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwe5oqe5",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwe873tt",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwau0ded",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw5mm5fm",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mwfe1mby",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mwfmgjzo",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwfolhc4",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwcg2h14",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwh2xv4s",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwjdywr5",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mwn99ues",
+   "why": "no executor for route"
   },
   {
-   "id": "mwjko1yr",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mwazktlm",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwlfrawa",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mwazktnz",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwmjucd0",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mwazktrq",
+   "why": "no executor for bot"
   },
   {
-   "id": "mwmrauab",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mwazktv3",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
@@ -148,7 +143,7 @@
  "blueprintsAt": 1795215604938,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795210860000
+   "slot": 1795214460000
   },
   "exam.yml": {
    "slot": 1795166220000
@@ -219,7 +214,7 @@
    "startedAt": 1795210252841
   },
   "pages-guard.yml": {
-   "slot": 1795212900000
+   "slot": 1795215600000
   },
   "autosalvage.yml": {
    "slot": 1795166220000
@@ -262,8 +257,8 @@
    "startedAt": 1795215604938
   },
   "growth-fold.yml": {
-   "slot": 1795210860000,
-   "startedAt": 1795212255613
+   "slot": 1795214460000,
+   "startedAt": 1795216231347
   },
   "arb-record.yml": {
    "slot": 1795214220000,
@@ -3407,30 +3402,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-19T23:06:41.234Z",
-   "open": 500,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 497,
-   "warnings": 0
-  },
   {
    "at": "2026-11-19T23:16:11.173Z",
    "open": 500,
@@ -7714,6 +7685,31 @@
    "sweep": true,
    "blueprints": 0,
    "held": 472,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T23:10:31.347Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "daily": [],
+   "catchup": [
+    "growth-fold.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 24,
    "warnings": 0
   }
  ]
