@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T04:24:02.169Z",
+ "updated": "2026-11-20T04:33:24.644Z",
  "last24h": {
-  "ticks": 52,
-  "started": 33,
+  "ticks": 53,
+  "started": 35,
   "requeued": 6,
   "setAside": 1,
   "probes": 0,
@@ -101,15 +101,15 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 59,
+   "used": 75,
    "cap": 90
   },
   "day": {
-   "used": 344,
+   "used": 360,
    "cap": 360
   },
-  "room": true,
-  "until": null,
+  "room": false,
+  "until": "2026-11-21T00:00:00.000Z",
   "paid": false
  },
  "handed": {
@@ -126,7 +126,8 @@
   "mva30i2e": 1795146942474,
   "mva30j4u": 1795147502513,
   "mwa0agd2": 1795148067086,
-  "mwa0ah54": 1795148642169
+  "mwa0ah54": 1795148642169,
+  "mwdsggtv": 1795149204644
  },
  "sweptAt": 1795148067086,
  "blueprintsAt": 1795148067086,
@@ -1656,6 +1657,42 @@
     }
    ],
    "requeued": 1,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 22,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T04:33:24.644Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwcuue69",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 116
+    },
+    {
+     "id": "mwdsggtv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 55
+    }
+   ],
+   "requeued": 0,
    "setAside": 0,
    "healed": [
     "tower-gate.yml"
