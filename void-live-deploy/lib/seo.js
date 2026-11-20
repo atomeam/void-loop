@@ -20,7 +20,7 @@ export const PAGES = Object.freeze(firstOfEach([
     action: { template: '/photos/?tab={tab}', input: 'tab' },
     links: [['Compress images', '/photos/?tab=out'], ['Crop a photo', '/photos/?tab=crop'], ['Brightness and filters', '/photos/?tab=adj'], ['Check a photo for GPS', '/photos/?tab=info'], ['Deutsch', '/photos/?lang=de']] },
   { path: '/color/', name: 'Color Picker: hex, RGB, HSL, CMYK, shades and palettes', does: 'Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.',
-    asks: ['color picker', 'hex color picker', 'hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour shades and tints', 'colour scheme generator'],
+    asks: ['color picker', 'hex color picker', 'hex to rgb', 'rgb to hex', 'hex colour codes', 'colour code converter', 'hsl to hex', 'colour scheme generator'],
     action: { template: '/color/?c={color}', input: 'color' },
     links: [['#ff5733', '/color/?c=ff5733'], ['#6d4aff', '/color/?c=6d4aff'], ['#ff0000', '/color/?c=ff0000'], ['#00ff00', '/color/?c=00ff00'], ['#0000ff', '/color/?c=0000ff'], ['#ffa500', '/color/?c=ffa500'], ['#808080', '/color/?c=808080']] },
   { path: '/random/', name: 'Random Number Generator', does: 'A random number between two bounds, several at once, without repeats or sorted, with decimal places or in binary, octal or hex, plus a shuffled deck of cards dealt into hands and random dates and times; the number is on screen at once.',
