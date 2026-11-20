@@ -37,3 +37,13 @@ test('Verse beats the reference when its judged overall is at least equal and no
   assert.equal(lop.answer.overall >= lop.reference.overall, true); assert.equal(lop.beats, false, 'one mark far behind is not a win');
   assert.equal(compare([j(90, 85)]).judged, 1);
 });
+import { judgeWhy, whyLine } from './answer-judge.mjs';
+test('when no judge answers, the reason for each (a status, no key, unreadable) is kept for the log line and never holds a key', async () => {
+  for (const k of Object.keys(judgeWhy)) delete judgeWhy[k];
+  const res = (ok, status, body) => async () => ({ ok, status, json: async () => body });
+  await judge('q', 'a', 'b', { GEMINI_API_KEY: 'SECRET-KEY', CLOUDFLARE_API_TOKEN: 't', CLOUDFLARE_ACCOUNT_ID: 'acct' }, async (url) => (String(url).includes('generativelanguage') ? res(false, 429, {})() : res(false, 403, {})()), () => 0.9);
+  assert.equal(whyLine(), 'gemini HTTP 429, workers-ai HTTP 403'); assert.ok(!whyLine().includes('SECRET'));
+  await judge('q', 'a', 'b', {}, async () => { throw new Error('x'); }); assert.equal(whyLine(), 'gemini no key, workers-ai no key');
+  await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, async () => { throw new Error('boom'); }); assert.match(whyLine(), /gemini Error/);
+  await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, res(true, 200, { candidates: [{ content: { parts: [{ text: marks(80, 70) }] } }] }), () => 0.9); assert.ok(!/gemini (HTTP|Error|answer)/.test(whyLine()), 'a success clears the reason');
+});

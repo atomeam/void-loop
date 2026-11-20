@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { load, serialize, examine, applyRun, askLive, refusedCount, GAP_BELOW } from '../assistant-exam.mjs';
 import { load as loadUniverse, serialize as serializeUniverse, markOf } from '../universe.mjs';
 import * as held from '../heldout-exam.mjs';
+import { whyLine } from '../answer-judge.mjs';
 
 export const BAR = 94;
 /** the line for /progress/: the score in plain words and what is next. Changes with every score, so every run is logged. Pure. */
@@ -35,7 +36,7 @@ async function runFixed(ctx, { ask, check }) {
 
 /** the line for the held-out sample: pattern marks, the blind judge's verdict against the reference, and the streak toward the bar. Pure. */
 export const heldLineOf = (out) => 'Held-out sample of ' + out.sum.questions + ' unseen questions: right ' + out.sum.right + ', useful ' + out.sum.useful + ', clear ' + out.sum.clear + '. '
-  + (out.verdict ? 'Judge (' + out.verdict.by.join(' and ') + ', ' + out.verdict.judged + ' judged blind): Verse ' + out.verdict.verse + ' against the reference ' + out.verdict.reference + '. ' : 'No judge answered, so this run is not counted. ')
+  + (out.verdict ? 'Judge (' + out.verdict.by.join(' and ') + ', ' + out.verdict.judged + ' judged blind): Verse ' + out.verdict.verse + ' against the reference ' + out.verdict.reference + '. ' : 'No judge answered' + (whyLine() ? ' (' + whyLine() + ')' : '') + ', so this run is not counted. ')
   + (out.beat === true ? 'Beat the reference. ' : out.beat === false ? 'Did not beat the reference. ' : '') + 'In a row: ' + out.streak + ' of ' + held.STREAK + '.';
 
 async function runHeld(ctx, { ask, judgeFn, check }, universe) {

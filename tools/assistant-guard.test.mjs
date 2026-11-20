@@ -99,7 +99,7 @@ test('when no judge answers the run is not counted: the streak stays and the lin
   const root = mkRoot(), jobs = []; let saved = {};
   await run(at19(root, saved, jobs), { ask: heldAsker(() => true), judgeFn: judgeWith(95, 90) }); feed(root, saved);
   saved = {}; const r = await run(at19(root, saved, jobs), { ask: heldAsker(() => true), judgeFn: async () => null });
-  assert.match(r.last, /No judge answered, so this run is not counted\. In a row: 1 of 3\./); assert.equal(JSON.parse(saved['tower.heldout.json']).streak, 1);
+  assert.match(r.last, /No judge answered[^.]*, so this run is not counted\. In a row: 1 of 3\./); assert.equal(JSON.parse(saved['tower.heldout.json']).streak, 1);
 });
 test('the questions change run to run, and a run where the agent would not answer writes nothing', async () => {
   const root = mkRoot(), jobs = []; let saved = {};
@@ -117,5 +117,5 @@ test('at 13:00 both run, and the Tower file carries the fixed marks and the held
 });
 test('heldLineOf says the streak in plain words', () => {
   const out = { sum: { questions: 20, right: 90, useful: 90, clear: 90 }, verdict: null, beat: null, streak: 2 };
-  assert.match(heldLineOf(out), /No judge answered, so this run is not counted\. In a row: 2 of 3\.$/);
+  assert.match(heldLineOf(out), /No judge answered[^.]*, so this run is not counted\. In a row: 2 of 3\.$/);
 });
