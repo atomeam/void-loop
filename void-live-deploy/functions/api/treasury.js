@@ -14,7 +14,6 @@
 import { ownerOk } from '../../lib/guard.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { realized, balances, bucketWeights, split, queueSpends, review } from '../../lib/treasury.js';
-import POLICY from '../../treasury/policy.json' with { type: 'json' };
 import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
 import { SERVICES, usdcText } from '../../lib/x402.js';
 import { sponsorView } from './sponsors.js';
@@ -29,8 +28,13 @@ async function ensure(env) {
   await env.DB.prepare(TABLE).run();
 }
 
-async function policyOf(_request, _env) {
-  return POLICY;
+// Wrangler 3's Pages bundler cannot parse `import … with { type: 'json' }`, so the API reads the file from static assets.
+// Public requests to /treasury/policy.json still 404 (functions/treasury/policy.json.js and ownerOnlyPath).
+async function policyOf(request, env) {
+  const u = new URL('/treasury/policy.json', request.url);
+  const r = env.ASSETS ? await env.ASSETS.fetch(u) : await fetch(u);
+  if (!r.ok) throw new Error('policy unavailable');
+  return r.json();
 }
 
 const ledger = async (env) => (await env.DB.prepare('SELECT id, at, kind, bucket, cents, purpose, expected, actual, status, needs, ref, data FROM void_treasury ORDER BY at, id').all()).results || [];
