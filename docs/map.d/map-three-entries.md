@@ -1,0 +1,3 @@
+The `process-lift-pack` skill (`void-live-deploy/skills/process-lift-pack.js`) packages a business process or idea into the heavy lifting Verse owns (clarify, design the flow, connect existing tools, test, monitor, hand off), rules-based and offline, and sends nothing.
+`tools/owner-only.mjs` (`node tools/owner-only.mjs /path`) exits 0 when that path answers only the owner (`lib/owner-gate.js`), else 1; `deploy.yml`'s live check asks it before fetching a file, so a file that became owner-only never fails a good deploy.
+`tools/universe-scan.mjs` scans what a visitor is served (`--live` for the signed-out live site) for the names the Tower measures against, and exits 1 when a protected name shows or an owner-only file answers a visitor.
