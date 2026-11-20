@@ -61,6 +61,7 @@ const causeKey = (c) => c.replace(/\(.*\)/, '').replace(/\d+%/g, '').replace(/\s
 async function infra(ctx) { const r = await ctx.hit('/api/treasury'); try { return Number(JSON.parse(r.text).pots.infrastructure) || 0; } catch { return null; } }
 
 // the system clipboard is one for the whole browser: two cards copying at once read each other's text, so the copy step goes one at a time
+const note = (what, e) => console.log('guards: cards: ' + what + ' (' + String(e.message).slice(0, 60) + ')');
 let clipLock = Promise.resolve();
 const alone = (fn) => { const run = clipLock.then(fn, fn); clipLock = run.catch(() => {}); return run; };
 
@@ -70,7 +71,7 @@ async function look(ctx, b, item) {
   try {
     const p = await c.newPage();
     p.on('request', (r) => { if (r.url().includes('/api/card-art?key=') && !out.req) { const u = new URL(r.url()); out.req = { key: u.searchParams.get('key'), kind: u.searchParams.get('kind') || 'answer' }; } });
-    p.on('response', async (r) => { if (r.url().includes('/api/card-art') && r.request().method() === 'POST') { try { const j = JSON.parse(await r.text()); if (j.state && j.state !== 'art') out.paintWhy = j.why || j.state; } catch { /* not json */ } } });
+    p.on('response', async (r) => { if (r.url().includes('/api/card-art') && r.request().method() === 'POST') { try { const j = JSON.parse(await r.text()); if (j.state && j.state !== 'art') out.paintWhy = j.why || j.state; } catch (e) { note('not json', e); } } });
     await p.goto(ctx.site + '/', { waitUntil: 'domcontentloaded', timeout: 45000 });
     await p.waitForTimeout(3000);
     const inp = await p.$('input[type=text], textarea, input:not([type])');
@@ -83,10 +84,10 @@ async function look(ctx, b, item) {
     if (!info) return out;
     out.card = true; out.expectArt = info.art; out.img = info.img; out.text = info.text;
     out.onSubject = subjectOk(item.words, info.subj, out.req && out.req.key);
-    if (out.req && info.img) { const g = await ctx.hit('/api/card-art?key=' + encodeURIComponent(out.req.key) + '&kind=' + encodeURIComponent(out.req.kind)); try { out.weak = !!JSON.parse(g.text).dropped; } catch { /* not json */ } }
+    if (out.req && info.img) { const g = await ctx.hit('/api/card-art?key=' + encodeURIComponent(out.req.key) + '&kind=' + encodeURIComponent(out.req.kind)); try { out.weak = !!JSON.parse(g.text).dropped; } catch (e) { note('not json', e); } }
     const btn = await p.$('.vcard:last-of-type .vc-share button:text-is("copy card")') || (await (await p.$$('.vcard')).pop().$('button:text-is("copy card")'));
     if (btn) {
-      const clip = await alone(async () => { await btn.scrollIntoViewIfNeeded().catch(() => {}); await btn.click(); await p.waitForTimeout(4000); return p.evaluate(async () => { try { const items = await navigator.clipboard.read(); for (const it of items) if (it.types.includes('text/plain')) return await (await it.getType('text/plain')).text(); } catch { /* no clipboard */ } return ''; }); });
+      const clip = await alone(async () => { await btn.scrollIntoViewIfNeeded().catch((e) => note('scroll', e)); await btn.click(); await p.waitForTimeout(4000); return p.evaluate(async () => { try { const items = await navigator.clipboard.read(); for (const it of items) if (it.types.includes('text/plain')) return await (await it.getType('text/plain')).text(); } catch (e) { return 'clipboard: ' + String(e.message).slice(0, 60); } return ''; }); });
       out.copy = clip ? copyOk(info.text, clip) : { ok: false, share: 0, cut: false };
     }
   } catch (e) { out.err = String(e.message).slice(0, 80); }
@@ -110,7 +111,7 @@ export async function run(ctx) {
     const art = r.causes.filter((c) => /art|placeholder|vision|subject/.test(c));
     if (art.length && r.req && !ctx.dry) {
       const p = await ctx.hit('/api/card-art', { init: { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: r.req.key, kind: r.req.kind, rarity: 'common', again: true }) } });
-      let st = ''; try { st = JSON.parse(p.text).state; } catch { /* not json */ }
+      let st = ''; try { st = JSON.parse(p.text).state; } catch (e) { note('not json', e); }
       (st === 'art' ? repainted : stuck).push(r.ask);
     } else if (art.length) stuck.push(r.ask);
   }
