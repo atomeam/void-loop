@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { pageProblems, reportOf, cleanReport, pagesHtml, luminance, KINDS } from '../void-live-deploy/lib/selfcheck.js';
-import { pathsOf, ownError, linkPaths, summaryOf } from './self-check.mjs';
+import { pathsOf, ownError, linkPaths, summaryOf, fixJobsOf, FIX_MAX } from './self-check.mjs';
 import { onRequestGet, onRequestPost, KEY } from '../void-live-deploy/functions/api/selfcheck.js';
 
 const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -78,4 +78,18 @@ test('the crawler: sitemap paths of this site only, each once; its own errors; l
   assert.equal(ownError('Failed to load resource: the server responded with a status of 404'), false); assert.equal(ownError('Uncaught TypeError: x'), true);
   assert.deepEqual(linkPaths(['/a/?q=1#z', 'https://a-to-mind.com/b/', 'https://other.com/c', '/api/news', '/@adam'], 'https://a-to-mind.com'), ['/a/', '/b/']);
   assert.match(summaryOf(reportOf([{ path: '/a/', problems: [{ kind: 'status', why: 'answers 500' }] }], { at: 'x' })), /`\/a\/`: does not open: answers 500/);
+});
+
+test('a broken page becomes one fix job for the coder, the serious ones first, at most FIX_MAX a run', () => {
+  const report = { pages: [
+    { path: '/a/', problems: [{ kind: 'wording', why: 'says "fight"' }] },
+    { path: '/b/', problems: [{ kind: 'status', why: 'answers 500' }] },
+    { path: '/c/', problems: [] },
+  ] };
+  const jobs = fixJobsOf(report);
+  assert.deepEqual(jobs.map((j) => j.target), ['auto:page /b/', 'auto:page /a/']);
+  assert.match(jobs[0].ask, /^Fix \/b\/ on the live site \(self-check\): answers 500/);
+  assert.ok(jobs.every((j) => j.target.length <= 40 && j.ask.length <= 200));
+  assert.equal(fixJobsOf({ pages: Array.from({ length: 9 }, (_, i) => ({ path: '/p' + i + '/', problems: [{ kind: 'link', why: 'x' }] })) }).length, FIX_MAX);
+  assert.deepEqual(fixJobsOf(null), []);
 });

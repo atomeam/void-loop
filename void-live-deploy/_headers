@@ -8,6 +8,12 @@
   Speculation-Rules: "/speculation-rules.json"
 
 
+# the emoji looks (/emojis/*, lib/emoji-looks.js): the monochrome Noto look is Google's Noto Emoji font (SIL Open Font License), loaded for only the
+# characters shown; only these pages may load that stylesheet and its font files. Nothing else in the policy changes.
+/emojis/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: wss: blob: data:; frame-src https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' chrome-extension: moz-extension:; form-action 'self' https://gumroad.com https://*.gumroad.com https://checkout.stripe.com; upgrade-insecure-requests
+
 # the boards: Turnstile, Cloudflare's bot check on every post, loads its own script (functions/api/boards/[[path]].js); only these pages allow it
 /boards/*
   ! Content-Security-Policy

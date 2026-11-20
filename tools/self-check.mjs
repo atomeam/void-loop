@@ -8,7 +8,7 @@
 // lib/selfcheck.js (pure, tested). It only reads: every request that is not a GET is answered here with an empty 204 and never leaves the
 // browser, and the visit counter is never called, so nothing is posted, bought, counted or kept. Its traffic says who it is.
 import { writeFileSync, existsSync, appendFileSync } from 'node:fs';
-import { pageProblems, reportOf, KINDS, LOADER } from '../void-live-deploy/lib/selfcheck.js';
+import { pageProblems, reportOf, KINDS, LOADER, SERIOUS } from '../void-live-deploy/lib/selfcheck.js';
 
 export const UA = 'VerseSelfCheck/1 (+https://a-to-mind.com/; reads only, sends nothing)';
 /** headers for a live page check. The owner token, when the workflow has one, is sent and never printed. */
@@ -83,6 +83,15 @@ export function summaryOf(r) {
   return lines.join('\n') + '\n';
 }
 
+/** a broken page becomes one fix job for Verse's coder (owner, 2026-11-20: "make it more and better"): the serious ones first, at most
+ *  `max` a run; the queue keeps one open job per target, so a page still broken next run is not filed twice. Pure. */
+export const FIX_MAX = 5;
+export function fixJobsOf(report, max = FIX_MAX) {
+  const serious = (p) => (p.problems || []).some((x) => SERIOUS.includes(x.kind));
+  return [...((report && report.pages) || [])].filter((p) => (p.problems || []).length).sort((a, b) => Number(serious(b)) - Number(serious(a))).slice(0, max)
+    .map((p) => ({ target: ('auto:page ' + p.path).slice(0, 40), ask: ('Fix ' + p.path + ' on the live site (self-check): ' + p.problems.map((x) => x.why).join('; ')).slice(0, 200) }));
+}
+
 async function main() {
   const site = process.env.VOID_SITE || 'https://a-to-mind.com';
   const only = arg('--only');
@@ -105,6 +114,10 @@ async function main() {
     const r = await fetch(site + '/api/selfcheck', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', origin: site, 'user-agent': UA }, body: JSON.stringify({ report }) });
     console.log('/api/selfcheck answered ' + r.status + ' ' + (await r.text()).slice(0, 200));
     if (!r.ok) process.exitCode = 1;
+    for (const job of fixJobsOf(report)) {
+      try { const q = await fetch(site + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', origin: site, 'user-agent': UA }, body: JSON.stringify(job) }); console.log('fix job ' + job.target + ': ' + q.status); }
+      catch (e) { console.log('fix job ' + job.target + ' not filed: ' + String(e.message || e).slice(0, 80)); }
+    }
   }
 }
 if (import.meta.url === 'file://' + process.argv[1]) main().catch((e) => { console.error(e); process.exit(1); });
