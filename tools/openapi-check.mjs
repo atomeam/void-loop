@@ -15,6 +15,7 @@ export const INTERNAL = {
   '/api/unbidden': "what Verse says first on its own /brain/ page (functions/api/unbidden.js, lib/unbidden.js): GET only, one `after` id, lines written from its own live state at most once per gap for everyone and daily-capped; /brain/ is the only caller",
   '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
+  '/api/buy': "Verse's own offer clicks (functions/api/buy.js): counts one click on an offer card and redirects to the catalog's own checkout, or counts a showing; no input is echoed; not a public API",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
   '/api/credits/claim': "internal credits for a signed-in member (functions/api/credits/claim.js, lib/credits.js): earned for real use, spent on allowances, no money moves",
   '/api/credits/latest': "the public credit feed (functions/api/credits/latest.js): masked names, no email, no account id",
