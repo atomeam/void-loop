@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#stage { width:100vw; height:100vh; }
+.agent { pointer-events:all; cursor:pointer; }
+.info { position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px; border-radius:6px; font-size:12px; max-width:280px; }
+button { margin:4px; padding:4px 8px; background:#223; color:#fff; border:1px solid #445; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation Predictive RNN SVG Genome Mind · Verse lab</title>
+<meta name="description" content="A local tiny Elman RNN (pure JS) takes DeviceOrientation history as causal input and predicts the next orientation delta.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation Predictive RNN SVG Genome Mind · Verse lab">
+<meta property="og:description" content="A local tiny Elman RNN (pure JS) takes DeviceOrientation history as causal input and predicts the next orientation delta.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f866-orientation-predictive-rnn-svg-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f866-orientation-predictive-rnn-svg-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div class="info">
+  <div>F866 Predictive RNN SVG Genome</div>
+  <div id="status">Tilt or move pointer. Click agents to reward.</div>
+  <button id="share">Seal & Broadcast Genome</button>
+  <button id="load">Load from IDB</button>
+</div>
+<svg id="stage" xmlns="http://www.w3.org/2000/svg"></svg>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation Predictive RNN SVG Genome Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

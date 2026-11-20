@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { position:absolute; top:0; left:0; z-index:0; }
+.card { position:absolute; width:120px; height:80px; background:rgba(40,40,80,0.85); border:1px solid #88f; border-radius:8px; padding:8px; cursor:move; z-index:2; user-select:none; transition:transform 0.1s; }
+.card:hover { border-color:#f80; }
+#status { position:fixed; bottom:10px; left:10px; background:rgba(0,0,0,0.7); padding:8px; border-radius:4px; z-index:10; font-size:12px; }
+button { margin:2px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU PSO Spatial Layout Mind · Verse lab</title>
+<meta name="description" content="A local Particle Swarm Optimization (PSO) &quot;mind&quot; evolves the positions of a set of absolute-positioned DOM cards on the Verse canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU PSO Spatial Layout Mind · Verse lab">
+<meta property="og:description" content="A local Particle Swarm Optimization (PSO) &quot;mind&quot; evolves the positions of a set of absolute-positioned DOM cards on the Verse canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f827-webgpu-pso-spatial-layout-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f827-webgpu-pso-spatial-layout-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="status">F827 PSO Layout | Fitness: -- | <button id="seal">Seal</button> <button id="reset">Reset</button> <button id="download">JSON</button></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU PSO Spatial Layout Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

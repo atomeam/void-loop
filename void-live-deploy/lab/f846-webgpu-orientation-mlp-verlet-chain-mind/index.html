@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#info { position:absolute; top:10px; left:10px; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; z-index:10; }
+.label { position:absolute; background:rgba(100,200,255,.8); color:#000; padding:2px 6px; border-radius:4px; font-size:11px; pointer-events:none; transform:translate(-50%,-50%); }
+button { margin:4px; padding:4px 8px; background:#246; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Orientation MLP Verlet Chain Mind · Verse lab</title>
+<meta name="description" content="A local tiny feed-forward MLP whose causal inputs are DeviceOrientation Euler angles + normalized pointer.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Orientation MLP Verlet Chain Mind · Verse lab">
+<meta property="og:description" content="A local tiny feed-forward MLP whose causal inputs are DeviceOrientation Euler angles + normalized pointer.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f846-webgpu-orientation-mlp-verlet-chain-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f846-webgpu-orientation-mlp-verlet-chain-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="info">
+  F846: WebGPU Orientation-MLP Verlet Chain<br>
+  Tilt / move pointer to morph chain. Click to reward.<br>
+  <button id="seal">Seal Genome</button> <button id="reset">Reset</button><br>
+  Fitness: <span id="fit">0</span> | Mode: <span id="mode">init</span>
+</div>
+<canvas id="cv"></canvas>
+<div id="labels"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Orientation MLP Verlet Chain Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

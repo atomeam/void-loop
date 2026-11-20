@@ -15,7 +15,6 @@ import { isShareProduct, shareFor, itemKey, paidTotal, CREDITS_TABLE, zipStore }
 import { parsePing } from '../../../lib/earnings.js';
 import { ownerOk } from '../../../lib/guard.js';
 import { specialRails, instructions, verifyUsdcTx, usdcUnits, railsOf, USDC_BASE } from '../../../lib/alt-pay.js';
-import { PAYER_SECRET } from '../../../lib/payer-secret.js';
 import { sellerMatches } from '../../../lib/gumroad.js';
 import { gumroadUrl, STORE_PRODUCTS, productOf, publicCatalog, providerOf, signingKey, signToken, verifyToken, licenseKey, verifyStripe, ADAPTERS, ORDERS_TABLE, emailHash, orderCode } from '../../../lib/store.js';
 
@@ -46,7 +45,7 @@ async function receipt(env, order, origin) {
     if (order.status === 'paid' || order.status === 'free') for (let i = 0; i < (p.files || []).length; i++) row.downloads.push({ name: p.files[i].key.split('/').pop(), url: origin + '/api/store/download?t=' + await signToken(key, { o: order.id, p: p.id, f: i, e }) });
     out.push(row);
   }
-  return { order: order.id, code: orderCode(order.id), status: order.status, provider: order.provider, created: order.created, items: out, expires: new Date(e).toISOString(), ...(order.status === 'paid' ? { secret: PAYER_SECRET } : {}) }; // a paid order tells the payer the secret (lib/payer-secret.js)
+  return { order: order.id, code: orderCode(order.id), status: order.status, provider: order.provider, created: order.created, items: out, expires: new Date(e).toISOString() };
 }
 
 export async function onRequest(ctx) {

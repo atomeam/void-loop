@@ -1,12 +1,22 @@
 {
-  "at": "2026-11-19T16:06:17.408Z",
+  "at": "2026-11-20T15:46:39.643Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261119-0105-2",
-      "ask": "Implement a miss-board reader that reads.git/verse-loop.stops.jsonl.",
-      "target": "voice:ask-20261119-0105-2"
+      "id": "ask-20261120-0112-2",
+      "ask": "Fix the Celtics query in the sports exam to resolve the score failure.",
+      "target": "voice:ask-20261120-0112-2"
+    },
+    {
+      "id": "ask-20261120-0112-1",
+      "ask": "Fix the podcasts exam by implementing support for 'play the episode before that' and 'pon el último episodio de radiolab'.",
+      "target": "voice:ask-20261120-0112-1"
+    },
+    {
+      "id": "ask-20261120-0103-3",
+      "ask": "Fix the 'tries is not defined' error in the visitor pass console.",
+      "target": "voice:ask-20261120-0103-3"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,.65); padding: 10px 14px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 280px; }
+  button { background: #2a2a40; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; margin: 4px 4px 0 0; cursor: pointer; }
+  button:hover { background: #3a3a55; }
+  #portals { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+  .portal { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(80,200,255,.35); border: 2px solid rgba(180,255,255,.7); transform: translate(-50%,-50%); transition: width .15s, height .15s, background .15s; pointer-events: auto; }
+  .portal:hover { filter: brightness(1.4); }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Neural Cellular Automaton Mic-Haptic Mind · Verse lab</title>
+<meta name="description" content="Ledger ID: F-833 (frontier series)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Neural Cellular Automaton Mic-Haptic Mind · Verse lab">
+<meta property="og:description" content="Ledger ID: F-833 (frontier series)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f833-webgpu-nca-mic-haptic-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f833-webgpu-nca-mic-haptic-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="portals"></div>
+<div id="hud">
+  <div><strong>F833 NCA Mic-Haptic Mind</strong></div>
+  <div id="status">Initializing…</div>
+  <div>Energy: <span id="energy">0</span> | Portals: <span id="nportals">6</span></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="mic">Toggle Mic</button>
+  <div style="margin-top:6px;font-size:11px;opacity:.8">Speak, play sound, or tilt. Click portals to reward local growth. Vibration on high energy.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Neural Cellular Automaton Mic-Haptic Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

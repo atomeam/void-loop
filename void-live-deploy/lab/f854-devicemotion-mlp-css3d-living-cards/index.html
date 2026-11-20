@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  #stage { position: relative; width: 100%; height: 100%; perspective: 800px; transform-style: preserve-3d; }
+  .card {
+    position: absolute; width: 140px; height: 90px; border-radius: 12px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid #0f3460;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none; box-shadow: 0 8px 24px rgba(0,0,0,.5);
+    transform-style: preserve-3d; transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 0 20px #e94560; }
+  .card .id { font-size: 12px; opacity: .7; }
+  .card .fit { font-size: 18px; font-weight: bold; color: #e94560; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; }
+  button { background: #e94560; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-left: 8px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceMotion MLP CSS3D Living Cards · Verse lab</title>
+<meta name="description" content="A swarm of absolute-positioned DOM cards embodied in CSS 3D space.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceMotion MLP CSS3D Living Cards · Verse lab">
+<meta property="og:description" content="A swarm of absolute-positioned DOM cards embodied in CSS 3D space.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f854-devicemotion-mlp-css3d-living-cards/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f854-devicemotion-mlp-css3d-living-cards/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">F854 Living CSS3D Cards <button id="seal">Seal Best</button> <span id="status">ready</span></div>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceMotion MLP CSS3D Living Cards</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

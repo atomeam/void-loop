@@ -12,12 +12,12 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Search recipes by name | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:104 `p class="sub" id="sub">Search by name or by ingredient; every quantity scaled to your serv` |
-| Browse by course, cuisine and occasion | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:124 `"false" aria-controls="browse">Browse</button>` |
-| Diet and allergy filters | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:148 `filtH" style="margin:0 0 4px">Diet and allergies</h2>` |
-| Ratings and reviews | Community | have | studied by hand: budgetbytes.com offers this (https://www.budgetbytes.com/) | void-live-deploy/recipes/index.html:199 `:14px;color:var(--soft)">Your rating</span><span class="stars" id="stars" role="group" ari` |
-| Change the servings | Cooking | have | studied by hand: budgetbytes.com offers this (https://www.budgetbytes.com/) | void-live-deploy/recipes/index.html:174 `button" id="more" aria-label="One serving more">+</button><span id="yield"></span></span>` |
-| Nutrition facts | Cooking | have | studied by hand: budgetbytes.com offers this (https://www.budgetbytes.com/) | void-live-deploy/recipes/index.html:145 `><button type="button" id="weekCal">Put the week on my calendar</button></div>` |
-| Save recipes | Keep | have | every site of this kind offers it | void-live-deploy/recipes/index.html:120 `lse" aria-controls="savedPane">Saved</button>` |
-| Print a recipe | Cooking | have | every site of this kind offers it | void-live-deploy/recipes/index.html:191 `utton type="button" id="print">Print</button>` |
+| Search recipes by name | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:105 `p class="sub" id="sub">Search by name or by ingredient; every quantity scaled to your serv` |
+| Browse by course, cuisine and occasion | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:125 `"false" aria-controls="browse">Browse</button>` |
+| Diet and allergy filters | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:149 `filtH" style="margin:0 0 4px">Diet and allergies</h2>` |
+| Ratings and reviews | Community | have | studied by hand: budgetbytes.com offers this (https://www.budgetbytes.com/) | void-live-deploy/recipes/index.html:200 `:14px;color:var(--soft)">Your rating</span><span class="stars" id="stars" role="group" ari` |
+| Change the servings | Cooking | have | studied by hand: budgetbytes.com offers this (https://www.budgetbytes.com/) | void-live-deploy/recipes/index.html:175 `button" id="more" aria-label="One serving more">+</button><span id="yield"></span></span>` |
+| Nutrition facts | Cooking | have | studied by hand: budgetbytes.com offers this (https://www.budgetbytes.com/) | void-live-deploy/recipes/index.html:146 `><button type="button" id="weekCal">Put the week on my calendar</button></div>` |
+| Save recipes | Keep | have | every site of this kind offers it | void-live-deploy/recipes/index.html:121 `lse" aria-controls="savedPane">Saved</button>` |
+| Print a recipe | Cooking | have | every site of this kind offers it | void-live-deploy/recipes/index.html:192 `utton type="button" id="print">Print</button>` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://www.budgetbytes.com/ | not compared yet |

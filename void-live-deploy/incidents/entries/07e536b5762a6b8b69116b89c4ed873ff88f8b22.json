@@ -1,0 +1,33 @@
+{
+ "at": "2026-11-20T17:32:47.301Z",
+ "sha": "07e536b5762a6b8b69116b89c4ed873ff88f8b22",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44779764680",
+ "suite": "browser suite on main",
+ "checks": [
+  "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill",
+  "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer",
+  "password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+  "busy blocks: three blocks make a bar with the free gaps named, typing \"gym 5-6pm\" adds a fourth, \"clear busy blocks\" takes the card off",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "domains/lab.broken.md",
+  "void-live-deploy/lab/catalog.json",
+  "void-live-deploy/lab/f806-webxr-hand-gravity-mlp-mind/app.js",
+  "void-live-deploy/lab/f806-webxr-hand-gravity-mlp-mind/index.html",
+  "void-live-deploy/lab/f807-local-ga-seating-chart/app.js",
+  "void-live-deploy/lab/f807-local-ga-seating-chart/index.html",
+  "void-live-deploy/lab/f809-local-hmm-spatial-intent-dom-mind/app.js",
+  "void-live-deploy/lab/f809-local-hmm-spatial-intent-dom-mind/index.html",
+  "void-live-deploy/lab/f810-local-gnn-dynamic-graph-spatial-mind/app.js",
+  "void-live-deploy/lab/f810-local-gnn-dynamic-graph-spatial-mind/index.html",
+  "void-live-deploy/lab/f811-spatial-weekly-timecard/app.js",
+  "void-live-deploy/lab/f811-spatial-weekly-timecard/index.html",
+  "void-live-deploy/lab/f811-webxr-hand-hopfield-associative-lattice-mind/app.js",
+  "void-live-deploy/lab/f811-webxr-hand-hopfield-associative-lattice-mind/index.html",
+  "void-live-deploy/lab/f812-webgpu-sph-hand-policy-mind/app.js"
+ ],
+ "shards": [
+  3
+ ]
+}

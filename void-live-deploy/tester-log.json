@@ -1,15 +1,83 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 148,
+ "cases": 149,
  "runsTotal": 300,
  "kinds": {
-  "visitor": 226,
-  "grow": 43,
   "file": 28,
+  "visitor": 226,
   "none": 2,
+  "grow": 43,
   "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-11-20T20:18:57Z",
+   "passed": 138,
+   "of": 149,
+   "kind": "grow",
+   "ms": 440,
+   "note": "new ground passed, kept as a regression case: \"share the open card\" (skill:share)",
+   "failed": [
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "favorite this",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find me a sci-fi film from the 80s pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for ikiru pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "refused: don't know this yet"
+    },
+    {
+     "ask": "yo draw yourself",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "draw yourself pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T20:06:42Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-20T18:19:08Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-20T13:34:26Z",
    "passed": 0,
@@ -384,46 +452,6 @@
      "why": "only \"waking up\" appeared, never the answer"
     }
    ]
-  },
-  {
-   "at": "2026-11-20T06:48:39Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-20T06:31:52Z",
-   "passed": 141,
-   "of": 145,
-   "kind": "file",
-   "ms": 342,
-   "note": "fix: \"show the days until a date\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "show the days until a date",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "flip this card",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-20T06:21:07Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
@@ -489,20 +517,20 @@
   },
   {
    "from": "2026-11-06",
-   "runs": 131,
-   "passed": 2281,
-   "of": 2882,
-   "broken": 5,
-   "brokenOf": 544,
-   "brokenPassed": 44,
-   "ms": 393
+   "runs": 135,
+   "passed": 2347,
+   "of": 2899,
+   "broken": 4,
+   "brokenOf": 436,
+   "brokenPassed": 0,
+   "ms": 391
   },
   {
    "from": "2026-11-13",
-   "runs": 169,
-   "passed": 6381,
-   "of": 6746,
-   "ms": 425
+   "runs": 165,
+   "passed": 6409,
+   "of": 6770,
+   "ms": 430
   }
  ],
  "seen": {
@@ -605,7 +633,7 @@
   "skill:senolytic": "2026-11-20T12:49:18Z",
   "skill:services": "2026-10-17T11:53:29Z",
   "skill:shape": "2026-11-20T13:17:03Z",
-  "skill:share": "2026-10-17T12:21:39Z",
+  "skill:share": "2026-11-20T20:18:57Z",
   "skill:show": "2026-10-17T12:21:39Z",
   "skill:show-countdown": "2026-10-17T13:52:50Z",
   "skill:showcase": "2026-10-17T13:52:50Z",
