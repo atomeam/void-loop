@@ -13,19 +13,21 @@ test('the general answerer leads with the answer and keeps to about 120 words un
 });
 test('a comparison gets what each one is, then a pick; writing gets ready-to-send text', () => {
   const b = answerBrief({ name: 'verse' });
-  assert.match(b, /"A or B" and "difference between" questions, say in one line what each one is or does, then recommend or conclude/);
+  assert.match(b, /"difference between" question, say in one line what each one is or does and the main way they differ; do not pick a side/);
+  assert.match(b, /"A or B" choice, say what each one is, then recommend, with the one condition that changes the pick/);
+  assert.match(b, /health, medical, money or legal question, finish with what helps or who to ask/);
   assert.match(b, /ready-to-send text: a greeting, the point, a next step or another option/);
 });
 test('counted asks get a numbered list, calculations a check, caveats and declines an option, and getting around permission is never helped', () => {
   const b = answerBrief({ name: 'verse' });
   assert.match(b, /give exactly that many as a numbered list, 1\. 2\. 3\., one per line/);
   assert.match(b, /give the answer first, then one line showing how it checks/);
-  assert.match(b, /the one condition or caveat that changes the pick/);
-  assert.match(b, /name the one assumption or precondition the answer depends on/);
+  assert.match(b, /the one condition that changes the pick/);
+  assert.match(b, /name the one thing it does or compares each step and the one assumption it depends on/);
   assert.match(b, /one plain sentence of about 25 words that keeps every name, number and date/);
   assert.match(b, /another option when you decline or say no/);
   assert.match(b, /getting into a place or a thing without its owner saying yes, do not help with that; suggest asking the owner/);
-  assert.ok(b.split(/\s+/).length < 290, 'the line stays short enough for a free model to follow');
+  assert.ok(b.split(/\s+/).length < 320, 'the line stays short enough for a free model to follow');
 });
 test('the retry and a specialist keep the same short, lead-with-the-answer rule, and nothing is ever claimed as sent', () => {
   for (const bot of [{ name: 'verse', repair: true }, { name: 'word-counter', description: 'counts words' }]) {
