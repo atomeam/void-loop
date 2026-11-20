@@ -5,7 +5,7 @@
 //   node tools/public-sites.mjs          rewrite the deploy copy (deploy.yml)
 //   node tools/public-sites.mjs --dry    print what it would change
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { deepScrub } from '../void-live-deploy/lib/scrub-sites.js';
+import { deepScrub, scrubSites } from '../void-live-deploy/lib/scrub-sites.js';
 
 export const SERVED = ['self.json', 'void.asks.json', 'void.growth.json', 'void.knowledge.json', 'skills/what.json', 'skills/families.json', 'skills/guide.json'];
 
@@ -16,13 +16,24 @@ export function publicSelf(self) {
   return out;
 }
 
+/** the served files the leak guard (tools/guards/leaks.mjs) found naming a studied site and put through the scrub too: void-live-deploy/lib/scrub-extra.json. */
+export function extraServed(read = () => readFileSync(new URL('../void-live-deploy/lib/scrub-extra.json', import.meta.url), 'utf8')) {
+  try { const f = JSON.parse(read()).files; return Array.isArray(f) ? f.filter((x) => typeof x === 'string' && /^[\w./-]+$/.test(x) && !x.includes('..')) : []; } catch { return []; }
+}
+/** one file's text after the scrub: a JSON file string by string, anything else as plain text. Pure. */
+export function scrubFile(name, src) {
+  if (!/\.json$/.test(name)) return scrubSites(src);
+  const j = JSON.parse(src);
+  return JSON.stringify(name === 'self.json' ? publicSelf(j) : deepScrub(j), null, 1) + '\n';
+}
+
 /** rewrite the deploy copy of the served files (tools/public-quotes.mjs calls this from deploy.yml; `node tools/public-sites.mjs` runs it alone). */
 export function cleanServed(dry = false) {
-  for (const f of SERVED) {
+  for (const f of [...new Set([...SERVED, ...extraServed()])]) {
     const p = new URL('../void-live-deploy/' + f, import.meta.url);
     if (!existsSync(p)) continue;
-    const src = readFileSync(p, 'utf8'), j = JSON.parse(src), out = JSON.stringify(f === 'self.json' ? publicSelf(j) : deepScrub(j), null, 1) + '\n';
-    const changed = JSON.stringify(j) !== JSON.stringify(JSON.parse(out));
+    const src = readFileSync(p, 'utf8'), out = scrubFile(f, src);
+    const changed = /\.json$/.test(f) ? JSON.stringify(JSON.parse(src)) !== JSON.stringify(JSON.parse(out)) : src !== out;
     console.log(`public sites: ${f} ${changed ? (dry ? 'would change' : 'cleaned') : 'already clean'}`);
     if (changed && !dry) writeFileSync(p, out);
   }

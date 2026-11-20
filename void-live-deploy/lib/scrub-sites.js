@@ -35,3 +35,10 @@ export const scrubSites = (text) => {
 };
 /** every string in a JSON value through scrubSites (keys untouched). Pure. */
 export const deepScrub = (v) => (typeof v === 'string' ? scrubSites(v) : Array.isArray(v) ? v.map(deepScrub) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, deepScrub(x)])) : v);
+/** the studied sites a text names, as bare hosts (no www, no path), each once. Pure. */
+export function studiedIn(text) {
+  if (typeof text !== 'string' || !text) return [];
+  const found = new Set();
+  for (const m of text.match(pattern()) || []) { const h = m.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/[/?#].*$/, ''); if (h) found.add(h); }
+  return [...found];
+}
