@@ -46,6 +46,12 @@ test('the studio ruler keeps the same three bad shows and swaps only the good on
   await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: groqSaying((p) => { seen.push(p); return 'Score 2'; }), gap: 0 });
   assert.ok(seen.some((p) => p.includes('72 seconds')), 'the good ruler is the true story');
 });
+test('the judge asks the thinking model to think hard', async () => {
+  const efforts = [];
+  const f = async (url, opt) => { if (/models$/.test(url)) return res(200, { data: [{ id: 'openai/gpt-oss-120b' }] }); efforts.push(JSON.parse(opt.body).reasoning_effort); return res(200, { choices: [{ message: { content: 'Score 2' } }] }); };
+  await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: f, gap: 0 });
+  assert.ok(efforts.length >= 12 && efforts.every((e) => e === 'high'));
+});
 test('a judge that separates still holds the show to 6+ on every blind question, the listener and the hard checks', async () => {
   const bad = [JOURNAL, OLD34, PAGE].map((t) => t.slice(0, 60));
   const v = await judge(show, 'short', { env: { GROQ_API_KEY: 'k' }, fetchImpl: groqSaying((p) => (bad.some((b) => p.includes(b)) ? 'Score 2' : /Human/.test(p) ? 'Human: 8' : 'Score 8')), gap: 0 });

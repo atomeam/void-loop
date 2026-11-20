@@ -47,7 +47,7 @@ export function groqModels(prefer, list) {
   return [...have, ...[...list].filter((m) => STRONG.test(m) && !/guard|whisper|tts|compound/.test(m) && !have.includes(m)).sort()];
 }
 /** one completion from the strongest free model that answers. Throws when none does: the studio never falls back to a weak one. */
-export async function llm(messages, { max = 4000, temperature = 0.8, prefer = WRITE_PREF, env = process.env, fetchImpl = fetch } = {}) {
+export async function llm(messages, { max = 4000, temperature = 0.8, prefer = WRITE_PREF, env = process.env, fetchImpl = fetch, think = '' } = {}) {
   const tried = [];
   if (env.GROQ_API_KEY) {
     const auth = { authorization: 'Bearer ' + env.GROQ_API_KEY, 'content-type': 'application/json' };
@@ -55,7 +55,7 @@ export async function llm(messages, { max = 4000, temperature = 0.8, prefer = WR
     for (const model of groqModels(prefer, groqList)) {
       let room = /gpt-oss|qwen3/.test(model) ? 3000 : 0;
       for (let t = 0; t < 4; t++) {
-        const body = { model, messages, temperature, max_completion_tokens: max + room, ...(/gpt-oss/.test(model) ? { reasoning_effort: temperature === 0 ? 'low' : 'medium', include_reasoning: false } : {}) };
+        const body = { model, messages, temperature, max_completion_tokens: max + room, ...(/gpt-oss/.test(model) ? { reasoning_effort: think || (temperature === 0 ? 'low' : 'medium'), include_reasoning: false } : {}) };
         const r = await fetchImpl('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: auth, body: JSON.stringify(body), signal: AbortSignal.timeout(180000) }).catch((e) => ({ ok: false, status: String(e.name) }));
         if (r.status === 429) { await sleep(1000 * Math.min(60, Number(r.headers.get('retry-after')) || 20)); continue; }
         const j = r.json ? await r.json().catch(() => ({})) : {};
@@ -173,7 +173,8 @@ export async function writeShow(kind, story, { env, fetchImpl } = {}) {
 /** the strict judge: calibration first, then the blind minimum and the listener, all on the whole script. */
 export async function judge(show, kind, { env, fetchImpl, gap = 2500 } = {}) {
   let via = '';
-  const askImpl = async (prompt) => { const r = await llm([{ role: 'user', content: prompt }], { max: 1500, temperature: 0, prefer: JUDGE_PREF, env, fetchImpl }); via = r.via; return r.text; };
+  // the judge thinks hard: at low effort it scored a true story 3 and a list of rules 6 on 'would a stranger stay'
+  const askImpl = async (prompt) => { const r = await llm([{ role: 'user', content: prompt }], { max: 1500, temperature: 0, prefer: JUDGE_PREF, env, fetchImpl, think: 'high' }); via = r.via; return r.text; };
   const cal = await calibrate({ askImpl, gap, maxChars: 24000, fixtures: STUDIO_FIXTURES });
   const text = show.lines.map((l) => l.who + ': ' + l.text).join(' ');
   const out = { separated: cal.separated, calibration: cal.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })), issues: hardShow(show, { kind }) };
@@ -254,7 +255,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const cmd = process.argv[2], arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
   const go = cmd === 'episode' ? () => makeEpisode({ dry: process.argv.includes('--dry') })
     : cmd === 'short' ? () => makeShort({ out: arg('--out', 'media/shorts') })
-    : cmd === 'calibrate' ? async () => { let via = ''; const c = await calibrate({ askImpl: async (p) => { const r = await llm([{ role: 'user', content: p }], { max: 1500, temperature: 0, prefer: JUDGE_PREF }); via = r.via; return r.text; }, gap: 2500, maxChars: 24000, fixtures: STUDIO_FIXTURES }); console.log(JSON.stringify({ via, separated: c.separated, rows: c.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })) })); return c.separated ? 0 : 1; }
+    : cmd === 'calibrate' ? async () => { let via = ''; const c = await calibrate({ askImpl: async (p) => { const r = await llm([{ role: 'user', content: p }], { max: 1500, temperature: 0, prefer: JUDGE_PREF, think: 'high' }); via = r.via; return r.text; }, gap: 2500, maxChars: 24000, fixtures: STUDIO_FIXTURES }); console.log(JSON.stringify({ via, separated: c.separated, rows: c.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })) })); return c.separated ? 0 : 1; }
     : null;
   if (!go) { console.error('usage: node tools/studio-make.mjs episode [--dry] | short [--out dir] | calibrate'); process.exit(2); }
   go().then((code) => process.exit(code), (e) => { console.log('not published: ' + (e && e.message || e)); process.exit(1); });
