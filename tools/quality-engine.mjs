@@ -48,6 +48,10 @@ export function surfaceList() {
 }
 
 // ---- the vision judge: a model looks at the screenshot against the pinnacle bar ----
+/** why the last judge call did not answer (for the log line); empty when it did. Never holds a key. */
+export const judgeWhy = {};
+export const judgeLine = (n, of, by, env = process.env) => (n ? 'Vision judge: ' + n + ' of ' + of + ' judged by ' + [...by].join(' and ') + '.'
+  : 'Vision judge: unjudged (' + ((env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) || env.GEMINI_API_KEY ? Object.entries(judgeWhy).filter(([, v]) => v).map(([k, v]) => k + ' ' + v).join(', ') || 'no answer' : 'no model key reached this run') + '), so visual scores stay capped at 85.');
 export async function visionJudge(png, surface, env = process.env, fetchFn = fetch, mime = 'image/png', { prompt: ask = null, read = readVision } = {}) {
   const prompt = ask || (charterPrompt() + visionPrompt(surface)), b64 = png.toString('base64');
   const cf = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN;
@@ -55,16 +59,18 @@ export async function visionJudge(png, surface, env = process.env, fetchFn = fet
     if (cf && env.CLOUDFLARE_ACCOUNT_ID) {
       const r = await fetchFn('https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + models('vision'), { method: 'POST', headers: { authorization: 'Bearer ' + cf, 'content-type': 'application/json' },
         body: JSON.stringify({ messages: [{ role: 'user', content: [{ type: 'text', text: prompt }, { type: 'image_url', image_url: { url: 'data:' + mime + ';base64,' + b64 } }] }], max_tokens: 400, temperature: 0 }), signal: AbortSignal.timeout(40000) });
+      judgeWhy.cf = r.ok ? 'answer unreadable' : 'HTTP ' + r.status;
       const j = await r.json().catch(() => ({})), text = (j.result && (j.result.response || j.result)) || (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
-      const v = read(typeof text === 'string' ? text : JSON.stringify(text)); if (v) return { ...v, by: 'workers-ai' };
+      const v = read(typeof text === 'string' ? text : JSON.stringify(text)); if (v) { judgeWhy.cf = ''; return { ...v, by: 'workers-ai' }; }
     }
     if (env.GEMINI_API_KEY) {
       const r = await fetchFn('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', { method: 'POST', headers: { 'x-goog-api-key': env.GEMINI_API_KEY, 'content-type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mime, data: b64 } }] }], generationConfig: { temperature: 0 } }), signal: AbortSignal.timeout(40000) });
+      judgeWhy.gemini = r.ok ? 'answer unreadable' : 'HTTP ' + r.status;
       const j = await r.json().catch(() => ({})), v = read(j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0].text);
-      if (v) return { ...v, by: 'gemini' };
+      if (v) { judgeWhy.gemini = ''; return { ...v, by: 'gemini' }; }
     }
-  } catch (_) { /* an unjudged run is capped, never passed */ }
+  } catch (e) { judgeWhy.error = String(e && e.name || 'error'); /* an unjudged run is capped, never passed */ }
   return null;
 }
 
@@ -81,7 +87,7 @@ export async function look(browser, s, { vision = true, exam = null } = {}) {
   if (v && v.nonsense && v.nonsense.length) m.details.nonsense = v.nonsense;
   const score = scoreSurface(m, v);
   if (SHOTS) { fs.mkdirSync(SHOTS, { recursive: true }); for (const [k, b] of Object.entries(r.shots)) fs.writeFileSync(path.join(SHOTS, slug(s.id) + '.' + k + '.png'), b); }
-  return { id: s.id, kind: s.kind, path: s.path, score, details: m.details, gfx: m.gfx, at: new Date().toISOString() };
+  return { id: s.id, kind: s.kind, path: s.path, score, details: m.details, gfx: m.gfx, by: v && v.by, at: new Date().toISOString() };
 }
 
 /** the home keeps its starfield (a live WebGL canvas) and its heart: an improvement elsewhere must never change that. */
@@ -195,10 +201,10 @@ export function meta(rec) {
 export async function lane({ limit = 5, dry = false, env = process.env } = {}) {
   const t0 = Date.now(), rec = load(), browser = await launch();
   try {
-    const out = { settled: null, surveyed: 0, started: null };
+    const out = { settled: null, surveyed: 0, started: null }, judged = { n: 0, by: new Set() };
     out.settled = await settle(browser, rec, { env });
     const exam = read(path.join(root, 'void-live-deploy/exam/latest.json'), null), details = {}, list = slice(surfaceList(), rec, limit);
-    for (const s of list) { const row = await look(browser, s, { exam, vision: !!(env.CLOUDFLARE_API_TOKEN || env.GEMINI_API_KEY) }); if (row.fail) continue; remember(rec, row); details[row.id] = row.details; out.surveyed++; }
+    for (const s of list) { const row = await look(browser, s, { exam, vision: !!(env.CLOUDFLARE_API_TOKEN || env.GEMINI_API_KEY) }); if (row.fail) continue; remember(rec, row); details[row.id] = row.details; out.surveyed++; if (row.by) { judged.n++; judged.by.add(row.by); } }
     if (!rec.pending && (!out.settled || out.settled.state !== 'waiting')) {
       const next = startNext(rec, details);
       if (next && next.targets) { rec.pending = { improver: next.id, signature: next.signature, targets: next.targets, at: new Date().toISOString(), minutes: 0, cents: 0 }; out.started = next; }
@@ -206,7 +212,7 @@ export async function lane({ limit = 5, dry = false, env = process.env } = {}) {
     const m = meta(rec);
     const minutes = Math.max(1, Math.round((Date.now() - t0) / 60000));
     const s = rec.summary;
-    rec.last = (out.settled && out.settled.cycle ? 'Settled ' + out.settled.cycle.id + ': ' + (out.settled.cycle.kept ? 'kept, +' + out.settled.cycle.gain : 'undone') + '. ' : '') + 'Measured ' + out.surveyed + ' surfaces; the board holds ' + s.surfaces + ' with an average of ' + s.average + ' of 100 and ' + s.passing + ' at the pinnacle.' + (out.started ? ' Started ' + out.started.what + ' on ' + out.started.targets.map((t) => t.id).join(', ') + '.' : '') + (m ? ' Upgraded itself: ' + m.did.join('; ') + '.' : '');
+    rec.last = (out.settled && out.settled.cycle ? 'Settled ' + out.settled.cycle.id + ': ' + (out.settled.cycle.kept ? 'kept, +' + out.settled.cycle.gain : 'undone') + '. ' : '') + 'Measured ' + out.surveyed + ' surfaces; the board holds ' + s.surfaces + ' with an average of ' + s.average + ' of 100 and ' + s.passing + ' at the pinnacle.' + (out.started ? ' Started ' + out.started.what + ' on ' + out.started.targets.map((t) => t.id).join(', ') + '.' : '') + (m ? ' Upgraded itself: ' + m.did.join('; ') + '.' : '') + ' ' + judgeLine(judged.n, out.surveyed, judged.by, env);
     if (!dry) save(rec);
     return { ...out, last: rec.last, ok: true, minutes, note: 'GitHub Actions on a public repo, so standard runner minutes are not billed. The free models come first; nothing was paid from the treasury.' };
   } finally { await browser.close(); }

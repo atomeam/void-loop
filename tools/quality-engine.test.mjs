@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import * as Q from '../void-live-deploy/lib/quality.js';
 import os from 'node:os';
 import path from 'node:path';
-import { calibrate, FIXTURES, blankRec, startNext } from './quality-engine.mjs';
+import { calibrate, FIXTURES, blankRec, startNext, judgeLine, judgeWhy, visionJudge } from './quality-engine.mjs';
 test('the vision answer is read strictly, and the judge is calibrated against the reference fails and fixes', async () => {
   assert.equal(Q.readVision('no json'), null); assert.equal(Q.readVision('{"graphics":11}'), null);
   assert.equal(Q.readVision('x {"graphics":3,"layout":4,"typography":5,"motion":3,"art":2,"fits":2,"nonsense":["a cube"]} y').art, 2);
@@ -33,4 +33,15 @@ test('startNext skips a surface with no file here and goes on to the next one', 
   assert.ok(next && next.targets && next.targets[0].id === '/dummy/', 'the dead route is passed over and the page with a file is fixed: ' + JSON.stringify(next));
   assert.ok(fs.readFileSync(path.join(dir, 'void-live-deploy/dummy/index.html'), 'utf8').includes(next.signature));
   assert.equal(startNext(blankRec(), {}, { dir }), null);
+});
+
+test('the lane says whether a vision model judged, and why not, without ever holding a key', async () => {
+  assert.match(judgeLine(3, 4, new Set(['workers-ai']), {}), /3 of 4 judged by workers-ai/);
+  assert.match(judgeLine(0, 4, new Set(), {}), /no model key reached this run.*capped at 85/);
+  const env = { CLOUDFLARE_API_TOKEN: 'secret-token', CLOUDFLARE_ACCOUNT_ID: 'acct' };
+  const bad = async () => ({ ok: false, status: 403, json: async () => ({}) });
+  assert.equal(await visionJudge(Buffer.from('x'), '/x/', env, bad), null);
+  const line = judgeLine(0, 4, new Set(), env); assert.match(line, /cf HTTP 403/); assert.ok(!line.includes('secret-token'));
+  const good = async () => ({ ok: true, status: 200, json: async () => ({ result: { response: JSON.stringify({ graphics: 6, layout: 7, typography: 7, motion: 5, art: 5, fits: 6, nonsense: [] }) } }) });
+  const v = await visionJudge(Buffer.from('x'), '/x/', env, good); assert.equal(v.by, 'workers-ai'); assert.equal(judgeWhy.cf, '');
 });
