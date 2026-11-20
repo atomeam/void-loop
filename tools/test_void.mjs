@@ -1543,6 +1543,14 @@ try {
     check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
+  // owner audit 2026-11-19: on a touch phone "weather in Lakeland Florida" answered "I could not find it" and the cookie recipe came back as a loose paragraph,
+  // because the skill files were still arriving and the ask went on without them. lib/ask-shapes.js names the one file for these shapes, so it loads at once.
+  if (want("phone ask: weather in a place and a dish's recipe answer with their own cards on a touch screen, never the 'could not find' line")) { const P = await fresh({ phone: true });
+    await P.ask('weather in Lisbon', 800); await until(async () => /Lisbon/.test(await P.page()) && /Open-Meteo/.test(await P.page()), 20000); const wx = await P.page();
+    check('phone ask: "weather in Lisbon" draws the weather card on a touch screen', /Lisbon/.test(wx) && /Open-Meteo/.test(wx) && !/could not find/i.test(wx), wx.slice(0, 160));
+    await P.ask('pancakes recipe', 800); await until(async () => /Ingredients/.test(await P.page()), 20000); const rc = await P.page();
+    check('phone ask: "pancakes recipe" draws the recipe card (ingredients and steps) on a touch screen', /Ingredients/.test(rc) && /Steps/.test(rc) && !P.errors.length, rc.slice(0, 160) + ' | ' + P.errors.join(' | '));
+    await P.ctx.close(); }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');

@@ -5160,9 +5160,14 @@ say('nothing selected to remove');
     // where a known ask sits in the routing order, or -1; waits at most `ms` for the table
     async function knownAsk(lower, ms) {
       const m = firstAsks || (skillFirst && (await Promise.race([skillFirst, new Promise((r) => setTimeout(() => r(null), Math.max(0, ms)))])));
-      const f = m && m.get(firstKey(lower)), at = f && skillPos ? skillPos.get(f) : undefined;
+      let f = m && m.get(firstKey(lower)), at = f && skillPos ? skillPos.get(f) : undefined;
+      if (typeof at !== 'number' && skillPos) { // not a known ask word for word: a shape ("weather in <place>", "<dish> recipe") still names the one file that takes it (lib/ask-shapes.js)
+        const sh = await Promise.race([shapesReady(), new Promise((r) => setTimeout(() => r(null), Math.max(0, ms)))]);
+        f = sh && sh.shapeFile(firstKey(lower)); at = f ? skillPos.get(f) : undefined;
+      }
       return typeof at === 'number' ? at : -1;
     }
+    const shapesReady = lazyImport(() => import('/lib/ask-shapes.js').catch(() => null));
     async function firstSkill(lower0, text, deadline, all = false) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
