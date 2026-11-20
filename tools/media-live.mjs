@@ -56,7 +56,7 @@ async function main() {
     page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
     await page.goto(SITE + '/films/', { waitUntil: 'domcontentloaded', timeout: 60000 });
     await page.waitForFunction(() => document.querySelector('.film') || /No films yet/.test(document.body.innerText), null, { timeout: 45000 }).catch(() => {});
-    const h1 = await page.locator('h1').first().innerText().catch(() => '');
+    const h1 = await page.locator('h1').first().evaluate((el) => { const c = el.cloneNode(true); c.querySelectorAll('.gl i').forEach((g) => g.remove()); return c.textContent; }).catch(() => ''); // the glitch's stand-in glyph flickers over the letter; read the word
     if (!/HOLOV.?DS/.test(h1.replace(/\s/g, '')) || /HOLOVIDIS/.test(h1.replace(/\s/g, ''))) fails.push(size + ': films heading reads "' + h1 + '"');
     const tiles = await page.locator('.film.thumb').count();
     for (let i = 0; i < Math.min(tiles, 4); i++) {
