@@ -70,6 +70,7 @@ const PANELS = {
       + '<div class="field"><label for="jb-region">' + esc(t('Work from')) + '</label><select id="jb-region">' + opt('', t('Any region'), '') + Object.entries(C.REGIONS).map(([k, v]) => opt(k, t(v), '')).join('') + '</select></div>'
       + '<div class="field"><label for="jb-cat">' + esc(t('Category')) + '</label><select id="jb-cat"><option value="">' + esc(t('Any category')) + '</option></select></div>'
       + '<div class="field"><label for="jb-tag">' + esc(t('Tag')) + '</label><input type="search" id="jb-tag" list="jb-tags" placeholder="' + esc(t('python, design, sales…')) + '"><datalist id="jb-tags"></datalist></div>'
+      + '<div class="field"><label for="jb-co">' + esc(t('Company')) + '</label><input type="search" id="jb-co" placeholder="' + esc(t('Company name')) + '"></div>'
       + '<div class="field"><label for="jb-type">' + esc(t('Job type')) + '</label><select id="jb-type">' + opt('', t('Any type'), '') + Object.entries(C.TYPES).map(([k, v]) => opt(k, t(v), '')).join('') + '</select></div>'
       + '<div class="field"><label for="jb-level">' + esc(t('Level')) + '</label><select id="jb-level">' + opt('', t('Any level'), '') + ['Entry', 'Junior', 'Mid', 'Senior', 'Lead', 'Manager', 'Executive'].map((v) => opt(v.toLowerCase(), t(v), '')).join('') + '</select></div>'
       + '<div class="field"><label for="jb-min">' + esc(t('Minimum salary a year')) + '</label><input type="number" id="jb-min" min="0" step="5000" inputmode="numeric" placeholder="0"></div>'
@@ -81,10 +82,10 @@ const PANELS = {
       + '<p class="count" id="jb-count" role="status" aria-live="polite">' + esc(t('Loading listings…')) + '</p><ol class="jobs" id="jb-results"></ol><div class="row"><button type="button" id="jb-more" hidden>' + esc(t('Show more')) + '</button></div>'
       + '<details class="also" id="jb-else"><summary>' + esc(t('Open this search on other job sites')) + '</summary><ul class="plist" id="jb-sites"></ul><p class="soft">' + esc(t('These links open the same words on each site; Verse sends nothing. Each says how sure its address pattern is.')) + '</p></details>');
     const f = (id) => $(el, '#' + id); let shown = 30;
-    const fill = () => { f('jb-q').value = s.q; f('jb-loc').value = s.loc; f('jb-region').value = s.region; f('jb-tag').value = s.tag; f('jb-type').value = s.type; f('jb-level').value = s.level; f('jb-min').value = s.min || ''; f('jb-days').value = String(s.days); f('jb-src').value = s.src; f('jb-sort').value = s.sort; f('jb-sal').checked = s.salaryOnly; f('jb-visa').checked = s.visa;
+    const fill = () => { f('jb-q').value = s.q; f('jb-loc').value = s.loc; f('jb-region').value = s.region; f('jb-tag').value = s.tag; f('jb-co').value = s.company; f('jb-type').value = s.type; f('jb-level').value = s.level; f('jb-min').value = s.min || ''; f('jb-days').value = String(s.days); f('jb-src').value = s.src; f('jb-sort').value = s.sort; f('jb-sal').checked = s.salaryOnly; f('jb-visa').checked = s.visa;
       const cats = C.facet(jobs, 'cat', 60), cs = f('jb-cat'); cs.innerHTML = opt('', t('Any category'), s.cat) + cats.map(([k, n]) => opt(k, k + ' (' + n + ')', s.cat)).join(''); if (s.cat && !cats.some(([k]) => k === s.cat)) cs.insertAdjacentHTML('beforeend', opt(s.cat, s.cat, s.cat));
       f('jb-tags').innerHTML = C.facet(jobs, 'tags', 80).map(([k]) => '<option value="' + esc(k) + '">').join(''); };
-    const read = () => setSearch({ q: f('jb-q').value.trim().slice(0, 60), loc: f('jb-loc').value.trim().slice(0, 60), region: f('jb-region').value, cat: f('jb-cat').value, tag: f('jb-tag').value.trim().slice(0, 40), type: f('jb-type').value, level: f('jb-level').value, min: Math.max(0, +f('jb-min').value || 0), days: +f('jb-days').value || 0, src: f('jb-src').value, sort: f('jb-sort').value, salaryOnly: f('jb-sal').checked, visa: f('jb-visa').checked });
+    const read = () => setSearch({ q: f('jb-q').value.trim().slice(0, 60), loc: f('jb-loc').value.trim().slice(0, 60), region: f('jb-region').value, cat: f('jb-cat').value, tag: f('jb-tag').value.trim().slice(0, 40), company: f('jb-co').value.trim().slice(0, 80), type: f('jb-type').value, level: f('jb-level').value, min: Math.max(0, +f('jb-min').value || 0), days: +f('jb-days').value || 0, src: f('jb-src').value, sort: f('jb-sort').value, salaryOnly: f('jb-sal').checked, visa: f('jb-visa').checked });
     let tm = 0; for (const x of el.querySelectorAll('input,select')) { x.addEventListener(x.type === 'search' || x.type === 'number' ? 'input' : 'change', () => { clearTimeout(tm); tm = setTimeout(() => { shown = 30; read(); }, x.type === 'search' || x.type === 'number' ? 200 : 0); }); }
     f('jb-form').addEventListener('submit', (e) => { e.preventDefault(); read(); });
     f('jb-clear').addEventListener('click', () => { shown = 30; setSearch({ ...C.EMPTY }); });
@@ -200,14 +201,40 @@ function notifyNew() {
   const n = (m.alerts || []).reduce((acc, a) => acc + C.newSince(jobs, a).fresh.length, 0); if (n > 0) { try { new Notification('Verse: ' + n + ' ' + t('new jobs in your saved searches')); } catch (_) { /* a browser that only notifies from a worker */ } }
 }
 
+const JOB_MODES = [['search', 'Search jobs', 'jb-search'], ['regions', 'Where you may work from', 'jb-regions'], ['categories', 'Categories', 'jb-cats'], ['tags', 'Tags', 'jb-tagcloud'], ['companies', 'Companies hiring', 'jb-companies'], ['alerts', 'Alerts', 'jb-alerts'], ['saved', 'Saved jobs', 'jb-saved'], ['tracker', 'Applications', 'tracker']];
+const JOB_MODE_ID = Object.fromEntries(JOB_MODES.flatMap(([m, , id]) => [[m, id], [id, id]]).concat([['region', 'jb-regions'], ['category', 'jb-cats'], ['cats', 'jb-cats'], ['tag', 'jb-tagcloud'], ['company', 'jb-companies'], ['applications', 'tracker'], ['alert', 'jb-alerts']]));
+export function jobModeOf(search = '', hash = '') {
+  const q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+  const raw = String(q.get('mode') || q.get('panel') || String(hash || '').replace(/^#/, '').split(/[&=]/)[0] || '').toLowerCase();
+  return JOB_MODE_ID[raw] || '';
+}
+function ensureModesCss() {
+  if (document.getElementById('modes-css')) return;
+  const s = document.createElement('style'); s.id = 'modes-css';
+  s.textContent = '.modes{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.modes a{display:inline-block;padding:6px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:inherit;min-height:36px;line-height:22px;background:var(--card)}.modes a:hover,.modes a:focus-visible{border-color:var(--accent)}';
+  document.head.append(s);
+}
+function jobModeBar(ids) {
+  ensureModesCss();
+  const have = new Set(ids), nav = document.createElement('nav'); nav.className = 'modes'; nav.setAttribute('aria-label', t('On this page'));
+  for (const [mode, label, id] of JOB_MODES) { if (!have.has(id) && !have.has(mode)) continue; const a = document.createElement('a'); a.href = '#' + mode; a.textContent = t(label); nav.append(a); }
+  return nav;
+}
+function goJobMode() {
+  const id = jobModeOf(location.search, location.hash); if (!id) return;
+  const el = document.getElementById(id); if (el) el.scrollIntoView({ block: 'start' });
+}
+
 /** mounts the panels a page asks for into root: { panels: [...], preset: { region, sort, ... }, de }. */
 export function mountJobs(root, cfg = {}) {
   cfgNow = cfg; Object.assign(s, C.EMPTY, cfg.preset || {}); if (location.search) Object.assign(s, Object.fromEntries(Object.entries(C.fromQuery(location.search)).filter(([k, v]) => v !== C.EMPTY[k])));
   root.textContent = '';
   const st = document.createElement('p'); st.className = 'notice'; st.id = 'jb-state'; st.setAttribute('role', 'status'); st.textContent = t('Loading listings…'); root.append(st);
-  for (const p of cfg.panels || ['search']) if (PANELS[p]) root.append(PANELS[p](cfg));
+  const panels = cfg.panels || ['search'];
+  if (panels.length > 1) root.append(jobModeBar(panels));
+  for (const p of panels) if (PANELS[p]) root.append(PANELS[p](cfg));
   if (isDe()) { document.documentElement.lang = 'de'; if (cfg.de) { const h = document.querySelector('h1'), p = document.querySelector('.intro'); if (h && cfg.de.h1) h.textContent = cfg.de.h1; if (p && cfg.de.intro) p.textContent = cfg.de.intro; if (cfg.de.h1) document.title = cfg.de.h1 + ' · Verse'; } }
   emit(); emitSaved();
-  if (location.hash === '#tracker') { const x = document.getElementById('tracker'); if (x) x.scrollIntoView(); }
+  goJobMode(); addEventListener('hashchange', goJobMode);
   return load();
 }
