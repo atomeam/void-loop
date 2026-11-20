@@ -1,13 +1,15 @@
-// Card art health: a few common asks (recipes, weather for several cities, others) are asked on the live site in a real browser. Each card must have real art
+// Card art health and recipe tone: a few common asks (recipes, weather for several cities, others) are asked on the live site in a real browser. Each card must have real art
 // (not the ink plate), on its subject, that the site's own vision check still passes (the card-art route looks at a kept picture and drops a weak or watermarked
-// one), and "copy card" must carry the card's whole text, not a cut piece. A card with bad art is painted again through the same route (past the free share the
+// one), and "copy card" must carry the card's whole text, not a cut piece. A recipe card's tone is judged too (tools/recipe-tone.mjs): gentle toward every animal and vegetable, warm, not preachy, steps still clear, and never a claim that plants feel pain. A card with bad art is painted again through the same route (past the free share the
 // treasury pays, and the log line says how much). Causes are counted; one that keeps coming back goes to the coder.
+import { toneJudge, toneCauses } from '../recipe-tone.mjs';
 export const POOL = [
   { ask: 'pancake recipe', words: ['pancake'] }, { ask: 'banana bread recipe', words: ['banana'] }, { ask: 'guacamole recipe', words: ['guacamole'] },
   { ask: 'chocolate chip cookies recipe', words: ['cookie'] }, { ask: 'lasagna recipe', words: ['lasagna'] },
   { ask: 'weather in Lakeland', words: ['lakeland'] }, { ask: 'weather in Paris', words: ['paris'] }, { ask: 'weather in Tokyo', words: ['tokyo'] },
   { ask: 'weather in Boston', words: ['boston'] }, { ask: 'weather in Denver', words: ['denver'] },
   { ask: 'tell me about tokyo', words: ['tokyo'] }, { ask: 'recipe for pad thai', words: ['pad thai', 'thai'] },
+  { ask: 'chicken soup recipe', words: ['chicken'] }, { ask: 'salad recipe', words: ['salad'] },
 ];
 export const PER_RUN = 6, WAIT_ART_MS = 50000, RECUR = 3, BUDGET_MS = 9 * 60e3;
 
@@ -46,6 +48,7 @@ export function judge(r) {
       if (!r.onSubject) out.push('art is not on the subject');
     }
   }
+  if (r.tone) out.push(...toneCauses(r.tone)); // a recipe card's tone, judged by a model (tools/recipe-tone.mjs)
   if (r.copy && !r.copy.ok) out.push(r.copy.cut ? 'copied card cut off' : 'copied card missing text (' + Math.round(r.copy.share * 100) + '% of it)');
   return out;
 }
@@ -83,6 +86,7 @@ async function look(ctx, b, item) {
     const info = await p.evaluate(() => { const el = [...document.querySelectorAll('.vcard')].pop(); if (!el) return null; const img = el.querySelector('.vc-forge-img'); return { subj: el.dataset.artSubject || '', art: !!el.querySelector('.vc-art'), img: img ? { w: img.naturalWidth, complete: img.complete } : null, text: el.innerText }; });
     if (!info) return out;
     out.card = true; out.expectArt = info.art; out.img = info.img; out.text = info.text;
+    if (/recipe/i.test(item.ask)) out.tone = await toneJudge(info.text, ctx.env || process.env); // null when no judge answered: reported, never passed
     out.onSubject = subjectOk(item.words, info.subj, out.req && out.req.key);
     if (out.req && info.img) { const g = await ctx.hit('/api/card-art?key=' + encodeURIComponent(out.req.key) + '&kind=' + encodeURIComponent(out.req.kind)); try { out.weak = !!JSON.parse(g.text).dropped; } catch (e) { note('not json', e); } }
     const btn = await p.$('.vcard:last-of-type .vc-share button:text-is("copy card")') || (await (await p.$$('.vcard')).pop().$('button:text-is("copy card")'));
@@ -121,9 +125,11 @@ export async function run(ctx) {
   const { memory, heal } = tally(prevMem, [...new Set(all)]);
   for (const c of heal) await ctx.queueJob('Card art and copy keep failing the same way on the live site: ' + c + '. Find the cause in the card route or the card page and fix it.', ('heal:card-' + c.replace(/[^a-z]+/g, '-')).slice(0, 40));
   const bad = results.filter((r) => r.causes.length);
-  const note = paid ? 'No model call from this guard. Repainting past the free share costs the treasury about ' + paid + ' cent' + (paid === 1 ? '' : 's') + ' (infrastructure pot before and after).' : 'No model call from this guard. A repaint inside the free share costs nothing.';
+  const note = paid ? 'No paid model call from this guard (the recipe tone judge runs on the free model). Repainting past the free share costs the treasury about ' + paid + ' cent' + (paid === 1 ? '' : 's') + ' (infrastructure pot before and after).' : 'No paid model call from this guard. A repaint inside the free share costs nothing; the recipe tone judge runs on the free model.';
   const last = !results.length ? 'No card came back this time.' : bad.length
     ? 'Asked ' + results.length + ' cards. ' + bad.length + ' had a problem: ' + bad.slice(0, 3).map((r) => '"' + r.ask + '": ' + r.causes.join(', ')).join('; ') + '. ' + (repainted.length ? 'Painted again: ' + repainted.join(', ') + '. ' : '') + (stuck.length ? 'Still without good art: ' + stuck.join(', ') + '. ' : '') + (heal.length ? 'A repeat cause went to the coder.' : '')
     : 'Asked recipes, weather for several cities and other cards. Every card had real art on its subject, passed the site\'s vision check, and copied with its full text.';
-  return { last: last.trim(), ok: true, note, paidCents: paid, state: { cards: memory } };
+  const recipes = results.filter((r) => r.card && /recipe/i.test(r.ask)), judged = recipes.filter((r) => r.tone).length;
+  const tone = recipes.length ? ' Recipe tone judged on ' + judged + ' of ' + recipes.length + ' recipe cards' + (judged < recipes.length ? ' (no judge answered for the rest; none was passed unseen)' : '') + '.' : '';
+  return { last: (last + tone).trim(), ok: true, note, paidCents: paid, state: { cards: memory } };
 }

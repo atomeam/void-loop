@@ -4,6 +4,8 @@
 // scale(): every quantity in a line (numbers, ½ ¼ ¾, mixed numbers, ranges) multiplied for a new number of servings; swapUnits(): cups, spoons,
 // ounces, pounds, °F and inches into ml, g, °C and cm and back; timersIn(): the "for 10 minutes" in a step as a countdown to tap. Pure throughout.
 // Tests: tools/recipes.test.mjs.
+import { gentleRecipe } from './recipe-respect.js'; // every recipe reads gently (owner, 2026-11-19): lib/recipe-respect.js
+export { gentler, thanksLine } from './recipe-respect.js';
 
 const VULGAR = { '¼': 1 / 4, '½': 1 / 2, '¾': 3 / 4, '⅓': 1 / 3, '⅔': 2 / 3, '⅛': 1 / 8, '⅜': 3 / 8, '⅝': 5 / 8, '⅞': 7 / 8 };
 const FRACS = [[1 / 8, '⅛'], [1 / 4, '¼'], [1 / 3, '⅓'], [3 / 8, '⅜'], [1 / 2, '½'], [5 / 8, '⅝'], [2 / 3, '⅔'], [3 / 4, '¾'], [7 / 8, '⅞']];
@@ -189,7 +191,7 @@ export function fromMeal(m) {
   for (let i = 1; i <= 20; i++) { const n = clean(m['strIngredient' + i]), q = clean(m['strMeasure' + i]); if (n) ingredients.push((q && q !== '-' ? q + ' ' : '') + n); }
   let steps = String(m.strInstructions || '').replace(/\r/g, '').split(/\n+/).map((s) => s.replace(/^\s*(?:step\s*)?\d+\s*[.):-]?\s*/i, '').trim()).filter((s) => s.length > 2 && !/^step\s*\d+$/i.test(s));
   if (steps.length === 1 && steps[0].length > 220) steps = steps[0].split(/(?<=[.!?])\s+(?=[A-Z])/).reduce((acc, s) => { const last = acc[acc.length - 1]; if (last && (last + ' ' + s).length < 200) acc[acc.length - 1] = last + ' ' + s; else acc.push(s); return acc; }, []);
-  return { id: 'mealdb-' + m.idMeal, name: clean(m.strMeal), servings: 4, servingsGuessed: true, time: 0, ingredients, steps, image: m.strMealThumb || '', source: /^https?:\/\//.test(m.strSource || '') ? m.strSource : '', video: /^https?:\/\//.test(m.strYoutube || '') ? m.strYoutube : '', area: clean(m.strArea), category: clean(m.strCategory), from: 'TheMealDB' };
+  return gentleRecipe({ id: 'mealdb-' + m.idMeal, name: clean(m.strMeal), servings: 4, servingsGuessed: true, time: 0, ingredients, steps, image: m.strMealThumb || '', source: /^https?:\/\//.test(m.strSource || '') ? m.strSource : '', video: /^https?:\/\//.test(m.strYoutube || '') ? m.strYoutube : '', area: clean(m.strArea), category: clean(m.strCategory), from: 'TheMealDB' });
 }
 // TheMealDB's own categories and cuisines (its list.php?c=list and ?a=list): browsing asks only for one of these, a closed list
 export const CATEGORIES = Object.freeze(['Beef', 'Breakfast', 'Chicken', 'Dessert', 'Goat', 'Lamb', 'Miscellaneous', 'Pasta', 'Pork', 'Seafood', 'Side', 'Starter', 'Vegan', 'Vegetarian']);

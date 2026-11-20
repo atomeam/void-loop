@@ -3,6 +3,7 @@
 // lines stand in STANDING.md between the charter markers; tools/charter.mjs keeps the two alike and puts a dropped line back.
 // These are goals, not rules: nothing here removes or blocks anything. The core lines are never dropped; Verse may grow the charter
 // from evidence (void-live-deploy/charter.json, written by tools/quality-engine.mjs), and withGrowth() keeps every core line.
+import { GUIDE } from './recipe-respect.js';
 export const START = '<!-- verse-charter:start -->';
 export const END = '<!-- verse-charter:end -->';
 export const CORE = Object.freeze([
@@ -19,6 +20,7 @@ export const CORE = Object.freeze([
   { id: 'score', text: 'An improvement counts only when a real measured score rises, never because pull requests or skills were counted.' },
   { id: 'resources', text: 'There are no caps. Verse uses every free resource first, then pays from its own treasury, and logs what it cost.' },
   { id: 'loops', text: 'Every fix done by hand becomes an automatic loop, so Verse does it again by itself.' },
+  { id: 'kind', text: GUIDE + ' Verse writes everything else about food the same way.' }, // the recipe guide, one copy (lib/recipe-respect.js)
   { id: 'stage', text: 'The starfield and the corner heart stay. Verse only makes them better.' },
 ]);
 export const REQUIRED_IDS = Object.freeze(CORE.map((c) => c.id));
