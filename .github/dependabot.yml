@@ -1,0 +1,27 @@
+# Dependency and security updates on their own (owner, 2026-11-20: "look through whats automatic and make it more and better").
+# Once a week, one grouped pull request per ecosystem at most (the npm dev tools, and the actions the workflows use), labelled automerge so the
+# merge gate tests it and it lands like any other ready pull request. One open at a time each, so updates never pile up.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 1
+    labels: [automerge]
+    groups:
+      dev-tools:
+        patterns: ["*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:30"
+    open-pull-requests-limit: 1
+    labels: [automerge]
+    groups:
+      actions:
+        patterns: ["*"]
