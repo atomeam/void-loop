@@ -132,3 +132,17 @@ test('the old picks stay: a calculator, a percent, a word count, key words, a co
   assert.equal(pick('count the words in this note', registry), 'word-counter');
   assert.equal(pick('find the key words in rain rain cloud sun', registry), 'keyword-finder');
 });
+
+// A quoted or pasted text is the thing worked on: its words never pick a bot.
+import { instructionTerms } from '../void-live-deploy/lib/agent-answer.js';
+test('words inside quoted text do not pick a bot; the instruction does', () => {
+  const lane = [{ id: 'gap-check', job: 'A gap between two marked lanes: the handoff sentence is counted and discarded', status: 'live' }, { id: 'summarizer', job: 'Summarizes a text in one sentence', status: 'live' }];
+  const ask = 'Give me a one-line recap of this: "Two lanes were marked on the road, and the gap between the sentence and the marked lane was counted." Keep it short.';
+  assert.ok(!instructionTerms(ask).includes('lane'));
+  assert.ok(!botChoices(ask, lane).some((b) => b.name === 'gap-check'), 'the quoted lane does not claim it');
+  assert.ok(botChoices('Marked lane gap: the handoff sentence is counted', lane).some((b) => b.name === 'gap-check'), 'the same words as an instruction still do');
+  assert.deepEqual(instructionTerms('reverse "hello there friend"'), ['reverse']);
+  assert.ok(instructionTerms('"only a quote of some length here"').length > 0, 'an ask that is only a quote still has terms');
+  assert.equal(pick('what percent is 45 of 60', registry), 'percent-bot');
+  assert.equal(pick('count the words in this note', registry), 'word-counter');
+});

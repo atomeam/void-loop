@@ -55,9 +55,15 @@ const rawId = (b) => new Set(String(b.name || b.id || '').toLowerCase().split(/[
 const slim = (b) => ({ name: String(b.name || b.id), description: String(b.description || b.job || 'the answer pipeline').slice(0, 160) });
 const GENERAL = { name: 'verse', description: 'the answer pipeline' };
 
+/** the words of the ask that say what to do: quoted or pasted text is the thing worked on, so its words never pick a bot (a bike lane in a quoted news story is not a lane). Pure. */
+export function instructionTerms(ask) {
+  const bare = String(ask || '').replace(/"[^"]*"|\u201c[^\u201d]*\u201d|`[^`]*`|(?<![A-Za-z])'[^']{12,}'(?![A-Za-z])/g, ' ');
+  const t = askTerms(bare);
+  return t.length ? t : askTerms(ask);
+}
 /** live bots whose declared purpose matches, best first, then Verse's answer pipeline. A shared filler word is not a match. Pure. */
 export function botChoices(ask, bots) {
-  const want = new Set(askTerms(ask));
+  const want = new Set(instructionTerms(ask));
   const open = openEnded(ask);
   const live = (bots || []).filter((b) => !b.status || b.status === 'live');
   const purposes = live.map(purposeOf);
