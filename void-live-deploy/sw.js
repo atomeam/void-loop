@@ -74,6 +74,8 @@ self.addEventListener('activate', (e) => {
 const DRESS = new Set(['/', '/team/', '/bots/', '/agent/', '/films/', '/treasury/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
 function dress(res, path) {
   if (!res || res.status !== 200 || !/text\/html/.test(res.headers.get('content-type') || '')) return Promise.resolve(res);
+  // the UniVerse screen is not the page: a nav drawn on it ran the shell once, and the owner's page swapped in after it had no bar (2026-11-20)
+  if (res.headers.get('x-verse-gate') === 'uni') return Promise.resolve(res);
   const p = !path || path === '/' ? '/' : (path.endsWith('/') ? path : path + '/');
   if (!DRESS.has(p)) return Promise.resolve(res);
   return res.clone().text().then((html) => {
