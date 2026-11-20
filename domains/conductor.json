@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T12:10:36.511Z",
+ "updated": "2026-11-20T12:20:00.105Z",
  "last24h": {
-  "ticks": 101,
-  "started": 87,
+  "ticks": 102,
+  "started": 90,
   "requeued": 11,
   "setAside": 1,
   "probes": 0,
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 8,
+   "used": 9,
    "cap": 90
   },
   "day": {
@@ -113,7 +113,7 @@
   "paid": false
  },
  "handed": {
-  "mvbl52gd": 1795155124554,
+  "mvbl52gd": 1795177200105,
   "mveb8rsi": 1795133003663,
   "mvu167w7": 1795155695690,
   "mveb8svc": 1795133576525,
@@ -137,7 +137,7 @@
   "mwmi5727": 1795174942453,
   "mwmpup7b": 1795175507922,
   "mwnbxf5o": 1795176071450,
-  "mwnkyhgw": 1795155124554
+  "mwnkyhgw": 1795177200105
  },
  "sweptAt": 1795176071450,
  "blueprintsAt": 1795176071450,
@@ -3172,6 +3172,48 @@
    "sweep": false,
    "blueprints": 0,
    "held": 470,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T12:20:00.105Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mw21cj6l",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 92
+    },
+    {
+     "id": "mwnkyhgw",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 42
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 266,
    "warnings": 0
   }
  ]
