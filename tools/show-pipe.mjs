@@ -153,7 +153,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const feats = featsFrom(growth);
   if (!feats.length) { console.error('no plain feat to tell'); process.exit(1); }
   if (process.argv[2] === 'shorts') {
-    console.log('The judged Shorts stay in void-live-deploy/studio. A new pair is tools/show-make.mjs and tools/show-film.mjs, and it replaces these only when the judge passes.');
+    // 2026-11-11 to 11-20 this printed a line and made nothing, so no film was made for ten days (owner, 2026-11-20). The studio
+    // (tools/studio-make.mjs) writes, judges and films one Short; it publishes only what the strict judge and the video gate pass.
+    const r = spawnSync(process.execPath, [resolve(root, 'tools/studio-make.mjs'), 'short', '--out', arg('--out') || 'media/shorts'], { stdio: 'inherit' });
+    process.exitCode = r.status || 0;
   } else if (process.argv[2] === 'feats') console.log(feats.join('\n'));
   else { console.error('usage: node tools/show-pipe.mjs shorts [--out dir] | feats'); process.exit(2); }
 }

@@ -307,6 +307,38 @@
    "link": "https://www.si.edu/openaccess",
    "used": null,
    "isolated": false
+  },
+  {
+   "name": "Kokoro-82M (hexgrad/kokoro, via kokoro-onnx)",
+   "author": "hexgrad; thewh1teagle",
+   "license": "Apache-2.0 (model), MIT (kokoro-onnx)",
+   "link": "https://huggingface.co/hexgrad/Kokoro-82M",
+   "used": "/podcast/ and /films/ (the two hosts' voices)",
+   "isolated": false
+  },
+  {
+   "name": "VCSL Steinway B piano samples",
+   "author": "Sam Gossner and contributors",
+   "license": "CC0-1.0",
+   "link": "https://github.com/sgossner/VCSL",
+   "used": "/podcast/ and /films/ (the piano bed)",
+   "isolated": false
+  },
+  {
+   "name": "Wikipedia featured feed and articles",
+   "author": "Wikipedia contributors",
+   "license": "CC BY-SA 4.0",
+   "link": "https://api.wikimedia.org/wiki/Feed_API",
+   "used": "/podcast/ and /films/ (the true story each show tells, named in its notes)",
+   "isolated": false
+  },
+  {
+   "name": "Pollinations image generation",
+   "author": "Pollinations.AI",
+   "license": "free to use, no account",
+   "link": "https://pollinations.ai/",
+   "used": "/films/ (one picture per line)",
+   "isolated": false
   }
  ],
  "pieces": [
