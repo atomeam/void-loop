@@ -1,5 +1,5 @@
 {
- "cursor": 5,
+ "cursor": 6,
  "picks": {
   "debris-field": 1,
   "gap-glide": 1,
@@ -7,7 +7,8 @@
   "packet-maze": 1,
   "stackwell": 1,
   "nine-grid": 1,
-  "three-alike": 1
+  "three-alike": 1,
+  "pong": 1
  },
  "scores": {
   "debris-field": {
@@ -113,6 +114,27 @@
     "fun": 7,
     "polish": 5
    }
+  },
+  "pong": {
+   "update": 1,
+   "note": "Update 1: The ball moves with more weight and momentum, making every rally feel more intense.",
+   "why": "shipped",
+   "fun": 62,
+   "cents": 0,
+   "paid": false,
+   "cycle": 1,
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44666567667",
+   "parts": {
+    "danger": 3,
+    "goal": 7,
+    "boss": 4,
+    "juice": 5,
+    "phone": 8,
+    "fair": 10,
+    "end": 7,
+    "fun": 6,
+    "polish": 6
+   }
   }
  },
  "shown": [
@@ -189,6 +211,20 @@
    "paid": false,
    "provider": "verse @cf/google/gemma-4-26b-a4b-it",
    "video": "https://github.com/atomeam/void-loop/actions/runs/44652720911",
+   "dropped": false,
+   "born": false
+  },
+  {
+   "at": "2026-11-20T03:22:24.073Z",
+   "id": "pong",
+   "title": "Verse Pong",
+   "n": 1,
+   "note": "Update 1: The ball moves with more weight and momentum, making every rally feel more intense.",
+   "fun": 62,
+   "cents": 0,
+   "paid": false,
+   "provider": "verse @cf/google/gemma-4-26b-a4b-it",
+   "video": "https://github.com/atomeam/void-loop/actions/runs/44666567667",
    "dropped": false,
    "born": false
   }
