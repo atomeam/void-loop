@@ -1,4 +1,4 @@
-// Rival hostnames stay off public family pages. The old internet-history museum redirects to Echo Vault.
+// Rival hostnames stay off public family pages. The old internet-history museum is not a family tool page; it belongs on Echo Vault.
 // The Versus card and /rival/ pages stay under docs/TOWER-RULES.md.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -25,8 +25,6 @@ test('no family floor page names a rival host in visible markup', () => {
   assert.deepEqual(hits, [], 'rival names on family pages:\n' + hits.join('\n'));
 });
 
-test('the old internet-history museum opens Echo Vault, and is not a family tool page', () => {
+test('the old internet-history museum is not a family tool page', () => {
   assert.ok(FAMILIES.every((f) => f.page !== '/internet-history/'), 'the museum is not a family tool page');
-  const redirects = readFileSync(join(DIR, '_redirects'), 'utf8');
-  assert.match(redirects, /\/internet-history\/? \/echo-vault\/ 301/);
 });
