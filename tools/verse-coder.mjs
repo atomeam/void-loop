@@ -245,7 +245,14 @@ export const keyless = (env = process.env) => Object.fromEntries(Object.entries(
 const git = (root, args, opts = {}) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, ...opts });
 const readOr = (p) => { try { return readFileSync(p, 'utf8'); } catch (_) { return null; } };
 
-export const WINDOW = Object.freeze({ messages: 20, fresh: 4, keep: 600, task: 6000, taskTurns: 2 });
+/** where a lap's brief starts its reference notes (tools/verse-loop.mjs buildPrompt) */
+export const NOTES = '\n## docs/GATE-STANDARDS.md';
+/** a brief without its opening charter copy (the system message has it). Pure over the charter text. */
+export function withoutCharter(text, charter = charterPrompt()) {
+  const t = String(text || ''), c = String(charter || '').trim();
+  return c && t.startsWith(c) ? t.slice(c.length).replace(/^\s+/, '') : t;
+}
+export const WINDOW = Object.freeze({ messages: 16, fresh: 4, keep: 450, task: 6000, taskTurns: 2 });
 /** what the model gets each turn: the system and the task, then the last WINDOW.messages turns, with each tool result older than the
  *  newest WINDOW.fresh messages cut to WINDOW.keep characters. Every turn sends the whole window again, so full old reads made the
  *  count grow with the square of the turns: a 250000-token run stopped near turn 12 of 30 with nothing shipped; now the newest WINDOW.fresh / 2 results stay whole.
@@ -258,8 +265,15 @@ export function windowOf(messages) {
   const m = Array.isArray(messages) ? messages : [];
   const rest = m.length > WINDOW.messages + 2 ? m.slice(-WINDOW.messages) : m.slice(2);
   const turns = m.filter((x) => x && x.role === 'assistant').length;
-  const task = m[1] && turns > WINDOW.taskTurns && m[1].content.length > WINDOW.task
-    ? { ...m[1], content: m[1].content.slice(0, WINDOW.task) + '\n[... ' + (m[1].content.length - WINDOW.task) + ' characters of reference notes cut after the first turns; the task is above]' } : m[1];
+  // after the first turns the brief shrinks to what only it carries: the rules and the task. The system message already has the charter, so the
+  // brief's second copy goes, and the reference notes at its end (docs/GATE-STANDARDS.md, docs/TAGTEAM.md: they grow with every game update)
+  // go too; whatever is left is held to WINDOW.task. Sent whole every turn, the real brief ran the token cap out at turn 28 of 30 (2026-11-20).
+  let task = m[1];
+  if (m[1] && turns > WINDOW.taskTurns) {
+    const body = withoutCharter(m[1].content), at = body.indexOf(NOTES);
+    const head = at > 0 ? body.slice(0, at) : body, kept = head.slice(0, WINDOW.task);
+    task = { ...m[1], content: kept + (kept.length < m[1].content.length ? '\n[... ' + (m[1].content.length - kept.length) + ' characters of the charter and reference notes cut after the first turns; the task is above]' : '') };
+  }
   return [...m.slice(0, 1), ...(m.length > 1 ? [task] : []), ...rest.map((x, i) => (i < rest.length - WINDOW.fresh && x.content.length > WINDOW.keep
     ? x.role === 'user' ? { role: 'user', content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older result; read it again if you need it]' }
       : x.content.length > 4 * WINDOW.keep ? { role: x.role, content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older turn of yours]' } : x
