@@ -38,12 +38,13 @@ async function queue(method, body, query = '') {
   return { status: res.status, json, text };
 }
 const gh = (...a) => execFileSync('gh', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000 });
-export function runsOf(wf, event = '', read = gh) {
-  try { return JSON.parse(read('api', `repos/${REPO}/actions/workflows/${wf}/runs?branch=main&per_page=10${event ? '&event=' + encodeURIComponent(event) : ''}`)).workflow_runs || []; }
+export function runsOf(wf, event = '', read = gh, status = '') {
+  try { return JSON.parse(read('api', `repos/${REPO}/actions/workflows/${wf}/runs?branch=main&per_page=10${event ? '&event=' + encodeURIComponent(event) : ''}${status ? '&status=' + status : ''}`)).workflow_runs || []; }
   catch (e) { if (/HTTP 404|Not Found/i.test(String(e.stderr || e.message))) return null; warn(wf + ': runs unreadable (' + String(e.message).slice(0, 80) + ')'); return []; }
 }
 // Tower's scheduled naming audit and deploy-triggered gate exercise different jobs. A hand run
 // varies by inputs, so it cannot prove either stream fixed without inspecting its job coverage.
+export const FINISHED_ONLY = new Set(['verify.yml']);
 export const HEALTH_EVENTS = Object.freeze({ 'tower-gate.yml': ['schedule', 'workflow_run'] });
 export function healthRunsOf(wf, recent, read = runsOf) {
   const events = HEALTH_EVENTS[wf];
@@ -126,7 +127,8 @@ async function tick() {
     const r = runsOf(f);
     if (r === null) { wf[f] = { exists: false }; continue; }
     runs[f] = r;
-    const s = streakOf(healthRunsOf(f, r), { events: HEALTH_EVENTS[f] });
+    // main's suite runs on every head, so its newest 10 are often all waiting or cancelled: its streak is read from finished runs
+    const s = streakOf(healthRunsOf(f, FINISHED_ONLY.has(f) ? (runsOf(f, '', gh, 'completed') || r) : r), { events: HEALTH_EVENTS[f] });
     wf[f] = { exists: true, busy: r.some((x) => BUSY.has(x.status)), today: 0, fails: s.fails, url: s.url, last: r[0] ? Date.parse(r[0].created_at) : 0 };
   }
   for (const r of Object.values(ROUTES)) if (wf[r.wf] && wf[r.wf].exists && !('counted' in wf[r.wf])) { wf[r.wf].today = todayOf(r.wf, day); wf[r.wf].counted = true; }
