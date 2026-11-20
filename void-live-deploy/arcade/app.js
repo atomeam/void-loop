@@ -39,7 +39,13 @@ const MORE = [
 ];
 
 const $ = (id) => document.getElementById(id);
-const games = $('games'), play = $('play'), how = $('how'), rebuild = $('rebuild');
+const games = $('games'), play = $('play'), how = $('how'), rebuild = $('rebuild') || shelfBelow(how);
+/** "Being rebuilt": the games that are still playable but not fun enough yet (lib/game-shelf.js), under the front shelf. */
+function shelfBelow(after) {
+  const h = document.createElement('h2'), p = document.createElement('p'), d = document.createElement('div');
+  h.textContent = 'Being rebuilt'; p.textContent = 'Still playable, but not fun enough yet. Each one moves back up once an update makes it fun.';
+  d.id = 'rebuild'; d.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px'; after.after(h, p, d); return d;
+}
 let round = 0;
 
 function paint(id) {
