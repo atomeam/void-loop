@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, suiteOpen, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT } from '../void-live-deploy/lib/page-pass.js';
+import { openPath, gatedPath, backPath, money, ensurePrice, resetLive, mintPass, readPass, passage, suiteOpen, screen, startCheckout, finishCheckout, applyStripeEvent, CENTS, PRODUCT, GATE_SRC } from '../void-live-deploy/lib/page-pass.js';
 import { onRequest as gate } from '../void-live-deploy/functions/_middleware.js';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/page-pass.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
@@ -107,6 +107,7 @@ async function grantFirst(DB) {
 test('the gate\'s Subscribe goes through /api/buy: the form says so, a showing and a click are counted, and the answer is the same Stripe Checkout', async () => {
   const { onRequestPost: buyPost } = await import('../void-live-deploy/functions/api/buy.js');
   const page = screen({ cents: CENTS }, '/flights/');
+  assert.equal(GATE_SRC, 'gate.base.a');
   assert.match(page, /<form method="post" action="\/api\/buy\?go=gate&amp;from=gate\.base\.a">/);
   assert.match(page, /\/api\/buy\?seen=gate\.base\.a&id=universe/);
   assert.equal(page.includes('action="/api/page-pass"'), false);
