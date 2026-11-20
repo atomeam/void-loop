@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T22:27:50.488Z",
+ "updated": "2026-11-20T22:38:02.871Z",
  "last24h": {
   "ticks": 150,
-  "started": 116,
+  "started": 117,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 15,
+   "used": 16,
    "cap": 90
   },
   "day": {
@@ -125,7 +125,7 @@
   "mw5mm5fm": 1795136972837,
   "mva30i2e": 1795212906151,
   "mva30j4u": 1795213670488,
-  "mwa0agd2": 1795191935987,
+  "mwa0agd2": 1795214282871,
   "mwa0ah54": 1795192504333,
   "mwdsggtv": 1795193080284,
   "mwdsgi9n": 1795193646885,
@@ -3402,30 +3402,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-19T22:29:06.534Z",
-   "open": 500,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 482,
-   "warnings": 0
-  },
   {
    "at": "2026-11-19T22:38:28.577Z",
    "open": 500,
@@ -7701,6 +7677,38 @@
    "catchup": [
     "arb-record.yml"
    ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 472,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T22:38:02.871Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwa0agd2",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 37
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
