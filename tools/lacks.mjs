@@ -15,6 +15,7 @@
 //   node tools/lacks.mjs settle cand.json probe.log --out passing.json --failed failed.json --report report.md
 //   node tools/lacks.mjs queue failed.json [--dry]         the asks that did not route become `probe:` jobs for propose-fix.yml (owner token; at most PROBE_OPEN_MAX open)
 // Nothing here writes into the repo but the files named by --out/--report; adding rows is tools/append.mjs, opening the PR is the workflow.
+import { laneOf } from '../void-live-deploy/lib/visible.js';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { heavy as heavyLessons, chance, load as loadLessons } from './grow-lessons.mjs';
 import { resolve, dirname } from 'node:path';
@@ -59,6 +60,7 @@ export function incidentHits(incidents, names) {
 
 /** Every skill scored, most lacking first. { name, score, reasons[], examples[] }; a skill with no example asks of its own cannot be hardened here and is left out
  *  (examples the guide quoted from a header, examplesFrom: 'header', are labels or the owner's words, never asks that skill routes). Pure. */
+export const FUN_LACK = 10;
 export function rank({ guide, families, bench, incidents } = {}) {
   const pages = guide && Array.isArray(guide.pages) ? guide.pages : [];
   const skills = pages.filter((p) => p && p.kind === 'skill' && typeof p.name === 'string' && Array.isArray(p.examples) && p.examples.length && p.examplesFrom !== 'header');
@@ -72,6 +74,10 @@ export function rank({ guide, families, bench, incidents } = {}) {
     const tw = TIER_WEIGHT[tiers.get(s.name)] || 0;
     if (tw) { score += tw; reasons.push('evidence tier: ' + tiers.get(s.name)); }
     if (hits.get(s.name)) { score += 5 * hits.get(s.name); reasons.push(hits.get(s.name) + ' failed run' + (hits.get(s.name) === 1 ? '' : 's') + ' name it'); }
+    // fun first (owner, 2026-11-20; lib/visible.js laneOf): what a visitor plays with is hardened before a business-tool pack
+    const lane = laneOf(s.name + ' ' + (s.title || '') + ' ' + (s.line || ''));
+    if (lane === 'fun') { score += FUN_LACK; reasons.push('a visitor plays with it'); }
+    else if (lane === 'business') { score = Math.round(score / 3); reasons.push('a business tool (a small share of the work)'); }
     return { name: s.name, score, reasons, examples: s.examples.map(String), benched: b };
   }).filter((r) => r.reasons.some((x) => /benchmark ask/.test(x))).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
 }

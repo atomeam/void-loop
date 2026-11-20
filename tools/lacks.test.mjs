@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cardGaps, THIN_LINE, benchedCount, tiersOf, incidentHits, rank, usable, plan, missedIn, settle, report, load, answered, UNBENCHED, PER_SKILL } from './lacks.mjs';
+import { cardGaps, THIN_LINE, benchedCount, tiersOf, incidentHits, rank, usable, plan, missedIn, settle, report, load, answered, UNBENCHED, PER_SKILL, FUN_LACK } from './lacks.mjs';
 
 const guide = { pages: [
   { kind: 'skill', name: 'timer', examples: ['set a timer for 5 minutes', 'timer'] },
@@ -21,8 +21,8 @@ test('benchmark rows are counted by skill whatever the want looks like', () => {
 test('no benchmark ask and a weak tier ranks first, with its reasons; thin evidence counts; a well benched skill, one with no examples and a chapter do not appear', () => {
   const r = rank({ guide, families, bench, incidents: {} });
   assert.deepEqual(r.map((x) => x.name), ['chess', 'pw', 'timer']);
-  assert.equal(r[0].score, UNBENCHED + 40);
-  assert.deepEqual(r[0].reasons, ['no benchmark ask', 'evidence tier: experiment']);
+  assert.equal(r[0].score, UNBENCHED + 40 + FUN_LACK); // chess: a visitor plays with it (fun first, 2026-11-20)
+  assert.deepEqual(r[0].reasons, ['no benchmark ask', 'evidence tier: experiment', 'a visitor plays with it']);
   assert.deepEqual(r[1].reasons, ['only 1 benchmark ask', 'evidence tier: tested']);
   const full = rank({ guide, families, bench: bench.concat([{ ask: 'a', want: 'skill:timer' }, { ask: 'b', want: 'skill:timer' }]), incidents: {} });
   assert.ok(!full.some((x) => x.name === 'timer'));
@@ -42,7 +42,7 @@ test('failed runs that name a skill raise it, and only as a whole word', () => {
   const h = incidentHits(incidents, ['chess', 'timer', 'pw']);
   assert.equal(h.get('chess'), 1); assert.equal(h.get('timer'), 1); assert.equal(h.has('pw'), false);
   const r = rank({ guide, families, bench: [], incidents });
-  assert.equal(r.find((x) => x.name === 'chess').score, UNBENCHED + 40 + 5);
+  assert.equal(r.find((x) => x.name === 'chess').score, UNBENCHED + 40 + 5 + FUN_LACK);
   assert.ok(r.find((x) => x.name === 'chess').reasons.includes('1 failed run name it'));
 });
 
