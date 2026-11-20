@@ -62,6 +62,6 @@ let led2 = record({}, it2, v);
 assert.equal(jobFor(it2, v, {}).type, 'stranger-improve');
 for (let i = 1; i < INVENT_AFTER; i++) led2 = record(led2, it2, v);
 const inv = jobFor(it2, v, led2.items[it2.id]);
-assert.equal(inv.type, 'stranger-invent'); assert.ok(inv.invent.spec && inv.invent.prototype && inv.invent.measure.bar === 100);
+assert.equal(inv.type, 'stranger-invent'); assert.equal(inv.invent.key, 'video:purpose'); assert.ok(inv.invent.spec && inv.invent.prototype && inv.invent.measure.bar === 100);
 assert.equal(jobFor(it2, pass, {}), null);
 console.log('stranger: ok');

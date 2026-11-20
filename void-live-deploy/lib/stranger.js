@@ -153,5 +153,5 @@ export function jobFor(item, v, prev = {}) {
   if (!invent) return { type: 'stranger-improve', item: item.id, kind: item.kind, failed: v.failed, want: { title: 'make ' + item.id + ' pass the stranger test', why: what, weight: 9 } };
   return { type: 'stranger-invent', item: item.id, kind: item.kind, failed: v.failed,
     want: { title: 'invent a new way to make ' + item.kind + 's like ' + item.id + ' good: ' + stuck.join(', '), why: 'improve jobs did not reach the bar (' + what + '); design Verse\'s own approach, combining models and tools in a new way or a new interface', weight: 11 },
-    invent: { spec: 'what professional looks like for this ' + item.kind + ', measured by the stranger test checks ' + stuck.join(', ') + '; what no existing free tool does', prototype: 'one working version on a helper/* branch', measure: { before: v.score, after: null, bar: 100 } } };
+    invent: { key: item.kind + ':' + stuck.join(','), spec: 'what professional looks like for this ' + item.kind + ', measured by the stranger test checks ' + stuck.join(', ') + '; what no existing free tool does', prototype: 'one working version on a helper/* branch', measure: { before: v.score, after: null, bar: 100 } } };
 }
