@@ -1,7 +1,7 @@
 // Visible progress (Atom, 2026-11-03). node --test tools/visible.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rankAdjust, adjustWeights, isFacingPath, parseFacingLog, shippedVisible, visibleLine, VISIBLE_BOOST, INTERNAL_CUT } from '../void-live-deploy/lib/visible.js';
+import { rankAdjust, adjustWeights, isFacingPath, parseFacingLog, shippedVisible, visibleLine, laneOf, VISIBLE_BOOST, INTERNAL_CUT, FUN_BOOST, BUSINESS_CUT, BUSINESS_SHARE } from '../void-live-deploy/lib/visible.js';
 import { score } from './conductor-core.mjs';
 
 const NOW = Date.parse('2026-11-03T18:00:00Z');
@@ -16,7 +16,8 @@ test('visible work ranks above internal work, and a plain item is unchanged', ()
   assert.equal(rankAdjust('regenerate families.json'), -INTERNAL_CUT);
   assert.equal(rankAdjust('groom docs and the conductor record'), -INTERNAL_CUT);
   assert.equal(rankAdjust('Perform a git diff and list the failing checks'), -INTERNAL_CUT);
-  assert.equal(rankAdjust('a drawing card on the stage'), 0);
+  assert.equal(rankAdjust('a drawing card on the stage'), FUN_BOOST, 'something a visitor plays with (fun first, 2026-11-20)');
+  assert.equal(rankAdjust('absorb a repo on the frontier'), 0);
   assert.equal(rankAdjust('the broken card showed up in the incident log'), VISIBLE_BOOST, 'a visible fix stays visible');
 });
 
@@ -68,4 +69,18 @@ test('the conductor scores a visible job above an internal one of the same kind'
   const vis = score(job('voice:card', 'the clock card is blank'), NOW);
   const inn = score(job('voice:diff', 'git diff the failing checks'), NOW);
   assert.ok(vis > inn, vis + ' > ' + inn);
+});
+
+test('fun first: games, challenges, cards and creative tools rise; business-tool packs fall and keep a small share of the top', () => {
+  for (const t of ['a new level for the snail game', 'a daily challenge on the home page', 'an emoji quiz', 'a song maker']) assert.equal(laneOf(t), 'fun', t);
+  for (const t of ['Add runbook-pack skill for client-facing SOPs', 'ops-digest: weekly ops', 'client-exceptions-pack', 'mark delivery-status-pack shipped', 'a client game pack']) assert.equal(laneOf(t), 'business', t);
+  assert.equal(laneOf('answer the weather right'), '');
+  assert.equal(rankAdjust('Add runbook-pack skill for client-facing SOPs'), -BUSINESS_CUT);
+  const cands = [
+    ...Array.from({ length: 6 }, (_, i) => ({ title: 'client-' + i + '-pack', weight: 200 })),
+    ...Array.from({ length: 8 }, (_, i) => ({ title: 'answer ask ' + i + ' right', weight: 100 - i })),
+  ];
+  const w = adjustWeights(cands), top = w.map((x, i) => [x, i]).sort((a, b) => b[0] - a[0]).slice(0, 10).map(([, i]) => cands[i].title);
+  assert.equal(top.filter((t) => /pack/.test(t)).length, Math.floor(BUSINESS_SHARE * 10), top.join(', '));
+  assert.ok(w.every((x) => x >= 1));
 });
