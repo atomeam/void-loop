@@ -159,6 +159,8 @@ export async function main(argv = process.argv.slice(2)) {
   const wrote = put(rec, dry);
   console.log(rec.name + ': ' + rec.status + ' ' + rec.last + (wrote ? '' : ' (unchanged)'));
   console.log(JSON.stringify({ id: rec.id, status: rec.status, last: rec.last, wrote, cost: rec.cost }));
+  // Verse's self-guards ride the lane (tools/verse-guards.mjs): each one is fenced, so a guard that breaks never fails the lane
+  try { const { runRides } = await import('./verse-guards.mjs'); await runRides(lane, { dry }); } catch (e) { console.log('guards: ' + String((e && e.message) || e).slice(0, 160)); }
   return 0;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main().then((c) => process.exit(c)).catch((e) => { console.error(String(e && e.message || e)); process.exit(1); });

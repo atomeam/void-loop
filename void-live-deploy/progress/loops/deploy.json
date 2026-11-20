@@ -1,0 +1,1 @@
+{"id":"deploy","name":"Deploy check","what":"Reads why a main deploy failed or rolled back and queues the fix for the coder, or says the exact change.","schedule":"with every house lane run, about every 2 hours","status":"Waiting for its first run.","last":"","cost":{"runner":"actions","minutes":1,"paidCents":0,"note":"Not run yet."},"state":{"fails":0,"pauseUntil":0}}
