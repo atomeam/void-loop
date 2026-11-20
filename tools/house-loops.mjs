@@ -155,6 +155,8 @@ export async function main(argv = process.argv.slice(2)) {
   // the revenue lane is the top priority (tools/revenue-lane.mjs): it runs first in every house run, fenced so it never fails the lane
   try { const { runLane } = await import('./revenue-lane.mjs'); const r = await runLane({ dry }); console.log('Revenue: ' + r.last); } catch (e) { console.log('revenue: ' + String((e && e.message) || e).slice(0, 160)); }
   if (lane === 'revenue') return 0;
+  // a lane branch left over from a merged pull request cannot take today's patch: make it fresh (tools/house-branch.mjs; Actions only, never one with an open pull request)
+  if (!dry) { try { const { freshLaneBranch } = await import('./house-branch.mjs'); await freshLaneBranch(lane); } catch (e) { console.log('house branch: ' + String((e && e.message) || e).slice(0, 160)); } }
   const loop = LOOPS.find((l) => l.id === lane), prev = loadOne(loop), now = Date.now(), gate = backoff(prev.state, now);
   save = (file, text) => { if (!dry) writeFileSync(file, text); };
   const result = gate.run ? await job() : { last: prev.last, ok: true };
