@@ -2,7 +2,7 @@
 export default [
  {
   "id": "void-monthly",
-  "name": "Verse Monthly",
+  "name": "MultiVerse",
   "cents": 4900,
   "every": "month",
   "kind": "membership",
