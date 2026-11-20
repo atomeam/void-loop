@@ -7,17 +7,17 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 - Live scan: 2026-10-28, HTTP 200, page title "Sejda helps with your PDF tasks"
 - History: [docs/HISTORY/sejda.com.md](../HISTORY/sejda.com.md)
 
-**Match: 44%**: 14 have, 0 partial, 6 missing, 12 unreviewed, of 32 features.
+**Match: 47%**: 15 have, 0 partial, 5 missing, 12 unreviewed, of 32 features.
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Merge PDFs | Organise | have | its live page (2026-10-28): "jda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log in Account Logout Select l" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
-| Split a PDF | Organise | have | its live page (2026-10-28): "Organize Arrange and reorder PDF pages Split Extract Pages Get a new document containing only the desired pag" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Merge PDFs | Organise | have | its live page (2026-10-28): "jda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log in Account Logout Select l" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
+| Split a PDF | Organise | have | its live page (2026-10-28): "Organize Arrange and reorder PDF pages Split Extract Pages Get a new document containing only the desired pag" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Reorder, rotate and delete pages | Organise | have | its live page (2026-10-28): "mbine multiple PDFs and images into one Organize Arrange and reorder PDF pages Split Extract Pages Get a new d" | void-live-deploy/pdf/app.js:3 `t","pages","extract","order","rotate","compress","img2pdf","pdf2img","numbers","watermark"` |
-| Compress a PDF | Files | have | its live page (2026-10-28): "com logo Sejda.com logo Sejda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log" | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Compress a PDF | Files | have | its live page (2026-10-28): "com logo Sejda.com logo Sejda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Convert Word, images and more to PDF | Convert | have | its live page (2026-10-28): "Annotate PDF Fill & Sign Add signature to PDF. Fill out PDF forms Create Forms Free PDF forms creator. Make e" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=img2pdf">Images to PDF</a><a href="/pdf/?tool=pdf2img">PDF to images<` |
 | Convert PDF to Word, Excel or images | Convert | have | its live page (2026-10-28): "int & scan in one step Convert from PDF PDF to Excel Convert PDF to Excel or CSV online for free. Extract tabl" | void-live-deploy/pdf/index.html:60 `><a href="/pdf/?tool=pdf2img">PDF to images</a><a href="/pdf/?tool=watermark">Watermark</a` |
-| Add text, images and shapes | Edit | missing | its live page (2026-10-28): "Sejda.com logo Sejda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log in Accoun" | no sign of it in the source of /pdf/ |
+| Add text, images and shapes | Edit | have | its live page (2026-10-28): "Sejda.com logo Sejda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log in Accoun" | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Sign a PDF | Edit | have | its live page (2026-10-28): "go Sejda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log in Account Logout Sel" | void-live-deploy/lib/image-handoff.js:56 `: rec.blob.type }) : Object.assign(rec.blob, { name: rec.name });` |
 | Fill in forms | Edit | missing | its live page (2026-10-28): ".com logo Sejda All Tools Compress Edit Fill & Sign Merge Delete Pages Crop Pricing Desktop Log in Account Log" | no sign of it in the source of /pdf/ |
 | Add or remove a password | Security | have | its live page (2026-10-28): "ss Reduce the size of your PDF Security Protect Protect file with password and permissions Unlock Remove restr" | void-live-deploy/pdf/index.html:63 `sit the page works offline. A password-protected PDF cannot be opened, and text in a PDF c` |

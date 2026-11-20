@@ -45,7 +45,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 7 | /scores/ | Watch games live | missing | cbssports.com, ESPN |
 | 6 | /flights/ | A price calendar and graph | missing | Google Flights |
 | 6 | /music/ | A yearly listening summary | missing | Spotify |
-| 6 | /pdf/ | Add text, images and shapes | missing | 10015.io, pdfcandy.com, sejda.com, tools.pdf24.org, smallpdf.com, ilovepdf.com |
 | 6 | /photos/ | Albums and sharing | missing | Google Photos |
 | 6 | /news/ | An account that keeps your things on every device | partial | channelnewsasia.com, dw.com, euronews.com, theguardian.com, thelocal.com, npr.org |
 | 6 | /jobs/ | An account that keeps your things on every device | partial | LinkedIn Jobs |
