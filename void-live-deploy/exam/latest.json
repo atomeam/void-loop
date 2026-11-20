@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-20T03:33:39.664Z",
+  "at": "2026-11-20T04:03:54.766Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -34,31 +34,79 @@
       }
     },
     "podcasts": {
-      "score": 92.1,
+      "score": 82.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of the daily",
+          "ask": "play the latest episode of this american life",
           "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of hidden brain",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the moth",
           "failed": [
             "audio"
           ],
-          "score": 85.7
+          "score": 83.3
         },
         {
           "ask": "play the latest episode of npr news now",
           "failed": [
+            "audio",
             "show",
             "episode"
           ],
-          "score": 71.4
+          "score": 57.1
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio"
+          ],
+          "score": 83.3
         },
         {
           "ask": "play the episode before that",
@@ -385,7 +433,7 @@
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 91.7
+    "domain": "podcasts",
+    "score": 82.3
   }
 }

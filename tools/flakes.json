@@ -237,5 +237,9 @@
   {"check": "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so", "sha": "46443de3b123718eb17e578352fd817176d8fb5d", "at": "2026-11-19T23:59:52Z"},
   {"check": "suite ran to the end", "sha": "571d31df04b9e11f7eb8277b42a0b85a2de2d101", "at": "2026-11-20T03:08:09Z"},
   {"check": "prizes: \"Spin them on the name wheel\" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill", "sha": "2196dc106400f84d22d4b68fc392291524513ad7", "at": "2026-11-20T03:11:37Z"},
-  {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "2196dc106400f84d22d4b68fc392291524513ad7", "at": "2026-11-20T03:11:37Z"}
+  {"check": "the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and \"Ask Verse\" lands on the fixer", "sha": "2196dc106400f84d22d4b68fc392291524513ad7", "at": "2026-11-20T03:11:37Z"},
+  {"check": "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download i", "sha": "622478a6f358cbc8b785c7caff19b3165941d25f", "at": "2026-11-20T04:00:24Z"},
+  {"check": "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in", "sha": "622478a6f358cbc8b785c7caff19b3165941d25f", "at": "2026-11-20T04:00:24Z"},
+  {"check": "suite ran to the end", "sha": "622478a6f358cbc8b785c7caff19b3165941d25f", "at": "2026-11-20T04:00:24Z"},
+  {"check": "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the co", "sha": "622478a6f358cbc8b785c7caff19b3165941d25f", "at": "2026-11-20T04:03:20Z"}
 ]

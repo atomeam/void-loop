@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-20T04:03:45.916Z",
+ "sha": "622478a6f358cbc8b785c7caff19b3165941d25f",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/44668835540",
+ "suite": "browser suite on main",
+ "checks": [
+  "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+  "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in",
+  "suite ran to the end",
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it"
+ ],
+ "touched": [
+  "docs/map.d/quality-fixes.md",
+  "tools/quality-improve.mjs",
+  "tools/quality-improve.test.mjs",
+  "tools/quality-measure.mjs",
+  "void-live-deploy/lib/verse-polish.css",
+  "void-live-deploy/lib/verse-scene.js"
+ ],
+ "shards": [
+  4
+ ]
+}
