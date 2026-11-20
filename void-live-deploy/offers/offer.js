@@ -4,7 +4,7 @@
 const el = document.querySelector('[data-offer]');
 if (el) (async () => {
   const slot = el.dataset.offer;
-  const o = await fetch('/offers/offers.json', { cache: 'no-cache' }).then((r) => r.json()).catch(() => null);
+  const o = await fetch('/offers/offers.json', { cache: 'no-cache' }).then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); }).catch(() => null);
   const s = o && o.slots && o.slots[slot];
   if (!s) return;
   let pick = null, src = '';
