@@ -10,7 +10,7 @@
 //   - do that PER_MINUTE times a minute and PER_CONN times a day from one connection (keyed by SHA-256 of the address, the UTC day and the SALT
 //     secret: the address is never stored, logged or returned), and only while the day's pictures last: Workers AI's share (AI_SHARE a day of
 //     its own, also counted in the Art Forge's total, so the two never pass AI_SHARE + FREE_CAP), then the free painter (POLL_CAP a day);
-//     past both it says the painter is resting. No money is spent that the forge did not already have (STANDING.md money rule);
+//     past both, remaining free Workers AI under the Art Forge's combined cap is used next (a free limit is never a stop); past that the treasury pays and logs the cost (STANDING.md: free resources first, then the treasury). Keyless Pollinations is never asked (it stamps a logo);
 //   - get the same picture again for the same words, style, shape and seed within a day: it is kept in the edge cache under a hash of those,
 //     costs nothing and counts nothing;
 //   - change a picture painted here today ("Change it", act 'change'): its reference (that hash) names the picture, which must still be in the
@@ -29,7 +29,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { models } from '../../lib/models.js';
 import { imageOf } from '../../lib/art-rules.js';
-import { capOf, asImage } from './card-art.js';
+import { capOf, asImage, canPay, ART_CENTS } from './card-art.js';
 import { publicPainter, paintWith } from './studio.js';
 import { IMAGE_MODELS } from '../../lib/models.js';
 import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAPES, SAYS, aiShareOf, POLL_CAP, PER_CONN, PER_MINUTE, PROMPT_MAX, NEGATIVE_MAX, CHANGE_MAX, CHANGE_BODY, EDIT_BYTES, imageSizeOf, fitsEdit, changePromptOf, WORDS_PER_CONN, WORDS_DAY, wordsAskOf, wordsOutOf } from '../../lib/image-gen.js';
@@ -75,6 +75,15 @@ async function noteMiss(env, painter, e) {
   try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_image_miss (day TEXT NOT NULL, why TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, why))').run();
     await env.DB.prepare('INSERT INTO void_image_miss (day, why, n) VALUES (?, ?, 1) ON CONFLICT(day, why) DO UPDATE SET n = n + 1').bind(dayOf(), painter + ': ' + why(e)).run(); } catch (_) {}
 }
+/** Pollinations only with a key: the keyless endpoint stamps a logo (owner, 2026-11-19). Pure. */
+export const pollReady = (env) => !/^(0|false|no|off)$/i.test(String((env && env.ART_POLLINATIONS) || '').trim()) && !!String((env && env.POLLINATIONS_KEY) || '').trim();
+/** one paid /image/ painting past the combined free cap, taken from the infrastructure pot (same one-cent charge as card art). */
+export async function billImage(env, model) {
+  try {
+    await env.DB.prepare('INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, ?, ?, ?, ?, ?)').bind('img-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8), new Date().toISOString(), 'spend', 'infrastructure', ART_CENTS, 'image past the free share (' + String(model).split('/').pop().slice(0, 40) + ')', 'done').run();
+    return ART_CENTS;
+  } catch (_) { return 0; }
+}
 export async function paintFree(env, prompt, size, seed, fetchFn = (u, o) => fetch(u, o)) {
   const token = String((env && env.POLLINATIONS_KEY) || '').trim();
   if (!token) { if (env && env.DB) await noteMiss(env, 'pollinations', 'no key: the keyless endpoint stamps a logo'); return ''; } // NO WATERMARK EVER (owner, 2026-11-19)
@@ -111,11 +120,16 @@ export async function onRequestPost({ request, env }, fetchFn) {
   // the image page's own share of Workers AI (2026-10-25, live: the forge had used its 30 by the afternoon and /image/ got none, so the first picture
   // depended on the free painter alone): AI_SHARE a day of its own, counted in the forge's total too (the forge paints that many fewer when /image/
   // paints first); at most AI_SHARE + the forge's FREE_CAP a day in all, ~4,000 neurons, inside the free daily allowance
-  const aiRoom = !!env.AI && !/^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim()) && ai < aiShareOf(env);
-  const pollRoom = poll < POLL_CAP && !/^(0|false|no|off)$/i.test(String(env.ART_POLLINATIONS || '').trim());
-  if (!aiRoom && !pollRoom) return resting('cap', de);
+  const artOff = /^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim());
+  const aiOn = !!env.AI && !artOff;
+  const shareRoom = aiOn && ai < aiShareOf(env);
+  const pollRoom = poll < POLL_CAP && pollReady(env);
+  const made = ai + (await forgeToday(env, day));
+  const freeRoom = aiOn && made < capOf(env); // leftover combined free allowance after the page's own share
+  const paidRoom = aiOn && !shareRoom && !freeRoom && await canPay(env);
+  if (!shareRoom && !freeRoom && !pollRoom && !paidRoom) return resting('cap', de);
   let img = '', painter = '';
-  if (aiRoom) {
+  if (shareRoom || freeRoom || paidRoom) {
     // the studio's bench picks the painter (functions/api/studio.js publicPainter): its best-scoring model inside klein-4b's cost; a square-only
     // model paints square shapes only, and any miss falls back to klein-4b below, so a bad pick never costs the user a picture
     const champ = await publicPainter(env).catch(() => 'klein-4b');
@@ -123,7 +137,10 @@ export async function onRequestPost({ request, env }, fetchFn) {
       try { img = imageOf((await paintWith(env, champ, full, size, seed, AI_MS)).img.replace(/^data:image\/[a-z]+;base64,/, '')) || ''; } catch (e) { await noteMiss(env, champ, e); img = ''; }
     }
     if (!img) try { img = await paintAi(env, full, size, seed); } catch (e) { await noteMiss(env, 'workers-ai', e); if (!/slow/.test(String(e && e.message))) { try { img = await paintAi(env, full, size, seed, false); } catch (e2) { await noteMiss(env, 'workers-ai without seed', e2); img = ''; } } } // a model that refuses the seed field paints without it
-    if (img) painter = 'workers-ai';
+    if (img) {
+      painter = 'workers-ai';
+      if (paidRoom) await billImage(env, models('art'));
+    }
   }
   if (!img && pollRoom) { img = await paintFree(env, full, size, seed, fetchFn); if (img) painter = 'pollinations'; }
   if (!img) return resting('busy', de);
@@ -204,8 +221,9 @@ export async function onRequestGet({ request, env }) {
   if (u.searchParams.get('diag') === '1') return diag(request, env, u.searchParams.get('try') === '1');
   if (!env || !env.DB || !env.SALT) return json({ left: 0, off: true });
   try { await ensure(env); const day = dayOf(), ai = await used(env, 'ai', day), poll = await used(env, 'poll', day), forge = await forgeToday(env, day);
-    const aiLeft = env.AI ? Math.max(0, aiShareOf(env) - ai) : 0; void forge;
-    return json({ left: aiLeft + Math.max(0, POLL_CAP - poll), perConnection: PER_CONN }); } catch (_) { return json({ left: 0, off: true }); }
+    const aiLeft = env.AI ? Math.max(0, aiShareOf(env) - ai, capOf(env) - ai - forge) : 0;
+    const pollLeft = pollReady(env) ? Math.max(0, POLL_CAP - poll) : 0;
+    return json({ left: aiLeft + pollLeft, perConnection: PER_CONN }); } catch (_) { return json({ left: 0, off: true }); }
 }
 
 // the owner's look at why pictures fail (GET /api/image?diag=1 with the owner key; &try=1 paints one small test picture with each painter and says

@@ -67,11 +67,11 @@ test('the route: refusals never reach a painter; a foreign origin is refused', a
   assert.equal((await post(env, { prompt: 'a fox' }, { origin: 'https://evil.example' })).status, 403);
   const de = await (await post(env, { prompt: 'Angela Merkel photo', lang: 'de' })).json(); assert.match(de.say, /echten Menschen/);
 });
-test('the route: past the Workers AI share, or when it fails, the free painter; past both the painter rests', async () => {
+test('the route: past the Workers AI share, leftover free allowance still paints; when Workers AI fails, the keyed free painter; past both the painter rests', async () => {
   const { env, calls } = world({ extra: { IMAGE_AI_SHARE: '2' } });
   for (let i = 0; i < 2; i++) assert.equal((await (await post(env, { prompt: 'a fox ' + i }, { ip: '198.51.100.' + i })).json()).painter, 'workers-ai');
-  assert.equal((await (await post(env, { prompt: 'a fox 3' }, { ip: '198.51.100.3' })).json()).painter, 'pollinations');
-  assert.equal(calls.length, 2);
+  assert.equal((await (await post(env, { prompt: 'a fox 3' }, { ip: '198.51.100.3' })).json()).painter, 'workers-ai', 'leftover combined free cap, not Pollinations first');
+  assert.equal(calls.length, 3);
   const failing = world({ ai: 'fail' }); assert.equal((await (await post(failing.env, { prompt: 'an owl' })).json()).painter, 'pollinations');
   const none = world({ ai: 'fail' }); const j = await (await post(none.env, { prompt: 'an owl' }, { free: freeDown })).json(); assert.equal(j.state, 'resting'); assert.equal(j.why, 'busy'); assert.match(j.say, /resting/);
   const off = world(); delete off.env.SALT; assert.equal((await (await post(off.env, { prompt: 'an owl' })).json()).why, 'off');
@@ -98,7 +98,7 @@ test('the route: per connection, a minute and a day', async () => {
   const slow = await post(env, { prompt: 'a fox x' }); assert.equal(slow.status, 429); assert.equal((await slow.json()).why, 'slow');
   env.DB.raw.prepare("UPDATE void_image_days SET n = ? WHERE k LIKE 'c:%'").run(I.PER_CONN); resetGuard(); store.clear();
   const mine = await post(env, { prompt: 'a fox y' }); assert.equal(mine.status, 429); assert.equal((await mine.json()).why, 'mine');
-  const left = await (await route.onRequestGet({ env })).json(); assert.equal(left.left, I.POLL_CAP - I.PER_MINUTE);
+  const left = await (await route.onRequestGet({ env })).json(); assert.equal(left.left, (FREE_CAP - I.PER_MINUTE) + I.POLL_CAP, "remaining free Workers AI plus keyed Pollinations");
 });
 test('the route: the studio bench picks the painter inside klein-4b\'s cost; a square-only pick paints squares only; its miss falls back to klein', async () => {
   const studio = await import('../void-live-deploy/functions/api/studio.js');
@@ -243,4 +243,36 @@ test('the route: "Fill in my words" has its own day cap per connection', async (
 test('no watermark ever (owner, 2026-11-19): without a Pollinations key the free painter is never asked, since its keyless endpoint stamps a logo', async () => {
   const { paintFree } = await import('../void-live-deploy/functions/api/image.js'); let asked = 0;
   assert.equal(await paintFree({}, 'a fox', [512, 512], 1, async () => { asked++; return new Response(''); }), ''); assert.equal(asked, 0);
+});
+
+test('without a Pollinations key, leftover free Workers AI still paints after the page share; left does not count the keyless painter', async () => {
+  const { env, calls } = world({ extra: { IMAGE_AI_SHARE: '1' } });
+  delete env.POLLINATIONS_KEY;
+  assert.equal((await (await post(env, { prompt: 'a fox' })).json()).painter, 'workers-ai');
+  const over = await (await post(env, { prompt: 'a fox 2' }, { ip: '198.51.100.8' })).json();
+  assert.equal(over.state, 'art'); assert.equal(over.painter, 'workers-ai', 'the combined free cap still has room');
+  assert.equal(calls.length, 2);
+  const left = await (await route.onRequestGet({ env })).json();
+  assert.equal(left.left, FREE_CAP - 2, 'no phantom Pollinations pictures');
+});
+
+test('past the combined free cap the treasury pays and logs the cost; an empty pot says today is used up, not try again in a minute', async () => {
+  const fill = (env) => {
+    env.DB.raw.exec('CREATE TABLE void_art (subject TEXT PRIMARY KEY, img TEXT NOT NULL, day TEXT NOT NULL)');
+    for (let i = 0; i < FREE_CAP; i++) env.DB.raw.prepare('INSERT INTO void_art VALUES (?, ?, ?)').run('s' + i, 'x', today);
+  };
+  const none = world({ extra: { IMAGE_AI_SHARE: '0' } });
+  delete none.env.POLLINATIONS_KEY;
+  fill(none.env);
+  const j = await (await post(none.env, { prompt: 'a fox' })).json();
+  assert.equal(j.state, 'resting'); assert.equal(j.why, 'cap'); assert.match(j.say, /used up|tomorrow/i);
+  const paid = world({ extra: { IMAGE_AI_SHARE: '0' } });
+  delete paid.env.POLLINATIONS_KEY;
+  fill(paid.env);
+  paid.env.DB.raw.exec("CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)");
+  paid.env.DB.raw.prepare("INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES ('a1', ?, 'alloc', 'infrastructure', 2, 'test', 'done')").run(new Date().toISOString());
+  const ok = await (await post(paid.env, { prompt: 'a paid fox' })).json();
+  assert.equal(ok.state, 'art'); assert.equal(ok.painter, 'workers-ai');
+  const spends = paid.env.DB.raw.prepare("SELECT cents, purpose FROM void_treasury WHERE kind = 'spend'").all();
+  assert.equal(spends.length, 1); assert.equal(spends[0].cents, 1); assert.match(spends[0].purpose, /image past the free share/);
 });
