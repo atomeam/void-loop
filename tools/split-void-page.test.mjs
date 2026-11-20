@@ -104,7 +104,7 @@ test('an ask typed before the main script has run is asked once it has run (live
   assert.equal(added.filter((s) => s.src === '/void-boot.js').length, 1);
 });
 
-test('a phone does not fetch the ask engine until a tap, a key, or twelve seconds', () => {
+test('a phone fetches the ask engine on a tap, a key, or a second and a half', () => {
   const prev = globalThis.matchMedia;
   globalThis.matchMedia = () => ({ matches: true });
   try {
@@ -124,7 +124,7 @@ test('a phone does not fetch the ask engine until a tap, a key, or twelve second
     };
     new Function('document', 'window', 'PerformanceObserver', 'requestAnimationFrame', 'setTimeout', 'matchMedia', loader)(document, { addEventListener() {} }, class { constructor() {} observe() {} disconnect() {} }, () => {}, (f, ms) => { late = { f, ms }; }, matchMedia);
     assert.deepEqual(added.map((s) => s.src), [], 'an empty phone home does not fetch the engine');
-    assert.equal(late.ms, 12000);
+    assert.equal(late.ms, 1500);
     listeners.pointerdown[0]();
     assert.deepEqual(added.map((s) => s.src), ['/void-boot.js']);
     added[0].onload();
