@@ -37,7 +37,7 @@ let pw = null;
 /** playwright-core: the repo's own when it is installed, else one copy in a temp folder (a house lane has no node_modules). Null when neither works. */
 export async function loadPlaywright() {
   if (pw) return pw;
-  try { pw = await import('playwright-core'); return pw; } catch { /* not installed here */ }
+  try { pw = await import('playwright-core'); return pw; } catch (e) { console.log('guards: playwright-core is not installed here (' + String(e.code || e.message).slice(0, 60) + '), fetching it'); }
   const dir = join(tmpdir(), 'verse-guard-pw');
   try {
     if (!existsSync(join(dir, 'node_modules/playwright-core'))) { mkdirSync(dir, { recursive: true }); writeFileSync(join(dir, 'package.json'), '{"private":true}'); const v = JSON.parse(read(join(root, 'package.json'))).dependencies?.['playwright-core'] || 'latest'; const r = spawnSync('npm', ['install', '--no-audit', '--no-fund', '--silent', 'playwright-core@' + v], { cwd: dir, timeout: 120000 }); if (r.status !== 0) return null; }
@@ -51,7 +51,7 @@ export function revertOnBranch(sha, branch, why, check = () => true, run = (a, o
   const git = (a, cwd) => run(a, cwd ? { cwd } : {});
   try {
     if (git(['worktree', 'add', '-q', '-B', branch, wt, 'origin/main']).status !== 0) return { pushed: false, why: 'could not make a worktree' };
-    const parents = String(git(['rev-list', '--parents', '-n1', sha], wt).stdout || '').trim().split(' ').length;
+    const parents = (String(git(['rev-list', '--parents', '-n1', sha], wt).stdout || '').trim().match(/ /g) || []).length + 1;
     const r = git(['-c', 'user.name=verse-guard', '-c', 'user.email=verse-guard@users.noreply.github.com', 'revert', '--no-edit', ...(parents > 2 ? ['-m', '1'] : []), sha], wt);
     if (r.status !== 0) { git(['revert', '--abort'], wt); return { pushed: false, why: 'the revert of ' + sha.slice(0, 8) + ' conflicts' }; }
     if (!check(wt)) return { pushed: false, why: 'the revert would not bring it back' };
