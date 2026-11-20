@@ -24,6 +24,8 @@ const GAMES = [
   { re: /\bhanabi\b/i, ask: 'play fireworks', label: () => 'Play Fireworks (Hanabi) with Verse' },
 ];
 
+const FUN = /\b(?:film|movie|television (?:series|show)|tv (?:series|show)|sitcom|animated|video game|band|singer|rapper|musician|songwriter|album|song|single|novel|book|author|writer|poet|painter|artist|actor|actress|comedian|footballer|basketball|baseball|tennis|athlete|sport|team|club|animal|species|bird|mammal|reptile|fish|dinosaur|planet|moon|star|galaxy|physicist|chemist|scientist|mathematician|inventor|explorer|emperor|pharaoh|king|queen|mountain|river|ocean|volcano)\b/i;
+const GRAVE = /\b(?:disease|disorder|syndrome|cancer|virus|pandemic|epidemic|war|battle|massacre|genocide|attack|bombing|shooting|disaster|famine|death|murder|killing|crash|terroris[mt]|holocaust|suicide|abuse)\b/i;
 /** What Verse can do about the subject, from the title and the one-line description (the summary's first words help). */
 export function relatedAsks(card) {
   const title = String((card && card.title) || '').trim(), desc = String((card && card.description) || '').trim();
@@ -40,6 +42,9 @@ export function relatedAsks(card) {
   }
   // a dish or a food: a recipe
   if (/\b(?:dish|food|cuisine|dessert|soup|bread|sauce|pastry|cake|stew|salad|beverage|cocktail)\b/i.test(desc)) add('recipe for ' + title.replace(/\s*\(.*\)$/, '').toLowerCase(), 'A recipe for ' + title.replace(/\s*\(.*\)$/, ''));
+  // every answer leads somewhere (fun plan, 2026-11-20): a film, a band, a book, an animal, a sport, a scientist leads to a trivia round;
+  // never on a card about a sickness, a war or a death, where a game would read as making light of it
+  if (FUN.test(desc) && !GRAVE.test(desc + ' ' + title)) add('play trivia', 'Play a quick trivia round');
   return out.slice(0, 4);
 }
 

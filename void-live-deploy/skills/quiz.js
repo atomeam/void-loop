@@ -133,6 +133,9 @@ async function run(text, api) {
     return 'quiz';
   }
   let src = sourceOf(things, kinds, api.stage.selected && api.stage.selected()), cold = false;
+  // a bare "quiz me" with nothing on the stage is a trivia round (skills/trivia.js), not a quiz on two gears put up for it (fun audit, 2026-11-20:
+  // the gears, a gear quiz and an answer card stacked up). "test me on that" still quizzes on the gears.
+  if (!src && kinds.trivia && /^(?:please\s+)?(?:quiz|test)\s+me(?:\s+please)?$/.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, ''))) { const T = await import('./trivia.js'); T.startRound(api); return 'quiz'; }
   if (!src) { src = starter(api); cold = !!src; }
   if (!src) { api.say(NONE); return 'quiz'; }
   const p = payloadOf(src, kinds);
