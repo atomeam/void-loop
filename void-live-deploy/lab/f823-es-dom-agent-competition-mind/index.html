@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#ddd; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.agent {
+  position:absolute; width:90px; height:70px; border-radius:12px;
+  background:rgba(40,60,90,0.85); border:1px solid rgba(120,180,255,0.4);
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-size:12px; text-align:center; cursor:grab; user-select:none;
+  transition:transform 0.15s ease, background 0.3s; box-shadow:0 4px 12px rgba(0,0,0,0.4);
+  will-change:transform,left,top;
+}
+.agent:active { cursor:grabbing; }
+#chrome {
+  position:fixed; top:12px; left:12px; z-index:100; background:rgba(0,0,0,0.6);
+  padding:10px 14px; border-radius:8px; font-size:13px; max-width:280px;
+}
+button { background:#1a3a5a; color:#fff; border:1px solid #4af; border-radius:6px; padding:6px 10px; margin:4px 4px 0 0; cursor:pointer; }
+button:hover { background:#2a5a8a; }
+canvas { position:absolute; top:0; left:0; pointer-events:none; opacity:0.35; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>ES DOM Agent Competition Mind · Verse lab</title>
+<meta name="description" content="Pure living DOM agents (absolute-positioned interactive cards) as the primary spatial embodiment.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="ES DOM Agent Competition Mind · Verse lab">
+<meta property="og:description" content="Pure living DOM agents (absolute-positioned interactive cards) as the primary spatial embodiment.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f823-es-dom-agent-competition-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f823-es-dom-agent-competition-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="trail"></canvas>
+  <div id="chrome">
+    <div>F823 · ES DOM Agents</div>
+    <div id="status">tilt: waiting · fitness: —</div>
+    <button id="seal">Seal Genome</button>
+    <button id="reset">Reset</button>
+    <div style="margin-top:6px;font-size:11px;opacity:0.7">Drag agents · Click to reward · Tilt device or move mouse</div>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">ES DOM Agent Competition Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

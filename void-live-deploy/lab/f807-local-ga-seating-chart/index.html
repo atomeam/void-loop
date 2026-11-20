@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4cc9f0; --text:#e8eaed; --ok:#81c784; --bad:#e57373; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--text); padding:1rem; line-height:1.4; }
+h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+.row { display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem; }
+label { display:block; font-size:0.85rem; opacity:0.8; margin-bottom:0.25rem; }
+textarea, input[type=number] { width:100%; background:#222; color:var(--text); border:1px solid #333; border-radius:6px; padding:0.5rem; font:inherit; }
+textarea { min-height:6rem; }
+button { background:var(--accent); color:#000; border:0; padding:0.6rem 1rem; border-radius:6px; font-weight:600; cursor:pointer; }
+button.secondary { background:#333; color:var(--text); }
+.tables { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:1rem; margin-top:1rem; }
+.table { background:var(--card); border-radius:10px; padding:0.75rem; min-height:120px; border:2px dashed #333; }
+.table h3 { margin:0 0 0.5rem; font-size:0.9rem; color:var(--accent); }
+.guest { background:#2a2f3a; padding:0.35rem 0.6rem; margin:0.25rem 0; border-radius:16px; cursor:grab; font-size:0.9rem; user-select:none; }
+.guest:active { cursor:grabbing; }
+.guest.dragging { opacity:0.5; }
+.score { font-size:0.85rem; margin:0.5rem 0; }
+.ok { color:var(--ok); } .bad { color:var(--bad); }
+.actions { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+@media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Seating chart · Verse lab</title>
+<meta name="description" content="Job: Enter guest names, number of tables, and keep-together or keep-apart pairs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Seating chart · Verse lab">
+<meta property="og:description" content="Job: Enter guest names, number of tables, and keep-together or keep-apart pairs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f807-local-ga-seating-chart/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f807-local-ga-seating-chart/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Seating chart</h1>
+<p>Paste names, set tables, add constraints. Arrange with a local genetic algorithm, drag to fix, then export.</p>
+
+<div class="row">
+  <div style="flex:1;min-width:200px">
+    <label>Guest names (one per line)</label>
+    <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;Dave&#10;Eve&#10;Frank"></textarea>
+  </div>
+  <div style="flex:1;min-width:200px">
+    <label>Keep together (pairs: Name, Name)</label>
+    <textarea id="together" placeholder="Alice, Bob&#10;Carol, Dave"></textarea>
+    <label>Keep apart (pairs: Name, Name)</label>
+    <textarea id="apart" placeholder="Eve, Frank"></textarea>
+  </div>
+</div>
+<div class="row">
+  <div>
+    <label>Tables</label>
+    <input type="number" id="tables" value="3" min="1" max="20">
+  </div>
+  <div>
+    <label>Seats per table</label>
+    <input type="number" id="seats" value="4" min="1" max="12">
+  </div>
+  <div style="align-self:flex-end">
+    <button id="arrange">Arrange</button>
+    <button class="secondary" id="reset">Reset</button>
+  </div>
+</div>
+<div class="score" id="score"></div>
+<div class="tables" id="board"></div>
+<div class="actions">
+  <button id="download">Download CSV</button>
+  <button class="secondary" id="copy">Copy list</button>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

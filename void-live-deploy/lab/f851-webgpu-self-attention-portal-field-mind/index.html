@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg:#0a0a12; --fg:#e8e8f0; --accent:#7af; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+  #canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .portal {
+    position:absolute; width:72px; height:72px; border-radius:12px;
+    background:rgba(20,30,50,.85); border:1px solid rgba(120,180,255,.4);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:11px; cursor:pointer; user-select:none; backdrop-filter:blur(4px);
+    transition:transform .15s;
+  }
+  .portal:hover { transform:scale(1.08); border-color:var(--accent); }
+  .energy { font-weight:700; color:#7af; }
+  #hud { position:fixed; top:12px; left:12px; background:rgba(0,0,0,.5); padding:8px 12px; border-radius:8px; z-index:10; }
+  #seal { margin-top:6px; padding:4px 10px; background:#246; border:0; color:#fff; border-radius:6px; cursor:pointer; }
+  #status { font-size:11px; opacity:.7; margin-top:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-self-attention-portal-field-mind · Verse lab</title>
+<meta name="description" content="Living DOM portals on The Verse canvas are tokens in a continuous spatial self-attention field.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-self-attention-portal-field-mind · Verse lab">
+<meta property="og:description" content="Living DOM portals on The Verse canvas are tokens in a continuous spatial self-attention field.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f851-webgpu-self-attention-portal-field-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f851-webgpu-self-attention-portal-field-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  F851 · Attention Field Mind
+  <div id="status">warming…</div>
+  <button id="seal">Seal matrices</button>
+</div>
+<canvas id="canvas"></canvas>
+<div id="portals"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-self-attention-portal-field-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

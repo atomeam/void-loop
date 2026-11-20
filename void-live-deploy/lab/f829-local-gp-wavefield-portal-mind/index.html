@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#portals { position:absolute; inset:0; pointer-events:none; }
+.portal { position:absolute; pointer-events:auto; background:rgba(20,30,50,0.85); border:1px solid #4466aa; border-radius:8px; padding:8px 12px; font-size:12px; max-width:280px; word-break:break-all; cursor:grab; transition:transform 0.1s; box-shadow:0 4px 12px rgba(0,0,0,0.4); }
+.portal:active { cursor:grabbing; }
+#hud { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:6px; font-size:13px; z-index:10; }
+button { margin:4px; padding:4px 10px; background:#223355; color:#aaccff; border:1px solid #4466aa; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local Genetic Programming Wavefield Portal Mind · Verse lab</title>
+<meta name="description" content="A pure-JS genetic programming system evolves mathematical expression trees that map DeviceOrientation (or pointer velocity residual) and time into source terms and">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local Genetic Programming Wavefield Portal Mind · Verse lab">
+<meta property="og:description" content="A pure-JS genetic programming system evolves mathematical expression trees that map DeviceOrientation (or pointer velocity residual) and time into source terms and">
+<meta property="og:url" content="https://a-to-mind.com/lab/f829-local-gp-wavefield-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f829-local-gp-wavefield-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<div id="hud">
+  F829 GP Wavefield Mind | Fitness: <span id="fit">0</span> | Gen: <span id="gen">0</span><br>
+  <button id="seal">Seal Genome</button> <button id="reset">Reset</button><br>
+  <small>Tilt device or move pointer. Click portals to reward. Drag to seed waves.</small>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Local Genetic Programming Wavefield Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

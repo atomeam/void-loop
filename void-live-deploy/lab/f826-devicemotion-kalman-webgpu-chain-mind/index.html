@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,20,0.7); padding:8px 12px; border-radius:8px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; font-size:12px; opacity:0.7; }
+canvas { display:block; width:100vw; height:100vh; }
+.bead { position:absolute; width:36px; height:36px; border-radius:50%; background:radial-gradient(circle at 30% 30%, #8cf, #48a); border:2px solid #adf; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; user-select:none; transition:transform 0.05s; }
+.bead:active { cursor:grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceMotion Kalman WebGPU Chain Mind · Verse lab</title>
+<meta name="description" content="A linear mass-spring chain (beads linked by springs) is simulated with Verlet integration.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceMotion Kalman WebGPU Chain Mind · Verse lab">
+<meta property="og:description" content="A linear mass-spring chain (beads linked by springs) is simulated with Verlet integration.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f826-devicemotion-kalman-webgpu-chain-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f826-devicemotion-kalman-webgpu-chain-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">F826 Kalman Chain Mind — tilt device or drag beads | S seal | R reward closest</div>
+<div id="status">init</div>
+<canvas id="cv"></canvas>
+<div id="beads"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceMotion Kalman WebGPU Chain Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

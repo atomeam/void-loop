@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4cc9f0; --text:#e8e8e8; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; min-height:100vh; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #333; }
+h1 { margin:0; font-size:1.4rem; }
+.controls { display:flex; flex-wrap:wrap; gap:0.75rem; padding:1rem; background:#12141a; }
+label { font-size:0.85rem; display:flex; flex-direction:column; gap:0.25rem; }
+input, textarea, button { font:inherit; padding:0.4rem 0.6rem; border-radius:6px; border:1px solid #444; background:#222; color:var(--text); }
+textarea { min-width:180px; min-height:60px; resize:vertical; }
+button { background:var(--accent); color:#000; border:none; cursor:pointer; font-weight:600; }
+button:hover { filter:brightness(1.1); }
+.workspace { display:flex; flex-wrap:wrap; gap:1rem; padding:1rem; }
+#canvasWrap { position:relative; flex:1; min-width:320px; min-height:420px; background:#0a0c10; border-radius:12px; overflow:hidden; }
+canvas { display:block; width:100%; height:100%; }
+#guests { position:absolute; inset:0; pointer-events:none; }
+.guest { position:absolute; pointer-events:auto; background:var(--card); border:2px solid var(--accent); border-radius:8px; padding:0.35rem 0.5rem; font-size:0.85rem; cursor:grab; user-select:none; white-space:nowrap; box-shadow:0 2px 6px #0006; }
+.guest:active { cursor:grabbing; }
+.unassigned { position:relative; width:220px; background:#16181e; border-radius:12px; padding:0.75rem; }
+.unassigned h3 { margin:0 0 0.5rem; font-size:0.95rem; }
+#pool { display:flex; flex-direction:column; gap:0.4rem; min-height:100px; }
+.footer { padding:1rem; display:flex; gap:0.75rem; flex-wrap:wrap; justify-content:center; }
+.status { font-size:0.8rem; opacity:0.7; text-align:center; padding:0.5rem; }
+@media (max-width:700px) { .workspace { flex-direction:column; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial Seating Chart Optimizer · Verse lab</title>
+<meta name="description" content="A practical event seating tool on the Verse canvas. Users supply their own guest list and soft constraints.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial Seating Chart Optimizer · Verse lab">
+<meta property="og:description" content="A practical event seating tool on the Verse canvas. Users supply their own guest list and soft constraints.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f867-spatial-seating-chart-optimizer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f867-spatial-seating-chart-optimizer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Seating Chart</h1>
+  <p style="margin:0.3rem 0 0; font-size:0.9rem; opacity:0.8">Drag guests onto tables or auto-optimize. Download the chart.</p>
+</header>
+<div class="controls">
+  <label>Guests (one per line)
+    <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;Dave"></textarea>
+  </label>
+  <label>Tables
+    <input id="nTables" type="number" min="1" max="12" value="2">
+  </label>
+  <label>Seats each
+    <input id="seats" type="number" min="2" max="12" value="4">
+  </label>
+  <label>Together (A+B per line)
+    <textarea id="together" placeholder="Alice+Bob"></textarea>
+  </label>
+  <label>Apart (A-B per line)
+    <textarea id="apart" placeholder="Carol-Dave"></textarea>
+  </label>
+  <button id="apply">Apply list</button>
+  <button id="auto">Auto-seat</button>
+</div>
+<div class="workspace">
+  <div id="canvasWrap">
+    <canvas id="chart"></canvas>
+    <div id="guests"></div>
+  </div>
+  <div class="unassigned">
+    <h3>Unassigned</h3>
+    <div id="pool"></div>
+  </div>
+</div>
+<div class="footer">
+  <button id="png">Download PNG</button>
+  <button id="csv">Copy CSV</button>
+  <button id="clear">Clear saved</button>
+</div>
+<div class="status" id="status">Paste names and press Apply list.</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
