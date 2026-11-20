@@ -1,164 +1,5 @@
 [
  {
-  "at": "2026-11-07T22:57:43Z",
-  "passed": 0,
-  "of": 105,
-  "ms": 344,
-  "kind": "file",
-  "key": "what do you get if you merge a pizza and a black hole | only \"waking up\" appeared, never the answer",
-  "failed": [
-   {
-    "ask": "what are you?",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "play voidquest",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "play solarquest",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "what can I buy",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "show me your videos",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "play chess",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "my actions",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "air quality in Tokyo",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "put on lofi hip hop pls",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "find the book the left hand of dakrness",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "bokos like dune",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 428,
-   "failed": []
-  },
-  "note": "fix: \"what do you get if you merge a pizza and a black hole\" only \"waking up\" appeared, never the answer; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-11-07T23:13:07Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 1675,
-   "failed": []
-  },
-  "note": "visitor pass 15/15"
- },
- {
-  "at": "2026-11-07T23:22:42Z",
-  "passed": 52,
-  "of": 105,
-  "ms": 406,
-  "kind": "file",
-  "key": "play voidquest | no #voidquest-card",
-  "failed": [
-   {
-    "ask": "what are you?",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "play voidquest",
-    "why": "no .voidquest-card"
-   },
-   {
-    "ask": "play solarquest",
-    "why": "no .voidquest-card"
-   },
-   {
-    "ask": "what can I buy",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "show me your videos",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "play chess",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "my actions",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "air quality in Tokyo",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "put on lofi hip hop pls",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "find the book the left hand of dakrness",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   },
-   {
-    "ask": "bokos like dune",
-    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-   }
-  ],
-  "visitor": {
-   "correct": 15,
-   "of": 15,
-   "medianMs": 1675,
-   "failed": []
-  },
-  "note": "fix: \"play voidquest\" no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-11-07T23:50:16Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 1143,
-   "failed": [
-    {
-     "ask": "what time is it",
-     "why": [
-      "slow 18783 ms"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-08T00:17:13Z",
   "kind": "visitor",
   "visitor": {
@@ -6795,5 +6636,120 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"how long until gta 6 comes out\" (skill:event-countdown)"
+ },
+ {
+  "at": "2026-11-20T04:31:57Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1118,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-20T04:43:02Z",
+  "passed": 140,
+  "of": 143,
+  "ms": 362,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "calorie calculator",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1118,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"export as stl\" (skill:print-file)"
+ },
+ {
+  "at": "2026-11-20T04:55:37Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 614,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-20T05:11:39Z",
+  "passed": 123,
+  "of": 144,
+  "ms": 430,
+  "kind": "file",
+  "key": "three alike | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "films by Kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film metadata for ikiru pls",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo style like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "movie night",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "make a vase",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "already built",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "three alike",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "time saved for the invoice automation",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 614,
+   "failed": []
+  },
+  "note": "fix: \"three alike\" only \"waking up\" appeared, never the answer"
  }
 ]

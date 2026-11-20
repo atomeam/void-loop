@@ -197,6 +197,7 @@ export function visionPrompt(surface) {
     'You are the strictest design and engineering judge alive. Mark one screenshot of "' + String(surface).slice(0, 80) + '" out of 10 on each line. 10 means it beats the best real-time 3D game graphics and the best product design in the world (GTA 6-class). 7 is a good, polished commercial product. 5 is competent but generic. 3 is generic, flat, placeholder or confusing. Good is not enough: only mark 9 or 10 when it would stand beside the best in its category and win.',
     'Calibration. A weather card for Paris whose picture is a generic glowing sci-fi cube unrelated to Paris: art 2. The same card with a real overcast Eiffel Tower street: art 6, graphics 4. A card that is a wall of stat tiles and jargon with a broken-looking layout: typography 3, layout 3. The same card rebuilt as a plain heading, one sentence, a progress bar and short lists, with a fitting picture: typography 7, layout 7, graphics 4. A flat page with no 3D: graphics 3 at most.',
     ...(/blub|mascot/i.test(String(surface)) ? [MASCOT_BAR] : []),
+    'Care counts: anything unkind, disrespectful or careless toward people, animals or plants, and any page that looks made without love or attention to detail, goes into "nonsense" and lowers the marks.',
     'Reply with only JSON: {"graphics":n,"layout":n,"typography":n,"motion":n,"art":n,"fits":n,"nonsense":["anything that does not make sense, is wrong, is placeholder or looks broken"]}. "fits" is how well the picture and the words match the subject.',
   ].join('\n');
 }

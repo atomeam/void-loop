@@ -57,7 +57,7 @@ async function main() {
         post.node = new THREE.PostProcessing(renderer); post.node.outputNode = color.add(bloom(color, 0.28, 0.6, 0.9)); post.on = true;
       }).catch((e) => W.errors.push('post: ' + String(e.message || e).slice(0, 100)));
     }
-    post.on = t === 'full' && !!post.node; $('chip').textContent = W.backend + ' · ' + (t === 'full' ? 'full detail' : 'light') + ' · ' + Math.round(W.fps) + ' fps';
+    post.on = t === 'full' && !!post.node; chipText(t);
   }
   function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
   addEventListener('resize', resize);
@@ -126,8 +126,9 @@ async function main() {
       v3.copy(w.at).project(camera); e.style.left = ((v3.x * 0.5 + 0.5) * innerWidth) + 'px'; e.style.top = ((-v3.y * 0.5 + 0.5) * innerHeight) + 'px'; e.style.display = v3.z < 1 ? 'block' : 'none';
     }
   }
+  function chipText(t) { $('chip').textContent = W.backend + ' · ' + (t === 'full' ? 'full detail' : 'light') + ' · ' + (W.fps > 0 ? Math.round(W.fps) + ' fps' : 'measuring'); } // the real frame rate, from the browser's own frame times
   function frame(now) {
-    const raw = Math.max(0, Math.min(0.1, (now - last) / 1000)); last = now; frames.push(raw); if (frames.length > 90) frames.shift();
+    const real = Math.max(0, (now - last) / 1000), raw = Math.min(0.1, real); last = now; frames.push(raw); if (frames.length > 90) frames.shift();
     const dt = raw * ctx.params.time; t += dt;
     handle.tick(dt, t, raw);
     const f = handle.focus ? handle.focus() : cam.target; if (cam.follow) cam.target.lerp(f, 1 - Math.exp(-raw * 4));
@@ -136,8 +137,8 @@ async function main() {
     sun.position.copy(cam.target).addScaledVector(sunDir, 60); sun.target.position.copy(cam.target); sun.target.updateMatrixWorld();
     labelsTick();
     if (post.on && post.node) post.node.render(); else renderer.render(scene, camera);
-    W.frames++; acc += raw; n++;
-    if (acc > 0.5) { W.fps = n / acc; W.frameMs = Math.round(1000 * acc / n); acc = 0; n = 0; $('chip').textContent = W.backend + ' · ' + (tier === 'full' ? 'full detail' : 'light') + ' · ' + Math.round(W.fps) + ' fps'; }
+    W.frames++; acc += real; n++;
+    if (acc > 0.5) { W.fps = n / acc; W.frameMs = Math.round(1000 * acc / n); acc = 0; n = 0; chipText(tier); }
     const age = (performance.now() - since) / 1000;
     if (!pinned && !W.switching) {
       if (tier === 'light' && age > 2.5 && W.fps >= 50 && !(phone && W.fps < 58)) { W.switching = true; upgrade('full'); }
@@ -145,7 +146,7 @@ async function main() {
     }
   }
   async function upgrade(to) { handle.dispose && handle.dispose(); handle = await mod.build(ctx, to); detail = to; setTier(to); since = performance.now(); slow = 0; W.switching = false; Object.entries(W.state).forEach(([k, v]) => { if (typeof v === 'boolean') handle.toggle && handle.toggle(k, v); else if (k !== 'time') handle.vary && handle.vary(k, v); }); }
-  W.manifest = man; W.scene = scene; W.renderer = renderer; W.handle = () => handle; W.camera = cam; W.setTier = (t2) => upgrade(t2); W.detail = () => detail;
+  W.manifest = man; W.chipText = chipText; W.scene = scene; W.renderer = renderer; W.handle = () => handle; W.camera = cam; W.setTier = (t2) => upgrade(t2); W.detail = () => detail;
   renderer.setAnimationLoop(frame);
   W.ready = true; document.body.dataset.ready = '1';
 }

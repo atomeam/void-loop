@@ -76,18 +76,18 @@ export async function build(ctx, detail) {
   const shellRig = new THREE.Group(), shellPivot = new THREE.Group(); shellPivot.add(shell); shellPivot.position.copy(aperC).multiplyScalar(-1); shellRig.add(shellPivot); root.add(shellRig);
   { // orient: the opening faces forward and down and to the right; the coil axis points back, up and out to the right, as a real right-handed shell sits
     const e1 = new THREE.Vector3(0, 1, 0), e2 = aperN.clone().sub(e1.clone().multiplyScalar(aperN.dot(e1))).normalize(), e3 = new THREE.Vector3().crossVectors(e1, e2);
-    const a = new THREE.Vector3(-0.45, 0.5, 0.74).normalize(), b0 = new THREE.Vector3(0.9, -0.4, -0.2), b = b0.sub(a.clone().multiplyScalar(b0.dot(a))).normalize(), c = new THREE.Vector3().crossVectors(a, b);
+    const a = new THREE.Vector3(-0.42, 0.68, 0.6).normalize(), b0 = new THREE.Vector3(0.9, -0.4, -0.2), b = b0.sub(a.clone().multiplyScalar(b0.dot(a))).normalize(), c = new THREE.Vector3().crossVectors(a, b);
     const L = new THREE.Matrix4().makeBasis(e1, e2, e3), Wm = new THREE.Matrix4().makeBasis(a, b, c); shellRig.quaternion.setFromRotationMatrix(Wm.multiply(L.transpose())); }
   const baseQ = shellRig.quaternion.clone(), yawQ = new THREE.Quaternion();
   const lip = new THREE.Mesh(keep(new THREE.TorusGeometry(1, 0.1, 10, 40)), keep(new THREE.MeshPhysicalMaterial({ color: 0xe9c488, roughness: 0.4, clearcoat: 0.5 }))); // the thickened rim of the opening
   { const ap = [0, 0, 0], bp = [0, 0, 0]; shellPoint(0, VEND, ap); shellPoint(Math.PI, VEND, bp); const rr = Math.hypot(ap[0] - bp[0], ap[1] - bp[1], ap[2] - bp[2]) / 2; lip.scale.setScalar(rr); lip.position.copy(aperC); lip.lookAt(aperC.clone().add(aperN)); lip.position.sub(aperC); const hold = new THREE.Group(); hold.position.copy(aperC); hold.add(lip); lip.position.set(0, 0, 0); hold.lookAt = null; shellPivot.add(hold); hold.position.copy(aperC); lip.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), aperN); lip.castShadow = true; lip.userData.part = 'shell'; }
-  const SHELL_K = 1.4 / (R0 * Math.exp(G * VEND)); shellRig.scale.setScalar(SHELL_K);
+  const SHELL_K = 0.98 / (R0 * Math.exp(G * VEND)); shellRig.scale.setScalar(SHELL_K);
 
   // ---------- the body: a lofted foot that follows the path the head took ----------
   const BL = 4.6, N = full ? 120 : 56, M = full ? 44 : 22, SIDE = new THREE.Vector3(), UPV = new THREE.Vector3(0, 1, 0);
   const prof = (s) => { // half width, height, and the sole's flatness along the body (s = 0 at the nose)
     const nose = s < 0.07 ? Math.sqrt(Math.max(0, 1 - ((0.07 - s) / 0.07) ** 2)) : 1, tail = s > 0.62 ? Math.max(0.03, 1 - ((s - 0.62) / 0.38) ** 1.35) : 1;
-    const w = 0.5 * nose * tail * (1 + 0.1 * sstep(0.2, 0.4, s)), hh = (0.4 + 0.5 * sstep(0.05, 0.28, s) - 0.1 * sstep(0.55, 0.8, s)) * nose * Math.pow(tail, 0.8); return { w, h: hh };
+    const w = 0.5 * nose * tail * (1 + 0.3 * sstep(0.15, 0.4, s)), hh = (0.4 + 0.5 * sstep(0.05, 0.28, s) - 0.1 * sstep(0.55, 0.8, s)) * nose * Math.pow(tail, 0.8); return { w, h: hh };
   };
   const hist = [], STEP = 0.05; let pos = { x: -6, z: 2, a: 0.25 }, travelled = 0; for (let i = 0; i < 140; i++) hist.push({ x: pos.x - Math.cos(pos.a) * i * STEP, z: pos.z - Math.sin(pos.a) * i * STEP }); // newest first
   const back = (d) => { const f = clamp(d / STEP, 0, hist.length - 1.001), i = Math.floor(f), k = f - i, p = hist[i], q = hist[i + 1]; return { x: p.x + (q.x - p.x) * k, z: p.z + (q.z - p.z) * k }; };
@@ -97,8 +97,11 @@ export async function build(ctx, detail) {
   bGeo.setAttribute('position', new THREE.BufferAttribute(bp, 3)); bGeo.setAttribute('color', new THREE.BufferAttribute(bc, 3)); bGeo.setAttribute('uv', new THREE.BufferAttribute(buv, 2)); bGeo.setIndex(bidx);
   const skinNormal = normalFrom(256, 256, (g, w, h) => { g.fillStyle = '#707070'; g.fillRect(0, 0, w, h); const r = rnd(21); for (let i = 0; i < 520; i++) { const v = 150 + r() * 100; g.fillStyle = `rgb(${v},${v},${v})`; g.beginPath(); g.ellipse(r() * w, r() * h, 3 + r() * 9, 1.5 + r() * 3, 1.57 + (r() - 0.5) * 0.5, 0, 7); g.fill(); } }, 3);
   const bodySolid = keep(new THREE.MeshPhysicalMaterial({ vertexColors: true, normalMap: skinNormal, normalScale: new THREE.Vector2(0.55, 0.55), roughness: 0.3, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.18, sheen: 0.3, sheenColor: new THREE.Color(0xf4ecd0), side: THREE.DoubleSide }));
-  const collar = new THREE.Mesh(keep(new THREE.TorusGeometry(1, 0.13, 10, 36)), bodySolid); // the mantle: the skin collar at the rim of the shell
-  { const ap = [0, 0, 0], bp = [0, 0, 0]; shellPoint(0, VEND, ap); shellPoint(Math.PI, VEND, bp); collar.scale.setScalar(Math.hypot(ap[0] - bp[0], ap[1] - bp[1], ap[2] - bp[2]) * 0.45); collar.position.copy(aperC); collar.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), aperN); collar.castShadow = true; collar.userData.part = 'mantle'; shellPivot.add(collar); }
+  const flesh = keep(new THREE.MeshPhysicalMaterial({ color: 0xcdc3a9, roughness: 0.35, clearcoat: 0.6, side: THREE.DoubleSide })); // the soft body that fills the opening
+  const collar = new THREE.Mesh(keep(new THREE.TorusGeometry(1, 0.16, 12, 40)), flesh), plug = new THREE.Mesh(keep(new THREE.SphereGeometry(1, 28, 18)), flesh); // the mantle collar at the rim, and the body mass just inside the opening
+  { const ap = [0, 0, 0], bp = [0, 0, 0]; shellPoint(0, VEND, ap); shellPoint(Math.PI, VEND, bp); const rr = Math.hypot(ap[0] - bp[0], ap[1] - bp[1], ap[2] - bp[2]) / 2, q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), aperN);
+    collar.scale.setScalar(rr * 0.93); collar.position.copy(aperC); collar.quaternion.copy(q); collar.castShadow = true; collar.userData.part = 'mantle'; shellPivot.add(collar);
+    plug.scale.set(rr * 0.96, rr * 0.96, rr * 0.7); plug.position.copy(aperC).addScaledVector(aperN, -rr * 0.3); plug.quaternion.copy(q); plug.userData.part = 'mantle'; shellPivot.add(plug); }
   const bodyGhost = keep(new THREE.MeshPhysicalMaterial({ color: 0xe8e0c8, roughness: 0.15, transparent: true, opacity: 0.2, depthWrite: false, side: THREE.DoubleSide }));
   const body = new THREE.Mesh(bGeo, bodySolid); body.castShadow = true; body.receiveShadow = true; body.frustumCulled = false; body.userData.part = 'foot'; root.add(body);
 
@@ -169,7 +172,7 @@ export async function build(ctx, detail) {
     const mc = at(0.0); mouthM.position.set(mc.p.x + mc.t.x * 0.28, mc.p.y + 0.2, mc.p.z + mc.t.z * 0.28); mouthM.rotation.y = -Math.atan2(mc.t.z, mc.t.x); mouthM.scale.set(1.1, 0.5 + 0.35 * Math.abs(Math.sin(st.feed * 8)), 1.4); mouthM.visible = st.retreat < 0.6;
     const pn = at(0.36); pneu.position.set(pn.p.x + pn.s.x * (pn.w * 0.95) + pn.t.x * 0.1, pn.p.y + pn.h * 0.62, pn.p.z + pn.s.z * (pn.w * 0.95) + pn.t.z * 0.1); const open = 0.35 + 0.65 * Math.max(0, Math.sin(st.breathe)); pneu.scale.set(open, 0.55 * open, open); pneu.visible = st.retreat < 0.5;
     // the shell rides the back, its opening at the neck
-    const sh = at(0.4), fy = pos.a; shellRig.position.set(sh.p.x - sh.t.x * 0.1 + sh.s.x * 0.05, sh.p.y + 0.8 * (1 - 0.15 * st.retreat), sh.p.z - sh.t.z * 0.1 + sh.s.z * 0.05); shellRig.quaternion.copy(yawQ.setFromAxisAngle(UPV, -fy)).multiply(baseQ);
+    const sh = at(0.4), fy = pos.a; shellRig.position.set(sh.p.x - sh.t.x * 0.1 + sh.s.x * 0.05, sh.p.y + 0.5 * (1 - 0.15 * st.retreat), sh.p.z - sh.t.z * 0.1 + sh.s.z * 0.05); shellRig.quaternion.copy(yawQ.setFromAxisAngle(UPV, -fy)).multiply(baseQ);
     // seal: the thin membrane over the opening when it has pulled in
     const ap = aperC.clone().multiplyScalar(0), wp = new THREE.Vector3(); shell.localToWorld(wp.copy(aperC)); const nrm = aperN.clone().transformDirection(shell.matrixWorld);
     epi.visible = st.retreat > 0.85; epi.position.copy(wp); epi.lookAt(wp.clone().add(nrm)); epi.scale.setScalar(1.18); void ap;
@@ -210,7 +213,7 @@ export async function build(ctx, detail) {
     tick(dt, time, raw) { lastTime = time; think(dt, time); placeBody(time); place(time, raw); layTrail(); bounce.intensity = st.glass ? 900 : 0; },
     focus() { const m = at(0.4); posAt.set(m.p.x, m.p.y + 0.8, m.p.z); return posAt; },
     toggle(id, on) {
-      if (id === 'xray') { st.xray = on; shell.material = on ? shellGhost : shellSolid; body.material = on ? bodyGhost : bodySolid; tent.forEach((t) => { t.mesh.material = on ? bodyGhost : bodySolid; }); }
+      if (id === 'xray') { st.xray = on; collar.material = plug.material = on ? bodyGhost : flesh; shell.material = on ? shellGhost : shellSolid; body.material = on ? bodyGhost : bodySolid; tent.forEach((t) => { t.mesh.material = on ? bodyGhost : bodySolid; }); }
       if (id === 'glass') { st.glass = on; ground.visible = !on; props.visible = !on; glass.visible = on; ctx.surface = on ? 'glass' : 'ground'; }
     },
     vary() {},
