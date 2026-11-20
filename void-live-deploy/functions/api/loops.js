@@ -13,7 +13,7 @@ export function loopsOf(record) {
   const ticks = Array.isArray(r.ticks) ? r.ticks : [];
   const caught = ticks.flatMap((t) => (t.catchup || []).map((wf) => ({ at: t.at, wf })));
   const cancelled = ticks.flatMap((t) => (t.cancelled || []).map((x) => ({ at: t.at, run: x })));
-  return { updated: r.updated || null, census: r.census || null, clock: { ticks24: ticks.length, caughtUp24: caught.length, caught: caught.slice(-40), cancelled24: cancelled.length }, broken: r.broken || [] };
+  return { updated: r.updated || null, census: r.census || null, clock: { ticks24: ticks.length, caughtUp24: caught.length, caught: caught.slice(-40), cancelled24: cancelled.length }, broken: r.broken || [], heldout: r.heldout || null, towerTarget: r.towerTarget || null };
 }
 
 export async function onRequestGet({ request, env }, fetchFn = fetch) {

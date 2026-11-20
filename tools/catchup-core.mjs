@@ -37,6 +37,7 @@ export const CATCHUP = Object.freeze([
   { wf: 'autosalvage.yml', grace: 30, what: 'the daily salvage' },
   { wf: 'trading-bots-data.yml', grace: 30, what: 'the daily trading bots data' },
   { wf: 'pages-ai-keys.yml', grace: 30, what: 'the daily AI keys push to the site' },
+  { wf: 'perf-budget.yml', grace: 30, what: 'the daily phone speed check of the key pages (under 3 s)' },
   { wf: 'store-gap.yml', grace: 30, what: 'the store gap pass every 4 hours' },
   { wf: 'word-sweep.yml', grace: 30, what: 'the wording sweep every 6 hours' },
   { wf: 'verse-watch.yml', grace: 20, what: 'the hourly watch' },
