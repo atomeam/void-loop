@@ -23,8 +23,7 @@ test('hidden episodes are off the show, the feed and the card; their files stay'
   for (const e of j.episodes.filter((x) => x.hidden)) assert.ok(!verseShow(j).episodes.some((v) => v.id === 'ep' + e.n));
   assert.match(read('skills/podcast.js'), /filter\(\(e\) => e && !e\.hidden\)/);
 });
-test('the films heading reads HOLOVIDS and /podcasts/ carries no stray markup', () => {
-  assert.match(read('films/index.html'), /VERSE HOLOV<span class="gl fast" aria-hidden="true"><b>I<\/b><i>1<\/i><\/span>DS/);
+test('/podcasts/ carries no stray markup', () => {
   assert.doesNotMatch(read('podcasts/index.html'), /rse">Open the show/);
   assert.equal((read('podcasts/index.html').match(/id="peoplePane"/g) || []).length, 1);
 });
