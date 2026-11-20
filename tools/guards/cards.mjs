@@ -20,8 +20,9 @@ const flat = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').r
 /** does the picture's subject name what the card is about. Pure. */
 export const subjectOk = (words, ...subjects) => { const t = flat(subjects.join(' ')); return !!t && words.some((w) => t.includes(flat(w))); };
 const LABELS = /^(examine|copy card|save card|custom art|reset art|share|☆ save|copy text|save text|send|pause|resume)$/i;
-/** the words of the card a reader sees, without its buttons. Pure. */
-export const bodyWords = (visible) => [...new Set(String(visible || '').split('\n').filter((l) => !LABELS.test(l.trim())).join(' ').toLowerCase().match(/[a-z]{5,}/g) || [])];
+const FOOT = /\d+\s*\/\s*\d+|^full card|^[pri]$|^\d+$/i; // the rarity strip, the link line and the three stats are card dressing, not what is copied
+/** the words of the card a reader sees, without its buttons and dressing. Pure. */
+export const bodyWords = (visible) => [...new Set(String(visible || '').split('\n').filter((l) => !LABELS.test(l.trim()) && !FOOT.test(l.trim())).join(' ').toLowerCase().match(/[a-z]{5,}/g) || [])];
 /** does the copied text carry the card: nearly every long word, and no cut-off ellipsis. Pure. */
 export function copyOk(visible, clip) {
   const words = bodyWords(visible), c = String(clip || '').toLowerCase();
@@ -56,6 +57,10 @@ export function tally(memory, causes) {
 const causeKey = (c) => c.replace(/\(.*\)/, '').replace(/\d+%/g, '').replace(/\s+/g, ' ').trim();
 async function infra(ctx) { const r = await ctx.hit('/api/treasury'); try { return Number(JSON.parse(r.text).pots.infrastructure) || 0; } catch { return null; } }
 
+// the system clipboard is one for the whole browser: two cards copying at once read each other's text, so the copy step goes one at a time
+let clipLock = Promise.resolve();
+const alone = (fn) => { const run = clipLock.then(fn, fn); clipLock = run.catch(() => {}); return run; };
+
 async function look(ctx, b, item) {
   const c = await b.newContext({ viewport: { width: 1280, height: 1000 }, permissions: ['clipboard-read', 'clipboard-write'] });
   const out = { ask: item.ask, card: false, expectArt: false, img: null, onSubject: true, weak: false, copy: null, paintWhy: '', req: null };
@@ -77,7 +82,10 @@ async function look(ctx, b, item) {
     out.onSubject = subjectOk(item.words, info.subj, out.req && out.req.key);
     if (out.req && info.img) { const g = await ctx.hit('/api/card-art?key=' + encodeURIComponent(out.req.key) + '&kind=' + encodeURIComponent(out.req.kind)); try { out.weak = !!JSON.parse(g.text).dropped; } catch { /* not json */ } }
     const btn = await p.$('.vcard:last-of-type .vc-share button:text-is("copy card")') || (await (await p.$$('.vcard')).pop().$('button:text-is("copy card")'));
-    if (btn) { await btn.scrollIntoViewIfNeeded().catch(() => {}); await btn.click(); await p.waitForTimeout(5000); const clip = await p.evaluate(async () => { try { const items = await navigator.clipboard.read(); for (const it of items) if (it.types.includes('text/plain')) return await (await it.getType('text/plain')).text(); } catch { /* no clipboard */ } return ''; }); out.copy = clip ? copyOk(info.text, clip) : { ok: false, share: 0, cut: false }; }
+    if (btn) {
+      const clip = await alone(async () => { await btn.scrollIntoViewIfNeeded().catch(() => {}); await btn.click(); await p.waitForTimeout(4000); return p.evaluate(async () => { try { const items = await navigator.clipboard.read(); for (const it of items) if (it.types.includes('text/plain')) return await (await it.getType('text/plain')).text(); } catch { /* no clipboard */ } return ''; }); });
+      out.copy = clip ? copyOk(info.text, clip) : { ok: false, share: 0, cut: false };
+    }
   } catch (e) { out.err = String(e.message).slice(0, 80); }
   finally { await c.close(); }
   return out;
