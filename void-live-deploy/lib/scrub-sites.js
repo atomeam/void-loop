@@ -20,7 +20,18 @@ export function studiedHosts() {
 }
 let re = null;
 const pattern = () => re || (re = new RegExp('(?<![\\w.@-])(?:https?:\\/\\/)?(?:www\\.)?(?:' + studiedHosts().map(esc).join('|') + ')(?![\\w-])(?:\\/[^\\s"\'<>)\\]]*)?', 'gi'));
-/** a text with every studied site's name or link replaced by "another site". Pure. */
-export const scrubSites = (text) => (typeof text === 'string' && text ? text.replace(pattern(), 'another site') : text);
+// where "another site" would read badly, the site is named by what it is: the phrase first, the plain replacement after
+const NATURAL = [
+  [/the way isitchristmas\.com does it/gi, 'the way the best one-question sites do it'],
+  [/\bthesportsdb\.com\b/gi, 'a public sports database'],
+  [/\bespn\.com\b/gi, 'a sports news site'],
+];
+/** a text with every studied site's name or link replaced (by what it is where a rule above knows, else "another site"). Pure. */
+export const scrubSites = (text) => {
+  if (typeof text !== 'string' || !text) return text;
+  let t = text;
+  for (const [re, to] of NATURAL) t = t.replace(re, to);
+  return t.replace(pattern(), 'another site');
+};
 /** every string in a JSON value through scrubSites (keys untouched). Pure. */
 export const deepScrub = (v) => (typeof v === 'string' ? scrubSites(v) : Array.isArray(v) ? v.map(deepScrub) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, deepScrub(x)])) : v);

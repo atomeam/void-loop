@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { deepScrub } from '../void-live-deploy/lib/scrub-sites.js';
 
-export const SERVED = ['self.json', 'void.asks.json', 'void.growth.json', 'void.knowledge.json'];
+export const SERVED = ['self.json', 'void.asks.json', 'void.growth.json', 'void.knowledge.json', 'skills/what.json', 'skills/families.json', 'skills/guide.json'];
 
 /** self.json as served: the tower keeps how many are beaten and how many there are, never which site is next. Pure. */
 export function publicSelf(self) {
