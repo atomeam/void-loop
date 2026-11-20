@@ -34,7 +34,19 @@ export const JUDGE_PREF = ['openai/gpt-oss-120b', 'llama-3.3-70b-versatile', 'mo
 // fixture was an inside joke about response times; a strong judge rightly told a stranger would leave (3 of 10),
 // so no judge could ever calibrate. The bar for a new show is unchanged: 6+ on every blind question and the listener.
 export const GOOD_STORY = "Critic: You are telling me the most famous message from space is one word in red pen? Verse: One word. August 1977, and Jerry Ehman is reading telescope printouts at his kitchen table. Critic: At his kitchen table? The aliens call and he is eating cereal. Verse: Pretty much. The telescope had heard a signal for 72 seconds, loud and narrow, like nothing in nature. Critic: Seventy-two seconds. So they called back, right? Verse: They pointed the telescope at that spot dozens of times. Nothing, ever again. Critic: So the aliens said hi once and hung up on us. Verse: And Ehman circled the numbers and wrote Wow in the margin. Critic: Almost fifty years of science, and the official word is Wow. Verse: Honestly, still the best review anyone has written. Critic: Then I am writing Wow on my tax return.";
-export const STUDIO_FIXTURES = Object.freeze([...FIXTURES.filter((f) => f.kind === 'bad'), { id: 'good-story', kind: 'good', text: GOOD_STORY }]);
+// the trend template the owner sent back (2026-11-20, "why would this even get made"): a bad show the judge must score under 6
+export const CLICKBAIT = "Critic: Why is everyone talking about Scene? Verse: Breaking news. Critic: The whole internet just found out about Scene. Verse: We asked one question: what is Scene? Critic: Scene is a 2026 Indian Tamil-language action thriller film. Verse: More at 11. Or right now in your group chat.";
+export const STUDIO_FIXTURES = Object.freeze([...FIXTURES.filter((f) => f.kind === 'bad'), { id: 'clickbait', kind: 'bad', text: CLICKBAIT }, { id: 'good-story', kind: 'good', text: GOOD_STORY }]);
+const BAIT = /\b(breaking news|breaking:|everyone(?: is|'s)? talking about|the whole internet|more at 11|you won'?t believe|in your group chat|we asked one question|make any video|make a video free)/i;
+const ENCYCLOPEDIA = /^[^.?!]{0,80}\b(is|was|are|were) (an?|the) [^.?!]{0,120}\b(film|movie|album|song|single|company|city|town|village|series|novel|video game|footballer|player|politician|band|singer|actor|actress|species|river|tournament|election|brand)\b[^?!]*\.?$/i;
+/** a clickbait template or a show that ends on a one-line encyclopedia fact instead of a payoff: hard fails. Pure. */
+export function baitIssues(show) {
+  const lines = (show && show.lines) || [], out = [];
+  if (lines.some((l) => BAIT.test(l.text) || /^BREAKING\b/.test(l.text))) out.push('clickbait template (breaking news, everyone is talking about, more at 11)');
+  const tail = lines.filter((l) => !/a-to-mind\.com/i.test(l.text)).slice(-2);
+  if (tail.some((l) => ENCYCLOPEDIA.test(String(l.text).trim()))) out.push('ends on an encyclopedia line, not a payoff');
+  return out;
+}
 export const AVOID = /\b(died|death|killed|murder|massacre|war|battle|bomb|attack|terror|genocide|disaster|crash|shooting|election|president|party|abuse|sex|suicide|execution|riot|invasion|assassinat)/i;
 
 const clean = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
@@ -177,7 +189,7 @@ export async function judge(show, kind, { env, fetchImpl, gap = 2500 } = {}) {
   const askImpl = async (prompt) => { const r = await llm([{ role: 'user', content: prompt }], { max: 1500, temperature: 0, prefer: JUDGE_PREF, env, fetchImpl, think: 'high' }); via = r.via; return r.text; };
   const cal = await calibrate({ askImpl, gap, maxChars: 24000, fixtures: STUDIO_FIXTURES });
   const text = show.lines.map((l) => l.who + ': ' + l.text).join(' ');
-  const out = { separated: cal.separated, calibration: cal.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })), issues: hardShow(show, { kind }) };
+  const out = { separated: cal.separated, calibration: cal.rows.map((r) => ({ id: r.id, kind: r.kind, min: r.min, scores: r.scores })), issues: [...hardShow(show, { kind }), ...baitIssues(show)] };
   if (cal.separated) {
     const b = await blindMin(text, { askImpl, gap, maxChars: 24000 });
     out.blind = { min: b.min, scores: b.scores, notes: b.notes };
