@@ -374,6 +374,7 @@ for (const [name, file] of [
   ['suite-gate', 'suite-gate.test.mjs'],
   ['suite-diff', 'suite-diff.test.mjs'],
   ['merge-stall', 'merge-stall.test.mjs'], // no merge for 2 hours while a green pull request waits: one issue names the stuck step
+  ['main-regen', 'main-regen.test.mjs'], // main's stale generated cards (an unlisted skill, a missing family) come back as one automerge PR
   ['pr-tidy', 'pr-tidy.test.mjs'], // held runs on bot pull requests are approved; one blocked 2 days with a quiet head closes with its reason
   ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'], ['studies-api', 'studies-api.test.mjs'],
   ['review-api', 'review-api.test.mjs'], ['review-pr', 'review-pr.test.mjs'],

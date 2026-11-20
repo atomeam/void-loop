@@ -22,6 +22,7 @@ import { mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-p
 import { fixAge, fixNote, nextStep } from './merge-flow.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { tidy } from './pr-tidy.mjs';
+import { openRegenPr } from './main-regen.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
@@ -162,6 +163,8 @@ try { prs = one ? [gh(`repos/${repo}/pulls/${one}`)] : gh(`repos/${repo}/pulls?s
 catch (e) { if (limited) stopForQuota(limited); throw e; }
 // held runs on bot pull requests are approved, and a pull request blocked for 2 days is closed with its reason (tools/pr-tidy.mjs)
 { const t = tidy({ gh, run, repo, prs, one }); if (t.closed.length) prs = prs.filter((p) => !t.closed.includes(p.number)); }
+// main's generated cards (the skill index, families, book, shared indexes) regenerate themselves: one helper/main-regen-* PR when stale (tools/main-regen.mjs)
+if (!one) await openRegenPr({ gh, run, repo, prs });
 const stuck = process.env.STUCK === '1', STUCK_MARK = '<!-- void-stuck -->';
 function noteStuck(p, why) {
   if (!stuck || stuckDecision(p, [], Date.now()).action === 'young') return;
