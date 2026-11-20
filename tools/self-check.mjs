@@ -114,10 +114,10 @@ async function main() {
     const r = await fetch(site + '/api/selfcheck', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', origin: site, 'user-agent': UA }, body: JSON.stringify({ report }) });
     console.log('/api/selfcheck answered ' + r.status + ' ' + (await r.text()).slice(0, 200));
     if (!r.ok) process.exitCode = 1;
-    for (const job of fixJobsOf(report)) {
-      try { const q = await fetch(site + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', origin: site, 'user-agent': UA }, body: JSON.stringify(job) }); console.log('fix job ' + job.target + ': ' + q.status); }
-      catch (e) { console.log('fix job ' + job.target + ' not filed: ' + String(e.message || e).slice(0, 80)); }
-    }
+    // at most FIX_MAX posts, sent together and awaited once
+    const filed = await Promise.all(fixJobsOf(report).map((job) => fetch(site + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', origin: site, 'user-agent': UA }, body: JSON.stringify(job) })
+      .then((q) => job.target + ': ' + q.status, (e) => job.target + ' not filed: ' + String(e.message || e).slice(0, 80))));
+    for (const line of filed) console.log('fix job ' + line);
   }
 }
 if (import.meta.url === 'file://' + process.argv[1]) main().catch((e) => { console.error(e); process.exit(1); });
