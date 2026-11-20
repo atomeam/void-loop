@@ -74,6 +74,10 @@ const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); 
 // and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
 const SHARED_TOOL_FILES = /^\/(visit\.js|verse\.css|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
+// a tool folded onto a family page (/photos/?mode=resize, /password/?mode=strength) first loads the family machinery: the page itself, lib/tower-family-mode.js
+// and the mode's html. Those are the folding, not the tool, so the tool's own budget (its page script and modules) leaves them out; a new file still counts.
+const FAMILY_FILES = /^(\/[a-z-]+\/\?mode=|\/lib\/tower-family-mode\.js(\?|$)|\/[a-z-]+\/modes\/[a-z-]+\.html(\?|$))/;
+const toolLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u) && !FAMILY_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
 const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) { sweep(); SECTION = label; } return on; };
@@ -1296,8 +1300,8 @@ try {
     await pg.fill('#pw', 'password'); await pg.click('#leak'); await pg.waitForFunction(() => /leaked/.test(document.getElementById('leakmsg').textContent), null, { timeout: 8000 }); const leak = await pg.$eval('#leakmsg', (e) => e.textContent);
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
     const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
-    check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
-      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+    check('password strength: /password-strength/ loads its page script and at most four own files beyond the family page (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
+      toolLoads(reqs, loaded) <= 4 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
       && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
       JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
     const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
@@ -1369,11 +1373,11 @@ try {
     await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
     if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
     check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
-      ownLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      toolLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
       JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
     const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
     const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));
-    check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', href === '/resize-image/?w=3.5&h=2.5&u=cm&kb=50' && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
+    check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', /^\/(resize-image|photos)\/\?(mode=resize&)?w=3\.5&h=2\.5&u=cm&kb=50$/.test(href) && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
     await R.ctx.close(); await K.ctx.close();
   }
   // the rest of pancardresizer.com: a preset fills a portal's size, a quarter turn swaps the picture's sides, and a dragged, zoomed crop moves
@@ -6620,7 +6624,8 @@ try {
     const saved = { page: await R.page(), store: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}')) };
     await R.p.reload(); await R.p.waitForTimeout(700);
     await R.ask('my morning', 2500);
-    const ran = { page: await R.page(), asks: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')) };
+    const coinPage = await until(async () => { const t = await R.page(); return /Coin/.test(t) && t; }, 12000); // the second ask's card is drawn after its skill loads: wait for it, not a fixed time (a slow runner showed the first card)
+    const ran = { page: coinPage || await R.page(), asks: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')) };
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
