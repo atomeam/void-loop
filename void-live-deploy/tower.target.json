@@ -43,92 +43,190 @@
    "m": 16
   }
  ],
- "passed": [
-  {
-   "id": "image boards: 2chan.net",
-   "at": "2026-11-06",
-   "n": 13,
-   "m": 16,
-   "open": [
-    "journey: do the main job and see the result",
-    "journey: share the result and reopen it from the link"
-   ]
-  },
-  {
-   "id": "password strength",
-   "at": "2026-11-06",
-   "n": 15,
-   "m": 15,
-   "open": []
-  },
-  {
-   "id": "ndscalc.ru",
-   "at": "2026-11-06",
-   "n": 10,
-   "m": 12,
-   "open": [
-    "journey: do the main job and see the result",
-    "journey: share the result and reopen it from the link"
-   ]
-  },
-  {
-   "id": "emoji combos",
-   "at": "2026-11-06",
-   "n": 15,
-   "m": 15,
-   "open": []
-  },
-  {
-   "id": "my ip",
-   "at": "2026-11-06",
-   "n": 8,
-   "m": 13,
-   "open": [
-    "plain text for scripts",
-    "journey: do the main job and see the result",
-    "journey: share the result and reopen it from the link"
-   ]
-  }
- ],
+ "passed": [],
  "background": [
   {
    "id": "image boards: 2chan.net",
    "aspect": "journey: do the main job and see the result",
-   "since": "2026-11-06",
-   "job": "script the journey with steps and negative controls"
+   "since": "2026-11-20",
+   "job": "must-beat: win \"journey: do the main job and see the result\" again on image boards: 2chan.net"
   },
   {
    "id": "image boards: 2chan.net",
    "aspect": "journey: share the result and reopen it from the link",
-   "since": "2026-11-06",
-   "job": "script the journey with steps and negative controls"
+   "since": "2026-11-20",
+   "job": "must-beat: win \"journey: share the result and reopen it from the link\" again on image boards: 2chan.net"
   },
   {
-   "id": "ndscalc.ru",
-   "aspect": "journey: do the main job and see the result",
-   "since": "2026-11-06",
-   "job": "script the journey with steps and negative controls"
+   "id": "password strength",
+   "aspect": "accuracy",
+   "since": "2026-11-20",
+   "job": "must-beat: win \"accuracy\" again on password strength"
   },
   {
-   "id": "ndscalc.ru",
-   "aspect": "journey: share the result and reopen it from the link",
-   "since": "2026-11-06",
-   "job": "script the journey with steps and negative controls"
+   "id": "password strength",
+   "aspect": "crack time",
+   "since": "2026-11-20",
+   "job": "must-beat: win \"crack time\" again on password strength"
+  },
+  {
+   "id": "password strength",
+   "aspect": "reasons and fixes",
+   "since": "2026-11-20",
+   "job": "must-beat: win \"reasons and fixes\" again on password strength"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: Platforms",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"Platforms\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: Emoji Versions",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"Emoji Versions\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 😃Smileys & Emotion",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"😃Smileys & Emotion\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🤦‍♀️People & Body",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🤦‍♀️People & Body\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🐶Animals & Nature",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🐶Animals & Nature\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🍩Food & Drink",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🍩Food & Drink\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🚗Travel & Places",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🚗Travel & Places\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🏀Activities",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🏀Activities\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 💎Objects",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"💎Objects\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: ✅Symbols",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"✅Symbols\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🏁Flags",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🏁Flags\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 😂Face with Tears of Joy",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"😂Face with Tears of Joy\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🥰Smiling Face with Hearts",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🥰Smiling Face with Hearts\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🥲Smiling Face with Tear",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🥲Smiling Face with Tear\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🥺Pleading Face",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🥺Pleading Face\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: ❤️‍🔥Heart on Fire",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"❤️‍🔥Heart on Fire\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: ❤️Red Heart",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"❤️Red Heart\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 👍Thumbs Up",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"👍Thumbs Up\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🔥Fire",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🔥Fire\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🇺🇦Flag: Ukraine",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🇺🇦Flag: Ukraine\" to Verse and beat the original's"
+  },
+  {
+   "id": "emoji combos",
+   "aspect": "feature: 🤣Elon Musk's Emoji Profile",
+   "since": "2026-11-20",
+   "job": "must-beat: add \"🤣Elon Musk's Emoji Profile\" to Verse and beat the original's"
   },
   {
    "id": "my ip",
    "aspect": "plain text for scripts",
-   "since": "2026-11-06",
-   "job": "measure it in tools/tower-gate.mjs"
+   "since": "2026-11-20",
+   "job": "must-beat: win \"plain text for scripts\" again on my ip"
   },
   {
    "id": "my ip",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-20",
+   "job": "must-beat: win \"journey: do the main job and see the result\" again on my ip"
+  },
+  {
+   "id": "my ip",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-20",
+   "job": "must-beat: win \"journey: share the result and reopen it from the link\" again on my ip"
+  },
+  {
+   "id": "ndscalc.ru",
    "aspect": "journey: do the main job and see the result",
    "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
   },
   {
-   "id": "my ip",
+   "id": "ndscalc.ru",
    "aspect": "journey: share the result and reopen it from the link",
    "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
@@ -202,5 +300,11 @@
  "last": {
   "at": "2026-11-19",
   "why": "assimilated travel: flightconnections.com (16 of 16 aspects verified)"
- }
+ },
+ "requeue": [
+  "image boards: 2chan.net",
+  "password strength",
+  "emoji combos",
+  "my ip"
+ ]
 }
