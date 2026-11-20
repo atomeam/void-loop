@@ -2717,16 +2717,18 @@ say('nothing selected to remove');
     function wantsMenu(lower) {
       return /^(menu|the menu|show (me )?(the )?menu|open (the )?menu|options|commands|what can i do( here)?|what can i ask|list (the )?skills|skills)\s*[?.!]?$/.test(lower);
     }
+    // "what are you working on" is its own skill (lib/will-card.js), never this identity / menu page
     function wantsSelfPage(lower) {
-      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|(?:verse|void)|a-to-mind)\b|^what\s+can\s+(you|i|(?:verse|void))\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|(?:verse|void))\b/.test(lower);
+      return /^(what|who)\s+(are|r)\s+(you|u)(?!\s+(?:working\s+on|building|doing|up\s+to|learning|planning|shipping))\b|^what\s+(is|'s)\s+(this|(?:verse|void)|a-to-mind)\b|^what\s+can\s+(you|i|(?:verse|void))\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|(?:verse|void))\b/.test(lower);
     }
     // "what are you?" / "who are you" / "what is void" / "tell me about yourself": Verse says what it is and its motto first, then
     // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word
     // (domains/void.canon.md ## Motto; tools/launch-fixes.test.mjs keeps them the same).
     const MOTTO = 'You name it, Verse learns it and does it better.';
     const SELF_LEAD = 'I’m Verse: one box where you ask for anything and it appears as a working card, game or page. My motto: “' + MOTTO + '”';
+    // "what are you working on" is its own skill (lib/will-card.js), never "what are you?"
     function wantsIdentity(lower) {
-      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|verse|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d|verse)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
+      return /^(what|who)\s+(are|r)\s+(you|u)(?!\s+(?:working\s+on|building|doing|up\s+to|learning|planning|shipping))\b|^what\s+(is|'s)\s+(this|void|v01d|verse|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d|verse)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
     }
     // asked "who are you", the stage answers in light too (asked by Verse, ask-20261015-0540-2: "subtly shifts the stage lighting to reflect
     // my identity"): a violet glow rises from the floor and fades over 2.4 s; nothing under reduced motion; body[data-identity] marks it
@@ -2893,26 +2895,26 @@ say('nothing selected to remove');
     function wantsWill(lower) {
       return /^(what\s+do\s+you\s+want(\s+to\s+(be|become|do))?|what\s+(is|'s)\s+your\s+will|what\s+are\s+you\s+becoming|what\s+do\s+you\s+wish\s+for|your\s+will)\s*[?.!]?$/.test(lower);
     }
+    function wantsWorkingOn(lower) {
+      return /^(?:so |ok(?:ay)?,? )?(?:please |tell me |show me |show )?(?:what(?:'s| is) (?:you|verse|void) working on|what (?:are|is) (?:you|verse|void) (?:(?:currently|now|right now|today) )?(?:working on|building(?: now| today)?|doing(?: now| today)?|up to(?: right now| now| today)?)|what are you up to(?: right now| now| today)?)\s*$/.test(String(lower || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim());
+    }
+    async function showWorkingOn() {
+      const el = showPage((p) => { p.innerHTML = '<h2>What I\'m working on</h2><div class="sub">…</div>'; });
+      let w = null;
+      try { w = await fetch('/api/will').then((r) => r.json()); } catch (_) {}
+      if (vpageEl !== el) return;
+      const WC = await import('/lib/will-card.js').catch(() => null);
+      if (vpageEl !== el) return;
+      el.innerHTML = WC && WC.workingOnHtml ? WC.workingOnHtml(w, esc, null) : '<h2>What I\'m working on</h2><p>I could not draw this card just now. Ask again in a moment.</p>';
+    }
     async function showWill() {
       const el = showPage((p) => { p.innerHTML = '<h2>What I want to become</h2><div class="sub">…</div>'; });
       let w = null;
       try { w = await fetch('/api/will').then((r) => r.json()); } catch (_) {}
       if (vpageEl !== el) return;
-      if (!w || !w.wants || (!w.wants.length && !(w.got && w.got.length))) { el.innerHTML = '<h2>What I want to become</h2><p>I haven\'t decided yet. I look at everything that exists every few hours and choose.</p>'; return; }
-      // zero lies (the owner, 2026-10-12): a reason that ranks or counts what Verse cannot back shows the recorded fact instead
-      // (lib/honest.js, the same check /api/will runs), and the fact itself sits under each want
-      const honest = await import('/lib/honest.js').catch(() => null);
+      const WC = await import('/lib/will-card.js').catch(() => null);
       if (vpageEl !== el) return;
-      const why = (x) => (honest ? honest.honestBecause(x.because, x.evidence) : x.because);
-      el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
-        // one block per want (owner, 2026-10-21: the wants ran together; 2026-10-30: asks and reasons still read as one run of plain
-        // lines when copied): a numbered want, then "Why:" on its own line, then "Evidence:", so the copied text keeps the structure too
-        + (w.wants.length ? '<div class="vh">What I want next</div><ol class="will-list" style="list-style:none;padding:0;margin:6px 0 10px">' + w.wants.map((x, i) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + (i + 1) + '. ' + esc(x.i_want) + '</b><div class="will-why" style="color:#8a8a8a;margin-top:4px"><span style="color:#aab">Why:</span> ' + esc(why(x)) + '</div>'
-          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px"><span style="color:#aab">Evidence:</span> ' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ol>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
-        // what I wanted and got: asks the ledger names as built, shown apart and marked done, never as a current want (functions/api/will.js
-        // splitBuilt; owner, 2026-10-30: a "Got it" line between the asks made the built repo ask read as one more want)
-        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Already built</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li class="will-done" style="margin:0 0 10px;color:#9aa"><b style="display:block"><span style="color:#7d9">Done:</span> ' + esc(x.i_want) + '</b><div style="font-size:12px">Built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
-        + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
+      el.innerHTML = WC && WC.willCardHtml ? WC.willCardHtml(w, esc, null) : '<h2>What I want to become</h2><p>I could not draw this card just now. Ask again in a moment.</p>';
     }
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
     function wantsVoice(lower) {
@@ -6931,6 +6933,7 @@ say('nothing selected to remove');
       if (paste && paste.kind === 'unclear') { lastPaste = { text, until: Date.now() + 600000 }; say(paste.line); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste unclear' }); return; }
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
+      if (wantsWorkingOn(lower0)) { showWorkingOn(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'working-on' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(lower0); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
