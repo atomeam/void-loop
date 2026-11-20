@@ -25,6 +25,13 @@ export function pickVoice(voices, lang = 'en-US') {
   return null;
 }
 
+/** true when the ask is text-to-speech ("read this out loud: …", "tts: …", "text to speech …"), not a calendar event. Pure. */
+export function isSpeechAsk(text) {
+  const t = String(text || '').trim().replace(/\s+([?!.])$/, '$1');
+  if (!t || t.length > 2000) return false;
+  return /^(?:please\s+)?(?:(?:text[\s-]+to[\s-]+(?:speech|voice)|tts)\b|(?:read|say|speak)\s+(?:this\s+|it\s+)?(?:out\s+)?(?:aloud|out\s+loud)\b|speak\s+(?:this|these\s+words)\b)/i.test(t);
+}
+
 // what is worth saying out loud from a card: no code, no links, no citation marks, no "Source:" line
 export function speakable(text) {
   return String(text || '')

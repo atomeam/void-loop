@@ -2,7 +2,7 @@
 //   node --test tools/my-device.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import skill, { deviceAsk, readAgent } from '../void-live-deploy/skills/my-device.js';
+import skill, { deviceAsk, readAgent, speechOf } from '../void-live-deploy/skills/my-device.js';
 import { onRequestGet } from '../void-live-deploy/functions/api/ip.js';
 
 test('the asks people type for their address, browser, system and screen', () => {
@@ -15,6 +15,19 @@ test('the asks people type for their address, browser, system and screen', () =>
 test('look-alikes stay with other skills', () => {
   for (const n of skill.nearMisses) assert.equal(deviceAsk(n), '', n);
   for (const n of ['what is an ip address', 'ip address of google.com', 'my screen is broken', 'my browser is slow', 'change my user agent']) assert.equal(deviceAsk(n), '', n);
+});
+
+
+test('read this out loud, tts and text to speech are the voice card', () => {
+  for (const [ask, words] of [
+    ['read this out loud: hello, how are you today?', 'hello, how are you today?'],
+    ['say out loud: hello, how are you today?', 'hello, how are you today?'],
+    ['text to speech hello world', 'hello world'],
+    ['tts: good morning', 'good morning'],
+  ]) {
+    assert.equal(deviceAsk(ask), 'voice', ask);
+    assert.equal(speechOf(ask).text, words, ask);
+  }
 });
 
 test('the user agent is read into a browser and a system', () => {

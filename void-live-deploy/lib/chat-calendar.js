@@ -3,6 +3,7 @@
 // /calendar/ keeps (lib/calendar.js KEY a2m.void.calendar.v1) and say the parsed date and time in words so a wrong reading is seen at once. The date
 // reading is the calendar's own (quickAdd). Pure; same plan/undo shape as lib/chat-notes.js. Tests: tools/chat-calendar.test.mjs.
 import * as C from './calendar.js';
+import { isSpeechAsk } from './speak.js';
 
 const cap = (s) => { s = String(s || '').trim(); return s ? s[0].toUpperCase() + s.slice(1) : s; };
 const lead = (t) => t.replace(/^(?:hey\s+)?(?:verse[,:]?\s+)?(?:please|bitte|can you|could you|would you|kannst du)\s+/i, '').replace(/\s+(?:please|bitte)$/i, '');
@@ -18,6 +19,7 @@ const TIMER = /\bin\s+(?:\d+(?:\.\d+)?|a|an|one|two|three|four|five|ten|fifteen|
 /** { op, ... } for a calendar sentence, or null. Syntax only. Pure. */
 export function parseIntent(raw) {
   const t = lead(String(raw || '').replace(/\s+/g, ' ').trim().replace(/[.!]+$/, '')); if (!t || t.length > 300) return null; let m;
+  if (isSpeechAsk(raw) || isSpeechAsk(t)) return null; // "read this out loud: … today" is the text-to-speech card, not an event
   if (TIMER.test(t) && /^(?:remind|wake|ping|alert|buzz)\b/i.test(t)) return null; // a timer from now, the stage's own
   if ((m = /^(?:when|what time) (?:is|was) (?:my |the |our )?(.+?)$/i.exec(t)) && !/^(?:it|the time|that|this)$/i.test(m[1])) return { op: 'when', target: m[1].trim() };
   if ((m = /^(?:change|move|reschedule|push|shift|update|verschiebe)\s+(?:my |the |our |den |das )?(.+?)(?: event| appointment| meeting| termin)?\s+(?:to|until|for|auf)\s+(.+)$/i.exec(t)) && (HAS_DAY.test(m[2]) || HAS_TIME.test(m[2]))) return { op: 'change', target: m[1].trim(), when: m[2].trim() };

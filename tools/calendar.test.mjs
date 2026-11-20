@@ -226,6 +226,16 @@ test("the Calendar page's card opens on the day the page shows, and the card's p
   assert.match(page, /mountRelated\(\$\('related'\), '\/calendar\/'[\s\S]*?\{ card: \(\) => A\.cardAskOf\(C\.dayKey\(state\.cursor\)\) \}\)/, 'the page gives its card the day it shows');
 });
 
+
+test('text to speech is not a calendar event, even when the words include today', async () => {
+  const { parseCalendar } = await import('../void-live-deploy/skills/calendar.js');
+  for (const t of ['read this out loud: hello, how are you today?', 'read this out loud: hello, how are you today', 'say out loud: hello, how are you today?', 'text to speech hello, how are you today?', 'tts: good morning']) {
+    assert.equal(parseCalendar(t), null, t);
+  }
+  assert.equal(parseCalendar('dentist today at 3').kind, 'add', 'a real event that names today still is one');
+  assert.equal(parseCalendar('speak at the conference on Tuesday').kind, 'add', 'speaking at an event stays on the calendar');
+});
+
 test('the stage calendar card sways while new, then settles still so its days hold under a pointer and the frame loop stops', async () => {
   const { swayAmp, SWAY_HOLD, SWAY_FADE } = await import('../void-live-deploy/skills/calendar3d.js');
   assert.equal(swayAmp(0), 3);
