@@ -1,0 +1,1 @@
+The Tower beyond websites feeds the game-updates lane: `tools/universe.mjs step` writes `data/universe-aim.json` (plain words per game, never a name) and `gameTask` in `tools/game-updates.mjs` adds the aim for the game being updated to its brief.

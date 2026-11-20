@@ -1,0 +1,27 @@
+{
+ "about": "Plain-word aims from the Tower beyond websites; no names (tools/universe.mjs aim).",
+ "games": {
+  "debris-field": {
+   "check": "rules",
+   "side": "correct",
+   "words": "rules and physics that behave the same every time (not measured yet)"
+  },
+  "gap-glide": {
+   "check": "rules",
+   "side": "correct",
+   "words": "rules and physics that behave the same every time (not measured yet)"
+  },
+  "null-sweep": {
+   "check": "rules",
+   "side": "correct",
+   "words": "rules and physics that behave the same every time (not measured yet)"
+  }
+ },
+ "things": {
+  "snail": {
+   "check": "accuracy",
+   "side": "correct",
+   "words": "the model matches the real thing: anatomy, size, structure (not measured yet)"
+  }
+ }
+}

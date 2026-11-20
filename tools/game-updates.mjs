@@ -19,7 +19,12 @@ export function saveBook(book, cwd = root) {
 export function gameTask(cwd = root) {
   const task = nextTask(loadBook(cwd));
   if (task.kind === 'invent') return { kind: 'invent', title: 'Game update: a new original game, Update 1', text: inventPrompt(), update: 1 };
-  return task;
+  const aim = universeAim(task, cwd);
+  return aim ? { ...task, text: task.text + '\n\nThe Tower also wants this from the game: ' + aim + '. Work toward it in this update, and keep the game original.' } : task;
+}
+/** the Tower's plain-word aim for the game being updated (data/universe-aim.json, no names), or ''. */
+export function universeAim(task, cwd = root) {
+  try { const a = JSON.parse(readFileSync(join(cwd, 'data/universe-aim.json'), 'utf8')).games[task.game && task.game.id]; return a && a.words ? String(a.words) : ''; } catch { return ''; }
 }
 const serve = (dir) => new Promise((ok) => {
   const server = createServer((req, res) => {

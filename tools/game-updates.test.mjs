@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { applyUpdate, bornFrom, decide, funOf, gamesOf, gapOf, had, nextTask, promptFor, scoreFrom, withBar } from '../void-live-deploy/lib/game-updates.js';
-import { gameDueNow, gatePlay, playLink } from './game-updates.mjs';
+import { gameDueNow, gatePlay, playLink, universeAim, gameTask } from './game-updates.mjs';
+import { SEEDS } from '../void-live-deploy/lib/universe-seeds.js';
+import { protectedNames } from '../void-live-deploy/lib/universe.js';
 
 const live = JSON.parse(readFileSync(new URL('../data/game-updates.json', import.meta.url), 'utf8'));
 
@@ -85,4 +87,13 @@ test('Debris Field fun is the public bar, and the coder is aimed at the lowest r
   const none = promptFor({ id: 'cross-bus', title: 'Cross the Bus', lane: 'hidden', file: 'void-live-deploy/skills/cross-bus-rules.js' }, 1, null);
   assert.match(none, /no review yet/);
   assert.match(none, /Do not change only how Verse, the ghost, or the opponent plays/);
+});
+
+test('the Tower beyond websites hands each game its plain-word aim, and the aim file never holds a target name', () => {
+  const root = new URL('..', import.meta.url).pathname, raw = readFileSync(new URL('../data/universe-aim.json', import.meta.url), 'utf8');
+  assert.ok(universeAim({ game: { id: 'debris-field' } }, root).length > 10);
+  assert.equal(universeAim({ game: { id: 'no-such-game' } }, root), '');
+  assert.equal(universeAim({ kind: 'invent' }, '/nowhere'), '');
+  for (const n of protectedNames(SEEDS)) assert.ok(!raw.toLowerCase().includes(n.toLowerCase()), n);
+  const t = gameTask(root); if (t.kind === 'game' && universeAim(t, root)) assert.match(t.text, /The Tower also wants/);
 });
