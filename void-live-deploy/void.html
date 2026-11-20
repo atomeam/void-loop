@@ -2817,6 +2817,10 @@ say('nothing selected to remove');
     // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
     const pageHost = (u) => { try { return /^https?:\/\//i.test(String(u)) ? new URL(u).hostname : ''; } catch (_) { return ''; } };
     // page: the tab the Verse extension read for this ask (title, url, selection, field, text); answered about that page, not the web
+    // talk memory (lib/talk-memory.js TALK_KEY, TALK_MAX, TALK_IDLE_MS): this tab only; closing it, or 30 quiet minutes, forgets it
+    const TALK_KEY = 'a2m.void.talk.v1';
+    function talkRead() { try { const v = JSON.parse(sessionStorage.getItem(TALK_KEY) || 'null'); return v && Array.isArray(v.t) && Date.now() - (v.at || 0) < 30 * 60e3 ? v.t.slice(-8) : []; } catch (_) { return []; } }
+    function talkAdd(ask, answer) { try { const t = [...talkRead(), { ask: String(ask).slice(0, 160), answer: String(answer || '').slice(0, 240) }].slice(-8); sessionStorage.setItem(TALK_KEY, JSON.stringify({ at: Date.now(), t })); } catch (_) {} }
     async function showAnswer(text, page, heading) {
       // heading: a short name for the card when the ask itself is too long to be one (a summed-up paste); the ask still goes to the server
       const head = heading || text;
@@ -2833,7 +2837,9 @@ say('nothing selected to remove');
         let built = null; try { const hb = window.verseBrainHost; built = !page && hb && hb.builtOn ? hb.builtOn(text) : null; } catch (_) { built = null; }
         const before = built && built.kind === 'follow' && built.prior && built.prior.ask ? { ask: String(built.prior.ask).slice(0, 160), answer: String(built.prior.answer || '').slice(0, 240) } : null;
         sentBefore = !!before;
-        const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : before ? { ask: text, before } : { ask: text }) });
+        // this tab's conversation so far (lib/talk-memory.js): the last 8 asks and the start of each answer, kept in sessionStorage, sent with this ask only
+        const talk = page ? [] : talkRead();
+        const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text, ...(before ? { before } : {}), ...(talk.length ? { talk } : {}) }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
       lastNear = j && j.near && !page ? { ask: text, near: j.near } : null; // the skill this ask nearly was, for the "Did you mean" line if nothing answers
@@ -2866,6 +2872,7 @@ say('nothing selected to remove');
       if (j.desc) { el.dataset.cardDesc = String(j.desc).slice(0, 160); el.dataset.cardExtract = String(j.answer).slice(0, 160); if (j.series) el.dataset.cardSeries = String(j.series).slice(0, 60); keepCard(el); } // the kind the source says it is types the card (lib/card-kinds.js)
       addCopy(el, false);
       if (!page) recallNote(el, text, j.answer, sentBefore);
+      if (!page) talkAdd(text, j.answer);
       say('');
       return 'answer';
     }

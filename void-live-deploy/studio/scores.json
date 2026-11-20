@@ -284,6 +284,81 @@
         "via": "Groq openai/gpt-oss-120b",
         "pass": false
       }
+    },
+    {
+      "at": "2026-11-20T22:12:49.634Z",
+      "studio": true,
+      "kind": "short",
+      "title": "Windows 1.0: A Tiled Tale",
+      "source": {
+        "title": "Windows 1.0",
+        "url": "https://en.wikipedia.org/wiki/Windows_1.0"
+      },
+      "pass": false,
+      "writer": "Groq openai/gpt-oss-120b",
+      "judge": {
+        "separated": true,
+        "calibration": [
+          {
+            "id": "journal",
+            "kind": "bad",
+            "min": 2,
+            "scores": [
+              5,
+              2,
+              10
+            ]
+          },
+          {
+            "id": "old34",
+            "kind": "bad",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "kind": "bad",
+            "min": 3,
+            "scores": [
+              5,
+              3,
+              9
+            ]
+          },
+          {
+            "id": "good-story",
+            "kind": "good",
+            "min": 7,
+            "scores": [
+              7,
+              7,
+              10
+            ]
+          }
+        ],
+        "issues": [],
+        "blind": {
+          "min": 3,
+          "scores": [
+            5,
+            3,
+            10
+          ],
+          "notes": [
+            "Score 5",
+            "Score 3",
+            "Score 10"
+          ]
+        },
+        "human": 7,
+        "humanNotes": "Human: 7 and Notes: The dialogue maintains a consistent answer‑response pattern and includes real‑number version identifiers (1.01–1.04).",
+        "via": "Groq openai/gpt-oss-120b",
+        "pass": false
+      }
     }
   ]
 }
