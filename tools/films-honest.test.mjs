@@ -28,3 +28,6 @@ test('the page script still parses', () => {
   assert.ok(scripts.length);
   const dir = mkdtempSync(join(tmpdir(), 'films-')); scripts.forEach((s, i) => { writeFileSync(join(dir, i + '.mjs'), s); execFileSync(process.execPath, ['--check', join(dir, i + '.mjs')]); });
 });
+test('the heading reads HOLOVIDS: the glitch flickers the I in place, it is never an extra letter (owner, 2026-11-20: it read HOLOVIDIS)', () => {
+  assert.match(page, /VERSE HOLOV<span class="gl fast" aria-hidden="true"><b>I<\/b><i>1<\/i><\/span>DS<\/span><\/h1>/);
+});
