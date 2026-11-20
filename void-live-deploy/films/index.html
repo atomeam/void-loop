@@ -29,7 +29,10 @@
     .film:hover { transform: translateY(-3px); border-color: rgba(255,61,127,.35); box-shadow: 0 26px 70px rgba(122,92,255,.25); }
     /* a transform on the card that holds a playing Short restarts it (owner, 2026-11-05: a touch, a drag or a move). The lift stays on a card with no video. */
     .film:has(video), .film:has(video):hover { transform: none; }
-    .film video { width: 100%; aspect-ratio: 9 / 16; background: #000; display: block; }
+    .film video { width: 100%; aspect-ratio: 9 / 16; background: linear-gradient(160deg, #1d1946, #0b0a1c 70%); display: block; } /* a tile whose picture has not arrived is a quiet gradient, never a black hole */
+    /* the drifting gems (lib/verse-scene.js) stay in the side margins, away from the text column; where the column fills the screen they fade right back */
+    #verse-scene { opacity: .22 !important; }
+    @media (min-width: 1200px) { #verse-scene { opacity: .85 !important; -webkit-mask-image: linear-gradient(90deg, #000 calc(50% - 600px), transparent calc(50% - 540px), transparent calc(50% + 540px), #000 calc(50% + 600px)); mask-image: linear-gradient(90deg, #000 calc(50% - 600px), transparent calc(50% - 540px), transparent calc(50% + 540px), #000 calc(50% + 600px)); } }
     .film .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
     .film h2 { font-size: 17px; margin: 0; line-height: 1.3; }
     .film .when { color: var(--muted); font-size: 13px; }
@@ -86,9 +89,9 @@
        that runs out in hours. .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube:
        download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a class="home" href="/">← Verse</a></p>
-  <p class="kicker">Watch short films free · Verse Holovids, new videos daily · <a href="/films/rss">follow by feed (RSS)</a></p>
+  <p class="kicker">Watch short films free · Verse Holovids, a new one when it passes Verse's own check · <a href="/films/rss">follow by feed (RSS)</a></p>
   <h1 aria-label="VERSE HOLOVIDS"><span class="glw">VERSE HOLOVID<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>S</span></h1>
-  <p class="sub">Every day Verse films one of its own experiments. Watch them free, and post any of them anywhere: every film is an ad for Verse, and anyone can upload it. Short clips, good for a break or a class on how AI tools behave.</p>
+  <p class="sub">Verse films its own experiments, and a new film goes up only when it passes Verse's own quality check, so the newest here can be a few days old. Watch them free, and post any of them anywhere: every film is an ad for Verse, and anyone can upload it. Short clips, good for a break or a class on how AI tools behave.</p>
   <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
        the films. A sign-in this browser already holds (the owner's, a member's from Verse) still brings the owner's YouTube steps
        and the review box, without asking. -->
@@ -216,7 +219,7 @@
       const want = new URLSearchParams(location.search).get('v');
       // a watch link to an older film reads on until it finds that film
       while (want && !films.some((f) => f.id === want) && next != null) films.push(...await page());
-      if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
+      if (!films.length) { status.textContent = 'No films yet: the first goes up when one passes Verse’s own quality check.'; return; }
       // Verse Tube (owner, 2026-10-15: "Verse should be its own version of YouTube"): the channel grid, and a watch page per video
       // at /films/?v=<id> with its player, words, views, share and upload buttons and related videos
       await viewsOf(films);
@@ -228,8 +231,10 @@
         $('div', { class: 'body' }, [$('h2', { text: f.title }), $('div', { class: 'when', text: vlabel(f.id) + ' · ' + when(f) })])]);
       // a card's picture loads when the card comes near the screen (owner, 2026-11-06: "ok still capping at 60 videos"): 60 pictures at
       // once used to spend the minute's budget before the next page was asked for
-      const near = 'IntersectionObserver' in window ? new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { const vd = e.target; vd.src = vd.dataset.src; near.unobserve(vd); } }, { rootMargin: '600px' }) : null;
-      const lazy = (el) => { const vd = el.querySelector('video[data-src]'); if (vd) near ? near.observe(vd) : (vd.src = vd.dataset.src); return el; };
+      // a tile whose film cannot be read at all (the file is gone or broken) leaves the grid instead of staying a dead square
+      const arm = (vd) => { vd.addEventListener('error', () => { const t = vd.closest('.film.thumb'); if (t) t.remove(); }, { once: true }); vd.src = vd.dataset.src; };
+      const near = 'IntersectionObserver' in window ? new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { const vd = e.target; arm(vd); near.unobserve(vd); } }, { rootMargin: '600px' }) : null;
+      const lazy = (el) => { const vd = el.querySelector('video[data-src]'); if (vd) near ? near.observe(vd) : arm(vd); return el; };
       if (cur) {
         document.title = cur.title + ' · Verse Holovids';
         try { if (!sessionStorage.getItem('a2m.tube.seen.' + cur.id)) { sessionStorage.setItem('a2m.tube.seen.' + cur.id, '1');

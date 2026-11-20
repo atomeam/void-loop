@@ -248,5 +248,8 @@
   {"check": "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in", "sha": "48c75c85e835b16278a39f83957b0990535b23a3", "at": "2026-11-20T05:37:08Z"},
   {"check": "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a", "sha": "48c75c85e835b16278a39f83957b0990535b23a3", "at": "2026-11-20T05:40:07Z"},
   {"check": "base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: UR", "sha": "48c75c85e835b16278a39f83957b0990535b23a3", "at": "2026-11-20T05:40:07Z"},
-  {"check": "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so", "sha": "48c75c85e835b16278a39f83957b0990535b23a3", "at": "2026-11-20T05:55:32Z"}
+  {"check": "late skills: \"dyslexia friendly font\" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so", "sha": "48c75c85e835b16278a39f83957b0990535b23a3", "at": "2026-11-20T05:55:32Z"},
+  {"check": "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download i", "sha": "a418163d127a26f7a08d8d667450f0689f2ad709", "at": "2026-11-20T06:26:47Z"},
+  {"check": "photo resizer: \"resize a photo to 3.5 x 2.5 cm under 50 kb\" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in", "sha": "a418163d127a26f7a08d8d667450f0689f2ad709", "at": "2026-11-20T06:26:47Z"},
+  {"check": "suite ran to the end", "sha": "a418163d127a26f7a08d8d667450f0689f2ad709", "at": "2026-11-20T06:26:47Z"}
 ]

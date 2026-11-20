@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-20T05:43:20.550Z",
+  "at": "2026-11-20T06:25:38.659Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -34,137 +34,37 @@
       }
     },
     "podcasts": {
-      "score": 72.1,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
+          "ask": "play the latest episode of radiolab",
           "failed": [
             "audio"
           ],
           "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of radiolab",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the daily",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of serial",
-          "failed": [
-            "episode"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of hardcore history",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
         },
         {
           "ask": "play the latest episode of hidden brain",
           "failed": [
-            "audio",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of freakonomics radio",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of science vs",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of crime junkie",
           "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
             "audio"
           ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of npr news now",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio",
-            "episode"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -481,7 +381,7 @@
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 72.1
+    "domain": "sports",
+    "score": 91.7
   }
 }
