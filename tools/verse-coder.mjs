@@ -61,7 +61,8 @@ export function providersFrom(env = process.env) {
   // GitHub Models is gone: GitHub retired it on 2026-07-30 (docs.github.com/en/rest/models/inference), and its old endpoint answers 200 "OK" to every call
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
-  oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'openai/gpt-oss-120b');
+  // Groq's free plan (2026-11-20) serves qwen3.8-27b; llama-3.3-70b-versatile moved to Contact Sales. The coder skips OpenAI's open-weight models.
+  oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'qwen/qwen3.8-27b');
   oa('gemini', 'GEMINI_API_KEY', 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', env.VERSE_CODER_GEMINI_MODEL || GEMINI_MODELS[0]);
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
