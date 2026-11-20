@@ -24,7 +24,7 @@ const BUILDERS = /\b(your|v0[1i]d'?s?|(?:verse|void)'?s?|verse'?s?)\s+builders?\
 // Verse's own money and growth ("you have earned your first $100, how would you spend it?", "how is your store doing"): its
 // facts (the store, the wishlist, what it has and wants) answer, not generic advice for a stranger. "you" must be the subject
 // or "your" must own the money, so "how should I spend $100" stays the visitor's own question.
-const MONEY = /\byou\s+(have\s+|'ve\s+|just\s+)?(earned|made|raised|sold|got)\b[^?.!]{0,40}(\$|dollars?|money|sales?|first)|\b(would|should|will|could)\s+you\s+(spend|invest|reinvest|use|buy)\b[^?.!]{0,30}\b(your|it|the money|earnings|first)\b|\byour\s+(earnings|revenue|income|budget|money|sales|store|first\s+\$?\d+)\b/i;
+const MONEY = /\byou\s+(have\s+|'ve\s+|just\s+)?(earned|made|raised|sold|got)\b[^?.!]{0,40}(\$|dollars?|money|sales?|first)|\b(would|should|will|could)\s+you\s+(spend|(?:re)?invest|use|buy)\b[^?.!]{0,30}\b(your|it|the money|earnings|first)\b|\byour\s+(earnings|revenue|income|budget|money|sales|store|first\s+\$?\d+)\b/i;
 // who or what Verse is ("who are you?", "are you an AI?", "what model are you?", "who created you?"): an identity probe is a fact
 // about Verse, answered from its own facts and persona, never a question for Wikipedia ("Who Are You" is also a song). Asked by
 // Verse's will, 2026-10-30: "Fix the self-skill router so it stops treating identity-based probes as questions instead of facts."
