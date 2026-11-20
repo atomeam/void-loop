@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T06:12:04.554Z",
+ "updated": "2026-11-20T06:21:35.690Z",
  "last24h": {
-  "ticks": 63,
-  "started": 56,
-  "requeued": 10,
+  "ticks": 64,
+  "started": 58,
+  "requeued": 11,
   "setAside": 1,
   "probes": 0,
   "errors": 1
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 2,
+   "used": 6,
    "cap": 90
   },
   "day": {
@@ -115,7 +115,7 @@
  "handed": {
   "mvbl52gd": 1795155124554,
   "mveb8rsi": 1795133003663,
-  "mvu167w7": 1795133576525,
+  "mvu167w7": 1795155695690,
   "mveb8svc": 1795133576525,
   "mvfu4evy": 1795134146575,
   "mvpuq9g6": 1795134709317,
@@ -2076,6 +2076,42 @@
    "probe": false,
    "grow": false,
    "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 22,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T06:21:35.690Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "want-guard-hourly-deploy-green",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 105
+    },
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    }
+   ],
+   "requeued": 1,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
    "will": false,
    "lap": false,
    "revived": [
