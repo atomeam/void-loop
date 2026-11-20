@@ -26,7 +26,7 @@ test('Gemini first, then Workers AI; no key, a failed call or an unreadable repl
   const calls = [];
   const both = async (url) => { calls.push(String(url).includes('generativelanguage') ? 'gemini' : 'cf'); return String(url).includes('generativelanguage') ? bad() : { json: async () => ({ result: { response: marks(80, 70) } }) }; };
   const j = await judge('q', 'a', 'b', { GEMINI_API_KEY: 'x', CLOUDFLARE_API_TOKEN: 't', CLOUDFLARE_ACCOUNT_ID: 'acct' }, both, () => 0.9);
-  assert.deepEqual(calls, ['gemini', 'cf']); assert.equal(j.by, 'workers-ai'); assert.equal(j.answer.right, 80);
+  assert.deepEqual([...new Set(calls)], ['gemini', 'cf']); assert.equal(calls.filter((c) => c === 'gemini').length, 2, 'both Gemini models were tried before the fallback'); assert.equal(j.by, 'workers-ai'); assert.equal(j.answer.right, 80);
 });
 test('Verse beats the reference when its judged overall is at least equal and no mark is more than 5 behind', () => {
   const j = (a, b) => ({ answer: { right: a, useful: a, clear: a }, reference: { right: b, useful: b, clear: b }, by: 'gemini' });
@@ -42,8 +42,14 @@ test('when no judge answers, the reason for each (a status, no key, unreadable) 
   for (const k of Object.keys(judgeWhy)) delete judgeWhy[k];
   const res = (ok, status, body) => async () => ({ ok, status, json: async () => body });
   await judge('q', 'a', 'b', { GEMINI_API_KEY: 'SECRET-KEY', CLOUDFLARE_API_TOKEN: 't', CLOUDFLARE_ACCOUNT_ID: 'acct' }, async (url) => (String(url).includes('generativelanguage') ? res(false, 429, {})() : res(false, 403, {})()), () => 0.9);
-  assert.equal(whyLine(), 'gemini HTTP 429, workers-ai HTTP 403'); assert.ok(!whyLine().includes('SECRET'));
+  assert.equal(whyLine(), 'gemini HTTP 429 (gemini-2.5-flash-lite), workers-ai HTTP 403'); assert.ok(!whyLine().includes('SECRET'));
   await judge('q', 'a', 'b', {}, async () => { throw new Error('x'); }); assert.equal(whyLine(), 'gemini no key, workers-ai no key');
   await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, async () => { throw new Error('boom'); }); assert.match(whyLine(), /gemini Error/);
   await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, res(true, 200, { candidates: [{ content: { parts: [{ text: marks(80, 70) }] } }] }), () => 0.9); assert.ok(!/gemini (HTTP|Error|answer)/.test(whyLine()), 'a success clears the reason');
+});
+
+test('a retired Gemini model (404) falls to the next one, and the first model named is not the shut-down 2.0', async () => {
+  const urls = []; const fetchFn = async (url) => { urls.push(String(url)); return /3\.5/.test(url) ? { ok: false, status: 404, json: async () => ({}) } : { ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: marks(90, 80) }] } }] }) }; };
+  const j = await judge('q', 'a', 'b', { GEMINI_API_KEY: 'k' }, fetchFn, () => 0.9);
+  assert.equal(j.by, 'gemini'); assert.equal(urls.length, 2); assert.ok(!urls.some((u) => /2\.0/.test(u)));
 });
