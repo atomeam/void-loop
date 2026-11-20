@@ -29,7 +29,7 @@ const stripe = (opt = {}) => async (url, init) => {
 async function withFetch(fn, impl) { resetLive(); const real = globalThis.fetch; globalThis.fetch = impl; try { return await fn(); } finally { globalThis.fetch = real; resetLive(); } }
 
 test('open paths stay open, full pages are Uni, and a missing key does not lock them', async () => {
-  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/api/versus-floor', '/exam/latest.json', '/self.json', '/progress/nightly.json', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/', '/films/rss', '/versus/', '/versus/index.html']) assert.equal(openPath(p), true, p);
+  for (const p of ['/', '/index.html', '/void.html', '/404.html', '/api/answer', '/api/status', '/api/publish', '/api/page-pass', '/api/versus-floor', '/exam/latest.json', '/self.json', '/progress/nightly.json', '/privacy/', '/members/', '/store/', '/skills/clock.js', '/films/', '/films/rss', '/blub/', '/versus/', '/versus/index.html']) assert.equal(openPath(p), true, p);
   for (const p of ['/flights/', '/emojis/', '/books/', '/podcasts/', '/brain/', '/studies.html', '/@sam']) assert.equal(gatedPath(p), true, p);
   assert.equal(gatedPath('/versus/'), false);
   assert.equal(backPath('https://evil.example/x'), '/'); assert.equal(money(CENTS), '$20 a month');

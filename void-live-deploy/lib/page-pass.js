@@ -18,6 +18,7 @@ export function openPath(pathname) {
   if (ASSET.test(p) || /\/rss\/?$/.test(p)) return true;
   const bare = p.replace(/\/index\.html$/, '').replace(/\/+$/, '') || '/';
   if (bare === '/versus') return true; // its own sign; /api/versus-floor and the json it reads stay open as an API and as files
+  if (bare === '/blub') return true; // the blobfish is the messenger of A-to-Mind Verse: strangers who follow its link must see it, not the Uni screen
   if (bare === '/films') return true; // free to watch; the hourly Films guard reads this page, and Uni was hiding it
   return OPEN.some((pre) => bare === pre || bare.startsWith(pre + '/'));
 }
