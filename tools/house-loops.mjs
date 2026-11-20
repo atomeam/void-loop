@@ -1,6 +1,6 @@
 // Run one house lane. The last stdout line is JSON. --dry writes nothing.
 //   node tools/house-loops.mjs list
-//   node tools/house-loops.mjs run <lane> [--dry]
+//   node tools/house-loops.mjs run <lane> [--dry]   (every run starts with the revenue lane; `run revenue` runs only that)
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
@@ -149,9 +149,12 @@ async function runNext() {
 const JOBS = { links: runLinks, health: runHealth, speed: runSpeed, twins: runTwins, plain: runPlain, fresh: runFresh, seo: runSeo, coverage: runCoverage, deps: runDeps, handoff: runHandoff, 'next-tool': runNext };
 
 export async function main(argv = process.argv.slice(2)) {
-  const [cmd, lane] = argv, dry = argv.includes('--dry'), job = JOBS[lane];
+  const [cmd, lane] = argv, dry = argv.includes('--dry'), job = lane === 'revenue' ? () => ({}) : JOBS[lane];
   if (cmd === 'list') { for (const l of LOOPS) console.log(l.id + '\t' + l.hourUtc + ':' + String(l.minuteUtc).padStart(2, '0')); return 0; }
   if (cmd !== 'run' || !job) { console.error('usage: node tools/house-loops.mjs list | run <lane> [--dry]'); return 2; }
+  // the revenue lane is the top priority (tools/revenue-lane.mjs): it runs first in every house run, fenced so it never fails the lane
+  try { const { runLane } = await import('./revenue-lane.mjs'); const r = await runLane({ dry }); console.log('Revenue: ' + r.last); } catch (e) { console.log('revenue: ' + String((e && e.message) || e).slice(0, 160)); }
+  if (lane === 'revenue') return 0;
   const loop = LOOPS.find((l) => l.id === lane), prev = loadOne(loop), now = Date.now(), gate = backoff(prev.state, now);
   save = (file, text) => { if (!dry) writeFileSync(file, text); };
   const result = gate.run ? await job() : { last: prev.last, ok: true };
