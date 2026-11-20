@@ -5,9 +5,15 @@ import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { realized, feeCents, balances, bucketWeights, clampShares, split, queueSpends, review, reviseCut, BUCKETS } from '../void-live-deploy/lib/treasury.js';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/treasury.js';
+import { onRequest as policyGone } from '../void-live-deploy/functions/treasury/policy.json.js';
 import { money, hackathonFinds, bountyFinds, settlementFinds, affiliateFinds, upsellFinds } from './found-money.mjs';
 
 const policy = JSON.parse(readFileSync(new URL('../void-live-deploy/treasury/policy.json', import.meta.url), 'utf8'));
+assert.equal(policy.owner_cut.share, 0.3, 'the payout share stays 30%');
+const gone = policyGone();
+assert.equal(gone.status, 404);
+assert.equal(gone.headers.get('cache-control'), 'no-store');
+assert.doesNotMatch(await gone.text(), /owner_cut|0\.3|reinvest/i);
 const ping = (o) => new URLSearchParams(o).toString();
 
 // fees: Gumroad's published 10% + 50c plus 2.9% + 30c on a direct sale, 30% flat on Discover
@@ -107,11 +113,13 @@ assert.equal(t.revenue.realized_cents, real);
 assert.equal(t.owner_view, false);
 assert.equal(t.pots.owner, undefined, 'the public ledger does not show the owner pot');
 assert.equal(t.policy && t.policy.owner_cut, undefined, 'the public ledger does not show the cut');
-assert.ok(!JSON.stringify(t).includes("Atom's cut") && !JSON.stringify(t).includes('owner_cut'), 'buyers do not see the cut');
+assert.ok(!JSON.stringify(t).includes("Atom's cut") && !JSON.stringify(t).includes('owner_cut') && !JSON.stringify(t).includes('paid_first'), 'buyers do not see the cut');
 assert.ok(!JSON.stringify(t).includes('buyer@example.com') && !JSON.stringify(t).includes('"s1"'), 'nothing about the buyer or the sale id is public');
 const ownerGet = (e = env) => onRequestGet({ request: new Request('https://a-to-mind.com/api/treasury', { headers: { authorization: 'Bearer owner-secret' } }), env: e });
 let ownView = await (await ownerGet()).json();
 assert.equal(ownView.owner_view, true);
+assert.equal(ownView.policy.paid_first.share, 0.3);
+assert.equal(ownView.policy.paid_first.label, "Atom's cut");
 assert.equal(ownView.split_cents, real, 'all of it split');
 assert.equal(ownView.pots.owner, Math.floor(real * policy.owner_cut.share), "Atom's cut first, paid as before");
 const again = await (await ownerGet()).json();

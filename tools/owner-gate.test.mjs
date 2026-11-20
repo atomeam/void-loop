@@ -12,7 +12,7 @@ const get = (path, headers = {}, method = 'GET') => new Request('https://a-to-mi
 const mw = (path, headers, method) => onRequest({ request: get(path, headers, method), env, next: async () => new Response('{"ok":1}', { headers: { 'cache-control': 'public, max-age=60' } }) });
 
 test('which paths are owner-only', () => {
-  for (const p of ['/tower.evidence.json', '/tower.shots/a-b.jpg', '/tower.icons/x.png', '/tower-evidence/a.json', '/rivals/index.json', '/history/some.site.json', '/assimilated.json', '/versus/compare.js', '/lib/tower.js', '/lib/versus-floor.js', '/versus/card.js'])
+  for (const p of ['/tower.evidence.json', '/tower.shots/a-b.jpg', '/tower.icons/x.png', '/tower-evidence/a.json', '/rivals/index.json', '/history/some.site.json', '/assimilated.json', '/versus/compare.js', '/lib/tower.js', '/lib/versus-floor.js', '/versus/card.js', '/lib/treasury.js', '/treasury/policy.json'])
     assert.ok(ownerOnlyPath(p), p);
   for (const p of ['/', '/versus/', '/versus/open.js', '/history/', '/history/index.html', '/lib/avatar.js', '/skills/tower.js', '/lib/versus-sign.js', '/versus/open.js', '/api/versus-floor'])
     assert.ok(!ownerOnlyPath(p), p);
