@@ -15,6 +15,9 @@ const BAD_TEXT = /\bundefined\b|\bNaN\b|\[object |lorem ipsum|\{\{|\bnull\b/i;
 export function chromeExe() {
   return [process.env.VOID_TEST_BROWSER, process.env.CHROME_PATH, '/usr/bin/google-chrome', '/opt/google/chrome/chrome', '/usr/bin/chromium'].find((p) => p && fs.existsSync(p));
 }
+// full pages sit behind the Uni screen for a stranger (lib/page-pass.js). With the owner's token (a CI secret, never printed) the engine sees the real page;
+// without it a gated page is reported as gated and never scored as if the Uni screen were the page.
+const OWNER = process.env.VOID_OWNER_TOKEN || '';
 export async function launch() {
   let pw; try { pw = await import('playwright-core'); } catch (_) { pw = await (await import('./verse-guards.mjs')).loadPlaywright(); }
   const { chromium } = pw;
@@ -64,7 +67,7 @@ const READ = () => {
   const clipped = [...document.body.querySelectorAll('h1,h2,h3,p,li,button,a')].filter((e) => vis(e) && e.scrollWidth > e.clientWidth + 2 && !/ellipsis/.test(getComputedStyle(e).textOverflow) && /hidden|clip/.test(getComputedStyle(e).overflowX)).length;
   const inline = [...document.scripts].filter((s) => !s.src).map((s) => s.textContent || '').join('\n');
   return { text, sizes: sizes.size, bodyMin: bodyMin === 99 ? 16 : bodyMin, transitions, feedback, reduced, alive: anims + vids > 0, art, big, canvases, links, controls, inputs, clipped,
-    scrollX: Math.max(0, document.documentElement.scrollWidth - innerWidth), inlineGpu: /navigator\.gpu/.test(inline), scripts: [...document.scripts].map((s) => s.src).filter((s) => s && s.startsWith(location.origin)).slice(0, 12), title: document.title, h1: (document.querySelector('h1') || {}).innerText || '' };
+    scrollX: Math.max(0, document.documentElement.scrollWidth - innerWidth), inlineGpu: /navigator\.gpu/.test(inline), scripts: [...document.scripts].map((s) => s.src).filter((s) => s && s.startsWith(location.origin)).slice(0, 12), gated: !!document.querySelector('meta[name="verse-gate"]'), title: document.title, h1: (document.querySelector('h1') || {}).innerText || '' };
 };
 
 async function entropyOf(host, png) {
@@ -85,7 +88,8 @@ async function open(browser, profile, url, { watch = true } = {}) {
   page.on('console', (m) => { if (m.type() === 'error' && !/favicon|Failed to load resource/.test(m.text())) seen.errors.push(m.text().slice(0, 140)); });
   page.on('pageerror', (e) => seen.errors.push(String(e.message || e).slice(0, 140)));
   page.on('response', (r) => { const u = r.url(); if (u.startsWith(SITE) && r.status() >= 400 && r.request().method() === 'GET') seen.failed.push(r.status() + ' ' + u.slice(SITE.length, SITE.length + 80)); });
-  await page.route('**/*', (route) => { const m = route.request().method(); if (m !== 'GET' && m !== 'HEAD' && m !== 'OPTIONS') { seen.mutating = (seen.mutating || 0) + 1; return route.fulfill({ status: 204, body: '' }); } return route.continue(); });
+  await page.route('**/*', (route) => { const m = route.request().method(); if (m !== 'GET' && m !== 'HEAD' && m !== 'OPTIONS') { seen.mutating = (seen.mutating || 0) + 1; return route.fulfill({ status: 204, body: '' }); } if (OWNER && route.request().url().startsWith(SITE)) return route.continue({ headers: { ...route.request().headers(), authorization: 'Bearer ' + OWNER } });
+    return route.continue(); });
   const t0 = Date.now();
   const res = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch((e) => ({ err: String(e.message || e).slice(0, 100) }));
   if (res && res.err) { await ctx.close(); return { fail: res.err }; }
@@ -133,6 +137,7 @@ export async function measure(browser, surface, { shots = true } = {}) {
   await host.context().close();
   const P = sides.phone, D = sides.desktop;
   if (!P || P.fail) return { ...out, fail: (P && P.fail) || 'no phone render' };
+  if (P.read && P.read.gated) return { ...out, fail: 'gated: the Uni screen shows, not the page (the owner token measures the real page)' };
   const worst = (f) => Math.max(f(P), D && !D.fail ? f(D) : 0);
   const readT = readability(P.read.text);
   const animated = (s) => s && !s.fail && ((s.q.draws - s.d0.draws) > 2 || (s.q.gpu - s.d0.gpu) > 2);
