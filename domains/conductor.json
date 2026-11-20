@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T07:37:03.932Z",
+ "updated": "2026-11-20T07:46:39.371Z",
  "last24h": {
-  "ticks": 72,
-  "started": 66,
+  "ticks": 73,
+  "started": 67,
   "requeued": 11,
   "setAside": 1,
   "probes": 0,
@@ -101,7 +101,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 13,
+   "used": 19,
    "cap": 90
   },
   "day": {
@@ -2359,6 +2359,36 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 22,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T07:46:39.371Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "want-exam-weather",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 75
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 22,
    "warnings": 0
