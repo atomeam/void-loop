@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T01:09:32.837Z",
+ "updated": "2026-11-20T01:18:53.529Z",
  "last24h": {
-  "ticks": 32,
-  "started": 11,
+  "ticks": 33,
+  "started": 12,
   "requeued": 4,
   "setAside": 0,
   "probes": 0,
@@ -16,12 +16,49 @@
    "url": "https://github.com/atomeam/void-loop/actions/runs/44628976914"
   },
   {
+   "wf": "verse-job.yml",
+   "fails": 3,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44651535365"
+  },
+  {
    "wf": "tower-gate.yml",
    "fails": 7,
    "url": "https://github.com/atomeam/void-loop/actions/runs/44558712521"
   }
  ],
  "held": [
+  {
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mw5mm5fm",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
   {
    "id": "mva30i2e",
    "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
@@ -69,48 +106,16 @@
   {
    "id": "mwdsgj2z",
    "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mweaagmp",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mweaah6f",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mwey8iy6",
-   "why": "propose-fix.yml is broken (8 failed runs); its repair is queued"
-  },
-  {
-   "id": "mwav1pw9",
-   "why": "no executor for retest"
-  },
-  {
-   "id": "mwazktlm",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mwazktnz",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mwazktrq",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mwazktv3",
-   "why": "no executor for bot"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 13,
    "cap": 90
   },
   "day": {
-   "used": 47,
+   "used": 60,
    "cap": 360
   },
   "room": true,
@@ -1047,6 +1052,37 @@
    "sweep": false,
    "blueprints": 0,
    "held": 29,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T01:18:53.529Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "want-guard-hourly-main-green",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 105
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 37,
    "warnings": 0
   }
  ]
