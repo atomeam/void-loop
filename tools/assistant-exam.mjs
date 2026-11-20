@@ -124,7 +124,7 @@ export function problemsOf(file) {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const getJson = async (url, opt) => { for (let i = 1; ; i++) { try { const res = await fetch(url, opt); if (res.status >= 500) throw new Error('HTTP ' + res.status); return await res.json(); } catch (e) { if (i >= 4) throw e; await sleep(1500 * i); } } };
+const getJson = async (url, opt) => { for (let i = 1; ; i++) { try { const res = await fetch(url, opt); if (!res.ok && res.status >= 500) throw new Error('HTTP ' + res.status); return await res.json(); } catch (e) { if (i >= 4) throw e; await sleep(1500 * i); } } }; // void-review: ok (a 4xx from the agent is JSON with ok:false, read as the answer; a 5xx is tried again)
 /** one question put to the live agent on its own thread: { text, status, tier }. */
 export async function askLive(base, ask) {
   const h = { 'content-type': 'application/json', origin: base }, thread = 'exam' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
