@@ -8,6 +8,7 @@
  * Pure: no network, no storage, no DOM. Tests: tools/team.test.mjs.
  */
 import { briefOf } from './job-guide.js';
+import { withSecret } from './payer-secret.js'; // a member bought from Verse: they are told the secret too
 
 export const CODE_RE = /^[a-z0-9][a-z0-9-]{0,20}$/;
 export const NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,23}$/;
@@ -306,8 +307,8 @@ export function purchaseProblem(answer, product) {
   if (!p.sale_id) return 'Gumroad gave no sale for that key';
   return '';
 }
-export const memberJoinedSay = (name) => 'Welcome, ' + name + '. You are a member of the Verse team. Save the key straight to a key file or this page keeps it; it is shown once. '
-  + 'Claim a job on the board (one click), ship it as a pull request, and your name goes on the credits. Propose changes in #ideas.';
+export const memberJoinedSay = (name) => withSecret('Welcome, ' + name + '. You are a member of the Verse team. Save the key straight to a key file or this page keeps it; it is shown once. '
+  + 'Claim a job on the board (one click), ship it as a pull request, and your name goes on the credits. Propose changes in #ideas.');
 // the board: kinds a newcomer can finish alone, from public facts (a rival site's page, a missing answer, a new idea)
 export const GOOD_FIRST = Object.freeze(['versus', 'gap', 'novelty']);
 const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Learn from a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
