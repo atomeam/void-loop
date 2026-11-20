@@ -359,6 +359,81 @@
         "via": "Groq openai/gpt-oss-120b",
         "pass": false
       }
+    },
+    {
+      "at": "2026-11-20T22:21:57.183Z",
+      "studio": true,
+      "kind": "short",
+      "title": "Windows 1.0: A Tale of Overlap",
+      "source": {
+        "title": "Windows 1.0",
+        "url": "https://en.wikipedia.org/wiki/Windows_1.0"
+      },
+      "pass": false,
+      "writer": "Groq openai/gpt-oss-120b",
+      "judge": {
+        "separated": true,
+        "calibration": [
+          {
+            "id": "journal",
+            "kind": "bad",
+            "min": 2,
+            "scores": [
+              4,
+              2,
+              10
+            ]
+          },
+          {
+            "id": "old34",
+            "kind": "bad",
+            "min": 1,
+            "scores": [
+              8,
+              7,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "kind": "bad",
+            "min": 5,
+            "scores": [
+              7,
+              5,
+              9
+            ]
+          },
+          {
+            "id": "good-story",
+            "kind": "good",
+            "min": 7,
+            "scores": [
+              7,
+              8,
+              10
+            ]
+          }
+        ],
+        "issues": [],
+        "blind": {
+          "min": 3,
+          "scores": [
+            4,
+            3,
+            10
+          ],
+          "notes": [
+            "Score 4.",
+            "Score 3",
+            "Score 10"
+          ]
+        },
+        "human": 2,
+        "humanNotes": "Human: 2 Notes: The Critic’s replies often fail to directly answer the Verse’s preceding statements.",
+        "via": "Groq openai/gpt-oss-120b",
+        "pass": false
+      }
     }
   ]
 }
