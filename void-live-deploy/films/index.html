@@ -219,7 +219,7 @@
       const want = new URLSearchParams(location.search).get('v');
       // a watch link to an older film reads on until it finds that film
       while (want && !films.some((f) => f.id === want) && next != null) films.push(...await page());
-      if (!films.length) { status.textContent = 'No films yet: the first goes up when one passes Verse's own quality check.'; return; }
+      if (!films.length) { status.textContent = 'No films yet: the first goes up when one passes Verse’s own quality check.'; return; }
       // Verse Tube (owner, 2026-10-15: "Verse should be its own version of YouTube"): the channel grid, and a watch page per video
       // at /films/?v=<id> with its player, words, views, share and upload buttons and related videos
       await viewsOf(films);

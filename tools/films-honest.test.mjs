@@ -17,7 +17,7 @@ test('no page or card says films come every day', () => {
 test('a tile with no picture yet is a gradient, and a tile whose film cannot load leaves the grid', () => {
   assert.doesNotMatch(page, /\.film video \{[^}]*background: #000/);
   assert.match(page, /\.film video \{[^}]*linear-gradient/);
-  assert.match(page, /vd\.addEventListener\('error'[^)]*closest\('\.film\.thumb'\)/);
+  assert.match(page, /vd\.addEventListener\('error'.*closest\('\.film\.thumb'\)/);
 });
 test('the gems stay in the side margins on a wide screen and fade back on a narrow one', () => {
   assert.match(page, /#verse-scene \{ opacity: \.22 !important; \}/);
