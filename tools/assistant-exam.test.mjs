@@ -59,3 +59,11 @@ test('the owner card box says the score, the bar and the weakest questions, and 
   assert.match(html, /A top AI assistant/); assert.match(html, /more than 94 on each/); assert.match(html, /time complexity of binary search/);
   assert.ok(!/percent/i.test(html), 'a question with no gap is not listed');
 });
+
+import { serialize } from './assistant-exam.mjs';
+test('the file is written one line per question and per row, and reads back the same', () => {
+  const d = { ...file, last: { at: 'x', overall: 1, rows: [{ id: 'a' }, { id: 'b' }] }, runs: [{ at: 'x' }] };
+  const s = serialize(d);
+  assert.deepEqual(JSON.parse(s), d);
+  assert.ok(s.split('\n').length < 80, 'a diff stays small');
+});

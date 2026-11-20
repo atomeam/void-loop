@@ -18,6 +18,8 @@ export const FILE = path.join(ROOT, 'void-live-deploy/tower.assistant.json');
 export const TARGET = 'top-assistant';
 export const GAP_BELOW = 90;
 export const load = (f = FILE) => JSON.parse(fs.readFileSync(f, 'utf8'));
+/** one line per question, per run and per scored row, so a diff shows what moved. Pure. */
+export const serialize = (d) => '{\n' + Object.entries(d).map(([k, v]) => ' ' + JSON.stringify(k) + ': ' + (k === 'set' || k === 'runs' ? '[\n' + v.map((x) => '  ' + JSON.stringify(x)).join(',\n') + '\n ]' : k === 'last' && v ? '{' + Object.entries(v).map(([a, b]) => (a === 'rows' ? '\n  "rows": [\n' + b.map((x) => '   ' + JSON.stringify(x)).join(',\n') + '\n  ]' : '\n  ' + JSON.stringify(a) + ': ' + JSON.stringify(b))).join(',') + '\n }' : JSON.stringify(v))).join(',\n') + '\n}\n';
 const words = (s) => String(s || '').trim().split(/\s+/).filter(Boolean);
 const sentences = (s) => String(s || '').split(/(?<=[.!?])\s+|\n+/).map((x) => x.trim()).filter(Boolean);
 const rx = (src) => new RegExp(src, 'i');
@@ -150,7 +152,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     if (args.includes('--write')) {
       const last = { at: new Date().toISOString(), base, ...sum, rows: rows.map((r, i) => ({ ...r, answer: answers[i].text.slice(0, 500), tier: answers[i].tier, bot: answers[i].bot || '' })) };
       file.last = last; file.runs = (file.runs || []).concat({ at: last.at, ...sum, gaps: gaps.length }).slice(-60);
-      fs.writeFileSync(FILE, JSON.stringify(file, null, 1) + '\n');
+      fs.writeFileSync(FILE, serialize(file));
       const U = await import('./universe.mjs'); let u = U.load();
       for (const [k, v] of Object.entries(marksOf(sum))) u = U.markOf(u, TARGET, k, v, { judge: 'assistant-exam' });
       const bg = (u.background || []).filter((b) => !(b.id === TARGET && String(b.aspect).startsWith('q:'))).concat(jobsOf(file.set, rows, today));
