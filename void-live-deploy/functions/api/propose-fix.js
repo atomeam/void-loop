@@ -7,6 +7,7 @@ import { ownerOk } from '../../lib/guard.js';
 import { models } from '../../lib/models.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { recall, lessonsBlock } from '../../lib/brain-recall.js';
+import { KEY as LESSONS_KEY } from '../../lib/brain-lessons.js';
 import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, MAX_TRIED, fixPrompt, parseEdits, evidenceOf } from '../../lib/propose-fix.js';
 
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
@@ -30,10 +31,12 @@ async function propose({ request, env }) {
   // lessons, and a failure here costs the lessons, never the proposal
   let carry = '';
   try {
-    if (env.ASSETS) {
-      const kr = await env.ASSETS.fetch(new Request(new URL('/void.knowledge.json', request.url)));
-      if (kr.ok) carry = lessonsBlock(recall(ask, await kr.json()));
-    }
+    // the knowledge file this deploy serves, and the lessons Verse's own results taught it (lib/brain-lessons.js, D1), recalled together
+    let file = [], mine = [];
+    if (env.ASSETS) { const kr = await env.ASSETS.fetch(new Request(new URL('/void.knowledge.json', request.url))); if (kr.ok) file = await kr.json(); }
+    if (env.DB) { try { const v = await env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind(LESSONS_KEY).first('v'); mine = v ? JSON.parse(v) : []; } catch (_) { mine = []; } }
+    const all = [...(Array.isArray(mine) ? mine : []), ...(Array.isArray(file) ? file : [])];
+    if (all.length) carry = lessonsBlock(recall(ask, all));
   } catch (_) { carry = ''; }
   let said = '';
   try {

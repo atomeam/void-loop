@@ -6,6 +6,7 @@
 // WHAT THIS CAN TOUCH: reads of a-to-mind.com, of public rival robots.txt and sitemaps, of public browser release feeds and of the
 // public GitHub API for this repo; writes only to its own D1 tables, the team chat and the build queue (team kinds, ids "want-*").
 // It never spends, never sends anything outside, never merges, never posts on X.
+import { lessonOf, keepLessons } from './brain-lessons.js';
 import * as C from './team-crew.js';
 import * as P from './team-priorities.js';
 import { slugOf, categoryOf, CATEGORIES } from './watch-build.js';
@@ -90,7 +91,7 @@ async function linkWalk(env, run) {
 async function measureOpen(env, ev, bots, now) {
   const { results } = await env.DB.prepare("SELECT * FROM void_team_wants WHERE state = 'open'").all();
   const jobs = await jobStates(env, results.map((w) => w.job));
-  const out = { met: [], reopened: [] };
+  const out = { met: [], reopened: [] }, lessons = []; // what each settled want taught (lib/brain-lessons.js), kept in one write at the end
   for (const w of results) {
     const v = C.measure(w.metric, { ...ev, jobs });
     if (v == null) continue;
@@ -100,7 +101,7 @@ async function measureOpen(env, ev, bots, now) {
       const note = 'outcome met (' + (bot ? 'team:' + bot.name : 'Verse') + '): ' + w.label + ' ' + (w.private ? 'moved the right way' : w.baseline + ' -> ' + v);
       await env.DB.prepare("UPDATE void_queue SET state = 'done', note = ?, updated = ? WHERE id = ? AND state != 'building'").bind(note.slice(0, 300), new Date(now).toISOString(), w.job).run().catch(() => null); // void-review: ok (only open wants, at most MAX_OPEN, and only the ones whose number moved)
       if (w.thread) await crewWrite(env, { c: 'work', by, thread: w.thread, now, body: 'Outcome met: ' + w.label + (w.private ? ' moved the right way.' : ' went from ' + w.baseline + ' to ' + v + '.') + ' Closing this want.' + (jobs[w.job] === 'building' ? ' (The coder holding the job closes it with its pull request.)' : '') });
-      out.met.push(w.key);
+      out.met.push(w.key); lessons.push(lessonOf({ kind: 'met', want: { ...w, latest: v }, job: w.job, at: new Date(now).toISOString() }));
       continue;
     }
     await env.DB.prepare('UPDATE void_team_wants SET latest = ?, checked = ? WHERE key = ?').bind(v, now, w.key).run();
@@ -117,9 +118,10 @@ async function measureOpen(env, ev, bots, now) {
       await env.DB.prepare('UPDATE void_queue SET state = ?, note = ?, updated = ? WHERE id = ?').bind(aside ? 'set aside' : 'queued', (why + ' · reopened by Verse\'s brain').slice(0, 300), new Date(now).toISOString(), w.job).run().catch(() => null);
       await env.DB.prepare('UPDATE void_team_wants SET nag = ?, reopened = reopened + 1, state = ? WHERE key = ?').bind(now, aside ? 'set aside' : 'open', w.key).run();
       if (w.thread) await crewWrite(env, { c: 'work', by, thread: w.thread, now, body: (aside ? 'Set aside: ' : 'Back on the queue: ') + why + '. The job was handed in, but the number it is measured by did not move.' });
-      out.reopened.push(w.key);
+      out.reopened.push(w.key); lessons.push(lessonOf({ kind: aside ? 'set aside' : 'reopened', want: { ...w, latest: v }, job: w.job, why: aside ? 'reopened ' + C.REOPEN_MAX + ' times and the number never moved' : '', at: new Date(now).toISOString() }));
     }
   }
+  await keepLessons(env, lessons);
   await env.DB.prepare("DELETE FROM void_team_wants WHERE state = 'met' AND met_at < ?").bind(now - KEEP_MET_MS).run();
   return out;
 }

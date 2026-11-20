@@ -4,6 +4,7 @@
 // its skills (skills/index.json) and its will (void_kv 'will', the same thing GET /api/will shows). All of it is already
 // public on a-to-mind.com; nothing owner-only (queue, earnings, spends) is read here. Also its games and card miniatures
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
+import { lessonLines } from './brain-lessons.js';
 import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
 import { PERSONA } from './persona.js';
 import { models, ANSWER_FALLBACK } from './models.js';
@@ -71,19 +72,21 @@ const asset = async (env, origin, p) => {
 
 export async function readSelf(env, origin, ms = 800) {
   const kv = async (k) => { try { const r = await env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind(k).first(); return r && r.v ? JSON.parse(r.v) : null; } catch (_) { return null; } };
-  const [self, skills, will, voice, replies, families] = await Promise.all([
+  const [self, skills, will, voice, replies, families, lessons] = await Promise.all([
     within(asset(env, origin, '/self.json'), ms),
     within(asset(env, origin, '/skills/index.json'), ms),
     within(kv('will'), ms),
     within(kv('voice'), ms),
     within(kv('voice-replies'), ms),
     within(asset(env, origin, '/skills/families.json'), ms),
+    within(kv('lessons'), ms), // what its results taught it (lib/brain-lessons.js)
   ]);
-  return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null, families: families && Array.isArray(families.families) ? families : null };
+  return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null, families: families && Array.isArray(families.families) ? families : null, lessons: Array.isArray(lessons) ? lessons : null };
 }
 
-export function selfFacts({ self, skills, will, voice, replies, families } = {}, { card = false, note = '' } = {}) {
+export function selfFacts({ self, skills, will, voice, replies, families, lessons } = {}, { card = false, note = '' } = {}) {
   const parts = [];
+  if (lessons && lessons.length) parts.push('What my results taught me lately (each from a want I settled by its number):\n' + lessonLines(lessons, 5).join('\n'));
   const cf = card ? cardFacts(self, { note }) : '';
   if (cf) parts.push(cf);
   if (self && self.about) parts.push('What I am: ' + self.about);
