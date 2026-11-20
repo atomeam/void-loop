@@ -59,7 +59,7 @@ shows the newest real chain: sense -> want -> job -> pull request -> result -> l
 4. Lessons from every outcome, read by the will, the coder and answers about Verse.
 5. The router breaks close calls with a small free model and logs them for nightly tuning.
 6. Sleep: the nightly note.
-7. Long-term personal memory by meaning, opt-in only.
+7. Long-term personal memory by meaning, opt-in only: a signed-in member's own saved notes are also ranked by meaning (bge-m3 on Workers AI, for that answer only); a visitor's "remember that …" facts stay on their device.
 8. Drives with real numbers.
 
 ## Rules this design keeps
