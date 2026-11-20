@@ -109,6 +109,7 @@ export function brainOf(S) {
   const sl = S.sleep || null;
   put('sleep', [sl ? 'last slept ' + String(sl.at || '').slice(0, 10) + ': ' + clip(sl.focus || '', 120) : 'has not slept yet: the first night writes the first note'], sl ? [ev(sl.at, 'Slept: ' + (sl.summary || ''))] : []);
   const drives = drivesOf(S);
-  put('drives', drives.map((d) => d.id + ': ' + (d.value == null ? 'not measured yet' : d.value + ' ' + d.unit)), []);
+  put('drives', drives.map((d) => d.id + ': ' + (d.value == null ? 'not measured yet' : d.value + ' ' + d.unit)),
+    [ex && ex.at ? ev(ex.at, 'Competence measured: mean exam score ' + ex.mean) : null, sc ? ev(sc.at, 'Integrity measured: ' + sc.fine + ' of ' + sc.checked + ' pages fine') : null]);
   return { at: new Date(now).toISOString(), regions: REGIONS.map((g) => ({ ...g, ...out[g.id] })), flow: FLOW, drives, chain: chainOf(S.chainRow, ls) };
 }
