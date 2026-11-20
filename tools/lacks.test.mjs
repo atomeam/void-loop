@@ -137,3 +137,4 @@ test('a row that routed must also answer before it joins the benchmark (PR #1987
   assert.match(t, /routed but the card did not answer[\s\S]*how far is nyc to london/);
   assert.deepEqual((await answered(rows, async () => { throw new Error('x'); })).passing.length, 3, 'a check that cannot run keeps the row (routing only)');
 });
+import './fun-share.test.mjs'; // fun first, held (2026-11-20)

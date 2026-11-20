@@ -317,6 +317,22 @@
    "isolated": false
   },
   {
+   "name": "kokoro-js and Transformers.js (ONNX Runtime Web)",
+   "author": "Xenova (Joshua Lochner), Hugging Face; Microsoft",
+   "license": "Apache-2.0 (kokoro-js, Transformers.js), MIT (ONNX Runtime)",
+   "link": "https://github.com/hexgrad/kokoro/tree/main/kokoro.js",
+   "used": "/video/ (the video maker's voice, run in the visitor's browser)",
+   "isolated": false
+  },
+  {
+   "name": "Wikimedia Commons photos",
+   "author": "each photo's author, credited on screen in every video",
+   "license": "each photo's own free licence (CC BY, CC BY-SA, public domain)",
+   "link": "https://commons.wikimedia.org/",
+   "used": "/video/ (the video maker's pictures)",
+   "isolated": false
+  },
+  {
    "name": "VCSL Steinway B piano samples",
    "author": "Sam Gossner and contributors",
    "license": "CC0-1.0",
