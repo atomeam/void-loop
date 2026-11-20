@@ -62,7 +62,7 @@ async function pageRecipe(q, el, api, base, pre) {
     + (r.image && /^https:\/\/www\.themealdb\.com\//.test(r.image) ? '<img alt="" src="' + esc(r.image) + '/preview">' : '')
     + '<div class="sub" style="margin-top:8px">Ingredients</div><ul>' + r.ingredients.map((x) => '<li>' + esc(line(x)) + '</li>').join('') + '</ul>'
     + '<div class="sub">Steps</div><ol>' + r.steps.slice(0, 20).map((x) => '<li style="margin:3px 0">' + esc(step(x)) + '</li>').join('') + '</ol>'
-    + '<p class="thanks" style="margin:10px 0 0;font-style:italic;opacity:.85">' + esc(r.thanks || thanksLine(r)) + '</p>'
+    + '<p class="thanks" style="margin-top:10px;font-style:italic;opacity:.85">' + esc(r.thanks || thanksLine(r)) + '</p>'
     + (q.by === 'mealdb' ? '<div class="src">Source: <a href="https://www.themealdb.com/meal/' + encodeURIComponent(q.id) + '" target="_blank" rel="noopener">TheMealDB</a></div>' : '');
   // the card's page link opens this same recipe at these servings and units (lib/card-frame.js pageOfCard)
   el.dataset.page = '/recipes/?' + (q.by === 'mealdb' ? 'id=' + q.id : 'q=' + encodeURIComponent(r.id.replace(/-/g, ' '))) + (n !== r.servings ? '&servings=' + n : '') + '&units=' + q.units;

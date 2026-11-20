@@ -293,7 +293,7 @@ export const ownPageOf = (name, hrefs) => {
   return '';
 };
 /** the link to a skill's full page, or '' when it has none. Pure. */
-export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
+export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin-top:6px;margin-bottom:2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
 
 /** put the card's frame on a page, or refresh it: idempotent, and safe to call from a MutationObserver (it only writes when it changes). */
 export function keep(el, esc, stats) {

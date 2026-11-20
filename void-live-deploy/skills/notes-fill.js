@@ -41,7 +41,7 @@ function draw(el, text, intent) {
     if (r.preview) { const pre = mk('p', 'src', r.preview.split('\n').slice(0, 6).join(' · ')); el.append(pre); }
     const row = mk('div', ''); el.append(row);
     row.append(btn('Undo', () => { const now = read(); write(undoOf(now, r.changes, Date.now())); saveLog(log().filter((x) => x.id !== entry.id)); el.replaceChildren(mk('h2', '', 'Undone'), mk('p', '', r.said + ': put back as it was.'), mk('p', 'src', 'Earlier versions stay in the note\'s history.')); }, true));
-    if (r.openId) { const a = mk('a', 'vc-page', 'Open it in Notes'); a.href = openHref(r.openId); a.style.cssText = 'display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600'; row.append(a); }
+    if (r.openId) { const a = mk('a', 'vc-page', 'Open it in Notes'); a.href = openHref(r.openId); a.style.cssText = 'display:inline-block;margin-top:6px;margin-bottom:2px;font-size:13px;font-weight:600'; row.append(a); }
   } else if (r.kind === 'confirm') {
     el.append(mk('p', '', r.preview + '?'), mk('p', 'src', 'It is not an exact match for the name you gave, so I am asking first.'));
     el.append(btn('Confirm', () => draw(el, text, r.intent), true), btn('Cancel', () => el.replaceChildren(mk('h2', '', 'Cancelled'), mk('p', '', 'Nothing was written.'))));
@@ -52,7 +52,7 @@ function draw(el, text, intent) {
     for (const l of r.lines || []) el.append(mk('p', '', l));
     for (const hit of r.hits || []) { const p = mk('p', ''); const a = mk('a', '', hit.title); a.href = openHref(hit.id); a.style.fontWeight = '700'; p.append(a, document.createTextNode(': ' + (hit.snippet || ''))); el.append(p); }
     if (r.offer) el.append(btn(r.offer.label, () => draw(el, text, r.offer.intent)));
-    if (r.openId) { const a = mk('a', 'vc-page', 'Open it in Notes'); a.href = openHref(r.openId); a.style.cssText = 'display:block;margin:6px 0 2px;font-size:13px;font-weight:600'; el.append(a); }
+    if (r.openId) { const a = mk('a', 'vc-page', 'Open it in Notes'); a.href = openHref(r.openId); a.style.cssText = 'display:block;margin-top:6px;margin-bottom:2px;font-size:13px;font-weight:600'; el.append(a); }
   } else { el.append(mk('p', '', HINT)); }
 }
 

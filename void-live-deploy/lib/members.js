@@ -16,7 +16,7 @@ export const BUY = 'https://moonbeam846.gumroad.com/l/yinmj'; // the paid Verse 
 
 // What paid Verse gives, in the order the page lists it. The member lab's rows (lab: true) are always listed, so the page says members
 // help build Verse (owner, 2026-10-30: "also needs to mention the build feature that allows members to help build features to verse");
-// until LIVE they say they open soon.
+// until LIVE each says plainly that it is not open yet.
 export const PERKS = Object.freeze([
   { id: 'build', title: 'Help build Verse', text: 'Send an idea for a feature and Verse\'s own agents build it into the site. Changes only ever add.', lab: true },
   { id: 'credit', title: 'Your name on what you add', text: 'Every idea of yours that ships is listed under Built by members, with your published Verse name if you have one.', lab: true },
@@ -29,7 +29,7 @@ export const PERKS = Object.freeze([
   { id: 'built', title: 'Built by you, on your page', text: 'Your published page lists the ideas of yours that Verse built, with a link to each change.' },
   { id: 'share', title: 'Your page shares as yours', text: 'A link to your published page shows your name and your cards in iMessage, Discord, X and Slack, not the Verse home card.' },
 ]);
-export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
+export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? 'Not open yet. ' + text : text }));
 
 // An idea that asks to take something away is refused before it is queued (the lap's add-only check is the second, binding wall).
 const SUBTRACT = /\b(?:remove|removing|delete|deleting|take (?:away|down|out|off)|get rid of|disable|turn off|switch off|shut (?:down|off)|hide|wipe|erase|strip out|rip out|drop (?:the|a|all|every)|kill (?:the|a|all|every)|ban|block (?:all|every|users?|visitors?)|lock (?:out|visitors?)|paywall|charge (?:visitors?|for)|make (?:\w+ ){0,3}paid|members?[- ]only|for members only|revert|roll back|undo|downgrade|lower (?:the )?(?:score|limit))\b/i;
