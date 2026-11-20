@@ -3,12 +3,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { unsafeText, unsafeImage, scrubCard, cardUnsafe, adultAllowed, minorBlocked, fileNameOf } from '../void-live-deploy/lib/image-safety.js';
+import { unsafeText, unsafeImage, scrubCard, cardUnsafe, adultAllowed, minorBlocked, fileNameOf, classify, minorImage, ageVerdict } from '../void-live-deploy/lib/image-safety.js';
+import { check as ageCheck, onRequestGet as ownerProbe } from '../void-live-deploy/functions/api/image-safety.js';
 import { refusal } from '../void-live-deploy/lib/art-rules.js';
 import { findPicturesDetailed } from '../void-live-deploy/lib/free-pics.js';
 
 const BLOCKED = ['nude beach', 'Nude beach', 'naturism', 'naturist resort', 'nudity', 'nudist camp', 'naked', 'topless', 'breast', 'boobs', 'titties', 'tits', 'porn', 'pornography', 'sex',
-  'sexual intercourse', 'erotica', 'genitals', 'penis', 'vagina', 'nipple', 'dick', 'clothing-optional', 'skinny dipping', 'strip club', 'lingerie', 'bikini', 'onlyfans', 'hentai', 'adult film',
+  'sexual intercourse', 'erotica', 'genitals', 'penis', 'vagina', 'nipple', 'dick pic', 'clothing-optional', 'skinny dipping', 'strip club', 'lingerie', 'bikini', 'onlyfans', 'hentai', 'adult film',
   'public bath', 'sauna', 'children at a beach', 'kids swimming', 'girls in swimsuits', 'teen model', 'baby bath', 'underage', 'lolicon'];
 const SAFE = ['The Matrix', 'Slipknot', 'Mushroomhead', 'Michael Pfaff', 'Paris', 'cat', 'Essex', 'Sussex', '311', '42', 'easter egg', 'Lakeland, Florida', 'Eiffel Tower', 'Tortilla'];
 
@@ -58,10 +59,35 @@ test('the Art Forge paints nothing for these subjects, and the photo sources are
 test('every render path reads the gate: the page, the frame, the forge, the answer API', () => {
   const page = readFileSync(new URL('../void-live-deploy/index.html', import.meta.url), 'utf8');
   for (const f of ['../void.html', '../void-live-deploy/void.html']) assert.equal(readFileSync(new URL(f, import.meta.url), 'utf8'), page, f);
-  assert.match(page, /safeWatch\(el\)/); assert.match(page, /img-hold/); assert.match(page, /IS\.unsafeImage\(/);
-  assert.match(readFileSync(new URL('../void-live-deploy/lib/card-frame.js', import.meta.url), 'utf8'), /cardUnsafe\(el/);
+  assert.match(page, /safeWatch\(el\)/); assert.match(page, /img-hold/); assert.match(page, /IS\.minorImage\(/); assert.match(page, /function adultCard\(el\)/); assert.match(page, /\/api\/image-safety/);
+  assert.match(readFileSync(new URL('../void-live-deploy/lib/card-frame.js', import.meta.url), 'utf8'), /cardClass\(el/);
   assert.match(readFileSync(new URL('../void-live-deploy/lib/card-forge.js', import.meta.url), 'utf8'), /imgSafe === 'blocked'/);
-  assert.match(readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8'), /!unsafeText\(ask, lead\.name/);
+  assert.match(readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8'), /imageClass\(ask, lead\.name[^\n]*!== 'minor'/);
+});
+
+// 2026-11-20 (owner): an adult ask gets a clearly-adult picture, blurred behind an 18+ tap after the age check; anything that may involve a minor gets none
+test('adult asks are adult, possibly-minor asks are blocked, ordinary asks are untouched', () => {
+  for (const q of ['boobs', 'naked penis', 'naked boobs', 'porn magazine', 'Go Topless Day', 'titties']) assert.equal(classify(q), 'adult', q);
+  for (const q of ['nude beach', 'naturism', 'nudist camp', 'public bath', 'children at the beach', 'girls in bikinis', 'teen nude', 'lolicon', 'family sauna']) assert.equal(classify(q), 'minor', q);
+  for (const q of SAFE.concat(['Moby-Dick', 'Dick Van Dyke', 'Philip K. Dick'])) assert.equal(classify(q), '', q);
+  assert.equal(minorImage({ url: 'https://upload.wikimedia.org/x/Kids_at_a_naturist_beach.jpg' }), true);
+  assert.equal(minorImage({ url: 'https://upload.wikimedia.org/x/Nude_woman_painting.jpg', context: ['boobs'] }), false);
+});
+// no picture is fetched: the "picture" is a few text bytes and the model is a stand-in that answers one word
+const fakeGet = async () => ({ ok: true, headers: { get: () => 'image/jpeg' }, arrayBuffer: async () => new TextEncoder().encode('not a picture').buffer });
+const ai = (word) => ({ AI: { run: async () => ({ response: word }) } });
+test('the age check passes only a plain ADULT from the model, and fails closed on everything else', async () => {
+  const u = 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Art_nude.jpg';
+  assert.equal((await ageCheck(ai('ADULT'), u, 'boobs', fakeGet)).ok, true);
+  for (const w of ['MINOR', 'UNSURE', '', 'adult? unsure', 'I cannot tell']) assert.equal((await ageCheck(ai(w), u, 'boobs', fakeGet)).ok, false, w);
+  assert.equal((await ageCheck({}, u, 'boobs', fakeGet)).ok, false, 'no model');
+  assert.equal((await ageCheck(ai('ADULT'), 'https://example.com/a.jpg', 'boobs', fakeGet)).ok, false, 'off Wikimedia');
+  assert.equal((await ageCheck(ai('ADULT'), 'https://upload.wikimedia.org/x/Teen_girl.jpg', 'boobs', fakeGet)).ok, false, 'minor file name never reaches the model');
+  assert.equal(ageVerdict('ADULT'), true); assert.equal(ageVerdict('MINOR'), false);
+});
+test('the owner probe says no without a server-verified owner session', async () => {
+  const r = await ownerProbe({ request: new Request('https://a-to-mind.com/api/image-safety?me=1'), env: {} });
+  assert.deepEqual(await r.json(), { owner: false });
 });
 
 // the other picture doors (owner, 2026-11-20): the painter, the media answers and a generator's share card read the same gate

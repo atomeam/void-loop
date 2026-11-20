@@ -11,7 +11,7 @@
 // Keys (GitHub and Cloudflare secrets only): PEXELS_API_KEY, PIXABAY_API_KEY, UNSPLASH_ACCESS_KEY, SMITHSONIAN_API_KEY (api.data.gov), EUROPEANA_API_KEY, FLICKR_API_KEY (+ FREE_PICS_FLICKR_COMMERCIAL=1),
 //   OPENVERSE_CLIENT_ID + OPENVERSE_CLIENT_SECRET. Switches: FREE_PICS_OFF=1 (all), FREE_PICS_<ID>=0 (one source, e.g. FREE_PICS_LOC=0), FREE_PICS_DAY (global cap, default 400).
 // Tests: tools/free-pics.test.mjs. Probe: tools/free-pics-probe.mjs. Playbook: docs/playbooks/free-pics.md.
-import { unsafeText, unsafeImage } from './image-safety.js';
+import { classify, minorImage } from './image-safety.js';
 export const UA = 'Verse/1.0 (https://a-to-mind.com; atom@a-to-mind.com)';
 export const ALL_LICENCES = Object.freeze(['cc0', 'pd', 'by', 'by-sa', 'open-access']);
 const AIC_IIIF = 'https://www.artic.edu/iiif/2';
@@ -368,7 +368,7 @@ export const resetState = () => { memLimit.clear(); memMin.clear(); };
 /** the full answer: { pics, report[] } (the report says what each source did, no keys). Options: kind ('sport'|'player'|'team'|'event'|'venue'|'place'|'space'|'art'|'animal'|'history'), sport, date 'YYYY-MM-DD', max (default 3),
  *  licences (default all five), env, fetch, cap(key, limit) -> Promise<{ok}>, cache {get, put}, sources (restrict), fromAnswer, timeoutMs, deadlineMs, blocked (Set of source pages), now. */
 export async function findPicturesDetailed(subject, opts = {}) {
-  if (unsafeText(subject)) return { pics: [], report: [{ source: '*', skipped: 'image safety: no photo for this subject (lib/image-safety.js)' }] };
+  if (classify(subject) === 'minor') return { pics: [], report: [{ source: '*', skipped: 'image safety: no photo for this subject (lib/image-safety.js)' }] };
   const report = [], pics = [], q0 = resolveSubject(subject, opts); if (!q0) return { pics, report: [{ source: '*', skipped: 'the subject is not on a closed list' }] };
   const kind = opts.kind || 'sport', q = opts.sport && KIND_ORDER[kind] !== 'space' && !q0.toLowerCase().includes(String(opts.sport).toLowerCase()) && NAMED.has(kind) ? q0 + ' ' + String(opts.sport).replace(/[^\p{L} ]/gu, '').slice(0, 20) : q0;
   const max = Math.max(1, Math.min(10, opts.max || 3)), now = opts.now || Date.now(), deadline = now + (opts.deadlineMs || 15000), ctx = makeCtx(opts), cache = opts.cache === undefined ? edgeCache() : opts.cache;
@@ -404,7 +404,7 @@ export async function findPicturesDetailed(subject, opts = {}) {
   }
   const u = pics.find((p) => p.track); if (u && opts.fetch !== false) { try { ctx.http(u.track, { headers: { authorization: 'Client-ID ' + keyOf(env, 'UNSPLASH_ACCESS_KEY') } }).catch(() => {}); } catch (_) {} } // Unsplash asks for a ping when a picture is used
   for (const p of pics) delete p.track;
-  return { pics: pics.filter((p) => p && !unsafeImage({ url: p.thumb || p.url || '', alt: p.alt || '', title: p.title || '', desc: p.desc || p.description || '', categories: p.categories || [], context: [subject] })), report };
+  return { pics: pics.filter((p) => p && !minorImage({ url: p.thumb || p.url || '', alt: p.alt || '', title: p.title || '', desc: p.desc || p.description || '', categories: p.categories || [], context: [subject] })), report };
 }
 /** the pictures only: [{ url, thumb, width, height, alt, creditHtmlSafeParts, licence, archive, ... }] in source order; [] when nothing qualifies (the caller keeps its drawing). */
 export const findPictures = async (subject, opts = {}) => (await findPicturesDetailed(subject, opts)).pics;
