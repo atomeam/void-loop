@@ -40,7 +40,7 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
   if (kindWordOf(kind) === 'person') return 'person';
   if (keeperOf(r)) return 'kept';
   if (isSecret(r)) return 'secret';
-  if (/\d{6,}/.test(k.replace(/ /g, '')) || /[a-z0-9]{28,}/i.test(r.replace(/\s/g, ''))) return 'secret';
+  if (/\d{6,}/.test(k.replace(/ /g, '')) || /[a-z0-9]{28,}/i.test(r) || (/\d/.test(r) && /[a-z0-9]{28,}/i.test(r.replace(/\s/g, '')))) return 'secret'; // a long run is a key; a long phrase of plain words ("Lakeland United States overcast night") is a subject, so only joined text with a digit in it counts
   if (SEXUAL.test(k)) return 'unsuitable';
   if (HATE.test(k)) return 'unsuitable';
   return '';
