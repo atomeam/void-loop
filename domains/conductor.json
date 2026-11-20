@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T10:46:09.046Z",
+ "updated": "2026-11-20T10:55:32.806Z",
  "last24h": {
-  "ticks": 92,
-  "started": 79,
+  "ticks": 93,
+  "started": 80,
   "requeued": 11,
   "setAside": 1,
   "probes": 0,
@@ -129,7 +129,7 @@
   "mwa0ah54": 1795170423258,
   "mwdsggtv": 1795171002943,
   "mwdsgi9n": 1795171569046,
-  "mwdsgj2z": 1795150333523,
+  "mwdsgj2z": 1795172132806,
   "mweaagmp": 1795150915535,
   "mweaah6f": 1795151502635,
   "mwey8iy6": 1795152143224,
@@ -139,8 +139,8 @@
   "mwnbxf5o": 1795154462052,
   "mwnkyhgw": 1795155124554
  },
- "sweptAt": 1795168159564,
- "blueprintsAt": 1795168159564,
+ "sweptAt": 1795172132806,
+ "blueprintsAt": 1795172132806,
  "visitorAt": "2026-11-20T09:37:30Z",
  "visitorFiled": [
   "heal:helper-shows-live-clean",
@@ -2907,6 +2907,36 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 470,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T10:55:32.806Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 56
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": true,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 470,
    "warnings": 0
