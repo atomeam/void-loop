@@ -1,6 +1,6 @@
 /**
  * client-tasks-dropped skill — list the specific client tasks that drop
- * when Verse owns the systems for a business idea. Makes "we own the heavy lifting"
+ * when Verse owns the systems for a business idea. Makes "verse does the hard work"
  * concrete for selling and delivery. Rules-based, offline. Nothing is sent.
  * "tasks dropped for automate client onboarding", "what client work drops for the SaaS idea",
  * "client tasks that drop: invoice reminders".
