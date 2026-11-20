@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1356,
+ "counted": 1389,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -41,22 +41,22 @@
    "file": "lib/keeper.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 177,
+   "dependants": 183,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 31,
    "direct": 1,
-   "dependants": 177,
+   "dependants": 183,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 176,
-   "tests": 6
+   "dependants": 182,
+   "tests": 7
   },
   {
    "file": "lib/load-later.js",
@@ -129,6 +129,13 @@
    "tests": 2
   },
   {
+   "file": "lib/card-focus.js",
+   "skills": 20,
+   "direct": 1,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
    "file": "lib/live-cards.js",
    "skills": 20,
    "direct": 0,
@@ -167,14 +174,14 @@
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 66,
+   "dependants": 65,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 64,
+   "dependants": 63,
    "tests": 5
   },
   {
@@ -197,13 +204,6 @@
    "direct": 11,
    "dependants": 23,
    "tests": 1
-  },
-  {
-   "file": "lib/self-sites.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 21,
-   "tests": 2
   },
   {
    "file": "lib/success-pulse.js",
@@ -244,6 +244,13 @@
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
+   "dependants": 21,
+   "tests": 2
+  },
+  {
+   "file": "lib/self-sites.js",
+   "skills": 10,
+   "direct": 0,
    "dependants": 21,
    "tests": 2
   },
@@ -531,7 +538,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 113,
+   "dependants": 114,
    "tests": 2
   },
   {
@@ -598,6 +605,13 @@
    "tests": 1
   },
   {
+   "file": "lib/snail-card.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/hero-view.js",
    "skills": 5,
    "direct": 1,
@@ -657,21 +671,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 113,
+   "dependants": 114,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 112,
+   "dependants": 113,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 110,
+   "dependants": 111,
    "tests": 9
   },
   {
@@ -752,13 +766,6 @@
    "tests": 1
   },
   {
-   "file": "lib/tower-controls.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/void-seal.js",
    "skills": 4,
    "direct": 0,
@@ -773,53 +780,11 @@
    "tests": 21
   },
   {
-   "file": "lib/gate-badge.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 2
-  },
-  {
-   "file": "lib/obituary.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 2
-  },
-  {
-   "file": "lib/tower-journeys.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 3
-  },
-  {
-   "file": "lib/tower-topic.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/tower-weight.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/stage-tools.js",
    "skills": 4,
    "direct": 3,
    "dependants": 5,
    "tests": 1
-  },
-  {
-   "file": "lib/tower.js",
-   "skills": 4,
-   "direct": 3,
-   "dependants": 5,
-   "tests": 36
   },
   {
    "file": "lib/field-cards.js",
@@ -1056,14 +1021,14 @@
    "file": "lib/image-gen.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 117,
+   "dependants": 123,
    "tests": 3
   },
   {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 2
   },
   {
@@ -1084,7 +1049,7 @@
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 1
   },
   {
@@ -1098,8 +1063,15 @@
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
+   "dependants": 39,
+   "tests": 1
+  },
+  {
+   "file": "lib/store.js",
+   "skills": 2,
+   "direct": 1,
    "dependants": 38,
-   "tests": 0
+   "tests": 6
   },
   {
    "file": "lib/markets.js",
@@ -1107,13 +1079,6 @@
    "direct": 2,
    "dependants": 37,
    "tests": 5
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 37,
-   "tests": 6
   },
   {
    "file": "lib/proposal.js",
@@ -1135,6 +1100,13 @@
    "direct": 1,
    "dependants": 21,
    "tests": 2
+  },
+  {
+   "file": "lib/recipe-respect.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 15,
+   "tests": 1
   },
   {
    "file": "lib/cook-flow.js",
@@ -1193,6 +1165,27 @@
    "tests": 5
   },
   {
+   "file": "lib/tower-controls.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
+   "file": "lib/gate-badge.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
+   "file": "lib/obituary.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
    "file": "lib/prizes.js",
    "skills": 2,
    "direct": 0,
@@ -1204,7 +1197,28 @@
    "skills": 2,
    "direct": 1,
    "dependants": 6,
+   "tests": 4
+  },
+  {
+   "file": "lib/tower-journeys.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6,
    "tests": 3
+  },
+  {
+   "file": "lib/tower-topic.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-weight.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/emoji.js",
@@ -1219,6 +1233,13 @@
    "direct": 2,
    "dependants": 5,
    "tests": 2
+  },
+  {
+   "file": "lib/tower.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 36
   },
   {
    "file": "lib/music-tools.js",
@@ -1392,8 +1413,8 @@
    "file": "lib/models.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 77,
-   "tests": 17
+   "dependants": 82,
+   "tests": 20
   },
   {
    "file": "lib/ask-same.js",
@@ -1718,6 +1739,13 @@
    "tests": 6
   },
   {
+   "file": "lib/versus-sign.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 0
+  },
+  {
    "file": "lib/video-mux.js",
    "skills": 1,
    "direct": 0,
@@ -1791,6 +1819,13 @@
    "file": "lib/transition.js",
    "skills": 1,
    "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/versus-floor.js",
+   "skills": 1,
+   "direct": 1,
    "dependants": 4,
    "tests": 1
   },
@@ -1977,13 +2012,6 @@
    "tests": 4
   },
   {
-   "file": "lib/versus-floor.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/video-gen.js",
    "skills": 1,
    "direct": 1,
@@ -2024,13 +2052,6 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/avatar.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 2
   },
   {
    "file": "lib/backdrop.js",
@@ -2446,20 +2467,6 @@
    "tests": 5
   },
   {
-   "file": "lib/tower-art.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/tower-rank.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/vat-ask.js",
    "skills": 1,
    "direct": 1,
@@ -2498,15 +2505,29 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 113,
+   "dependants": 119,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 112,
-   "tests": 36
+   "dependants": 118,
+   "tests": 37
+  },
+  {
+   "file": "lib/pages.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 75,
+   "tests": 1
+  },
+  {
+   "file": "lib/webauthn.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 75,
+   "tests": 0
   },
   {
    "file": "lib/http.js",
@@ -2516,31 +2537,17 @@
    "tests": 1
   },
   {
-   "file": "lib/pages.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 73,
-   "tests": 1
-  },
-  {
-   "file": "lib/webauthn.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 73,
-   "tests": 0
-  },
-  {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 72,
+   "dependants": 74,
    "tests": 11
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 57,
+   "dependants": 58,
    "tests": 0
   },
   {
@@ -2575,7 +2582,7 @@
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 40,
    "tests": 1
   },
   {
@@ -2589,7 +2596,7 @@
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 6
   },
   {
@@ -2757,7 +2764,7 @@
    "file": "lib/db.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 1
   },
   {
@@ -2779,7 +2786,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 17,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/x402.js",
@@ -2832,6 +2839,13 @@
   },
   {
    "file": "lib/paid-access.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/treasury.js",
    "skills": 0,
    "direct": 0,
    "dependants": 11,
@@ -2908,7 +2922,28 @@
    "tests": 1
   },
   {
+   "file": "lib/charter.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 3
+  },
+  {
+   "file": "lib/gate-preview.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 0
+  },
+  {
    "file": "lib/status.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
@@ -2927,6 +2962,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 0
+  },
+  {
+   "file": "lib/page-pass.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 2
   },
   {
    "file": "lib/sponsor-db.js",
@@ -2964,11 +3006,11 @@
    "tests": 1
   },
   {
-   "file": "lib/visits.js",
+   "file": "lib/agent-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 4,
-   "tests": 1
+   "dependants": 3,
+   "tests": 2
   },
   {
    "file": "lib/churn.js",
@@ -3034,6 +3076,13 @@
    "tests": 1
   },
   {
+   "file": "lib/agent-providers.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/approval-core.js",
    "skills": 0,
    "direct": 0,
@@ -3083,11 +3132,11 @@
    "tests": 1
   },
   {
-   "file": "lib/page-pass.js",
+   "file": "lib/owner-gate.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 1
+   "tests": 6
   },
   {
    "file": "lib/paypal.js",
@@ -3104,11 +3153,18 @@
    "tests": 0
   },
   {
-   "file": "lib/treasury.js",
+   "file": "lib/universe-seeds.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 1
+   "tests": 4
+  },
+  {
+   "file": "lib/universe.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 4
   },
   {
    "file": "lib/used.js",
@@ -3136,14 +3192,14 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
-   "file": "lib/agent-core.js",
+   "file": "lib/agent-cap.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/approval-gate.js",
@@ -3272,6 +3328,13 @@
    "tests": 1
   },
   {
+   "file": "lib/house-loops.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/job-draft.js",
    "skills": 0,
    "direct": 0,
@@ -3346,7 +3409,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/qr-page.js",
@@ -3356,11 +3419,18 @@
    "tests": 1
   },
   {
+   "file": "lib/quality.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 4
+  },
+  {
    "file": "lib/recipeimport.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/reports.js",
@@ -3382,6 +3452,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/scrub-sites.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 3
   },
   {
    "file": "lib/self-blocks.js",
@@ -3461,6 +3538,13 @@
    "tests": 1
   },
   {
+   "file": "lib/versus-moved.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/weather.js",
    "skills": 0,
    "direct": 0,
@@ -3524,11 +3608,25 @@
    "tests": 1
   },
   {
+   "file": "lib/ask-shapes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/audio-write.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/avatar.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
   },
   {
    "file": "lib/base64.js",
@@ -3608,6 +3706,13 @@
    "tests": 1
   },
   {
+   "file": "lib/compound.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/correction-fix.js",
    "skills": 0,
    "direct": 0,
@@ -3620,6 +3725,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/demand.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/denoise.js",
@@ -3711,6 +3823,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/game-updates.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
   },
   {
    "file": "lib/generators-card.js",
@@ -4063,6 +4182,13 @@
    "tests": 2
   },
   {
+   "file": "lib/store-log.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/sun-day.js",
    "skills": 0,
    "direct": 0,
@@ -4084,6 +4210,13 @@
    "tests": 0
   },
   {
+   "file": "lib/tower-art.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/tower-families.js",
    "skills": 0,
    "direct": 0,
@@ -4096,6 +4229,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 0
+  },
+  {
+   "file": "lib/tower-rank.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/trading-bots.js",
@@ -4119,11 +4259,25 @@
    "tests": 2
   },
   {
+   "file": "lib/verse-guards.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
    "file": "lib/verse-log.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/verse-scene.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/verse-world-bridge.js",
@@ -4161,6 +4315,13 @@
    "tests": 2
   },
   {
+   "file": "lib/win-post.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/wordcount.js",
    "skills": 0,
    "direct": 0,
@@ -4179,7 +4340,9 @@
   },
   "functions/_middleware.js": {
    "imports": [
-    "lib/page-pass.js"
+    "lib/page-pass.js",
+    "lib/owner-gate.js",
+    "lib/versus-moved.js"
    ],
    "importedBy": []
   },
@@ -4209,7 +4372,10 @@
    "imports": [
     "lib/agent-core.js",
     "lib/agent-answer.js",
+    "lib/agent-cap.js",
+    "lib/agent-providers.js",
     "lib/daily-cap.js",
+    "lib/router.js",
     "lib/models.js",
     "lib/shortfall.js",
     "lib/answer-free.js",
@@ -4413,6 +4579,16 @@
     "functions/fanfic/rss.js"
    ]
   },
+  "functions/api/buy.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/visits.js",
+    "lib/store.js",
+    "lib/db.js",
+    "lib/page-pass.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/calshare.js": {
    "imports": [
     "lib/guard.js",
@@ -4427,6 +4603,7 @@
    "imports": [
     "functions/api/answer.js",
     "functions/api/image.js",
+    "functions/api/coder.js",
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/wiki-look.js",
@@ -4494,7 +4671,17 @@
     "lib/treasury.js",
     "lib/router.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/card-art.js"
+   ],
+   "reachedBy": [
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/mcp.js",
+    "functions/api/x402/[service].js"
+   ]
   },
   "functions/api/comments.js": {
    "imports": [
@@ -4934,6 +5121,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/owner-cookie.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/owner-gate.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/page-pass.js": {
    "imports": [
     "lib/store.js",
@@ -5062,6 +5256,7 @@
   "functions/api/reflect.js": {
    "imports": [
     "lib/guard.js",
+    "lib/scrub-sites.js",
     "lib/ask-text.js",
     "lib/actions.js",
     "lib/models.js",
@@ -5765,12 +5960,37 @@
     "functions/api/agent.js"
    ]
   },
+  "lib/agent-cap.js": {
+   "imports": [
+    "lib/daily-cap.js",
+    "lib/agent-providers.js",
+    "lib/treasury.js",
+    "lib/guard.js"
+   ],
+   "importedBy": [
+    "functions/api/agent.js"
+   ]
+  },
   "lib/agent-core.js": {
    "imports": [
     "lib/models.js"
    ],
    "importedBy": [
-    "functions/api/agent.js"
+    "functions/api/agent.js",
+    "lib/house-loops.js"
+   ],
+   "reachedBy": [
+    "lib/verse-guards.js"
+   ]
+  },
+  "lib/agent-providers.js": {
+   "imports": [
+    "lib/daily-cap.js",
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/agent.js",
+    "lib/agent-cap.js"
    ]
   },
   "lib/agent-watch.js": {
@@ -5842,6 +6062,7 @@
     "functions/api/apibot.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/buy.js",
     "functions/api/card-art.js",
     "functions/api/claim.js",
     "functions/api/clip.js",
@@ -6153,6 +6374,7 @@
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
@@ -6161,6 +6383,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
     "functions/api/claim.js",
@@ -6191,6 +6414,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/owner-cookie.js",
     "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
@@ -6249,6 +6473,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/about-skill.js",
+    "lib/agent-cap.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/brain-everywhere.js",
@@ -6262,6 +6487,7 @@
     "lib/fix-audit.js",
     "lib/guard.js",
     "lib/memory-scope.js",
+    "lib/owner-gate.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/rap-listen.js",
@@ -6275,6 +6501,7 @@
     "lib/term-card.js",
     "lib/verse-log.js",
     "lib/verse-world-bridge.js",
+    "lib/versus-moved.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/void-me.js",
@@ -6386,6 +6613,12 @@
     "lib/self-context.js",
     "lib/verse-log.js"
    ]
+  },
+  "lib/ask-shapes.js": {
+   "imports": [
+    "lib/snail-card.js"
+   ],
+   "importedBy": []
   },
   "lib/ask-text.js": {
    "imports": [],
@@ -6599,6 +6832,7 @@
     "functions/[handle].js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -6816,9 +7050,7 @@
   },
   "lib/avatar.js": {
    "imports": [],
-   "importedBy": [
-    "skills/tower.js"
-   ]
+   "importedBy": []
   },
   "lib/avi.js": {
    "imports": [],
@@ -7826,7 +8058,6 @@
     "lib/card-frame.js",
     "lib/card-image.js",
     "lib/skill-confidence.js",
-    "lib/tome.js",
     "skills/rally.js"
    ],
    "reachedBy": [
@@ -7930,6 +8161,34 @@
     "skills/games.js",
     "skills/merge.js",
     "skills/oracle.js"
+   ]
+  },
+  "lib/card-focus.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/studio-card.js",
+    "skills/arcade-card.js"
+   ],
+   "reachedBy": [
+    "skills/cross-bus.js",
+    "skills/debris-field.js",
+    "skills/dim-void.js",
+    "skills/gap-glide.js",
+    "skills/glyph-verse.js",
+    "skills/jump-stack.js",
+    "skills/merge-void.js",
+    "skills/nine-grid.js",
+    "skills/null-sweep.js",
+    "skills/null-waves.js",
+    "skills/packet-maze.js",
+    "skills/pong.js",
+    "skills/push-packets.js",
+    "skills/snake.js",
+    "skills/stackwell.js",
+    "skills/three-alike.js",
+    "skills/token-stand.js",
+    "skills/void-breaker.js",
+    "skills/zorbleflux.js"
    ]
   },
   "lib/card-forge.js": {
@@ -8190,7 +8449,6 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/term-card.js",
-    "lib/tome.js",
     "lib/verse-log.js",
     "lib/verse-world-bridge.js",
     "lib/voice.js",
@@ -8257,6 +8515,20 @@
     "functions/api/x402/[service].js",
     "functions/meanings/index.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/charter.js": {
+   "imports": [
+    "lib/recipe-respect.js"
+   ],
+   "importedBy": [
+    "lib/game-updates.js",
+    "lib/propose-fix.js",
+    "lib/quality.js"
+   ],
+   "reachedBy": [
+    "functions/api/propose-fix.js",
+    "lib/demand.js"
    ]
   },
   "lib/chat-calendar.js": {
@@ -8562,6 +8834,10 @@
     "skills/rap.js"
    ]
   },
+  "lib/compound.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/context-check.js": {
    "imports": [],
    "importedBy": [
@@ -8807,6 +9083,8 @@
     "functions/api/report.js",
     "functions/api/sing.js",
     "functions/api/unbidden.js",
+    "lib/agent-cap.js",
+    "lib/agent-providers.js",
     "lib/free-router.js"
    ],
    "reachedBy": [
@@ -8904,6 +9182,7 @@
    "importedBy": [
     "functions/api/agent.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -8934,6 +9213,12 @@
    "importedBy": [
     "skills/decide-cards.js"
    ]
+  },
+  "lib/demand.js": {
+   "imports": [
+    "lib/quality.js"
+   ],
+   "importedBy": []
   },
   "lib/denoise.js": {
    "imports": [],
@@ -9041,6 +9326,7 @@
    ],
    "reachedBy": [
     "functions/api/a2a.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
@@ -9820,17 +10106,35 @@
     "skills/oracle.js"
    ]
   },
+  "lib/game-updates.js": {
+   "imports": [
+    "lib/charter.js"
+   ],
+   "importedBy": []
+  },
   "lib/gate-badge.js": {
    "imports": [],
    "importedBy": [
-    "lib/tower.js",
-    "skills/tower.js"
+    "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
+    "lib/scrub-sites.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/gate-preview.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/page-pass.js"
+   ],
+   "reachedBy": [
+    "functions/_middleware.js",
+    "functions/api/buy.js",
+    "functions/api/page-pass.js",
+    "lib/versus-moved.js"
    ]
   },
   "lib/generators-card.js": {
@@ -9912,6 +10216,7 @@
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
     "functions/api/claim.js",
@@ -9927,6 +10232,7 @@
     "functions/api/icsfeed.js",
     "functions/api/image.js",
     "functions/api/misses.js",
+    "functions/api/owner-cookie.js",
     "functions/api/passkey.js",
     "functions/api/probe-asks.js",
     "functions/api/probe-log.js",
@@ -9960,9 +10266,11 @@
     "functions/api/will.js",
     "functions/c/[clip].js",
     "functions/team/_middleware.js",
+    "lib/agent-cap.js",
     "lib/automations-run.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/owner-gate.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/void-me.js"
@@ -9971,6 +10279,7 @@
     "functions/[handle].js",
     "functions/_middleware.js",
     "functions/api/a2a.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/blueprint.js",
@@ -10018,7 +10327,8 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/bench-asks.js",
-    "lib/team-crew-run.js"
+    "lib/team-crew-run.js",
+    "lib/versus-moved.js"
    ]
   },
   "lib/guide.js": {
@@ -10278,6 +10588,14 @@
     "functions/api/will.js"
    ]
   },
+  "lib/house-loops.js": {
+   "imports": [
+    "lib/agent-core.js"
+   ],
+   "importedBy": [
+    "lib/verse-guards.js"
+   ]
+  },
   "lib/http.js": {
    "imports": [],
    "importedBy": [
@@ -10404,6 +10722,7 @@
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
@@ -10412,6 +10731,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/card-art.js",
     "functions/api/catalog.js",
@@ -10442,6 +10762,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/owner-cookie.js",
     "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
@@ -10498,13 +10819,16 @@
     "functions/team/_middleware.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
+    "lib/agent-cap.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/owner-gate.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js",
+    "lib/versus-moved.js",
     "lib/void-me.js",
     "skills/video-gen.js"
    ]
@@ -10805,6 +11129,7 @@
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -10812,6 +11137,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
     "functions/api/claim.js",
@@ -10838,6 +11164,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/owner-cookie.js",
     "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
@@ -10895,6 +11222,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/about-skill.js",
+    "lib/agent-cap.js",
     "lib/automations-run.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
@@ -10915,6 +11243,7 @@
     "lib/fix-audit.js",
     "lib/guard.js",
     "lib/memory-scope.js",
+    "lib/owner-gate.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/rap-listen.js",
@@ -10929,6 +11258,7 @@
     "lib/term-card.js",
     "lib/verse-log.js",
     "lib/verse-world-bridge.js",
+    "lib/versus-moved.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/void-me.js",
@@ -11707,6 +12037,7 @@
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
@@ -11715,6 +12046,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/card-art.js",
     "functions/api/catalog.js",
@@ -11748,6 +12080,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/owner-cookie.js",
     "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
@@ -11806,6 +12139,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/about-skill.js",
+    "lib/agent-cap.js",
     "lib/automations-run.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
@@ -11827,6 +12161,7 @@
     "lib/guard.js",
     "lib/image-gen.js",
     "lib/memory-scope.js",
+    "lib/owner-gate.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/rap-listen.js",
@@ -11841,6 +12176,7 @@
     "lib/term-card.js",
     "lib/verse-log.js",
     "lib/verse-world-bridge.js",
+    "lib/versus-moved.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/void-me.js",
@@ -11969,9 +12305,11 @@
     "functions/api/watchalong.js",
     "functions/api/will.js",
     "lib/agent-core.js",
+    "lib/agent-providers.js",
     "lib/ai-gateway.js",
     "lib/approval-core.js",
     "lib/clef.js",
+    "lib/recruit.js",
     "lib/review-api.js",
     "lib/router.js",
     "lib/self-context.js",
@@ -12017,12 +12355,15 @@
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
+    "lib/agent-cap.js",
     "lib/approval-gate.js",
     "lib/bench-asks.js",
+    "lib/house-loops.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
     "lib/team-mcp.js",
+    "lib/verse-guards.js",
     "skills/video-gen.js"
    ]
   },
@@ -12335,6 +12676,7 @@
     "functions/[handle].js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -12509,13 +12851,13 @@
   "lib/obituary.js": {
    "imports": [],
    "importedBy": [
-    "lib/tower.js",
-    "skills/tower.js"
+    "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
+    "lib/scrub-sites.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/walker.js"
    ]
   },
@@ -12623,6 +12965,7 @@
     "functions/api/_middleware.js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
@@ -12631,6 +12974,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/boards/[[path]].js",
+    "functions/api/buy.js",
     "functions/api/calshare.js",
     "functions/api/card-art.js",
     "functions/api/catalog.js",
@@ -12665,6 +13009,7 @@
     "functions/api/mine.js",
     "functions/api/misses.js",
     "functions/api/news.js",
+    "functions/api/owner-cookie.js",
     "functions/api/page-pass.js",
     "functions/api/passkey.js",
     "functions/api/paypal/index.js",
@@ -12722,14 +13067,26 @@
     "functions/team/_middleware.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
+    "lib/agent-cap.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/credits.js",
     "lib/memory-scope.js",
+    "lib/owner-gate.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js",
+    "lib/versus-moved.js",
     "lib/void-me.js"
+   ]
+  },
+  "lib/owner-gate.js": {
+   "imports": [
+    "lib/guard.js"
+   ],
+   "importedBy": [
+    "functions/_middleware.js",
+    "functions/api/owner-cookie.js"
    ]
   },
   "lib/owner-link.js": {
@@ -12758,11 +13115,14 @@
   "lib/page-pass.js": {
    "imports": [
     "lib/guard.js",
-    "lib/void-me.js"
+    "lib/void-me.js",
+    "lib/gate-preview.js"
    ],
    "importedBy": [
     "functions/_middleware.js",
-    "functions/api/page-pass.js"
+    "functions/api/buy.js",
+    "functions/api/page-pass.js",
+    "lib/versus-moved.js"
    ]
   },
   "lib/page-picture.js": {
@@ -12787,6 +13147,7 @@
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/buy.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/credits/claim.js",
@@ -12846,7 +13207,8 @@
     "lib/memory-scope.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
-    "lib/team-crew-run.js"
+    "lib/team-crew-run.js",
+    "lib/versus-moved.js"
    ]
   },
   "lib/paid-access.js": {
@@ -13027,6 +13389,7 @@
     "functions/api/apibot.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/buy.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13575,6 +13938,7 @@
   "lib/propose-fix.js": {
    "imports": [
     "lib/persona.js",
+    "lib/charter.js",
     "lib/automation-fix.js"
    ],
    "importedBy": [
@@ -13665,6 +14029,14 @@
     "skills/quick-tools.js",
     "skills/rally.js",
     "skills/writing-aids.js"
+   ]
+  },
+  "lib/quality.js": {
+   "imports": [
+    "lib/charter.js"
+   ],
+   "importedBy": [
+    "lib/demand.js"
    ]
   },
   "lib/rally-rules.js": {
@@ -14023,14 +14395,40 @@
    ],
    "importedBy": []
   },
-  "lib/recipeimport.js": {
+  "lib/recipe-respect.js": {
    "imports": [],
+   "importedBy": [
+    "lib/charter.js",
+    "lib/recipeimport.js",
+    "lib/recipes.js"
+   ],
+   "reachedBy": [
+    "functions/api/propose-fix.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "lib/chat-recipes.js",
+    "lib/demand.js",
+    "lib/game-updates.js",
+    "lib/kitchen.js",
+    "lib/propose-fix.js",
+    "lib/quality.js",
+    "lib/recipe-card.js",
+    "skills/recipe.js",
+    "skills/recipes-fill.js"
+   ]
+  },
+  "lib/recipeimport.js": {
+   "imports": [
+    "lib/recipe-respect.js"
+   ],
    "importedBy": [
     "functions/api/recipeimport.js"
    ]
   },
   "lib/recipes.js": {
-   "imports": [],
+   "imports": [
+    "lib/recipe-respect.js"
+   ],
    "importedBy": [
     "functions/api/recipes.js",
     "lib/chat-recipes.js",
@@ -14043,7 +14441,9 @@
    ]
   },
   "lib/recruit.js": {
-   "imports": [],
+   "imports": [
+    "lib/models.js"
+   ],
    "importedBy": []
   },
   "lib/reefwatch.js": {
@@ -14300,6 +14700,7 @@
     "lib/models.js"
    ],
    "importedBy": [
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
@@ -14534,6 +14935,17 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/scrub-sites.js": {
+   "imports": [
+    "lib/tower.js",
+    "lib/versus-floor.js",
+    "lib/universe-seeds.js",
+    "lib/universe.js"
+   ],
+   "importedBy": [
+    "functions/api/reflect.js"
+   ]
+  },
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js",
@@ -14602,10 +15014,12 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
     "functions/ip/index.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
+    "lib/scrub-sites.js",
     "lib/seo.js",
     "lib/term-card.js",
     "lib/toolkit.js",
@@ -14617,9 +15031,7 @@
     "skills/merge.js",
     "skills/open-tool.js",
     "skills/pdf-tools.js",
-    "skills/studios.js",
     "skills/toolkit.js",
-    "skills/tower.js",
     "skills/walker.js"
    ]
   },
@@ -15052,6 +15464,20 @@
     "lib/mcp.js",
     "lib/team-mcp.js",
     "skills/time.js"
+   ]
+  },
+  "lib/snail-card.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/ask-shapes.js",
+    "skills/figure.js"
+   ],
+   "reachedBy": [
+    "skills/figure-can.js",
+    "skills/mini/pentamote.js",
+    "skills/motorbody.js",
+    "skills/print-download.js",
+    "skills/print-file.js"
    ]
   },
   "lib/songs.js": {
@@ -15587,6 +16013,10 @@
     "skills/shop.js"
    ]
   },
+  "lib/store-log.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/store-products.js": {
    "imports": [],
    "importedBy": [
@@ -15598,6 +16028,7 @@
     "functions/api/apibot.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/buy.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -15639,6 +16070,7 @@
     "lib/alt-pay.js"
    ],
    "importedBy": [
+    "functions/api/buy.js",
     "functions/api/page-pass.js",
     "functions/api/store/[[path]].js",
     "lib/price-lock.js",
@@ -15730,7 +16162,8 @@
   },
   "lib/studio-card.js": {
    "imports": [
-    "lib/stage-pack.js"
+    "lib/stage-pack.js",
+    "lib/card-focus.js"
    ],
    "importedBy": [
     "skills/dim-void.js",
@@ -16040,6 +16473,7 @@
     "functions/[handle].js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -16323,7 +16757,6 @@
   "lib/tome.js": {
    "imports": [
     "lib/guide.js",
-    "lib/card-art.js",
     "lib/rule-registry.js",
     "lib/book-news.js"
    ],
@@ -16380,9 +16813,7 @@
    "imports": [
     "skills/mini/tower.js"
    ],
-   "importedBy": [
-    "skills/tower.js"
-   ]
+   "importedBy": []
   },
   "lib/tower-controls.js": {
    "imports": [],
@@ -16391,10 +16822,10 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
+    "lib/scrub-sites.js",
     "skills/cartoon.js",
-    "skills/studios.js",
-    "skills/tower.js",
     "skills/walker.js"
    ]
   },
@@ -16414,18 +16845,16 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
+    "lib/scrub-sites.js",
     "skills/cartoon.js",
-    "skills/studios.js",
-    "skills/tower.js",
     "skills/walker.js"
    ]
   },
   "lib/tower-rank.js": {
    "imports": [],
-   "importedBy": [
-    "skills/tower.js"
-   ]
+   "importedBy": []
   },
   "lib/tower-topic.js": {
    "imports": [],
@@ -16433,23 +16862,23 @@
     "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
+    "lib/scrub-sites.js",
     "skills/cartoon.js",
-    "skills/studios.js",
-    "skills/tower.js",
     "skills/walker.js"
    ]
   },
   "lib/tower-weight.js": {
    "imports": [],
    "importedBy": [
-    "lib/tower.js",
-    "skills/tower.js"
+    "lib/tower.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "functions/api/will.js",
+    "lib/scrub-sites.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/walker.js"
    ]
   },
@@ -16468,11 +16897,11 @@
    ],
    "importedBy": [
     "functions/api/will.js",
-    "skills/studios.js",
-    "skills/tower.js",
+    "lib/scrub-sites.js",
     "skills/walker.js"
    ],
    "reachedBy": [
+    "functions/api/reflect.js",
     "skills/cartoon.js"
    ]
   },
@@ -16599,7 +17028,18 @@
    "imports": [],
    "importedBy": [
     "functions/api/coder.js",
-    "functions/api/treasury.js"
+    "functions/api/treasury.js",
+    "lib/agent-cap.js"
+   ],
+   "reachedBy": [
+    "functions/api/agent.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/mcp.js",
+    "functions/api/x402/[service].js"
    ]
   },
   "lib/unbidden.js": {
@@ -16613,6 +17053,24 @@
   "lib/units.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/universe-seeds.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/scrub-sites.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js"
+   ]
+  },
+  "lib/universe.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/scrub-sites.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js"
+   ]
   },
   "lib/used.js": {
    "imports": [],
@@ -16643,6 +17101,12 @@
     "skills/vat.js"
    ]
   },
+  "lib/verse-guards.js": {
+   "imports": [
+    "lib/house-loops.js"
+   ],
+   "importedBy": []
+  },
   "lib/verse-log.js": {
    "imports": [
     "lib/self-blocks.js",
@@ -16660,6 +17124,10 @@
     "functions/api/automations/tick.js"
    ]
   },
+  "lib/verse-scene.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/verse-secrets.js": {
    "imports": [],
    "importedBy": [
@@ -16669,6 +17137,7 @@
     "functions/[handle].js",
     "functions/api/a2a.js",
     "functions/api/actions.js",
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
@@ -16831,10 +17300,36 @@
    "importedBy": []
   },
   "lib/versus-floor.js": {
-   "imports": [],
+   "imports": [
+    "lib/versus-sign.js"
+   ],
    "importedBy": [
     "functions/api/versus-floor.js",
+    "lib/scrub-sites.js",
     "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js"
+   ]
+  },
+  "lib/versus-moved.js": {
+   "imports": [
+    "lib/page-pass.js"
+   ],
+   "importedBy": [
+    "functions/_middleware.js"
+   ]
+  },
+  "lib/versus-sign.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/versus-floor.js",
+    "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/versus-floor.js",
+    "lib/scrub-sites.js"
    ]
   },
   "lib/versus.js": {
@@ -16901,6 +17396,7 @@
   "lib/visits.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/buy.js",
     "functions/api/claim.js",
     "functions/api/sponsors.js",
     "functions/api/visit.js"
@@ -17003,6 +17499,7 @@
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/buy.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/credits/claim.js",
@@ -17046,7 +17543,8 @@
     "functions/team/mcp.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
-    "lib/team-crew-run.js"
+    "lib/team-crew-run.js",
+    "lib/versus-moved.js"
    ]
   },
   "lib/void-seal.js": {
@@ -17241,6 +17739,7 @@
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
     "functions/api/blueprint.js",
+    "functions/api/buy.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/credits/claim.js",
@@ -17300,7 +17799,8 @@
     "lib/memory-scope.js",
     "lib/page-pass.js",
     "lib/paid-access.js",
-    "lib/team-crew-run.js"
+    "lib/team-crew-run.js",
+    "lib/versus-moved.js"
    ]
   },
   "lib/wheel.js": {
@@ -17429,6 +17929,13 @@
   },
   "lib/will-schema.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "lib/win-post.js": {
+   "imports": [],
+   "external": [
+    "node:crypto"
+   ],
    "importedBy": []
   },
   "lib/wordcount.js": {
@@ -17611,7 +18118,9 @@
    "importedBy": []
   },
   "skills/arcade-card.js": {
-   "imports": [],
+   "imports": [
+    "lib/card-focus.js"
+   ],
    "importedBy": [
     "skills/cross-bus.js",
     "skills/debris-field.js",
@@ -17713,6 +18222,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/automation-status-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/automation-status.js": {
    "imports": [],
    "importedBy": [
@@ -17766,6 +18279,10 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/before-after-pack.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/bench.js": {
    "imports": [],
@@ -17986,6 +18503,10 @@
    "importedBy": []
   },
   "skills/client-brief.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/client-delivery-receipt.js": {
    "imports": [],
    "importedBy": []
   },
@@ -18397,6 +18918,10 @@
     "skills/ready-checks.js"
    ]
   },
+  "skills/delivery-status-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/dependency-health.js": {
    "imports": [],
    "external": [
@@ -18705,6 +19230,7 @@
   },
   "skills/figure.js": {
    "imports": [
+    "lib/snail-card.js",
     "lib/ask-text.js"
    ],
    "importedBy": [
@@ -18881,6 +19407,10 @@
    "importedBy": [
     "skills/handoffs.js"
    ]
+  },
+  "skills/full-lift-plan.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/game-level.js": {
    "imports": [],
@@ -20144,6 +20674,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/mini/snail.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/mini/stopwatch.js": {
    "imports": [],
    "importedBy": []
@@ -20188,9 +20722,6 @@
    "imports": [],
    "importedBy": [
     "lib/tower-art.js"
-   ],
-   "reachedBy": [
-    "skills/tower.js"
    ]
   },
   "skills/mini/void.js": {
@@ -20225,6 +20756,10 @@
    "importedBy": [
     "skills/reliability-pack.js"
    ]
+  },
+  "skills/monitor-receipt.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/monopoly-rules.js": {
    "imports": [],
@@ -20773,6 +21308,10 @@
    "imports": [
     "lib/ask-text.js"
    ],
+   "importedBy": []
+  },
+  "skills/process-lift-pack.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/process-map.js": {
@@ -21779,9 +22318,7 @@
    ]
   },
   "skills/studios.js": {
-   "imports": [
-    "lib/tower.js"
-   ],
+   "imports": [],
    "importedBy": []
   },
   "skills/study-cards.js": {
@@ -22198,15 +22735,10 @@
   },
   "skills/tower.js": {
    "imports": [
-    "lib/tower-art.js",
-    "lib/versus-floor.js",
+    "lib/versus-sign.js",
     "versus/open.js",
-    "lib/tower.js",
-    "lib/obituary.js",
-    "lib/gate-badge.js",
-    "lib/avatar.js",
-    "lib/tower-rank.js",
-    "lib/tower-weight.js"
+    "lib/versus-floor.js",
+    "versus/card.js"
    ],
    "importedBy": []
   },
