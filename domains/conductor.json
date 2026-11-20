@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-20T00:50:45.172Z",
+ "updated": "2026-11-20T01:00:06.560Z",
  "last24h": {
-  "ticks": 30,
-  "started": 8,
+  "ticks": 31,
+  "started": 9,
   "requeued": 4,
   "setAside": 0,
   "probes": 0,
@@ -22,8 +22,8 @@
   },
   {
    "wf": "deploy.yml",
-   "fails": 7,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44647637044"
+   "fails": 8,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44649224906"
   }
  ],
  "held": [
@@ -111,11 +111,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 31,
+   "used": 0,
    "cap": 90
   },
   "day": {
-   "used": 31,
+   "used": 47,
    "cap": 360
   },
   "room": true,
@@ -130,7 +130,8 @@
   "mvfu4evy": 1795134146575,
   "mvpuq9g6": 1795134709317,
   "mvpuqaee": 1795135283788,
-  "mvpuqb4r": 1795135845172
+  "mvpuqb4r": 1795135845172,
+  "mvvjzso8": 1795136406560
  },
  "sweptAt": 1795135845172,
  "blueprintsAt": 1795135845172,
@@ -979,6 +980,38 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 487,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T01:00:06.560Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvvjzso8",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml",
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 487,
    "warnings": 0
