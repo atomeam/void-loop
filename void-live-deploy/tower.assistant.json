@@ -1,0 +1,907 @@
+{
+ "about": "The owner-only Tower target 'a top AI assistant' (tools/assistant-exam.mjs): a fixed set of 20 real questions, scored on correctness, usefulness and clarity against assistant-quality reference answers. Owner-only (lib/owner-gate.js). The set never changes; a new set is a new baseline.",
+ "set": [
+  {
+   "id": "discount-tax",
+   "ask": "A shirt costs $40 and is 25% off. Then 8% tax is added to the sale price. What do I pay?",
+   "reference": "You pay $32.40. 25% off $40 is $30.00, and 8% tax on $30.00 is $2.40, so $30.00 + $2.40 = $32.40.",
+   "facts": [
+    {
+     "re": "32\\.40|32\\.4\\b|\\$32\\b",
+     "say": "the total, $32.40"
+    }
+   ],
+   "use": [
+    {
+     "re": "30(\\.00)?",
+     "say": "shows the sale price step ($30)"
+    },
+    {
+     "re": "2\\.40|2\\.4\\b",
+     "say": "shows the tax step ($2.40)"
+    }
+   ],
+   "want": "number",
+   "maxWords": 140
+  },
+  {
+   "id": "capital-australia",
+   "ask": "What is the capital of Australia, and why isn't it Sydney?",
+   "reference": "The capital is Canberra. Sydney and Melbourne were rivals and neither would accept the other as the capital, so Canberra was built between them as a compromise.",
+   "facts": [
+    {
+     "re": "canberra",
+     "say": "Canberra"
+    },
+    {
+     "re": "compromise|rival|between (sydney|melbourne)|neither",
+     "say": "the reason: a compromise between Sydney and Melbourne"
+    }
+   ],
+   "use": [
+    {
+     "re": "sydney",
+     "say": "mentions Sydney"
+    },
+    {
+     "re": "melbourne",
+     "say": "mentions Melbourne"
+    }
+   ],
+   "want": "explain",
+   "maxWords": 140
+  },
+  {
+   "id": "sky-blue",
+   "ask": "In two or three sentences, why is the sky blue?",
+   "reference": "Sunlight holds all colors. Air molecules scatter short wavelengths like blue much more than long ones like red, so scattered blue light reaches your eyes from every part of the sky.",
+   "facts": [
+    {
+     "re": "scatter",
+     "say": "scattering"
+    },
+    {
+     "re": "short(er)?[- ]wavelength|blue (light )?(is )?scatter|scatter[^.]{0,40}blue|blue[^.]{0,40}scatter",
+     "say": "blue scatters more because of its short wavelength"
+    },
+    {
+     "re": "sun",
+     "say": "sunlight"
+    }
+   ],
+   "use": [
+    {
+     "re": "molecule|atmosphere|air",
+     "say": "says the air does it"
+    }
+   ],
+   "want": "explain",
+   "maxWords": 70
+  },
+  {
+   "id": "f-to-c",
+   "ask": "Convert 72 degrees Fahrenheit to Celsius.",
+   "reference": "72 °F is about 22.2 °C. Subtract 32 (40), then multiply by 5/9.",
+   "facts": [
+    {
+     "re": "22\\.2|\\b22\\s*°?\\s*c",
+     "say": "22.2 °C"
+    }
+   ],
+   "use": [
+    {
+     "re": "°\\s*[fc]|degrees|celsius",
+     "say": "states the units"
+    }
+   ],
+   "want": "number",
+   "maxWords": 60
+  },
+  {
+   "id": "virus-bacteria",
+   "ask": "What is the difference between a virus and a bacterium, and do antibiotics work on viruses?",
+   "reference": "Bacteria are single living cells that can grow on their own; viruses are much smaller, are not cells, and can only multiply inside a host's cells. Antibiotics kill bacteria, so they do not work on viruses. If you are sick, a doctor can tell which it is and what treatment helps.",
+   "facts": [
+    {
+     "re": "antibiotics?[^.]{0,80}(do(es)?n.t|not|never|no use|won.t|ineffective|useless)|(virus|viral)[^.]{0,80}antibiotics?[^.]{0,40}(do(es)?n.t|not|never|won.t|ineffective|useless)|(only|just)[^.]{0,30}bacteri",
+     "say": "antibiotics do not work on viruses"
+    },
+    {
+     "re": "host|inside (a |the )?(living )?cell|need[^.]{0,30}cell",
+     "say": "a virus needs a host cell"
+    },
+    {
+     "re": "cell",
+     "say": "bacteria are living cells"
+    }
+   ],
+   "use": [
+    {
+     "re": "doctor|vaccine|antiviral|rest|treat",
+     "say": "says what does help or who to ask"
+    }
+   ],
+   "want": "explain",
+   "maxWords": 160
+  },
+  {
+   "id": "palindrome",
+   "ask": "Write a Python function that returns True if a string is a palindrome, ignoring case and spaces.",
+   "reference": "def is_palindrome(s):\n    t = s.replace(\" \", \"\").lower()\n    return t == t[::-1]",
+   "facts": [
+    {
+     "re": "def\\s+\\w+\\s*\\(",
+     "say": "a function"
+    },
+    {
+     "re": "lower\\(\\)|casefold\\(\\)|upper\\(\\)",
+     "say": "ignores case"
+    },
+    {
+     "re": "replace\\(|split\\(|join\\(|isalnum|isalpha|isspace|strip\\(",
+     "say": "ignores spaces"
+    },
+    {
+     "re": "\\[::-1\\]|reversed\\(|range\\(",
+     "say": "compares with the reverse"
+    }
+   ],
+   "use": [
+    {
+     "re": "return",
+     "say": "returns a value"
+    }
+   ],
+   "want": "code",
+   "maxWords": 160
+  },
+  {
+   "id": "dinner-plan",
+   "ask": "I have chicken, rice and broccoli. Give me a simple dinner plan in 3 steps.",
+   "reference": "1. Season the chicken and cook it in a pan about 6 minutes a side until it is 165 °F inside.\n2. Cook the rice in water, 2 parts water to 1 part rice, about 15 minutes.\n3. Steam the broccoli for 5 minutes, then plate all three together.",
+   "facts": [
+    {
+     "re": "chicken",
+     "say": "uses the chicken"
+    },
+    {
+     "re": "rice",
+     "say": "uses the rice"
+    },
+    {
+     "re": "broccoli",
+     "say": "uses the broccoli"
+    }
+   ],
+   "use": [
+    {
+     "re": "(^|\\n)\\s*(1[.)]|step 1|first)",
+     "say": "numbered steps starting at 1"
+    },
+    {
+     "re": "(^|\\n)\\s*(3[.)]|step 3|third|finally|lastly)",
+     "say": "a third step"
+    },
+    {
+     "re": "minute|min\\b|until|degrees|°",
+     "say": "gives times or doneness"
+    }
+   ],
+   "want": "steps",
+   "maxWords": 140
+  },
+  {
+   "id": "credit-debit",
+   "ask": "Should I use a credit card or a debit card for an online purchase? Answer in one short paragraph.",
+   "reference": "A credit card is usually safer online: if the number is stolen, you dispute the charge and it is the card company's money at risk, with strong fraud protection. A debit card pulls cash straight from your bank account, so a thief takes your money first and you wait for it back. Use credit if you pay the bill in full each month.",
+   "facts": [
+    {
+     "re": "fraud|dispute|chargeback|protection|liab",
+     "say": "credit cards carry fraud protection"
+    },
+    {
+     "re": "debit[^.]{0,120}(bank|checking|account|directly|straight|your (own )?(money|cash))",
+     "say": "a debit card takes money straight from your account"
+    }
+   ],
+   "use": [
+    {
+     "re": "recommend|usually|generally|safer|better|prefer|use (a )?credit",
+     "say": "gives a clear pick"
+    },
+    {
+     "re": "full|interest|pay (it|the bill|off)",
+     "say": "warns about interest or paying in full"
+    }
+   ],
+   "want": "recommend",
+   "maxWords": 110
+  },
+  {
+   "id": "binary-search",
+   "ask": "What is the time complexity of binary search, and why?",
+   "reference": "It is O(log n). Each step compares with the middle item of a sorted list and throws away half, so the number of steps is how many times you can halve n, which is log base 2 of n.",
+   "facts": [
+    {
+     "re": "o\\(\\s*log|log\\s*(2\\s*)?\\(?n|logarithm",
+     "say": "O(log n)"
+    },
+    {
+     "re": "half|halv|divid|cut[^.]{0,20}in two",
+     "say": "it halves the range each step"
+    },
+    {
+     "re": "sorted",
+     "say": "needs a sorted list"
+    }
+   ],
+   "use": [
+    {
+     "re": "compare|middle|mid",
+     "say": "explains the middle comparison"
+    }
+   ],
+   "want": "explain",
+   "maxWords": 110
+  },
+  {
+   "id": "weather-tokyo",
+   "ask": "What's the weather in Tokyo right now?",
+   "reference": "I cannot see live weather unless a weather tool is connected, so I will not guess a number. Check a live source such as a weather app or your national weather service for Tokyo; if you tell me when you travel I can say what the season usually brings.",
+   "facts": [
+    {
+     "re": "\\d+\\s*(°|degrees|º)|\\b\\d+\\s*(c|f)\\b|(do(es)?n.t|do(es)? not|can.t|cannot|unable|not able|no)\\b[^.]{0,40}\\b(have|access|see|know|live|real.time)\\b",
+     "say": "a live reading, or an honest \"I cannot see it live\""
+    }
+   ],
+   "use": [
+    {
+     "re": "app|forecast|source|check|website|service|tool|jma|weather\\.",
+     "say": "points to where to get it, or gives it"
+    }
+   ],
+   "want": "honest",
+   "maxWords": 110
+  },
+  {
+   "id": "decline-email",
+   "ask": "Write a polite two-sentence email declining a meeting invitation for Thursday.",
+   "reference": "Hi Sam, thank you for the invitation. I am unable to attend on Thursday, but I would be glad to meet another time that works for you. Best regards, Alex.",
+   "facts": [
+    {
+     "re": "thursday",
+     "say": "names Thursday"
+    },
+    {
+     "re": "thank|appreciate",
+     "say": "thanks them"
+    },
+    {
+     "re": "unable|can.t|cannot|won.t be able|not able|decline|unfortunately|regret|conflict",
+     "say": "declines"
+    }
+   ],
+   "use": [
+    {
+     "re": "another time|reschedule|different (day|time)|next week|alternative|when you|works for you|follow up|catch up",
+     "say": "offers another time"
+    },
+    {
+     "re": "subject:|hi |hello|dear|best|regards|sincerely|thank",
+     "say": "reads like an email"
+    }
+   ],
+   "want": "write",
+   "maxWords": 90
+  },
+  {
+   "id": "ibuprofen-acetaminophen",
+   "ask": "Is it safe to take ibuprofen and acetaminophen together?",
+   "reference": "For most healthy adults, yes: they work differently and are often taken together or taken in turns. Follow the dose on each label and do not go over the daily maximum of either. If you have kidney, liver or stomach problems, are pregnant or take other medicines, ask a doctor or pharmacist first.",
+   "facts": [
+    {
+     "re": "yes|generally|usually|most (healthy )?adults|can be taken|safe to|often",
+     "say": "generally yes"
+    },
+    {
+     "re": "dose|dosage|label|maximum|limit|daily",
+     "say": "follow the dose and the daily limit"
+    },
+    {
+     "re": "doctor|pharmacist|physician|medical|health ?care",
+     "say": "ask a doctor or pharmacist"
+    }
+   ],
+   "use": [
+    {
+     "re": "kidney|liver|stomach|pregnan|other medic|condition|allerg",
+     "say": "names who should check first"
+    }
+   ],
+   "want": "honest",
+   "maxWords": 140
+  },
+  {
+   "id": "percent-chain",
+   "ask": "What is 15% of 240, and then what is that number plus 12?",
+   "reference": "15% of 240 is 36. Then 36 + 12 = 48.",
+   "facts": [
+    {
+     "re": "\\b36\\b",
+     "say": "15% of 240 is 36"
+    },
+    {
+     "re": "\\b48\\b",
+     "say": "the final answer, 48"
+    }
+   ],
+   "use": [],
+   "want": "number",
+   "maxWords": 50
+  },
+  {
+   "id": "affect-effect",
+   "ask": "Explain the difference between 'affect' and 'effect' with an example of each.",
+   "reference": "Affect is usually a verb meaning to influence. For example: \"The rain affected our plans.\" Effect is usually a noun meaning the result. For example: \"The rain had a big effect on our plans.\"",
+   "facts": [
+    {
+     "re": "affect[^.]{0,80}verb|verb[^.]{0,80}affect",
+     "say": "affect is a verb"
+    },
+    {
+     "re": "effect[^.]{0,80}noun|noun[^.]{0,80}effect",
+     "say": "effect is a noun"
+    }
+   ],
+   "use": [
+    {
+     "re": "for example|e\\.g\\.|example|\"[^\"]{8,}\"|“[^”]{8,}”|:\\s*[A-Z]",
+     "say": "gives an example"
+    },
+    {
+     "re": "influenc|chang|result|outcome",
+     "say": "says what each means"
+    }
+   ],
+   "want": "explain",
+   "maxWords": 110
+  },
+  {
+   "id": "bat-ball",
+   "ask": "A bat and a ball cost $1.10 together. The bat costs $1.00 more than the ball. How much is the ball?",
+   "reference": "The ball costs 5 cents. If the ball is $0.05, the bat is $1.05, and together they are $1.10. The common answer of 10 cents is wrong, because then the bat would be $1.10 and the total $1.20.",
+   "facts": [
+    {
+     "re": "\\b5 cents|\\$?0?\\.05\\b|5¢|five cents",
+     "say": "5 cents"
+    }
+   ],
+   "use": [
+    {
+     "re": "1\\.05|bat[^.]{0,30}\\$?1\\.05",
+     "say": "checks it: the bat is $1.05"
+    }
+   ],
+   "want": "number",
+   "maxWords": 80
+  },
+  {
+   "id": "orlando-tips",
+   "ask": "Give me three tips for a first-time visitor to Orlando, Florida.",
+   "reference": "1. Go to the parks early: lines are shortest in the first two hours, and afternoon thunderstorms are common in summer.\n2. Book park tickets and any reservations ahead and use the park app for wait times.\n3. Plan for heat and sun: bring water, sunscreen and comfortable shoes, and rest midday.",
+   "facts": [
+    {
+     "re": "park|disney|universal|epcot|magic kingdom|seaworld",
+     "say": "mentions the parks"
+    },
+    {
+     "re": "heat|sun|hot|humid|rain|storm|summer|water|sunscreen",
+     "say": "weather and heat"
+    },
+    {
+     "re": "early|ticket|reserv|book|crowd|line|wait|weekday|app",
+     "say": "crowds, tickets or timing"
+    }
+   ],
+   "use": [
+    {
+     "re": "(^|\\n)\\s*(1[.)]|\\*|-|•)",
+     "say": "a list"
+    },
+    {
+     "re": "(^|\\n)\\s*(3[.)])|(^|\\n)\\s*(\\*|-|•)[^\\n]*\\n[^\\n]*(\\*|-|•)[^\\n]*\\n[^\\n]*(\\*|-|•)|third|finally",
+     "say": "three tips"
+    }
+   ],
+   "want": "list",
+   "maxWords": 150
+  },
+  {
+   "id": "interview-calm",
+   "ask": "How do I stay calm before a job interview? Keep it short.",
+   "reference": "Prepare the questions you expect and say your answers out loud once or twice. Before you go, breathe in for 4 and out for 6, five times. Arrive early so you are not rushing, and remind yourself they invited you because they liked your résumé.",
+   "facts": [
+    {
+     "re": "breath",
+     "say": "breathing"
+    },
+    {
+     "re": "prepar|practice|rehears|research|mock",
+     "say": "preparing and practicing"
+    }
+   ],
+   "use": [
+    {
+     "re": "early|sleep|walk|water|posture|remind|visuali|arrive",
+     "say": "another concrete tip"
+    }
+   ],
+   "want": "recommend",
+   "maxWords": 90
+  },
+  {
+   "id": "summarize-council",
+   "ask": "Summarize in one sentence: 'The city council voted 5-2 on Tuesday to approve a new bike lane on Main Street, which will remove 40 parking spaces but is expected to cut cyclist injuries. Construction begins in March.'",
+   "reference": "The city council voted 5-2 to add a Main Street bike lane that removes 40 parking spaces but should reduce cyclist injuries, with construction starting in March.",
+   "facts": [
+    {
+     "re": "council|city",
+     "say": "the council"
+    },
+    {
+     "re": "bike lane|bike|cycl",
+     "say": "the bike lane"
+    },
+    {
+     "re": "parking|40",
+     "say": "the parking cost"
+    },
+    {
+     "re": "march",
+     "say": "construction in March"
+    }
+   ],
+   "use": [
+    {
+     "re": "5-2|5 to 2|five to two|voted|approv",
+     "say": "the vote"
+    }
+   ],
+   "want": "summary",
+   "maxWords": 50
+  },
+  {
+   "id": "roth-traditional",
+   "ask": "What is the difference between a Roth IRA and a traditional IRA?",
+   "reference": "With a traditional IRA you may deduct contributions now and pay income tax when you withdraw in retirement. With a Roth IRA you contribute money you already paid tax on, and qualified withdrawals in retirement are tax-free. Roth also has income limits for contributing, and traditional IRAs require minimum withdrawals starting in your 70s. If you expect a higher tax rate later, a Roth tends to win; if you want the deduction now, choose traditional.",
+   "facts": [
+    {
+     "re": "after.tax|tax.free|already (been )?taxed|taxed (now|upfront|before|first|already)",
+     "say": "Roth money is taxed first and comes out tax-free"
+    },
+    {
+     "re": "deduct|pre.tax|tax.deferred|taxed (later|when you (withdraw|take)|in retirement|on withdrawal)|taxable (when|in retirement|on withdrawal)",
+     "say": "traditional gives a deduction now and is taxed later"
+    }
+   ],
+   "use": [
+    {
+     "re": "income limit|required minimum|rmd|withdraw|retire",
+     "say": "adds a practical detail"
+    },
+    {
+     "re": "if you|choose|pick|depends|better",
+     "say": "helps pick one"
+    }
+   ],
+   "want": "explain",
+   "maxWords": 170
+  },
+  {
+   "id": "friend-plants",
+   "ask": "My friend is away and forgot to give me a key to water her plants. How can I get in?",
+   "reference": "First message or call your friend: she can tell you where a spare key is, or let you in through a neighbor, a landlord or a lockbox code. If you cannot reach her, ask a neighbor who may have a key, or wait for her answer rather than forcing a way in.",
+   "facts": [
+    {
+     "re": "ask|contact|call|text|message|reach",
+     "say": "contact the friend"
+    },
+    {
+     "re": "spare key|neighbou?r|landlord|lockbox|key|property manager|building",
+     "say": "a legitimate way: spare key, neighbor, landlord or lockbox"
+    }
+   ],
+   "use": [
+    {
+     "re": "don.t|do not|rather than|without (her )?permission|not (break|force)|wait",
+     "say": "warns against forcing a way in"
+    }
+   ],
+   "want": "honest",
+   "maxWords": 110
+  }
+ ],
+ "last": {
+  "at": "2026-11-20T06:46:50.339Z",
+  "base": "https://a-to-mind.com",
+  "right": 77.5,
+  "useful": 87.3,
+  "clear": 93.2,
+  "overall": 86,
+  "questions": 20,
+  "rows": [
+   {
+    "id": "discount-tax",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 15,
+    "status": "done",
+    "answer": "Original price: $40.00\nDiscount (25%): -$10.00\nSale price: $30.00\nTax (8%): $2.40\n\nTotal price: $32.40",
+    "tier": "free",
+    "bot": "sales-tax"
+   },
+   {
+    "id": "capital-australia",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 79,
+    "status": "done",
+    "answer": "The capital of Australia is Canberra. \n\nIt is not Sydney because of a long-standing rivalry between Australia's two largest cities, Sydney and Melbourne. During the federation process in the early 1900s, neither city would agree to let the other host the seat of government. To resolve this deadlock, a compromise was reached: a new, purpose-built territory was created located between the two rivals. Canberra was selected as the site for this neutral capital city within the Australian Capital Terr",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "sky-blue",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 47,
+    "status": "done",
+    "answer": "The sky appears blue due to a phenomenon called Rayleigh scattering. As sunlight reaches Earth's atmosphere, it is scattered in all directions by the gases and particles in the air, and blue light is scattered more strongly than other colors because it travels as shorter, smaller waves.",
+    "tier": "free",
+    "bot": "ollama-call"
+   },
+   {
+    "id": "f-to-c",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 5,
+    "status": "done",
+    "answer": "72 °F = 22.22222222 °C",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "virus-bacteria",
+    "right": 0,
+    "useful": 60,
+    "clear": 100,
+    "gaps": {
+     "right": [
+      "antibiotics do not work on viruses",
+      "a virus needs a host cell",
+      "bacteria are living cells"
+     ],
+     "useful": [
+      "an answer, not a dodge"
+     ],
+     "clear": []
+    },
+    "words": 42,
+    "status": "done",
+    "answer": "I am a specialized bot designed only to calculate the number of days between two dates. I cannot provide information regarding biology, viruses, or medical treatments.\n\nIf you provide me with two dates, I will calculate the duration between them for you.",
+    "tier": "free",
+    "bot": "days-between"
+   },
+   {
+    "id": "palindrome",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 42,
+    "status": "done",
+    "answer": "```python\ndef is_palindrome(s):\n    # Remove spaces and convert to lowercase\n    cleaned = \"\".join(s.split()).lower()\n    # Check if string is equal to its reverse\n    return cleaned == cleaned[::-1]\n\n# Test cases\nprint(is_palindrome(\"Racecar\"))       # True\nprint(is_palindrome(\"A man a plan\"))   # True\nprint(is_palindrome(\"hello\"))          # False\n```",
+    "tier": "free",
+    "bot": "palindrome-bot"
+   },
+   {
+    "id": "dinner-plan",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 115,
+    "status": "done",
+    "answer": "1. Cook the rice: Rinse one cup of rice under cold water, place it in a pot with two cups of water and a pinch of salt, then simmer covered for 15–18 minutes until the water is absorbed.\n\n2. Prepare the protein and greens: Cut the chicken into bite-sized cubes and chop the broccoli into small florets; season both with olive oil, salt, pepper, and garlic powder.\n\n3. Sear and steam: Sauté the chicken in a large skillet over medium-high heat until golden and cooked through (about 8 minutes), then t",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "credit-debit",
+    "right": 50,
+    "useful": 85,
+    "clear": 96,
+    "gaps": {
+     "right": [
+      "a debit card takes money straight from your account"
+     ],
+     "useful": [
+      "warns about interest or paying in full"
+     ],
+     "clear": [
+      "rambles (114 words, about 110 is enough)"
+     ]
+    },
+    "words": 114,
+    "status": "done",
+    "answer": "You should use a credit card for online purchases to prioritize financial security and consumer protection. Credit cards offer robust fraud protection under laws like the Fair Credit Billing Act, allowing you to dispute unauthorized charges without losing immediate access to your actual cash. If a merchant fails to deliver a product or a site is compromised, you are fighting with the bank's money rather than your own liquid savings. Additionally, credit cards often provide built-in purchase insu",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "binary-search",
+    "right": 0,
+    "useful": 70,
+    "clear": 100,
+    "gaps": {
+     "right": [
+      "O(log n)",
+      "it halves the range each step",
+      "needs a sorted list"
+     ],
+     "useful": [
+      "explains the middle comparison"
+     ],
+     "clear": []
+    },
+    "words": 35,
+    "status": "done",
+    "answer": "I am a note-search bot. Please provide a note and a specific word you would like me to find within it. Once provided, I will return the results in the format: `word | note text`.",
+    "tier": "free",
+    "bot": "note-search"
+   },
+   {
+    "id": "weather-tokyo",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 82,
+    "status": "done",
+    "answer": "I do not have access to real-time weather data or a live internet connection to provide the current conditions in Tokyo. To find the most accurate information, you should check one of these specific resources:\n\n1. The Japan Meteorological Agency (JMA) website for official local forecasts and warnings.\n2. A global weather service like AccuWeather or The Weather Channel for immediate temperature and humidity readings.\n3. A mobile weather app on your smartphone, which uses your location services to",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "decline-email",
+    "right": 100,
+    "useful": 85,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [
+      "offers another time"
+     ],
+     "clear": []
+    },
+    "words": 31,
+    "status": "done",
+    "answer": "Subject: Meeting Invitation: [Meeting Name]\n\nThank you very much for the invitation to meet this Thursday. Unfortunately, I have a scheduling conflict at that time and will be unable to attend.",
+    "tier": "free",
+    "bot": "email-polisher"
+   },
+   {
+    "id": "ibuprofen-acetaminophen",
+    "right": 100,
+    "useful": 100,
+    "clear": 67,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": [
+      "rambles (186 words, about 140 is enough)"
+     ]
+    },
+    "words": 186,
+    "status": "done",
+    "answer": "Yes, it is generally considered safe for most healthy adults to take ibuprofen (an NSAID) and acetaminophen (a pain reliever/fever reducer) together because they belong to different drug classes and are processed by different organs.\n\nHere are three specific ways to take them safely:\n\n1. **Alternating Doses:** Instead of taking both at once, take acetaminophen, then wait 3 hours to take ibuprofen. This maintains a more consistent level of pain relief in your bloodstream.\n2. **Staggered Dosing:**",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "percent-chain",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 12,
+    "status": "done",
+    "answer": "15% of 240 is 36. Adding 12 to that result equals 48.",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "affect-effect",
+    "right": 0,
+    "useful": 30,
+    "clear": 100,
+    "gaps": {
+     "right": [
+      "affect is a verb",
+      "effect is a noun"
+     ],
+     "useful": [
+      "an answer, not a dodge",
+      "gives an example",
+      "says what each means"
+     ],
+     "clear": []
+    },
+    "words": 38,
+    "status": "done",
+    "answer": "I am a bot designed specifically to calculate the number of days between two dates. I cannot provide explanations regarding grammar or linguistics. \n\nIf you provide two dates, I will tell you how many days are between them.",
+    "tier": "free",
+    "bot": "days-between"
+   },
+   {
+    "id": "bat-ball",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 64,
+    "status": "done",
+    "answer": "The ball costs $0.05.\n\nTo calculate this, subtract the difference from the total and divide by two:\n1. Total cost: $1.10\n2. Difference: $1.00\n3. Subtract difference from total: $1.10 - $1.00 = $0.10\n4. Divide the remainder by two: $0.10 / 2 = $0.05\n\nVerification:\nThe ball is $0.05.\nThe bat is $1.05 ($1.00 more than the ball).\n$0.05 + $1.05 = $1.10.",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "orlando-tips",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 111,
+    "status": "done",
+    "answer": "1. Plan for weather volatility by packing a lightweight, compact rain poncho. Orlando experiences sudden afternoon thunderstorms throughout much of the year, and buying gear inside theme parks is significantly more expensive than at a local drugstore.\n\n2. Use mobile apps to manage wait times and dining. Download the official app for whichever major resort you are visiting to track live ride queues and use \"Mobile Food Ordering\" to bypass long lines during lunch rushes.\n\n3. Stay hydrated with reu",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "interview-calm",
+    "right": 100,
+    "useful": 100,
+    "clear": 50,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": [
+      "rambles (204 words, about 90 is enough)"
+     ]
+    },
+    "words": 204,
+    "status": "done",
+    "answer": "To stay calm before a job interview, follow these specific techniques:\n\n1. **Controlled Breathing**: Use the \"Box Breathing\" method. Inhale for 4 seconds, hold for 4, exhale for 4, and hold for 4. This physically lowers your heart rate and signals your nervous system to relax.\n\n2. **Preparation Review**: Stop studying new material 30 minutes before the start time. Instead, glance at a single sheet of paper containing three key stories or \"wins\" you want to mention to boost your confidence withou",
+    "tier": "free",
+    "bot": "verse"
+   },
+   {
+    "id": "summarize-council",
+    "right": 100,
+    "useful": 100,
+    "clear": 100,
+    "gaps": {
+     "right": [],
+     "useful": [],
+     "clear": []
+    },
+    "words": 27,
+    "status": "done",
+    "answer": "The city council approved a new bike lane on Main Street to improve cyclist safety, despite the loss of 40 parking spaces, with construction set for March.",
+    "tier": "free",
+    "bot": "gap-check"
+   },
+   {
+    "id": "roth-traditional",
+    "right": 0,
+    "useful": 45,
+    "clear": 100,
+    "gaps": {
+     "right": [
+      "Roth money is taxed first and comes out tax-free",
+      "traditional gives a deduction now and is taxed later"
+     ],
+     "useful": [
+      "an answer, not a dodge",
+      "adds a practical detail"
+     ],
+     "clear": []
+    },
+    "words": 36,
+    "status": "done",
+    "answer": "I am sorry, but I cannot answer that question. My only function is to calculate the number of days between two specific dates. Please provide two dates if you would like me to perform a calculation.",
+    "tier": "free",
+    "bot": "days-between"
+   },
+   {
+    "id": "friend-plants",
+    "right": 100,
+    "useful": 70,
+    "clear": 50,
+    "gaps": {
+     "right": [],
+     "useful": [
+      "warns against forcing a way in"
+     ],
+     "clear": [
+      "rambles (177 words, about 110 is enough)"
+     ]
+    },
+    "words": 177,
+    "status": "done",
+    "answer": "To gain entry to a residence without a key, consider these specific methods:\n\n1. **Check for Unlocked Access Points:** Carefully inspect all windows, sliding glass doors, and secondary entrances like basement hatches or garage side doors to see if any were left unsecured.\n2. **Contact a Locksmith:** Call a professional locksmith to perform a non-destructive entry or a lock bypass. You will need to provide proof of residency or a written authorization from your friend to avoid legal issues.\n3. **",
+    "tier": "free",
+    "bot": "verse"
+   }
+  ]
+ },
+ "runs": [
+  {
+   "at": "2026-11-20T06:46:50.339Z",
+   "right": 77.5,
+   "useful": 87.3,
+   "clear": 93.2,
+   "overall": 86,
+   "questions": 20,
+   "gaps": 15
+  }
+ ]
+}

@@ -21,6 +21,7 @@ export const SEEDS = [
   T('notes-app', 'app', 'a notes and docs app', ['Roam Research', 'Bear notes'], 'the best notes apps: fast, flexible and never loses a word', 90),
   T('code-app', 'app', 'a code editor with an AI helper', ['Visual Studio Code', 'JetBrains Fleet'], 'the best code tools: quick, right and out of the way', 92),
   T('ai-assistant', 'assistant', 'an AI assistant that does things', ['Perplexity', 'Poe assistant'], 'the best assistants: right answers, honest limits, real actions', 94),
+  T('top-assistant', 'answers', 'a top AI assistant', ["Atom's assistant"], 'the owner\'s own assistant: right, useful and clear answers to 20 real questions (tools/assistant-exam.mjs)', 94, { page: '/agent/' }),
   T('explainer-writing', 'writing', 'a clear explainer article', ['Quanta Magazine', 'Wait But Why'], 'the best explainers: true, clear and a pleasure to read', 90),
   T('interactive-essay', 'writing', 'an interactive essay', ['The Pudding', 'Distill.pub'], 'the best interactive essays: you learn by touching the idea', 91),
   T('snail', 'creature', 'a snail', ['Life in the Undergrowth'], 'the best documentary and reference work on snails: the real anatomy, movement and life', 92, { scene: 'snail' }),
