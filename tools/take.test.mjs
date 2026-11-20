@@ -8,7 +8,12 @@ test('an article offers what Verse can do about its subject', () => {
   assert.deepEqual(relatedAsks({ title: 'Ludo', description: 'Board game' }).map((a) => a.ask), ['play aggravation']);
   assert.deepEqual(relatedAsks({ title: 'Lisbon', description: 'Capital city of Portugal' }).map((a) => a.ask), ['weather in Lisbon', 'map of Lisbon', 'time in Lisbon']);
   assert.deepEqual(relatedAsks({ title: 'Paella', description: 'Spanish rice dish' }).map((a) => a.ask), ['recipe for paella']);
-  assert.deepEqual(relatedAsks({ title: 'Albert Einstein', description: 'German-born physicist' }), []);
+  assert.deepEqual(relatedAsks({ title: 'Albert Einstein', description: 'German-born physicist' }).map((a) => a.ask), ['play trivia']);
+  assert.deepEqual(relatedAsks({ title: 'Inception', description: '2010 film by Christopher Nolan' }).map((a) => a.ask), ['play trivia']);
+  assert.deepEqual(relatedAsks({ title: 'Radiohead', description: 'English rock band' }).map((a) => a.ask), ['play trivia']);
+  assert.deepEqual(relatedAsks({ title: 'Battle of the Somme', description: 'Battle of World War I' }), []);
+  assert.deepEqual(relatedAsks({ title: 'Influenza', description: 'Infectious disease' }), []);
+  assert.deepEqual(relatedAsks({ title: 'Photosynthesis', description: 'Biological process' }), []);
 });
 
 test("Verse's take is escaped, and nothing shows when there is nothing to add", () => {
