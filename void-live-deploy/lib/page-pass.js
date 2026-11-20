@@ -157,7 +157,7 @@ export const bearer = (request) => { const m = /^Bearer (.+)$/.exec(request.head
 export function suiteOpen(request, env) {
   const host = new URL(request.url).hostname;
   if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host === '[::1]') return true;
-  if (host.endsWith('.pages.dev')) return true;
+  // a *.pages.dev address is public (deploy links are printed in the incident records), so it is gated like a-to-mind.com (2026-11-20: every full page opened there for anyone)
   if (env && env.VERSE_LOCAL_PREVIEW === '1') return true;
   if (env && env.PASSKEY_RP_ID === 'localhost' && host === 'localhost' && request.headers.get('x-verse-suite') === '1') return true;
   return false;

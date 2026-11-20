@@ -97,6 +97,13 @@ test('loopback builds see full pages with no token; production stays gated', asy
     }
     const res = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
     assert.match(await res.text(), /<h1>UniVerse<\/h1>/, 'production stays gated');
+    for (const origin of ['https://8a4eb095.a-to-mind.pages.dev', 'https://helper-x.a-to-mind.pages.dev']) { // deploy links are public: gated as production is
+      assert.equal(suiteOpen(new Request(origin + '/flights/'), {}), false, origin);
+      const r = await gate({ request: new Request(origin + '/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
+      assert.match(await r.text(), /<h1>UniVerse<\/h1>/, origin);
+    }
+    const hop = await gate({ request: new Request('https://a-to-mind.pages.dev/arcade/?x=1'), env: {}, next: html('ARCADE') });
+    assert.equal(hop.status, 301); assert.equal(hop.headers.get('location'), 'https://a-to-mind.com/arcade/?x=1');
   }, stripe());
 });
 
