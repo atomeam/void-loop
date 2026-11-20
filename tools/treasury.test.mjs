@@ -104,11 +104,18 @@ await env.DB.prepare('INSERT INTO void_sales (id, resource, sale_id, subscriptio
 t = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/treasury'), env })).json();
 const real = 4900 - feeCents(4900);
 assert.equal(t.revenue.realized_cents, real);
-assert.equal(t.split_cents, real, 'all of it split');
-assert.equal(t.pots.owner, Math.floor(real * policy.owner_cut.share), "Atom's cut first");
+assert.equal(t.owner_view, false);
+assert.equal(t.pots.owner, undefined, 'the public ledger does not show the owner pot');
+assert.equal(t.policy && t.policy.owner_cut, undefined, 'the public ledger does not show the cut');
+assert.ok(!JSON.stringify(t).includes("Atom's cut") && !JSON.stringify(t).includes('owner_cut'), 'buyers do not see the cut');
 assert.ok(!JSON.stringify(t).includes('buyer@example.com') && !JSON.stringify(t).includes('"s1"'), 'nothing about the buyer or the sale id is public');
-const again = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/treasury'), env })).json();
-assert.equal(again.entries.filter((e) => e.kind === 'alloc').length, t.entries.filter((e) => e.kind === 'alloc').length, 'a second read splits nothing twice');
+const ownerGet = (e = env) => onRequestGet({ request: new Request('https://a-to-mind.com/api/treasury', { headers: { authorization: 'Bearer owner-secret' } }), env: e });
+let ownView = await (await ownerGet()).json();
+assert.equal(ownView.owner_view, true);
+assert.equal(ownView.split_cents, real, 'all of it split');
+assert.equal(ownView.pots.owner, Math.floor(real * policy.owner_cut.share), "Atom's cut first, paid as before");
+const again = await (await ownerGet()).json();
+assert.equal(again.entries.filter((e) => e.kind === 'alloc').length, ownView.entries.filter((e) => e.kind === 'alloc').length, 'a second read splits nothing twice');
 // owner-only writes
 assert.equal((await onRequestPost({ request: new Request('https://a-to-mind.com/api/treasury', { method: 'POST', body: '{"action":"review"}' }), env })).status, 401);
 const own = (body) => onRequestPost({ request: new Request('https://a-to-mind.com/api/treasury', { method: 'POST', headers: { authorization: 'Bearer owner-secret' }, body: JSON.stringify(body) }), env });
@@ -116,9 +123,11 @@ const rv = await (await own({ action: 'review' })).json();
 assert.ok(rv.ok && rv.reason);
 assert.equal((await (await own({ action: 'reconcile' })).json()).ok, false, 'no Gumroad token: says so, reads nothing');
 assert.equal((await own({ action: 'paid', cents: 100 })).status, 200);
+ownView = await (await ownerGet()).json();
+assert.equal(ownView.pots.owner, Math.floor(real * policy.owner_cut.share) - 100);
+assert.equal(ownView.reviews.length, 1);
 t = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/treasury'), env })).json();
-assert.equal(t.pots.owner, Math.floor(real * policy.owner_cut.share) - 100);
-assert.equal(t.reviews.length, 1);
+assert.equal(t.pots.owner, undefined);
 // reconcile with a token reads Gumroad's sales into the same table, deduplicated
 const env2 = fakeEnv({ GUMROAD_ACCESS_TOKEN: 'tok' });
 await onRequestGet({ request: new Request('https://a-to-mind.com/api/treasury'), env: env2 });
