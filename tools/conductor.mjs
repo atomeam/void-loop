@@ -7,6 +7,7 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import { CATCHUP, PER_TICK, cronsOf, newestSlot, catchupDue, lateDuplicates } from './catchup-core.mjs';
 import { plan, probeDue, growDue, designDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, coderShort, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
 import { queueBlueprints } from './watch-build.mjs'; // every blueprint Verse wrote becomes a tv: build job, a few an hour
@@ -20,7 +21,9 @@ const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
 export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-gate.yml', 'deploy.yml',
-  'pages-guard.yml', 'actions-failures.yml', 'grow-self.yml', 'design-loop.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
+  'pages-guard.yml', 'actions-failures.yml', 'grow-self.yml', 'design-loop.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml',
+  // main's own suite and the live checks after a deploy (2026-11-20): three red runs in a row on main queue a heal: job for the coder
+  'verify.yml', 'self-check.yml', 'site-test.yml', ...DAILY.map((d) => d.wf)])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
 const warn = (m) => { warnings.push(m); console.log('::warning title=Conductor::' + m); };
@@ -70,6 +73,35 @@ function start(wf, input, id) {
   const a = ['workflow', 'run', wf, '--repo', REPO, '--ref', 'main'];
   if (input && id) a.push('-f', `${input}=${id}`);
   gh(...a);
+}
+function startWith(wf, inputs = {}) {
+  gh('workflow', 'run', wf, '--repo', REPO, '--ref', 'main', ...Object.entries(inputs).flatMap(([k, v]) => ['-f', `${k}=${v}`]));
+}
+/** the catch-up clock (tools/catchup-core.mjs): each loop whose cron slot GitHub dropped or delayed is started once its grace is up, and
+ *  GitHub's late duplicate of a slot the clock already ran is cancelled. state: { [wf]: { slot, startedAt } }. At most READS run lists a
+ *  tick, so the clock costs the token a few calls, not one per loop. */
+const CATCHUP_READS = 15, CATCHUP_WATCH_H = 10;
+export async function catchUp(state, now, runs, act, done) {
+  const cu = Object.fromEntries(Object.entries(state || {}).filter(([wf]) => CATCHUP.some((c) => c.wf === wf)));
+  let reads = 0;
+  const rows = CATCHUP.map((c) => {
+    let crons = []; try { crons = cronsOf(fs.readFileSync('.github/workflows/' + c.wf, 'utf8')); } catch (_) { /* gone: skipped */ }
+    const slot = newestSlot(crons, now), st = cu[c.wf] || {};
+    return { c, crons, slot, st, due: !!slot && now - slot >= c.grace * 60000 && st.slot !== slot, watch: !!st.startedAt && now - st.startedAt < CATCHUP_WATCH_H * 3600000 };
+  }).filter((x) => x.crons.length && (x.due || x.watch)).sort((a, b) => Number(b.due) - Number(a.due)); // the late loops are read first
+  for (const { c, crons, slot, st, due, watch } of rows) {
+    if (!runs[c.wf] && reads >= CATCHUP_READS) continue;
+    const r = runs[c.wf] || (reads++, runsOf(c.wf));
+    if (!r) continue;
+    if (watch) for (const id of lateDuplicates({ crons, runs: r, counts: c.counts })) {
+      if (await act('cancel late ' + c.wf, async () => { gh('api', '-X', 'POST', `repos/${REPO}/actions/runs/${id}/cancel`); return true; })) done.cancelled.push(c.wf + '#' + id);
+    }
+    if (!due) continue;
+    if (catchupDue({ crons, runs: r, now, grace: c.grace, busy: r.some((x) => BUSY.has(x.status)), counts: c.counts })) {
+      if (done.catchup.length < PER_TICK && await act('catch up ' + c.wf, async () => { startWith(c.wf, c.inputs); return true; })) { done.catchup.push(c.wf); cu[c.wf] = { slot, startedAt: now }; }
+    } else if (!r.some((x) => BUSY.has(x.status)) || r.some((x) => Date.parse(x.created_at) >= slot)) cu[c.wf] = { ...st, slot }; // it ran on its own: settled
+  }
+  return cu;
 }
 
 async function coderBudget() {
@@ -197,6 +229,11 @@ async function tick() {
     const w = wf[d.wf] || {};
     if (dailyDue({ exists: w.exists, busy: w.busy, lastRunMs: w.last, now, hourUtc: d.hourUtc }) && await act(d.wf, async () => { start(d.wf); return true; })) done.daily.push(d.wf);
   }
+  // the catch-up clock: every other loop with a cron, on time whatever GitHub's scheduler does
+  done.catchup = []; done.cancelled = [];
+  let catchup = state.catchup || {};
+  try { catchup = await catchUp(state.catchup, now, runs, act, done); } catch (e) { warn('catch-up: ' + String(e.message || e).slice(0, 120)); }
+  if (DRY) catchup = state.catchup || {};
   let sweptAt = state.sweptAt || 0;
   if (sweepDue({ sweptMs: sweptAt, now }) && await act('automerge sweep', async () => { start('automerge.yml'); return true; })) { done.sweep = true; if (!DRY) sweptAt = now; }
   // every blueprint not built yet goes on the queue, a few an hour, best first (tools/watch-build.mjs queueBlueprints keeps the pace)
@@ -205,21 +242,21 @@ async function tick() {
     try { const out = await queueBlueprints(); done.blueprints = out.queued; for (const l of out.said) console.log('blueprints: ' + l); blueprintsAt = now; }
     catch (e) { warn('blueprints: ' + String(e.message || e).slice(0, 120)); }
   }
-  return finish({ ...state, handed, sweptAt, blueprintsAt }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
+  return finish({ ...state, handed, sweptAt, blueprintsAt, catchup }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
 }
 
 function finish(state, now, t) {
   const at = new Date(now).toISOString();
-  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, design: !!t.done.design, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], daily: t.done.daily || [], sweep: !!t.done.sweep, blueprints: (t.done.blueprints || []).length, held: t.held.length, warnings: warnings.length }
+  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, design: !!t.done.design, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], daily: t.done.daily || [], catchup: t.done.catchup || [], cancelled: t.done.cancelled || [], sweep: !!t.done.sweep, blueprints: (t.done.blueprints || []).length, held: t.held.length, warnings: warnings.length }
     : { at, error: warnings[0] || 'no plan', warnings: warnings.length };
   const ticks = [...(state.ticks || []), tick].filter((x) => now - Date.parse(x.at) < 24 * 3600000).slice(-200);
   const day = { ticks: ticks.length, started: ticks.reduce((n, x) => n + ((x.started || []).length), 0), requeued: ticks.reduce((n, x) => n + (x.requeued || 0), 0),
     setAside: ticks.reduce((n, x) => n + (x.setAside || 0), 0), probes: ticks.filter((x) => x.probe).length, errors: ticks.filter((x) => x.error).length };
   const broken = t ? Object.entries(t.wf).filter(([, s]) => s.exists && s.fails >= 3).map(([f, s]) => ({ wf: f, fails: s.fails, url: s.url })) : (state.broken || []);
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
-    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, sweptAt: state.sweptAt || 0, blueprintsAt: state.blueprintsAt || 0, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
+    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, sweptAt: state.sweptAt || 0, blueprintsAt: state.blueprintsAt || 0, catchup: state.catchup || {}, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
-  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; design pass ${t.done.design ? 'started' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}; blueprints queued ${(t.done.blueprints || []).join(', ') || 'none'}` : 'no plan: ' + (warnings[0] || ''),
+  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; design pass ${t.done.design ? 'started' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; caught up ${(t.done.catchup || []).join(', ') || 'none late'}${(t.done.cancelled || []).length ? '; late duplicates cancelled ' + t.done.cancelled.join(', ') : ''}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}; blueprints queued ${(t.done.blueprints || []).join(', ') || 'none'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',
     `last 24 h: ${day.started} started, ${day.requeued} put back, ${day.setAside} set aside, ${day.probes} probe runs, ${day.errors} ticks without a plan`].filter(Boolean);
   console.log(lines.join('\n'));
