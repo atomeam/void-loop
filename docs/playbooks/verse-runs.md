@@ -22,5 +22,5 @@ A visitor who types a public run's name, "what automations does Verse run", or "
 
 ## Writing public asks
 
-`.github/workflows/verse-runs-write.yml` runs `node tools/verse-runs.mjs --write` every six hours and opens a small automerge pull request when something new is appended. A run that has nothing new changes no files.
+``node tools/verse-runs.mjs --write` appends public asks that are not already listed. A run that has nothing new changes no files. Personal notes are never written. (A scheduled workflow for this is ready to add when a token that can write workflow files is available.)
 
