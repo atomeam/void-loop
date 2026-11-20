@@ -1,5 +1,6 @@
 /** Debris Field: one ship, free movement, everything on the field comes for you. Verse is a ghost score. */
-export const id = 'debris-field', W = 1280, H = 720, fly = true, stick = 'fly', update = 1;
+export const id = 'debris-field', W = 1280, H = 720, fly = true, stick = 'fly', update = 2;
+export const whatsNew = 'Update 2: Verse sets three marks you can really beat, passing one is a moment with sound, the first waves start gentle, the ship always fires, and every hit, wave and crystal has its own sound.';
 const rng = (s) => { s.n = (Math.imul(s.n, 1664525) + 1013904223) >>> 0; return s.n / 4294967296; };
 const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 const hypot = (x, y) => Math.hypot(x, y) || 1;
@@ -8,7 +9,7 @@ function blank(seed) {
     n: (seed >>> 0) || 1, tick: 0, clock: 0, phase: 'title', over: null, why: '', anim: 0, ghost: 0,
     you: { x: W / 2, y: H / 2, vx: 0, vy: 0, lives: 3, cool: 0, inv: 0, dash: 0, spread: 0, shield: 0, alive: 1, aim: 0 },
     shots: [], foes: [], bits: [], pops: [], drops: [], stars: [],
-    score: { you: 0 }, mult: 1, chain: 0, shake: 0, stop: 0, mo: 0, wave: 1, banner: 0, boss: 0, flash: 0, sfx: 0, cue: '',
+    score: { you: 0 }, marks: [], passed: 0, say: '', mult: 1, chain: 0, shake: 0, stop: 0, mo: 0, wave: 1, banner: 0, boss: 0, flash: 0, sfx: 0, cue: '',
   };
   for (let layer = 0; layer < 3; layer++) for (let i = 0; i < 36; i++) s.stars.push({ x: rng(s) * W, y: rng(s) * H, z: 0.2 + layer * 0.5, a: 0.18 + layer * 0.2, layer });
   return s;
@@ -52,7 +53,7 @@ function shoot(s, ax, ay) {
   const ang = Math.atan2(ay - p.y, ax - p.x); p.aim = ang;
   const fans = p.spread > 0 ? [-0.28, 0, 0.28] : [0];
   for (const o of fans) s.shots.push({ x: p.x + Math.cos(ang) * 26, y: p.y + Math.sin(ang) * 26, vx: Math.cos(ang + o) * 14, vy: Math.sin(ang + o) * 14, on: 1 });
-  p.cool = p.spread > 0 ? 11 : 8; s.cue = 'shot'; s.sfx = 1;
+  p.cool = p.spread > 0 ? 11 : 8; if (!s.cue) s.cue = 'shot'; s.sfx = 1;
 }
 function bossAct(s, f, step) {
   f.pat = (f.pat || 0) + 1;
@@ -157,12 +158,15 @@ function hurt(s) {
 }
 export function create(seed = 1) {
   const s = blank(seed);
-  s.ghost = rival(seed);
+  const full = rival(seed, 4200), two = rival(seed, 1240);
+  // Update 2 (fun audit, 2026-11-20: "23,735 vs 15 feels hopeless"): Verse's mark is what it scores in the first two waves; a bronze
+  // mark comes first so a new player wins something early, and Verse's full run stays as the gold mark to chase later.
+  s.ghost = two; s.marks = [Math.max(150, Math.round(two * 0.3 / 50) * 50), two, Math.max(full, two + 500)];
   return s;
 }
-function rival(seed) {
+function rival(seed, cap) {
   const s = blank(seed); let n = 0;
-  while (s.phase !== 'over' && n < 4200) { tick(s, { bot: 'verse' }); n++; }
+  while (s.phase !== 'over' && n < cap) { tick(s, { bot: 'verse' }); n++; }
   return s.score.you;
 }
 export function tick(s, input = {}) {
@@ -173,7 +177,7 @@ export function tick(s, input = {}) {
   if (input.bot === 'film' && s.tick % 70 === 20) input.dash = true;
   s.sx = input.sx || 0; s.sy = input.sy || 0;
   const wave = 1 + (s.tick / 620 | 0);
-  if (wave !== s.wave) { s.wave = wave; s.banner = 50; s.boss = 0; }
+  if (wave !== s.wave) { s.wave = wave; s.banner = 50; s.boss = 0; s.say = ''; s.cue = 'wave'; s.sfx = 1; }
   s.banner = Math.max(0, s.banner - 1);
   if (s.stop > 0) { s.stop--; s.shake *= 0.88; for (const b of s.bits) { b.x += b.vx * 0.2; b.y += b.vy * 0.2; b.life--; } return s; }
   const slow = s.mo > 0; if (slow) s.mo--;
@@ -195,12 +199,12 @@ export function tick(s, input = {}) {
     const ax = mouse ? input.ax : foe ? foe.x : s.you.x + Math.cos(s.you.aim) * 120;
     const ay = mouse ? input.ay : foe ? foe.y : s.you.y + Math.sin(s.you.aim) * 120;
     if (mouse) s.you.aim = Math.atan2(ay - s.you.y, ax - s.you.x);
-    if (!mouse || input.hold) shoot(s, ax, ay);
+    shoot(s, ax, ay); // Update 2: it always fires (a desktop player who did not hold the button scored nothing); the pointer only aims
   }
   s.you.cool = Math.max(0, s.you.cool - 1); s.you.inv = Math.max(0, s.you.inv - 1); s.you.spread = Math.max(0, s.you.spread - 1);
   const quiet = (s.tick % 320) < 16;
   s.why = s.boss === 1 ? 'a heavy crystal has your track' : quiet ? 'a breath, then the next pattern' : 'they are closing from the edges';
-  if (!quiet && s.you.alive && s.tick % Math.max(7, 20 - s.wave) === 0) {
+  if (!quiet && s.you.alive && s.tick % (s.wave === 1 ? 32 : s.wave === 2 ? 25 : Math.max(7, 20 - s.wave)) === 0) {
     const roll = rng(s);
     const kind = s.wave >= 3 && roll < 0.34 ? 'dart' : s.wave >= 2 && roll < 0.6 ? 'split' : 'chase';
     spawn(s, kind);
@@ -241,6 +245,11 @@ export function tick(s, input = {}) {
   for (const p of s.pops) { p.y -= 1; p.life--; }
   s.shots = s.shots.filter((b) => b.on); s.foes = s.foes.filter((f) => f.on);
   s.bits = s.bits.filter((b) => b.life > 0); s.pops = s.pops.filter((p) => p.life > 0); s.drops = s.drops.filter((d) => d.on);
+  const mk = s.marks || [];
+  if (s.passed < mk.length && s.score.you > mk[s.passed]) {
+    s.say = ['BRONZE · YOU PASSED ' + mk[0], 'YOU PASSED VERSE', 'GOLD · VERSE\'S BEST RUN'][s.passed]; s.passed++; s.banner = 70; s.flash = 14; s.cue = 'win'; s.sfx = 1;
+    for (const c of ['#ffd76a', '#4fe3e3', '#ff7aa8', '#f4f1ea']) burst(s, s.you.x, s.you.y, c, 14, false); s.cue = 'win'; s.shake = 6;
+  }
   if (!s.you.alive && s.mo === 0) {
     s.phase = 'over'; s.anim = 0;
     s.over = s.score.you > s.ghost ? 'you' : s.score.you === s.ghost ? 'draw' : 'void';
@@ -344,7 +353,7 @@ export function draw(g, s) {
   hud(g, s);
   if (s.banner > 8 && s.phase === 'play') {
     g.globalAlpha = Math.min(1, s.banner / 22); g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 40px ui-sans-serif, system-ui, sans-serif';
-    g.fillText(s.boss ? 'HEAVY CRYSTAL' : 'WAVE ' + s.wave, W / 2, 120); g.textAlign = 'left'; g.globalAlpha = 1;
+    if (s.say) g.fillStyle = '#ffd76a'; g.fillText(s.say || (s.boss ? 'HEAVY CRYSTAL' : 'WAVE ' + s.wave), W / 2, 120); g.textAlign = 'left'; g.globalAlpha = 1;
   }
   if (s.phase === 'title') titleCard(g);
   if (s.phase === 'over') endCard(g, s, Math.min(1, s.anim / 16));
@@ -358,7 +367,7 @@ function hud(g, s) {
   g.fillStyle = 'rgba(8,6,18,.5)'; g.fillRect(24, 18, 360, 44); g.fillRect(W - 460, 18, 250, 44);
   g.fillStyle = '#f4f1ea'; g.font = '600 22px ui-sans-serif, system-ui, sans-serif';
   g.fillText('YOU  ' + s.score.you + '   ×' + s.mult.toFixed(1), 36, 48);
-  g.textAlign = 'right'; g.fillText('VERSE  ' + s.ghost, W - 220, 48); g.textAlign = 'left';
+  const next = (s.marks || [])[s.passed]; g.textAlign = 'right'; g.fillText(next != null ? ['BRONZE  ', 'VERSE  ', 'GOLD  '][s.passed] + next : 'ALL MARKS BEATEN', W - 220, 48); g.textAlign = 'left';
   for (let i = 0; i < 3; i++) {
     if (i < s.you.lives) { g.globalAlpha = 1; g.fillStyle = '#4fe3e3'; g.fillRect(36 + i * 28, H - 40, 18, 7); }
     else { g.globalAlpha = 0.7; g.strokeStyle = '#4fe3e3'; g.lineWidth = 2; g.strokeRect(36.5 + i * 28, H - 39.5, 17, 6); }
@@ -372,13 +381,13 @@ function titleCard(g) {
   g.globalAlpha = 0.78; g.fillStyle = '#07060f'; g.fillRect(0, H / 2 - 210, W, 420);
   g.globalAlpha = 1; g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 64px ui-sans-serif, system-ui, sans-serif';
   g.fillText('DEBRIS FIELD', W / 2, H / 2 - 120);
-  g.fillStyle = '#4fe3e3'; g.font = '700 28px ui-sans-serif, system-ui, sans-serif'; g.fillText('Update 1', W / 2, H / 2 - 68);
+  g.fillStyle = '#4fe3e3'; g.font = '700 28px ui-sans-serif, system-ui, sans-serif'; g.fillText('Update ' + update, W / 2, H / 2 - 68);
   g.fillStyle = '#f4f1ea'; g.font = '22px ui-sans-serif, system-ui, sans-serif';
   g.fillText("What's new", W / 2, H / 2 - 22);
-  g.fillText('The ending lists your score, Verse, and your best.', W / 2, H / 2 + 16);
-  g.fillText('The dash meter moved off the stick. The stars drift.', W / 2, H / 2 + 48);
-  g.fillText('The crystal glows before it charges.', W / 2, H / 2 + 80);
-  g.fillStyle = '#7ef6ff'; g.fillText('Arrows move. Hold the button to fire. Shift or space dashes.', W / 2, H / 2 + 132);
+  g.fillText('Verse sets three marks you can really beat. Passing one is a moment.', W / 2, H / 2 + 16);
+  g.fillText('The first waves start gentle, then it ramps up.', W / 2, H / 2 + 48);
+  g.fillText('Every hit, wave and crystal has its own sound.', W / 2, H / 2 + 80);
+  g.fillStyle = '#7ef6ff'; g.fillText('Arrows or WASD move. It fires by itself; the pointer aims. Shift or space dashes.', W / 2, H / 2 + 132);
   g.textAlign = 'left';
 }
 function deviceBest() {
@@ -388,9 +397,9 @@ function endCard(g, s, fade) {
   const best = Math.max(deviceBest(), s.score.you || 0);
   g.globalAlpha = 0.72 * fade; g.fillStyle = '#07060f'; g.fillRect(0, H / 2 - 168, W, 336);
   g.globalAlpha = fade; g.textAlign = 'center'; g.fillStyle = '#f4f1ea'; g.font = '700 60px ui-sans-serif, system-ui, sans-serif';
-  g.fillText(s.over === 'you' ? 'YOU BEAT VERSE' : 'RUN OVER', W / 2, H / 2 - 88);
+  g.fillText(s.over === 'you' ? 'YOU BEAT VERSE' : s.passed ? 'BRONZE MARK BEATEN' : 'RUN OVER', W / 2, H / 2 - 88);
   g.font = '600 28px ui-sans-serif, system-ui, sans-serif'; g.fillStyle = '#7ef6ff'; g.fillText('You  ' + s.score.you, W / 2, H / 2 - 28);
-  g.fillStyle = '#d2b0ff'; g.fillText('Verse  ' + s.ghost, W / 2, H / 2 + 14);
+  g.fillStyle = '#d2b0ff'; g.fillText('Verse  ' + s.ghost + (s.passed < 3 && s.marks && s.marks.length ? '   ·   next mark  ' + s.marks[s.passed] : ''), W / 2, H / 2 + 14);
   g.fillStyle = '#f4f1ea'; g.fillText('Best  ' + best, W / 2, H / 2 + 56);
   g.fillStyle = '#4fe3e3'; g.font = '22px ui-sans-serif, system-ui, sans-serif'; g.fillText('space or tap to play again', W / 2, H / 2 + 108);
   g.textAlign = 'left'; g.globalAlpha = 1;
@@ -412,4 +421,4 @@ function hear(kind) {
     o.start(); o.stop(hear.ac.currentTime + (kind === 'boom' ? 0.2 : 0.03));
   } catch (_) { /* silent */ }
 }
-export const how = 'Update 1. The ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges. One ship. Arrows or WASD move it. On a desktop the pointer aims and holding the button fires. A touch stick moves and the guns stay hot. Shift or space dashes, then it has to cool. Chasers, darts and splitters come in from every edge. A heavy crystal is the wave boss. Three lives, and a hit leaves you clear for a moment. A shield takes the hit that would have cost one. The multiplier climbs with kills and drops when you are hit. Verse is the ghost score for this field, not another ship.';
+export const how = 'Update 2: Verse sets three marks you can beat (bronze, Verse, gold), the first waves start gentle, and the game has real sound. One ship. Arrows or WASD move it. It fires by itself; on a desktop the pointer aims. A touch stick moves and the guns stay hot. Shift or space dashes, then it has to cool. Chasers, darts and splitters come in from every edge. A heavy crystal is the wave boss. Three lives, and a hit leaves you clear for a moment. A shield takes the hit that would have cost one. The multiplier climbs with kills and drops when you are hit. Verse is the ghost score for this field, not another ship.';
