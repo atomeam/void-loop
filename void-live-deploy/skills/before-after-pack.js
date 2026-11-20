@@ -1,7 +1,7 @@
 /**
  * before-after-pack skill — package the before (client hours, manual steps, chasing) and after
  * (Verse owns the systems, automations, tests, monitors and handoff; client does less) for a business idea.
- * Makes selling and delivery concrete: the client sees the lift, Verse packages "we own the heavy lifting."
+ * Makes selling and delivery concrete: the client sees the lift, Verse packages "verse does the hard work."
  * Rules-based, offline. Nothing is sent. Reuses existing tools and skills.
  * "before after pack for client onboarding", "package the before and after for invoice automation",
  * "show the lift from client work to Verse owns it for support routing"
@@ -34,7 +34,7 @@ export function packFor(subject) {
       'Verse designs, builds, connects (existing tools first), tests and monitors',
       'Verse owns the running automations, status, docs and handoff; client summons what they need'
     ],
-    clientDoesLess: 'The client no longer does the heavy lifting of setup, running or chasing. Verse packages the ownership.',
+    clientDoesLess: 'The client no longer does the hard work of setup, running or chasing. Verse packages the ownership.',
     next: 'Ask for the ownership pack, progress report or full handoff when ready to deliver.'
   };
 }
@@ -45,7 +45,7 @@ async function run(text, api) {
   const pack = packFor(text);
   showPage((el) => {
     el.innerHTML = '<h2>Before and after: ' + esc(name) + '</h2>'
-      + '<p class="sub">What the client does now, and what Verse owns so the client does less. We package the heavy lifting.</p>'
+      + '<p class="sub">What the client does now, and what Verse owns so the client does less. We package the hard work.</p>'
       + '<h3>Before (client does the work)</h3><ul>' + pack.before.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>After (Verse owns it)</h3><ul>' + pack.after.map(i => '<li>' + esc(i) + '</li>').join('') + '</ul>'
       + '<h3>How the client does less</h3><p>' + esc(pack.clientDoesLess) + '</p>'
