@@ -35,7 +35,7 @@ def bed(piano, seconds, bpm=72, seed=1):
         root, chord = PROG[bar % len(PROG)]
         hits = [(0, root - 12, 0.55), (0, root, 0.4)]
         for k, m in enumerate([chord[0], chord[1], chord[2], chord[3], chord[2], chord[1], chord[2], chord[3]]):
-            hits.append((k * beat / 2 + rnd.uniform(-0.012, 0.012), m, 0.22 + 0.1 * (k % 2 == 0) + rnd.uniform(-0.03, 0.03)))
+            hits.append((k * beat / 2 + rnd.uniform(-0.012, 0.012), m, (0.32 if k in (0, 2, 4, 6) else 0.22) + rnd.uniform(-0.03, 0.03)))
         for off, m, v in hits:
             y = note(piano, m, v)
             a = int((t + off) * SR)
