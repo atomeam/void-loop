@@ -10,7 +10,8 @@ export default [
   "blurb": "MultiVerse: every pro skill, films, code review, priority.",
   "status": "live",
   "origin": "v01d",
-  "published": "2026-10-15"
+  "published": "2026-10-15",
+  "trial": "first week free"
  },
  {
   "id": "code-review-pro",
@@ -81,7 +82,8 @@ export default [
   "blurb": "Real jobs that pay real money.",
   "status": "live",
   "origin": "v01d",
-  "published": "2026-10-15"
+  "published": "2026-10-15",
+  "trial": "first week free"
  },
  {
   "id": "join-the-team",
