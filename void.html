@@ -2673,6 +2673,7 @@ say('nothing selected to remove');
       try { document.dispatchEvent(new CustomEvent('void:cards')); } catch (_) {}
       srAnnounce(el);
       el._ask = currentAsk; el._at = Date.now();
+      logAsk(currentAsk, el); // the owner's Searches log (functions/api/searches.js): 90 days, a hashed visitor ID, never an IP
       safeWatch(el); // lib/image-safety.js: no photo on a card about nudity, sex, the explicit body or minors in such a context (fail closed)
       // a line with data-ask on any page (a menu row, a choice between two Springfields) runs that ask
       el.addEventListener('click', (e) => {
@@ -5260,6 +5261,12 @@ say('nothing selected to remove');
       const run = () => { if (!imgSafe) return; try { if (el.dataset.imgSafe === 'blocked' || imgSafe.cardUnsafe(el, el._ask || '')) imgSafe.scrubCard(el); } catch (_) { imgSafe.scrubCard(el); } el.classList.remove('img-hold'); };
       try { new MutationObserver(run).observe(el, { childList: true, subtree: true, characterData: true }); } catch (_) {}
       imgSafeP.then(run);
+    }
+    let lastLogged = '';
+    function logAsk(ask, el) {
+      const a = String(ask || '').trim(); if (!a || a === lastLogged || !/(^|\.)a-to-mind\.com$/.test(location.hostname)) return; lastLogged = a;
+      setTimeout(() => fetch('/api/searches', { method: 'POST', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: a.slice(0, 300), kind: el.dataset.skill || el.dataset.kind || 'answer' }) })
+        .then((r) => r.json()).then((j) => { if (j && (j.state === 'banned' || j.state === 'locked')) { el.innerHTML = '<h2>Asking is paused</h2><p>This device can\u2019t ask Verse right now.</p>'; el.dataset.imgSafe = 'blocked'; } }).catch(() => {}), 1200);
     }
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
     function ensureCardFrame() {
