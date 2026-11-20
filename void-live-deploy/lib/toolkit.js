@@ -116,23 +116,9 @@ const HAND_RELATED = Object.freeze({
   '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
   '/chords/': ['/piano/', '/tuner/', '/metronome/'],
   // the flights pages (owner, 2026-10-26): the hub reaches each tool; each tool its closest sisters, the weather and the clocks
-  '/flights/': ['/flights/time/', '/flights/trip/', '/flights/co2/', '/weather/', '/time/'],
-  '/flights/trip/': ['/flights/', '/calendar/', '/flights/time/', '/time/'],
-  '/flights/airports/': ['/flights/', '/flights/distance/', '/flights/routes/', '/time/'],
-  '/flights/time/': ['/flights/distance/', '/time/', '/flights/trip/', '/flights/'],
-  '/flights/distance/': ['/flights/map/', '/flights/time/', '/flights/co2/', '/convert/'],
-  '/flights/map/': ['/flights/distance/', '/flights/airports/', '/flights/'],
-  '/flights/co2/': ['/flights/distance/', '/flights/', '/convert/'],
-  '/flights/routes/': ['/flights/', '/flights/airports/', '/weather/'],
-  // the jobs pages (owner, 2026-10-26): the hub reaches each lane page; each lane page the hub and its closest sisters
-  '/jobs/': ['/jobs/alerts/', '/jobs/salary/', '/jobs/europe/', '/jobs/companies/', '/calendar/'],
-  '/jobs/regions/': ['/jobs/', '/jobs/europe/', '/jobs/alerts/', '/time/'],
-  '/jobs/alerts/': ['/jobs/', '/jobs/categories/', '/jobs/tags/'],
-  '/jobs/europe/': ['/jobs/', '/jobs/regions/', '/translate/'],
-  '/jobs/salary/': ['/jobs/', '/calculator/', '/jobs/tags/', '/convert/'],
-  '/jobs/categories/': ['/jobs/', '/jobs/tags/', '/jobs/companies/'],
-  '/jobs/tags/': ['/jobs/', '/jobs/categories/', '/jobs/salary/'],
-  '/jobs/companies/': ['/jobs/', '/jobs/categories/', '/jobs/alerts/'],
+  '/flights/': ['/weather/', '/time/', '/calendar/', '/tools/'],
+  // the jobs page (owner, 2026-11-20): one page for every job tool, related to calendar and time
+  '/jobs/': ['/calendar/', '/time/', '/tools/'],
   // the repo activity ledger (owner, 2026-10-28): a Kanban board and notes to plan from what it lists, the calendar for its dates
   '/ledger/': ['/kanban/', '/team/', '/notes/', '/calendar/', '/g/'],
   // the STL checker (asked by Verse): a part's size in other units, and the arithmetic of a print

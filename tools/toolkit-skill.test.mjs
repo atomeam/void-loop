@@ -33,7 +33,7 @@ test('the card and the Tools page list the same pages: the card once missed the 
   const main = html.slice(html.indexOf('<main'), html.indexOf('<nav id="related"'));
   const page = new Set([...main.matchAll(/<li[^>]*><a href="(\/[^"]*)"/g)].map((m) => m[1]));
   const onCard = new Set([...card('all tools').el.innerHTML.matchAll(/<a href="([^"]*)"/g)].map((m) => m[1]));
-  assert.ok(page.size > 80, 'the page lists its tools: ' + page.size);
+  assert.ok(page.size >= 60, 'the page lists its tools: ' + page.size);
   assert.deepEqual([...page].filter((h) => !onCard.has(h)), [], 'on /tools/ but not on the card');
   assert.deepEqual([...onCard].filter((h) => !page.has(h)), [], 'on the card but not on /tools/');
 });

@@ -168,3 +168,33 @@
 # standard name for Starboard
 /dashboard /starboard/ 301
 /dashboard/ /starboard/ 301
+
+# flights and jobs: one page each (owner, 2026-11-20)
+/flights/trip /flights/?mode=trip 301
+/flights/trip/ /flights/?mode=trip 301
+/flights/airports /flights/?mode=airports 301
+/flights/airports/ /flights/?mode=airports 301
+/flights/time /flights/?mode=time 301
+/flights/time/ /flights/?mode=time 301
+/flights/distance /flights/?mode=distance 301
+/flights/distance/ /flights/?mode=distance 301
+/flights/map /flights/?mode=map 301
+/flights/map/ /flights/?mode=map 301
+/flights/co2 /flights/?mode=co2 301
+/flights/co2/ /flights/?mode=co2 301
+/flights/routes /flights/?mode=routes 301
+/flights/routes/ /flights/?mode=routes 301
+/jobs/regions /jobs/?mode=regions 301
+/jobs/regions/ /jobs/?mode=regions 301
+/jobs/alerts /jobs/?mode=alerts 301
+/jobs/alerts/ /jobs/?mode=alerts 301
+/jobs/europe /jobs/?region=europe 301
+/jobs/europe/ /jobs/?region=europe 301
+/jobs/salary /jobs/?salaryOnly=1&sort=salary 301
+/jobs/salary/ /jobs/?salaryOnly=1&sort=salary 301
+/jobs/categories /jobs/?mode=categories 301
+/jobs/categories/ /jobs/?mode=categories 301
+/jobs/tags /jobs/?mode=tags 301
+/jobs/tags/ /jobs/?mode=tags 301
+/jobs/companies /jobs/?mode=companies 301
+/jobs/companies/ /jobs/?mode=companies 301
