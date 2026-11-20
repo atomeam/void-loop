@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { openPath } from '../void-live-deploy/lib/page-pass.js'; // the same list of open pages the UniVerse gate uses
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = (process.env.VOID_SITE || 'https://a-to-mind.com').replace(/\/+$/, '');
@@ -31,9 +32,11 @@ export function honestCopy(text, product) {
 
 // ---- copy from the playbook (pure) ----
 const tail = (b) => { const s = String(b || '').trim().replace(/\.$/, ''); const c = s.includes(': ') ? s.split(': ').slice(1).join(': ') : s; return /^[A-Z][a-z]+\b/.test(c) && !/^[A-Z][a-z]*[A-Z]/.test(c) ? c[0].toLowerCase() + c.slice(1) : c; };
-export function fill(pattern, p) {
-  if ((pattern.needs && !p[pattern.needs]) || (pattern.kinds && !pattern.kinds.includes(p.kind))) return null;
-  const map = { name: p.name, blurb: String(p.blurb || '').replace(/\.$/, ''), blurb_lc: tail(p.blurb), price: 'for ' + p.price, price_bare: p.price, trial: p.trial || '' };
+/** a blurb list without the things the page already gives away free (a card on /films/ must not say the plan adds films). Pure. */
+export const without = (text, items) => (items || []).reduce((t, w) => t.split(/,\s*/).filter((x) => x.trim().toLowerCase() !== String(w).toLowerCase()).join(', '), String(text || ''));
+export function fill(pattern, p, slot = {}) {
+  if ((pattern.needs && !p[pattern.needs]) || (pattern.kinds && !pattern.kinds.includes(p.kind)) || (pattern.needsFree && !slot.free)) return null;
+  const map = { name: p.name, blurb: without(String(p.blurb || '').replace(/\.$/, ''), slot.free_items), blurb_lc: without(tail(p.blurb), slot.free_items), price: 'for ' + p.price, price_bare: p.price, trial: p.trial || '' };
   const sub = (s) => String(s).replace(/\{(\w+)\}/g, (_, k) => (k in map ? map[k] : '{' + k + '}')).replace(/\s+/g, ' ').replace(/\.\./g, '.');
   const v = { pattern: pattern.id, product: p.id, text: sub(pattern.template), cta: sub(pattern.cta), ...(pattern.direct ? { direct: true } : {}) };
   return honestCopy(v.text, p) || honestCopy(v.cta, p) ? null : v;
@@ -64,6 +67,12 @@ export function lap({ offers, playbook, catalog, rows, broken, now }) {
   const o = JSON.parse(JSON.stringify(offers)), pb = JSON.parse(JSON.stringify(playbook)), changes = [];
   const byId = Object.fromEntries((catalog || []).map((p) => [p.id, p])), at = new Date(now).toISOString().slice(0, 10); // a day, so two runs on one day write the same file
   const pat = (id) => pb.patterns.find((p) => p.id === id);
+  // a page behind the UniVerse gate is seen only by members (a stranger gets the gate, and the gate is its own slot below): its card comes down,
+  // so nobody is pitched what they already have. Only pages anyone can open (lib/page-pass.js openPath) carry a card.
+  for (const [slot, s] of Object.entries(o.slots)) {
+    if (s.kind === 'gate' || openPath(s.page)) continue;
+    o.history.push({ slot, ended: at, result: 'retired: ' + s.page + ' is behind the UniVerse gate' }); changes.push(slot + ': retired (' + s.page + ' is behind the UniVerse gate)'); delete o.slots[slot];
+  }
   for (const [slot, s] of Object.entries(o.slots)) {
     if (s.running && s.running.variants.some((v) => broken.includes(v.product))) { // a checkout broke: undo the offer now
       o.history.push({ slot, exp: s.running.exp, ended: at, result: 'undone: a checkout stopped answering' }); changes.push(slot + ': undid ' + s.running.exp + ' (checkout down)'); s.running = null;
@@ -91,7 +100,7 @@ export function lap({ offers, playbook, catalog, rows, broken, now }) {
     for (const p of ranked) { // one variant per pattern, so each experiment compares proven patterns, not two copies of one
       if (variants.length > RULES.challengers) break;
       if (variants.some((x) => x.pattern === p.id)) continue;
-      const v = live.map((prod) => fill(p, prod)).find(Boolean); if (v) variants.push(v);
+      const v = live.map((prod) => fill(p, prod, s)).find(Boolean); if (v) variants.push(v);
     }
     if (variants.length < 2) continue;
     const exp = 'e' + at.slice(2, 10).replace(/-/g, '') + slot.slice(0, 3);
@@ -116,11 +125,11 @@ export async function runLane({ dry = false, now = Date.now() } = {}) {
   const offers = readJson(FILES.offers, null), playbook = readJson(FILES.playbook, null);
   if (!offers || !playbook) return { ok: false, last: 'The offer files are missing.' };
   const out = catalog.length ? lap({ offers, playbook, catalog, rows, broken, now }) : { offers, playbook, changes: [] };
-  const sum = (k) => rows.filter((r) => r.kind === k).reduce((a, r) => a + r.n, 0);
+  const sum = (k) => rows.filter((r) => r.kind === k && r.id !== 'universe').reduce((a, r) => a + r.n, 0), sumId = (k, id) => rows.filter((r) => r.kind === k && r.id === id).reduce((a, r) => a + r.n, 0);
   const row = { at: new Date(now).toISOString(), income_cents: rev ? rev.realized_cents : null, sales: rev ? rev.sales : null, checkouts: { live: paid.length, up: paid.length - broken.length, broken },
-    offers_60d: buy ? { seen: sum('seen'), clicks: sum('click') } : null, running: Object.values(out.offers.slots).filter((s) => s.running).length, changes: out.changes };
+    offers_60d: buy ? { seen: sum('seen'), clicks: sum('click') } : null, gate: buy ? { seen: sumId('seen', 'universe'), clicks: sumId('click', 'universe') } : null, running: Object.values(out.offers.slots).filter((s) => s.running).length, changes: out.changes };
   const money = rev ? '$' + (rev.realized_cents / 100).toFixed(2) + ' realized from ' + rev.sales + ' sales' : 'income unreadable';
-  const last = money + '. Checkouts up ' + row.checkouts.up + '/' + row.checkouts.live + (broken.length ? ' (down: ' + broken.join(', ') + ')' : '') + '. ' + (out.changes.length ? out.changes.length + ' offer change(s): ' + out.changes.join('; ') + '.' : 'No offer change; experiments still running.');
+  const last = money + '. Checkouts up ' + row.checkouts.up + '/' + row.checkouts.live + (broken.length ? ' (down: ' + broken.join(', ') + ')' : '') + '. ' + (out.changes.length ? out.changes.length + ' offer change(s): ' + out.changes.join('; ') + '.' : 'No offer change; experiments still running.') + (buy ? ' Gate (UniVerse Subscribe): ' + sumId('seen', 'universe') + ' showings, ' + sumId('click', 'universe') + ' clicks in 60 days.' : '');
   if (!dry) {
     const w = (f, o) => writeFileSync(join(root, f), JSON.stringify(o, null, 1) + '\n');
     writeFileSync(join(root, FILES.offers), compact(out.offers)); w(FILES.playbook, out.playbook);

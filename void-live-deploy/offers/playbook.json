@@ -9,7 +9,8 @@
     "https://about.readthedocs.com/blog/2024/08/10-year-anniversary/",
     "https://www.failory.com/interview/photopea"
    ],
-   "template": "Everything here is free. {name} adds {blurb_lc}, {price}.",
+   "needsFree": true,
+   "template": "This page is free. {name} adds {blurb_lc}, {price}.",
    "cta": "See {name}",
    "results": {
     "tries": 0,

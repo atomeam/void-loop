@@ -32,6 +32,16 @@ A new pattern goes in with its source, or not at all.
    `<div data-offer="name">` and a row in `offers/offers.json`.
 5. Writes a row to `void-live-deploy/progress/loops/revenue-runs/<time>.json` (income, sales, checkouts up, offer counts, the changes made; a new file each run) and the lane card `progress/loops/revenue.json`.
 
+## Which pages carry a card
+
+Only pages anyone can open (the list in `lib/page-pass.js` `openPath`, the same one the UniVerse gate uses). A page behind the gate is seen only by
+members, so a card there would pitch people what they already have: the lane retires any slot whose page is gated. Traffic (`/api/visit`, 14 days):
+of the ten busiest pages only `/` (left alone) and `/films/` are open; `/team/`, `/lab/`, `/brain/`, `/starboard/`, `/podcasts/`, `/conquered/`, `/treasury/`
+and `/arcade/` are gated now. Slots: `films` and `blub` (the page strangers land on from a shared blobfish link). The `gate` slot is the UniVerse
+screen itself: its showing and its Subscribe click are counted by `/api/buy` (id `universe`, source `gate.base.a`) and read into every run's row;
+it is measured only, no experiment runs on it yet. A signed-in MultiVerse member or the owner is shown no card (`offers/offer.js`); a UniVerse member
+or a stranger is offered MultiVerse (Verse Monthly, a real checkout), the next plan up.
+
 ## Honesty
 
 `honestCopy` refuses urgency, scarcity, counts of buyers, ratings, guarantees and any dollar amount that is not the product's own price; a

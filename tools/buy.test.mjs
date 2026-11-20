@@ -23,5 +23,5 @@ test('the route redirects, refuses a cross-site write and a made-up offer, and s
 test('the offer files parse and every slot\'s page carries the slot', () => {
   const o = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/offers/offers.json', import.meta.url), 'utf8'));
   JSON.parse(fs.readFileSync(new URL('../void-live-deploy/offers/playbook.json', import.meta.url), 'utf8'));
-  for (const [slot, s] of Object.entries(o.slots)) assert.ok(fs.readFileSync(new URL('../void-live-deploy' + s.page + 'index.html', import.meta.url), 'utf8').includes('data-offer="' + slot + '"'), slot);
+  for (const [slot, s] of Object.entries(o.slots)) if (s.kind !== 'gate') assert.ok(fs.readFileSync(new URL('../void-live-deploy' + s.page + 'index.html', import.meta.url), 'utf8').includes('data-offer="' + slot + '"'), slot);
 });
