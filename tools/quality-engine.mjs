@@ -114,7 +114,8 @@ export function slice(list, rec, n) {
 /** settle the open change: has it gone live, and did the score go up? Keeps or undoes it in the tree. */
 export async function settle(browser, rec, { env = process.env, undo = true } = {}) {
   const pend = rec.pending; if (!pend) return null;
-  const live = await fetch(SITE + pend.targets[0].id + '?q=' + Date.now(), { headers: { 'user-agent': 'VerseQuality/1.0' } }).then((r) => r.text()).catch(() => '');
+  const liveUrl = new URL(pend.targets[0].id, SITE + '/'); liveUrl.searchParams.set('q', String(Date.now()));
+  const live = await fetch(liveUrl, { headers: { 'user-agent': 'VerseQuality/1.0' } }).then((r) => (r.ok ? r.text() : '')).catch(() => '');
   if (!live.includes(pend.signature)) {
     if (Date.now() - Date.parse(pend.at) > 8 * 3600e3) { rec.cycles.push({ at: new Date().toISOString(), id: pend.targets[0].id, improver: pend.improver, kept: false, gain: 0, cents: 0, why: 'the change never went live; dropped' }); rec.pending = null; return { state: 'dropped' }; }
     return { state: 'waiting' };
