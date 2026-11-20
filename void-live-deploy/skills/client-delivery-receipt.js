@@ -1,7 +1,7 @@
 /**
  * client-delivery-receipt skill — a client-facing receipt of the full delivery package
  * for a business idea: systems Verse owns, docs, running automations (confirm-line gated),
- * monitors and last status. Reduces client chasing; makes "we own the heavy lifting" concrete.
+ * monitors and last status. Reduces client chasing; makes "verse does the hard work" concrete.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "delivery receipt for my idea: automate invoice reminders",
  * "show the receipt for client onboarding",
