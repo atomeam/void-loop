@@ -1,0 +1,30 @@
+{
+ "about": "The compounding pass: sites and targets that counted, measured again against their live originals. Owner-only (lib/owner-gate.js).",
+ "rows": [
+  {"at": "2026-11-20", "checked": 6, "stillWin": 1, "retired": ["ndscalc.ru"], "requeued": [{"id": "image boards: 2chan.net", "failed": ["journey: do the main job and see the result", "journey: share the result and reopen it from the link"], "features": []}, {"id": "password strength", "failed": ["accuracy", "crack time", "reasons and fixes"], "features": []}, {"id": "emoji combos", "failed": [], "features": ["Platforms", "Emoji Versions", "😃Smileys & Emotion", "🤦‍♀️People & Body", "🐶Animals & Nature", "🍩Food & Drink", "🚗Travel & Places", "🏀Activities", "💎Objects", "✅Symbols", "🏁Flags", "😂Face with Tears of Joy", "🥰Smiling Face with Hearts", "🥲Smiling Face with Tear", "🥺Pleading Face", "❤️‍🔥Heart on Fire", "❤️Red Heart", "👍Thumbs Up", "🔥Fire", "🇺🇦Flag: Ukraine", "🤣Elon Musk's Emoji Profile"]}, {"id": "my ip", "failed": ["plain text for scripts", "journey: do the main job and see the result", "journey: share the result and reopen it from the link"], "features": []}], "newFeatures": [{"id": "emoji combos", "feature": "Platforms"}, {"id": "emoji combos", "feature": "Emoji Versions"}, {"id": "emoji combos", "feature": "😃Smileys & Emotion"}, {"id": "emoji combos", "feature": "🤦‍♀️People & Body"}, {"id": "emoji combos", "feature": "🐶Animals & Nature"}, {"id": "emoji combos", "feature": "🍩Food & Drink"}, {"id": "emoji combos", "feature": "🚗Travel & Places"}, {"id": "emoji combos", "feature": "🏀Activities"}, {"id": "emoji combos", "feature": "💎Objects"}, {"id": "emoji combos", "feature": "✅Symbols"}, {"id": "emoji combos", "feature": "🏁Flags"}, {"id": "emoji combos", "feature": "😂Face with Tears of Joy"}, {"id": "emoji combos", "feature": "🥰Smiling Face with Hearts"}, {"id": "emoji combos", "feature": "🥲Smiling Face with Tear"}, {"id": "emoji combos", "feature": "🥺Pleading Face"}, {"id": "emoji combos", "feature": "❤️‍🔥Heart on Fire"}, {"id": "emoji combos", "feature": "❤️Red Heart"}, {"id": "emoji combos", "feature": "👍Thumbs Up"}, {"id": "emoji combos", "feature": "🔥Fire"}, {"id": "emoji combos", "feature": "🇺🇦Flag: Ukraine"}, {"id": "emoji combos", "feature": "🤣Elon Musk's Emoji Profile"}], "featuresBeaten": [], "universe": {"targets": 34, "counted": 0}}
+ ],
+ "open": [
+  {"id": "emoji combos", "feature": "Platforms"},
+  {"id": "emoji combos", "feature": "Emoji Versions"},
+  {"id": "emoji combos", "feature": "😃Smileys & Emotion"},
+  {"id": "emoji combos", "feature": "🤦‍♀️People & Body"},
+  {"id": "emoji combos", "feature": "🐶Animals & Nature"},
+  {"id": "emoji combos", "feature": "🍩Food & Drink"},
+  {"id": "emoji combos", "feature": "🚗Travel & Places"},
+  {"id": "emoji combos", "feature": "🏀Activities"},
+  {"id": "emoji combos", "feature": "💎Objects"},
+  {"id": "emoji combos", "feature": "✅Symbols"},
+  {"id": "emoji combos", "feature": "🏁Flags"},
+  {"id": "emoji combos", "feature": "😂Face with Tears of Joy"},
+  {"id": "emoji combos", "feature": "🥰Smiling Face with Hearts"},
+  {"id": "emoji combos", "feature": "🥲Smiling Face with Tear"},
+  {"id": "emoji combos", "feature": "🥺Pleading Face"},
+  {"id": "emoji combos", "feature": "❤️‍🔥Heart on Fire"},
+  {"id": "emoji combos", "feature": "❤️Red Heart"},
+  {"id": "emoji combos", "feature": "👍Thumbs Up"},
+  {"id": "emoji combos", "feature": "🔥Fire"},
+  {"id": "emoji combos", "feature": "🇺🇦Flag: Ukraine"},
+  {"id": "emoji combos", "feature": "🤣Elon Musk's Emoji Profile"}
+ ],
+ "last": {"at": "2026-11-20", "checked": 6, "stillWin": 1, "retired": ["ndscalc.ru"], "requeued": [{"id": "image boards: 2chan.net", "failed": ["journey: do the main job and see the result", "journey: share the result and reopen it from the link"], "features": []}, {"id": "password strength", "failed": ["accuracy", "crack time", "reasons and fixes"], "features": []}, {"id": "emoji combos", "failed": [], "features": ["Platforms", "Emoji Versions", "😃Smileys & Emotion", "🤦‍♀️People & Body", "🐶Animals & Nature", "🍩Food & Drink", "🚗Travel & Places", "🏀Activities", "💎Objects", "✅Symbols", "🏁Flags", "😂Face with Tears of Joy", "🥰Smiling Face with Hearts", "🥲Smiling Face with Tear", "🥺Pleading Face", "❤️‍🔥Heart on Fire", "❤️Red Heart", "👍Thumbs Up", "🔥Fire", "🇺🇦Flag: Ukraine", "🤣Elon Musk's Emoji Profile"]}, {"id": "my ip", "failed": ["plain text for scripts", "journey: do the main job and see the result", "journey: share the result and reopen it from the link"], "features": []}], "newFeatures": [{"id": "emoji combos", "feature": "Platforms"}, {"id": "emoji combos", "feature": "Emoji Versions"}, {"id": "emoji combos", "feature": "😃Smileys & Emotion"}, {"id": "emoji combos", "feature": "🤦‍♀️People & Body"}, {"id": "emoji combos", "feature": "🐶Animals & Nature"}, {"id": "emoji combos", "feature": "🍩Food & Drink"}, {"id": "emoji combos", "feature": "🚗Travel & Places"}, {"id": "emoji combos", "feature": "🏀Activities"}, {"id": "emoji combos", "feature": "💎Objects"}, {"id": "emoji combos", "feature": "✅Symbols"}, {"id": "emoji combos", "feature": "🏁Flags"}, {"id": "emoji combos", "feature": "😂Face with Tears of Joy"}, {"id": "emoji combos", "feature": "🥰Smiling Face with Hearts"}, {"id": "emoji combos", "feature": "🥲Smiling Face with Tear"}, {"id": "emoji combos", "feature": "🥺Pleading Face"}, {"id": "emoji combos", "feature": "❤️‍🔥Heart on Fire"}, {"id": "emoji combos", "feature": "❤️Red Heart"}, {"id": "emoji combos", "feature": "👍Thumbs Up"}, {"id": "emoji combos", "feature": "🔥Fire"}, {"id": "emoji combos", "feature": "🇺🇦Flag: Ukraine"}, {"id": "emoji combos", "feature": "🤣Elon Musk's Emoji Profile"}], "featuresBeaten": [], "universe": {"targets": 34, "counted": 0}}
+}

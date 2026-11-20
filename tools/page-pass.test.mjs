@@ -34,16 +34,17 @@ test('open paths stay open, full pages are Uni, and a missing key does not lock 
   assert.equal(gatedPath('/versus/'), false);
   assert.equal(backPath('https://evil.example/x'), '/'); assert.equal(money(CENTS), '$20 a month');
   const page = screen({ cents: CENTS }, '/flights/');
-  assert.match(page, /<h1>Uni<\/h1>/); assert.match(page, /Subscribe/); assert.match(page, /href="\/">Free cards/); assert.match(page, /href="\/members\/">Multi/);
-  assert.equal(/UniVerse|MultiVerse|Premium|4242/.test(page), false);
+  assert.match(page, /<h1>UniVerse<\/h1>/); assert.match(page, /Subscribe/); assert.match(page, /href="\/">Free cards/); assert.match(page, /href="\/members\/">MultiVerse/);
+  assert.equal(/\bUni\b|Premium|4242/.test(page), false, 'the plan is spelled UniVerse, never Uni'); assert.match(page, /Subscribe to UniVerse/); assert.match(page, /<canvas id="s"/); assert.match(page, /href="\/credits\/"/);
+  const arcade = screen({ cents: CENTS }, '/arcade/'); assert.match(arcade, /\/gate\/arcade\.webp/); assert.match(arcade, /href="\/\?q=open%20the%20arcade"/); assert.equal(gatedPath('/credits/'), false, 'credits are public: licenses require it');
   assert.equal(await (await gate({ request: ask('/flights/'), env: {}, next: html('FLIGHTS') })).text(), 'FLIGHTS');
   await withFetch(async () => { assert.equal(await (await gate({ request: ask('/books/'), env: { STRIPE_SECRET_KEY: KEY }, next: html('BOOKS') })).text(), 'BOOKS'); }, async () => new Response('{}', { status: 401, headers: { 'content-type': 'application/json' } }));
   await withFetch(async () => {
     const stranger = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
-    assert.match(await stranger.text(), /<h1>Uni<\/h1>/); assert.equal(stranger.headers.get('x-verse-gate'), 'uni');
+    assert.match(await stranger.text(), /<h1>UniVerse<\/h1>/); assert.equal(stranger.headers.get('x-verse-gate'), 'uni');
     assert.equal(await (await gate({ request: ask('/versus/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('Out of Order') })).text(), 'Out of Order');
     assert.equal(await (await gate({ request: ask('/films/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('VERSE FILMS') })).text(), 'VERSE FILMS');
-    assert.match(await (await gate({ request: ask('/podcasts/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('PODS') })).text(), /<h1>Uni<\/h1>/);
+    assert.match(await (await gate({ request: ask('/podcasts/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('PODS') })).text(), /<h1>UniVerse<\/h1>/);
     resetLive();
     const owner = await gate({ request: ask('/flights/', { authorization: 'Bearer suite-owner-token' }), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt', READ_TOKEN: 'suite-owner-token' }, next: html('FLIGHTS') });
     assert.equal(await owner.text(), 'FLIGHTS'); assert.equal(owner.headers.get('x-verse-gate'), 'open');
@@ -95,7 +96,7 @@ test('loopback builds see full pages with no token; production stays gated', asy
       assert.equal(res.headers.get('x-verse-gate'), 'open', origin);
     }
     const res = await gate({ request: ask('/flights/'), env: { STRIPE_SECRET_KEY: KEY, SALT: 'salt' }, next: html('FLIGHTS') });
-    assert.match(await res.text(), /<h1>Uni<\/h1>/, 'production stays gated');
+    assert.match(await res.text(), /<h1>UniVerse<\/h1>/, 'production stays gated');
   }, stripe());
 });
 

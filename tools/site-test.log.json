@@ -1,24 +1,5 @@
 [
  {
-  "at": "2026-11-08T00:17:13Z",
-  "kind": "visitor",
-  "visitor": {
-   "correct": 14,
-   "of": 15,
-   "medianMs": 421,
-   "failed": [
-    {
-     "ask": "translate hello to spanish",
-     "why": [
-      "answer misses /hola/i",
-      "skill article fallback"
-     ]
-    }
-   ]
-  },
-  "note": "visitor pass 14/15"
- },
- {
   "at": "2026-11-08T00:28:45Z",
   "passed": 0,
   "of": 105,
@@ -6751,5 +6732,16 @@
    "failed": []
   },
   "note": "fix: \"three alike\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-20T05:23:12Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 830,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
  }
 ]

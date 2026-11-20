@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-20T05:04:12.243Z",
+  "at": "2026-11-20T05:43:20.550Z",
   "against": "live",
   "week": "2026-W47",
   "scale": 2,
@@ -34,12 +34,19 @@
       }
     },
     "podcasts": {
-      "score": 83.3,
+      "score": 72.1,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of radiolab",
           "failed": [
             "audio",
             "episode"
@@ -57,10 +64,9 @@
         {
           "ask": "play the latest episode of serial",
           "failed": [
-            "audio",
             "episode"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of planet money",
@@ -96,22 +102,78 @@
           "score": 71.4
         },
         {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the moth",
+          "failed": [
+            "audio"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "play the latest episode of npr news now",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
+        },
+        {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio",
             "episode"
           ],
-          "score": 28.6
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -160,7 +222,7 @@
       }
     },
     "weather": {
-      "score": 95.8,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -176,10 +238,9 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -279,10 +340,38 @@
       }
     },
     "sports": {
-      "score": 95.4,
+      "score": 91.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "celtics score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "nba team celtics",
           "failed": [
@@ -393,6 +482,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 83.3
+    "score": 72.1
   }
 }
