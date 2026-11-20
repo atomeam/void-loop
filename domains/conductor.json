@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-19T23:53:55.961Z",
+ "updated": "2026-11-20T00:03:23.663Z",
  "last24h": {
-  "ticks": 24,
-  "started": 0,
+  "ticks": 25,
+  "started": 2,
   "requeued": 4,
   "setAside": 0,
   "probes": 0,
@@ -111,18 +111,21 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 4,
+   "used": 0,
    "cap": 90
   },
   "day": {
-   "used": 360,
+   "used": 0,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-20T00:00:00.000Z",
+  "room": true,
+  "until": null,
   "paid": false
  },
- "handed": {},
+ "handed": {
+  "mvbl52gd": 1795133003663,
+  "mveb8rsi": 1795133003663
+ },
  "sweptAt": 1795131871335,
  "blueprintsAt": 1795131871335,
  "visitorAt": "2026-11-19T23:27:14Z",
@@ -768,6 +771,44 @@
    "sweep": false,
    "blueprints": 0,
    "held": 497,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-20T00:03:23.663Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "tower-gate.yml",
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 487,
    "warnings": 0
   }
  ]
