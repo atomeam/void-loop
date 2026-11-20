@@ -7,7 +7,7 @@
 export function isProcessLiftPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:process\s+)?lift\s+(?:pack|package)\b/i.test(t)
-    || /^(?:package|pack)\s+(?:the\s+)?(?:(?:\w+\s+)?(?:heavy\s+)?(?:work|lift(?:ing)?))\b/i.test(t)
+    || /^(?:package|pack)\s+(?:the\s+)?(?:(?:\w+\s+)?(?:heavy\s+)?(?:work|lift(?:ing)?))\b(?!\s+summary)/i.test(t) // a lift summary is lift-summary's
     || /^(?:we\s+own\s+the\s+lift|verse\s+does\s+the\s+lift)\b/i.test(t)
     || /^(?:heavy\s+lift(?:ing)?\s+pack|hard\s+work\s+pack)\b/i.test(t);
 }
