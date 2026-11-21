@@ -10176,7 +10176,8 @@
     "automation-status-pack",
     "before-after-pack",
     "we-own-it-pack",
-    "delivery-status-pack"
+    "delivery-status-pack",
+    "handoff-status-pack"
    ],
    "n": 548
   },
@@ -12583,7 +12584,7 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CDI–CDII",
+   "title": "Rules CDI–CDIII",
    "rules": [
     {
      "rank": 401,
@@ -12594,6 +12595,11 @@
      "rank": 402,
      "name": "delivery-status-pack",
      "catches": "delivery status for the onboarding automation"
+    },
+    {
+     "rank": 403,
+     "name": "handoff-status-pack",
+     "catches": "status handoff for my onboarding system"
     }
    ],
    "n": 599
