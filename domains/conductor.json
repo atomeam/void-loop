@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T10:52:17.420Z",
+ "updated": "2026-11-21T11:01:43.322Z",
  "last24h": {
   "ticks": 148,
   "started": 83,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 2,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -124,7 +124,7 @@
   "mva30j4u": 1795257767778,
   "mwa0agd2": 1795258337420,
   "mwa0ah54": 1795237453116,
-  "mwdsggtv": 1795236889096,
+  "mwdsggtv": 1795258903322,
   "mwdsgi9n": 1795241408071,
   "mwdsgj2z": 1795241972871,
   "mweaagmp": 1795243092242,
@@ -144,12 +144,12 @@
   "mvvjzso8": 1795223280158,
   "mw5mm5fm": 1795223856465
  },
- "sweptAt": 1795254940426,
- "blueprintsAt": 1795254940426,
+ "sweptAt": 1795258903322,
+ "blueprintsAt": 1795258903322,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795254060000,
-   "startedAt": 1795255506711
+   "slot": 1795257660000,
+   "startedAt": 1795258903322
   },
   "exam.yml": {
    "slot": 1795252620000,
@@ -279,12 +279,12 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795253820000,
-   "startedAt": 1795255506711
+   "slot": 1795257420000,
+   "startedAt": 1795258903322
   },
   "growth-fold.yml": {
-   "slot": 1795254060000,
-   "startedAt": 1795255506711
+   "slot": 1795257660000,
+   "startedAt": 1795258903322
   },
   "arb-record.yml": {
    "slot": 1795257420000,
@@ -3449,36 +3449,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T10:55:32.806Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwdsgj2z",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 56
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": true,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 470,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T11:04:53.509Z",
    "open": 500,
@@ -7841,6 +7811,43 @@
    ],
    "cancelled": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T11:01:43.322Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwdsggtv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 58
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "site-test.yml",
+    "verse-watch.yml",
+    "growth-fold.yml"
+   ],
+   "cancelled": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 482,
    "warnings": 0
