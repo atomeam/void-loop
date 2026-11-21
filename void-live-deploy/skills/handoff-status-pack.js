@@ -1,5 +1,5 @@
 /**
- * handoff-status-pack skill — package a client-facing living status of the heavy lifting Verse owns for a business idea or system: current state, monitors, last status and next check, so the client does less monitoring and delivery stays reliable.
+ * handoff-status-pack skill — package a client-facing living status of the main work Verse owns for a business idea or system: current state, monitors, last status and next check, so the client does less monitoring and delivery stays reliable.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "status handoff for my onboarding system", "handoff status pack for invoice reminders", "package the status for the support router"
  */
