@@ -1,0 +1,74 @@
+# A stranger's check of a changed page, tool, game or card (tools/stranger-gate.mjs).
+# On a pull request it serves this branch and fails with a plain list. Nightly it opens the live site
+# and files one fix job per failure. Screenshots and the JSON are the artifact. No preview deploy.
+name: Stranger test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'void-live-deploy/**'
+      - 'void.html'
+      - 'tools/stranger-gate.mjs'
+      - 'tools/game-fun.mjs'
+      - 'tools/quality-measure.mjs'
+      - '.github/workflows/stranger-gate.yml'
+  schedule:
+    - cron: '17 7 * * *'
+  workflow_dispatch:
+    inputs:
+      paths:
+        description: Routes to check on the live site, comma-separated. Empty checks tonight's three.
+        type: string
+        default: ''
+
+concurrency:
+  group: stranger-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  stranger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: git fetch --no-tags origin main
+      - run: npm ci --no-audit --no-fund
+      - name: Chrome
+        run: command -v google-chrome >/dev/null || (sudo apt-get update && sudo apt-get install -y google-chrome-stable)
+      - name: Stranger test
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+          VOID_TEST_BROWSER: /usr/bin/google-chrome
+          STRANGER_PATHS: ${{ inputs.paths }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CLOUDFLARE_AI_TOKEN: ${{ secrets.CLOUDFLARE_AI_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN2: ${{ secrets.CLOUDFLARE_API_TOKEN2 }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ ! -f tools/stranger-gate.mjs ]; then echo "stranger-gate.mjs is not on this commit; nothing to run"; exit 0; fi
+          node tools/stranger-gate.mjs --json stranger-out/stranger.json --shots stranger-out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stranger-test
+          path: stranger-out/
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Open a fix job for each nightly failure
+        if: always() && github.event_name == 'schedule'
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          if [ ! -f stranger-out/stranger.json ]; then echo "no stranger result on this run"; exit 0; fi
+          node tools/stranger-gate.mjs --file-jobs stranger-out/stranger.json
