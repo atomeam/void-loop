@@ -16,7 +16,7 @@ export const LOOPS = Object.freeze([
   { id: 'coverage', name: 'Test coverage', what: 'Names the next library file no test mentions.', hourUtc: 15, minuteUtc: 23, minutes: 3 },
   { id: 'deps', name: 'Dependencies', what: 'Names a high or critical advisory. It does not bump a package.', hourUtc: 17, minuteUtc: 33, minutes: 4 },
   { id: 'handoff', name: 'Page handoff', what: 'Names the next page pair that share data and are not connected.', hourUtc: 19, minuteUtc: 43, minutes: 4 },
-  { id: 'next-tool', name: 'Next free tool', what: 'Names the oldest open row on the gaps list.', hourUtc: 21, minuteUtc: 53, minutes: 2 },
+  { id: 'next-tool', name: 'Next free tool', what: 'Names the growth loop\'s top pick, or the oldest open gap when the loop has none.', hourUtc: 21, minuteUtc: 53, minutes: 2 },
 ]);
 
 export const LINK_FIXES = Object.freeze([

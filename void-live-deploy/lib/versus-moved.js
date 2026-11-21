@@ -9,6 +9,7 @@ const MOVED = [
   ['/compare', '/versus/?view=compare'], ['/compare/', '/versus/?view=compare'],
   ['/assimilated', '/versus/?view=assimilated'], ['/assimilated/', '/versus/?view=assimilated'],
   ['/obituaries', '/versus/?view=obituaries'], ['/obituaries/', '/versus/?view=obituaries'],
+  ['/tower', '/versus/?view=growth'], ['/tower/', '/versus/?view=growth'],
 ].map(([from, to]) => from + ' ' + to + ' 301').join('\n');
 const TABLE = parseRedirects(MOVED);
 

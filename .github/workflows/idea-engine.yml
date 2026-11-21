@@ -1,0 +1,40 @@
+# The one growth loop, once a day. The tournament is lib/idea-core.js. This writes the owner board and, when it
+# changed, pushes helper/idea-engine so the helper pull-request workflow can open it. No model call.
+name: Idea engine
+
+on:
+  schedule:
+    - cron: '11 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: idea-engine
+  cancel-in-progress: false
+
+jobs:
+  day:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The day's board
+        run: |
+          node --test tools/idea-core.test.mjs tools/idea-engine.test.mjs
+          node tools/idea-engine.mjs --write
+          git diff --quiet -- void-live-deploy/tower.ideas.json void-live-deploy/idea-ids.json void-live-deploy/growth/latest.json && exit 0
+          git config user.name "Verse helper"
+          git config user.email "helper@users.noreply.github.com"
+          git checkout -B helper/idea-engine
+          git add void-live-deploy/tower.ideas.json void-live-deploy/idea-ids.json void-live-deploy/growth/latest.json
+          git commit -m "The idea engine's daily board."
+          git push --force-with-lease origin helper/idea-engine

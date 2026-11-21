@@ -1,4 +1,6 @@
-# Tower loop: take one floor of Versus all the way to conquered
+# Tower loop: take one floor all the way to conquered
+
+The side-by-side climb is not what chooses the next thing Verse builds. That is the growth loop (`docs/playbooks/growth-loop.md`). This playbook still measures one floor when a floor is the work.
 
 **The name (owner, 2026-10-25: "the tower rename is easy its versus"):** what a person sees is called Versus (the card's head, /conquered/, the 3D miniature's label); the identifiers keep `tower` (`lib/tower.js`, `skills/tower.js`, `tower-gate.yml`, `tower.evidence.json`, the `tower` skill), and "the tower" still opens the card beside "versus". This playbook's "tower" names those files; "floor" stays a floor.
 

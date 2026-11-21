@@ -206,6 +206,78 @@ export function learn(history) {
   for (const [k, e] of Object.entries(g)) w[k] = +Math.max(0.7, Math.min(1.4, (1 + e.grow) / (1 + e.rework))).toFixed(2);
   return w;
 }
+/** how many ideas to build today. One until a stranger-gate pass rate exists, then up to five as that rate rises. Pure. */
+export function pickCount(rate) {
+  const r = Number(rate);
+  if (!Number.isFinite(r)) return 1;
+  return 1 + Math.floor(Math.min(1, Math.max(0, r)) * 4);
+}
+/** share of shipped ideas the stranger gate kept. Null when none have a gate result yet. Pure. */
+export function gateRate(history) {
+  const rows = Object.values(history || {}).filter((h) => h && (h.gate === 'pass' || h.gate === 'fail'));
+  if (!rows.length) return null;
+  return Math.round((rows.filter((h) => h.gate === 'pass').length / rows.length) * 100) / 100;
+}
+/** failed and partial capability-sweep rows, as seeds. Names only: a stack trace never becomes an idea. Pure. */
+export function sweepSeeds(items) {
+  const out = [];
+  for (const it of items || []) {
+    if (!it || (it.overall !== 'fail' && it.overall !== 'partial')) continue;
+    const name = String(it.name || it.id || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+    if (!name) continue;
+    out.push({ title: 'Make ' + name + ' do the job inside the page that already exists', from: 'capability-sweep', targets: [] });
+    if (out.length >= 12) break;
+  }
+  return out;
+}
+/** open rows of the gaps list, as seeds. Pure. */
+export function gapSeeds(md) {
+  const out = [];
+  for (const line of String(md || '').split('\n')) {
+    const m = line.match(/^\|\s*\d+\s*\|\s*([^|]+?)\s*\|[^|]*\|[^|]*\|\s*open\s*\|/);
+    if (!m) continue;
+    out.push({ title: m[1].trim().slice(0, 120), from: 'gaps', targets: [] });
+    if (out.length >= 12) break;
+  }
+  return out;
+}
+/** re-asks, a bounce under four seconds, a Report tap, or a dwell under three seconds mark the answer weak. Pure. */
+export function weakAnswer(sig) {
+  const s = sig || {}, reasons = [];
+  if ((+s.reasks || 0) >= 2) reasons.push('re-asks');
+  if (Number.isFinite(+s.bounceMs) && +s.bounceMs < 4000) reasons.push('quick bounce');
+  if (s.reported) reasons.push('report');
+  if (Number.isFinite(+s.dwellMs) && +s.dwellMs < 3000) reasons.push('low dwell');
+  const target = reasons.includes('report') ? 'sources' : reasons.includes('low dwell') ? 'card' : 'prompt';
+  return { weak: reasons.length > 0, reasons, target: reasons.length ? target : '' };
+}
+/** one regression row for a fix. Null when the ask is too short to keep. Pure. */
+export function regressionRow(fix) {
+  const ask = String((fix && fix.ask) || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  if (ask.length < 4) return null;
+  return { ask, expect: String((fix && fix.expect) || 'the page does the thing').slice(0, 160) };
+}
+/** the public share card: a title, a link back, and the score. No markup. Pure. */
+export function shareOf(pick) {
+  const title = String((pick && (pick.pitch || pick.title)) || 'Verse grew').replace(/[<>&"]/g, '').slice(0, 80);
+  return { title, path: '/?q=' + encodeURIComponent(title), score: (pick && pick.total) || 0 };
+}
+/** a bad deploy becomes a rollback job for the live-revert path. A healthy reading does nothing. Pure. */
+export function repairJob(health) {
+  if (!health || health.ok !== false) return { action: 'none', job: null };
+  const sha = /^[0-9a-f]{7,40}$/.test(String(health.sha || '')) ? health.sha : '';
+  return { action: 'rollback', job: { target: 'heal:deploy', ask: ('Roll back the bad deploy' + (sha ? ' ' + sha : '') + ' through the live-revert path and open a fix').slice(0, 200) } };
+}
+/** skills and pages later builds can call. Pure. */
+export function blocksOf(inv) {
+  return ((inv && inv.items) || []).filter((it) => it.kind === 'skill' || it.kind === 'page').map((it) => ({ id: it.id, title: it.name, kind: it.kind, path: it.path || '' }));
+}
+/** blocks whose name shares a word with the ask. Pure. */
+export function matchBlocks(ask, blocks) {
+  const w = new Set(words(ask));
+  return (blocks || []).filter((b) => words(b.title + ' ' + b.id).some((x) => w.has(x))).slice(0, 3);
+}
+
 /** the will's want for a pick: what to build, how it is measured, and the gate it ships through. Pure. */
 export function wantOf(c) {
   return { kind: 'idea engine', title: (c.pitch || c.title).slice(0, 160), weight: c.pitch ? 36 : 28, source: 'idea engine: ' + c.gen,

@@ -176,6 +176,16 @@ def gather(cap=60, with_done=False):
                 cands.append({"kind": "fix myself", "title": f"answer \"{ask[:120]}\" for a visitor", "why": f"the visitor pass on the live site: {why}"[:240], "weight": 34, "source": "visitor pass"})
     except Exception as e:
         print("visitor pass:", e, file=sys.stderr)
+    # the growth loop's board (tools/idea-engine.mjs). Its picks outrank a side-by-side climb. Titles only.
+    try:
+        ideas = json.loads((ROOT / "void-live-deploy" / "tower.ideas.json").read_text(encoding="utf-8"))
+        for p in (ideas.get("picks") or [])[:5]:
+            title = str(p.get("title") or "").strip()
+            if len(title) < 8:
+                continue
+            cands.append({"kind": "idea engine", "title": title[:160], "why": "the growth loop's tournament", "weight": 36, "source": "idea engine"})
+    except Exception as e:
+        print("idea engine:", e, file=sys.stderr)
 
     # 4. everything else on Victus the ingest marked as a capability
     try:

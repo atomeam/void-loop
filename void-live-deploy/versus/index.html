@@ -30,9 +30,10 @@ if (model && view === 'rival') await (await import('/versus/rivals.js')).renderR
 else if (model && view === 'compare') (await import('/versus/compare.js')).renderCompare(root, location.search);
 else if (model && view === 'obituaries') await (await import('/versus/obituaries.js')).renderObituaries(root);
 else if (model && view === 'assimilated') (await import('/versus/assimilated.js')).renderAssimilated(root);
+else if (model && view === 'growth') await (await import('/versus/growth.js')).renderGrowth(root);
 else if (model) {
   const { ownerHtml } = await import('/lib/versus-floor.js');
-  root.innerHTML = ownerHtml(model) + '<nav class="elv-views" aria-label="More on Versus"><a href="/versus/?view=rival">Every rival</a> · <a href="/versus/?view=compare">Side by side</a> · <a href="/versus/?view=assimilated">Assimilated</a> · <a href="/versus/?view=obituaries">Obituaries</a></nav>'; // void-review: ok (ownerHtml runs every value through esc; the links are fixed)
+  root.innerHTML = ownerHtml(model) + '<nav class="elv-views" aria-label="More on Versus"><a href="/versus/?view=growth">Growth</a> · <a href="/versus/?view=rival">Every rival</a> · <a href="/versus/?view=compare">Side by side</a> · <a href="/versus/?view=assimilated">Assimilated</a> · <a href="/versus/?view=obituaries">Obituaries</a></nav>'; // void-review: ok (ownerHtml runs every value through esc; the links are fixed)
 }
 </script>
 <script type="module" src="/verse-shell.js"></script>

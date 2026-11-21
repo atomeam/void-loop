@@ -138,7 +138,17 @@ async function askSentence(h1) {
     return { text: oneSentence(j && j.result && (j.result.response || '')), tier };
   } catch { return { text: '', tier }; }
 }
+function growthPick() {
+  try {
+    const j = JSON.parse(read(join(root, 'void-live-deploy/tower.ideas.json')));
+    const p = j && j.picks && j.picks[0];
+    if (p && p.title) return 'The growth loop pick is ' + String(p.title).slice(0, 160) + '.';
+  } catch { /* the board is not written yet */ }
+  return '';
+}
 async function runNext() {
+  const fromLoop = growthPick();
+  if (fromLoop) return { last: fromLoop, ok: true, note: 'Folded into the growth loop. No separate model call.', paidCents: 0 };
   const g = nextGap(read(join(root, 'docs/GAPS.md')));
   let last = g ? 'Oldest open gap is ' + g.n + ', ' + g.ask + '.' : 'No open gap in the list.';
   if (!g || process.env.HOUSE_ASK !== '1') return { last, ok: true };

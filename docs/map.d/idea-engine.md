@@ -9,8 +9,7 @@ the idea systems into one. **One engine**, daily, so Verse keeps coming up with 
   and easter eggs fun, and seeds from the older lists), dedupe, taste scoring (fun first, grow what exists, linked, a minimal homepage,
   business capped), a round-robin tournament, the picks, and ship-small-and-measure (grow, or rework: never deleted) with a per-generator
   bandit weight. Ideas from Verse's take on an answer card (`splitTake`, `judgeTake`) start at once when they clear the bar.
-- **Runner:** `tools/idea-engine.mjs` (workflow `idea-engine.yml`): writes `void-live-deploy/tower.ideas.json` (owner-only, the board on
-  `/progress/`) and `void-live-deploy/idea-ids.json` (the shipped slugs the use counter accepts). The top 3 become wants in `tools/will.py`.
+- **Runner:** `tools/idea-engine.mjs` (workflow `idea-engine.yml`, playbook `docs/playbooks/growth-loop.md`): writes `void-live-deploy/tower.ideas.json` (owner-only; `/tower/` shows it), `void-live-deploy/idea-ids.json` (slugs `lib/idea-use.js` counts) and `void-live-deploy/growth/latest.json` (the public share card: title, link, score). How many it builds scales from 1 to 5 with the stranger-gate pass rate (`pickCount`). The will reads the picks. Levers on the board: weak-answer feedback, callable blocks, live-revert repair, share cards, regression rows.
 - **Methods borrowed (public practice):** SCAMPER, morphological mash-ups, the Kano model's delighters, ICE-style scoring, round-robin
   tournaments, multi-armed bandits. Models: Workers AI, Verse's own (/api/coder) or Groq only; past the free limits the treasury pays
   and the cents are logged on the board.

@@ -77,6 +77,24 @@ test('a take idea: parsed off the take, grows an existing thing when one fits, s
   assert.equal(c.judgeTake(t.idea, 'Pluto', [], [t.idea && c.slug(t.idea.title)]).start, false);
 });
 
+test('the pass rate scales how many ideas get built, and the levers stay pure', () => {
+  assert.equal(c.pickCount(null), 1);
+  assert.equal(c.pickCount(0), 1);
+  assert.equal(c.pickCount(1), 5);
+  assert.equal(c.gateRate({ a: { gate: 'pass' }, b: { gate: 'fail' }, c: { gate: 'waiting' } }), 0.5);
+  assert.equal(c.sweepSeeds([{ name: 'Make a video', overall: 'fail', reason: 'at run (tools/x.mjs:3:9)' }])[0].title.includes('Make a video'), true);
+  assert.ok(!JSON.stringify(c.sweepSeeds([{ name: 'Make a video', overall: 'fail', reason: 'at run (tools/x.mjs:3:9)' }])).includes('tools/'));
+  assert.equal(c.gapSeeds('| 18 | ring size chart | x | y | open |\n')[0].title, 'ring size chart');
+  assert.deepEqual(c.weakAnswer({ reasks: 2, dwellMs: 1000 }).reasons, ['re-asks', 'low dwell']);
+  assert.equal(c.weakAnswer({ reasks: 2, dwellMs: 1000 }).target, 'card');
+  assert.equal(c.regressionRow({ ask: 'ab' }), null);
+  assert.equal(c.repairJob({ ok: true }).action, 'none');
+  assert.equal(c.repairJob({ ok: false, sha: 'abc1234' }).job.target, 'heal:deploy');
+  const blocks = c.blocksOf(inv);
+  assert.ok(c.matchBlocks('play snake', blocks).some((b) => b.id === 'snake') === false);
+  assert.ok(c.matchBlocks('arcade games', blocks).some((b) => /arcade/i.test(b.id)));
+});
+
 test('a want for the will names the gate and the use hook', () => {
   const w = c.wantOf({ ...c.score({ gen: 'improve', slug: 'x-y', title: 'T', targets: ['snake'], prior: {} }), wins: 2 });
   assert.equal(w.kind, 'idea engine');

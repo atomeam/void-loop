@@ -17,6 +17,7 @@ test('/rival/ and /compare/ are no longer pages; they redirect into /versus/ and
   assert.deepEqual(movedTo('/compare', '?floor=x'), { to: '/versus/?view=compare&floor=x', status: 301 });
   assert.deepEqual(movedTo('/assimilated/', '?q=abc'), { to: '/versus/?view=assimilated&q=abc', status: 301 });
   assert.equal(movedTo('/versus/', ''), null);
+  assert.deepEqual(movedTo('/tower/', ''), { to: '/versus/?view=growth', status: 301 });
   // _redirects runs before any function on Cloudflare and drops the query, so these paths are not in it; they reach the middleware through _routes.json
   assert.doesNotMatch(read('_redirects'), /^\/(rival|compare)\/? /m);
   const include = JSON.parse(read('_routes.json')).include;
