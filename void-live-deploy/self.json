@@ -150,26 +150,26 @@
   {
    "state": "open",
    "date": "",
-   "ask": "A free lane with a million-token context for the jobs Workers AI cannot hold, with a public-content rule on it",
-   "from": "from a video the owner shared by Maitis, 2026-11-14"
+   "ask": "Client systems connect pack",
+   "from": "growth, 2026-11-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "teach the loop to log which tool a stopped lap spent its turns on, so the miss board can rank the read spirals that remain",
-   "from": "claude 2026-11-17"
+   "ask": "Delivery pack",
+   "from": "growth, 2026-11-19"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "add a fourth skill for the lab/pattern family once two runs have used the pack",
-   "from": "claude 2026-11-17"
+   "ask": "Client monitor receipt",
+   "from": "growth, 2026-11-19"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "a miss-board reader that reads .git/verse-loop.stops.jsonl and lists the read spirals still to fix",
-   "from": "claude 2026-11-17"
+   "ask": "Full lift plan",
+   "from": "growth, 2026-11-19"
   }
  ],
  "games": [
@@ -225,6 +225,7 @@
   "rack",
   "ringer",
   "savings",
+  "snail",
   "stopwatch",
   "swarm",
   "swatch",
@@ -333,7 +334,7 @@
   },
   {
    "name": "Life extension and disease cures",
-   "last": "2026-11-11"
+   "last": "2026-11-18"
   },
   {
    "name": "Planet restoration",
@@ -345,96 +346,100 @@
   }
  ],
  "building": {
-  "at": "2026-11-12T21:02:25Z",
+  "at": "2026-11-18T16:01:46Z",
   "date": "2026-10-15",
-  "by": "builder",
-  "item": "Verse FILMS get better every day",
-  "what": "step 1 shipped; step 2 next. Lists run 24 (2026-11-12): step 2's scorecard shipped. Lists run 25 (2026-11-12): step 2 done (card check and re-shoot); step 3 is next, unclaimed."
+  "by": "claude",
+  "item": "Verse values anything from a photo",
+  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
   {
-   "at": "2026-11-18T13:13:01Z",
-   "subject": "Finding: image-gen checked against the live site (findings/image-gen)"
-  },
-  {
-   "at": "2026-11-18T13:07:07Z",
-   "subject": "Better at connect flows: 1 more way of asking answered right — new phrases: “show the data flows for client onboarding” now opens…"
-  },
-  {
-   "at": "2026-11-18T12:09:26Z",
+   "at": "2026-11-21T00:29:42Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-18T11:05:35Z",
-   "subject": "Design loop: 1 page fixed, 40 -> 0 design defects"
+   "at": "2026-11-21T00:27:45Z",
+   "subject": "Searches: signed-in account from the server session, bans follow the account; a Report button on every card feeding the Tower (#3286)"
   },
   {
-   "at": "2026-11-18T10:43:30Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-11-21T00:27:42Z",
+   "subject": "Main regenerates its cards: unlisted skills adopted, generated files current (#3277)"
   },
   {
-   "at": "2026-11-18T09:42:34Z",
-   "subject": "Incident: the browser suite failed on daac7b14 (void-live-deploy/incidents.json)"
+   "at": "2026-11-21T00:27:38Z",
+   "subject": "Verse's system of systems: one flow, one owner per stage, every loop placed (docs/systems.md, lib/systems.js) (#3262)"
   },
   {
-   "at": "2026-11-18T09:42:16Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-21T00:24:13Z",
+   "subject": "A main deploy that has a runner finishes, and a backstop uploads the current tip. (#3291)"
   },
   {
-   "at": "2026-11-18T09:26:50Z",
-   "subject": "Flake: 1 check(s) passed on a rerun of daac7b1 (tools/flakes.json)"
+   "at": "2026-11-21T00:17:53Z",
+   "subject": "Explore more: one official or legal link on an answer card (#3284)"
   },
   {
-   "at": "2026-11-18T09:09:39Z",
-   "subject": "Incident: the browser suite failed on a1bdb96f (void-live-deploy/incidents.json)"
+   "at": "2026-11-21T00:17:44Z",
+   "subject": "Idea board on /progress/ (owner-only) and the idea engine's picks as wants in the will (#3266)"
   },
   {
-   "at": "2026-11-18T09:03:36Z",
-   "subject": "Better at handoff ready, summon pack and system design: 7 more ways of asking answered right — new phrases: “what is missing for client…"
+   "at": "2026-11-21T00:17:40Z",
+   "subject": "Keep empty Boards and Fan fiction off the Tools list (#3255)"
   },
   {
-   "at": "2026-11-18T09:02:02Z",
-   "subject": "Outcome exam: weather 54.5"
+   "at": "2026-11-21T00:14:58Z",
+   "subject": "Outcome exam: sports 92.6"
   },
   {
-   "at": "2026-11-18T08:31:09Z",
-   "subject": "Fix the flaky book Rule-registry check: generators write before they report, and every skill has a family (#2947)"
+   "at": "2026-11-21T00:14:42Z",
+   "subject": "Restore full growth-inbox.md and mark handoff-status-pack as building"
   },
   {
-   "at": "2026-11-18T08:30:50Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"adaptive flow"
+   "at": "2026-11-21T00:14:42Z",
+   "subject": "Mark handoff-status-pack as building in growth-inbox.md (same commit as skill)"
   },
   {
-   "at": "2026-11-18T08:08:06Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+   "at": "2026-11-21T00:14:42Z",
+   "subject": "Register handoff-status-pack in skills/index.json"
   },
   {
-   "at": "2026-11-18T07:53:39Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+   "at": "2026-11-21T00:14:42Z",
+   "subject": "Add handoff-status-pack skill and order entry so Verse can package client-facing status, monitors and next check for systems it owns"
   },
   {
-   "at": "2026-11-18T07:22:52Z",
-   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
+   "at": "2026-11-21T00:14:08Z",
+   "subject": "Site test: fix: \"dyslexia friendly font\" only \"waking up\" appeared, nev"
   },
   {
-   "at": "2026-11-18T06:42:04Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-21T00:08:23Z",
+   "subject": "Image safety on the other picture doors: the painter, media answers' posters and a generator's share card (#3280)"
   },
   {
-   "at": "2026-11-18T05:53:36Z",
-   "subject": "Outcome exam: definitions 93.3"
+   "at": "2026-11-21T00:08:20Z",
+   "subject": "Tower Searches: every ask, blocked ones in red, strikes and a Ban button (owner only) (#3278)"
   },
   {
-   "at": "2026-11-18T05:50:08Z",
-   "subject": "Failed jobs read: run 44244209240 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-21T00:08:17Z",
+   "subject": "The watchdog reads verify's verdict on main instead of running the full suite and the benchmark a second time (#3268)"
   },
   {
-   "at": "2026-11-18T05:39:48Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"adaptive flow"
+   "at": "2026-11-21T00:08:14Z",
+   "subject": "Retire dead and duplicate loops: old film loops, one-off probes, drifted workflow drafts (#3264)"
+  },
+  {
+   "at": "2026-11-21T00:08:10Z",
+   "subject": "Flights and Jobs: one page holds every tool, and asks open a section (#3244)"
+  },
+  {
+   "at": "2026-11-21T00:07:31Z",
+   "subject": "Safety and 18+ page: minors never, adult pictures blurred behind 18+, age checks keep no ID, reporting (#3282)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Grok Bot (lists run 26)",
+    "line": "the weather card stops hanging on a slow forecast (time limits, one retry, then Verse's own /api/weather), recipe asks in five languages, the ready-checks and connections families, and main's red index and overlap checks; branch…"
+   },
    {
     "name": "Viktor health checks",
     "line": "blank answers, invalid tool lists and stalled requests no longer pass the existing guard; https://github.com/atomeam/void-loop/pull/2869 · 2026-11-16"
@@ -454,10 +459,6 @@
    {
     "name": "Debris Field Update 1",
     "line": "the ending lists your score, Verse, and your best. The dash meter moved off the stick. The stars drift. The crystal glows before it charges. https://github.com/atomeam/void-loop/pull/2820"
-   },
-   {
-    "name": "Debris Field boss",
-    "line": "a large crystal with a health bar, a shard ring, a charge and cracks, a second and a half of clear air after a hit, a dash, a labeled sound button, and full screen that keeps the nav. https://github.com/atomeam/void-loop/pull/2819"
    }
   ],
   "ladders": [
@@ -612,8 +613,8 @@
   }
  ],
  "visible": {
-  "day": 6,
-  "week": 157
+  "day": 8,
+  "week": 212
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -660,19 +661,20 @@
   ],
   "visits": {
    "clock-mini": 1,
+   "review-2026-united-states-elections": 1,
    "trailer-mississippi-senate-race-election-results": 1,
    "x9": 1
   },
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 85 (434 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-17T14:27Z",
+  "line": "People this week: 50 (281 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-20T14:02Z",
   "source": "verse"
  },
  "tower": {
-  "target": "flightconnections.com",
-  "since": "2026-11-09",
+  "target": "2chan.net",
+  "since": "2026-11-20",
   "next": [
    "heycolor.com",
    "nameunit.com",
