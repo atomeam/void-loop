@@ -47,6 +47,7 @@ import { quoteBody, batch } from './markets.js';
 import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-kinds.js';
 import { kindOf as subjectKind } from '../../lib/card-kinds.js';
 import * as FP from '../../lib/free-pics.js';
+import { stopped } from './searches.js';
 import { unsafeText, unsafeImage } from '../../lib/image-safety.js';
 import { edgeCache, edgeGate, buildId, edgeKeyUrl, edgeGet, edgePut, edgeTtl, marked, storable, HIT, MISS, BYPASS, REFRESH } from '../../lib/answer-edge.js';
 import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE, noteReading, setupFacts, noteFinish } from '../../lib/note-ask.js';
@@ -473,6 +474,7 @@ async function answerPost({ request, env, waitUntil }, edge = { cache: null, mar
   if (body && body.mode === 'market-report') return marketReport(request, env, body); // the /markets/ page's "Verse reports" (lib/report-run.js): one per window for everyone, validated, capped
   const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
+  if (await stopped(request, env)) return Response.json({ answer: null, sources: [], note: 'paused' }, { status: 403 }); // a banned or locked visitor (functions/api/searches.js)
   // secrets, other visitors' data and harmful asks are answered here, kindly, before any cache, model or skill (lib/keeper.js)
   const kept = keeperOf(typed);
   if (kept) return Response.json({ answer: kept.answer, sources: [], kept: kept.kind });

@@ -61,12 +61,39 @@ function picker(label, key, id) {
 
 // ---------- panels ----------
 const PANELS = {};
-const pane = (title, id) => { const s = document.createElement('section'); s.className = 'panel'; s.id = id; s.setAttribute('aria-labelledby', id + '-h'); s.innerHTML = '<h2 id="' + id + '-h">' + esc(t(title)) + '</h2>'; return s; };
+const pane = (title, id, aliases = []) => { const s = document.createElement('section'); s.className = 'panel'; s.id = id; s.setAttribute('aria-labelledby', id + '-h'); s.innerHTML = '<h2 id="' + id + '-h">' + esc(t(title)) + '</h2>';
+  for (const a of aliases) { if (!a || a === id) continue; const h = document.createElement('span'); h.id = a; h.hidden = true; s.prepend(h); }
+  return s; };
+const FLIGHT_MODES = [['search', 'Search', 'providers'], ['distance', 'Distance', 'facts'], ['time', 'Time', 'time'], ['co2', 'CO2', 'co2'], ['map', 'Map', 'route'], ['routes', 'Where I can fly', 'routes'], ['airports', 'Airport codes', 'airports'], ['trip', 'Itinerary', 'trip'], ['tracker', 'Prices', 'tracker']];
+const FLIGHT_MODE_ID = Object.fromEntries(FLIGHT_MODES.flatMap(([m, , id]) => [[m, id], [id, id]]).concat([['providers', 'providers'], ['facts', 'facts'], ['route', 'route'], ['carbon', 'co2'], ['itinerary', 'trip'], ['layover', 'trip'], ['fly', 'routes']]));
+export function flightModeOf(search = '', hash = '') {
+  const q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+  const raw = String(q.get('mode') || String(hash || '').replace(/^#/, '').split(/[&=]/)[0] || '').toLowerCase();
+  return FLIGHT_MODE_ID[raw] || '';
+}
+function ensureModesCss() {
+  if (document.getElementById('modes-css')) return;
+  const s = document.createElement('style'); s.id = 'modes-css';
+  s.textContent = '.modes{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.modes a{display:inline-block;padding:6px 12px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:inherit;min-height:36px;line-height:22px;background:var(--card)}.modes a:hover,.modes a:focus-visible{border-color:var(--accent)}';
+  document.head.append(s);
+}
+function modeBar(ids) {
+  ensureModesCss();
+  const have = new Set(ids), nav = document.createElement('nav'); nav.className = 'modes'; nav.setAttribute('aria-label', t('On this page'));
+  for (const [mode, label, id] of FLIGHT_MODES) { if (!have.has(id)) continue; const a = document.createElement('a'); a.href = '#' + mode; a.textContent = t(label); nav.append(a); }
+  return nav;
+}
+function goFlightMode() {
+  const id = flightModeOf(location.search, location.hash); if (!id) return;
+  const el = document.getElementById(id); if (el) el.scrollIntoView({ block: 'start' });
+}
 const el = (html) => { const d = document.createElement('div'); d.innerHTML = html; return d; };
 
 /** controls: the form. Fields: airports, via, dates, time, pax, cabin, trip. */
 PANELS.controls = (cfg) => {
-  const s = pane(cfg.title || 'Your trip', 'controls'), f = cfg.controls || ['airports', 'trip', 'dates', 'pax', 'cabin'];
+  const s = pane(cfg.title || 'Your trip', 'controls');
+  const want = cfg.controls || ['airports', 'trip', 'dates', 'pax', 'cabin'];
+  const f = (cfg.panels || []).includes('time') ? ['airports', 'via', 'origin', 'trip', 'dates', 'time', 'stay', 'pax', 'cabin'].filter((x) => want.includes(x) || ['via', 'time', 'stay'].includes(x)) : want;
   const form = document.createElement('div'); form.className = 'form'; s.append(form);
   if (f.includes('airports')) {
     const row = document.createElement('div'); row.className = 'grid2'; const a = picker('From', 'from', 'f-from'), b = picker('To', 'to', 'f-to');
@@ -91,7 +118,7 @@ PANELS.controls = (cfg) => {
 
 /** providers: one search, opened on each provider's site; the airline's own site. */
 PANELS.providers = () => {
-  const s = pane('Search across providers', 'providers');
+  const s = pane('Search across providers', 'providers', ['search']);
   s.insertAdjacentHTML('beforeend', '<p class="note" id="pv-note"></p><ul class="plist" id="pv-list"></ul><div class="row"><div class="field"><label for="pv-al">' + esc(t('An airline’s own site')) + '</label><select id="pv-al"><option value="">' + esc(t('Choose an airline')) + '</option>' + Object.entries(C.AIRLINES).sort((a, b) => a[1][0].localeCompare(b[1][0])).map(([k, v]) => '<option value="' + k + '">' + esc(v[0]) + ' (' + k + ')</option>').join('') + '</select></div><a class="btn" id="pv-aw" rel="noopener noreferrer" target="_blank" hidden></a></div><p class="note" id="pv-why"></p>');
   const note = $(s, '#pv-note'), list = $(s, '#pv-list'), sel = $(s, '#pv-al'), aw = $(s, '#pv-aw');
   const upd = () => {
@@ -111,7 +138,7 @@ PANELS.providers = () => {
 
 /** facts: the route worked out on the device. */
 PANELS.facts = (cfg) => {
-  const s = pane('Route facts', 'facts'); s.insertAdjacentHTML('beforeend', '<div id="fa-out" aria-live="polite"></div><div id="fa-near"></div>');
+  const s = pane('Route facts', 'facts', ['distance']); s.insertAdjacentHTML('beforeend', '<div id="fa-out" aria-live="polite"></div><div id="fa-near"></div>');
   const out = $(s, '#fa-out'), near = $(s, '#fa-near'); if (state.from && state.to) out.style.minHeight = '400px'; // room for the answer, so the page below does not jump
   const upd = () => {
     const a = ap(state.from), b = ap(state.to); near.textContent = '';
@@ -173,7 +200,7 @@ PANELS.time = () => {
 
 /** route: a chain of airports, leg by leg, on a map. */
 PANELS.route = () => {
-  const s = pane('Chain of airports', 'route'); s.insertAdjacentHTML('beforeend', '<div class="field"><label for="r-in">' + esc(t('Airports in order, with a dash or a space')) + '</label><input type="text" id="r-in" value="JFK-LHR-SIN" autocomplete="off" spellcheck="false"></div><div class="map" id="r-map"></div><div id="r-out" aria-live="polite"></div>');
+  const s = pane('Chain of airports', 'route', ['map']); s.insertAdjacentHTML('beforeend', '<div class="field"><label for="r-in">' + esc(t('Airports in order, with a dash or a space')) + '</label><input type="text" id="r-in" value="JFK-LHR-SIN" autocomplete="off" spellcheck="false"></div><div class="map" id="r-map"></div><div id="r-out" aria-live="polite"></div>');
   const inp = $(s, '#r-in'), out = $(s, '#r-out'), map = $(s, '#r-map'); out.style.minHeight = '230px'; map.style.minHeight = '195px'; const q = new URLSearchParams(location.search).get('route'); if (q) inp.value = q;
   const upd = () => {
     if (!idx) return; const { ports, bad } = C.parseRoute(idx, inp.value);
@@ -199,7 +226,7 @@ PANELS.airports = () => {
   $(s, '#a-tries').addEventListener('click', (e) => { const b = e.target.closest('button[data-try]'); if (!b) return; q.value = b.dataset.try; picked = ''; link('q', q.value); upd(); q.focus(); });
   q.addEventListener('keydown', (e) => { if (e.key === 'Enter' && first) { e.preventDefault(); detail(first); const h = $(det, 'h3'); if (h) { h.tabIndex = -1; h.focus(); } } });
   addEventListener('keydown', (e) => { if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return; const el = document.activeElement; if (el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable)) return; e.preventDefault(); q.focus(); q.select(); });
-  const codesText = (a) => a.iata + ' / ' + a.icao + ' · ' + a.name + ' · ' + a.city + ', ' + a.country + ' · ' + a.lat.toFixed(4) + ', ' + a.lon.toFixed(4) + ' · ' + a.tz + ' · ' + location.origin + '/flights/airports/?code=' + a.iata;
+  const codesText = (a) => a.iata + ' / ' + a.icao + ' · ' + a.name + ' · ' + a.city + ', ' + a.country + ' · ' + a.lat.toFixed(4) + ', ' + a.lon.toFixed(4) + ' · ' + a.tz + ' · ' + location.origin + '/flights/?mode=airports&code=' + a.iata;
   det.addEventListener('click', async (e) => { const b = e.target.closest('button[data-copy]'); if (!b) return; const a = ap(b.dataset.copy); if (!a) return; const m = $(det, '#a-copymsg'); try { await navigator.clipboard.writeText(codesText(a)); m.textContent = t('Copied.'); } catch (_) { m.textContent = codesText(a); } }); $(s, '#a-help').textContent = t('Each airport shows its IATA and ICAO codes, city and country, its Position on a map, its time zone and the time there now, its size, other airports of the same city, Nearby airports, and a link to Fly from here or Fly to here.'); if (new URLSearchParams(location.search).get('code')) det.style.minHeight = '420px';
   const detail = (a) => {
     picked = a.iata; link('code', a.iata); const near = C.nearby(idx, a, 200, 6), same = C.sameCity(idx, a), now = nowLabel(a), off = C.offsetLabel(C.offsetMin(a.tz, Date.now()));
@@ -328,12 +355,14 @@ export function mountFlights(root, cfg = {}) {
   const err = document.createElement('p'); err.id = 'fl-err'; err.className = 'bad'; err.hidden = true; err.textContent = t('The airport list could not be loaded. Reload the page.');
   root.append(err);
   if (cfg.notice !== false) { const n = document.createElement('p'); n.className = 'notice'; n.textContent = t('Verse has no live fares: the prices are on the providers, and this page opens your search there. Everything else is worked out on your device.'); root.append(n); }
-  for (const p of cfg.panels || ['controls', 'providers', 'facts']) if (PANELS[p]) root.append(PANELS[p](cfg));
+  const panels = cfg.panels || ['controls', 'providers', 'facts'];
+  if (panels.length > 3) root.append(modeBar(panels));
+  for (const p of panels) if (PANELS[p]) root.append(PANELS[p](cfg));
   const foot = document.createElement('div'); foot.className = 'row'; foot.innerHTML = '<button type="button" id="fl-share">' + esc(t('Share link')) + '</button> <span class="live" id="fl-sharemsg" role="status"></span>'; root.append(foot);
   $(foot, '#fl-share').addEventListener('click', async () => { const url = location.href.replace(/#.*$/, ''); try { if (navigator.share) { await navigator.share({ title: document.title, url }); return; } } catch (e) { if (e && e.name === 'AbortError') return; } try { await navigator.clipboard.writeText(url); $(foot, '#fl-sharemsg').textContent = t('Copied the link.'); } catch (_) { $(foot, '#fl-sharemsg').textContent = url; } });
   const credit = document.createElement('p'); credit.className = 'note'; credit.innerHTML = esc(t('Airport data: OurAirports (public domain), ourairports.com/data. Time zones are placed by country, region and position.')); root.append(credit);
   if (isDe()) { document.documentElement.lang = 'de'; if (cfg.de) { const h = document.querySelector('h1'), p = document.querySelector('.intro'); if (h && cfg.de.h1) h.textContent = cfg.de.h1; if (p && cfg.de.intro) p.textContent = cfg.de.intro; if (cfg.de.h1) document.title = cfg.de.h1 + ' · Verse'; } }
-  const done = loadIndex();
+  const done = loadIndex().then(() => { goFlightMode(); addEventListener('hashchange', goFlightMode); });
   keepForOffline();
   return done;
 }

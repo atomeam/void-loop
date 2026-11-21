@@ -45,7 +45,7 @@ test('"upload this to YouTube" reaches the films skill', () => {
   for (const a of ['upload a file', 'youtube', 'post a tweet']) assert.ok(!wantsUpload(a), a);
 });
 test('clips.yml puts every ad clip in VERSE FILMS', () => {
-  const y = readFileSync(new URL('../.github/workflows/clips.yml', import.meta.url), 'utf8');
+  const y = readFileSync(new URL('../archive/workflows/clips.yml', import.meta.url), 'utf8');
   assert.match(y, /film-post\.mjs "media\/clips\/\$id\.mp4"/);
 });
 

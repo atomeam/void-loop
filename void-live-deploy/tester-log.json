@@ -3,13 +3,78 @@
  "cases": 150,
  "runsTotal": 300,
  "kinds": {
-  "none": 2,
+  "none": 1,
   "visitor": 226,
   "grow": 44,
-  "file": 27,
+  "file": 28,
   "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-11-21T00:13:30Z",
+   "passed": 126,
+   "of": 151,
+   "kind": "file",
+   "ms": 487,
+   "note": "fix: \"dyslexia friendly font\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what do you get if you merge a pizza and a black hole",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "closer on the figure",
+     "why": "console: Failed to load resource: the server responded with a status of 520 ()"
+    },
+    {
+     "ask": "test me on that",
+     "why": "console: Failed to load resource: the server responded with a status of 520 ()"
+    },
+    {
+     "ask": "set my ambition temperature for the podcast",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "dyslexia friendly font",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-20T23:57:17Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-20T23:19:48Z",
    "passed": 0,
@@ -420,113 +485,84 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-20T11:09:41Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-20T10:56:55Z",
-   "passed": 143,
-   "of": 146,
-   "kind": "grow",
-   "ms": 313,
-   "note": "new ground passed, kept as a regression case: \"pizza delivery to 1 main st phoenix\" (skill:rides)",
-   "failed": [
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-28",
+   "from": "2026-08-29",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-04",
+   "from": "2026-09-05",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-11",
+   "from": "2026-09-12",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-18",
+   "from": "2026-09-19",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-25",
+   "from": "2026-09-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-02",
+   "from": "2026-10-03",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-09",
+   "from": "2026-10-10",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-16",
+   "from": "2026-10-17",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-23",
+   "from": "2026-10-24",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-30",
+   "from": "2026-10-31",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-06",
-   "runs": 136,
+   "from": "2026-11-07",
+   "runs": 135,
    "passed": 2463,
-   "of": 2805,
-   "broken": 2,
-   "brokenOf": 218,
+   "of": 2696,
+   "broken": 1,
+   "brokenOf": 109,
    "brokenPassed": 0,
-   "ms": 391
+   "ms": 388
   },
   {
-   "from": "2026-11-13",
-   "runs": 164,
-   "passed": 6569,
-   "of": 6946,
+   "from": "2026-11-14",
+   "runs": 165,
+   "passed": 6695,
+   "of": 7097,
    "ms": 438
   }
  ],
@@ -984,6 +1020,7 @@
   "skill:ready-checks": "2026-11-19T20:22:55Z",
   "skill:delivery-status-pack": "2026-11-19T22:25:16Z",
   "skill:full-lift-plan": "2026-11-20T00:31:48Z",
-  "skill:automation-status-pack": "2026-11-20T21:13:13Z"
+  "skill:automation-status-pack": "2026-11-20T21:13:13Z",
+  "skill:we-own-it-pack": "2026-11-21T00:13:30Z"
  }
 }

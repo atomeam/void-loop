@@ -32,7 +32,8 @@ export function rarityKey(r) {
   return ({ proven: 'mythic', checked: 'rare', tested: 'uncommon', experiment: 'common' })[w] || (w in RARITY_LOOK ? w : 'common');
 }
 /** the kinds that have a plate of their own */
-export const KINDS = ['Film', 'Show', 'Album', 'Song', 'Band', 'Game', 'Book', 'Person', 'Place', 'Creature', 'Organisation', 'Event', 'Idea', 'Answer', 'Skill', 'Miniature'];
+export const KINDS = ['Film', 'Show', 'Album', 'Song', 'Band', 'Game', 'Book', 'Magazine', 'Person', 'Place', 'Creature', 'Organisation', 'Restaurant chain', 'Event', 'Idea', 'Answer', 'Skill', 'Miniature'];
+const PLATE_AS = { Magazine: 'Book', 'Restaurant chain': 'Organisation' };
 const KIND_WORD = { organization: 'Organisation', movie: 'Film', series: 'Show', concept: 'Idea', character: 'Idea', episode: 'Show', myth: 'Idea', food: 'Creature', vehicle: 'Idea', team: 'Organisation' };
 /** the first kind a type line names ("Film · Song — 1965" is Film); unknown words are an Idea */
 export function kindWord(s) {
@@ -317,7 +318,7 @@ export function artInner(card = {}, { w = 520, h = 170 } = {}) {
     R: (a, b) => a + r() * (b - a), I: (a, b) => Math.floor(a + r() * (b - a + 1)),
     P: 'hsl(' + hue + ' 32% 88%)', L: 'hsl(' + hue + ' 46% 70%)', D: 'hsl(' + hue + ' 34% 30%)', V: 'hsl(' + hue + ' 40% 8%)', G: hot ? '#ffb347' : '#fff0a8',
   };
-  const plateKind = kind === 'Skill' || kind === 'Miniature' || (kind === 'Game' && card.glyph) ? (kind === 'Miniature' ? 'Miniature' : 'Skill') : kind;
+  const plateKind = kind === 'Skill' || kind === 'Miniature' || (kind === 'Game' && card.glyph) ? (kind === 'Miniature' ? 'Miniature' : 'Skill') : (PLATE_AS[kind] || kind);
   const weatherText = String(card.text || card.key || card.name || '').toLowerCase();
   const isWeather = /\b(weather|sky|rain|drizzle|storm|snow|fog|cloudy|sunny|clear|overcast|thunder)\b/.test(weatherText) && (kind === 'Skill' || /sky|weather/i.test(String(card.kind || '') + ' ' + String(card.typeLine || '')));
   let weatherCondition = '';

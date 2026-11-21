@@ -3,6 +3,7 @@
 // A prompt typed by a person, a style and a shape from short allow-lists, an optional "leave out" line and a seed in; the prompt the painter
 // gets, the size, the reason a prompt is refused, and the caps out. The painter is the Art Forge's (functions/api/card-art.js): Workers AI's
 // image model first, inside a share of the forge's own daily cap, then Pollinations (free) with its safety filter on, then an honest "resting".
+import { unsafeText, minorBlocked } from './image-safety.js';
 import { SEXUAL, HATE } from './art-rules.js';
 import { keeperOf } from './keeper.js';
 
@@ -64,6 +65,7 @@ export function refusalOf(prompt, negative = '', style = 'none', isSecret = () =
   const p = cleanLine(prompt), n = cleanLine(negative, NEGATIVE_MAX), lo = p.toLowerCase();
   if (!p.replace(/[^\p{L}\p{N}]/gu, '')) return 'empty';
   if (isSecret(p) || isSecret(n) || /[A-Za-z0-9_-]{32,}/.test(p) || /\d{9,}/.test(p.replace(/[\s-]/g, ''))) return 'secret';
+  if (minorBlocked(unsafeText(p))) return 'unsuitable'; // lib/image-safety.js: never a painting of minors in a nude, partly clothed or sexual context
   if (SEXUAL.test(lo) || HATE.test(lo) || /\b(?:undress\w*|topless|lingerie|bikini|underage|loli|shota|child\w* (?:in|wearing) (?:underwear|swimsuit))\b/i.test(p)) return 'unsuitable';
   if (PERSON_WORDS.test(p) || namedPersonPhoto(p, style)) return 'person';
   if (keeperOf(p)) return 'kept';

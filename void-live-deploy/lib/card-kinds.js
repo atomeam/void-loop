@@ -17,7 +17,9 @@ export const KINDS = [
   ['Band', /\b(?:band|musical group|boy group|girl group|rock group|duo)\b/i, 'words'],
   ['Card', /\b(?:trading card|collectible card|playing card|tarot card|pok[eé]mon (?:species|card)|magic: the gathering card|yu-gi-oh! card)\b/i, 'games'],
   ['Game', /\b(?:video game|board game|card game|tabletop game|role-playing game|game series)\b/i, 'games'],
-  ['Book', /\b(?:novel|novella|poem|short story|play by|comic book|manga|book by|memoir|textbook)\b/i, 'words'],
+  ['Book', /\b(?:novels?|novella|poem|short story|play by|comic book|manga|books?(?: series)?|book by|memoir|textbook|series of (?:novels|books))\b/i, 'words'],
+  ['Magazine', /\b(?:magazines?|periodicals?|journals?)\b/i, 'words'],
+  ['Restaurant chain', /\b(?:restaurant chains?|fast[- ]food chains?|hamburger chains?|diner chains?)\b/i, 'time'],
   ['Place', /\b(?:residence|palace|building|bridge|tower|landmark|monument|museum|castle|stadium|skyscraper|cathedral|church|temple|airport|railway station|fortress|dam|canal)\b/i, 'sky'], // a landmark before a person: "residence of the president" is the White House
   ['Person', /\((?:born|b\.)\s|\(\d{3,4}\s*[–-]\s*\d{2,4}\)|\b(?:actor|actress|singer|songwriter|musician|rapper|politician|writer|author|novelist|poet|playwright|scientist|mathematician|physicist|chemist|biologist|philosopher|artist|painter|sculptor|director|comedian|footballer|athlete|player|inventor|engineer|president|king|queen|emperor|explorer|economist|composer|conductor|astronaut|businessman|businesswoman|entrepreneur|activist|journalist|presenter|model|chef|boxer|racing driver|coach)\b/i, 'self'],
   ['Food', /\b(?:dish|dessert|cuisine|juice|drink|liquid extract|beverage|cocktail|pastry|sauce|cheese|bread|soup|sandwich|snack|candy|confection|stew)\b/i, 'life'],
@@ -26,17 +28,28 @@ export const KINDS = [
   ['Vehicle', /\b(?:automobile|car model|aircraft|airliner|locomotive|motorcycle|spacecraft|rocket|vehicle|smartphone|gadget|operating system|programming language|software)\b/i, 'make'],
   ['Team', /\b(?:football club|sports? team|basketball team|baseball team|cricket team|hockey team|national team)\b/i, 'time'],
   ['Concept', /\b(?:theory|theorem|equation|chemical element|particle|physical law|principle|chess opening|mathematical|syndrome|disease)\b/i, 'index'],
-  ['Organisation', /\b(?:company|corporation|organi[sz]ation|university|institution|agency|association|political party|nonprofit|brand|manufacturer|retailer|school|team|club|league)\b/i, 'time'],
+  ['Organisation', /\b(?:company|corporation|organi[sz]ation|university|institution|agency|association|political party|nonprofit|brand|manufacturer|retailer|school|team|club|league|restaurants?|restaurant chain|fast[- ]food(?: chain)?)\b/i, 'time'],
   ['Event', /\b(?:war|battle|festival|election|treaty|disaster|revolution|championship|tournament|olympics|massacre|conference|protest|uprising)\b/i, 'time'],
   ['Idea', /./, 'index'],
 ];
-const WORD = { card: 'Card', 'trading card': 'Card', film: 'Film', movie: 'Film', song: 'Song', single: 'Song', album: 'Album', band: 'Band', 'tv series': 'Show', 'tv show': 'Show', 'television series': 'Show', novel: 'Book', book: 'Book', play: 'Book', poem: 'Book', 'video game': 'Game', game: 'Game', musical: 'Show', manga: 'Book', 'comic book': 'Book', company: 'Organisation', band_: 'Band', ep: 'Album', mixtape: 'Album', soundtrack: 'Album', 'film series': 'Film', 'tv episode': 'Show', episode: 'Show' };
+const WORD = { card: 'Card', 'trading card': 'Card', film: 'Film', movie: 'Film', song: 'Song', single: 'Song', album: 'Album', band: 'Band', 'tv series': 'Show', 'tv show': 'Show', 'television series': 'Show', novel: 'Book', book: 'Book', magazine: 'Magazine', periodical: 'Magazine', 'restaurant chain': 'Restaurant chain', restaurant: 'Restaurant chain', play: 'Book', poem: 'Book', 'video game': 'Game', game: 'Game', musical: 'Show', manga: 'Book', 'comic book': 'Book', company: 'Organisation', band_: 'Band', ep: 'Album', mixtape: 'Album', soundtrack: 'Album', 'film series': 'Film', 'tv episode': 'Show', episode: 'Show' };
 
 /** { kind, chapter, detail }: what a page's short description says it is, with its year and maker when it says them. Pure. */
-export function kindOf(description, extract = '') {
-  const d = String(description || ''), text = d + ' ' + String(extract || '').slice(0, 160);
-  const specific = KINDS.slice(0, -1); // the last row (Idea) matches anything: it is the fallback, not a reading of the description
-  const hit = specific.find(([, re]) => re.test(d)) || specific.find(([, re]) => re.test(text)) || KINDS[KINDS.length - 1];
+export function kindFromInstance(instanceOf) {
+  const parts = Array.isArray(instanceOf) ? instanceOf : String(instanceOf || '').split(/\s*\|\s*/);
+  for (const raw of parts) {
+    const t = String(raw || '').trim().toLowerCase();
+    if (!t) continue;
+    const k = WORD[t] || ({ human: 'Person', magazine: 'Magazine', periodical: 'Magazine', journal: 'Magazine', 'restaurant chain': 'Restaurant chain', restaurant: 'Restaurant chain' })[t];
+    if (k) return k;
+  }
+  return '';
+}
+export function kindOf(description, extract = '', instanceOf = '') {
+  const d = String(description || ''), inst = kindFromInstance(instanceOf);
+  const specific = KINDS.slice(0, -1);
+  const named = inst && (specific.find((k) => k[0] === inst) || [inst, null, inst === 'Restaurant chain' ? 'time' : 'words']);
+  const hit = named || specific.find(([, re]) => re.test(d)) || (!d.trim() && specific.find(([, re]) => re.test(String(extract || '').slice(0, 160)))) || KINDS[KINDS.length - 1];
   const year = (/\b(1[5-9]\d\d|20\d\d)\b/.exec(d) || [])[1] || '';
   const by = (/\bby ([A-Z][^,;()]{2,40})/.exec(d) || [])[1] || '';
   return { kind: hit[0], chapter: hit[2], detail: [year, by].filter(Boolean).join(' · ') };
@@ -81,8 +94,17 @@ export function alsoFrom(titles, title) {
 }
 /** the type line's words: "Film · Song" with the first's detail after a dash. Pure. */
 export function typeWords(primary, also = [], detail = '') {
-  const kinds = [primary, ...(also || []).filter((k) => k !== primary)];
-  return kinds.join(' · ') + (detail ? ' — ' + detail : '');
+  return String(primary || '') + (detail ? ' — ' + detail : '');
+}
+/** when the ask names a type, prefer a hit of that type ("porn magazine" → the magazine, not a film). Pure. */
+export function preferTyped(ask, hits) {
+  const list = Array.isArray(hits) ? hits.filter(Boolean) : [];
+  if (!list.length) return null;
+  const m = /\b(magazines?|films?|movies?|bands?|albums?|songs?|books?|restaurants?)\b/i.exec(String(ask || ''));
+  if (!m) return list[0];
+  const key = m[1].toLowerCase().replace(/s$/, '');
+  const want = ({ movie: 'Film', film: 'Film', magazine: 'Magazine', band: 'Band', album: 'Album', song: 'Song', book: 'Book', restaurant: 'Restaurant chain' })[key];
+  return list.find((h) => kindOf(h.description || h.snippet || '', '', '').kind === want) || list[0];
 }
 /** one search for sister pages' titles; resolves [] on any failure */
 export function fetchAlso(title) {

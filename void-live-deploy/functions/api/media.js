@@ -6,6 +6,7 @@
 // here. Not found = { verified: false } with nothing else, never a guess. No D1, no KV, no model; the edge caches an answer for a day.
 import { cleanTitle, normTitle, pickSong, pickDeezerSong, listenLinks, pickShow, showLinks, showAvailability } from '../../lib/media.js';
 import { cleanYear } from '../../lib/movies.js';
+import { unsafeText } from '../../lib/image-safety.js';
 import { lookup as movie } from './movies.js';
 const UA = { 'user-agent': 'Verse/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
 async function getJson(u, ms = 5000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(u, { headers: UA, signal: c.signal, cf: { cacheTtlByStatus: { '200-299': 86400, '300-599': 0 } } }); if (!r.ok) throw new Error('upstream ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
@@ -31,6 +32,16 @@ export async function show(title, year, viewer = '') {
   const av = showAvailability(s, viewer), ok = av.state === 'ok';
   return { verified: true, ...s, availability: av.state, why: av.why, links: showLinks(s.title, s.year, s.site, s.page, !ok), sources: ['TVMaze'] };
 }
+/** lib/image-safety.js on a media answer: when the asked title or anything the source says about it touches nudity, sex or minors in such a
+ *  context, every picture field (poster, art, cover, image, thumb) is dropped and the answer says so. Mutates and returns the answer. */
+export function safePictures(out, asked = []) {
+  if (!out || typeof out !== 'object') return out;
+  const said = ['title', 'artist', 'album', 'collection', 'name', 'genre', 'summary', 'overview', 'plot'].map((k) => (typeof out[k] === 'string' ? out[k].slice(0, 800) : ''));
+  if (!unsafeText(asked, said)) return out;
+  for (const k of Object.keys(out)) if (/poster|image|art(?:work)?$|cover|thumb|still|backdrop/i.test(k) && typeof out[k] === 'string') delete out[k];
+  out.pictures = 'hidden (image safety)';
+  return out;
+}
 export const ADAPTERS = { show: (q) => show(q.title, q.year, q.viewer), music: (q) => music(q.title, q.artist), movie: (q) => movie(q.title, q.year) };
 export async function onRequestGet({ request }) {
   const q = new URL(request.url).searchParams, kind = String(q.get('kind') || ''), title = cleanTitle(q.get('title')), artist = cleanTitle(q.get('artist'));
@@ -41,6 +52,7 @@ export async function onRequestGet({ request }) {
   const out = await ADAPTERS[kind]({ title, artist, year: cleanYear(q.get('year')), viewer });
   // no source could be reached: a 503 the edge never keeps, so the next ask tries again instead of reading a day-old failure
   if (out && out.unreachable) { const r = reply(out, 503); r.headers.set('cache-control', 'no-store'); return r; }
+  safePictures(out, [title, artist]);
   const res = reply(out);
   if (kind === 'show') res.headers.set('cache-control', 'private, max-age=3600');
   return res;

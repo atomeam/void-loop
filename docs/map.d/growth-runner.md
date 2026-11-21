@@ -1,0 +1,1 @@
+- `tools/growth-runner.mjs` and `void-live-deploy/lib/growth-runner.js` (test `tools/growth-runner.test.mjs`, playbook `docs/playbooks/growth-pipeline.md`): a proposed change is applied to a copy, checked, and marked shipped only after the checks pass. GitHub stays the source of truth. The push uses the token already in the environment and never prints it.

@@ -49,12 +49,14 @@ export const HAND_PAGES = Object.freeze([
   ['/resize-image/', 'Image Resizer'],
 ].map(Object.freeze));
 /** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, then HAND_PAGES, without /tools/ itself. Pure. */
+// rooms kept off the Tools list and the 'Use with' links until people post there: an empty board or story shelf reads as a dead site (fun audit 2026-11-20); asking for them by name still opens them
+export const QUIET = Object.freeze(new Set(['/boards/', '/fanfic/']));
 export const allTools = () => {
   const seen = new Set();
   const out = [];
   for (const row of [...Object.entries(TOOLS), ...MORE_PAGES, ...HAND_PAGES]) {
     const [p] = row;
-    if (p === '/tools/' || seen.has(p)) continue;
+    if (p === '/tools/' || QUIET.has(p) || seen.has(p)) continue;
     seen.add(p); out.push(row);
   }
   return out;
@@ -169,7 +171,7 @@ export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(
 /** the stage link that opens a page's card ('/?q=...'), or '' for a page with none. Pure. */
 export const cardLinkOf = (path) => (CARD_ASK[path] ? '/?q=' + encodeURIComponent(CARD_ASK[path]) : '');
 /** the related tools of a page as [{ href, label }], closest first; unknown pages get none. Pure. */
-export const relatedOf = (path) => (RELATED[path] || []).filter((p) => TOOLS[p]).map((href) => ({ href, label: TOOLS[href] }));
+export const relatedOf = (path) => (RELATED[path] || []).filter((p) => TOOLS[p] && !QUIET.has(p)).map((href) => ({ href, label: TOOLS[href] }));
 
 /** a colour written as #rrggbb (3 or 6 hex digits, with or without #), or null. Pure. */
 export function hexOf(text) {

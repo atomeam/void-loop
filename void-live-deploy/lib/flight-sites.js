@@ -1,17 +1,16 @@
 /**
- * flight-sites: the pages of the travel floor of Versus, one table (owner, 2026-10-26: "need a flights page"; "even if we are sure we already stomp them we still make a
- * page and beat them", docs/RULES.md). The floor's leader gets /flights/; each site of its lane gets a page of its own, built to have every feature that site has and
- * measured against it by the gate (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/tool-sites.js adds these rows to SITE_PAGES, so
+ * flight-sites: the travel floor of Versus, one table (owner, 2026-10-26: "need a flights page"; "even if we are sure we already stomp them we still make a
+ * page and beat them", docs/RULES.md). The floor's leader is /flights/, one page that holds every flight tool as a section (owner, 2026-11-20: the flight tools are one page). Each lane site is measured against a section of that page (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/tool-sites.js adds these rows to SITE_PAGES, so
  * lib/toolkit.js (TOOLS) and lib/seo.js (PAGES) read them like the PDF and Kanban rows. A page picks its panels from lib/flights-ui.js. Verse's pages name no other
  * site; the table does, in plain text, only here as `lane`. Pure data and the ask that reaches the pages.
  */
 const ALL = ['airports', 'trip', 'dates', 'pax', 'cabin'];
 export const FLIGHT_SITES = Object.freeze([
-  { path: '/flights/', tag: 'Search flights on five providers, with the route worked out on your device', card: 'flights', lane: 'travel', name: 'Flights', h1: 'Flights', panels: ['controls', 'providers', 'facts', 'tracker', 'trip'], controls: ALL,
-    intro: 'Plan a flight: pick the airports and dates, open the same search on Google Flights, Skyscanner, Kayak, Momondo and Expedia in one click, and see the distance, flight time, time difference and CO2 worked out on your device. Keep the fares you see, with the lowest and a target, and your trip with its layovers. Verse has no live fares: the prices are on the providers. No account, no ads.',
+  { path: '/flights/', tag: 'Search flights on five providers, with the route worked out on your device', card: 'flights', lane: 'travel', name: 'Flights', h1: 'Flights', panels: ['controls', 'providers', 'facts', 'time', 'co2', 'route', 'routes', 'airports', 'trip', 'tracker'], controls: ['airports', 'via', 'trip', 'dates', 'time', 'stay', 'pax', 'cabin'],
+    intro: 'Plan a flight: pick the airports once and see the distance, flight time, CO2 and great-circle map together, open the same search on five providers, look up airport codes, see where you can fly, and keep a trip with its layovers. Verse has no live fares: the prices are on the providers. No account, no ads.',
     does: 'A flights page that runs on your device: airport search by city, name or code with nearby airports, one search opened on five providers from fixed addresses (and the airline site when it is known), route facts (distance, flight time, time difference, local arrival, CO2), a price log with the lowest seen and a target, and itineraries with layover checks and a calendar file. No live fares: the prices are on the providers. No account, works offline, English and German.',
     asks: ['flights', 'flights to lisbon', 'cheap flights', 'flight search', 'compare flight prices', 'flight price tracker', 'flights from london to new york', 'plan a flight'],
-    de: { h1: 'Flüge', intro: 'Planen Sie einen Flug: Wählen Sie Flughäfen und Daten, öffnen Sie dieselbe Suche mit einem Klick bei Google Flights, Skyscanner, Kayak, Momondo und Expedia und sehen Sie Entfernung, Flugzeit, Zeitunterschied und CO2 auf Ihrem Gerät berechnet. Behalten Sie die Preise, die Sie sehen, mit dem niedrigsten und einem Ziel, und Ihre Reise mit ihren Zwischenstopps. Verse hat keine Live-Preise: Die Preise stehen bei den Anbietern. Kein Konto, keine Werbung.' },
+    de: { h1: 'Flüge', intro: 'Planen Sie einen Flug: Geben Sie die Flughäfen einmal ein und sehen Sie Entfernung, Flugzeit, CO2 und Großkreis-Karte zusammen, öffnen Sie dieselbe Suche mit einem Klick bei fünf Anbietern, schlagen Sie Flughafencodes nach, sehen Sie, wohin Sie fliegen können, und behalten Sie Ihre Reise mit ihren Zwischenstopps. Verse hat keine Live-Preise: Die Preise stehen bei den Anbietern. Kein Konto, keine Werbung.' },
     links: [['London to New York', '/flights/?from=LHR&to=JFK'], ['New York to Lisbon', '/flights/?from=JFK&to=LIS'], ['Berlin to Barcelona', '/flights/?from=BER&to=BCN'], ['Paris to Tokyo', '/flights/?from=CDG&to=HND'], ['Sydney to Los Angeles', '/flights/?from=SYD&to=LAX']], action: { template: '/flights/?to={airport}', input: 'airport' } },
   { path: '/flights/trip/', tag: 'Paste a confirmation, check every layover, get a calendar file', card: 'flight itinerary', lane: 'travel: tripwaffle.com', name: 'Flight itinerary and layovers', h1: 'Flight itinerary and layovers', panels: ['trip'],
     intro: 'Paste a booking confirmation and the flights are read out of it: flight numbers, airports, dates and times, and the booking reference. Or type each flight in. The page checks the wait between flights across time zones and warns about tight connections, overnight waits and changes of airport, makes a calendar file and a link you can share. It stays on this device: nothing is uploaded and there is no account.',
@@ -59,17 +58,26 @@ export const FLIGHT_ASK = new RegExp('^(?:please\\s+)?(?:'
 export const FLIGHT_TIME_ASK = new RegExp('^(?:please\\s+)?(?:(?:how long is )?(?:the )?flight (?:time|duration|length)|how long (?:is|does) (?:the |a )?flight (?:take )?)\\s*(?:from\\s+(' + PLACE + ')\\s+to\\s+(' + PLACE + ')|between\\s+(' + PLACE + ')\\s+and\\s+(' + PLACE + ')|(' + PLACE + ')\\s+(?:to\\s+)?(' + PLACE + '))?$', 'i');
 export const FLIGHT_DIST_ASK = new RegExp('^(?:please\\s+)?(?:(?:flight |air )?distance (?:from\\s+(' + PLACE + ')\\s+to\\s+(' + PLACE + ')|between\\s+(' + PLACE + ')\\s+and\\s+(' + PLACE + '))|how far is (' + PLACE + ') from (' + PLACE + ')(?: by (?:air|plane))?)$', 'i');
 export const FLIGHT_PAGE_ASK = /^(?:an? |the |free |online |my )*(?:flight\s+(?:search|finder|tracker|price tracker|price alert|itinerary|planner|distance)|air\s+distance|airfare\s+(?:tracker|search)|trip\s+itinerary|layover\s+(?:calculator|checker)|airport\s+codes?(?:\s+lookup)?|iata\s+codes?|flight\s+co2(?:\s+calculator)?|flight\s+carbon\s+footprint|air\s+miles\s+calculator|great\s+circle\s+(?:map|mapper|distance))$/i;
-// "where can i fly", "where can i fly from berlin", "destinations from lisbon", "airports within 3 hours of london": the airports a flight time reaches (/flights/routes/)
+// "where can i fly", "where can i fly from berlin", "destinations from lisbon", "airports within 3 hours of london": the airports a flight time reaches (/flights/?mode=routes)
 export const FLIGHT_ROUTES_ASK = new RegExp('^(?:please\\s+)?(?:where\\s+can\\s+i\\s+fly(?:\\s+to)?(?:\\s+from\\s+(' + PLACE + '))?|(?:nonstop|direct)\\s+(?:destinations|flights?\\s+routes?)(?:\\s+from\\s+(' + PLACE + '))?|(?:destinations|places\\s+to\\s+fly|flights?\\s+routes?)\\s+from\\s+(' + PLACE + ')|places\\s+to\\s+fly|airports\\s+within\\s+\\d{1,2}\\s+hours?(?:\\s+(?:of|from)\\s+(' + PLACE + '))?|explore\\s+destinations(?:\\s+by\\s+flight\\s+time)?)$', 'i');
+
+/** which panel a ?mode= or #hash on /flights/ opens. Pure. */
+export const FLIGHT_MODE_ID = Object.freeze({ search: 'providers', providers: 'providers', distance: 'facts', facts: 'facts', time: 'time', co2: 'co2', carbon: 'co2', map: 'route', route: 'route', airports: 'airports', routes: 'routes', fly: 'routes', trip: 'trip', itinerary: 'trip', layover: 'trip', tracker: 'tracker' });
+export function flightModeOf(search = '', hash = '') {
+  const q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+  const raw = String(q.get('mode') || String(hash || '').replace(/^#/, '').split(/[&=]/)[0] || '').toLowerCase();
+  return FLIGHT_MODE_ID[raw] || '';
+}
+
 const clean = (s) => (s ? String(s).replace(/\s+/g, ' ').replace(/\b(?:tomorrow|today|next week|this weekend)\b.*$/i, '').trim() : '');
 /** where an ask about flights goes: the page's address with the places in it (fromq and toq are names the page looks up in its airport list), or '' when it is not a flight ask. Pure. */
 export function flightAskOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '); let m;
-  const q = (a, b, path = '/flights/') => path + (a || b ? '?' + [a && 'fromq=' + encodeURIComponent(clean(a)), b && 'toq=' + encodeURIComponent(clean(b))].filter(Boolean).join('&') : '');
-  if ((m = FLIGHT_TIME_ASK.exec(t))) { const a = m[1] || m[3] || m[5], b = m[2] || m[4] || m[6]; return q(a, b, '/flights/time/'); }
-  if ((m = FLIGHT_DIST_ASK.exec(t))) { const a = m[1] || m[3] || m[6], b = m[2] || m[4] || m[5]; return q(a, b, '/flights/distance/'); }
+  const q = (a, b, mode = '') => '/flights/' + (a || b || mode ? '?' + [mode && 'mode=' + mode, a && 'fromq=' + encodeURIComponent(clean(a)), b && 'toq=' + encodeURIComponent(clean(b))].filter(Boolean).join('&') : '');
+  if ((m = FLIGHT_TIME_ASK.exec(t))) { const a = m[1] || m[3] || m[5], b = m[2] || m[4] || m[6]; return q(a, b, 'time'); }
+  if ((m = FLIGHT_DIST_ASK.exec(t))) { const a = m[1] || m[3] || m[6], b = m[2] || m[4] || m[5]; return q(a, b, 'distance'); }
   if ((m = FLIGHT_ASK.exec(t))) { let a = m[1] || m[4] || m[3] || m[6], b = m[2] || m[5]; const sp = b && /^(.+?)\s+from\s+(.+)$/i.exec(b); if (sp) { b = sp[1]; a = sp[2]; } return q(a, b); }
-  if ((m = FLIGHT_ROUTES_ASK.exec(t))) return q(m[1] || m[2] || m[3] || m[4], '', '/flights/routes/');
-  if (FLIGHT_PAGE_ASK.test(t)) { const k = t.toLowerCase(); return /itinerary|layover/.test(k) ? '/flights/trip/' : /airport|iata/.test(k) ? '/flights/airports/' : /co2|carbon/.test(k) ? '/flights/co2/' : /air miles|great circle (?:distance)|distance/.test(k) ? '/flights/distance/' : /great circle/.test(k) ? '/flights/map/' : '/flights/'; }
+  if ((m = FLIGHT_ROUTES_ASK.exec(t))) return q(m[1] || m[2] || m[3] || m[4], '', 'routes');
+  if (FLIGHT_PAGE_ASK.test(t)) { const k = t.toLowerCase(); return /itinerary|layover/.test(k) ? q('', '', 'trip') : /airport|iata/.test(k) ? q('', '', 'airports') : /co2|carbon/.test(k) ? q('', '', 'co2') : /air miles|great circle (?:distance)|distance/.test(k) ? q('', '', 'distance') : /great circle/.test(k) ? q('', '', 'map') : '/flights/'; }
   return '';
 }

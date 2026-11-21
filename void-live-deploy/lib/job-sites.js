@@ -1,18 +1,17 @@
 /**
  * job-sites: the pages of the jobs floor of Versus, one table (owner, 2026-10-26: "we have to have everything all the sites have"; "even if we are sure we already
- * stomp them we still make a page and beat them", docs/RULES.md). The floor's leader (LinkedIn Jobs) gets /jobs/; each site of its lane gets a page of its own, built to
- * have every feature that site has and measured against it by the gate (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/tool-sites.js
+ * stomp them we still make a page and beat them", docs/RULES.md). The floor's leader is /jobs/, one page with filters for region, category, tag, salary, company and alerts (owner, 2026-11-20: the job tools are one page). Each lane site is measured against a section or filter of that page (lib/tower.js LANE_PAGES). tools/tool-site-pages.mjs writes each page from a row; lib/tool-sites.js
  * adds these rows to SITE_PAGES, so lib/toolkit.js and lib/seo.js read them like the other rows. A page picks its panels from lib/jobs-ui.js and may start from a preset
  * search. Verse's pages name no rival site; the table does, in plain text, only here as `lane`. The listings' own sources (Remotive, Jobicy, Himalayas) are named on
  * every page, as their terms ask (lib/jobs-core.js). Pure data and the ask that reaches the pages.
  */
 const SHARED = ['search', 'saved', 'alerts', 'tracker', 'feed', 'sources'];
 export const JOB_SITES = Object.freeze([
-  { path: '/jobs/', tag: 'Remote jobs from three free feeds, with alerts and a tracker on your device', card: 'remote jobs', lane: 'jobs', name: 'Jobs', h1: 'Jobs', panels: SHARED,
-    intro: 'Search remote jobs by keyword, place, tag and salary, filter and sort them, save jobs and searches, see what is new since your last visit, and keep your applications (applied, interview, offer) with notes in a tracker that never leaves this device. Listings come from Remotive, Jobicy and Himalayas; you apply on the original posting.',
+  { path: '/jobs/', tag: 'Remote jobs from three free feeds, with alerts and a tracker on your device', card: 'remote jobs', lane: 'jobs', name: 'Jobs', h1: 'Jobs', panels: ['search', 'regions', 'categories', 'tags', 'companies', 'saved', 'alerts', 'tracker', 'feed', 'sources'],
+    intro: 'Search remote jobs by keyword, region, category, tag, salary and company, set alerts with no account, filter and sort them, save jobs and searches, see what is new since your last visit, and keep your applications (applied, interview, offer) with notes in a tracker that never leaves this device. Listings come from Remotive, Jobicy and Himalayas; you apply on the original posting.',
     does: 'A job search on your device: remote jobs from Remotive, Jobicy and Himalayas with keyword, place, tag, category, type, level and salary filters and sorting; saved jobs and searches, alerts as new matches since your last visit and an RSS feed; an application tracker with notes, a calendar file and CSV export. No account, no profile, nothing about you stored on a server; English and German.',
     asks: ['jobs', 'find jobs', 'job search', 'remote jobs', 'remote job board', 'job alerts', 'job application tracker', 'remote developer jobs'],
-    de: { h1: 'Jobs', intro: 'Suchen Sie Remote-Jobs nach Stichwort, Ort, Schlagwort und Gehalt, filtern und sortieren Sie sie, merken Sie sich Jobs und Suchen, sehen Sie, was seit Ihrem letzten Besuch neu ist, und führen Sie Ihre Bewerbungen (beworben, Gespräch, Angebot) mit Notizen in einer Liste, die dieses Gerät nie verlässt. Die Anzeigen kommen von Remotive, Jobicy und Himalayas; beworben wird auf der Originalanzeige.' },
+    de: { h1: 'Jobs', intro: 'Suchen Sie Remote-Jobs nach Stichwort, Region, Kategorie, Schlagwort, Gehalt und Unternehmen, richten Sie Benachrichtigungen ohne Konto ein, filtern und sortieren Sie sie, merken Sie sich Jobs und Suchen, sehen Sie, was seit Ihrem letzten Besuch neu ist, und führen Sie Ihre Bewerbungen (beworben, Gespräch, Angebot) mit Notizen in einer Liste, die dieses Gerät nie verlässt. Die Anzeigen kommen von Remotive, Jobicy und Himalayas; beworben wird auf der Originalanzeige.' },
     links: [['Developer jobs', '/jobs/?q=developer'], ['Design jobs', '/jobs/?q=designer'], ['Jobs open in Europe', '/jobs/?region=europe'], ['Jobs with a salary', '/jobs/?salaryOnly=1&sort=salary'], ['New this week', '/jobs/?days=7']], action: { template: '/jobs/?q={q}', input: 'q' } },
   { path: '/jobs/regions/', tag: 'Remote jobs by where you may work from, with a feed for each search', card: 'remote jobs by region', lane: 'jobs: jobicy.com', name: 'Remote jobs by region', h1: 'Remote jobs by region', panels: ['regions', ...SHARED], preset: { region: 'worldwide' },
     intro: 'Remote jobs sorted by where you may work from: anywhere, the USA, Europe, the UK, Germany, Latin America, Asia and more, with the industry, the level, the job type and the salary when it is given. Every search has an RSS feed for your reader, with no account.',
@@ -58,11 +57,20 @@ export const JOB_SITES = Object.freeze([
     links: [], action: { template: '/jobs/companies/?company={company}', input: 'company' } },
 ]);
 
+
+/** which panel a ?mode= / ?panel= or #hash on /jobs/ opens. Pure. */
+export const JOB_MODE_ID = Object.freeze({ search: 'jb-search', regions: 'jb-regions', region: 'jb-regions', categories: 'jb-cats', category: 'jb-cats', cats: 'jb-cats', tags: 'jb-tagcloud', tag: 'jb-tagcloud', companies: 'jb-companies', company: 'jb-companies', alerts: 'jb-alerts', alert: 'jb-alerts', saved: 'jb-saved', tracker: 'tracker', applications: 'tracker' });
+export function jobModeOf(search = '', hash = '') {
+  const q = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+  const raw = String(q.get('mode') || q.get('panel') || String(hash || '').replace(/^#/, '').split(/[&=]/)[0] || '').toLowerCase();
+  return JOB_MODE_ID[raw] || '';
+}
+
 // ---------- the asks that reach these pages (skills/work.js and the ask bar in lib/toolkit.js read them) ----------
 export const JOB_PAGE_ASK = /^(?:please\s+)?(?:an? |the |free |online |my )*(?:job\s+(?:search|board|alerts?|finder|application\s+tracker|tracker)|jobs?\s+page|find\s+(?:me\s+)?(?:a\s+)?jobs?|application\s+tracker|remote\s+(?:job\s+board|jobs?(?:\s+(?:board|alerts?|by\s+(?:region|category|tag|salary|company)|with\s+salar(?:y|ies)|in\s+europe|europe|in\s+germany))?)|jobs?\s+(?:in\s+(?:germany|europe)|with\s+visa\s+sponsorship)|companies\s+hiring(?:\s+remotely)?|remote\s+companies\s+hiring|highest\s+paying\s+remote\s+jobs)$/i;
 /** where an ask about a jobs page goes ('' when it is not one). Pure. */
 export function jobAskOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (!JOB_PAGE_ASK.test(t)) return ''; const k = t.toLowerCase();
-  return /alert/.test(k) ? '/jobs/alerts/' : /tracker/.test(k) ? '/jobs/#tracker' : /germany|europe|visa/.test(k) ? '/jobs/europe/' : /salar|paying/.test(k) ? '/jobs/salary/' : /region/.test(k) ? '/jobs/regions/' : /categor/.test(k) ? '/jobs/categories/' : /\btag/.test(k) ? '/jobs/tags/' : /compan/.test(k) ? '/jobs/companies/' : '/jobs/';
+  return /alert/.test(k) ? '/jobs/?mode=alerts' : /tracker/.test(k) ? '/jobs/#tracker' : /germany|europe|visa/.test(k) ? '/jobs/?region=europe' : /salar|paying/.test(k) ? '/jobs/?salaryOnly=1&sort=salary' : /region/.test(k) ? '/jobs/?mode=regions' : /categor/.test(k) ? '/jobs/?mode=categories' : /\btag/.test(k) ? '/jobs/?mode=tags' : /compan/.test(k) ? '/jobs/?mode=companies' : '/jobs/';
 }
