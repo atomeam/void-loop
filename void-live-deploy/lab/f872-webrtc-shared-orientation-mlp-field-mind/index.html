@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+#info { position:fixed; top:8px; left:8px; z-index:10; font-size:12px; background:rgba(0,0,0,.5); padding:6px; border-radius:4px; }
+.portal {
+  position:absolute; width:80px; height:80px; border-radius:50%;
+  background:radial-gradient(circle, #4af, #18c);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; cursor:pointer; user-select:none;
+  transition:transform .15s, filter .15s;
+  box-shadow:0 0 20px rgba(68,170,255,.4);
+}
+canvas#field { position:fixed; top:0; left:0; width:100%; height:100%; opacity:.35; pointer-events:none; }
+button { position:fixed; bottom:12px; right:12px; z-index:10; padding:8px 14px; background:#18c; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webrtc-shared-orientation-mlp-field-mind · Verse lab</title>
+<meta name="description" content="Each browser instance runs a tiny pure-JS MLP (2-layer, ~20 weights) whose input is the current DeviceOrientation (beta/gamma normalized) plus a local residual.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webrtc-shared-orientation-mlp-field-mind · Verse lab">
+<meta property="og:description" content="Each browser instance runs a tiny pure-JS MLP (2-layer, ~20 weights) whose input is the current DeviceOrientation (beta/gamma normalized) plus a local residual.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f872-webrtc-shared-orientation-mlp-field-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f872-webrtc-shared-orientation-mlp-field-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="info">F872 Shared Orientation Mind Field<br>Tilt device or move pointer • Click portals to reward & seal<br>Open another tab to share the field</div>
+<canvas id="field"></canvas>
+<button id="seal">Seal Genome</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">webrtc-shared-orientation-mlp-field-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

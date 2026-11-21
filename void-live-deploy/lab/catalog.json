@@ -1,5 +1,141 @@
 [
  {
+  "slug": "f878-webxr-hand-spatial-memory-mlp-mind",
+  "num": 878,
+  "title": "WebXR Hand Spatial Memory MLP Mind",
+  "blurb": "A progressive WebXR (or pointer-fallback) experience where hand joint or pointer motion injects into a persistent 2D spatial memory field stored in IndexedDB.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F878-webxr-hand-spatial-memory-mlp-mind",
+  "hash": "6f98ae3d702f",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f877-webgpu-spatial-hebbian-neural-field-mind",
+  "num": 877,
+  "title": "webgpu-spatial-hebbian-neural-field-mind",
+  "blurb": "Slug: webgpu-spatial-hebbian-neural-field-mind",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F877-webgpu-spatial-hebbian-neural-field-mind",
+  "hash": "156f2a99c739",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f876-webxr-hand-policy-linkage-mind",
+  "num": 876,
+  "title": "webxr-hand-policy-linkage-mind",
+  "blurb": "Slug: webxr-hand-policy-linkage-mind",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F876-webxr-hand-policy-linkage-mind",
+  "hash": "7458f6d9611f",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f875-webgpu-es-spatial-layout-optimizer",
+  "num": 875,
+  "title": "WebGPU ES Spatial Layout Optimizer",
+  "blurb": "A practical spatial tool for The Verse: users drop text or image cards onto a canvas.",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F875-webgpu-es-spatial-layout-optimizer",
+  "hash": "6b9b6136bafd",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f874-webgpu-mic-pitch-es-particle-mind",
+  "num": 874,
+  "title": "webgpu-mic-pitch-es-particle-mind",
+  "blurb": "Live microphone audio is analyzed via Web Audio AnalyserNode for fundamental pitch (autocorrelation approximation) and RMS energy.",
+  "status": "works",
+  "source": "F874-webgpu-mic-pitch-es-particle-mind",
+  "hash": "076732bac33e",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f873-decisiontree-dom-combat-swarm-mind",
+  "num": 873,
+  "title": "Decision-Tree DOM Combat Swarm Mind",
+  "blurb": "Multi-agent competition on the Verse canvas where the agents are living absolute-positioned DOM cards.",
+  "status": "works",
+  "source": "F873-decisiontree-dom-combat-swarm-mind",
+  "hash": "6ad8c99e8d0f",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f873-webgpu-attention-fluid-houdini-mind",
+  "num": 873,
+  "title": "webgpu-attention-fluid-houdini-mind",
+  "blurb": "A previously unused primary substrate for The Verse canvas: a WebGPU (or Canvas2D fallback) 2D incompressible fluid simulation (simple stable fluids / Navier-Stokes",
+  "status": "works",
+  "source": "F873-webgpu-attention-fluid-houdini-mind",
+  "hash": "0807a048b788",
+  "grade": "toy",
+  "idea": "mindmap"
+ },
+ {
+  "slug": "f872-webgpu-mic-speech-audio-portal-synesthesia-mind",
+  "num": 872,
+  "title": "webgpu-mic-speech-audio-portal-synesthesia-mind",
+  "blurb": "A closed-loop synesthetic mind on the Verse canvas. Microphone spectral features (AnalyserNode) and pointer residuals feed a local tiny policy MLP (pure JS).",
+  "status": "works",
+  "source": "F872-webgpu-mic-speech-audio-portal-synesthesia-mind",
+  "hash": "d17b8bb52d2c",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f872-webrtc-shared-orientation-mlp-field-mind",
+  "num": 872,
+  "title": "webrtc-shared-orientation-mlp-field-mind",
+  "blurb": "Each browser instance runs a tiny pure-JS MLP (2-layer, ~20 weights) whose input is the current DeviceOrientation (beta/gamma normalized) plus a local residual.",
+  "status": "works",
+  "source": "F872-webrtc-shared-orientation-mlp-field-mind",
+  "hash": "76ffb34524a9",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f871-houdini-paint-policy-portal-mind",
+  "num": 871,
+  "title": "Houdini Paint Policy Portal Mind",
+  "blurb": "A local tiny policy agent (pure-JS linear map + reward delta rule) continuously updates CSS custom properties.",
+  "status": "works",
+  "source": "F871-houdini-paint-policy-portal-mind",
+  "hash": "985685610e81",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
+  "slug": "f870-webxr-gaze-sdf-policy-sculptor-mind",
+  "num": 870,
+  "title": "webxr-gaze-sdf-policy-sculptor-mind",
+  "blurb": "A compact multi-sphere SDF lives entirely in the browser. A pure-JS local policy agent (small linear map over features: gaze ray origin/direction residual, dwell",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F870-webxr-gaze-sdf-policy-sculptor-mind",
+  "hash": "f00dbf5c1670",
+  "grade": "toy",
+  "idea": "pattern"
+ },
+ {
   "slug": "f869-webgpu-voxel-density-local-policy-sculptor-mind",
   "num": 869,
   "title": "webgpu-voxel-density-local-policy-sculptor-mind",
@@ -96,6 +232,17 @@
   "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
   "source": "F861-webgpu-dem-granular-orientation-mlp-mind",
   "hash": "71051afc5ddb",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f860-attention-sequence-dom-morph-mind",
+  "num": 860,
+  "title": "Attention Sequence Morph Portals — Verse",
+  "blurb": "Slug: attention-sequence-dom-morph-mind",
+  "status": "works",
+  "source": "F860-attention-sequence-dom-morph-mind",
+  "hash": "500d0fc4f290",
   "grade": "toy",
   "idea": "level"
  },

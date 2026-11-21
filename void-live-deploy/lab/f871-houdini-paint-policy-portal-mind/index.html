@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0c10; color: #e0e6f0; font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; }
+  .portal {
+    position: absolute; width: 180px; height: 120px; border-radius: 12px;
+    background: paint(living-mind);
+    border: 1px solid rgba(140, 180, 255, 0.4);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  .portal.fallback { background: linear-gradient(135deg, #1a2a4a, #2a4a6a); }
+  #hud { position: fixed; top: 12px; left: 12px; font-size: 12px; opacity: 0.8; pointer-events: none; }
+  #log { position: fixed; bottom: 12px; left: 12px; font-size: 11px; max-width: 400px; opacity: 0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Houdini Paint Policy Portal Mind · Verse lab</title>
+<meta name="description" content="A local tiny policy agent (pure-JS linear map + reward delta rule) continuously updates CSS custom properties.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Houdini Paint Policy Portal Mind · Verse lab">
+<meta property="og:description" content="A local tiny policy agent (pure-JS linear map + reward delta rule) continuously updates CSS custom properties.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f871-houdini-paint-policy-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f871-houdini-paint-policy-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">F871 Houdini Paint Policy Portal Mind<br>Pointer drives living paint · Click to reward</div>
+<div id="log"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Houdini Paint Policy Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

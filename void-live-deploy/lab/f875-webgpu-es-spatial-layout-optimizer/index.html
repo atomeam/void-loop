@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:relative; width:100vw; height:100vh; }
+.card { position:absolute; background:#222; border:1px solid #444; padding:8px; border-radius:6px; cursor:move; min-width:80px; user-select:none; box-shadow:0 2px 8px #0008; }
+.card input { background:#111; color:#eee; border:none; width:100%; }
+#controls { position:fixed; top:10px; left:10px; z-index:10; background:#000a; padding:10px; border-radius:8px; }
+button, input { margin:4px; }
+#status { font-size:12px; color:#8f8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU ES Spatial Layout Optimizer · Verse lab</title>
+<meta name="description" content="A practical spatial tool for The Verse: users drop text or image cards onto a canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU ES Spatial Layout Optimizer · Verse lab">
+<meta property="og:description" content="A practical spatial tool for The Verse: users drop text or image cards onto a canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f875-webgpu-es-spatial-layout-optimizer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f875-webgpu-es-spatial-layout-optimizer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="controls">
+  <button id="add">Add Card</button>
+  <button id="opt">Optimize</button>
+  <button id="seal">Seal Genome</button>
+  <button id="export">Export JSON</button>
+  <button id="png">Download PNG</button>
+  <div id="status">Ready. WebGPU: checking…</div>
+</div>
+<div id="canvas"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU ES Spatial Layout Optimizer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
