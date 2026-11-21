@@ -8,15 +8,11 @@ name: Verse engineer
 
 on:
   schedule:
-    - cron: '17 7 * * *'
+    - cron: '17 */2 * * *'
   workflow_run:
     workflows: [Verse deploy]
     types: [completed]
   workflow_dispatch:
-
-concurrency:
-  group: verse-engineer
-  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -26,6 +22,9 @@ permissions:
 
 jobs:
   live:
+    concurrency:
+      group: verse-engineer-live
+      cancel-in-progress: false
     if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -45,6 +44,9 @@ jobs:
 
   day:
     if: github.event_name != 'workflow_run'
+    concurrency:
+      group: verse-engineer-day
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
