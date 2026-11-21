@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T10:33:23.866Z",
+ "updated": "2026-11-21T10:42:47.778Z",
  "last24h": {
   "ticks": 148,
   "started": 83,
@@ -121,7 +121,7 @@
   "mvbl52gd": 1795241408071,
   "mvu167w7": 1795220251623,
   "mva30i2e": 1795256634917,
-  "mva30j4u": 1795235767248,
+  "mva30j4u": 1795257767778,
   "mwa0agd2": 1795236327140,
   "mwa0ah54": 1795237453116,
   "mwdsggtv": 1795236889096,
@@ -235,8 +235,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795255200000,
-   "startedAt": 1795256070457
+   "slot": 1795257000000,
+   "startedAt": 1795257767778
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -3449,36 +3449,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T10:36:42.943Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwdsggtv",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 55
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 470,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T10:46:09.046Z",
    "open": 500,
@@ -7829,6 +7799,41 @@
    ],
    "daily": [],
    "catchup": [],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T10:42:47.778Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml"
+   ],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
