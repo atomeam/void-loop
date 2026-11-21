@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T08:02:44.274Z",
+ "updated": "2026-11-21T08:12:10.655Z",
  "last24h": {
   "ticks": 148,
-  "started": 91,
+  "started": 90,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -228,7 +228,8 @@
    "startedAt": 1795245910550
   },
   "lab-sync.yml": {
-   "slot": 1795160220000
+   "slot": 1795246620000,
+   "startedAt": 1795248730655
   },
   "dispatcher.yml": {
    "slot": 1795180980000
@@ -238,8 +239,8 @@
    "startedAt": 1795238022181
   },
   "pages-guard.yml": {
-   "slot": 1795246200000,
-   "startedAt": 1795247032878
+   "slot": 1795248000000,
+   "startedAt": 1795248730655
   },
   "autosalvage.yml": {
    "slot": 1795166220000
@@ -3445,36 +3446,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T08:05:39.274Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mw5blp33",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 89
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 344,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T08:15:03.999Z",
    "open": 500,
@@ -7788,6 +7759,36 @@
    "catchup": [
     "site-test.yml",
     "verse-watch.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T08:12:10.655Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "lab-sync.yml"
    ],
    "cancelled": [],
    "sweep": false,
