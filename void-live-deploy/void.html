@@ -4464,10 +4464,10 @@ say('nothing selected to remove');
     }
     // a random number lands on a big number die (skills/mini/dice.js; owner, 2026-10-25: "3d figure if possible")
     function diceMini(el, c) {
-      const r = /from (-?\d+) to (-?\d+)/.exec(c.note || ''); if (c.title !== 'Random number' || !r || !el) return;
+      if (!el) return; const r = c.title === 'Random number' ? /from (-?\d+) to (-?\d+)/.exec(c.note || '') : null; const d = c.title === 'Die' ? /\bd(\d+)\b/.exec(c.note || '') : null; if (!r && !d) return; const lo = r ? +r[1] : 1, hi = r ? +r[2] : +d[1];
       const band = document.createElement('div'); band.className = 'vmini'; band.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 150 : 180) + 'px;margin:0 0 6px';
       el.prepend(band);
-      cardMini(band, 'dice', { value: c.big, lo: +r[1], hi: +r[2] }, { key: 'dice:' + Date.now().toString(36), label: '3D number die showing ' + c.big }).catch(() => band.remove());
+      cardMini(band, 'dice', { value: c.big, lo, hi }, { key: 'dice:' + Date.now().toString(36), label: '3D number die showing ' + c.big }).catch((err) => { console.warn('diceMini:', err); band.remove(); });
     }
     // plain arithmetic ("12*7 = 84", "15% of 240 = 36") gets a pocket calculator that types the sum (skills/mini/calculator.js)
     function calcMini(el, note) {
@@ -6661,7 +6661,7 @@ say('nothing selected to remove');
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
           say(c.big); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
-        if (c) { const cel = showPage((p) => { if (c.title === 'Random number') p.dataset.page = '/random/?min=' + c.lo + '&max=' + c.hi; /* the page opens on the same range */ p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; }); diceMini(cel, c); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
+        if (c) { const cel = showPage((p) => { if (c.title === 'Random number') p.dataset.page = '/random/?min=' + c.lo + '&max=' + c.hi; /* the page opens on the same range */ p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p><p><a href="#" data-ask="game box">More table tools in the Game Box: dice of any size, coins, a card deck, a timer and a score keeper</a></p>'; if (c.title === 'Die' || /\bd\d+\b/.test(c.note || '')) { const row = document.createElement('p'); const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'Roll again'; btn.addEventListener('click', () => handle(text)); row.appendChild(btn); p.insertBefore(row, p.lastElementChild); } }); diceMini(cel, c); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
