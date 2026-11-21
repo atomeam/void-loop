@@ -12,7 +12,8 @@ a.who{color:#9ab;cursor:pointer;text-decoration:underline dotted}.ban{color:#ff9
 <h1>Searches</h1>
 <p class="sub">Every ask typed into Verse, newest first, kept 90 days. Visitor IDs are salted hashes, never IPs. Red = caught by the minors / illegal block. Owner only.</p>
 <input id="q" placeholder="words in the ask"><input id="who" placeholder="visitor ID (v-...)"><button id="go">Filter</button> <button id="clear">All</button>
-<table><thead><tr><th>Time (ET)</th><th>Ask</th><th>Visitor</th><th>Card</th><th>Blocked</th><th>Repeats</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+<table><thead><tr><th>Time (ET)</th><th>Ask</th><th>Visitor / account</th><th>Card</th><th>Blocked</th><th>Repeats</th><th></th></tr></thead><tbody id="rows"></tbody></table>
+<h2 style="font-size:16px;margin-top:28px">Reports</h2><table><thead><tr><th>Time (ET)</th><th>Reason</th><th>Card</th><th>Ask</th><th>Visitor / account</th><th>Picture link</th></tr></thead><tbody id="reports"></tbody></table>
 </main>
 <script type="module">
 const $ = (id) => document.getElementById(id), esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -23,13 +24,19 @@ async function draw() {
   const r = await fetch('/api/searches?' + p.toString(), { credentials: 'same-origin' }); // void-review: ok (URLSearchParams encodes every value) if (!r.ok) { $('rows').innerHTML = '<tr><td colspan="7">Not found.</td></tr>'; return; }
   let rows = []; try { rows = (await r.json()).rows || []; } catch (_) { $('rows').innerHTML = '<tr><td colspan="7">Not found.</td></tr>'; return; }
   $('rows').innerHTML = rows.map((x) => '<tr class="' + (x.blocked ? 'blocked' : '') + '"><td>' + esc(when(x.at)) + '</td><td>' + esc(x.ask) + '</td><td><a class="who" data-who="' + esc(x.who) + '">' + esc(x.who) + '</a>' + (x.ban ? ' <span class="ban">(' + esc(x.ban) + ')</span>' : '') + '</td><td>' + esc(x.kind) + '</td><td class="flag">' + (x.blocked ? 'BLOCKED' : '') + '</td><td>' + (x.repeats || '') + '</td><td>'
-    + (x.ban === 'banned' ? '<button data-ban="' + esc(x.who) + '" data-state="">Lift ban</button>' : x.ban === 'locked' ? '<button data-ban="' + esc(x.who) + '" data-state="banned">Confirm ban</button> <button data-ban="' + esc(x.who) + '" data-state="">Lift</button>' : '<button data-ban="' + esc(x.who) + '" data-state="banned">Ban</button>') + '</td></tr>').join('') || '<tr><td colspan="7">No asks yet.</td></tr>';
+    + (x.ban === 'banned' ? '<button data-ban="' + esc(x.acct && x.acct !== 'owner' ? x.acct : x.who) + '" data-state="">Lift ban</button>' : x.ban === 'locked' ? '<button data-ban="' + esc(x.acct && x.acct !== 'owner' ? x.acct : x.who) + '" data-state="banned">Confirm ban</button> <button data-ban="' + esc(x.acct && x.acct !== 'owner' ? x.acct : x.who) + '" data-state="">Lift</button>' : '<button data-ban="' + esc(x.acct && x.acct !== 'owner' ? x.acct : x.who) + '" data-state="banned">Ban</button>') + '</td></tr>').join('') || '<tr><td colspan="7">No asks yet.</td></tr>';
 }
 document.addEventListener('click', async (e) => {
   const w = e.target.closest('a.who'); if (w) { $('who').value = w.dataset.who; load(); return; }
   const b = e.target.closest('button[data-ban]'); if (!b) return;
   await fetch('/api/searches', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ban: b.dataset.ban, state: b.dataset.state }) }); load();
 });
+async function reports() {
+  try { const r = await fetch('/api/searches?reports=1', { credentials: 'same-origin' }); if (!r.ok) return; const { reports: rs = [] } = await r.json();
+    $('reports').innerHTML = rs.map((x) => '<tr><td>' + esc(when(x.at)) + '</td><td>' + esc(x.reason) + '</td><td>' + esc(x.title) + '</td><td>' + esc(x.ask) + '</td><td>' + esc(x.who) + (x.acct ? ' \u00b7 ' + esc(x.acct) : '') + '</td><td>' + (x.pic ? '<code>' + esc(x.pic.slice(0, 80)) + '</code>' : '') + '</td></tr>').join('') || '<tr><td colspan="6">No reports.</td></tr>';
+  } catch (_) {}
+}
+reports(); setInterval(reports, 30000);
 $('go').onclick = load; $('clear').onclick = () => { $('q').value = ''; $('who').value = ''; load(); };
 load(); setInterval(load, 15000);
 </script></body></html>

@@ -21,29 +21,38 @@ const clean = (s, n) => String(s || '').replace(/[\u0000-\u001f]/g, ' ').replace
 
 /** a memory store with the same four calls as the D1 one (tests, local). */
 export function memoryStore() {
-  const rows = [], bans = new Map();
+  const rows = [], bans = new Map(), reports = [];
   return {
-    rows, bans,
+    rows, bans, reports,
+    async addReport(r) { reports.push(r); },
+    async listReports(limit = 100) { return [...reports].sort((a, b) => b.at - a.at).slice(0, limit); },
     async add(r) { rows.push(r); },
-    async list({ who = '', q = '', limit = 200 } = {}) { return rows.filter((r) => (!who || r.who === who) && (!q || r.ask.toLowerCase().includes(q.toLowerCase()))).sort((a, b) => b.at - a.at).slice(0, limit); },
+    async list({ who = '', q = '', limit = 200 } = {}) { return rows.filter((r) => (!who || r.who === who || r.acct === who) && (!q || r.ask.toLowerCase().includes(q.toLowerCase()))).sort((a, b) => b.at - a.at).slice(0, limit); },
     async blockedSince(who, since) { return rows.filter((r) => r.who === who && r.blocked && r.at >= since).length; },
     async ban(who) { return bans.get(who) || null; },
     async setBan(who, state, why) { if (state) bans.set(who, { who, state, why, at: Date.now() }); else bans.delete(who); },
-    async prune(before) { for (let i = rows.length - 1; i >= 0; i--) if (rows[i].at < before) rows.splice(i, 1); },
+    async prune(before) { for (let i = rows.length - 1; i >= 0; i--) if (rows[i].at < before) rows.splice(i, 1); for (let i = reports.length - 1; i >= 0; i--) if (reports[i].at < before) reports.splice(i, 1); },
   };
 }
 /** one ask: logged, then judged. Returns { logged, blocked, state: ''|'slow'|'locked'|'banned' }. */
-export async function record(store, { ask, who, kind = '', now = Date.now() }) {
+export async function record(store, { ask, who, kind = '', acct = '', now = Date.now() }) {
   const a = clean(ask, ASK_MAX); if (!a || !who) return { logged: false, blocked: '', state: '' };
-  const ban = await store.ban(who);
+  const ban = (await store.ban(who)) || (acct ? await store.ban(acct) : null); // a ban on the account follows it to any device, and a banned device stays banned when signed in
   const blocked = blockedOf(a);
-  await store.add({ at: now, ask: a, who, kind: clean(kind, 30), blocked });
+  await store.add({ at: now, ask: a, who, kind: clean(kind, 30), blocked, acct: clean(acct, 40) });
   if (ban && ban.state === 'banned') return { logged: true, blocked, state: 'banned' };
   if (ban && ban.state === 'locked') return { logged: true, blocked, state: 'locked' };
   if (!blocked) return { logged: true, blocked, state: '' };
   const n = await store.blockedSince(who, now - DAY);
   if (n >= LOCK_AT) { await store.setBan(who, 'locked', n + ' blocked asks in 24 hours'); return { logged: true, blocked, state: 'locked' }; }
   return { logged: true, blocked, state: n >= SLOW_AT ? 'slow' : '' };
+}
+export const REASONS = ['bad picture', 'wrong', 'other'];
+/** a visitor's report on a card (the Report button): kept for the owner's Tower list. Pure apart from the store. */
+export async function report(store, { who, acct = '', ask = '', title = '', reason = '', note = '', pic = '', now = Date.now() }) {
+  const r = REASONS.includes(reason) ? reason : 'other';
+  const row = { at: now, who, acct: clean(acct, 40), ask: clean(ask, ASK_MAX), title: clean(title, 200), reason: r, note: clean(note, 300), pic: /^https:\/\/[^\s"'<>]{4,500}$/.test(String(pic)) ? String(pic) : '' };
+  await store.addReport(row); return row;
 }
 /** the owner's view: the rows, each with its visitor's repeat count of blocked asks and ban state. */
 export async function view(store, { who = '', q = '', limit = 200 } = {}) {
@@ -60,13 +69,16 @@ export function d1Store(db) {
     db.prepare('CREATE INDEX IF NOT EXISTS void_searches_at ON void_searches (at)'),
     db.prepare('CREATE INDEX IF NOT EXISTS void_searches_who ON void_searches (who, at)'),
     db.prepare('CREATE TABLE IF NOT EXISTS void_search_bans (who TEXT PRIMARY KEY, state TEXT, why TEXT, at INTEGER)'),
-  ]));
+    db.prepare('CREATE TABLE IF NOT EXISTS void_card_reports (at INTEGER, who TEXT, acct TEXT, ask TEXT, title TEXT, reason TEXT, note TEXT, pic TEXT)'),
+  ]).then(() => db.prepare('ALTER TABLE void_searches ADD COLUMN acct TEXT').run().catch(() => {})));
   return {
-    async add(r) { await init(); await db.prepare('INSERT INTO void_searches (at, ask, who, kind, blocked) VALUES (?, ?, ?, ?, ?)').bind(r.at, r.ask, r.who, r.kind, r.blocked).run(); },
-    async list({ who = '', q = '', limit = 200 } = {}) { await init(); const r = await db.prepare('SELECT at, ask, who, kind, blocked FROM void_searches WHERE (? = \'\' OR who = ?) AND (? = \'\' OR ask LIKE ?) ORDER BY at DESC LIMIT ?').bind(who, who, q, '%' + q + '%', limit).all(); return r.results || []; },
+    async add(r) { await init(); await db.prepare('INSERT INTO void_searches (at, ask, who, kind, blocked, acct) VALUES (?, ?, ?, ?, ?, ?)').bind(r.at, r.ask, r.who, r.kind, r.blocked, r.acct || '').run(); },
+    async addReport(r) { await init(); await db.prepare('INSERT INTO void_card_reports (at, who, acct, ask, title, reason, note, pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(r.at, r.who, r.acct, r.ask, r.title, r.reason, r.note, r.pic).run(); },
+    async listReports(limit = 100) { await init(); const r = await db.prepare('SELECT * FROM void_card_reports ORDER BY at DESC LIMIT ?').bind(limit).all(); return r.results || []; },
+    async list({ who = '', q = '', limit = 200 } = {}) { await init(); const r = await db.prepare('SELECT at, ask, who, kind, blocked, acct FROM void_searches WHERE (? = \'\' OR who = ? OR acct = ?) AND (? = \'\' OR ask LIKE ?) ORDER BY at DESC LIMIT ?').bind(who, who, who, q, '%' + q + '%', limit).all(); return r.results || []; },
     async blockedSince(who, since) { await init(); const r = await db.prepare('SELECT COUNT(*) AS n FROM void_searches WHERE who = ? AND blocked != \'\' AND at >= ?').bind(who, since).first(); return (r && r.n) || 0; },
     async ban(who) { await init(); return (await db.prepare('SELECT who, state, why, at FROM void_search_bans WHERE who = ?').bind(who).first()) || null; },
     async setBan(who, state, why) { await init(); if (state) await db.prepare('INSERT INTO void_search_bans (who, state, why, at) VALUES (?, ?, ?, ?) ON CONFLICT(who) DO UPDATE SET state = excluded.state, why = excluded.why, at = excluded.at').bind(who, state, why || '', Date.now()).run(); else await db.prepare('DELETE FROM void_search_bans WHERE who = ?').bind(who).run(); },
-    async prune(before) { await init(); await db.prepare('DELETE FROM void_searches WHERE at < ?').bind(before).run(); },
+    async prune(before) { await init(); await db.prepare('DELETE FROM void_searches WHERE at < ?').bind(before).run(); await db.prepare('DELETE FROM void_card_reports WHERE at < ?').bind(before).run(); },
   };
 }

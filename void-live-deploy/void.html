@@ -2674,6 +2674,7 @@ say('nothing selected to remove');
       srAnnounce(el);
       el._ask = currentAsk; el._at = Date.now();
       logAsk(currentAsk, el); // the owner's Searches log (functions/api/searches.js): 90 days, a hashed visitor ID, never an IP
+      addReport(el); // the Report button: a bad picture, a wrong answer or anything else goes to the owner's Tower list (functions/api/searches.js)
       safeWatch(el); // lib/image-safety.js: no photo on a card about nudity, sex, the explicit body or minors in such a context (fail closed)
       // a line with data-ask on any page (a menu row, a choice between two Springfields) runs that ask
       el.addEventListener('click', (e) => {
@@ -5262,10 +5263,31 @@ say('nothing selected to remove');
       try { new MutationObserver(run).observe(el, { childList: true, subtree: true, characterData: true }); } catch (_) {}
       imgSafeP.then(run);
     }
+    function addReport(el) {
+      setTimeout(() => {
+        if (!el.isConnected || el.querySelector('.vreport')) return;
+        const box = document.createElement('div'); box.className = 'vreport'; box.dataset.nosave = '1'; box.dataset.shareSkip = '1'; box.style.cssText = 'margin:8px 0 0;font-size:12px;color:#777;text-align:right';
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = 'report'; b.style.cssText = 'background:none;border:0;color:#777;font:inherit;cursor:pointer;text-decoration:underline dotted';
+        b.addEventListener('click', () => {
+          box.textContent = 'What\u2019s wrong? ';
+          for (const why of ['bad picture', 'wrong', 'other']) {
+            const o = document.createElement('button'); o.type = 'button'; o.textContent = why; o.style.cssText = 'margin-left:6px;background:#151520;border:1px solid #333;color:#ccc;border-radius:6px;font:inherit;padding:2px 8px;cursor:pointer';
+            o.addEventListener('click', () => {
+              const img = el.querySelector('img[src^="https://"]'), h = el.querySelector('h2');
+              fetch('/api/searches', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ report: why, ask: String(el._ask || '').slice(0, 300), title: h ? h.textContent.slice(0, 200) : '', pic: img ? img.getAttribute('src') : '' }) }).catch(() => {});
+              box.textContent = 'Thanks, Verse\u2019s owner will look at it.';
+            });
+            box.appendChild(o);
+          }
+        });
+        box.appendChild(b); el.appendChild(box);
+      }, 1500);
+    }
     let lastLogged = '';
     function logAsk(ask, el) {
       const a = String(ask || '').trim(); if (!a || a === lastLogged || !/(^|\.)a-to-mind\.com$/.test(location.hostname)) return; lastLogged = a;
-      setTimeout(() => fetch('/api/searches', { method: 'POST', keepalive: true, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: a.slice(0, 300), kind: el.dataset.skill || el.dataset.kind || 'answer' }) })
+      const tok = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } })();
+      setTimeout(() => fetch('/api/searches', { method: 'POST', keepalive: true, headers: tok ? { 'content-type': 'application/json', authorization: 'Bearer ' + tok } : { 'content-type': 'application/json' }, body: JSON.stringify({ ask: a.slice(0, 300), kind: el.dataset.skill || el.dataset.kind || 'answer' }) })
         .then((r) => r.json()).then((j) => { if (j && (j.state === 'banned' || j.state === 'locked')) { el.innerHTML = '<h2>Asking is paused</h2><p>This device can\u2019t ask Verse right now.</p>'; el.dataset.imgSafe = 'blocked'; } }).catch(() => {}), 1200);
     }
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
