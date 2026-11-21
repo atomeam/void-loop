@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T10:05:06.711Z",
+ "updated": "2026-11-21T10:14:30.457Z",
  "last24h": {
   "ticks": 148,
-  "started": 88,
+  "started": 86,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 2,
    "cap": 90
   },
   "day": {
@@ -235,8 +235,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795254300000,
-   "startedAt": 1795254940426
+   "slot": 1795255200000,
+   "startedAt": 1795256070457
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -247,7 +247,8 @@
    "startedAt": 1795222135111
   },
   "pages-ai-keys.yml": {
-   "slot": 1795167660000
+   "slot": 1795254060000,
+   "startedAt": 1795256070457
   },
   "word-sweep.yml": {
    "slot": 1795241820000,
@@ -3443,42 +3444,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T10:08:07.182Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mw21cj6l",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 92
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 266,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T10:17:32.103Z",
    "open": 500,
@@ -7840,6 +7805,35 @@
     "site-test.yml",
     "verse-watch.yml",
     "growth-fold.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T10:14:30.457Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "pages-ai-keys.yml"
    ],
    "cancelled": [],
    "sweep": false,
