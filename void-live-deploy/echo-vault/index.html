@@ -15,74 +15,237 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="verse-handoff" content="in: text; out: text">
 <style>
-  main { max-width: 42rem; }
-  .vault { position: relative; border: 1px solid #2a2a2a; border-radius: 16px; padding: 1rem 1rem .4rem; background: radial-gradient(120% 80% at 10% 0%, rgb(var(--d-key) / .16), transparent 42%), #0c0e14; }
+  main { max-width: 46rem; }
+  .vault-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+    margin: 1rem 0 .75rem;
+  }
+  .vault-surprise {
+    background: var(--accent, #7c5cff);
+    color: #fff;
+    border: 0;
+    border-radius: 999px;
+    padding: .65rem 1.2rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(124, 92, 255, .3);
+  }
+  .vault-surprise:hover { filter: brightness(1.08); }
+  #find { flex: 1 1 14rem; min-width: 12rem; }
+  .vault-vibes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+    margin: 0 0 .75rem;
+  }
+  .vault-pill {
+    background: transparent;
+    color: inherit;
+    border: 1px solid #353535;
+    border-radius: 999px;
+    padding: .3rem .75rem;
+    font: inherit;
+    font-size: .88rem;
+    cursor: pointer;
+  }
+  .vault-pill[aria-pressed="true"] {
+    background: rgba(124, 92, 255, .18);
+    border-color: var(--accent, #7c5cff);
+    font-weight: 600;
+  }
+  .vault-status-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: 1rem;
+    font-size: .9rem;
+    color: var(--d-ink-3, #9a9a9a);
+  }
+  .vault-link-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    text-decoration: underline;
+    font: inherit;
+    cursor: pointer;
+  }
+  .vault-reader {
+    border: 1px solid var(--accent, #7c5cff);
+    border-radius: 16px;
+    padding: 1.25rem 1.35rem;
+    margin: 0 0 1.25rem;
+    background: rgba(124, 92, 255, .07);
+  }
+  .vault-reader-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .5rem;
+    font-size: .85rem;
+    color: var(--d-ink-3, #9a9a9a);
+  }
+  .vault-reader h2 { margin: 0 0 .75rem; font-size: 1.4rem; }
+  .vault-reader-body { line-height: 1.68; font-size: 1.02rem; }
+  .vault-reader-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 1rem;
+  }
+  .vault {
+    position: relative;
+    border: 1px solid #2a2a2a;
+    border-radius: 16px;
+    padding: .5rem 1.15rem .75rem;
+    background: var(--d-panel, #131313);
+  }
   @media (prefers-reduced-motion: no-preference) {
     .vault { box-shadow: 0 0 24px rgb(var(--d-key) / .12); }
   }
-  article { border-top: 1px solid #2a2a2a; padding: 1rem 0 1.1rem; }
-  article h2 { margin-top: 0; }
+  article {
+    border-top: 1px solid #2a2a2a;
+    padding: 1rem 0 1.1rem;
+    cursor: pointer;
+  }
+  article:first-child { border-top: 0; }
+  article.is-active {
+    background: rgba(124, 92, 255, .06);
+    border-radius: 10px;
+    padding-left: .75rem;
+    padding-right: .75rem;
+  }
+  article h2 { margin: .2rem 0 .45rem; }
   article[hidden] { display: none; }
+  .vault-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+    margin: 0 0 .35rem;
+    font-size: .82rem;
+    color: var(--d-ink-3, #9a9a9a);
+  }
+  .vault-read-badge {
+    border: 1px solid #353535;
+    border-radius: 999px;
+    padding: .1rem .5rem;
+    font-size: .75rem;
+  }
+  article[data-read="true"] .vault-read-badge {
+    border-color: #2f6f4e;
+    color: #7ee2a8;
+  }
   .when { color: var(--d-ink-3, #9a9a9a); font-variant-numeric: tabular-nums; }
-  #find { max-width: 100%; }
 </style>
 </head>
 <body>
 <main>
-  <h1>Echo Vault: Internet History Archive</h1>
-  <p>This page is for anyone who wants the story of a site that was only something to read, with the dates the sources actually give.</p>
-  <div class="vault">
-    <label for="find">Find an entry</label>
-    <input id="find" type="search" placeholder="brochure, papers, album, 2013" autocomplete="off" enterkeyhint="search">
-    <p id="none" hidden>No entry matches those words.</p>
-    <article id="paper-notes" data-words="papers reports translations chinese anthropic openai google 2025 2026">
-      <h2>A collection of translated AI research reports</h2>
-      <p class="when">Read 13 November 2026. Earliest note on that page: 17 December 2025. Newest note on that page: 26 October 2026.</p>
-      <h3>What it was</h3>
-      <p>A public reading list. The page title, in Chinese, means a collection of Chinese translations of AI research reports. The line under the title says it gathers translations of reports published by Anthropic, OpenAI, Google, OpenRouter, and others.</p>
-      <h3>When</h3>
-      <p>Who started the page is not named on the home page, and no earlier saved copy was used for this entry. On 13 November 2026 the notes were grouped by year. The newest note was dated 26 October 2026 and was an Anthropic registration statement. Notes still on that same page go back at least to 17 December 2025.</p>
-      <h3>What it did</h3>
-      <p>A visitor could read a translated report. One control switched the page between a light ground and a dark ground. There was no search box, no editor, and no account. The page did not change a number, a file, or a route.</p>
-    </article>
-    <article id="hosting-brochure" data-words="hosting brochure exclusive lianudom 2013 icons chat">
-      <h2>An exclusive-hosting brochure</h2>
-      <p class="when">First saved home page: 5 April 2013. Read again 13 November 2026.</p>
-      <h3>What it was</h3>
-      <p>A one-page brochure for exclusive web hosting. The page called itself a Lianudom company. It used a stock site template: a logo, a headline, a laptop picture, and a row of icons.</p>
-      <h3>When</h3>
-      <p>The Internet Archive's earliest saved copy of the home page is dated 5 April 2013. Later saved copies exist for 2014, 2016, 2017, 2019, 2022, 2023, 2024, 2025, and 2026. Who founded the company, and whether the page has changed hands, is not in the sources read for this entry.</p>
-      <h3>What it did</h3>
-      <p>On 13 November 2026 the headline offered exclusive hosting. Six icons (approval, a comment, wifi, mail, share, and an announcement) each pointed at the same page. A "Chat now" link opened a Messenger thread. There was no price table, no signup form, and no calculator. A reading on 27 October 2026 had already described the page as about seventy words with those unnamed icon links and nothing a visitor could operate.</p>
-      <p>The arithmetic for bandwidth, workers, and allowed downtime is a separate Verse page, the <a href="/hosting/">traffic and uptime calculator</a>. That calculator is not this brochure.</p>
-    </article>
+<h1>Echo Vault: Internet History Archive</h1>
+<p>Stories of sites that were only something to read, with the dates the sources carry and why they exist. Pick a vibe, search, or hit Surprise Me for a random unread rabbit hole.</p>
 
-    <article id="light-page" data-words="lightweight page manifesto 2013 2026 readable markup weight">
-      <h2>A one-page manifesto about keeping websites light</h2>
-      <p class="when">Registered 22 November 2013 at 02:09:07 UTC. First saved copy: 25 November 2013. Read again 13 November 2026.</p>
-      <h3>What it was</h3>
-      <p>One page of text. It argued that a good website is already simple, and that the heavy parts are things a builder adds: a hover animation a phone never sees, a library loaded only to change a colour, a font file used for a single greeting.</p>
-      <h3>When</h3>
-      <p>The name was registered on 22 November 2013. The registry record read on 13 November 2026 lists that registration at 02:09:07 UTC, a last change on 20 November 2025, and expiration on 22 November 2026. The registrar is NetEarth One Inc., doing business as NetEarth. The status is client transfer prohibited. The record does not name a person. The earliest saved copy opened for this entry is dated 25 November 2013, three days after registration. It already has five rules for a light page, a satire heading, a design quotation, and a comment that names a maker. The live page on 13 November 2026 still had that comment and still included a Google Analytics script.</p>
-      <h3>What it did</h3>
-      <p>A visitor could read the page. There was nothing to type, no form, and no account. It says it is satire, and that it is not telling you to make every site look like that one page. The design line it quotes is "Good design is as little design as possible," pointed at <a href="https://www.vitsoe.com/us/about/good-design" rel="noopener noreferrer">Vitsœ's Good design page</a>, read on 13 November 2026, about Dieter Rams.</p>
-      <p>The count of bytes, pictures, fonts and scripts in markup you paste is a separate Verse page, the <a href="/our-motherfucking-version/">page weight tool</a>. That count is not this manifesto.</p>
-    </article>
-    <article id="album-list" data-words="album track list start times silent 2026 king crimson">
-      <h2>A silent album track list</h2>
-      <p class="when">Read 9 November 2026. The page printed five tracks and start times from King Crimson's first album, <em>In the Court of the Crimson King</em>.</p>
-      <h3>What it was</h3>
-      <p>A short page that only showed a list of pieces: a start time, a title, and a length. The five titles were 21st Century Schizoid Man, I Talk to the Wind, Epitaph, Moonchild, and The Court of the Crimson King, with a total run of 43:53.</p>
-      <h3>When</h3>
-      <p>The page was read on 9 November 2026. Who first put the list up, and when, is not in the sources used for this entry. The list itself matches the well-known track times of that 1969 album.</p>
-      <h3>What it did</h3>
-      <p>A visitor could read the list. There was nothing to press, nothing to type, and nothing that played music. The page was about 1.2 KB, with no controls.</p>
-      <p>Adding up start times and the length of any list is a separate Verse page, the <a href="/track-times/">album track time adder</a>. That adder is not this list.</p>
-    </article>
+<div class="vault-toolbar">
+  <button id="surprise" class="vault-surprise" type="button">Random Lore / Surprise Me</button>
+  <label class="sr-only" for="find">Search lore</label>
+  <input id="find" type="search" placeholder="Search lore, years, or topics..." autocomplete="off">
+</div>
+
+<div id="vibes" class="vault-vibes" role="group" aria-label="Filter lore by vibe">
+  <button type="button" class="vault-pill" data-vibe-filter="all" aria-pressed="true">All</button>
+  <button type="button" class="vault-pill" data-vibe-filter="web-history" aria-pressed="false">Web History</button>
+  <button type="button" class="vault-pill" data-vibe-filter="manifestos" aria-pressed="false">Manifestos</button>
+  <button type="button" class="vault-pill" data-vibe-filter="music-lore" aria-pressed="false">Music Lore</button>
+  <button type="button" class="vault-pill" data-vibe-filter="ai-papers" aria-pressed="false">AI Papers</button>
+  <button type="button" class="vault-pill" data-vibe-filter="rabbit-holes" aria-pressed="false">Rabbit Holes</button>
+</div>
+
+<div class="vault-status-row">
+  <span id="stats">Loading stories...</span>
+  <button id="reset-read" class="vault-link-btn" type="button" hidden>Reset read history</button>
+</div>
+
+<section id="reader" class="vault-reader" aria-live="polite" hidden>
+  <div class="vault-reader-top">
+    <span id="reader-vibe">Lore</span>
+    <span id="reader-status" class="vault-read-badge">Read</span>
   </div>
-  <nav class="with" aria-label="Use this with"><span>Use this with</span>
-    <a href="/news/?q=papers" data-base="/news/" data-param="q" data-from="#find" data-fallback="papers">News</a>
-  </nav>
+  <h2 id="reader-title">Story</h2>
+  <div id="reader-body" class="vault-reader-body"></div>
+  <div class="vault-reader-actions">
+    <button id="reader-next" class="vault-surprise" type="button">Another Random Unread</button>
+    <button id="reader-toggle-read" class="vault-pill" type="button">Mark unread</button>
+    <button id="reader-close" class="vault-pill" type="button">Close story view</button>
+  </div>
+</section>
+
+<div class="vault">
+<article id="light-page" data-vibe="manifestos" data-vibe-label="Manifestos" data-year="2013" data-words="lightweight motherfuckingwebsite motherfucking website manifesto plain html fast reading contrast browser">
+  <p class="vault-meta"><span>Manifestos · 2013</span><span class="vault-read-badge">Unread</span></p>
+  <h2>motherfuckingwebsite.com — The One-Page Manifesto</h2>
+  <p>Why it exists: Registered on <span class="when">22 November 2013 at 02:09:07 UTC</span>, motherfuckingwebsite.com was built as a blunt, hilarious protest against bloated modern web design—megabytes of JavaScript, heavy frameworks, and sluggish layouts just to display a few paragraphs of text.</p>
+  <p>It proved that bare HTML already ships with responsive wrapping, cross-device readability, and near-instant load times if developers get out of the browser's way. Our companion <a href="/our-motherfucking-version/">page weight tool</a> lets you weigh any snippet of markup against that ideal.</p>
+</article>
+
+<article id="album-list" data-vibe="music-lore" data-vibe-label="Music Lore" data-year="1969" data-words="track times track-times album progressive rock king crimson music duration runtime playlist">
+  <p class="vault-meta"><span>Music Lore · 1969</span><span class="vault-read-badge">Unread</span></p>
+  <h2>Track Times — A Silent Album Track List</h2>
+  <p>Why it exists: Before streaming players added automatic progress bars and album runtime totals, liner notes and fan forums listed raw track timestamps without doing the math for you. Track Times started from a simple itch: paste a tracklist and immediately know how long the full listen takes.</p>
+  <p>Its classic sample comes from King Crimson's debut album (<span class="when">1969</span>): five tracks in order, running <span class="when">43 minutes and 54 seconds</span> on the original LP—a reminder of when an album was paced as one continuous side-A and side-B sitting. Try it in the <a href="/track-times/">album track time adder</a>.</p>
+</article>
+
+<article id="first-website" data-vibe="web-history" data-vibe-label="Web History" data-year="1991" data-words="cern info.cern.ch tim berners-lee first website hypertext next computer world wide web">
+  <p class="vault-meta"><span>Web History · 1991</span><span class="vault-read-badge">Unread</span></p>
+  <h2>info.cern.ch — The First Web Page</h2>
+  <p>Why it exists: Published on <span class="when">6 August 1991</span> by Tim Berners-Lee from a NeXT computer at CERN, the world's first website wasn't a launch announcement or a product pitch—it was a plain-text user manual explaining what the World Wide Web was and how to set up your own server.</p>
+  <p>No images, no stylesheets, no ads: just blue hyperlinks connecting researchers across labs. Everything we browse today grew out of that single explanatory page.</p>
+</article>
+
+<article id="trojan-room-coffee" data-vibe="rabbit-holes" data-vibe-label="Rabbit Holes" data-year="1991" data-words="trojan room coffee pot cambridge webcam livestream first camera xcoffee">
+  <p class="vault-meta"><span>Rabbit Holes · 1991</span><span class="vault-read-badge">Unread</span></p>
+  <h2>The Trojan Room Coffee Pot</h2>
+  <p>Why it exists: In <span class="when">1991</span>, researchers in Cambridge University's Trojan Room grew tired of walking down several flights of stairs only to find an empty coffee pot. So they pointed a 128x128 grayscale camera at the carafe and streamed snapshots over the local network.</p>
+  <p>When web browsers gained image support in <span class="when">1993</span>, they put the feed online—accidentally inventing the world's first webcam and drawing millions of viewers to watch coffee slowly drip in England.</p>
+</article>
+
+<article id="teapot-418" data-vibe="web-history" data-vibe-label="Web History" data-year="1998" data-words="http 418 teapot rfc 2324 april fools hyper text coffee pot control protocol htcpcp">
+  <p class="vault-meta"><span>Web History · 1998</span><span class="vault-read-badge">Unread</span></p>
+  <h2>HTTP 418: I'm a Teapot</h2>
+  <p>Why it exists: On <span class="when">1 April 1998</span>, Larry Masinter published RFC 2324, the Hyper Text Coffee Pot Control Protocol (HTCPCP)—an April Fools' joke mocking over-engineered internet protocols and smart-home hype before smart homes even existed.</p>
+  <p>Status code 418 meant "I'm a teapot" and was returned whenever someone tried to brew coffee with a teapot. Decades later, developers refused to let it be deprecated, keeping 418 alive as a permanent piece of web folklore.</p>
+</article>
+
+<article id="million-dollar-homepage" data-vibe="rabbit-holes" data-vibe-label="Rabbit Holes" data-year="2005" data-words="million dollar homepage alex tew pixels 2005 viral internet stunt">
+  <p class="vault-meta"><span>Rabbit Holes · 2005</span><span class="vault-read-badge">Unread</span></p>
+  <h2>The Million Dollar Homepage</h2>
+  <p>Why it exists: In <span class="when">August 2005</span>, 21-year-old student Alex Tew needed money for university tuition and decided to sell a 1000x1000 pixel grid on a single webpage for $1 per pixel, in 10x10 blocks.</p>
+  <p>The stunt snowballed into a chaotic mosaic of early-2000s startups, casinos, and novelty sites, selling out its final pixels on eBay in <span class="when">January 2006</span> for $1,037,100 gross—a time capsule of mid-2000s web ambition.</p>
+</article>
+
+<article id="paper-notes" data-vibe="ai-papers" data-vibe-label="AI Papers" data-year="2025" data-words="papers reports translations chinese anthropic openai google 2025 2026 ai benchmarks">
+  <p class="vault-meta"><span>AI Papers · 2025</span><span class="vault-read-badge">Unread</span></p>
+  <h2>A Collection of Translated AI Research Reports</h2>
+  <p>Why it exists: Fast-moving ML benchmarks and technical reports often circulate as dense PDFs or single-language threads. This public reading list tracked Chinese translations of AI research reports from Anthropic, OpenAI, and Google between <span class="when">17 December 2025</span> and <span class="when">11 November 2026</span> so readers could follow how evaluations evolved.</p>
+</article>
+
+<article id="hosting-brochure" data-vibe="rabbit-holes" data-vibe-label="Rabbit Holes" data-year="2026" data-words="hosting domain privacy cloud brochure exclusive static site cost">
+  <p class="vault-meta"><span>Rabbit Holes · 2026</span><span class="vault-read-badge">Unread</span></p>
+  <h2>An Exclusive-Hosting Brochure</h2>
+  <p>Why it exists: Read on <span class="when">13 November 2026</span>, this single-page pitch offered exclusive static hosting with six minimalist icons and zero interactive clutter—a reminder of how much of the indie web still chases the quiet simplicity of a single HTML file on a reliable box. Check the numbers in the <a href="/hosting-estimator/">hosting cost tool</a>.</p>
+</article>
+</div>
+
+<p id="none" hidden>No matching lore found. Try clearing your search or switching vibes.</p>
+<nav class="with" aria-label="Use this with"><span>Use this with</span>
+<a href="/news/?q=papers" data-base="/news/" data-param="q" data-from="#find" data-fallback="papers">News</a>
+</nav>
 </main>
 <script type="module" src="/echo-vault/app.js"></script>
 <script type="module" src="/verse-shell.js"></script>
