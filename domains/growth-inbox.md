@@ -1,1 +1,1 @@
-| building | 2026-11-20 | handoff-status-pack skill: package current status, monitors and next check for a system Verse owns so the client does less monitoring and delivery stays reliable | new idea by growth agent; helper/handoff-status-pack |
+PLACEHOLDER_FULL_CONTENT
