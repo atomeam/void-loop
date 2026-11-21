@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T09:27:37.081Z",
+ "updated": "2026-11-21T09:36:56.307Z",
  "last24h": {
   "ticks": 148,
   "started": 89,
@@ -14,11 +14,6 @@
    "wf": "tower-gate.yml",
    "fails": 8,
    "url": "https://github.com/atomeam/void-loop/actions/runs/44763837012"
-  },
-  {
-   "wf": "grow-self.yml",
-   "fails": 5,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44880189740"
   },
   {
    "wf": "verify.yml",
@@ -3446,29 +3441,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T09:30:37.517Z",
-   "open": 500,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 470,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T09:39:55.978Z",
    "open": 500,
@@ -7830,6 +7802,32 @@
     "pages-guard.yml",
     "arb-record.yml"
    ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T09:36:56.307Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
