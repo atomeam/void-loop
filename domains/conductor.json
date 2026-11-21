@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T12:16:55.469Z",
+ "updated": "2026-11-21T12:26:18.568Z",
  "last24h": {
   "ticks": 148,
-  "started": 81,
+  "started": 79,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -126,7 +126,7 @@
   "mwa0ah54": 1795259463640,
   "mwdsggtv": 1795258903322,
   "mwdsgi9n": 1795263415469,
-  "mwdsgj2z": 1795241972871,
+  "mwdsgj2z": 1795263978568,
   "mweaagmp": 1795243092242,
   "mweaah6f": 1795261725002,
   "mwey8iy6": 1795262851984,
@@ -236,8 +236,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795261500000,
-   "startedAt": 1795262288029
+   "slot": 1795263300000,
+   "startedAt": 1795263978568
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -288,8 +288,8 @@
    "startedAt": 1795262851984
   },
   "arb-record.yml": {
-   "slot": 1795261020000,
-   "startedAt": 1795262288029
+   "slot": 1795262820000,
+   "startedAt": 1795263978568
   }
  },
  "census": {
@@ -3450,48 +3450,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T12:20:00.105Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mw21cj6l",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 92
-    },
-    {
-     "id": "mwnkyhgw",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 42
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 266,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T12:29:36.436Z",
    "open": 500,
@@ -7870,6 +7828,42 @@
    ],
    "daily": [],
    "catchup": [],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T12:26:18.568Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 33
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "arb-record.yml"
+   ],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
