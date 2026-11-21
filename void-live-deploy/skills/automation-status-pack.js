@@ -8,7 +8,7 @@
 export function isAutomationStatusPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:automation|running|system)\s+(?:status|state)\s+(?:pack|package|card)\b/i.test(t)
-    || /^(?:status|state)\s+(?:of\s+)?(?:the\s+)?(?:running\s+)?(?:automations?|systems?)\b/i.test(t)
+    || /^(?:status|state)\s+(?:of\s+)?(?:the\s+)?(?:running\s+)?(?:automations?|systems?)\b/i.test(t) || /^(?:running|automation)\s+(?:status|state)\s+(?:for|of|on)\s+\S+/i.test(t)
     || /^(?:package|show|make)\s+(?:the\s+)?(?:automation|running)\s+status\b/i.test(t);
 }
 
