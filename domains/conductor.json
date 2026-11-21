@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T11:29:53.450Z",
+ "updated": "2026-11-21T11:39:17.948Z",
  "last24h": {
   "ticks": 148,
-  "started": 81,
+  "started": 80,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -170,7 +170,8 @@
    "slot": 1795177380000
   },
   "store-check.yml": {
-   "slot": 1795172820000
+   "slot": 1795259220000,
+   "startedAt": 1795261157948
   },
   "key-keeper.yml": {
    "slot": 1795231020000,
@@ -3449,36 +3450,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T11:33:01.365Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwme3uk5",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 44
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 470,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T11:42:22.453Z",
    "open": 500,
@@ -7845,6 +7816,34 @@
    "catchup": [
     "pages-guard.yml",
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T11:39:17.948Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "store-check.yml"
    ],
    "cancelled": [],
    "sweep": false,
