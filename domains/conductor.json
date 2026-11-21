@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T11:01:43.322Z",
+ "updated": "2026-11-21T11:11:03.640Z",
  "last24h": {
   "ticks": 148,
   "started": 83,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 3,
    "cap": 90
   },
   "day": {
@@ -123,7 +123,7 @@
   "mva30i2e": 1795256634917,
   "mva30j4u": 1795257767778,
   "mwa0agd2": 1795258337420,
-  "mwa0ah54": 1795237453116,
+  "mwa0ah54": 1795259463640,
   "mwdsggtv": 1795258903322,
   "mwdsgi9n": 1795241408071,
   "mwdsgj2z": 1795241972871,
@@ -235,8 +235,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795257000000,
-   "startedAt": 1795257767778
+   "slot": 1795258800000,
+   "startedAt": 1795259463640
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -3449,36 +3449,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T11:04:53.509Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mweaagmp",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 55
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 470,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T11:14:13.781Z",
    "open": 500,
@@ -7848,6 +7818,41 @@
    ],
    "cancelled": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T11:11:03.640Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwa0ah54",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 38
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 482,
    "warnings": 0
