@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T00:58:35.219Z",
+ "updated": "2026-11-21T01:08:00.158Z",
  "last24h": {
   "ticks": 147,
-  "started": 129,
+  "started": 130,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -101,21 +101,20 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 90,
+   "used": 6,
    "cap": 90
   },
   "day": {
-   "used": 90,
+   "used": 96,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-21T01:00:00.000Z",
+  "room": true,
+  "until": null,
   "paid": false
  },
  "handed": {
   "mvbl52gd": 1795219475998,
   "mvu167w7": 1795220251623,
-  "mvvjzso8": 1795136406560,
   "mw5mm5fm": 1795136972837,
   "mva30i2e": 1795212906151,
   "mva30j4u": 1795213670488,
@@ -131,19 +130,20 @@
   "mwmi5727": 1795221541885,
   "mwmpup7b": 1795222135111,
   "mwnbxf5o": 1795222715219,
-  "mwnkyhgw": 1795199303431,
+  "mwnkyhgw": 1795223280158,
   "mveb8rsi": 1795219475998,
   "mveb8svc": 1795220251623,
   "mvfu4evy": 1795220947482,
   "mvpuq9g6": 1795221541885,
   "mvpuqaee": 1795222135111,
-  "mvpuqb4r": 1795222715219
+  "mvpuqb4r": 1795222715219,
+  "mvvjzso8": 1795223280158
  },
- "sweptAt": 1795219475998,
- "blueprintsAt": 1795219475998,
+ "sweptAt": 1795223280158,
+ "blueprintsAt": 1795223280158,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795218060000
+   "slot": 1795221660000
   },
   "exam.yml": {
    "slot": 1795166220000
@@ -260,8 +260,8 @@
    "startedAt": 1795219475998
   },
   "growth-fold.yml": {
-   "slot": 1795218060000,
-   "startedAt": 1795219475998
+   "slot": 1795221660000,
+   "startedAt": 1795223280158
   },
   "arb-record.yml": {
    "slot": 1795221420000,
@@ -269,14 +269,14 @@
   }
  },
  "census": {
-  "at": "2026-11-20T22:04:15.613Z",
-  "loops": 112,
-  "working": 86,
+  "at": "2026-11-21T01:08:00.158Z",
+  "loops": 113,
+  "working": 84,
   "failing": 4,
   "behind": 8,
-  "idle": 10,
-  "runs24": 795,
-  "minutes24": 4136,
+  "idle": 11,
+  "runs24": 880,
+  "minutes24": 5574,
   "costCents24": 0,
   "note": "GitHub Actions on a public repository: standard runner minutes are not billed, so each run costs $0. Models are the free ones first; a paid call is logged by the treasury.",
   "rows": [
@@ -291,25 +291,25 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:03:57Z",
+     "at": "2026-11-21T01:02:12Z",
      "event": "workflow_dispatch",
      "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825747223"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847685119"
     },
     "seen": 30,
     "ok": 0,
-    "fail": 7,
+    "fail": 5,
     "rate": 0,
-    "streak": 7,
-    "minutesPerRun": 39.4,
-    "minutesPerDay": 1183,
+    "streak": 5,
+    "minutesPerRun": 31.1,
+    "minutesPerDay": 933,
     "costCentsPerDay": 0,
     "status": "failing"
    },
    {
     "wf": "watchdog.yml",
     "name": "Verse watchdog",
-    "what": "Verse watchdog: the loop checks itself.",
+    "what": "Verse watchdog: the loop checks itself, without running the suite a second time (docs/systems.md, duplicates).",
     "crons": [
      "17 10 * * 1-6",
      "17 10 * * 0",
@@ -317,22 +317,22 @@
     ],
     "onClock": false,
     "expected24": 9,
-    "ran24": 4,
+    "ran24": 5,
     "scheduled24": 4,
     "lateMin": 79,
     "last": {
-     "at": "2026-11-20T20:30:56Z",
-     "event": "schedule",
+     "at": "2026-11-20T23:00:05Z",
+     "event": "workflow_dispatch",
      "result": "failure",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44812049025"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44833425006"
     },
     "seen": 30,
     "ok": 10,
     "fail": 19,
     "rate": 34,
-    "streak": 13,
-    "minutesPerRun": 12.8,
-    "minutesPerDay": 51,
+    "streak": 14,
+    "minutesPerRun": 13.8,
+    "minutesPerDay": 69,
     "costCentsPerDay": 0,
     "status": "failing"
    },
@@ -363,56 +363,114 @@
     "status": "failing"
    },
    {
-    "wf": "verse-job.yml",
-    "name": "Verse job",
-    "what": "One queue job through Verse's own coding agent (tools/verse-job.mjs; docs/playbooks/conductor.md).",
-    "crons": [],
+    "wf": "grow-self.yml",
+    "name": "Verse hardens itself",
+    "what": "Verse hardens itself (owner, 2026-10-19: \"make it so Verse can open its own PRs and push them through and review all after thinking it up based on what it…",
+    "crons": [
+     "17 4 * * *"
+    ],
     "onClock": false,
-    "expected24": 0,
-    "ran24": 30,
-    "scheduled24": 0,
-    "lateMin": null,
+    "expected24": 1,
+    "ran24": 12,
+    "scheduled24": 1,
+    "lateMin": 532,
     "last": {
-     "at": "2026-11-20T22:04:34Z",
+     "at": "2026-11-20T23:10:54Z",
      "event": "workflow_dispatch",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825837229"
+     "result": "failure",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44834859689"
     },
     "seen": 30,
-    "ok": 26,
-    "fail": 3,
-    "rate": 90,
+    "ok": 29,
+    "fail": 1,
+    "rate": 97,
     "streak": 1,
-    "minutesPerRun": 4.8,
-    "minutesPerDay": 144,
+    "minutesPerRun": 2.5,
+    "minutesPerDay": 30,
     "costCentsPerDay": 0,
     "status": "last run failed"
    },
    {
-    "wf": "pages-guard.yml",
-    "name": "Pages guard",
-    "what": "Pages guard (tools/pages-guard.mjs; incident 2026-11-09): only deploy.yml's wrangler upload of void-live-deploy may deploy a-to-mind.com.",
+    "wf": "arb-record.yml",
+    "name": "Arbitrage record",
+    "what": "The arbitrage scanner's record (lib/arb-history.js) fills on its own: every 30 minutes this asks the free scan for BTC and ETH, and each fresh scan writes its…",
     "crons": [
-     "*/15 * * * *"
+     "7,37 * * * *"
     ],
     "onClock": true,
-    "expected24": 96,
-    "ran24": 15,
+    "expected24": 48,
+    "ran24": 9,
     "scheduled24": 3,
-    "lateMin": 7,
+    "lateMin": 17,
     "last": {
-     "at": "2026-11-20T21:51:00Z",
-     "event": "push",
+     "at": "2026-11-21T00:59:04Z",
+     "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44823916678"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847345310"
     },
     "seen": 30,
-    "ok": 27,
+    "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.1,
-    "minutesPerDay": 32,
+    "minutesPerRun": 0.8,
+    "minutesPerDay": 7,
+    "costCentsPerDay": 0,
+    "status": "behind"
+   },
+   {
+    "wf": "growth-fold.yml",
+    "name": "Growth fold",
+    "what": "Fold the growth entries PRs leave in growth/entries/ (one file each, tools/grow.mjs on a branch) into the ledger, void-live-deploy/void.growth.json, and…",
+    "crons": [
+     "41 * * * *"
+    ],
+    "onClock": true,
+    "expected24": 24,
+    "ran24": 7,
+    "scheduled24": 3,
+    "lateMin": 39,
+    "last": {
+     "at": "2026-11-21T01:08:24Z",
+     "event": "workflow_dispatch",
+     "result": "in_progress",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848329952"
+    },
+    "seen": 30,
+    "ok": 28,
+    "fail": 1,
+    "rate": 97,
+    "streak": 0,
+    "minutesPerRun": 0.7,
+    "minutesPerDay": 5,
+    "costCentsPerDay": 0,
+    "status": "behind"
+   },
+   {
+    "wf": "verse-watch.yml",
+    "name": "Verse watch",
+    "what": "Verse watches TV and listens to the radio on its own, to learn (owner, 2026-10-30: \"make it so verse can watch tv or listen to the radio on its own to learn…",
+    "crons": [
+     "37 * * * *"
+    ],
+    "onClock": true,
+    "expected24": 24,
+    "ran24": 7,
+    "scheduled24": 4,
+    "lateMin": 26,
+    "last": {
+     "at": "2026-11-21T00:55:45Z",
+     "event": "schedule",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847012404"
+    },
+    "seen": 30,
+    "ok": 29,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 2.6,
+    "minutesPerDay": 18,
     "costCentsPerDay": 0,
     "status": "behind"
    },
@@ -449,93 +507,9 @@
     "status": "behind"
    },
    {
-    "wf": "growth-fold.yml",
-    "name": "Growth fold",
-    "what": "Fold the growth entries PRs leave in growth/entries/ (one file each, tools/grow.mjs on a branch) into the ledger, void-live-deploy/void.growth.json, and…",
-    "crons": [
-     "41 * * * *"
-    ],
-    "onClock": true,
-    "expected24": 24,
-    "ran24": 4,
-    "scheduled24": 3,
-    "lateMin": 39,
-    "last": {
-     "at": "2026-11-20T22:04:40Z",
-     "event": "workflow_dispatch",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825850466"
-    },
-    "seen": 30,
-    "ok": 28,
-    "fail": 1,
-    "rate": 97,
-    "streak": 0,
-    "minutesPerRun": 0.3,
-    "minutesPerDay": 1,
-    "costCentsPerDay": 0,
-    "status": "behind"
-   },
-   {
-    "wf": "verse-watch.yml",
-    "name": "Verse watch",
-    "what": "Verse watches TV and listens to the radio on its own, to learn (owner, 2026-10-30: \"make it so verse can watch tv or listen to the radio on its own to learn…",
-    "crons": [
-     "37 * * * *"
-    ],
-    "onClock": true,
-    "expected24": 24,
-    "ran24": 4,
-    "scheduled24": 3,
-    "lateMin": 28,
-    "last": {
-     "at": "2026-11-20T22:04:38Z",
-     "event": "workflow_dispatch",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825845389"
-    },
-    "seen": 30,
-    "ok": 28,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 2,
-    "minutesPerDay": 8,
-    "costCentsPerDay": 0,
-    "status": "behind"
-   },
-   {
-    "wf": "arb-record.yml",
-    "name": "Arbitrage record",
-    "what": "The arbitrage scanner's record (lib/arb-history.js) fills on its own: every 30 minutes this asks the free scan for BTC and ETH, and each fresh scan writes its…",
-    "crons": [
-     "7,37 * * * *"
-    ],
-    "onClock": true,
-    "expected24": 48,
-    "ran24": 3,
-    "scheduled24": 3,
-    "lateMin": 17,
-    "last": {
-     "at": "2026-11-20T17:11:50Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44780928963"
-    },
-    "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.2,
-    "minutesPerDay": 1,
-    "costCentsPerDay": 0,
-    "status": "behind"
-   },
-   {
     "wf": "bot-factory.yml",
     "name": "bot-factory",
-    "what": "Live copy of docs/bot-factory.workflow.yml.",
+    "what": "The bot factory.",
     "crons": [
      "17 * * * *"
     ],
@@ -617,6 +591,34 @@
     "status": "behind"
    },
    {
+    "wf": "probe-asks.yml",
+    "name": "Verse probes itself",
+    "what": "Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md).",
+    "crons": [
+     "23 */4 * * *"
+    ],
+    "onClock": false,
+    "expected24": 6,
+    "ran24": 2,
+    "scheduled24": 2,
+    "lateMin": 142,
+    "last": {
+     "at": "2026-11-20T17:02:08Z",
+     "event": "schedule",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44779296231"
+    },
+    "seen": 30,
+    "ok": 29,
+    "fail": 1,
+    "rate": 97,
+    "streak": 0,
+    "minutesPerRun": 1.4,
+    "minutesPerDay": 3,
+    "costCentsPerDay": 0,
+    "status": "behind"
+   },
+   {
     "wf": "assemble-growth.yml",
     "name": "assemble-growth",
     "what": "",
@@ -638,12 +640,37 @@
     "status": "never ran"
    },
    {
-    "wf": "clef-probe.yml",
-    "name": "Clef probe",
-    "what": "Frontier #9 (Clef routes every ask): what the site's Workers AI binding knows about Clef and Clef-flash (tools/clef-probe.mjs, POST /api/bench { probe: true…",
-    "crons": [],
+    "wf": "capability-sweep.yml",
+    "name": "Capability sweep",
+    "what": "Copy this file to .github/workflows/capability-sweep.yml to enable the nightly run.",
+    "crons": [
+     "17 11 * * *"
+    ],
     "onClock": false,
-    "expected24": 0,
+    "expected24": 1,
+    "ran24": 0,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": null,
+    "seen": 0,
+    "ok": 0,
+    "fail": 0,
+    "rate": null,
+    "streak": 0,
+    "minutesPerRun": 0,
+    "minutesPerDay": 0,
+    "costCentsPerDay": 0,
+    "status": "never ran"
+   },
+   {
+    "wf": "deploy-latest.yml",
+    "name": "Deploy latest main",
+    "what": "Uploads the current main tip when the ordinary deploy is stuck behind checks or a burst of merges.",
+    "crons": [
+     "8,23,38,53 * * * *"
+    ],
+    "onClock": false,
+    "expected24": 96,
     "ran24": 0,
     "scheduled24": 0,
     "lateMin": null,
@@ -680,6 +707,29 @@
     "status": "never ran"
    },
    {
+    "wf": "idea-engine.yml",
+    "name": "Idea engine",
+    "what": "The one growth loop, once a day.",
+    "crons": [
+     "11 14 * * *"
+    ],
+    "onClock": false,
+    "expected24": 1,
+    "ran24": 0,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": null,
+    "seen": 0,
+    "ok": 0,
+    "fail": 0,
+    "rate": null,
+    "streak": 0,
+    "minutesPerRun": 0,
+    "minutesPerDay": 0,
+    "costCentsPerDay": 0,
+    "status": "never ran"
+   },
+   {
     "wf": "actions-failures.yml",
     "name": "Actions failure reader",
     "what": "The GitHub Actions failure reader (asked by Verse: \"Automate the extraction of failing job names and error logs from GitHub Actions for commit 814032d5.\").",
@@ -690,10 +740,10 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:04:25Z",
+     "at": "2026-11-21T00:57:51Z",
      "event": "workflow_run",
      "result": "skipped",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825815820"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847223620"
     },
     "seen": 30,
     "ok": 0,
@@ -716,18 +766,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T21:57:09Z",
+     "at": "2026-11-21T01:06:43Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824784360"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848155581"
     },
     "seen": 30,
-    "ok": 30,
+    "ok": 29,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 1.3,
-    "minutesPerDay": 38,
+    "minutesPerRun": 2.3,
+    "minutesPerDay": 69,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -745,18 +795,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:04:36Z",
+     "at": "2026-11-21T01:07:05Z",
      "event": "workflow_run",
-     "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825840653"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848191589"
     },
     "seen": 30,
-    "ok": 0,
+    "ok": 24,
     "fail": 0,
-    "rate": null,
+    "rate": 100,
     "streak": 0,
-    "minutesPerRun": 0,
-    "minutesPerDay": 0,
+    "minutesPerRun": 2.9,
+    "minutesPerDay": 87,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -771,18 +821,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:03:55Z",
+     "at": "2026-11-21T01:02:11Z",
      "event": "workflow_dispatch",
-     "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825743491"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847682550"
     },
     "seen": 30,
-    "ok": 9,
+    "ok": 15,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 9.3,
-    "minutesPerDay": 280,
+    "minutesPerRun": 8.5,
+    "minutesPerDay": 255,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -799,18 +849,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:02:17Z",
+     "at": "2026-11-21T00:48:41Z",
      "event": "workflow_run",
-     "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825511634"
+     "result": "in_progress",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266749"
     },
     "seen": 30,
-    "ok": 0,
+    "ok": 1,
     "fail": 0,
-    "rate": null,
+    "rate": 100,
     "streak": 0,
-    "minutesPerRun": 0,
-    "minutesPerDay": 0,
+    "minutesPerRun": 29.1,
+    "minutesPerDay": 872,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -825,18 +875,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T21:57:06Z",
+     "at": "2026-11-21T01:06:39Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824777758"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848148094"
     },
     "seen": 30,
-    "ok": 28,
+    "ok": 27,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 1.9,
-    "minutesPerDay": 56,
+    "minutesPerRun": 2.6,
+    "minutesPerDay": 79,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -854,18 +904,44 @@
     "scheduled24": 2,
     "lateMin": 8,
     "last": {
-     "at": "2026-11-20T22:00:53Z",
+     "at": "2026-11-21T01:07:37Z",
      "event": "workflow_dispatch",
      "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825305965"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848248420"
     },
     "seen": 30,
     "ok": 27,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 10,
-    "minutesPerDay": 301,
+    "minutesPerRun": 11.4,
+    "minutesPerDay": 341,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "live-revert.yml",
+    "name": "Live check reverts",
+    "what": "A failed live check reverts the deploy that caused it, through a pull request (docs/LOOP-GAPS.md: canary + automatic rollback).",
+    "crons": [],
+    "onClock": false,
+    "expected24": 0,
+    "ran24": 30,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": {
+     "at": "2026-11-21T00:32:26Z",
+     "event": "workflow_run",
+     "result": "skipped",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44844497121"
+    },
+    "seen": 30,
+    "ok": 0,
+    "fail": 0,
+    "rate": null,
+    "streak": 0,
+    "minutesPerRun": 0,
+    "minutesPerDay": 0,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -880,18 +956,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T21:57:32Z",
-     "event": "workflow_run",
+     "at": "2026-11-21T01:06:37Z",
+     "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824836418"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848145004"
     },
     "seen": 30,
-    "ok": 19,
+    "ok": 16,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.5,
-    "minutesPerDay": 75,
+    "minutesPerRun": 2.7,
+    "minutesPerDay": 81,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -906,18 +982,46 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T21:57:08Z",
+     "at": "2026-11-21T01:06:41Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824780968"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848151894"
     },
     "seen": 30,
-    "ok": 30,
+    "ok": 29,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 1,
-    "minutesPerDay": 31,
+    "minutesPerRun": 2.1,
+    "minutesPerDay": 62,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "pages-guard.yml",
+    "name": "Pages guard",
+    "what": "Pages guard (tools/pages-guard.mjs; incident 2026-11-09): only deploy.yml's wrangler upload of void-live-deploy may deploy a-to-mind.com.",
+    "crons": [
+     "*/15 * * * *"
+    ],
+    "onClock": true,
+    "expected24": 96,
+    "ran24": 30,
+    "scheduled24": 2,
+    "lateMin": 10,
+    "last": {
+     "at": "2026-11-21T00:59:01Z",
+     "event": "workflow_dispatch",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847341355"
+    },
+    "seen": 30,
+    "ok": 25,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 4.5,
+    "minutesPerDay": 136,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -932,18 +1036,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:03:50Z",
+     "at": "2026-11-21T00:59:15Z",
      "event": "workflow_dispatch",
-     "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825734100"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847362869"
     },
     "seen": 30,
-    "ok": 27,
-    "fail": 1,
-    "rate": 96,
+    "ok": 25,
+    "fail": 3,
+    "rate": 89,
     "streak": 0,
-    "minutesPerRun": 3.5,
-    "minutesPerDay": 105,
+    "minutesPerRun": 2.6,
+    "minutesPerDay": 78,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -957,21 +1061,21 @@
     "onClock": false,
     "expected24": 12,
     "ran24": 30,
-    "scheduled24": 2,
+    "scheduled24": 1,
     "lateMin": 66,
     "last": {
-     "at": "2026-11-20T21:59:18Z",
-     "event": "schedule",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825077165"
+     "at": "2026-11-21T01:08:21Z",
+     "event": "workflow_dispatch",
+     "result": "in_progress",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848324030"
     },
     "seen": 30,
     "ok": 29,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 1.3,
-    "minutesPerDay": 39,
+    "minutesPerRun": 3,
+    "minutesPerDay": 90,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -986,18 +1090,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:02:16Z",
+     "at": "2026-11-21T00:48:41Z",
      "event": "workflow_run",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825511327"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266645"
     },
     "seen": 30,
     "ok": 7,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 4.7,
-    "minutesPerDay": 140,
+    "minutesPerRun": 3.9,
+    "minutesPerDay": 118,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1011,21 +1115,21 @@
     "onClock": true,
     "expected24": 24,
     "ran24": 30,
-    "scheduled24": 1,
-    "lateMin": 49,
+    "scheduled24": 0,
+    "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:02:16Z",
+     "at": "2026-11-21T00:48:41Z",
      "event": "workflow_run",
-     "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825511423"
+     "result": "in_progress",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266636"
     },
     "seen": 30,
-    "ok": 1,
+    "ok": 2,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 27,
-    "minutesPerDay": 811,
+    "minutesPerRun": 28.2,
+    "minutesPerDay": 845,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1042,18 +1146,46 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:02:16Z",
+     "at": "2026-11-21T00:48:41Z",
      "event": "workflow_run",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825511501"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266729"
     },
     "seen": 30,
-    "ok": 8,
+    "ok": 12,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.6,
-    "minutesPerDay": 77,
+    "minutesPerRun": 1.6,
+    "minutesPerDay": 48,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "tower-gate.yml",
+    "name": "Tower gate",
+    "what": "The tower's automatic checks (tools/tower-gate.mjs) against the live sites.",
+    "crons": [
+     "17 6 * * *"
+    ],
+    "onClock": true,
+    "expected24": 1,
+    "ran24": 30,
+    "scheduled24": 1,
+    "lateMin": 553,
+    "last": {
+     "at": "2026-11-21T00:32:13Z",
+     "event": "workflow_run",
+     "result": "skipped",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44844473502"
+    },
+    "seen": 30,
+    "ok": 4,
+    "fail": 1,
+    "rate": 80,
+    "streak": 0,
+    "minutesPerRun": 11.7,
+    "minutesPerDay": 351,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1070,18 +1202,44 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:02:16Z",
+     "at": "2026-11-21T00:48:41Z",
      "event": "workflow_run",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825511480"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266675"
     },
     "seen": 30,
-    "ok": 11,
-    "fail": 0,
-    "rate": 100,
+    "ok": 5,
+    "fail": 4,
+    "rate": 56,
     "streak": 0,
-    "minutesPerRun": 1.7,
-    "minutesPerDay": 51,
+    "minutesPerRun": 2.5,
+    "minutesPerDay": 75,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "verse-job.yml",
+    "name": "Verse job",
+    "what": "One queue job through Verse's own coding agent (tools/verse-job.mjs; docs/playbooks/conductor.md).",
+    "crons": [],
+    "onClock": false,
+    "expected24": 0,
+    "ran24": 30,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": {
+     "at": "2026-11-21T00:04:53Z",
+     "event": "workflow_dispatch",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44841375679"
+    },
+    "seen": 30,
+    "ok": 27,
+    "fail": 3,
+    "rate": 90,
+    "streak": 0,
+    "minutesPerRun": 5.4,
+    "minutesPerDay": 161,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1096,20 +1254,20 @@
     "expected24": 96,
     "ran24": 30,
     "scheduled24": 1,
-    "lateMin": 5,
+    "lateMin": 7,
     "last": {
-     "at": "2026-11-20T22:04:36Z",
+     "at": "2026-11-21T01:08:23Z",
      "event": "workflow_dispatch",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825841148"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848327112"
     },
     "seen": 30,
-    "ok": 29,
+    "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 0.8,
-    "minutesPerDay": 25,
+    "minutesPerRun": 2.2,
+    "minutesPerDay": 66,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1123,21 +1281,47 @@
     "onClock": false,
     "expected24": 24,
     "ran24": 30,
-    "scheduled24": 1,
-    "lateMin": 51,
+    "scheduled24": 0,
+    "lateMin": null,
     "last": {
-     "at": "2026-11-20T22:04:50Z",
+     "at": "2026-11-21T01:06:45Z",
      "event": "workflow_dispatch",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825876060"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848158784"
     },
     "seen": 30,
-    "ok": 29,
+    "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.6,
-    "minutesPerDay": 79,
+    "minutesPerRun": 3.8,
+    "minutesPerDay": 114,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "x402-live.yml",
+    "name": "x402 live",
+    "what": "Verse's pay-per-call API on the live site (tools/x402-live.mjs): after every main deploy and by hand, the x402 catalog, one unpaid call (402 with requirements…",
+    "crons": [],
+    "onClock": false,
+    "expected24": 0,
+    "ran24": 30,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": {
+     "at": "2026-11-21T00:32:13Z",
+     "event": "workflow_run",
+     "result": "skipped",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44844473308"
+    },
+    "seen": 30,
+    "ok": 6,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 2.7,
+    "minutesPerDay": 80,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1160,50 +1344,22 @@
     ],
     "onClock": false,
     "expected24": 11,
-    "ran24": 24,
-    "scheduled24": 11,
-    "lateMin": 63,
+    "ran24": 25,
+    "scheduled24": 12,
+    "lateMin": 83,
     "last": {
-     "at": "2026-11-20T21:05:43Z",
+     "at": "2026-11-21T00:57:30Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44817229491"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847188918"
     },
-    "seen": 24,
-    "ok": 24,
+    "seen": 27,
+    "ok": 27,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 5.1,
-    "minutesPerDay": 122,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "tower-gate.yml",
-    "name": "Tower gate",
-    "what": "The tower's automatic checks (tools/tower-gate.mjs) against the live sites.",
-    "crons": [
-     "17 6 * * *"
-    ],
-    "onClock": true,
-    "expected24": 1,
-    "ran24": 14,
-    "scheduled24": 1,
-    "lateMin": 570,
-    "last": {
-     "at": "2026-11-20T21:57:32Z",
-     "event": "workflow_run",
-     "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824835928"
-    },
-    "seen": 30,
-    "ok": 16,
-    "fail": 2,
-    "rate": 89,
-    "streak": 0,
-    "minutesPerRun": 9.2,
-    "minutesPerDay": 128,
+    "minutesPerRun": 5.6,
+    "minutesPerDay": 139,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1216,74 +1372,22 @@
     ],
     "onClock": false,
     "expected24": 4,
-    "ran24": 14,
+    "ran24": 15,
     "scheduled24": 2,
     "lateMin": 106,
     "last": {
-     "at": "2026-11-20T21:52:08Z",
+     "at": "2026-11-20T23:00:25Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824076813"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44833475628"
     },
     "seen": 30,
     "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 3.8,
-    "minutesPerDay": 54,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "live-revert.yml",
-    "name": "Live check reverts",
-    "what": "A failed live check reverts the deploy that caused it, through a pull request (docs/LOOP-GAPS.md: canary + automatic rollback).",
-    "crons": [],
-    "onClock": false,
-    "expected24": 0,
-    "ran24": 13,
-    "scheduled24": 0,
-    "lateMin": null,
-    "last": {
-     "at": "2026-11-20T22:04:16Z",
-     "event": "workflow_run",
-     "result": "skipped",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825796461"
-    },
-    "seen": 30,
-    "ok": 0,
-    "fail": 0,
-    "rate": null,
-    "streak": 0,
-    "minutesPerRun": 0,
-    "minutesPerDay": 0,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "x402-live.yml",
-    "name": "x402 live",
-    "what": "Verse's pay-per-call API on the live site (tools/x402-live.mjs): after every main deploy and by hand, the x402 catalog, one unpaid call (402 with requirements…",
-    "crons": [],
-    "onClock": false,
-    "expected24": 0,
-    "ran24": 13,
-    "scheduled24": 0,
-    "lateMin": null,
-    "last": {
-     "at": "2026-11-20T21:57:32Z",
-     "event": "workflow_run",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44824836006"
-    },
-    "seen": 30,
-    "ok": 18,
-    "fail": 1,
-    "rate": 95,
-    "streak": 0,
-    "minutesPerRun": 0.8,
-    "minutesPerDay": 11,
+    "minutesPerRun": 4.1,
+    "minutesPerDay": 62,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1300,46 +1404,18 @@
     "scheduled24": 3,
     "lateMin": 55,
     "last": {
-     "at": "2026-11-20T20:21:32Z",
+     "at": "2026-11-21T00:17:59Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44810627281"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44842880962"
     },
     "seen": 30,
     "ok": 29,
     "fail": 1,
     "rate": 97,
     "streak": 0,
-    "minutesPerRun": 2.9,
-    "minutesPerDay": 34,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "grow-self.yml",
-    "name": "Verse hardens itself",
-    "what": "Verse hardens itself (owner, 2026-10-19: \"make it so Verse can open its own PRs and push them through and review all after thinking it up based on what it…",
-    "crons": [
-     "17 4 * * *"
-    ],
-    "onClock": false,
-    "expected24": 1,
-    "ran24": 12,
-    "scheduled24": 1,
-    "lateMin": 532,
-    "last": {
-     "at": "2026-11-20T21:08:41Z",
-     "event": "workflow_dispatch",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44817669621"
-    },
-    "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 1.7,
-    "minutesPerDay": 21,
+    "minutesPerRun": 3.3,
+    "minutesPerDay": 40,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1354,48 +1430,20 @@
     "expected24": 1,
     "ran24": 9,
     "scheduled24": 1,
-    "lateMin": 438,
+    "lateMin": 434,
     "last": {
-     "at": "2026-11-20T01:09:53Z",
+     "at": "2026-11-21T01:08:19Z",
      "event": "workflow_dispatch",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44651538170"
+     "result": "in_progress",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44848321289"
     },
     "seen": 30,
-    "ok": 30,
+    "ok": 29,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 0.3,
-    "minutesPerDay": 3,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "store-gap.yml",
-    "name": "Verse builds store gaps",
-    "what": "Product gaps become products (tools/store-gap.mjs).",
-    "crons": [
-     "41 */4 * * *"
-    ],
-    "onClock": true,
-    "expected24": 6,
-    "ran24": 9,
-    "scheduled24": 3,
-    "lateMin": 146,
-    "last": {
-     "at": "2026-11-20T21:31:26Z",
-     "event": "workflow_dispatch",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44821059681"
-    },
-    "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.4,
-    "minutesPerDay": 4,
+    "minutesPerRun": 0.8,
+    "minutesPerDay": 7,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1408,22 +1456,50 @@
     ],
     "onClock": false,
     "expected24": 1,
-    "ran24": 6,
+    "ran24": 8,
     "scheduled24": 1,
-    "lateMin": 388,
+    "lateMin": 412,
     "last": {
-     "at": "2026-11-20T22:03:26Z",
+     "at": "2026-11-20T23:47:08Z",
      "event": "workflow_dispatch",
-     "result": "queued",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44825673478"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44839299980"
     },
     "seen": 30,
-    "ok": 27,
-    "fail": 2,
-    "rate": 93,
+    "ok": 29,
+    "fail": 1,
+    "rate": 97,
     "streak": 0,
-    "minutesPerRun": 4.2,
-    "minutesPerDay": 25,
+    "minutesPerRun": 4.9,
+    "minutesPerDay": 39,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "store-gap.yml",
+    "name": "Verse builds store gaps",
+    "what": "Product gaps become products (tools/store-gap.mjs).",
+    "crons": [
+     "41 */4 * * *"
+    ],
+    "onClock": true,
+    "expected24": 6,
+    "ran24": 8,
+    "scheduled24": 2,
+    "lateMin": 78,
+    "last": {
+     "at": "2026-11-21T00:17:55Z",
+     "event": "workflow_dispatch",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44842872647"
+    },
+    "seen": 30,
+    "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.7,
+    "minutesPerDay": 6,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1434,22 +1510,22 @@
     "crons": [],
     "onClock": false,
     "expected24": 0,
-    "ran24": 6,
+    "ran24": 7,
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-20T20:14:24Z",
+     "at": "2026-11-20T23:35:25Z",
      "event": "workflow_dispatch",
      "result": "cancelled",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44809529471"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44837907315"
     },
     "seen": 30,
-    "ok": 5,
-    "fail": 2,
-    "rate": 71,
+    "ok": 4,
+    "fail": 1,
+    "rate": 80,
     "streak": 0,
     "minutesPerRun": 0.5,
-    "minutesPerDay": 3,
+    "minutesPerDay": 4,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1482,58 +1558,88 @@
     "status": "working"
    },
    {
-    "wf": "probe-asks.yml",
-    "name": "Verse probes itself",
-    "what": "Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md).",
+    "wf": "learn.yml",
+    "name": "Verse learns",
+    "what": "Verse learns by itself (Verse's own want, domains/void.will.md #1; frontier item 2).",
     "crons": [
-     "23 */4 * * *"
+     "39 18 * * *",
+     "39 19 * * *"
     ],
     "onClock": false,
-    "expected24": 6,
+    "expected24": 2,
     "ran24": 3,
     "scheduled24": 3,
-    "lateMin": 142,
+    "lateMin": 289,
     "last": {
-     "at": "2026-11-20T17:02:08Z",
+     "at": "2026-11-21T00:55:56Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44779296231"
-    },
-    "seen": 30,
-    "ok": 29,
-    "fail": 1,
-    "rate": 97,
-    "streak": 0,
-    "minutesPerRun": 1.4,
-    "minutesPerDay": 4,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "rides-live.yml",
-    "name": "Rides live",
-    "what": "The rides family against a live service (tools/rides-live.mjs): once a day, from GitHub's network, ask the public OSRM demo router (no key, no account) for…",
-    "crons": [
-     "17 14 * * *"
-    ],
-    "onClock": true,
-    "expected24": 1,
-    "ran24": 3,
-    "scheduled24": 2,
-    "lateMin": 370,
-    "last": {
-     "at": "2026-11-20T21:47:25Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44823407207"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847031500"
     },
     "seen": 30,
     "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 0.6,
-    "minutesPerDay": 2,
+    "minutesPerRun": 0.5,
+    "minutesPerDay": 1,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "void-voice.yml",
+    "name": "Verse's voice",
+    "what": "Verse's voice, daily (lib/voice.js, functions/api/reflect.js, tools/reflect.mjs).",
+    "crons": [
+     "9 18 * * *",
+     "9 19 * * *"
+    ],
+    "onClock": false,
+    "expected24": 2,
+    "ran24": 3,
+    "scheduled24": 3,
+    "lateMin": 300,
+    "last": {
+     "at": "2026-11-21T00:45:14Z",
+     "event": "schedule",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44845895563"
+    },
+    "seen": 30,
+    "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.4,
+    "minutesPerDay": 1,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "word-sweep.yml",
+    "name": "Verse word sweep",
+    "what": "The word sweep (owner, 2026-10-19: \"put a random word generator to cycle every possible card\").",
+    "crons": [
+     "17 */6 * * *"
+    ],
+    "onClock": true,
+    "expected24": 4,
+    "ran24": 3,
+    "scheduled24": 2,
+    "lateMin": 91,
+    "last": {
+     "at": "2026-11-21T00:49:22Z",
+     "event": "workflow_dispatch",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846341584"
+    },
+    "seen": 30,
+    "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 3,
+    "minutesPerDay": 9,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1566,26 +1672,53 @@
     "status": "working"
    },
    {
-    "wf": "learn.yml",
-    "name": "Verse learns",
-    "what": "Verse learns by itself (Verse's own want, domains/void.will.md #1; frontier item 2).",
+    "wf": "rides-live.yml",
+    "name": "Rides live",
+    "what": "The rides family against a live service (tools/rides-live.mjs): once a day, from GitHub's network, ask the public OSRM demo router (no key, no account) for…",
     "crons": [
-     "39 18 * * *",
-     "39 19 * * *"
+     "17 14 * * *"
     ],
-    "onClock": false,
-    "expected24": 2,
+    "onClock": true,
+    "expected24": 1,
     "ran24": 2,
-    "scheduled24": 2,
-    "lateMin": 289,
+    "scheduled24": 1,
+    "lateMin": 370,
     "last": {
-     "at": "2026-11-20T01:25:49Z",
+     "at": "2026-11-20T21:47:25Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44653558433"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44823407207"
     },
     "seen": 30,
     "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.6,
+    "minutesPerDay": 1,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "trading-bots-data.yml",
+    "name": "Trading bots data",
+    "what": "The daily candles the trading-bot backtests run on (tools/trading-bots-data.mjs): BTC-USD and ETH-USD from Coinbase Exchange's public market data, closed UTC…",
+    "crons": [
+     "17 0 * * *"
+    ],
+    "onClock": true,
+    "expected24": 1,
+    "ran24": 2,
+    "scheduled24": 1,
+    "lateMin": 383,
+    "last": {
+     "at": "2026-11-21T00:49:21Z",
+     "event": "workflow_dispatch",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44846338665"
+    },
+    "seen": 18,
+    "ok": 18,
     "fail": 0,
     "rate": 100,
     "streak": 0,
@@ -1623,59 +1756,28 @@
     "status": "working"
    },
    {
-    "wf": "void-voice.yml",
-    "name": "Verse's voice",
-    "what": "Verse's voice, daily (lib/voice.js, functions/api/reflect.js, tools/reflect.mjs).",
-    "crons": [
-     "9 18 * * *",
-     "9 19 * * *"
-    ],
+    "wf": "workflow-lint.yml",
+    "name": "workflow-lint",
+    "what": "A workflow file GitHub can't parse fails silently: its jobs just never run (void-review and the secret scan were off for 20 minutes on 2026-10-15 after one…",
+    "crons": [],
     "onClock": false,
-    "expected24": 2,
+    "expected24": 0,
     "ran24": 2,
-    "scheduled24": 2,
-    "lateMin": 297,
+    "scheduled24": 0,
+    "lateMin": null,
     "last": {
-     "at": "2026-11-20T01:11:46Z",
-     "event": "schedule",
+     "at": "2026-11-21T00:24:17Z",
+     "event": "push",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44651782191"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44843586660"
     },
     "seen": 30,
-    "ok": 30,
+    "ok": 28,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 0.4,
-    "minutesPerDay": 1,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "word-sweep.yml",
-    "name": "Verse word sweep",
-    "what": "The word sweep (owner, 2026-10-19: \"put a random word generator to cycle every possible card\").",
-    "crons": [
-     "17 */6 * * *"
-    ],
-    "onClock": true,
-    "expected24": 4,
-    "ran24": 2,
-    "scheduled24": 2,
-    "lateMin": 91,
-    "last": {
-     "at": "2026-11-20T20:28:04Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44811614301"
-    },
-    "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 3,
-    "minutesPerDay": 6,
+    "minutesPerRun": 1.9,
+    "minutesPerDay": 4,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1710,7 +1812,7 @@
    {
     "wf": "autosalvage.yml",
     "name": "autosalvage",
-    "what": "Live copy of docs/autosalvage.workflow.yml.",
+    "what": "The salvage unifier (tools/autosalvage/), daily.",
     "crons": [
      "17 9 * * *"
     ],
@@ -2296,34 +2398,6 @@
     "status": "working"
    },
    {
-    "wf": "trading-bots-data.yml",
-    "name": "Trading bots data",
-    "what": "The daily candles the trading-bot backtests run on (tools/trading-bots-data.mjs): BTC-USD and ETH-USD from Coinbase Exchange's public market data, closed UTC…",
-    "crons": [
-     "17 0 * * *"
-    ],
-    "onClock": true,
-    "expected24": 1,
-    "ran24": 1,
-    "scheduled24": 1,
-    "lateMin": 383,
-    "last": {
-     "at": "2026-11-20T07:10:22Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44692995954"
-    },
-    "seen": 17,
-    "ok": 17,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.4,
-    "minutesPerDay": 0,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
     "wf": "traffic.yml",
     "name": "Traffic",
     "what": "Does anyone outside us visit Verse? Daily, tools/traffic.mjs reads Cloudflare's analytics for a-to-mind.com when a token can (none can as of 2026-10-26), else…",
@@ -2437,32 +2511,6 @@
     "status": "working"
    },
    {
-    "wf": "workflow-lint.yml",
-    "name": "workflow-lint",
-    "what": "A workflow file GitHub can't parse fails silently: its jobs just never run (void-review and the secret scan were off for 20 minutes on 2026-10-15 after one…",
-    "crons": [],
-    "onClock": false,
-    "expected24": 0,
-    "ran24": 1,
-    "scheduled24": 0,
-    "lateMin": null,
-    "last": {
-     "at": "2026-11-20T21:17:23Z",
-     "event": "push",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44818982211"
-    },
-    "seen": 30,
-    "ok": 28,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 2,
-    "minutesPerDay": 2,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
     "wf": "art-look.yml",
     "name": "Art look",
     "what": "See the picture the Art Forge paints for one subject (functions/api/card-art.js), from GitHub's network, for builders whose machine can't reach a-to-mind.com:…",
@@ -2536,32 +2584,6 @@
     "rate": 100,
     "streak": 0,
     "minutesPerRun": 0.2,
-    "minutesPerDay": 0,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "clips.yml",
-    "name": "Verse clips",
-    "what": "Replaced by .github/workflows/shorts.yml.",
-    "crons": [],
-    "onClock": false,
-    "expected24": 0,
-    "ran24": 0,
-    "scheduled24": 0,
-    "lateMin": null,
-    "last": {
-     "at": "2026-11-03T20:29:26Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/41713026599"
-    },
-    "seen": 20,
-    "ok": 19,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 3.3,
     "minutesPerDay": 0,
     "costCentsPerDay": 0,
     "status": "working"
@@ -2806,32 +2828,6 @@
     "rate": 83,
     "streak": 0,
     "minutesPerRun": 0.2,
-    "minutesPerDay": 0,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "record.yml",
-    "name": "Verse records itself",
-    "what": "Replaced by .github/workflows/shorts.yml.",
-    "crons": [],
-    "onClock": false,
-    "expected24": 0,
-    "ran24": 0,
-    "scheduled24": 0,
-    "lateMin": null,
-    "last": {
-     "at": "2026-11-04T04:01:31Z",
-     "event": "workflow_run",
-     "result": "skipped",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/41770648832"
-    },
-    "seen": 30,
-    "ok": 14,
-    "fail": 1,
-    "rate": 93,
-    "streak": 0,
-    "minutesPerRun": 5,
     "minutesPerDay": 0,
     "costCentsPerDay": 0,
     "status": "working"
@@ -3095,6 +3091,52 @@
     "status": "on pull requests"
    },
    {
+    "wf": "stranger-gate.yml",
+    "name": "Stranger test",
+    "what": "A stranger's check of a changed page, tool, game or card (tools/stranger-gate.mjs).",
+    "crons": [
+     "17 7 * * *"
+    ],
+    "onClock": false,
+    "expected24": 1,
+    "ran24": 0,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": null,
+    "seen": 0,
+    "ok": 0,
+    "fail": 0,
+    "rate": null,
+    "streak": 0,
+    "minutesPerRun": 0,
+    "minutesPerDay": 0,
+    "costCentsPerDay": 0,
+    "status": "on pull requests"
+   },
+   {
+    "wf": "stranger-test.yml",
+    "name": "Stranger test",
+    "what": "Stranger test (tools/stranger-gate.mjs).",
+    "crons": [
+     "17 7 * * *"
+    ],
+    "onClock": false,
+    "expected24": 1,
+    "ran24": 0,
+    "scheduled24": 0,
+    "lateMin": null,
+    "last": null,
+    "seen": 0,
+    "ok": 0,
+    "fail": 0,
+    "rate": null,
+    "streak": 0,
+    "minutesPerRun": 0,
+    "minutesPerDay": 0,
+    "costCentsPerDay": 0,
+    "status": "on pull requests"
+   },
+   {
     "wf": "touch-webkit.yml",
     "name": "Ringer touch (WebKit)",
     "what": "Ringer by touch in WebKit, the engine under iOS Safari (tools/touch-webkit.mjs): the 3D ring's touch checks that the full suite runs in Chromium, run again in…",
@@ -3267,32 +3309,6 @@
     "status": "idle"
    },
    {
-    "wf": "route-bench.yml",
-    "name": "Route bench",
-    "what": "Frontier #9 (Clef routes every ask), first piece: Clef-flash beside the embedding router on the bench's own asks (tools/route-bench.mjs, POST /api/bench {…",
-    "crons": [],
-    "onClock": false,
-    "expected24": 0,
-    "ran24": 0,
-    "scheduled24": 0,
-    "lateMin": null,
-    "last": {
-     "at": "2026-10-13T16:12:04Z",
-     "event": "workflow_dispatch",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/38428528839"
-    },
-    "seen": 3,
-    "ok": 3,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.5,
-    "minutesPerDay": 0,
-    "costCentsPerDay": 0,
-    "status": "idle"
-   },
-   {
     "wf": "think-tank.yml",
     "name": "Forethinkers",
     "what": "",
@@ -3320,7 +3336,7 @@
    }
   ]
  },
- "censusAt": 1795212255613,
+ "censusAt": 1795223280158,
  "visitorAt": "2026-11-21T00:41:00Z",
  "visitorFiled": [
   "heal:helper-book-green-main",
@@ -3405,38 +3421,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T01:00:06.560Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mvvjzso8",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml",
-    "deploy.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 487,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T01:09:32.837Z",
    "open": 500,
@@ -7739,6 +7723,46 @@
    ],
    "cancelled": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 472,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T01:08:00.158Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvvjzso8",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mwnkyhgw",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 18
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "growth-fold.yml"
+   ],
+   "cancelled": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 472,
    "warnings": 0
