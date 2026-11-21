@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T01:45:53.545Z",
+ "updated": "2026-11-21T01:55:17.038Z",
  "last24h": {
   "ticks": 147,
-  "started": 127,
+  "started": 126,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -219,8 +219,8 @@
    "startedAt": 1795223856465
   },
   "pages-guard.yml": {
-   "slot": 1795223700000,
-   "startedAt": 1795224419517
+   "slot": 1795225500000,
+   "startedAt": 1795226117038
   },
   "autosalvage.yml": {
    "slot": 1795166220000
@@ -269,8 +269,8 @@
    "startedAt": 1795223280158
   },
   "arb-record.yml": {
-   "slot": 1795223220000,
-   "startedAt": 1795224419517
+   "slot": 1795225020000,
+   "startedAt": 1795226117038
   }
  },
  "census": {
@@ -3426,37 +3426,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T01:47:03.116Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwbfid91",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 118
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 37,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T01:56:58.235Z",
    "open": 500,
@@ -7759,6 +7728,35 @@
    ],
    "daily": [],
    "catchup": [],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T01:55:17.038Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "arb-record.yml"
+   ],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
