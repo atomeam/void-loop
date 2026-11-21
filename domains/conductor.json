@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T04:07:53.017Z",
+ "updated": "2026-11-21T04:17:17.223Z",
  "last24h": {
   "ticks": 147,
-  "started": 111,
-  "requeued": 10,
+  "started": 110,
+  "requeued": 9,
   "setAside": 0,
   "probes": 0,
   "errors": 0
@@ -111,11 +111,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 8,
    "cap": 90
   },
   "day": {
-   "used": 230,
+   "used": 238,
    "cap": 360
   },
   "room": true,
@@ -125,7 +125,7 @@
  "handed": {
   "mvbl52gd": 1795219475998,
   "mvu167w7": 1795220251623,
-  "mva30i2e": 1795212906151,
+  "mva30i2e": 1795234637223,
   "mva30j4u": 1795213670488,
   "mwa0agd2": 1795214282871,
   "mwa0ah54": 1795215604938,
@@ -281,14 +281,14 @@
   }
  },
  "census": {
-  "at": "2026-11-21T01:08:00.158Z",
+  "at": "2026-11-21T04:17:17.223Z",
   "loops": 113,
-  "working": 84,
-  "failing": 4,
-  "behind": 8,
+  "working": 85,
+  "failing": 5,
+  "behind": 6,
   "idle": 11,
-  "runs24": 880,
-  "minutes24": 5574,
+  "runs24": 890,
+  "minutes24": 5253,
   "costCents24": 0,
   "note": "GitHub Actions on a public repository: standard runner minutes are not billed, so each run costs $0. Models are the free ones first; a paid call is logged by the treasury.",
   "rows": [
@@ -303,18 +303,46 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:02:12Z",
+     "at": "2026-11-21T03:22:12Z",
      "event": "workflow_dispatch",
-     "result": "pending",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847685119"
+     "result": "in_progress",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44860763066"
     },
     "seen": 30,
     "ok": 0,
-    "fail": 5,
+    "fail": 16,
     "rate": 0,
-    "streak": 5,
-    "minutesPerRun": 31.1,
-    "minutesPerDay": 933,
+    "streak": 16,
+    "minutesPerRun": 32.9,
+    "minutesPerDay": 987,
+    "costCentsPerDay": 0,
+    "status": "failing"
+   },
+   {
+    "wf": "grow-self.yml",
+    "name": "Verse hardens itself",
+    "what": "Verse hardens itself (owner, 2026-10-19: \"make it so Verse can open its own PRs and push them through and review all after thinking it up based on what it…",
+    "crons": [
+     "17 4 * * *"
+    ],
+    "onClock": false,
+    "expected24": 1,
+    "ran24": 12,
+    "scheduled24": 1,
+    "lateMin": 544,
+    "last": {
+     "at": "2026-11-21T03:20:59Z",
+     "event": "workflow_dispatch",
+     "result": "failure",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44860659416"
+    },
+    "seen": 30,
+    "ok": 27,
+    "fail": 3,
+    "rate": 90,
+    "streak": 3,
+    "minutesPerRun": 2.5,
+    "minutesPerDay": 30,
     "costCentsPerDay": 0,
     "status": "failing"
    },
@@ -333,18 +361,18 @@
     "scheduled24": 4,
     "lateMin": 79,
     "last": {
-     "at": "2026-11-20T23:00:05Z",
-     "event": "workflow_dispatch",
+     "at": "2026-11-21T02:29:11Z",
+     "event": "schedule",
      "result": "failure",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44833425006"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44856147885"
     },
     "seen": 30,
     "ok": 10,
     "fail": 19,
     "rate": 34,
-    "streak": 14,
-    "minutesPerRun": 13.8,
-    "minutesPerDay": 69,
+    "streak": 15,
+    "minutesPerRun": 13.1,
+    "minutesPerDay": 66,
     "costCentsPerDay": 0,
     "status": "failing"
    },
@@ -375,30 +403,30 @@
     "status": "failing"
    },
    {
-    "wf": "grow-self.yml",
-    "name": "Verse hardens itself",
-    "what": "Verse hardens itself (owner, 2026-10-19: \"make it so Verse can open its own PRs and push them through and review all after thinking it up based on what it…",
+    "wf": "verse-watch.yml",
+    "name": "Verse watch",
+    "what": "Verse watches TV and listens to the radio on its own, to learn (owner, 2026-10-30: \"make it so verse can watch tv or listen to the radio on its own to learn…",
     "crons": [
-     "17 4 * * *"
+     "37 * * * *"
     ],
-    "onClock": false,
-    "expected24": 1,
-    "ran24": 12,
-    "scheduled24": 1,
-    "lateMin": 532,
+    "onClock": true,
+    "expected24": 24,
+    "ran24": 9,
+    "scheduled24": 3,
+    "lateMin": 28,
     "last": {
-     "at": "2026-11-20T23:10:54Z",
+     "at": "2026-11-21T03:58:56Z",
      "event": "workflow_dispatch",
      "result": "failure",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44834859689"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44863798236"
     },
     "seen": 30,
-    "ok": 29,
+    "ok": 28,
     "fail": 1,
     "rate": 97,
     "streak": 1,
-    "minutesPerRun": 2.5,
-    "minutesPerDay": 30,
+    "minutesPerRun": 2.6,
+    "minutesPerDay": 24,
     "costCentsPerDay": 0,
     "status": "last run failed"
    },
@@ -411,14 +439,14 @@
     ],
     "onClock": true,
     "expected24": 48,
-    "ran24": 9,
-    "scheduled24": 3,
-    "lateMin": 17,
+    "ran24": 16,
+    "scheduled24": 4,
+    "lateMin": 16,
     "last": {
-     "at": "2026-11-21T00:59:04Z",
-     "event": "workflow_dispatch",
+     "at": "2026-11-21T04:13:54Z",
+     "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847345310"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44865063735"
     },
     "seen": 30,
     "ok": 30,
@@ -426,7 +454,7 @@
     "rate": 100,
     "streak": 0,
     "minutesPerRun": 0.8,
-    "minutesPerDay": 7,
+    "minutesPerDay": 13,
     "costCentsPerDay": 0,
     "status": "behind"
    },
@@ -439,50 +467,22 @@
     ],
     "onClock": true,
     "expected24": 24,
-    "ran24": 7,
+    "ran24": 10,
     "scheduled24": 3,
     "lateMin": 39,
     "last": {
-     "at": "2026-11-21T01:08:24Z",
+     "at": "2026-11-21T04:08:21Z",
      "event": "workflow_dispatch",
-     "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848329952"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44864595113"
     },
     "seen": 30,
-    "ok": 28,
+    "ok": 29,
     "fail": 1,
     "rate": 97,
     "streak": 0,
     "minutesPerRun": 0.7,
-    "minutesPerDay": 5,
-    "costCentsPerDay": 0,
-    "status": "behind"
-   },
-   {
-    "wf": "verse-watch.yml",
-    "name": "Verse watch",
-    "what": "Verse watches TV and listens to the radio on its own, to learn (owner, 2026-10-30: \"make it so verse can watch tv or listen to the radio on its own to learn…",
-    "crons": [
-     "37 * * * *"
-    ],
-    "onClock": true,
-    "expected24": 24,
-    "ran24": 7,
-    "scheduled24": 4,
-    "lateMin": 26,
-    "last": {
-     "at": "2026-11-21T00:55:45Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847012404"
-    },
-    "seen": 30,
-    "ok": 29,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 2.6,
-    "minutesPerDay": 18,
+    "minutesPerDay": 7,
     "costCentsPerDay": 0,
     "status": "behind"
    },
@@ -501,12 +501,12 @@
     "expected24": 27,
     "ran24": 6,
     "scheduled24": 6,
-    "lateMin": 37,
+    "lateMin": 25,
     "last": {
-     "at": "2026-11-20T19:58:45Z",
+     "at": "2026-11-21T01:22:55Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44807119740"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44849843145"
     },
     "seen": 30,
     "ok": 30,
@@ -531,10 +531,10 @@
     "scheduled24": 3,
     "lateMin": 27,
     "last": {
-     "at": "2026-11-20T20:21:22Z",
+     "at": "2026-11-21T02:15:44Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44810600180"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44854897159"
     },
     "seen": 30,
     "ok": 30,
@@ -559,10 +559,10 @@
     "scheduled24": 3,
     "lateMin": 99,
     "last": {
-     "at": "2026-11-20T20:28:27Z",
+     "at": "2026-11-21T02:25:15Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44811672480"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44855789425"
     },
     "seen": 30,
     "ok": 30,
@@ -587,10 +587,10 @@
     "scheduled24": 3,
     "lateMin": 66,
     "last": {
-     "at": "2026-11-20T21:47:23Z",
+     "at": "2026-11-21T03:11:42Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44823400752"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44859837836"
     },
     "seen": 30,
     "ok": 30,
@@ -599,34 +599,6 @@
     "streak": 0,
     "minutesPerRun": 0.3,
     "minutesPerDay": 1,
-    "costCentsPerDay": 0,
-    "status": "behind"
-   },
-   {
-    "wf": "probe-asks.yml",
-    "name": "Verse probes itself",
-    "what": "Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md).",
-    "crons": [
-     "23 */4 * * *"
-    ],
-    "onClock": false,
-    "expected24": 6,
-    "ran24": 2,
-    "scheduled24": 2,
-    "lateMin": 142,
-    "last": {
-     "at": "2026-11-20T17:02:08Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44779296231"
-    },
-    "seen": 30,
-    "ok": 29,
-    "fail": 1,
-    "rate": 97,
-    "streak": 0,
-    "minutesPerRun": 1.4,
-    "minutesPerDay": 3,
     "costCentsPerDay": 0,
     "status": "behind"
    },
@@ -752,10 +724,10 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T00:57:51Z",
+     "at": "2026-11-21T03:57:26Z",
      "event": "workflow_run",
      "result": "skipped",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847223620"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44863687282"
     },
     "seen": 30,
     "ok": 0,
@@ -778,18 +750,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:06:43Z",
+     "at": "2026-11-21T03:25:52Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848155581"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861082706"
     },
     "seen": 30,
     "ok": 29,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.3,
-    "minutesPerDay": 69,
+    "minutesPerRun": 1.6,
+    "minutesPerDay": 47,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -807,18 +779,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:07:05Z",
-     "event": "workflow_run",
+     "at": "2026-11-21T04:08:27Z",
+     "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848191589"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44864603037"
     },
     "seen": 30,
-    "ok": 24,
+    "ok": 23,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.9,
-    "minutesPerDay": 87,
+    "minutesPerRun": 0.7,
+    "minutesPerDay": 21,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -833,18 +805,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:02:11Z",
+     "at": "2026-11-21T03:22:10Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847682550"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44860760882"
     },
     "seen": 30,
-    "ok": 15,
+    "ok": 21,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 8.5,
-    "minutesPerDay": 255,
+    "minutesPerRun": 5.5,
+    "minutesPerDay": 166,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -861,18 +833,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T00:48:41Z",
+     "at": "2026-11-21T03:29:47Z",
      "event": "workflow_run",
-     "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266749"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861407224"
     },
     "seen": 30,
-    "ok": 1,
+    "ok": 5,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 29.1,
-    "minutesPerDay": 872,
+    "minutesPerRun": 33.6,
+    "minutesPerDay": 1007,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -887,18 +859,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:06:39Z",
+     "at": "2026-11-21T03:25:48Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848148094"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861076867"
     },
     "seen": 30,
     "ok": 27,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.6,
-    "minutesPerDay": 79,
+    "minutesPerRun": 1.7,
+    "minutesPerDay": 52,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -914,20 +886,20 @@
     "expected24": 168,
     "ran24": 30,
     "scheduled24": 2,
-    "lateMin": 8,
+    "lateMin": 9,
     "last": {
-     "at": "2026-11-21T01:07:37Z",
+     "at": "2026-11-21T04:16:55Z",
      "event": "workflow_dispatch",
      "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848248420"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44865320172"
     },
     "seen": 30,
     "ok": 27,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 11.4,
-    "minutesPerDay": 341,
+    "minutesPerRun": 9.8,
+    "minutesPerDay": 294,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -968,18 +940,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:06:37Z",
+     "at": "2026-11-21T03:25:46Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848145004"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861074279"
     },
     "seen": 30,
-    "ok": 16,
+    "ok": 25,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.7,
-    "minutesPerDay": 81,
+    "minutesPerRun": 1.8,
+    "minutesPerDay": 53,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -994,18 +966,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T01:06:41Z",
+     "at": "2026-11-21T03:25:50Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848151894"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861079957"
     },
     "seen": 30,
     "ok": 29,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.1,
-    "minutesPerDay": 62,
+    "minutesPerRun": 1.1,
+    "minutesPerDay": 34,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1020,20 +992,20 @@
     "expected24": 96,
     "ran24": 30,
     "scheduled24": 2,
-    "lateMin": 10,
+    "lateMin": 14,
     "last": {
-     "at": "2026-11-21T00:59:01Z",
+     "at": "2026-11-21T03:58:54Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847341355"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44863796108"
     },
     "seen": 30,
-    "ok": 25,
+    "ok": 27,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 4.5,
-    "minutesPerDay": 136,
+    "minutesPerRun": 3.7,
+    "minutesPerDay": 110,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1048,18 +1020,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T00:59:15Z",
+     "at": "2026-11-21T04:09:24Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847362869"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44864678564"
     },
     "seen": 30,
-    "ok": 25,
-    "fail": 3,
-    "rate": 89,
+    "ok": 28,
+    "fail": 1,
+    "rate": 97,
     "streak": 0,
-    "minutesPerRun": 2.6,
-    "minutesPerDay": 78,
+    "minutesPerRun": 2.3,
+    "minutesPerDay": 70,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1073,13 +1045,13 @@
     "onClock": false,
     "expected24": 12,
     "ran24": 30,
-    "scheduled24": 1,
+    "scheduled24": 2,
     "lateMin": 66,
     "last": {
-     "at": "2026-11-21T01:08:21Z",
+     "at": "2026-11-21T04:17:38Z",
      "event": "workflow_dispatch",
      "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848324030"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44865385450"
     },
     "seen": 30,
     "ok": 29,
@@ -1102,18 +1074,18 @@
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T00:48:41Z",
+     "at": "2026-11-21T03:29:47Z",
      "event": "workflow_run",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266645"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861406936"
     },
     "seen": 30,
-    "ok": 7,
+    "ok": 9,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 3.9,
-    "minutesPerDay": 118,
+    "minutesPerRun": 2.8,
+    "minutesPerDay": 83,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1127,21 +1099,21 @@
     "onClock": true,
     "expected24": 24,
     "ran24": 30,
-    "scheduled24": 0,
-    "lateMin": null,
+    "scheduled24": 1,
+    "lateMin": 7,
     "last": {
-     "at": "2026-11-21T00:48:41Z",
-     "event": "workflow_run",
+     "at": "2026-11-21T04:08:19Z",
+     "event": "workflow_dispatch",
      "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266636"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44864592421"
     },
     "seen": 30,
-    "ok": 2,
+    "ok": 6,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 28.2,
-    "minutesPerDay": 845,
+    "minutesPerRun": 28.4,
+    "minutesPerDay": 851,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1155,21 +1127,21 @@
     "onClock": false,
     "expected24": 48,
     "ran24": 30,
-    "scheduled24": 0,
-    "lateMin": null,
+    "scheduled24": 1,
+    "lateMin": 7,
     "last": {
-     "at": "2026-11-21T00:48:41Z",
-     "event": "workflow_run",
+     "at": "2026-11-21T04:14:17Z",
+     "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266729"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44865097943"
     },
     "seen": 30,
-    "ok": 12,
+    "ok": 13,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 1.6,
-    "minutesPerDay": 48,
+    "minutesPerRun": 1,
+    "minutesPerDay": 31,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1206,26 +1178,26 @@
     "name": "Verse engineer",
     "what": "Verse's own engineer, on the free model stack the coder already uses (Workers AI, then OpenRouter, Groq, Gemini and Cerebras when those keys exist: the…",
     "crons": [
-     "17 7 * * *"
+     "17 */2 * * *"
     ],
     "onClock": false,
-    "expected24": 1,
+    "expected24": 12,
     "ran24": 30,
     "scheduled24": 0,
     "lateMin": null,
     "last": {
-     "at": "2026-11-21T00:48:41Z",
+     "at": "2026-11-21T03:29:47Z",
      "event": "workflow_run",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44846266675"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861406966"
     },
     "seen": 30,
-    "ok": 5,
-    "fail": 4,
-    "rate": 56,
+    "ok": 7,
+    "fail": 2,
+    "rate": 78,
     "streak": 0,
-    "minutesPerRun": 2.5,
-    "minutesPerDay": 75,
+    "minutesPerRun": 2,
+    "minutesPerDay": 59,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1268,18 +1240,18 @@
     "scheduled24": 1,
     "lateMin": 7,
     "last": {
-     "at": "2026-11-21T01:08:23Z",
+     "at": "2026-11-21T04:17:39Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848327112"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44865387636"
     },
     "seen": 30,
     "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 2.2,
-    "minutesPerDay": 66,
+    "minutesPerRun": 0.7,
+    "minutesPerDay": 20,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1293,21 +1265,21 @@
     "onClock": false,
     "expected24": 24,
     "ran24": 30,
-    "scheduled24": 0,
-    "lateMin": null,
+    "scheduled24": 1,
+    "lateMin": 15,
     "last": {
-     "at": "2026-11-21T01:06:45Z",
+     "at": "2026-11-21T03:25:54Z",
      "event": "workflow_dispatch",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848158784"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44861085741"
     },
     "seen": 30,
     "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 3.8,
-    "minutesPerDay": 114,
+    "minutesPerRun": 1.9,
+    "minutesPerDay": 56,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1356,22 +1328,22 @@
     ],
     "onClock": false,
     "expected24": 11,
-    "ran24": 25,
-    "scheduled24": 12,
+    "ran24": 22,
+    "scheduled24": 11,
     "lateMin": 83,
     "last": {
-     "at": "2026-11-21T00:57:30Z",
+     "at": "2026-11-21T02:51:25Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847188918"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44858118041"
     },
-    "seen": 27,
-    "ok": 27,
+    "seen": 28,
+    "ok": 28,
     "fail": 0,
     "rate": 100,
     "streak": 0,
-    "minutesPerRun": 5.6,
-    "minutesPerDay": 139,
+    "minutesPerRun": 5.7,
+    "minutesPerDay": 124,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1414,12 +1386,12 @@
     "expected24": 12,
     "ran24": 12,
     "scheduled24": 3,
-    "lateMin": 55,
+    "lateMin": 50,
     "last": {
-     "at": "2026-11-21T00:17:59Z",
-     "event": "workflow_dispatch",
+     "at": "2026-11-21T04:07:58Z",
+     "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44842880962"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44864562785"
     },
     "seen": 30,
     "ok": 29,
@@ -1428,6 +1400,34 @@
     "streak": 0,
     "minutesPerRun": 3.3,
     "minutesPerDay": 40,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "store-gap.yml",
+    "name": "Verse builds store gaps",
+    "what": "Product gaps become products (tools/store-gap.mjs).",
+    "crons": [
+     "41 */4 * * *"
+    ],
+    "onClock": true,
+    "expected24": 6,
+    "ran24": 10,
+    "scheduled24": 3,
+    "lateMin": 78,
+    "last": {
+     "at": "2026-11-21T01:42:38Z",
+     "event": "schedule",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44851768315"
+    },
+    "seen": 30,
+    "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.7,
+    "minutesPerDay": 7,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1444,13 +1444,13 @@
     "scheduled24": 1,
     "lateMin": 434,
     "last": {
-     "at": "2026-11-21T01:08:19Z",
+     "at": "2026-11-21T01:17:58Z",
      "event": "workflow_dispatch",
-     "result": "in_progress",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44848321289"
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44849335216"
     },
     "seen": 30,
-    "ok": 29,
+    "ok": 30,
     "fail": 0,
     "rate": 100,
     "streak": 0,
@@ -1488,41 +1488,13 @@
     "status": "working"
    },
    {
-    "wf": "store-gap.yml",
-    "name": "Verse builds store gaps",
-    "what": "Product gaps become products (tools/store-gap.mjs).",
-    "crons": [
-     "41 */4 * * *"
-    ],
-    "onClock": true,
-    "expected24": 6,
-    "ran24": 8,
-    "scheduled24": 2,
-    "lateMin": 78,
-    "last": {
-     "at": "2026-11-21T00:17:55Z",
-     "event": "workflow_dispatch",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44842872647"
-    },
-    "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.7,
-    "minutesPerDay": 6,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
     "wf": "void-review.yml",
     "name": "Verse review",
     "what": "Verse reviews every pull request first, in seconds: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a visitor asks Verse to review code…",
     "crons": [],
     "onClock": false,
     "expected24": 0,
-    "ran24": 7,
+    "ran24": 6,
     "scheduled24": 0,
     "lateMin": null,
     "last": {
@@ -1537,7 +1509,7 @@
     "rate": 80,
     "streak": 0,
     "minutesPerRun": 0.5,
-    "minutesPerDay": 4,
+    "minutesPerDay": 3,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1570,60 +1542,30 @@
     "status": "working"
    },
    {
-    "wf": "learn.yml",
-    "name": "Verse learns",
-    "what": "Verse learns by itself (Verse's own want, domains/void.will.md #1; frontier item 2).",
+    "wf": "probe-asks.yml",
+    "name": "Verse probes itself",
+    "what": "Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md).",
     "crons": [
-     "39 18 * * *",
-     "39 19 * * *"
+     "23 */4 * * *"
     ],
     "onClock": false,
-    "expected24": 2,
+    "expected24": 6,
     "ran24": 3,
     "scheduled24": 3,
-    "lateMin": 289,
+    "lateMin": 142,
     "last": {
-     "at": "2026-11-21T00:55:56Z",
+     "at": "2026-11-21T01:36:09Z",
      "event": "schedule",
      "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44847031500"
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44851134077"
     },
     "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
+    "ok": 29,
+    "fail": 1,
+    "rate": 97,
     "streak": 0,
-    "minutesPerRun": 0.5,
-    "minutesPerDay": 1,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "void-voice.yml",
-    "name": "Verse's voice",
-    "what": "Verse's voice, daily (lib/voice.js, functions/api/reflect.js, tools/reflect.mjs).",
-    "crons": [
-     "9 18 * * *",
-     "9 19 * * *"
-    ],
-    "onClock": false,
-    "expected24": 2,
-    "ran24": 3,
-    "scheduled24": 3,
-    "lateMin": 300,
-    "last": {
-     "at": "2026-11-21T00:45:14Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44845895563"
-    },
-    "seen": 30,
-    "ok": 30,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.4,
-    "minutesPerDay": 1,
+    "minutesPerRun": 1.4,
+    "minutesPerDay": 4,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1680,6 +1622,63 @@
     "streak": 0,
     "minutesPerRun": 49,
     "minutesPerDay": 98,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "key-keeper.yml",
+    "name": "Key keeper",
+    "what": "Verse retires its own keys (owner, 2026-10-30: \"verse gets its own money and needs to learn to handle all the keys and secrets, stop trying to make this a…",
+    "crons": [
+     "17 3 * * *"
+    ],
+    "onClock": true,
+    "expected24": 1,
+    "ran24": 2,
+    "scheduled24": 1,
+    "lateMin": 462,
+    "last": {
+     "at": "2026-11-21T03:49:29Z",
+     "event": "workflow_dispatch",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44863061620"
+    },
+    "seen": 22,
+    "ok": 22,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.2,
+    "minutesPerDay": 0,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "learn.yml",
+    "name": "Verse learns",
+    "what": "Verse learns by itself (Verse's own want, domains/void.will.md #1; frontier item 2).",
+    "crons": [
+     "39 18 * * *",
+     "39 19 * * *"
+    ],
+    "onClock": false,
+    "expected24": 2,
+    "ran24": 2,
+    "scheduled24": 2,
+    "lateMin": 289,
+    "last": {
+     "at": "2026-11-21T00:55:56Z",
+     "event": "schedule",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44847031500"
+    },
+    "seen": 30,
+    "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.5,
+    "minutesPerDay": 1,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -1763,6 +1762,35 @@
     "rate": 73,
     "streak": 0,
     "minutesPerRun": 0.5,
+    "minutesPerDay": 1,
+    "costCentsPerDay": 0,
+    "status": "working"
+   },
+   {
+    "wf": "void-voice.yml",
+    "name": "Verse's voice",
+    "what": "Verse's voice, daily (lib/voice.js, functions/api/reflect.js, tools/reflect.mjs).",
+    "crons": [
+     "9 18 * * *",
+     "9 19 * * *"
+    ],
+    "onClock": false,
+    "expected24": 2,
+    "ran24": 2,
+    "scheduled24": 2,
+    "lateMin": 300,
+    "last": {
+     "at": "2026-11-21T00:45:14Z",
+     "event": "schedule",
+     "result": "success",
+     "url": "https://github.com/atomeam/void-loop/actions/runs/44845895563"
+    },
+    "seen": 30,
+    "ok": 30,
+    "fail": 0,
+    "rate": 100,
+    "streak": 0,
+    "minutesPerRun": 0.4,
     "minutesPerDay": 1,
     "costCentsPerDay": 0,
     "status": "working"
@@ -2042,34 +2070,6 @@
     "streak": 0,
     "minutesPerRun": 0.6,
     "minutesPerDay": 1,
-    "costCentsPerDay": 0,
-    "status": "working"
-   },
-   {
-    "wf": "key-keeper.yml",
-    "name": "Key keeper",
-    "what": "Verse retires its own keys (owner, 2026-10-30: \"verse gets its own money and needs to learn to handle all the keys and secrets, stop trying to make this a…",
-    "crons": [
-     "17 3 * * *"
-    ],
-    "onClock": true,
-    "expected24": 1,
-    "ran24": 1,
-    "scheduled24": 1,
-    "lateMin": 462,
-    "last": {
-     "at": "2026-11-20T11:41:38Z",
-     "event": "schedule",
-     "result": "success",
-     "url": "https://github.com/atomeam/void-loop/actions/runs/44729669958"
-    },
-    "seen": 21,
-    "ok": 21,
-    "fail": 0,
-    "rate": 100,
-    "streak": 0,
-    "minutesPerRun": 0.3,
-    "minutesPerDay": 0,
     "costCentsPerDay": 0,
     "status": "working"
    },
@@ -3348,7 +3348,7 @@
    }
   ]
  },
- "censusAt": 1795223280158,
+ "censusAt": 1795234637223,
  "visitorAt": "2026-11-21T03:30:36Z",
  "visitorFiled": [
   "heal:helper-shows-live-clean",
@@ -3433,42 +3433,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T04:14:27.086Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwcuue69",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 116
-    },
-    {
-     "id": "mwa0agd2",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 60
-    }
-   ],
-   "requeued": 1,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T04:24:02.169Z",
    "open": 500,
@@ -7724,6 +7688,40 @@
     "site-test.yml",
     "growth-fold.yml"
    ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T04:17:17.223Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
