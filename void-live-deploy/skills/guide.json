@@ -70,8 +70,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "kind": "family",
    "count": {
-    "experiment": 0,
-    "tested": 1,
+    "experiment": 1,
+    "tested": 0,
     "checked": 0,
     "proven": 30
    },
@@ -140,8 +140,8 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "kind": "family",
    "count": {
-    "experiment": 0,
-    "tested": 9,
+    "experiment": 3,
+    "tested": 6,
     "checked": 7,
     "proven": 92
    },
@@ -3856,8 +3856,8 @@
     "pie chart of Q1 40, Q2 35, Q3 25",
     "line chart jan 10, feb 14, mar 9"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "experiment",
+   "why": "nothing checks it yet",
    "n": 203
   },
   {
@@ -8817,8 +8817,8 @@
     "status of the automations for invoice reminders",
     "running status for the support router Verse owns"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "experiment",
+   "why": "nothing checks it yet",
    "n": 485
   },
   {
@@ -8832,8 +8832,8 @@
     "package the hard work for client onboarding",
     "we-own-it for SaaS support"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "experiment",
+   "why": "nothing checks it yet",
    "n": 486
   },
   {
@@ -8847,8 +8847,8 @@
     "status pack for my client idea",
     "what is the delivery status of the invoice system"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "experiment",
+   "why": "nothing checks it yet",
    "n": 487
   },
   {
