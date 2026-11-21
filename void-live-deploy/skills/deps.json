@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1407,
+ "counted": 1416,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -34,7 +34,7 @@
    "file": "lib/image-safety.js",
    "skills": 32,
    "direct": 0,
-   "dependants": 187,
+   "dependants": 194,
    "tests": 1
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 185,
+   "dependants": 186,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 31,
    "direct": 1,
-   "dependants": 185,
+   "dependants": 186,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 31,
    "direct": 0,
-   "dependants": 184,
+   "dependants": 185,
    "tests": 8
   },
   {
@@ -343,14 +343,14 @@
    "skills": 9,
    "direct": 1,
    "dependants": 16,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/job-sites.js",
    "skills": 9,
    "direct": 1,
    "dependants": 16,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/game-kit.js",
@@ -1035,8 +1035,8 @@
    "file": "lib/image-gen.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 125,
-   "tests": 3
+   "dependants": 126,
+   "tests": 4
   },
   {
    "file": "lib/alt-pay.js",
@@ -1112,7 +1112,7 @@
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 2
   },
   {
@@ -1302,7 +1302,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 18
+   "tests": 19
   },
   {
    "file": "lib/adventure.js",
@@ -1473,6 +1473,13 @@
    "tests": 2
   },
   {
+   "file": "lib/free-pics.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 34,
+   "tests": 3
+  },
+  {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
@@ -1485,13 +1492,6 @@
    "direct": 1,
    "dependants": 33,
    "tests": 1
-  },
-  {
-   "file": "lib/free-pics.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 33,
-   "tests": 3
   },
   {
    "file": "lib/plan.js",
@@ -1518,7 +1518,7 @@
    "file": "lib/automations.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 6
   },
   {
@@ -2533,29 +2533,36 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 121,
+   "dependants": 122,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 120,
+   "dependants": 121,
    "tests": 37
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 77,
+   "dependants": 78,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 77,
+   "dependants": 78,
    "tests": 0
+  },
+  {
+   "file": "lib/void-me.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 77,
+   "tests": 11
   },
   {
    "file": "lib/http.js",
@@ -2563,13 +2570,6 @@
    "direct": 0,
    "dependants": 76,
    "tests": 1
-  },
-  {
-   "file": "lib/void-me.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 76,
-   "tests": 11
   },
   {
    "file": "lib/earnings.js",
@@ -2619,6 +2619,13 @@
    "direct": 0,
    "dependants": 40,
    "tests": 1
+  },
+  {
+   "file": "lib/owner-gate.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 40,
+   "tests": 7
   },
   {
    "file": "lib/voice.js",
@@ -2685,6 +2692,13 @@
   },
   {
    "file": "lib/report.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 33,
+   "tests": 1
+  },
+  {
+   "file": "lib/searches.js",
    "skills": 0,
    "direct": 0,
    "dependants": 33,
@@ -2957,13 +2971,6 @@
    "tests": 4
   },
   {
-   "file": "lib/owner-gate.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 6
-  },
-  {
    "file": "lib/status.js",
    "skills": 0,
    "direct": 0,
@@ -3182,6 +3189,13 @@
   },
   {
    "file": "lib/calshare.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/content-safety.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -3797,6 +3811,13 @@
    "tests": 2
   },
   {
+   "file": "lib/cos-20.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/demand.js",
    "skills": 0,
    "direct": 0,
@@ -3844,6 +3865,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 3
+  },
+  {
+   "file": "lib/explore-more.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/fanfic-de.js",
@@ -3917,6 +3945,13 @@
   },
   {
    "file": "lib/generators-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/growth-runner.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4210,6 +4245,13 @@
    "tests": 1
   },
   {
+   "file": "lib/safe-meanings.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/scrim.js",
    "skills": 0,
    "direct": 0,
@@ -4273,7 +4315,21 @@
    "tests": 1
   },
   {
+   "file": "lib/stranger.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/sun-day.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/systems.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4513,6 +4569,7 @@
     "lib/subject-kinds.js",
     "lib/card-kinds.js",
     "lib/free-pics.js",
+    "functions/api/searches.js",
     "lib/image-safety.js",
     "lib/answer-edge.js",
     "lib/note-ask.js",
@@ -5169,6 +5226,7 @@
    "imports": [
     "lib/media.js",
     "lib/movies.js",
+    "lib/image-safety.js",
     "functions/api/movies.js"
    ],
    "importedBy": []
@@ -5468,6 +5526,49 @@
    ],
    "importedBy": [
     "functions/api/report.js"
+   ]
+  },
+  "functions/api/searches.js": {
+   "imports": [
+    "lib/searches.js",
+    "lib/void-me.js",
+    "lib/owner-gate.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/blueprint.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/feed.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/meanings.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
+    "lib/bench-asks.js"
    ]
   },
   "functions/api/selfcheck.js": {
@@ -5904,7 +6005,8 @@
   },
   "functions/gen/[id].js": {
    "imports": [
-    "lib/listgen.js"
+    "lib/listgen.js",
+    "lib/image-safety.js"
    ],
    "importedBy": []
   },
@@ -6585,6 +6687,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
@@ -7100,6 +7203,7 @@
     "functions/api/team.js",
     "functions/api/watch.js",
     "lib/automations-run.js",
+    "lib/growth-runner.js",
     "lib/keep-going.js"
    ],
    "reachedBy": [
@@ -9071,6 +9175,15 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/content-safety.js": {
+   "imports": [
+    "lib/image-safety.js"
+   ],
+   "importedBy": [
+    "lib/cos-20.js",
+    "lib/safe-meanings.js"
+   ]
+  },
   "lib/context-check.js": {
    "imports": [],
    "importedBy": [
@@ -9227,6 +9340,13 @@
     "skills/verse-brain.js",
     "skills/walker.js"
    ]
+  },
+  "lib/cos-20.js": {
+   "imports": [
+    "lib/free-pics.js",
+    "lib/content-safety.js"
+   ],
+   "importedBy": []
   },
   "lib/council-law.js": {
    "imports": [
@@ -9703,6 +9823,10 @@
    "imports": [
     "lib/podcasts.js"
    ],
+   "importedBy": []
+  },
+  "lib/explore-more.js": {
+   "imports": [],
    "importedBy": []
   },
   "lib/factorials.js": {
@@ -10245,6 +10369,7 @@
    "importedBy": [
     "functions/api/answer.js",
     "functions/api/daily-art.js",
+    "lib/cos-20.js",
     "skills/image.js"
    ],
    "reachedBy": [
@@ -10470,6 +10595,12 @@
     "skills/recipe.js"
    ]
   },
+  "lib/growth-runner.js": {
+   "imports": [
+    "lib/automations.js"
+   ],
+   "importedBy": []
+  },
   "lib/guard.js": {
    "imports": [
     "lib/owner-accounts.js",
@@ -10582,6 +10713,7 @@
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
     "functions/api/translate.js",
@@ -10986,6 +11118,7 @@
   },
   "lib/image-gen.js": {
    "imports": [
+    "lib/image-safety.js",
     "lib/art-rules.js",
     "lib/keeper.js"
    ],
@@ -11073,6 +11206,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
@@ -11131,9 +11265,14 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/media.js",
+    "functions/gen/[id].js",
     "lib/art-rules.js",
     "lib/card-frame.js",
-    "lib/free-pics.js"
+    "lib/content-safety.js",
+    "lib/free-pics.js",
+    "lib/image-gen.js",
+    "lib/searches.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
@@ -11211,6 +11350,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
@@ -11259,12 +11399,12 @@
     "lib/character.js",
     "lib/comments-ui.js",
     "lib/comments.js",
+    "lib/cos-20.js",
     "lib/credits.js",
     "lib/daily-photo.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/guard.js",
-    "lib/image-gen.js",
     "lib/memory-scope.js",
     "lib/owner-gate.js",
     "lib/page-pass.js",
@@ -11275,6 +11415,7 @@
     "lib/rap-video.js",
     "lib/rap-voice.js",
     "lib/rap.js",
+    "lib/safe-meanings.js",
     "lib/self-context.js",
     "lib/story.js",
     "lib/team-crew-run.js",
@@ -11674,6 +11815,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
@@ -12640,6 +12782,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
@@ -13577,6 +13720,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
@@ -13631,11 +13775,44 @@
     "functions/_middleware.js",
     "functions/api/loops.js",
     "functions/api/owner-cookie.js",
+    "functions/api/searches.js",
     "lib/page-pass.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/answer.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/blueprint.js",
     "functions/api/buy.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/feed.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/meanings.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
     "functions/api/page-pass.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
+    "lib/bench-asks.js",
     "lib/versus-moved.js"
    ]
   },
@@ -13736,6 +13913,7 @@
     "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
@@ -15438,6 +15616,12 @@
     "skills/duel.js"
    ]
   },
+  "lib/safe-meanings.js": {
+   "imports": [
+    "lib/content-safety.js"
+   ],
+   "importedBy": []
+  },
   "lib/safety.js": {
    "imports": [],
    "importedBy": [
@@ -15506,6 +15690,48 @@
    ],
    "importedBy": [
     "functions/api/reflect.js"
+   ]
+  },
+  "lib/searches.js": {
+   "imports": [
+    "lib/image-safety.js"
+   ],
+   "importedBy": [
+    "functions/api/searches.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/answer.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/blueprint.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/feed.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/meanings.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/x402/[service].js",
+    "functions/meanings/index.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/self-blocks.js": {
@@ -16746,6 +16972,10 @@
     "skills/rap.js"
    ]
   },
+  "lib/stranger.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/studio-card.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -16872,6 +17102,10 @@
     "lib/astro.js",
     "lib/zones.js"
    ],
+   "importedBy": []
+  },
+  "lib/systems.js": {
+   "imports": [],
    "importedBy": []
   },
   "lib/table-tools.js": {
@@ -18141,6 +18375,7 @@
     "functions/api/passkey.js",
     "functions/api/publish.js",
     "functions/api/review.js",
+    "functions/api/searches.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
     "functions/api/support.js",
@@ -18311,6 +18546,7 @@
     "functions/team/mcp.js",
     "lib/approval-core.js",
     "lib/approval-gate.js",
+    "lib/growth-runner.js",
     "lib/keep-going.js",
     "lib/team-crew-run.js",
     "skills/approve-card.js"
@@ -18447,6 +18683,7 @@
     "functions/api/report.js",
     "functions/api/review.js",
     "functions/api/scores.js",
+    "functions/api/searches.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
