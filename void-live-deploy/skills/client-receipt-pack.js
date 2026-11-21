@@ -1,7 +1,7 @@
 /**
  * client-receipt-pack skill — package a single client-facing receipt of everything Verse owns for a business idea:
  * clarified systems, running automations, monitors, status, time saved and the next summons.
- * Reduces client work to one ask; delivery stays reliable because Verse packages the heavy lifting.
+ * Reduces client work to one ask; delivery stays reliable because Verse packages the main work.
  * Rules-based, offline. Nothing is sent. Reuses existing tools and skills.
  * "client receipt pack for invoice automation",
  * "show the receipt of what Verse owns for client onboarding",
