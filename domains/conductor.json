@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T11:20:27.584Z",
+ "updated": "2026-11-21T11:29:53.450Z",
  "last24h": {
   "ticks": 148,
-  "started": 82,
+  "started": 81,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 3,
+   "used": 5,
    "cap": 90
   },
   "day": {
@@ -235,8 +235,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795258800000,
-   "startedAt": 1795259463640
+   "slot": 1795259700000,
+   "startedAt": 1795260593450
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -287,8 +287,8 @@
    "startedAt": 1795258903322
   },
   "arb-record.yml": {
-   "slot": 1795257420000,
-   "startedAt": 1795258337420
+   "slot": 1795259220000,
+   "startedAt": 1795260593450
   }
  },
  "census": {
@@ -3449,36 +3449,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T11:23:36.867Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwey8iy6",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 54
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 470,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T11:33:01.365Z",
    "open": 500,
@@ -7847,6 +7817,35 @@
    ],
    "daily": [],
    "catchup": [],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T11:29:53.450Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "arb-record.yml"
+   ],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
