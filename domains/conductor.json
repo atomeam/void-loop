@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T01:55:17.038Z",
+ "updated": "2026-11-21T02:04:42.719Z",
  "last24h": {
   "ticks": 147,
-  "started": 126,
+  "started": 125,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 62,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -148,7 +148,8 @@
  "blueprintsAt": 1795223280158,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795221660000
+   "slot": 1795225260000,
+   "startedAt": 1795226682719
   },
   "exam.yml": {
    "slot": 1795166220000
@@ -261,12 +262,12 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795221420000,
-   "startedAt": 1795219475998
+   "slot": 1795225020000,
+   "startedAt": 1795226682719
   },
   "growth-fold.yml": {
-   "slot": 1795221660000,
-   "startedAt": 1795223280158
+   "slot": 1795225260000,
+   "startedAt": 1795226682719
   },
   "arb-record.yml": {
    "slot": 1795225020000,
@@ -3426,37 +3427,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T01:56:58.235Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "want-exam-definitions",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 37,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T02:06:24.956Z",
    "open": 500,
@@ -7756,6 +7726,36 @@
    "catchup": [
     "pages-guard.yml",
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T02:04:42.719Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "site-test.yml",
+    "verse-watch.yml",
+    "growth-fold.yml"
    ],
    "cancelled": [],
    "sweep": false,
