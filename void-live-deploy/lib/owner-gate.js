@@ -10,7 +10,7 @@ const EXACT = new Set(['/assimilated.json', '/lib/tower.js', '/lib/tower-weight.
 /** true for a path only the owner may read. Pure. */
 export function ownerOnlyPath(pathname) {
   const p = String(pathname || '');
-  return EXACT.has(p) || //^\/lib\/tower[^/\]+\.js$/.test(p) || ^\/(?:tower\.[^/]+|tower-evidence|rivals)(?:\/.*)?$/.test(p) || /^\/history\/[^/]+\.json$/.test(p);
+  return EXACT.has(p) || //^\/lib\/tower[^/\]+\.js$/.test(p) || /^\/(?:tower\.[^/]+|tower-evidence|rivals)(?:\/.*)?$/.test(p) || /^\/history\/[^/]+\.json$/.test(p);
 }
 export function cookieOf(request) {
   const m = new RegExp('(?:^|;\\s*)' + COOKIE + '=([^;]+)').exec(request.headers.get('cookie') || '');
