@@ -27,7 +27,7 @@ import { topicOf } from '../void-live-deploy/lib/tower-topic.js';
 import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { readGone, isGone } from './tower-alive.mjs';
-import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate, barRow } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate, barRow } from '../void-live-deploy/lib/tower.js'; import { echoVaultOf } from '../void-live-deploy/lib/echo-vault.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { probeFor, keywordsOf } from './tower-probes.mjs';
@@ -102,7 +102,7 @@ export const sharesWords = (fam, text) => { const t = norm(text); return familyW
  *  and scripts), then its traffic (Tranco: a smaller site first). score is 0-100, higher is
  *  easier: 100 / (1 + controls / 10 + bytes / 1 MB), or 50 / (1 + hardness / 10) for a site the scan has not sized yet. place is its place in
  *  this run's queue (1 = taken on first). A site whose read came back walled, gone or stuck is never picked again (pickCandidates). Pure. */
-export function easeOf(x, place = null) {
+const isStubSite = (x = {}) => (Number.isFinite(x.controls) && x.controls !== null && x.controls === 0) || (Number.isFinite(x.bytes) && x.bytes !== null && x.bytes < 1024); export function easeOf(x, place = null) { if (isStubSite(x)) return { score: 0, ...(place ? { place } : {}), why: 'stub (' + (x.controls ?? '?') + ' controls, ' + (x.bytes ?? '?') + ' B)' };
   const sized = Number.isFinite(x.controls) && x.controls !== null && Number.isFinite(x.bytes) && x.bytes !== null;
   const score = sized ? 100 / (1 + x.controls / 10 + x.bytes / 1e6) : 50 / (1 + (Number.isFinite(x.hardness) && x.hardness !== null ? x.hardness : 50) / 10);
   const why = sized ? x.controls + ' controls, ' + Math.round(x.bytes / 1000) + ' KB' : 'not sized yet' + (x.hardness !== null && x.hardness !== undefined ? ', hardness ' + x.hardness : '');
@@ -113,7 +113,7 @@ export function easeOf(x, place = null) {
 export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS, gone = readGone() } = {}) {
   const tried = (state && state.sites) || {}, out = [], ranking = rankingOf({ frontier, floors, state });
   for (const x of frontierOf(frontier, floors)) {
-    if (x.blocked || offLimits(x.host, ranking) || isGone(x.host, gone)) continue; // a gone or parked domain (tools/tower-alive.mjs) is never read // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
+    if (x.blocked || offLimits(x.host, ranking) || isGone(x.host, gone) || isStubSite(x)) continue; // a gone or parked domain (tools/tower-alive.mjs) is never read // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
     const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
     out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness, controls: x.controls, bytes: x.bytes, ease: easeOf(x, out.length + 1) }); if (out.length >= max) break;
@@ -275,7 +275,7 @@ async function build(planFile, outFile, maxBuilt) {
       const fam = fams.find((f) => f.id === String(a.family || '').trim().toLowerCase());
       if (!fam || !sharesWords(fam, siteText)) {
         const why = !fam ? 'no floor does its job (' + clipWords(a.why, 160) + ')' : 'the model chose ' + fam.id + ' but the site says none of its words';
-        decision.state[c.host] = { at: now(), outcome: 'no-family', why: clip(why, 200), title: clip(r.pages[0].title, 80), ...pick }; save();
+        decision.state[c.host] = { at: now(), outcome: (!fam && (echoVaultOf({ kind: (r.pages[0] && r.pages[0].title) + ' ' + why, controls: c.controls, bytes: c.bytes, press: c.controls }) || /\b(?:history|lore|archive|chronicle|museum|encyclopedia|wiki|reading|editorial|essay|blog)\b/i.test(siteText))) ? 'echo-vault' : 'no-family', why: clip(why, 200), title: clip(r.pages[0].title, 80), ...pick }; save();
         decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') needs a page no floor has yet: ' + clipWords(a.why, 90), 200) });
         console.log(c.host + ': ' + why); continue;
       }

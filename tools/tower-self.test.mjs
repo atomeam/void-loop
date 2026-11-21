@@ -48,6 +48,7 @@ test('the pick: easiest frontier sites first, never a floor, a blocked site or o
   assert.deepEqual(pickCandidates(frontier, state, { at }).map((x) => x.host), ['d.test'], 'no-family comes back after ' + RETRY_DAYS + ' days');
   assert.equal(pickCandidates(frontier, {}, { at, max: 1 }).length, 1);
 });
+test('easeOf scores zero-control or <1024-byte stub sites as 0 and pickCandidates skips them', () => { assert.equal(easeOf({ site: 'zero.test', hardness: 5, controls: 0, bytes: 4096 }).score, 0); assert.equal(easeOf({ site: 'tiny.test', hardness: 5, controls: 3, bytes: 512 }).score, 0); assert.equal(easeOf({ site: 'edge.test', hardness: 5, controls: 3, bytes: 1023 }).score, 0); assert.ok(easeOf({ site: 'real.test', hardness: 10, controls: 4, bytes: 2048 }).score > 0); const frontier = { sites: [{ site: 'zero.test', hardness: 5, controls: 0, bytes: 4096 }, { site: 'tiny.test', hardness: 5, controls: 3, bytes: 512 }, { site: 'real.test', hardness: 20, controls: 4, bytes: 4096 }] }; const at = Date.parse('2026-10-26T00:00:00Z'); assert.deepEqual(pickCandidates(frontier, {}, { at }).map((x) => x.host), ['real.test']); });
 
 test('the row\'s words: never the site, never what the page does not do, never markup or a key; the family page\'s own words otherwise', () => {
   const fam = colour(), baseText = textOf(fs.readFileSync(path.join(root, 'void-live-deploy/color/index.html'), 'utf8')) + ' ' + fam.does;
