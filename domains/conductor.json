@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T00:04:35.998Z",
+ "updated": "2026-11-21T00:17:31.623Z",
  "last24h": {
   "ticks": 147,
-  "started": 124,
+  "started": 125,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -18,70 +18,94 @@
  ],
  "held": [
   {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
+   "id": "want-guard-hourly-deploy-green",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
+   "id": "want-guard-hourly-main-green",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
+   "id": "want-exam-definitions",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
+   "id": "want-idea-298bf37d16",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
+   "id": "want-idea-f167636764",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwn99ues",
-   "why": "no executor for route"
+   "id": "want-idea-ac2885447b",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwazktlm",
-   "why": "no executor for bot"
+   "id": "want-idea-f50546a338",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwazktnz",
-   "why": "no executor for bot"
+   "id": "want-idea-25e717d31f",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwazktrq",
-   "why": "no executor for bot"
+   "id": "want-idea-1a3192a173",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwazktv3",
-   "why": "no executor for bot"
+   "id": "want-idea-5e6497554d",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwazktv9",
-   "why": "no executor for bot"
+   "id": "mwcuue69",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwkeqzae",
-   "why": "no executor for next"
+   "id": "mwe1sh8c",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwav1pw9",
-   "why": "no executor for retest"
+   "id": "mwe46i1x",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
-   "id": "mwditzd8",
-   "why": "no executor for route"
+   "id": "mwe4pvdh",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "mwe5oqe5",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "mwe873tt",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "mwau0ded",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "mwfe1mby",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "mwfmgjzo",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "mwfolhc4",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 8,
+   "used": 51,
    "cap": 90
   },
   "day": {
-   "used": 8,
+   "used": 51,
    "cap": 360
   },
   "room": true,
@@ -90,8 +114,7 @@
  },
  "handed": {
   "mvbl52gd": 1795219475998,
-  "mvu167w7": 1795155695690,
-  "mveb8svc": 1795133576525,
+  "mvu167w7": 1795220251623,
   "mvfu4evy": 1795134146575,
   "mvpuq9g6": 1795134709317,
   "mvpuqaee": 1795135283788,
@@ -104,7 +127,7 @@
   "mwa0ah54": 1795215604938,
   "mwdsggtv": 1795214868815,
   "mwdsgi9n": 1795219475998,
-  "mwdsgj2z": 1795194215665,
+  "mwdsgj2z": 1795220251623,
   "mweaagmp": 1795194782245,
   "mweaah6f": 1795217607912,
   "mwey8iy6": 1795218868749,
@@ -113,7 +136,8 @@
   "mwmpup7b": 1795197612742,
   "mwnbxf5o": 1795198178741,
   "mwnkyhgw": 1795199303431,
-  "mveb8rsi": 1795219475998
+  "mveb8rsi": 1795219475998,
+  "mveb8svc": 1795220251623
  },
  "sweptAt": 1795219475998,
  "blueprintsAt": 1795219475998,
@@ -3294,128 +3318,90 @@
   ]
  },
  "censusAt": 1795212255613,
- "visitorAt": "2026-11-20T23:19:48Z",
+ "visitorAt": "2026-11-21T00:13:30Z",
  "visitorFiled": [
-  "heal:helper-book-green-main",
-  "review:2699",
-  "review:2701",
-  "review:2832",
-  "review:2831",
-  "feature:team-3565",
-  "heal:helper-image-change-f60f",
-  "review:2842",
-  "review:2843",
-  "review:2852",
-  "tv:contactless-delivery-verificatio",
-  "feature:flightconnections-co-d3bf4719",
-  "feature:flightconnections-co-77245665",
-  "feature:flightconnections-co-68e29fa9",
-  "review:2845",
-  "review:2802",
-  "heal:helper-combine-pdf",
-  "review:2868",
-  "heal:tower-gate.yml",
-  "review:2875",
-  "tv:digital-resilience-audit",
-  "heal:helper-automation-proposal",
-  "gap:se-185621",
-  "review:2877",
-  "review:2899",
-  "review:2906",
-  "review:2916",
-  "review:2914",
-  "review:2920",
-  "next",
-  "review:2928",
-  "review:2930",
-  "review:2935",
-  "review:2937",
-  "review:2940",
-  "heal:helper-summon-pack",
-  "review:2941",
-  "heal:helper-connect-flows",
-  "review:2943",
-  "review:2944",
-  "heal:helper-automation-handoff",
-  "review:2951",
-  "review:2962",
-  "heal:helper-systems-connect-pack",
-  "review:2963",
-  "review:2964",
-  "review:2965",
-  "probe:math-quiz-10-questions",
-  "review:2968",
-  "review:2972",
-  "review:2975",
-  "probe:automation-status-for-invoice-remi",
-  "flake:the-fix-pages-the-hub-lists-every",
-  "flake:python-tests",
-  "heal:suite-bf8d9a3",
-  "review:2974",
-  "review:2987",
-  "heal:helper-ops-digest",
-  "review:2988",
-  "review:2991",
-  "probe:connect-systems-for-invoice-automa",
-  "heal:suite-e5755e8",
-  "tv:prayer-request-workflow",
-  "route:games-eight-ball",
-  "probe:status-of-the-automations-verse-ow",
-  "will:overhaul-site-shopping-persona-playtest-",
-  "review:2999",
-  "heal:helper-process-lift-pack",
-  "probe:client-handoff-pack-on-onboarding-",
-  "review:3001",
-  "heal:helper-reliability-ownership",
-  "review:3007",
-  "flake:password-strength-password-strengt",
-  "flake:base64-page-base64-encodes-and-dec",
-  "heal:helper-delivery-pack",
-  "review:3018",
-  "review:3019",
-  "visit:define-serendipity",
-  "heal:helper-connections-watch",
-  "review:3022"
+  "heal:helper-shows-live-clean",
+  "review:2702",
+  "heal:helper-shows-craft-6fca",
+  "review:2667",
+  "review:2705",
+  "review:2706",
+  "heal:helper-delivery-board",
+  "review:2707",
+  "review:2708",
+  "heal:helper-status-digest",
+  "review:2713",
+  "tv:relationship-history-logger",
+  "review:2717",
+  "review:2723",
+  "visit:what-s-the-weather-in-lakeland-f",
+  "route:ownership-ownership-map-for-weekly",
+  "heal:helper-full-handoff",
+  "review:2725",
+  "review:2728",
+  "review:2729",
+  "review:2731",
+  "review:2732",
+  "probe:what-am-i-missing-in-this-plan",
+  "probe:draft-the-handoff-checklist",
+  "probe:show-me-the-ownership-map",
+  "review:2733",
+  "review:2736",
+  "review:2739",
+  "heal:helper-full-handoff-complete",
+  "heal:helper-system-plan",
+  "review:2743",
+  "heal:helper-reliability-pack",
+  "heal:helper-roi-pack",
+  "heal:helper-kickoff-pack",
+  "visit:tell-me-a-joke",
+  "review:2747",
+  "heal:helper-versus-owner-ad9e",
+  "review:2749",
+  "heal:helper-conflict-checks-d564",
+  "heal:helper-uni-pages-131a",
+  "heal:helper-register-delivery-skills",
+  "heal:helper-systems-owned",
+  "review:2758",
+  "probe:is-the-bot-running",
+  "probe:summarize-the-last-sprint",
+  "review:2761",
+  "heal:helper-delivery-ready",
+  "probe:how-do-i-use-you",
+  "review:2753",
+  "heal:helper-delivery-dashboard",
+  "review:2766",
+  "heal:helper-register-delivery-skills-",
+  "review:2777",
+  "heal:helper-client-weekly",
+  "review:2778",
+  "heal:helper-delivery-ready-register",
+  "review:2780",
+  "heal:helper-incident-pack",
+  "review:2783",
+  "heal:helper-track-times-11ee",
+  "heal:helper-sustain-pack",
+  "review:2787",
+  "review:2788",
+  "feature:flightconnections-co-16bb714c",
+  "feature:flightconnections-co-8e95a3b2",
+  "feature:flightconnections-co-a2eec86b",
+  "review:2792",
+  "heal:helper-handoff-next",
+  "review:2794",
+  "heal:helper-sales-pack",
+  "review:2804",
+  "review:2808",
+  "heal:helper-work-list-44cf",
+  "review:2805",
+  "review:2806",
+  "heal:helper-debris-field-bc88",
+  "heal:helper-scope-pack",
+  "review:2817",
+  "review:2827",
+  "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T00:12:56.525Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mveb8svc",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml",
-    "deploy.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 487,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T00:22:26.575Z",
    "open": 500,
@@ -7675,6 +7661,50 @@
    "sweep": true,
    "blueprints": 0,
    "held": 14,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T00:17:31.623Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mwdsgj2z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 32
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 472,
    "warnings": 0
   }
  ]
