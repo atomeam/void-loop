@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 30,
+ "count": 31,
  "skills": {
   "working-on": [
    "will-card",
@@ -182,6 +182,9 @@
    "monitor-receipt",
    "ownership-pack",
    "handoff-checklist"
+  ],
+  "verse-runs": [
+   "verse-runs"
   ]
  }
 }
