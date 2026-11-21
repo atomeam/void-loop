@@ -40,3 +40,5 @@ binding = "AI"
 [[r2_buckets]]
 binding = "FILMS"
 bucket_name = "void-films"
+[vars]
+STORE_PROVIDER = "stripe"
