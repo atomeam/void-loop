@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T17:27:28.346Z",
+ "updated": "2026-11-21T17:36:58.875Z",
  "last24h": {
   "ticks": 148,
-  "started": 80,
+  "started": 79,
   "requeued": 5,
   "setAside": 0,
   "probes": 0,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 2,
+   "used": 3,
    "cap": 90
   },
   "day": {
@@ -144,8 +144,8 @@
   "mvvjzso8": 1795223280158,
   "mw5mm5fm": 1795223856465
  },
- "sweptAt": 1795278651498,
- "blueprintsAt": 1795278651498,
+ "sweptAt": 1795282618875,
+ "blueprintsAt": 1795282618875,
  "catchup": {
   "site-test.yml": {
    "slot": 1795279260000,
@@ -3463,36 +3463,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T17:31:56.136Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwey8iy6",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 54
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": true,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 472,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T17:41:18.418Z",
    "open": 500,
@@ -8021,6 +7991,32 @@
    ],
    "cancelled": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T17:36:58.875Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
+   "cancelled": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 482,
    "warnings": 0
