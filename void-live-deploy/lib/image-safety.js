@@ -8,7 +8,7 @@ const SENSITIVE = new RegExp('\\b(?:' + [
   'strip(?:per|pers|tease|ping)', 'strip ?clubs?', 'lingerie', 'bikinis?', 'swimsuits?', 'swimwear', 'underwear', 'panties', 'thongs?', 'bras?', 'nsfw', 'xxx', 'rule ?34',
   'sex(?:es|y|ual|uality|ually|ting|t)?', 'porn\\w*', 'erotic\\w*', 'fetish\\w*', 'kink\\w*', 'bdsm', 'hentai', 'onlyfans', 'camgirls?', 'obscen\\w*', 'lewd', 'smut',
   'genital\\w*', 'penis(?:es)?', 'phallus', 'phallic', 'vagina\\w*', 'vulva\\w*', 'clitor\\w*', 'testic\\w*', 'scrot\\w*', 'pubic', 'pubes', 'anus', 'anal', 'buttocks?',
-  'breasts?', 'nipples?', 'areolae?', 'boobs?', 'boobies', 'tits?', 'titties', 'titty', 'dick ?pics?', 'pussy', 'cunt', 'orgasm\\w*', 'masturbat\\w*', 'ejaculat\\w*',
+  'breasts?', 'nipples?', 'areolae?', 'boobs?', 'boobies', 'tits?', 'titties', 'titty', 'dick(?:s| ?pics?)?', 'cocks?', 'pussy', 'cunt', 'orgasm\\w*', 'masturbat\\w*', 'ejaculat\\w*',
   'intercourse', 'coitus', 'prostitut\\w*', 'escort (?:service|agency|agencies)s?', 'brothels?', 'harlot', 'hooker\\w*', 'adult (?:film|films|video|videos|content|entertainment|industry|actor|actress|model|site|sites|star)s?',
   'circumcis\\w*', 'puberty', 'breastfeed\\w*', 'body ?paint\\w*', 'baths?', 'bath(?:e|es|ing|house|houses)', 'saunas?', 'onsen', 'banya', 'shower(?:s|ing)?', 'voyeur\\w*', 'exhibitionis\\w*',
   'incest', 'rape', 'molest\\w*', 'grooming', 'trafficking',
@@ -30,8 +30,10 @@ export function unsafeText(...parts) {
 // get no picture for anyone (owner, 2026-11-20: the minors block is absolute; fail closed when age is uncertain)
 const FAMILY_NUDITY = /\b(?:naturis\w*|nudis\w*|nude beach\w*|naturist beach\w*|clothing[- ]optional|skinny[- ]?dip\w*|baths?|bath(?:e|es|ing|house|houses)|saunas?|onsen|banya|puberty|breastfeed\w*|famil(?:y|ies)|school\w*|camps?|resorts?)\b/i;
 /** 'minor' (no picture, for everyone, no override), 'adult' (a clearly-adult picture may show, blurred until an 18+ tap; the owner is exempt) or ''. */
+// names and works that only share a word with the body (lib/content-safety.js NAMED_WORK keeps the same list for meanings)
+const NAMED_WORK = /\b(?:moby[ -]?dick|dick van dyke|philip k\.?\s*dick|dick grayson|dick cheney|dick tracy|dick clark|spotted dick|cock robin|cocker spaniel)\b/gi;
 export function classify(...parts) {
-  const t = parts.flat(3).filter((x) => x != null).map((x) => String(x)).join(' \u2022 ').replace(/[_+%]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+  const t = parts.flat(3).filter((x) => x != null).map((x) => String(x)).join(' \u2022 ').replace(/[_+%]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(NAMED_WORK, ' ');
   if (!t.trim()) return '';
   if (ABUSE.test(t)) return 'minor';
   const sens = SENSITIVE.test(t);
