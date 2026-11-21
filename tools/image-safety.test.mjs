@@ -63,3 +63,19 @@ test('every render path reads the gate: the page, the frame, the forge, the answ
   assert.match(readFileSync(new URL('../void-live-deploy/lib/card-forge.js', import.meta.url), 'utf8'), /imgSafe === 'blocked'/);
   assert.match(readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8'), /!unsafeText\(ask, lead\.name/);
 });
+
+// the other picture doors (owner, 2026-11-20): the painter, the media answers and a generator's share card read the same gate
+test('the painter never paints minors in such a context; media answers drop their pictures; a sensitive generator shares the plain card', async () => {
+  const { refusalOf } = await import('../void-live-deploy/lib/image-gen.js');
+  assert.equal(refusalOf('children at the nude beach'), 'unsuitable');
+  assert.equal(refusalOf('a lighthouse at dawn'), '');
+  const { safePictures } = await import('../void-live-deploy/functions/api/media.js');
+  const bad = safePictures({ verified: true, title: 'Naked', poster: 'https://static.tvmaze.com/x.jpg', image: 'https://x/y.jpg' }, ['naked']);
+  assert.equal(bad.poster, undefined); assert.equal(bad.image, undefined); assert.match(bad.pictures, /hidden/);
+  const ok = safePictures({ verified: true, title: 'The Matrix', poster: 'https://static.tvmaze.com/m.jpg' }, ['the matrix']);
+  assert.equal(ok.poster, 'https://static.tvmaze.com/m.jpg');
+  const { withCard } = await import('../void-live-deploy/functions/gen/[id].js');
+  const html = '<meta property="og:image" content="x">';
+  assert.match(withCard(html, { id: 'abcdefgh', title: 'Nude pics', description: 'd', image: 'k1' }), /og\.png/);
+  assert.match(withCard(html, { id: 'abcdefgh', title: 'Cat names', description: 'd', image: 'k1' }), /api\/gallery\?img=k1/);
+});

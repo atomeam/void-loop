@@ -3,12 +3,13 @@
 // name), so a link pasted in a chat shows what it is. The generator's text is never put into the HTML: the page fetches it from /api/generators.
 // GET only; an id that is not a published generator gets the plain editor page with a 404 status. Read-only, no model, no writes.
 import { compile } from '../../lib/listgen.js';
+import { unsafeText } from '../../lib/image-safety.js';
 
 export const ID_RE = /^[a-z2-7]{8}$/;
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 /** the editor page's html with the share card set for one generator. Pure. */
 export function withCard(html, { id, title, description, image }, origin = 'https://a-to-mind.com') {
-  const url = origin + '/gen/' + id, t = esc(title) + ' · Verse', d = esc(description), img = image ? origin + '/api/gallery?img=' + image : origin + '/og.png';
+  const url = origin + '/gen/' + id, t = esc(title) + ' · Verse', d = esc(description), img = image && !unsafeText(title, description) ? origin + '/api/gallery?img=' + image : origin + '/og.png'; // lib/image-safety.js: a sensitive generator's share card shows the plain Verse card
   return String(html)
     .replace(/<title>[^<]*<\/title>/, '<title>' + t + '</title>')
     .replace(/<meta name="description" content="[^"]*">/, '<meta name="description" content="' + d + '">')
