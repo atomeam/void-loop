@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T13:22:44.350Z",
+ "updated": "2026-11-21T13:32:08.388Z",
  "last24h": {
   "ticks": 148,
-  "started": 87,
+  "started": 88,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 14,
+   "used": 20,
    "cap": 90
   },
   "day": {
@@ -164,7 +164,8 @@
    "startedAt": 1795236889096
   },
   "review-main.yml": {
-   "slot": 1795179180000
+   "slot": 1795265580000,
+   "startedAt": 1795267928388
   },
   "treasury.yml": {
    "slot": 1795263780000,
@@ -3451,29 +3452,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T13:26:17.241Z",
-   "open": 500,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 472,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T13:35:37.794Z",
    "open": 500,
@@ -7945,6 +7923,41 @@
    "daily": [],
    "catchup": [
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 24,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T13:32:08.388Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwe1sh8c",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 117
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "review-main.yml"
    ],
    "cancelled": [],
    "sweep": false,
