@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T07:53:20.001Z",
+ "updated": "2026-11-21T08:02:44.274Z",
  "last24h": {
   "ticks": 148,
-  "started": 92,
+  "started": 91,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -153,8 +153,8 @@
  "blueprintsAt": 1795247032878,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795243260000,
-   "startedAt": 1795244777786
+   "slot": 1795246860000,
+   "startedAt": 1795248164274
   },
   "exam.yml": {
    "slot": 1795166220000
@@ -280,11 +280,11 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795243020000,
-   "startedAt": 1795244777786
+   "slot": 1795246620000,
+   "startedAt": 1795248164274
   },
   "growth-fold.yml": {
-   "slot": 1795243260000,
+   "slot": 1795246860000,
    "startedAt": 1795244777786
   },
   "arb-record.yml": {
@@ -3445,36 +3445,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T07:56:02.207Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mw21cj6l",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 92
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 266,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T08:05:39.274Z",
    "open": 500,
@@ -7788,6 +7758,36 @@
    "daily": [],
    "catchup": [
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T08:02:44.274Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "site-test.yml",
+    "verse-watch.yml"
    ],
    "cancelled": [],
    "sweep": false,
