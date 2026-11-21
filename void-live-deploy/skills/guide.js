@@ -27,6 +27,7 @@ const WHOSE = '(?:the\\s+|your\\s+|(?:verse|v01d)\\s*\'?s?\\s+|(?:verse|void)\\s
 const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|(?:verse|void)\\s+)?' + BOOK_WORDS + '|(?:v01d|(?:verse|void)|verse)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything|book of (?:the\\s+)?verse)(?:\\s+of\\s+everything(?:\\s+(?:you|it|(?:verse|v01d)|(?:verse|void)|verse)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
 const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|(?:verse|void)\\s+)?' + BOOK_WORDS + '\\s+(?:at|on|to|for|about)\\s+(?:the\\s+)?([a-z0-9][a-z0-9 \'-]{1,40})$', 'i');
 const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|verse|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
+const RE_WHAT_ELSE = /^(?:(?:show|tell)\s+me\s+)?what\s+else\s+(?:(?:can|could|do)\s+(?:you|void|v01d|verse|it)|(?:you|void|v01d|verse|it)\s+(?:can|could|do))\s+do(?:\s+please)?$/i;
 const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|(?:verse|void)\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|(?:verse|void)\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
 const RE_MORE = /^(?:(?:what's|whats|what is)\s+in\s+the\s+(?:book|guide)|(?:the\s+)?table\s+of\s+contents|(?:show\s+me\s+)?(?:the\s+)?(?:whole|complete|full)\s+(?:list|guide|book|manual)(?:\s+of\s+(?:skills|everything))?|every\s+skill(?:\s+(?:you|(?:verse|void)|(?:verse|v01d)|verse)\s+(?:have|has))?|(?:the\s+)?(?:v01d|(?:verse|void)|verse)\s+(?:book|guide|manual|handbook))$/i;
 // the rule registry (asked by Verse): "rule registry", "show the router rules", "list all active router rules" open the book at that chapter
@@ -40,7 +41,7 @@ export function guideOf(text) {
   if (at) return { at: at[1].trim() };
   if (RE_NEWS.test(t)) return { at: "what\u2019s new" };
   if (RE_RULES.test(t)) return { at: 'rule registry' };
-  if (RE_BOOK.test(t) || RE_ALL.test(t) || RE_MORE.test(t)) return { at: '' };
+  if (RE_BOOK.test(t) || RE_ALL.test(t) || RE_WHAT_ELSE.test(t) || RE_MORE.test(t)) return { at: '' };
   return null;
 }
 
