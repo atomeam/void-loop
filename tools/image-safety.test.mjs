@@ -105,3 +105,8 @@ test('the painter never paints minors in such a context; media answers drop thei
   assert.match(withCard(html, { id: 'abcdefgh', title: 'Nude pics', description: 'd', image: 'k1' }), /og\.png/);
   assert.match(withCard(html, { id: 'abcdefgh', title: 'Cat names', description: 'd', image: 'k1' }), /api\/gallery\?img=k1/);
 });
+test('an adult-intent card (cos-20) is always adult on the page: blurred and age-checked, never a plain photo', () => {
+  const el = { dataset: { cos20: '1' }, textContent: 'Gianna Adult 18+', querySelector: () => null };
+  assert.equal(classify('gianna'), '');
+  return import('../void-live-deploy/lib/image-safety.js').then((m) => assert.equal(m.cardClass(el, 'gianna'), 'adult'));
+});

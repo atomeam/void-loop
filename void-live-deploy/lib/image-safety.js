@@ -43,6 +43,7 @@ export function classify(...parts) {
 /** a card's class from its heading, kind line, text and the ask (see classify). */
 export function cardClass(el, ask = '') {
   if (!el) return '';
+  if (el.dataset && el.dataset.cos20 !== undefined || (el.querySelector && el.querySelector('img[data-adult-gated]'))) { const c = classify(ask, String(el.textContent || '').slice(0, 800)); return c === 'minor' ? 'minor' : 'adult'; } // an adult-intent card (lib/cos-20.js) is adult: blurred, age-checked
   const d = el.dataset || {}, h2 = el.querySelector && el.querySelector('h2');
   return classify(ask, d.ask || '', d.cardDesc || '', d.cardExtract || '', h2 ? h2.textContent : '', String(el.textContent || '').slice(0, 800));
 }

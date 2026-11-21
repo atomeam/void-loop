@@ -5268,13 +5268,14 @@ say('nothing selected to remove');
         fetch('/api/image-safety', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: src, context: ctx.slice(0, 600) }) }).then((r) => r.json())
           .then((j) => { if (j && j.ok === true && im.getAttribute('src') === src) { im.dataset.ageCheck = 'ok'; im.dataset.ageOk = '1'; } else im.remove(); }).catch(() => im.remove());
       }
-      const open = () => { el.dataset.adultOpen = '1'; const b = el.querySelector('.adult-tap'); if (b) b.remove(); };
+      const open = () => { el.dataset.adultOpen = '1'; for (const n of el.querySelectorAll('.adult-tap, .adult-why')) n.remove(); };
       if (el.dataset.adultOpen) return;
       isOwner().then((o) => { if (o) open(); });
       if (!el.querySelector('.adult-tap') && el.querySelector('img[data-age-check]')) {
         const b = document.createElement('button'); b.type = 'button'; b.className = 'adult-tap'; b.dataset.nosave = '1'; b.textContent = '18+ \u00b7 tap to show the picture';
         b.addEventListener('click', () => { isOwner().then((o) => { if (o || localStorage.getItem('a2m.adult18') === '1' || confirm('This picture shows adult nudity. Are you 18 or older?')) { try { localStorage.setItem('a2m.adult18', '1'); } catch (_) {} open(); } }); });
-        const h = el.querySelector('h2'); if (h) h.after(b); else el.prepend(b);
+        const lk = document.createElement('a'); lk.href = '/safety/'; lk.className = 'adult-why'; lk.dataset.nosave = '1'; lk.textContent = 'Safety and 18+'; lk.style.cssText = 'display:block;text-align:center;font-size:11px;color:#888';
+        const h = el.querySelector('h2'); if (h) { h.after(b); b.after(lk); } else { el.prepend(lk); el.prepend(b); }
       }
     }
     function safeWatch(el) {
