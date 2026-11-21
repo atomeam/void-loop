@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { easeOf, sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, keepSeo, swWith, judgeRows, guardOf, reportLine, causeOfLap, isNoop, nextOf, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
+import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, keepSeo, swWith, judgeRows, guardOf, reportLine, causeOfLap, isNoop, nextOf, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
 import { FLOORS, LANES, LANE_PAGES, passingRows } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
