@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; border-radius:8px; }
+canvas { display:block; }
+.portal { position:absolute; width:60px; height:40px; background:rgba(100,150,255,0.7); border-radius:8px; pointer-events:auto; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:12px; user-select:none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand Spatial Memory MLP Mind · Verse lab</title>
+<meta name="description" content="A progressive WebXR (or pointer-fallback) experience where hand joint or pointer motion injects into a persistent 2D spatial memory field stored in IndexedDB.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand Spatial Memory MLP Mind · Verse lab">
+<meta property="og:description" content="A progressive WebXR (or pointer-fallback) experience where hand joint or pointer motion injects into a persistent 2D spatial memory field stored in IndexedDB.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f878-webxr-hand-spatial-memory-mlp-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f878-webxr-hand-spatial-memory-mlp-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F878 WebXR Hand Spatial Memory MLP</div>
+  <button id="xrbtn">Enter WebXR</button>
+  <button id="seal">Seal Genome</button>
+  <div id="status">Fallback mode: pointer as hand. Tilt or move to inject memory.</div>
+</div>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand Spatial Memory MLP Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
