@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T06:19:32.871Z",
+ "updated": "2026-11-21T06:28:51.663Z",
  "last24h": {
   "ticks": 148,
-  "started": 96,
-  "requeued": 4,
+  "started": 95,
+  "requeued": 3,
   "setAside": 0,
   "probes": 0,
   "errors": 0
@@ -111,11 +111,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 5,
    "cap": 90
   },
   "day": {
-   "used": 286,
+   "used": 291,
    "cap": 360
   },
   "room": true,
@@ -231,8 +231,8 @@
    "startedAt": 1795238022181
   },
   "pages-guard.yml": {
-   "slot": 1795240800000,
-   "startedAt": 1795241408071
+   "slot": 1795241700000,
+   "startedAt": 1795242531663
   },
   "autosalvage.yml": {
    "slot": 1795166220000
@@ -281,8 +281,8 @@
    "startedAt": 1795241408071
   },
   "arb-record.yml": {
-   "slot": 1795239420000,
-   "startedAt": 1795240840171
+   "slot": 1795241220000,
+   "startedAt": 1795242531663
   }
  },
  "census": {
@@ -3438,42 +3438,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T06:21:35.690Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "want-guard-hourly-deploy-green",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 105
-    },
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    }
-   ],
-   "requeued": 1,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T06:30:56.160Z",
    "open": 500,
@@ -7742,6 +7706,43 @@
    "catchup": [
     "coins-snapshot.yml",
     "subject-eval.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 24,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T06:28:51.663Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "want-guard-hourly-deploy-green",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 125
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "arb-record.yml"
    ],
    "cancelled": [],
    "sweep": false,
