@@ -13,7 +13,7 @@
  "smoke_at": "2026-11-20",
  "bench_at": "2026-11-18",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 13,
   "checked": 20,
   "proven": 447
@@ -4856,7 +4856,7 @@
    "name": "Safety and small delights",
    "for": "privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 0,
     "checked": 0,
     "proven": 6
@@ -4916,6 +4916,14 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 31
+    },
+    {
+     "name": "clear-search-history",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-11-20",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-11-21"
     }
    ]
   }

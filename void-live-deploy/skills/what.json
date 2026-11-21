@@ -52,6 +52,7 @@
  "chart": "A real bar, line or pie chart from the numbers in the ask, drawn as SVG on the card (nothing sent)",
  "checkers": "Wooden draughts on the same board and table as chess, played against Verse",
  "chess": "A real wooden chess set on the stage, played against Verse",
+ "clear-search-history": "A skill of Verse.",
  "client-brief": "Short client-facing brief of the systems Verse owns for a business idea so the client does less asking for updates",
  "client-handoff": "A shareable handoff card for one system Verse owns",
  "client-intake": "Capture a business idea and show the systems Verse already serves that match it, plus the idea's real build state",
