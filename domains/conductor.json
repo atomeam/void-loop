@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T00:48:55.111Z",
+ "updated": "2026-11-21T00:58:35.219Z",
  "last24h": {
   "ticks": 147,
-  "started": 128,
+  "started": 129,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -14,16 +14,15 @@
    "wf": "tower-gate.yml",
    "fails": 8,
    "url": "https://github.com/atomeam/void-loop/actions/runs/44763837012"
-  },
-  {
-   "wf": "verify.yml",
-   "fails": 3,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44841614629"
   }
  ],
  "held": [
   {
    "id": "want-guard-hourly-deploy-green",
+   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
+  },
+  {
+   "id": "want-idea-f167636764",
    "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
@@ -36,10 +35,6 @@
   },
   {
    "id": "want-idea-298bf37d16",
-   "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
-  },
-  {
-   "id": "want-idea-f167636764",
    "why": "verse-job.yml is paused (the coder's back-off, #3288, until 06:14 UTC)"
   },
   {
@@ -106,21 +101,20 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 87,
+   "used": 90,
    "cap": 90
   },
   "day": {
-   "used": 87,
+   "used": 90,
    "cap": 360
   },
-  "room": true,
-  "until": null,
+  "room": false,
+  "until": "2026-11-21T01:00:00.000Z",
   "paid": false
  },
  "handed": {
   "mvbl52gd": 1795219475998,
   "mvu167w7": 1795220251623,
-  "mvpuqb4r": 1795135845172,
   "mvvjzso8": 1795136406560,
   "mw5mm5fm": 1795136972837,
   "mva30i2e": 1795212906151,
@@ -136,13 +130,14 @@
   "mwme3uk5": 1795218262687,
   "mwmi5727": 1795221541885,
   "mwmpup7b": 1795222135111,
-  "mwnbxf5o": 1795198178741,
+  "mwnbxf5o": 1795222715219,
   "mwnkyhgw": 1795199303431,
   "mveb8rsi": 1795219475998,
   "mveb8svc": 1795220251623,
   "mvfu4evy": 1795220947482,
   "mvpuq9g6": 1795221541885,
-  "mvpuqaee": 1795222135111
+  "mvpuqaee": 1795222135111,
+  "mvpuqb4r": 1795222715219
  },
  "sweptAt": 1795219475998,
  "blueprintsAt": 1795219475998,
@@ -219,7 +214,8 @@
    "startedAt": 1795210252841
   },
   "pages-guard.yml": {
-   "slot": 1795220100000
+   "slot": 1795221900000,
+   "startedAt": 1795222715219
   },
   "autosalvage.yml": {
    "slot": 1795166220000
@@ -260,7 +256,7 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795217820000,
+   "slot": 1795221420000,
    "startedAt": 1795219475998
   },
   "growth-fold.yml": {
@@ -268,8 +264,8 @@
    "startedAt": 1795219475998
   },
   "arb-record.yml": {
-   "slot": 1795219620000,
-   "startedAt": 1795220947482
+   "slot": 1795221420000,
+   "startedAt": 1795222715219
   }
  },
  "census": {
@@ -3409,38 +3405,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T00:50:45.172Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mvpuqb4r",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml",
-    "deploy.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 487,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T01:00:06.560Z",
    "open": 500,
@@ -7731,6 +7695,47 @@
    "catchup": [
     "trading-bots-data.yml",
     "word-sweep.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 472,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T00:58:35.219Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mvpuqb4r",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mwnbxf5o",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 18
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "arb-record.yml"
    ],
    "cancelled": [],
    "sweep": false,
