@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T16:30:51.498Z",
+ "updated": "2026-11-21T16:40:17.148Z",
  "last24h": {
   "ticks": 148,
-  "started": 83,
-  "requeued": 4,
+  "started": 82,
+  "requeued": 5,
   "setAside": 0,
   "probes": 0,
   "errors": 0
@@ -18,7 +18,7 @@
   {
    "wf": "verify.yml",
    "fails": 10,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44919194902"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44922558402"
   }
  ],
  "held": [
@@ -99,14 +99,14 @@
    "why": "verse-job.yml is paused (the coder's back-off, #3325, until 19:42 UTC)"
   },
   {
-   "id": "mwh2xv4s",
+   "id": "mwcuue69",
    "why": "verse-job.yml is paused (the coder's back-off, #3325, until 19:42 UTC)"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 5,
    "cap": 90
   },
   "day": {
@@ -239,8 +239,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795276800000,
-   "startedAt": 1795277521199
+   "slot": 1795278600000,
+   "startedAt": 1795279217148
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -3453,36 +3453,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T16:35:04.333Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwa0ah54",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 61
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 472,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T16:44:40.284Z",
    "open": 500,
@@ -8022,6 +7992,34 @@
    "sweep": true,
    "blueprints": 0,
    "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T16:40:17.148Z",
+   "open": 500,
+   "started": [],
+   "requeued": 1,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 481,
    "warnings": 0
   }
  ]
