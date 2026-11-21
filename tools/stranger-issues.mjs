@@ -5,14 +5,19 @@ import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
 const file = process.argv[2] || 'stranger-out/stranger.json';
-let body = { rows: [] };
-try { body = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { console.log('no stranger.json'); process.exit(0); }
-const bad = (body.rows || []).filter((r) => r.reasons && r.reasons.length);
+function asList(text) {
+  try { const v = JSON.parse(text || '[]'); return Array.isArray(v) ? v : []; }
+  catch (_) { return []; }
+}
+let rows = [];
+try { const parsed = JSON.parse(fs.readFileSync(file, 'utf8')); rows = parsed && Array.isArray(parsed.rows) ? parsed.rows : []; }
+catch (_) { console.log('no stranger.json'); process.exit(0); }
+const bad = rows.filter((r) => r && r.reasons && r.reasons.length);
 if (!bad.length) { console.log('no failures'); process.exit(0); }
-const gh = (args) => spawnSync('gh', args, { encoding: 'utf8' });
+const gh = (args) => spawnSync('gh', args, { encoding: 'utf8', timeout: 120000 });
 gh(['label', 'create', 'stranger-test', '--color', '5319e7', '--description', 'Found by the stranger test']);
 const listed = gh(['issue', 'list', '--label', 'stranger-test', '--state', 'open', '--limit', '100', '--json', 'title']);
-const open = new Set(listed.status === 0 ? JSON.parse(listed.stdout || '[]').map((i) => i.title) : []);
+const open = new Set((listed.status === 0 ? asList(listed.stdout) : []).map((i) => i && i.title).filter(Boolean));
 for (const r of bad) {
   const title = ('Stranger test: ' + r.id).slice(0, 80);
   if (open.has(title)) { console.log('already open: ' + title); continue; }
