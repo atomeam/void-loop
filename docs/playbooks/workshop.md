@@ -11,7 +11,7 @@ Each one calls something that already existed:
 - `page_check` reads the latest self-check. It names the stranger gate and does not open a browser.
 - `run_tests` queues one file from a closed list.
 - `propose_change` queues `growth:proposal` for the self-build runner, which applies the files to a copy.
-- `searches` reads the router log (`readRoutes`), already redacted.
+- `searches` reads the Searches log (`/api/searches`), the same list the owner Tower shows.
 - `growth_stats` and `cost_log` read `/growth/latest.json`.
 - `image_pick` uses the picture finder. `image_make` calls `/api/image`, under that route's caps.
 - `deploy_status` reads the status guards and the self-check.

@@ -52,6 +52,7 @@ export const LIMITS = {
   aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number
   joins: { rpm: 30, body: 0 }, // GET only, no input, one COUNT read, cached a minute: the member count and the newest join's time (functions/api/joins.js)
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
+  searches: { rpm: 60, body: 4000 }, // the Searches log (functions/api/searches.js): one ask in, the owner reads the list; the route slices the body to 2000
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
   bench: { rpm: 30, body: 10000 }, // owner-only (functions/api/bench.js): model bake-off chunks of 8 built-in asks, or { route } with up to 16 asks of at most 300 characters (frontier #9)

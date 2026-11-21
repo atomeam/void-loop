@@ -2,12 +2,12 @@
 // Each tool calls a route or library Verse already has. No new secret is created or printed.
 import { ownerOk } from '../../lib/guard.js';
 import { safePath, safeUrl } from '../../lib/automations.js';
-import { readRoutes } from '../../lib/router.js';
 import { pictureFor } from '../../lib/page-picture.js';
 import { rpc } from '../../lib/workshop.js';
 import { onRequestPost as queuePost } from './queue.js';
 import { onRequestPost as paint } from './image.js';
 import { onRequestGet as selfGet } from './selfcheck.js';
+import { onRequestGet as searchesGet } from './searches.js';
 import { readStatus } from './status.js';
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
@@ -60,10 +60,11 @@ export async function onRequestPost({ request, env }) {
       return queue(request, env, 'growth:proposal', 'Apply ' + ok.length + ' file(s) on a copy, then the stranger gate. First: ' + ok[0].path);
     },
     searches: async () => {
-      if (!env || !env.DB) return 'No route log is bound.';
-      const rows = await readRoutes(env, 20);
-      const list = (rows.rows || rows || []).slice(0, 20);
-      return (Array.isArray(list) ? list : []).map((r) => (r.count || 1) + ' ' + (r.route || '') + ' ' + String(r.ask || '').slice(0, 80)).join('\n') || 'The route log is empty.';
+      const res = await searchesGet({ request, env });
+      if (res.status !== 200) return 'The searches log did not answer (' + res.status + ').';
+      const b = await res.json().catch(() => ({}));
+      const rows = Array.isArray(b.rows) ? b.rows.slice(0, 20) : [];
+      return rows.map((r) => (r.kind || 'ask') + ' ' + String(r.ask || '').slice(0, 80)).join('\n') || 'The searches log is empty.';
     },
     growth: async () => {
       if (!env || !env.ASSETS) return 'No board is published.';
