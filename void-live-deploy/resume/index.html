@@ -561,9 +561,11 @@
       let state = loadState();
       let activeTab = getInitialTab();
 
+      function safeGetStorage(key) { try { return window.localStorage.getItem(key); } catch (err) { console.warn("localStorage.getItem failed:", err); return null; } }
+      function safeSetStorage(key, value) { try { window.localStorage.setItem(key, value); } catch (err) { console.warn("localStorage.setItem failed:", err); } }
       function loadState() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          const raw = safeGetStorage(STORAGE_KEY);
           if (!raw) return structuredClone(DEFAULT_STATE);
           const parsed = JSON.parse(raw);
           return {
@@ -572,13 +574,13 @@
             cover: { ...DEFAULT_STATE.cover, ...(parsed.cover || {}) },
             email: { ...DEFAULT_STATE.email, ...(parsed.email || {}) }
           };
-        } catch {
+        } catch (err) { console.warn("Failed to parse saved state:", err);
           return structuredClone(DEFAULT_STATE);
         }
       }
 
       function saveState() {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+        try { safeSetStorage(STORAGE_KEY, JSON.stringify(state)); } catch (err) { console.warn("Failed to serialize state:", err); }
       }
 
       function getInitialTab() {
