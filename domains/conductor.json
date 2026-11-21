@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T12:45:05.543Z",
+ "updated": "2026-11-21T12:54:27.020Z",
  "last24h": {
   "ticks": 148,
-  "started": 80,
+  "started": 81,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 4,
    "cap": 90
   },
   "day": {
@@ -131,7 +131,7 @@
   "mweaah6f": 1795261725002,
   "mwey8iy6": 1795262851984,
   "mwme3uk5": 1795262288029,
-  "mwmi5727": 1795243654895,
+  "mwmi5727": 1795265667020,
   "mwmpup7b": 1795244219266,
   "mwnbxf5o": 1795244777786,
   "mwnkyhgw": 1795245344462,
@@ -167,7 +167,8 @@
    "slot": 1795179180000
   },
   "treasury.yml": {
-   "slot": 1795177380000
+   "slot": 1795263780000,
+   "startedAt": 1795265667020
   },
   "store-check.yml": {
    "slot": 1795259220000,
@@ -252,8 +253,8 @@
    "startedAt": 1795256070457
   },
   "word-sweep.yml": {
-   "slot": 1795241820000,
-   "startedAt": 1795243654895
+   "slot": 1795263420000,
+   "startedAt": 1795265667020
   },
   "gaps.yml": {
    "slot": 1794845820000
@@ -288,8 +289,8 @@
    "startedAt": 1795262851984
   },
   "arb-record.yml": {
-   "slot": 1795262820000,
-   "startedAt": 1795263978568
+   "slot": 1795264620000,
+   "startedAt": 1795265667020
   }
  },
  "census": {
@@ -3450,36 +3451,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T12:48:47.562Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mw5blphr",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 346,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T12:58:08.305Z",
    "open": 500,
@@ -7876,6 +7847,49 @@
    ],
    "daily": [],
    "catchup": [],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 24,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T12:54:27.020Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "want-guard-hourly-main-green",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mwmi5727",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 20
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "treasury.yml",
+    "word-sweep.yml",
+    "arb-record.yml"
+   ],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
