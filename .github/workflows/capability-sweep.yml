@@ -1,0 +1,87 @@
+# Copy this file to .github/workflows/capability-sweep.yml to enable the nightly run.
+# The helper token cannot create workflow files (needs the workflow scope).
+
+# First-time visitor Ask sweep of the common homepage cards (tools/capability-sweep).
+# Nightly, and on demand: desktop and phone against https://a-to-mind.com/, writes
+# tools/capability-sweep/results.json on main. Screenshots stay as artifacts, not in git.
+# A failed card does not fail the job; the file is the record. No secrets.
+name: Capability sweep
+
+on:
+  schedule:
+    - cron: '17 11 * * *' # 6:17 AM America/New_York in winter (EST)
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: optional comma-separated capability ids; empty = all
+        type: string
+        default: ''
+      vp:
+        description: desktop, phone, or both
+        type: string
+        default: ''
+
+concurrency:
+  group: capability-sweep
+  cancel-in-progress: false
+
+permissions:
+  contents: write # results.json on main
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Checks
+        run: node --test tools/capability-sweep.test.mjs
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Live Ask sweep
+        env:
+          SWEEP_ORIGIN: https://a-to-mind.com
+        run: |
+          args=(--asks-only)
+          [ -n "${{ inputs.ids }}" ] && args+=(--ids "${{ inputs.ids }}")
+          [ -n "${{ inputs.vp }}" ] && args+=(--vp "${{ inputs.vp }}")
+          node tools/capability-sweep/sweep.mjs "${args[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capability-sweep-shots
+          path: tools/capability-sweep/shots
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Commit results
+        if: always()
+        run: |
+          git diff --quiet tools/capability-sweep/results.json && { echo "results unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/capability-sweep/results.json
+          git commit -m "Capability sweep: first-time visitor Ask results, as of today"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

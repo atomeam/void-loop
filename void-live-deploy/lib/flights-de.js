@@ -219,5 +219,15 @@ export const DE = Object.freeze({
  "Trip and layovers": "Reise und Zwischenstopps",
  "day": "Tag",
  "days": "Tage",
- "Your trip": "Ihre Reise"
+ "Your trip": "Ihre Reise",
+ "On this page": "Auf dieser Seite",
+ "Search": "Suche",
+ "Distance": "Entfernung",
+ "Time": "Zeit",
+ "CO2": "CO₂",
+ "Map": "Karte",
+ "Where I can fly": "Wohin ich fliegen kann",
+ "Airport codes": "Flughafencodes",
+ "Itinerary": "Reiseplan",
+ "Prices": "Preise"
 });

@@ -45,7 +45,10 @@ These are private books. Almost all say "Public face: blank": none of them becom
 
 | File | What it is | Could become | Size |
 | --- | --- | --- | --- |
-| `assemble-growth.yml` | Rebuilds `domains/void.growth.md` from `domains/forethinkers/_growth_parts/`; it only fires on a 2026-10-03 branch, and that board is frozen history since 2026-10-11 | The Forethinkers' route into the frontier: point it at the frontier, or retire it in cleanup step 4 once nothing needs it | S |
+| `assemble-growth.yml` | Rebuilds `domains/void.growth.md` from `domains/forethinkers/_growth_parts/`; it only fired on a 2026-10-03 branch that no longer exists, so it never ran (its retirement is in its own pull request) | The Forethinkers' route into the frontier, if they come back | S |
+| `clips.yml`, `record.yml` (now `archive/workflows/`) | The old daily ad batch and the lab-experiment films, both replaced by `shorts.yml`; hand runs only since. Retired 2026-11-20 | Their steps (draft release, Verse FILMS post) are reusable in `shorts.yml` | M |
+| `clef-probe.yml`, `route-bench.yml` (now `archive/workflows/`) | One-off probes for frontier #9 (what the Workers AI binding knows about Clef; Clef-flash beside the embedding router); not run since mid-October. The tools (`tools/clef-probe.mjs`, `tools/route-bench.mjs`) stay. Retired 2026-11-20 | A step of the router's nightly tuning | S |
+| `bot-factory.draft.yml`, `autosalvage.draft.yml` (were `docs/*.workflow.yml`, now `archive/workflows/`) | Drafts of the live `bot-factory.yml` and `autosalvage.yml` that had already drifted from them. The live files are the one copy. Retired 2026-11-20 | Nothing: history only | S |
 
 The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehearsal.yml`, `think-tank.yml`) are tools, not salvage.
 

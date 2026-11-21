@@ -1,0 +1,43 @@
+# Uploads the current main tip when the ordinary deploy is stuck behind checks or a burst of merges.
+# It does not run the suite. verify.yml still tests main and reverts a commit that breaks the site.
+# One group, and a newer run replaces the one that has not uploaded yet, so only the latest tip goes out.
+name: Deploy latest main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "8,23,38,53 * * * *"
+
+concurrency:
+  group: void-deploy-latest
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: The tip this upload carries
+        id: tip
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Pages Git builds off
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tools/pages-guard.mjs pause-git
+      - name: Deploy the current main tip
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "3.114.17"
+          workingDirectory: void-live-deploy
+          command: pages deploy . --project-name=a-to-mind --branch=main --commit-hash=${{ steps.tip.outputs.sha }} --commit-dirty=true

@@ -11,7 +11,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Merge PDFs | Organise | have | every site of this kind offers it | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
-| Split a PDF | Organise | have | every site of this kind offers it | void-live-deploy/pdf/index.html:56 `<h1>PDF tools: merge, split, compress and edit pages</h1>` |
+| Merge PDFs | Organise | have | every site of this kind offers it | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
+| Split a PDF | Organise | have | every site of this kind offers it | void-live-deploy/pdf/index.html:56 `<h1>PDF Editor: merge, split, compress and edit pages</h1>` |
 | Reorder, rotate and delete pages | Organise | have | every site of this kind offers it | void-live-deploy/pdf/app.js:3 `t","pages","extract","order","rotate","compress","img2pdf","pdf2img","numbers","watermark"` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://codeshack.io/pdf-merge-tool/ | not compared yet |

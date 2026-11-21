@@ -22,8 +22,8 @@ export function unsafeText(...parts) {
   const t = parts.flat(3).filter((x) => x != null).map((x) => String(x)).join(' \u2022 ').replace(/[_+%]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
   if (!t.trim()) return '';
   if (ABUSE.test(t)) return 'abuse';
+  if (MINOR.test(t) && (BODY.test(t) || SENSITIVE.test(t))) return 'minor-context'; // a minor word beside any nudity word is the minors block, not just adult
   if (SENSITIVE.test(t)) return 'sensitive';
-  if (MINOR.test(t) && BODY.test(t)) return 'minor-context';
   return '';
 }
 /** the file name a picture URL carries, decoded ("Foo_bar.jpg" from an upload.wikimedia.org thumb URL) */

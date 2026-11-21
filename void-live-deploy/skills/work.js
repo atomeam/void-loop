@@ -14,10 +14,10 @@ const NOT_PLACE = /^(?:me|my area|here|home)$/i;
 // a jobs ask with no role: a search verb, or "remote" / "work from home", must say it is a job hunt
 const WFH = '(?:remote|work[- ]from[- ]home|wfh)';
 // a jobs page's own view, not a role: each jobs page's stage ask ("remote jobs by salary", "job alerts", "remote companies hiring", lib/job-sites.js) opens that page
-const LANE_PAGES = new Set(['/jobs/alerts/', '/jobs/salary/', '/jobs/regions/', '/jobs/categories/', '/jobs/tags/', '/jobs/companies/']);
+const LANE_PAGES = new Set(['/jobs/?mode=alerts', '/jobs/?salaryOnly=1&sort=salary', '/jobs/?mode=regions', '/jobs/?mode=categories', '/jobs/?mode=tags', '/jobs/?mode=companies']);
 // a lane's words where a role would stand: "highest paying jobs", "jobs by salary", "job categories", "job alerts"
-const LANE_ROLE = [[/^(?:alerts?|job\s+alerts?)$/i, '/jobs/alerts/'], [/^(?:by\s+salary|with\s+salar(?:y|ies)|(?:highest|best|top|well)[- ]paying|high[- ]paying|paying)$/i, '/jobs/salary/'],
-  [/^(?:by\s+)?(?:regions?)$/i, '/jobs/regions/'], [/^(?:by\s+)?(?:categor(?:y|ies))$/i, '/jobs/categories/'], [/^(?:by\s+)?tags?$/i, '/jobs/tags/'], [/^(?:by\s+)?compan(?:y|ies)$/i, '/jobs/companies/']];
+const LANE_ROLE = [[/^(?:alerts?|job\s+alerts?)$/i, '/jobs/?mode=alerts'], [/^(?:by\s+salary|with\s+salar(?:y|ies)|(?:highest|best|top|well)[- ]paying|high[- ]paying|paying)$/i, '/jobs/?salaryOnly=1&sort=salary'],
+  [/^(?:by\s+)?(?:regions?)$/i, '/jobs/?mode=regions'], [/^(?:by\s+)?(?:categor(?:y|ies))$/i, '/jobs/?mode=categories'], [/^(?:by\s+)?tags?$/i, '/jobs/?mode=tags'], [/^(?:by\s+)?compan(?:y|ies)$/i, '/jobs/?mode=companies']];
 const ANY_ROLE = new RegExp('^(?:(?:find|search(?:\\s+for)?|look(?:\\s+for)?|hunt\\s+for)\\s+(?:me\\s+)?(?:some\\s+)?(?:' + WFH + '\\s+)?(?:jobs?|work|a\\s+job|a\\s+' + WFH + '\\s+job)'
   + '|(?:show|list)\\s+(?:me\\s+)?' + WFH + '\\s+(?:jobs?|work)|' + WFH + '\\s+jobs?|(?:' + WFH + '\\s+)?job\\s+(?:search|hunt(?:ing)?|listings?|openings))$', 'i');
 /** a jobs ask as { q, loc }: the role (may be '') and the place (may be ''). Null when the text is not a jobs ask. Pure. */
@@ -55,7 +55,7 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const ask = workAsk(text);
   if (!ask) return 'none';
-  const { q, loc, lane } = ask, pay = lane === '/jobs/salary/', what = [q || 'every role', loc && 'open to ' + loc, pay && 'with pay, highest first'].filter(Boolean).join(' · ');
+  const { q, loc, lane } = ask, pay = !!(lane && /salaryOnly=1/.test(lane)), what = [q || 'every role', loc && 'open to ' + loc, pay && 'with pay, highest first'].filter(Boolean).join(' · ');
   const el = showPage((p) => { p.innerHTML = '<h2>Work</h2><div class="sub">…</div>'; });
   try {
     // the snapshot the jobs page also reads (lib/jobs-ui.js), so the card counts what the page counts; a missing snapshot leaves the live feeds
@@ -64,7 +64,7 @@ async function run(text, api) {
     if (!api._pageStill(el)) return 'work';
     const jobs = C.search(C.merge((snap && snap.jobs) || [], (j && j.jobs) || []), pay ? { q, loc, salaryOnly: true, sort: 'salary' } : { q, loc });
     // a lane page reads the same query as /jobs/ (lib/jobs-ui.js), so the place carries over: "job alerts in Berlin" opens alerts for Berlin
-    const page = lane ? lane + (loc ? '?' + C.toQuery({ loc }) : '') : '/jobs/?' + C.toQuery({ q, loc });
+    const page = lane ? lane + (loc ? (lane.includes('?') ? '&' : '?') + C.toQuery({ loc }) : '') : '/jobs/?' + C.toQuery({ q, loc });
     // a place may mean on-site work too, which these remote listings do not hold: the same search on two big boards, opened by the visitor
     const boards = (lead, ids) => '<p style="color:#8a8a8a;font-size:13px">' + esc(lead) + ': ' + C.searchLinks({ q, loc }).filter((x) => ids.includes(x.id)).map((x) => '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.name) + '</a>').join(' · ') + '</p>';
     // a role these feeds hold few of (2026-10-30, live: "remote python jobs" found 1 of about 280 listings): the same remote search where there are more, on the two boards whose search address is partly confirmed (lib/jobs-core.js searchLinks)
