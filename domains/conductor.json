@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T05:51:16.608Z",
+ "updated": "2026-11-21T06:00:40.171Z",
  "last24h": {
   "ticks": 148,
-  "started": 98,
+  "started": 97,
   "requeued": 4,
   "setAside": 0,
   "probes": 0,
@@ -111,7 +111,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 40,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -134,7 +134,7 @@
   "mwdsgj2z": 1795220251623,
   "mweaagmp": 1795220947482,
   "mweaah6f": 1795239713259,
-  "mwey8iy6": 1795218868749,
+  "mwey8iy6": 1795240840171,
   "mwme3uk5": 1795240276608,
   "mwmi5727": 1795221541885,
   "mwmpup7b": 1795222135111,
@@ -209,7 +209,8 @@
    "slot": 1795153260000
   },
   "rea-study.yml": {
-   "slot": 1795152180000
+   "slot": 1795238580000,
+   "startedAt": 1795240840171
   },
   "subject-eval.yml": {
    "slot": 1795153260000
@@ -270,16 +271,16 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795235820000,
-   "startedAt": 1795237453116
+   "slot": 1795239420000,
+   "startedAt": 1795240840171
   },
   "growth-fold.yml": {
    "slot": 1795236060000,
    "startedAt": 1795237453116
   },
   "arb-record.yml": {
-   "slot": 1795237620000,
-   "startedAt": 1795238586980
+   "slot": 1795239420000,
+   "startedAt": 1795240840171
   }
  },
  "census": {
@@ -3435,42 +3436,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T05:51:37.848Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwcuue69",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 116
-    },
-    {
-     "id": "mwmpup7b",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 43
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T06:01:02.052Z",
    "open": 500,
@@ -7729,6 +7694,44 @@
    "daily": [],
    "catchup": [
     "traffic.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T06:00:40.171Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwey8iy6",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 55
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "rea-study.yml",
+    "verse-watch.yml",
+    "arb-record.yml"
    ],
    "cancelled": [],
    "sweep": false,
