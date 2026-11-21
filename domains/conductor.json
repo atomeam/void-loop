@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T12:54:27.020Z",
+ "updated": "2026-11-21T13:03:55.052Z",
  "last24h": {
   "ticks": 148,
-  "started": 81,
+  "started": 83,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -132,7 +132,7 @@
   "mwey8iy6": 1795262851984,
   "mwme3uk5": 1795262288029,
   "mwmi5727": 1795265667020,
-  "mwmpup7b": 1795244219266,
+  "mwmpup7b": 1795266235052,
   "mwnbxf5o": 1795244777786,
   "mwnkyhgw": 1795245344462,
   "mveb8rsi": 1795219475998,
@@ -148,8 +148,8 @@
  "blueprintsAt": 1795262851984,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795261260000,
-   "startedAt": 1795258903322
+   "slot": 1795264860000,
+   "startedAt": 1795266235052
   },
   "exam.yml": {
    "slot": 1795252620000,
@@ -281,12 +281,12 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795261020000,
-   "startedAt": 1795262288029
+   "slot": 1795264620000,
+   "startedAt": 1795266235052
   },
   "growth-fold.yml": {
-   "slot": 1795261260000,
-   "startedAt": 1795262851984
+   "slot": 1795264860000,
+   "startedAt": 1795266235052
   },
   "arb-record.yml": {
    "slot": 1795264620000,
@@ -3451,29 +3451,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T12:58:08.305Z",
-   "open": 500,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 472,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T13:07:27.573Z",
    "open": 500,
@@ -7889,6 +7866,51 @@
     "treasury.yml",
     "word-sweep.yml",
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 24,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T13:03:55.052Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "want-exam-definitions",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 85
+    },
+    {
+     "id": "mwmpup7b",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 20
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "verse-podcast.yml"
+   ],
+   "catchup": [
+    "site-test.yml",
+    "verse-watch.yml",
+    "growth-fold.yml"
    ],
    "cancelled": [],
    "sweep": false,
