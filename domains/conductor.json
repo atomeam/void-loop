@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T14:47:21.359Z",
+ "updated": "2026-11-21T14:56:40.521Z",
  "last24h": {
   "ticks": 148,
-  "started": 87,
+  "started": 86,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -12,8 +12,8 @@
  "broken": [
   {
    "wf": "tower-gate.yml",
-   "fails": 8,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44763837012"
+   "fails": 9,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44915258648"
   },
   {
    "wf": "verify.yml",
@@ -239,8 +239,8 @@
    "startedAt": 1795252694433
   },
   "pages-guard.yml": {
-   "slot": 1795270500000,
-   "startedAt": 1795271323146
+   "slot": 1795272300000,
+   "startedAt": 1795273000521
   },
   "autosalvage.yml": {
    "slot": 1795252620000,
@@ -291,8 +291,8 @@
    "startedAt": 1795270192211
   },
   "arb-record.yml": {
-   "slot": 1795270020000,
-   "startedAt": 1795271323146
+   "slot": 1795271820000,
+   "startedAt": 1795273000521
   }
  },
  "census": {
@@ -3453,36 +3453,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T14:51:07.711Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mw5blp33",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 346,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T15:00:34.411Z",
    "open": 500,
@@ -7990,6 +7960,35 @@
    "daily": [],
    "catchup": [
     "rides-live.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T14:56:40.521Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml",
+    "arb-record.yml"
    ],
    "cancelled": [],
    "sweep": false,
