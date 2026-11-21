@@ -1,0 +1,24 @@
+fox | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+fox | schnell | 98 | 1617ms | 1024x1024 | none
+fox | klein-4b | 91 | 7565ms | 1024x1024 | unnatural leg/paw merging with snow
+hands | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+hands | schnell | 53 | 1849ms | 1024x1024 | deformed fingers and missing steam
+hands | klein-4b | 59.5 | 7428ms | 1024x1024 | extra and merged fingers
+sign | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+sign | schnell | 98 | 2196ms | 1024x1024 | none
+sign | klein-4b | 100 | 5725ms | 1024x1024 | none
+astronaut | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+astronaut | schnell | 96 | 2209ms | 1024x1024 | slightly flat lighting on the subject
+astronaut | klein-4b | 98 | 8543ms | 1024x1024 | none
+anime | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+anime | schnell | 89 | 1886ms | 1024x1024 | garbled text on book cover
+anime | klein-4b | 91 | 8378ms | 1024x1024 | slight anatomical distortion in the hands/fingers holding the book
+still | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+still | schnell | 78 | 1573ms | 1024x1024 | missing yellow lemons, mostly limes and oranges
+still | klein-4b | 98 | 8901ms | 1024x1024 | none
+market | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+market | schnell | 93.5 | 1775ms | 1024x1024 | slight blurring in distant background figures
+market | klein-4b | 91 | 18020ms | 1024x1024 | minor facial distortions in background figures
+robot | sdxl-lightning | - |  |  | 5028: @cf/bytedance/stable-diffusion-xl-lightning was deprecated on 2026-11-20. See the model catalog for alternatives: https://developers.cloudflare.com/workers-ai/models/
+robot | schnell | 95.5 | 1868ms | 1024x1024 | slight blur in the background plant leaves
+robot | klein-4b | 91 | 12101ms | 1024x1024 | water stream physics and connection to spout
