@@ -50,7 +50,7 @@ jobs:
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "### main is still ${{ github.sha }}, which the last benchmark here passed: nothing to re-run" >> "$GITHUB_STEP_SUMMARY"
           fi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.moved.outputs.run != 'false'
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}

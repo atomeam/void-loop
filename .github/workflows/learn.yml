@@ -38,12 +38,12 @@ jobs:
     outputs:
       drafted: ${{ steps.draft.outputs.drafted }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -107,7 +107,7 @@ jobs:
               console.log(q.id + ' note: ' + res.status); } })();
           "
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: steps.draft.outputs.drafted != '' && steps.draft.outputs.drafted != '0'
         with:
           name: learned-drafts
@@ -124,10 +124,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: learned-drafts
           path: drafts/learned

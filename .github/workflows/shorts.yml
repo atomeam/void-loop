@@ -30,8 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -58,7 +58,7 @@ jobs:
           sudo apt-get install -y -qq espeak-ng >/dev/null || true
       - name: Cache the voice
         id: voice
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/kokoro
           key: kokoro-v1-onnx-v1
@@ -107,7 +107,7 @@ jobs:
           YT_PRIVACY: ${{ vars.YT_PRIVACY }}
         # tools/youtube.mjs refuses any film whose meta has not passed the gate
         run: set -o pipefail; for m in media/shorts/*.json; do node tools/youtube.mjs "$m" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: verse-shorts

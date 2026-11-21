@@ -60,7 +60,7 @@ jobs:
     # the suite gate chose. One check took 134 s that morning, so 5 minutes cut a sweep off before it started the gate.
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0 # merging main into a conflicted PR's branch needs the history on both sides

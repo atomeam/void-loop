@@ -33,14 +33,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0 # the episode reads main's commit history for the day
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       # 2026-11-06: apt-get install ffmpeg hung for 20 minutes on one runner (pip had finished in 11 s) and the job limit cancelled the
@@ -66,7 +66,7 @@ jobs:
           fi
       - name: The two voices (cached)
         id: voices
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/kokoro
           key: kokoro-v1-onnx-v1

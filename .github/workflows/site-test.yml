@@ -29,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30 # the test step has its own 12 minutes; the claims check after it must still get its turn
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
@@ -42,7 +42,7 @@ jobs:
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tools/site-test.mjs --improve --shots site-test-shots || echo "::warning title=Site test::a regression case failed (the issue step files it once)"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         continue-on-error: true # screenshots are a convenience; a storage timeout must not skip the claims check below
         with:

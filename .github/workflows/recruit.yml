@@ -26,14 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 1
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/recruit
           key: recruit-state-${{ github.run_id }}
@@ -51,7 +51,7 @@ jobs:
           node tools/recruit.mjs --once --state "$RECRUIT_STATE" --replies "$RUNNER_TEMP/recruit/replies.json"
       - name: Keep the quota state
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ${{ runner.temp }}/recruit
           key: recruit-state-${{ github.run_id }}

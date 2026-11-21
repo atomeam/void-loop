@@ -40,11 +40,11 @@ jobs:
           if [ -n "$last" ] && [ $(( $(date +%s) - $(date -d "$last" +%s) )) -lt 7200 ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"; echo "### Last full check started $last, under two hours ago: skipped" >> "$GITHUB_STEP_SUMMARY"
           else echo "run=true" >> "$GITHUB_OUTPUT"; fi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.due.outputs.run == 'true'
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.due.outputs.run == 'true'
         with:
           node-version: 22
@@ -59,7 +59,7 @@ jobs:
         run: |
           if [ -n "$ONLY" ]; then node tools/self-check.mjs --only "$ONLY" --json self-check.json # a few pages: the summary only, the card keeps the full report
           else node tools/self-check.mjs --json self-check.json --post; fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always() && steps.due.outputs.run == 'true'
         with:
           name: self-check

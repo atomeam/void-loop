@@ -49,11 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60 # a fight run takes minutes (at most 3 floors); a list by hand about a minute a floor (eleven aspects, a German browser and an offline reload per site)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 2 # the deploy's own change, for the floors whose pages it touched
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
@@ -84,10 +84,10 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
@@ -109,7 +109,7 @@ jobs:
           git commit -q -m "Tower gate: versus measured"
           for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: tower-slice-${{ matrix.shard }}
           path: void-live-deploy/tower.evidence.${{ matrix.shard }}.json
@@ -127,10 +127,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
@@ -147,13 +147,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         continue-on-error: true # every slice failing leaves nothing to download; the step below says so
         with:
           pattern: tower-slice-*

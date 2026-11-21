@@ -35,10 +35,10 @@ jobs:
       pull-requests: write
       actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: ffmpeg

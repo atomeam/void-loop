@@ -42,10 +42,10 @@ jobs:
       VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
       FEATURE_SCAN_MAX_CALLS: '12'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
