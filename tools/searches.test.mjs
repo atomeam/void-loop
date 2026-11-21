@@ -48,3 +48,25 @@ test('the Tower page is owner-only and noindex; the page logs asks; privacy says
   assert.match(readFileSync(new URL('../void-live-deploy/index.html', import.meta.url), 'utf8'), /logAsk\(currentAsk, el\)/);
   assert.match(readFileSync(new URL('../void-live-deploy/privacy/index.html', import.meta.url), 'utf8'), /90 days/);
 });
+
+test('a signed-in account is logged from its server-checked session, never from the body; a ban on it follows it', async () => {
+  const { report } = await import('../void-live-deploy/lib/searches.js');
+  const fakeDb = { prepare: () => ({ bind: () => ({ first: async () => ({ user_id: 'USERHANDLE123', expires: Date.now() + 1e6 }) }) }) };
+  const tok = 'x'.repeat(43);
+  const signed = new Request('https://a-to-mind.com/api/searches', { method: 'POST', headers: { authorization: 'Bearer ' + tok } });
+  assert.equal(await api.accountOf(signed, { DB: fakeDb }), 'a-USERHANDLE123');
+  assert.equal(await api.accountOf(new Request('https://a-to-mind.com/api/searches'), {}), '');
+  const s = memoryStore();
+  await record(s, { ask: 'cats', who: 'v-1', acct: 'a-u1' });
+  assert.equal(s.rows[0].acct, 'a-u1');
+  await s.setBan('a-u1', 'banned', 'owner');
+  assert.equal((await record(s, { ask: 'dogs', who: 'v-2', acct: 'a-u1' })).state, 'banned');
+  assert.equal((await view(s, { who: 'a-u1' })).length, 2);
+  const r = await report(s, { who: 'v-1', reason: 'bad picture', ask: 'nude beach', title: 'Nude beach', pic: 'https://upload.wikimedia.org/x.jpg' });
+  assert.equal(r.reason, 'bad picture'); assert.equal(s.reports.length, 1);
+  assert.equal((await report(s, { who: 'v-1', reason: 'spam<script>' })).reason, 'other');
+});
+test('every card gets the Report button, and it is never in a saved card', () => {
+  const page = readFileSync(new URL('../void-live-deploy/index.html', import.meta.url), 'utf8');
+  assert.match(page, /addReport\(el\)/); assert.match(page, /box\.dataset\.nosave = '1'/);
+});

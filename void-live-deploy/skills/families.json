@@ -14,8 +14,8 @@
  "bench_at": "2026-11-18",
  "totals": {
   "experiment": 0,
-  "tested": 8,
-  "checked": 19,
+  "tested": 11,
+  "checked": 20,
   "proven": 447
  },
  "families": [
@@ -595,7 +595,7 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 11,
     "proven": 45
    },
@@ -787,6 +787,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 32
+    },
+    {
+     "name": "daily-challenge",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-20",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "pong",
@@ -1157,7 +1164,7 @@
     {
      "name": "baggage",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark, 5 live findings, 2026-11-19",
+     "why": "a self-test, 3 real asks in the benchmark, 6 live findings, 2026-11-20",
      "last_tested": "2026-11-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2759,7 +2766,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 36 live findings, 2026-11-19",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 38 live findings, 2026-11-20",
      "last_tested": "2026-11-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3789,8 +3796,8 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 7,
-    "checked": 6,
+    "tested": 9,
+    "checked": 7,
     "proven": 92
    },
    "skills": [
@@ -4208,7 +4215,7 @@
     {
      "name": "app",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-11-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -4371,10 +4378,11 @@
     },
     {
      "name": "working-on",
-     "tier": "tested",
-     "why": "1 browser-suite mention",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-11-20",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "promoted": "2026-11-20"
     },
     {
      "name": "podcast",
@@ -4761,6 +4769,27 @@
     },
     {
      "name": "before-after-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-20",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "automation-status-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-20",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "we-own-it-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-20",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "delivery-status-pack",
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-11-20",

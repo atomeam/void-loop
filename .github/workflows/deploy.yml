@@ -40,13 +40,13 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # one run per PR, and one deploy of main. A newer push of that same branch replaces the run that is waiting
-    # (it does the same deploy). The run that has a runner finishes: cancelling it mid-upload was a deploy that never landed.
-    # Main used to give every deploy its own group (the run id), so a burst of merges queued one per head (2026-11-04).
-    # On a pull request the new push cancels the older run, because that run's checks are the same work on an older head.
+    # one run per PR, and one deploy of main. A newer push of main waits: cancelling the run that has a runner
+    # meant a burst of merges never uploaded (the one about to deploy was replaced, then the replacement was too).
+    # On a push, inputs.pr is null, and `null != ''` is true, so the old expression cancelled main deploys.
+    # Only a pull-request check cancels its older run. A main deploy that has a runner always finishes.
     concurrency:
-      group: ${{ github.event.pull_request.number && format('void-deploy-pr-{0}', github.event.pull_request.number) || inputs.pr && format('void-deploy-pr-{0}', inputs.pr) || 'void-deploy-main' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' || inputs.pr != '' }}
+      group: ${{ github.event.pull_request.number && format('void-deploy-pr-{0}', github.event.pull_request.number) || (github.event_name == 'workflow_dispatch' && inputs.pr != '' && format('void-deploy-pr-{0}', inputs.pr)) || 'void-deploy-main' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.pr != '') }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
@@ -167,9 +167,12 @@ jobs:
         run: |
           git fetch -q origin main
           head=$(git rev-parse origin/main)
+          # A queued newer run is waiting on this same group. Stopping for it meant every deploy in a burst
+          # cancelled before the upload, and the site stayed on an old commit. Only an older run yields, and only
+          # when a newer deploy is already in progress (it will upload). The newest run always uploads.
           if [ "$head" != "$(git rev-parse HEAD)" ] && git merge-base --is-ancestor HEAD "$head"; then
-            n=$(gh run list --workflow deploy.yml --json headSha,status,databaseId -q "[.[] | select(.headSha == \"$head\" and (.status == \"queued\" or .status == \"in_progress\" or .status == \"waiting\"))] | length")
-            if [ "${n:-0}" -gt 0 ]; then echo "main moved to $head and its deploy is running: this run stops"; gh run cancel "$GITHUB_RUN_ID"; sleep 60; fi
+            n=$(gh run list --workflow deploy.yml --json headSha,status,databaseId -q "[.[] | select(.headSha == \"$head\" and .status == \"in_progress\" and .databaseId != $GITHUB_RUN_ID)] | length")
+            if [ "${n:-0}" -gt 0 ]; then echo "main moved to $head and that deploy is already running: this older run stops"; gh run cancel "$GITHUB_RUN_ID"; sleep 60; fi
           fi
 
       # Only this upload deploys a-to-mind (incident 2026-11-09): Cloudflare Pages' Git integration built pushes from the repo root with no
@@ -282,50 +285,26 @@ jobs:
       # MCP live (frontier #6) checks Verse's tools with the real MCP client against a-to-mind.com. Its hourly schedule fires only
       # every few hours (5 scheduled runs on 2026-10-12, none for 5 h after #571 added a tool), and a deploy automerge starts
       # fires no workflow_run, so the deploy starts it: the live check follows every main deploy within minutes.
-      - name: Start MCP live against this deploy
+      # Follow-ups after a main deploy. Each already has its own concurrency group. Starting another while one
+      # is queued or running only filled the runner queue, so the next deploy waited. One of each is enough.
+      - name: Start follow-up workflows when none are already waiting
         if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run mcp-live.yml --repo "${{ github.repository }}" --ref main && echo "MCP live started" >> "$GITHUB_STEP_SUMMARY"
-
-      # Floor pages stay works:false until this run passes them on the live site. A merge made with the
-      # workflow token starts no push workflow, so the deploy starts the check, the same way it starts MCP live.
-      - name: Start the floor live check against this deploy
-        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run floor-live.yml --repo "${{ github.repository }}" --ref main && echo "Floor live started" >> "$GITHUB_STEP_SUMMARY"
-
-      # Verse in the MCP registry (mcp-registry.yml): a merge automerge makes pushes to main with GITHUB_TOKEN, which starts no push
-      # workflow (#642 merged its server.json and the registry run never started), so the deploy starts it too. It publishes
-      # server.json's version only when the registry does not have it yet, so most runs end in seconds.
-      - name: Start the MCP registry listing
-        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run mcp-registry.yml --repo "${{ github.repository }}" --ref main && echo "MCP registry started" >> "$GITHUB_STEP_SUMMARY"
-
-      # Verse's hourly automations (automations/hourly.json): seeded through its own door after every main deploy, so a change to the
-      # seed file is live within minutes (an automerge merge starts no push workflow). The same id replaces a rule: most runs change nothing.
-      - name: Start the automations seed
-        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run automations-seed.yml --repo "${{ github.repository }}" --ref main && echo "Automations seed started" >> "$GITHUB_STEP_SUMMARY"
-
-      # Verse's will (will.yml) after every main deploy, so a want this merge built leaves the card now. will.yml used to listen for
-      # this workflow's workflow_run, but a deploy that automerge starts (github-actions[bot], GITHUB_TOKEN) fires none: the last
-      # such run was 2026-10-29T03:13Z. A gh workflow run is the one start a GITHUB_TOKEN run can make.
-      - name: Start Verse's will
-        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run will.yml --repo "${{ github.repository }}" --ref main && echo "Verse's will started" >> "$GITHUB_STEP_SUMMARY"
+          REPO: ${{ github.repository }}
+        run: |
+          start() {
+            local f="$1" n
+            n=$(gh run list --repo "$REPO" --workflow "$f" --limit 8 --json status -q '[.[] | select(.status=="queued" or .status=="in_progress" or .status=="pending" or .status=="waiting")] | length' || echo 1)
+            if [ "${n:-1}" = 0 ]; then gh workflow run "$f" --repo "$REPO" --ref main && echo "started $f"; else echo "$f already going ($n), not started again"; fi
+          }
+          start mcp-live.yml
+          start floor-live.yml
+          start mcp-registry.yml
+          start automations-seed.yml
+          start will.yml
+          echo "follow-ups" >> "$GITHUB_STEP_SUMMARY"
 
       # Verse's voice (lib/voice.js): after anything ships, Verse is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
@@ -349,12 +328,12 @@ jobs:
   # test member on an in-memory D1 claims a receipt (Already joined), reloads, and sends an idea; nothing reaches Gumroad or
   # a-to-mind.com. Its own job, so a red here fails "Verse deploy" and tools/pr-ready.mjs holds the merge.
   members-paid:
-    if: github.event_name != 'workflow_dispatch' || inputs.pr != ''
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.pr != '')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.event.pull_request.number && format('void-members-paid-pr-{0}', github.event.pull_request.number) || inputs.pr && format('void-members-paid-pr-{0}', inputs.pr) || 'void-members-paid-main' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' || inputs.pr != '' }}
+      group: ${{ github.event.pull_request.number && format('void-members-paid-pr-{0}', github.event.pull_request.number) || (github.event_name == 'workflow_dispatch' && inputs.pr != '' && format('void-members-paid-pr-{0}', inputs.pr)) || 'void-members-paid-main' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.pr != '') }}
     steps:
       # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no
       # tools/members-paid.e2e.mjs at its head, and the merge result is the code that reaches main anyway.
@@ -382,7 +361,7 @@ jobs:
   # played in a real browser on a PR that changes one of those pages or the hand-off code (2026-10-30: until now nothing in CI ran them,
   # so a broken hand-off only showed when a person used it). Its own job, like members-paid: a red here fails "Verse deploy" and holds the merge.
   handoffs:
-    if: github.event_name == 'pull_request' || inputs.pr != ''
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.pr != '')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:

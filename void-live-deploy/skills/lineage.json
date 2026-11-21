@@ -1,7 +1,11 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 26,
+ "count": 30,
  "skills": {
+  "working-on": [
+   "will-card",
+   "wants"
+  ],
   "experiments": [
    "toolkit"
   ],
@@ -158,6 +162,26 @@
    "handoff-checklist",
    "systems-monitor",
    "client-status"
+  ],
+  "automation-status-pack": [
+   "monitor-pack",
+   "system-status",
+   "reliability-pack",
+   "status-digest",
+   "full-handoff"
+  ],
+  "before-after-pack": [
+   "client-intake",
+   "idea-to-system",
+   "process-lift-pack",
+   "lift-summary",
+   "full-handoff"
+  ],
+  "delivery-status-pack": [
+   "delivery-pack",
+   "monitor-receipt",
+   "ownership-pack",
+   "handoff-checklist"
   ]
  }
 }
