@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T07:34:31.206Z",
+ "updated": "2026-11-21T07:43:52.878Z",
  "last24h": {
   "ticks": 148,
-  "started": 94,
+  "started": 93,
   "requeued": 3,
   "setAside": 0,
   "probes": 0,
@@ -149,8 +149,8 @@
   "mvvjzso8": 1795223280158,
   "mw5mm5fm": 1795223856465
  },
- "sweptAt": 1795243092242,
- "blueprintsAt": 1795243092242,
+ "sweptAt": 1795247032878,
+ "blueprintsAt": 1795247032878,
  "catchup": {
   "site-test.yml": {
    "slot": 1795243260000,
@@ -238,8 +238,8 @@
    "startedAt": 1795238022181
   },
   "pages-guard.yml": {
-   "slot": 1795245300000,
-   "startedAt": 1795245910550
+   "slot": 1795246200000,
+   "startedAt": 1795247032878
   },
   "autosalvage.yml": {
    "slot": 1795166220000
@@ -3445,36 +3445,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T07:37:03.932Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "want-exam-weather",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 75
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T07:46:39.371Z",
    "open": 500,
@@ -7793,6 +7763,35 @@
    "catchup": [],
    "cancelled": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T07:43:52.878Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "pages-guard.yml"
+   ],
+   "cancelled": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 482,
    "warnings": 0
