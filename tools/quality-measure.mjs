@@ -137,7 +137,10 @@ export async function measure(browser, surface, { shots = true } = {}) {
   await host.context().close();
   const P = sides.phone, D = sides.desktop;
   if (!P || P.fail) return { ...out, fail: (P && P.fail) || 'no phone render' };
-  if (P.read && P.read.gated) return { ...out, fail: 'gated: the Uni screen shows, not the page (the owner token measures the real page)' };
+  if (P.read && P.read.gated) {
+    if (shots) { out.shots.phone = P.png; if (D && !D.fail) out.shots.desktop = D.png; }
+    return { ...out, fail: 'gated: the Uni screen shows, not the page (the owner token measures the real page)' };
+  }
   const worst = (f) => Math.max(f(P), D && !D.fail ? f(D) : 0);
   const readT = readability(P.read.text);
   const animated = (s) => s && !s.fail && ((s.q.draws - s.d0.draws) > 2 || (s.q.gpu - s.d0.gpu) > 2);

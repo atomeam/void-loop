@@ -32,13 +32,14 @@ export function withResult(rec, id, update, r, fails, at) {
   games[id] = { update, pass: fails.length === 0, at, fails, metrics: r };
   return { games };
 }
-function serve() {
+export function serve() {
   const T = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml' };
   const s = http.createServer((q, res) => { let p = decodeURIComponent(new URL(q.url, 'http://x').pathname); if (p.endsWith('/')) p += 'index.html'; const f = path.join(site, p); if (!f.startsWith(site) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': T[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); });
   return new Promise((ok) => s.listen(0, '127.0.0.1', () => ok(s)));
 }
-export async function probe(id, { ms = 30000, base = '', video = '' } = {}) {
-  const { chromium } = await import('playwright-core'); const srv = base ? null : await serve(); const origin = base || 'http://127.0.0.1:' + srv.address().port;
+export async function probe(id, { ms = 30000, base = '', video = '', shot = '', quick = false } = {}) {
+  let chromium; try { ({ chromium } = await import('playwright-core')); } catch (_) { const pw = await (await import('./verse-guards.mjs')).loadPlaywright(); if (!pw) throw new Error('playwright-core is not installed'); chromium = pw.chromium; }
+  const srv = base ? null : await serve(); const origin = base || 'http://127.0.0.1:' + srv.address().port;
   const b = await chromium.launch({ headless: true, executablePath: process.env.VOID_TEST_BROWSER || undefined, args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
   const c = await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, ...(video ? { recordVideo: { dir: video, size: { width: 390, height: 844 } } } : {}) });
   const p = await c.newPage(), errors = []; p.on('pageerror', (e) => errors.push(String(e.message)));
@@ -61,11 +62,14 @@ export async function probe(id, { ms = 30000, base = '', video = '' } = {}) {
     }
     r.fps = await p.evaluate(() => new Promise((ok) => { let n = 0; const t = performance.now(); const f = (x) => { n++; if (x - t < 2000) requestAnimationFrame(f); else ok(Math.round(n / ((x - t) / 1000))); }; requestAnimationFrame(f); }));
     s = await st(); r.speedEnd = s.speed; r.levelEnd = s.level; r.sounds = s.sounds - snd0; r.audio = s.audio;
-    const t2 = Date.now(); r.failMs = 99999;
-    while (Date.now() - t2 < BAR.failMs + 5000) { s = await st(); if (s.over) { r.failMs = Date.now() - t2; break; } if (s.waiting) await p.touchscreen.tap(px(4), 700); await p.mouse.move(px(4), 700); await p.waitForTimeout(150); }
-    await p.waitForTimeout(800); await p.touchscreen.tap(195, 700); await p.waitForTimeout(300); s = await st(); r.again = !s.over && s.score === 0;
+    // quick skips the minute spent waiting to lose: the stranger gate plays the game; game-audit keeps the long idle check
+    if (!quick) {
+      const t2 = Date.now(); r.failMs = 99999;
+      while (Date.now() - t2 < BAR.failMs + 5000) { s = await st(); if (s.over) { r.failMs = Date.now() - t2; break; } if (s.waiting) await p.touchscreen.tap(px(4), 700); await p.mouse.move(px(4), 700); await p.waitForTimeout(150); }
+      await p.waitForTimeout(800); await p.touchscreen.tap(195, 700); await p.waitForTimeout(300); s = await st(); r.again = !s.over && s.score === 0;
+    }
   } catch (e) { errors.push('probe: ' + String(e.message || e).slice(0, 140)); }
-  finally { r.errors = errors.length; r.errorText = errors[0] || ''; await c.close().catch(() => {}); await b.close().catch(() => {}); if (srv) srv.close(); }
+  finally { if (shot) { try { await p.screenshot({ path: shot }); } catch (_) {} } r.errors = errors.length; r.errorText = errors[0] || ''; await c.close().catch(() => {}); await b.close().catch(() => {}); if (srv) srv.close(); }
   return r;
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
