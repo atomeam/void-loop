@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T02:23:28.260Z",
+ "updated": "2026-11-21T02:32:50.199Z",
  "last24h": {
   "ticks": 147,
-  "started": 123,
+  "started": 122,
   "requeued": 10,
   "setAside": 1,
   "probes": 0,
@@ -18,7 +18,7 @@
   {
    "wf": "verify.yml",
    "fails": 8,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44853584363"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44854015869"
   }
  ],
  "held": [
@@ -106,11 +106,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 17,
+   "used": 27,
    "cap": 90
   },
   "day": {
-   "used": 169,
+   "used": 179,
    "cap": 360
   },
   "room": true,
@@ -3427,37 +3427,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T02:25:15.547Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwcckvqs",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 117
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 37,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T02:35:10.548Z",
    "open": 500,
@@ -7751,6 +7720,32 @@
    "catchup": [
     "arb-record.yml"
    ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T02:32:50.199Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
    "cancelled": [],
    "sweep": false,
    "blueprints": 0,
