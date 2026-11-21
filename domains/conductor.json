@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T14:00:19.996Z",
+ "updated": "2026-11-21T14:09:52.211Z",
  "last24h": {
   "ticks": 148,
   "started": 88,
@@ -106,7 +106,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 1,
    "cap": 90
   },
   "day": {
@@ -148,8 +148,8 @@
  "blueprintsAt": 1795266800935,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795264860000,
-   "startedAt": 1795266235052
+   "slot": 1795268460000,
+   "startedAt": 1795270192211
   },
   "exam.yml": {
    "slot": 1795252620000,
@@ -287,8 +287,8 @@
    "startedAt": 1795269619996
   },
   "growth-fold.yml": {
-   "slot": 1795264860000,
-   "startedAt": 1795266235052
+   "slot": 1795268460000,
+   "startedAt": 1795270192211
   },
   "arb-record.yml": {
    "slot": 1795268220000,
@@ -3453,29 +3453,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T14:03:47.559Z",
-   "open": 500,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 472,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T14:13:22.384Z",
    "open": 500,
@@ -7974,6 +7951,35 @@
     "dispatcher.yml",
     "verse-watch.yml",
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T14:09:52.211Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "site-test.yml",
+    "growth-fold.yml"
    ],
    "cancelled": [],
    "sweep": false,
