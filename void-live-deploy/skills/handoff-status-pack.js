@@ -15,9 +15,10 @@ function extractIdea(text) {
   const m = t.match(/(?:for|idea|system|business)\s*[:\-]\s*(.+)/i) || t.match(/\bfor\s+(?:my\s+|the\s+|a\s+)?(.+)/i) || t.match(/[:\-]\s*(.+)/);
   return m ? m[1].trim() : 'unspecified system';
 }
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
 async function run(text, api) {
-  const { showPage, esc } = api;
+  const { showPage } = api;
   const idea = extractIdea(text);
   const el = showPage((p) => { p.innerHTML = '<h2>Handoff status</h2><div class="sub">building…</div>'; });
   const pack = [
