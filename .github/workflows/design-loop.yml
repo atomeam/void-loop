@@ -42,11 +42,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -55,7 +55,7 @@ jobs:
         id: pw
         run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
       - name: Cache Chromium
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
@@ -73,7 +73,7 @@ jobs:
           set -o pipefail
           node --test tools/ask-bar.test.mjs 2>&1 | tee bar.txt
           { echo "### The live ask bar"; echo; grep -E '^# at [0-9]+ px:' bar.txt | sed 's/^# /- /' || true; } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ask-bar-live
@@ -88,11 +88,11 @@ jobs:
       fixed: ${{ steps.loop.outputs.fixed }}
       title: ${{ steps.loop.outputs.title }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -103,7 +103,7 @@ jobs:
         id: pw
         run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
       - name: Cache Chromium
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
@@ -141,7 +141,7 @@ jobs:
           node tools/design-loop.mjs --check
           [ -n "$DRY" ] && { echo "a dry run: nothing committed"; exit 0; }
           echo "fixed=$fixed" >> "$GITHUB_OUTPUT"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: design-loop
@@ -161,14 +161,14 @@ jobs:
       contents: write
       actions: write # start the deploy after the commit (a push by this token starts no workflow)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: design-loop
           path: ${{ runner.temp }}/dl

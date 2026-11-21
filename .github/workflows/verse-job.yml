@@ -39,7 +39,7 @@ jobs:
     outputs:
       run: ${{ steps.pause.outputs.run }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           sparse-checkout: domains
@@ -59,12 +59,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0
           token: ${{ secrets.VERSE_BOT_TOKEN || secrets.VERSE_LOOP_TOKEN || github.token }}
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -81,7 +81,7 @@ jobs:
           cp void.html void-live-deploy/void.html
           git update-index --assume-unchanged void-live-deploy/index.html void-live-deploy/void.html
       - name: The loop's memory (failure streak, open PRs, heal tries)
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/verse-loop
           key: verse-loop-state-${{ github.run_id }}
@@ -113,7 +113,7 @@ jobs:
           case "$JOB" in ''|*[!A-Za-z0-9_-]*) echo "::error title=Verse job::the job id is not an id"; exit 0 ;; esac
           node tools/verse-job.mjs "$JOB" $DRY
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: game-play
           path: ${{ runner.temp }}/game-play
@@ -121,7 +121,7 @@ jobs:
           retention-days: 14
       - name: Keep the loop's memory
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ${{ runner.temp }}/verse-loop
           key: verse-loop-state-${{ github.run_id }}

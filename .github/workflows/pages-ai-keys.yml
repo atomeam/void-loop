@@ -26,7 +26,7 @@ jobs:
       WRANGLER: npx --yes wrangler@3.114.17
       PROJECT: a-to-mind
     steps:
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: copy the keys that exist

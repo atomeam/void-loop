@@ -14,7 +14,7 @@ jobs:
   cycle:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Even New York hour, or a manual run
         id: gate
@@ -33,7 +33,7 @@ jobs:
             echo "skip odd America/New_York hour $hour"
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.gate.outputs.run == 'true'
         with:
           node-version: "20"

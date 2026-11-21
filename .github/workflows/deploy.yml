@@ -50,12 +50,12 @@ jobs:
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0 # the suite reads git history of the append-only records; the PR diff needs the base
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
@@ -190,7 +190,7 @@ jobs:
         id: deploy
         # a PR gets no preview (above): only main deploys. inputs.pr is a pull-request check started by hand and never an upload.
         if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && inputs.pr == ''
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -337,8 +337,8 @@ jobs:
     steps:
       # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no
       # tools/members-paid.e2e.mjs at its head, and the merge result is the code that reaches main anyway.
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -346,7 +346,7 @@ jobs:
       - name: Playwright version
         id: pw
         run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
@@ -368,7 +368,7 @@ jobs:
       group: void-handoffs-pr-${{ github.event.pull_request.number || inputs.pr }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
       - name: Does this PR touch a hand-off?
@@ -376,7 +376,7 @@ jobs:
         run: |
           # domains/handoff.md is the working-on log. A claim line there is not a hand-off page, and playing every journey on it held a merge on two unrelated paint timeouts.
           if git diff --name-only HEAD^1 HEAD | grep -vE '^(domains|docs)/' | grep -Eq 'void-live-deploy/(bpm|metronome|chords|piano|calendar|time|weather)/|handoff'; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "### No hand-off page changed: journeys not played" >> "$GITHUB_STEP_SUMMARY"; fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.touch.outputs.run == 'true'
         with:
           node-version: 22
@@ -387,7 +387,7 @@ jobs:
         if: steps.touch.outputs.run == 'true'
         id: pw
         run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         if: steps.touch.outputs.run == 'true'
         with:
           path: ~/.cache/ms-playwright

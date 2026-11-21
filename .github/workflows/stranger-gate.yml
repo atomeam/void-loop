@@ -34,11 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: git fetch --no-tags origin main
@@ -58,7 +58,7 @@ jobs:
         run: |
           if [ ! -f tools/stranger-gate.mjs ]; then echo "stranger-gate.mjs is not on this commit; nothing to run"; exit 0; fi
           node tools/stranger-gate.mjs --json stranger-out/stranger.json --shots stranger-out
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: stranger-test

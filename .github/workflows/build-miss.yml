@@ -49,11 +49,11 @@ jobs:
       phrasings: ${{ steps.report.outputs.phrasings }}
       title: ${{ steps.report.outputs.title }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -90,7 +90,7 @@ jobs:
         run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
       - name: Cache Chromium
         if: steps.claim.outputs.claimed == '1'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
@@ -133,7 +133,7 @@ jobs:
           node tools/build-miss.mjs report --out "$RUNNER_TEMP/miss" | tee report.txt
           sed -n '/^### Verse built/,/^| result/p' report.txt >> "$GITHUB_STEP_SUMMARY" || true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: steps.report.outputs.passed == '1'
         with:
           name: v01d-skill
@@ -154,10 +154,10 @@ jobs:
       issues: write
       actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: v01d-skill
           path: ${{ runner.temp }}/miss

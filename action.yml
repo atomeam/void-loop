@@ -49,7 +49,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v7
       with: { node-version: 22 }
     - name: The x402 payer, for pay-per-review only
       if: inputs.x402-wallet-key != '' && (github.event_name == 'pull_request' || github.event_name == 'pull_request_target')

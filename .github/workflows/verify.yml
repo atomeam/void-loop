@@ -49,7 +49,7 @@ jobs:
       group: void-verify-fast-${{ github.ref }} # one group for this branch: a newer push replaces the waiting run
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
@@ -118,7 +118,7 @@ jobs:
       group: void-verify-slow-${{ matrix.check }}-${{ github.ref }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 2
@@ -127,7 +127,7 @@ jobs:
         run: |
           if git log -1 --format=%B | grep -q '^Verse-auto-revert:'; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
           if ! git diff --name-only HEAD~1 HEAD | grep -qv '^void-live-deploy/incidents'; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.skip.outputs.skip != 'true'
         with:
           node-version: 22
@@ -196,7 +196,7 @@ jobs:
       actions: write # start the deploy of the reverted main
       checks: read # the failed checks earlier red runs named (tools/revert-target.mjs)
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
@@ -257,7 +257,7 @@ jobs:
           echo "### Converter offline proof: a PNG and a WAV converted with the network cut ($(date -u +%FT%TZ))" >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the converter offline proof
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 1 && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: converter-offline-proof
           path: converter-offline-proof.json
@@ -281,7 +281,7 @@ jobs:
       # not one per shard: three shards each pushed their own "Incident:" commit, and each replaced the others' checks)
       - name: Keep this shard's output for the incident job
         if: steps.test.outcome == 'failure' && steps.rerun.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: suite-output-${{ matrix.shard }}
           path: test-output.txt
@@ -386,11 +386,11 @@ jobs:
       contents: write # the one incidents.json commit on main
       actions: read # which shards of this run passed and which failed
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: needs.browser-suite.result == 'failure'
         with:
           pattern: suite-output-*
