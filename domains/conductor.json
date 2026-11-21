@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T05:23:06.980Z",
+ "updated": "2026-11-21T05:32:34.546Z",
  "last24h": {
   "ticks": 147,
-  "started": 100,
-  "requeued": 6,
+  "started": 98,
+  "requeued": 5,
   "setAside": 0,
   "probes": 0,
   "errors": 0
@@ -17,8 +17,8 @@
   },
   {
    "wf": "grow-self.yml",
-   "fails": 3,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/44860659416"
+   "fails": 4,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/44870667325"
   },
   {
    "wf": "verify.yml",
@@ -149,8 +149,8 @@
   "mvvjzso8": 1795223280158,
   "mw5mm5fm": 1795223856465
  },
- "sweptAt": 1795235199693,
- "blueprintsAt": 1795235199693,
+ "sweptAt": 1795239154546,
+ "blueprintsAt": 1795239154546,
  "catchup": {
   "site-test.yml": {
    "slot": 1795236060000,
@@ -3434,42 +3434,6 @@
   "heal:helper-status-handoff"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T05:31:57.608Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwcuue69",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 116
-    },
-    {
-     "id": "mwme3uk5",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 43
-    }
-   ],
-   "requeued": 1,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T05:42:13.530Z",
    "open": 500,
@@ -7704,6 +7668,33 @@
    ],
    "cancelled": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 480,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T05:32:34.546Z",
+   "open": 500,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [],
+   "cancelled": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 480,
    "warnings": 0
