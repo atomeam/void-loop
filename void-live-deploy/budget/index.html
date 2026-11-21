@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget, Expenses &amp; Subscriptions — Verse</title>
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --panel: #131722;
+      --panel-2: #1a2030;
+      --border: #273046;
+      --text: #e8ecf4;
+      --muted: #98a4bd;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+    header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+    h1 { font-size: 1.5rem; margin: 0; }
+    .sub { color: var(--muted); font-size: 0.92rem; margin: 4px 0 0; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .stat-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .stat-val { font-size: 1.35rem; font-weight: 700; margin-top: 4px; }
+    .stat-val.pos { color: var(--accent); }
+    .stat-val.neg { color: var(--danger); }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    .tab-btn {
+      background: var(--panel);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: var(--accent-2); color: #07101f; border-color: var(--accent-2); }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .hidden { display: none; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    input, select, textarea, button {
+      font: inherit;
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    input[type="range"] { padding: 0; border: none; background: transparent; accent-color: var(--accent-2); }
+    button { cursor: pointer; font-weight: 600; }
+    button.primary { background: var(--accent); color: #062116; border-color: var(--accent); }
+    button.ghost { background: transparent; color: var(--muted); }
+    button.danger { background: transparent; color: var(--danger); border-color: #5c2626; }
+    textarea { width: 100%; min-height: 110px; resize: vertical; }
+    .cat-item, .exp-item, .sub-item {
+      display: grid;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .cat-item { grid-template-columns: minmax(140px, 1.3fr) 1fr 110px 70px auto; }
+    .exp-item { grid-template-columns: minmax(150px, 1.6fr) 100px 130px auto; }
+    .sub-item { grid-template-columns: minmax(140px, 1.4fr) 100px 100px 100px auto auto; }
+    .bar-track { height: 10px; background: var(--panel-2); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); margin: 10px 0; }
+    .bar-fill { height: 100%; background: var(--accent); transition: width 0.15s ease; }
+    .bar-fill.over { background: var(--danger); }
+    .badge { font-size: 0.78rem; padding: 3px 8px; border-radius: 999px; background: var(--panel); border: 1px solid var(--border); color: var(--muted); }
+    .notice { font-size: 0.88rem; color: var(--muted); margin-top: 8px; }
+    @media (max-width: 720px) {
+      .cat-item, .exp-item, .sub-item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Verse Budget Super-Page</h1>
+        <p class="sub">Unified monthly allocator, receipt &amp; Cash App CSV expenses, and recurring subscriptions.</p>
+      </div>
+    </header>
+
+    <section class="summary-grid" aria-label="Live Financial Summary">
+      <div class="stat-card"><div class="stat-label">Monthly Income</div><div class="stat-val" id="sum-income">$0.00</div></div>
+      <div class="stat-card"><div class="stat-label">Budgeted</div><div class="stat-val" id="sum-budgeted">$0.00</div></div>
+      <div class="stat-card"><div class="stat-label">Logged Expenses</div><div class="stat-val" id="sum-expenses">$0.00</div></div>
+      <div class="stat-card"><div class="stat-label">Monthly Subscriptions</div><div class="stat-val" id="sum-subs">$0.00</div></div>
+      <div class="stat-card"><div class="stat-label">Remaining Cash Flow</div><div class="stat-val pos" id="sum-cashflow">$0.00</div></div>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Budget Sections">
+      <button type="button" class="tab-btn active" data-tab="budget" role="tab" aria-selected="true">Budget Allocator</button>
+      <button type="button" class="tab-btn" data-tab="expenses" role="tab" aria-selected="false">Expenses &amp; Cash App CSV</button>
+      <button type="button" class="tab-btn" data-tab="subscriptions" role="tab" aria-selected="false">Subscriptions</button>
+    </nav>
+
+    <section id="tab-budget" class="panel" role="tabpanel">
+      <div class="row" style="justify-content: space-between; margin-bottom: 14px;">
+        <label class="row">
+          <span>Monthly Income ($):</span>
+          <input type="number" id="income-input" min="0" step="50" value="4000" />
+        </label>
+        <div id="budget-breakdown-text" class="badge">0% allocated</div>
+      </div>
+      <div class="bar-track"><div id="budget-bar" class="bar-fill" style="width: 0%;"></div></div>
+      <div id="budget-list"></div>
+      <form id="add-cat-form" class="row" style="margin-top: 12px;">
+        <input type="text" id="new-cat-name" placeholder="New category name" required />
+        <input type="number" id="new-cat-amt" placeholder="Amount" min="0" step="10" value="100" required />
+        <button type="submit" class="primary">Add Category</button>
+      </form>
+    </section>
+
+    <section id="tab-expenses" class="panel hidden" role="tabpanel">
+      <div class="row" style="justify-content: space-between; margin-bottom: 10px;">
+        <strong>Paste Receipt Lines or Import Cash App CSV</strong>
+        <label class="badge" style="cursor: pointer;">
+          Import Cash App CSV
+          <input type="file" id="csv-file-input" accept=".csv,text/csv" style="display: none;" />
+        </label>
+      </div>
+      <textarea id="receipt-input" placeholder="Paste receipt lines, e.g.&#10;Trader Joes 42.50 food&#10;Metro pass 33.00 transport"></textarea>
+      <div class="row" style="margin-top: 10px; margin-bottom: 16px;">
+        <button type="button" id="parse-receipts-btn" class="primary">Add Receipt Lines</button>
+        <button type="button" id="export-csv-btn">Export CSV</button>
+        <button type="button" id="copy-summary-btn">Copy Summary</button>
+        <button type="button" id="clear-expenses-btn" class="danger">Clear All</button>
+        <span id="expense-status" class="notice" style="margin: 0;"></span>
+      </div>
+      <div id="expense-list"></div>
+    </section>
+
+    <section id="tab-subscriptions" class="panel hidden" role="tabpanel">
+      <div class="row" style="justify-content: space-between; margin-bottom: 14px;">
+        <div>
+          <strong>Recurring Tools &amp; Bills</strong>
+          <div class="notice" id="sub-burn-summary">Monthly Equivalent: $0.00 | Annual Burn: $0.00</div>
+        </div>
+      </div>
+      <form id="add-sub-form" class="row" style="margin-bottom: 16px;">
+        <input type="text" id="sub-name" placeholder="Service name" required />
+        <input type="number" id="sub-price" placeholder="Price" min="0" step="0.01" required />
+        <select id="sub-cycle">
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+        <input type="text" id="sub-category" placeholder="Category" value="Tools" />
+        <button type="submit" class="primary">Add Subscription</button>
+      </form>
+      <div id="sub-list"></div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var BUDGET_KEY = 'verse-f647-budget';
+      var EXPENSE_KEY = 'verse-f643-receipt';
+      var SUB_KEY = 'verse-f641-subs';
+      var CATEGORIES = ['food', 'transport', 'office', 'home', 'health', 'other'];
+
+      function safeRead(key, fallback) {
+        try {
+          var raw = window.localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (err) {
+          console.warn('localStorage read failed for ' + key + ':', err);
+          return fallback;
+        }
+      }
+
+      function safeWrite(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (err) {
+          console.warn('localStorage write failed for ' + key + ':', err);
+        }
+      }
+
+      function fmt(n) {
+        var num = Number(n) || 0;
+        var sign = num < 0 ? '-' : '';
+        return sign + '$' + Math.abs(num).toFixed(2);
+      }
+
+      var budgetState = safeRead(BUDGET_KEY, null);
+      if (!budgetState || !Array.isArray(budgetState.cats)) {
+        budgetState = {
+          income: 4000,
+          cats: [
+            { name: 'Rent / mortgage', amt: 1400 },
+            { name: 'Food', amt: 400 },
+            { name: 'Transport', amt: 200 },
+            { name: 'Utilities', amt: 150 }
+          ]
+        };
+      }
+
+      var expenses = safeRead(EXPENSE_KEY, null);
+      if (!Array.isArray(expenses)) {
+        expenses = [
+          { id: 'e1', desc: 'Grocery market', amt: 64.20, cat: 'food' },
+          { id: 'e2', desc: 'City transit pass', amt: 33.00, cat: 'transport' }
+        ];
+      }
+
+      var subs = safeRead(SUB_KEY, null);
+      if (!Array.isArray(subs)) {
+        subs = [
+          { id: 's1', name: 'Cloud Storage', price: 9.99, cycle: 'monthly', status: 'active', category: 'Tools' },
+          { id: 's2', name: 'Domain Renewal', price: 14.00, cycle: 'yearly', status: 'active', category: 'Web' }
+        ];
+      }
+
+      function monthlyEq(item) {
+        if (item.status !== 'active') return 0;
+        var p = Number(item.price) || 0;
+        return item.cycle === 'yearly' ? p / 12 : p;
+      }
+
+      function renderSummary() {
+        var income = Number(budgetState.income) || 0;
+        var budgeted = budgetState.cats.reduce(function (s, c) { return s + (Number(c.amt) || 0); }, 0);
+        var expTotal = expenses.reduce(function (s, e) { return s + (Number(e.amt) || 0); }, 0);
+        var subMonthly = subs.reduce(function (s, i) { return s + monthlyEq(i); }, 0);
+        var cashflow = income - expTotal - subMonthly;
+
+        document.getElementById('sum-income').textContent = fmt(income);
+        document.getElementById('sum-budgeted').textContent = fmt(budgeted);
+        document.getElementById('sum-expenses').textContent = fmt(expTotal);
+        document.getElementById('sum-subs').textContent = fmt(subMonthly);
+        var cfEl = document.getElementById('sum-cashflow');
+        cfEl.textContent = fmt(cashflow);
+        cfEl.className = 'stat-val ' + (cashflow >= 0 ? 'pos' : 'neg');
+      }
+
+      function renderBudget() {
+        var income = Number(budgetState.income) || 0;
+        document.getElementById('income-input').value = income;
+        var total = budgetState.cats.reduce(function (s, c) { return s + (Number(c.amt) || 0); }, 0);
+        var pct = income > 0 ? Math.round((total / income) * 100) : 0;
+        var unallocated = income - total;
+        document.getElementById('budget-breakdown-text').textContent =
+          pct + '% allocated (' + fmt(total) + ' of ' + fmt(income) + ', ' + (unallocated >= 0 ? fmt(unallocated) + ' left' : fmt(Math.abs(unallocated)) + ' over') + ')';
+        var bar = document.getElementById('budget-bar');
+        bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+        bar.className = 'bar-fill' + (pct > 100 ? ' over' : '');
+
+        var list = document.getElementById('budget-list');
+        list.innerHTML = '';
+        budgetState.cats.forEach(function (cat, idx) {
+          var row = document.createElement('div');
+          row.className = 'cat-item';
+          var nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = cat.name;
+          nameInput.addEventListener('change', function () {
+            cat.name = nameInput.value.trim() || 'Category';
+            safeWrite(BUDGET_KEY, budgetState);
+            renderBudget();
+          });
+
+          var slider = document.createElement('input');
+          slider.type = 'range';
+          slider.min = '0';
+          slider.max = String(Math.max(income, Number(cat.amt) || 0, 500));
+          slider.step = '10';
+          slider.value = String(Number(cat.amt) || 0);
+
+          var numInput = document.createElement('input');
+          numInput.type = 'number';
+          numInput.min = '0';
+          numInput.step = '10';
+          numInput.value = String(Number(cat.amt) || 0);
+
+          var pctSpan = document.createElement('span');
+          pctSpan.className = 'badge';
+          pctSpan.textContent = (income > 0 ? Math.round(((Number(cat.amt) || 0) / income) * 100) : 0) + '%';
+
+          slider.addEventListener('input', function () {
+            cat.amt = Number(slider.value) || 0;
+            numInput.value = cat.amt;
+            safeWrite(BUDGET_KEY, budgetState);
+            renderSummary();
+            pctSpan.textContent = (income > 0 ? Math.round((cat.amt / income) * 100) : 0) + '%';
+          });
+          numInput.addEventListener('change', function () {
+            cat.amt = Math.max(0, Number(numInput.value) || 0);
+            safeWrite(BUDGET_KEY, budgetState);
+            renderAll();
+          });
+
+          var delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'danger';
+          delBtn.textContent = 'Remove';
+          delBtn.addEventListener('click', function () {
+            budgetState.cats.splice(idx, 1);
+            safeWrite(BUDGET_KEY, budgetState);
+            renderAll();
+          });
+
+          row.appendChild(nameInput);
+          row.appendChild(slider);
+          row.appendChild(numInput);
+          row.appendChild(pctSpan);
+          row.appendChild(delBtn);
+          list.appendChild(row);
+        });
+      }
+
+      function renderExpenses() {
+        var list = document.getElementById('expense-list');
+        list.innerHTML = '';
+        if (!expenses.length) {
+          list.innerHTML = '<p class="notice">No logged expenses yet. Paste receipt lines or import a Cash App CSV above.</p>';
+          return;
+        }
+        expenses.forEach(function (exp, idx) {
+          var row = document.createElement('div');
+          row.className = 'exp-item';
+
+          var desc = document.createElement('span');
+          desc.textContent = exp.desc;
+
+          var amt = document.createElement('strong');
+          amt.textContent = fmt(exp.amt);
+
+          var sel = document.createElement('select');
+          CATEGORIES.forEach(function (c) {
+            var opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            if (exp.cat === c) opt.selected = true;
+            sel.appendChild(opt);
+          });
+          sel.addEventListener('change', function () {
+            exp.cat = sel.value;
+            safeWrite(EXPENSE_KEY, expenses);
+          });
+
+          var delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'danger';
+          delBtn.textContent = 'Delete';
+          delBtn.addEventListener('click', function () {
+            expenses.splice(idx, 1);
+            safeWrite(EXPENSE_KEY, expenses);
+            renderAll();
+          });
+
+          row.appendChild(desc);
+          row.appendChild(amt);
+          row.appendChild(sel);
+          row.appendChild(delBtn);
+          list.appendChild(row);
+        });
+      }
+
+      function renderSubs() {
+        var monthly = subs.reduce(function (s, i) { return s + monthlyEq(i); }, 0);
+        var yearly = monthly * 12;
+        document.getElementById('sub-burn-summary').textContent =
+          'Monthly Equivalent: ' + fmt(monthly) + ' | Annual Burn: ' + fmt(yearly);
+
+        var list = document.getElementById('sub-list');
+        list.innerHTML = '';
+        if (!subs.length) {
+          list.innerHTML = '<p class="notice">No subscriptions tracked yet.</p>';
+          return;
+        }
+        subs.forEach(function (item, idx) {
+          var row = document.createElement('div');
+          row.className = 'sub-item';
+
+          var name = document.createElement('strong');
+          name.textContent = item.name + (item.category ? ' (' + item.category + ')' : '');
+
+          var price = document.createElement('span');
+          price.textContent = fmt(item.price) + '/' + (item.cycle === 'yearly' ? 'yr' : 'mo');
+
+          var eq = document.createElement('span');
+          eq.className = 'badge';
+          eq.textContent = fmt(monthlyEq(item)) + '/mo eq';
+
+          var toggleBtn = document.createElement('button');
+          toggleBtn.type = 'button';
+          toggleBtn.className = 'ghost';
+          toggleBtn.textContent = item.status === 'active' ? 'Active' : 'Paused';
+          toggleBtn.addEventListener('click', function () {
+            item.status = item.status === 'active' ? 'paused' : 'active';
+            safeWrite(SUB_KEY, subs);
+            renderAll();
+          });
+
+          var delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'danger';
+          delBtn.textContent = 'Remove';
+          delBtn.addEventListener('click', function () {
+            subs.splice(idx, 1);
+            safeWrite(SUB_KEY, subs);
+            renderAll();
+          });
+
+          row.appendChild(name);
+          row.appendChild(price);
+          row.appendChild(eq);
+          row.appendChild(toggleBtn);
+          row.appendChild(delBtn);
+          list.appendChild(row);
+        });
+      }
+
+      function renderAll() {
+        renderSummary();
+        renderBudget();
+        renderExpenses();
+        renderSubs();
+      }
+
+      function setTab(tabName) {
+        var valid = ['budget', 'expenses', 'subscriptions'];
+        if (valid.indexOf(tabName) === -1) tabName = 'budget';
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+          var isAct = btn.getAttribute('data-tab') === tabName;
+          btn.classList.toggle('active', isAct);
+          btn.setAttribute('aria-selected', String(isAct));
+        });
+        valid.forEach(function (t) {
+          document.getElementById('tab-' + t).classList.toggle('hidden', t !== tabName);
+        });
+        try {
+          var url = new URL(window.location.href);
+          url.searchParams.set('tab', tabName);
+          window.history.replaceState(null, '', url.toString());
+        } catch (err) {
+          console.warn('Unable to update URL tab param:', err);
+        }
+      }
+
+      document.querySelectorAll('.tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setTab(btn.getAttribute('data-tab'));
+        });
+      });
+
+      document.getElementById('income-input').addEventListener('change', function (e) {
+        budgetState.income = Math.max(0, Number(e.target.value) || 0);
+        safeWrite(BUDGET_KEY, budgetState);
+        renderAll();
+      });
+
+      document.getElementById('add-cat-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = document.getElementById('new-cat-name').value.trim();
+        var amt = Math.max(0, Number(document.getElementById('new-cat-amt').value) || 0);
+        if (!name) return;
+        budgetState.cats.push({ name: name, amt: amt });
+        safeWrite(BUDGET_KEY, budgetState);
+        document.getElementById('new-cat-name').value = '';
+        renderAll();
+      });
+
+      document.getElementById('parse-receipts-btn').addEventListener('click', function () {
+        var text = document.getElementById('receipt-input').value;
+        var lines = text.split(/\r?\n/);
+        var added = 0;
+        lines.forEach(function (line) {
+          var tokens = line.trim().split(/\s+/).filter(Boolean);
+          if (tokens.length < 2) return;
+          var amtIdx = -1;
+          for (var i = tokens.length - 1; i >= 0; i--) {
+            var cleaned = tokens[i].replace(/[$,]/g, '');
+            if (!isNaN(Number(cleaned)) && cleaned !== '') {
+              amtIdx = i;
+              break;
+            }
+          }
+          if (amtIdx <= 0) return;
+          var amt = Math.abs(Number(tokens[amtIdx].replace(/[$,]/g, '')));
+          var desc = tokens.slice(0, amtIdx).join(' ');
+          var rawCat = tokens.slice(amtIdx + 1).join(' ').toLowerCase();
+          var cat = CATEGORIES.indexOf(rawCat) !== -1 ? rawCat : 'other';
+          expenses.push({ id: 'e' + Date.now() + Math.random(), desc: desc, amt: amt, cat: cat });
+          added++;
+        });
+        safeWrite(EXPENSE_KEY, expenses);
+        document.getElementById('receipt-input').value = '';
+        document.getElementById('expense-status').textContent = 'Added ' + added + ' expense(s).';
+        renderAll();
+      });
+
+      document.getElementById('csv-file-input').addEventListener('change', function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          var content = String(ev.target.result || '');
+          var rows = content.split(/\r?\n/).filter(Boolean);
+          if (rows.length < 2) return;
+          var headers = rows[0].split(',').map(function (h) { return h.replace(/^"|"$/g, '').trim().toLowerCase(); });
+          var amtCol = headers.findIndex(function (h) { return h.indexOf('amount') !== -1; });
+          var noteCol = headers.findIndex(function (h) { return h.indexOf('note') !== -1 || h.indexOf('name') !== -1 || h.indexOf('description') !== -1; });
+          var added = 0;
+          for (var r = 1; r < rows.length; r++) {
+            var cols = rows[r].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || rows[r].split(',');
+            var rawAmt = amtCol >= 0 && cols[amtCol] ? cols[amtCol].replace(/["$,]/g, '') : '';
+            var num = Number(rawAmt);
+            if (!num) continue;
+            var desc = (noteCol >= 0 && cols[noteCol] ? cols[noteCol].replace(/^"|"$/g, '').trim() : '') || 'Cash App Transaction';
+            expenses.push({ id: 'csv' + Date.now() + r, desc: desc, amt: Math.abs(num), cat: 'other' });
+            added++;
+          }
+          safeWrite(EXPENSE_KEY, expenses);
+          document.getElementById('expense-status').textContent = 'Imported ' + added + ' Cash App CSV row(s).';
+          renderAll();
+        };
+        reader.readAsText(file);
+      });
+
+      document.getElementById('export-csv-btn').addEventListener('click', function () {
+        var csv = 'Description,Amount,Category\n' + expenses.map(function (e) {
+          return '"' + String(e.desc).replace(/"/g, '""') + '",' + Number(e.amt).toFixed(2) + ',' + e.cat;
+        }).join('\n');
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'verse-expenses.csv';
+        link.click();
+      });
+
+      document.getElementById('copy-summary-btn').addEventListener('click', function () {
+        var total = expenses.reduce(function (s, e) { return s + (Number(e.amt) || 0); }, 0);
+        var summary = 'Expenses (' + expenses.length + '): ' + fmt(total) + '\n' + expenses.map(function (e) {
+          return '- ' + e.desc + ': ' + fmt(e.amt) + ' (' + e.cat + ')';
+        }).join('\n');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(summary).then(function () {
+            document.getElementById('expense-status').textContent = 'Summary copied to clipboard.';
+          }).catch(function (err) {
+            console.warn('Clipboard copy failed:', err);
+          });
+        }
+      });
+
+      document.getElementById('clear-expenses-btn').addEventListener('click', function () {
+        expenses = [];
+        safeWrite(EXPENSE_KEY, expenses);
+        document.getElementById('expense-status').textContent = 'Cleared expenses.';
+        renderAll();
+      });
+
+      document.getElementById('add-sub-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = document.getElementById('sub-name').value.trim();
+        var price = Math.max(0, Number(document.getElementById('sub-price').value) || 0);
+        var cycle = document.getElementById('sub-cycle').value;
+        var category = document.getElementById('sub-category').value.trim() || 'Tools';
+        if (!name) return;
+        subs.push({ id: 's' + Date.now(), name: name, price: price, cycle: cycle, status: 'active', category: category });
+        safeWrite(SUB_KEY, subs);
+        document.getElementById('sub-name').value = '';
+        document.getElementById('sub-price').value = '';
+        renderAll();
+      });
+
+      var initialTab = 'budget';
+      try {
+        initialTab = new URLSearchParams(window.location.search).get('tab') || 'budget';
+      } catch (err) {
+        console.warn('Unable to read tab query param:', err);
+      }
+      setTab(initialTab);
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
