@@ -1,0 +1,1 @@
+- **Stranger test workflow (`.github/workflows/stranger-test.yml`, `tools/stranger-issues.mjs`):** runs `tools/stranger-gate.mjs` on every pull request and nightly against the live site. A pull request fails with the plain list. The nightly run files one queue job and one GitHub issue per new failure. `stranger-out/stranger.json` and the screenshots are the artifact.

@@ -1,0 +1,64 @@
+# Stranger test (tools/stranger-gate.mjs). Every pull request, and nightly against the live site.
+# A pull request fails with the plain-English list the gate prints. The nightly run files one queue job
+# and one GitHub issue per new failure. JSON and screenshots are the artifact. No new secret is created.
+name: Stranger test
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 7 * * *' # 07:17 UTC nightly
+  workflow_dispatch:
+
+concurrency:
+  group: stranger-test-${{ github.event_name }}-${{ github.event.pull_request.number || 'live' }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write # one fix-job issue per new nightly failure
+
+jobs:
+  stranger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Chromium
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Stranger test
+        id: test
+        continue-on-error: ${{ github.event_name != 'pull_request' }}
+        env:
+          STRANGER_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          git fetch origin main
+          node tools/stranger-gate.mjs --json stranger-out/stranger.json --shots stranger-out
+      - name: Queue a fix job for each nightly failure
+        if: always() && github.event_name != 'pull_request'
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/stranger-gate.mjs --file-jobs stranger-out/stranger.json
+      - name: Open a fix-job issue for each new nightly failure
+        if: always() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STRANGER_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node tools/stranger-issues.mjs stranger-out/stranger.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stranger-test
+          path: stranger-out
+          if-no-files-found: ignore
+          retention-days: 14
