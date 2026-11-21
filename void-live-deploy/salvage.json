@@ -1,14 +1,14 @@
 {
- "at": "2026-11-20",
- "scanned": 556,
+ "at": "2026-11-21",
+ "scanned": 558,
  "counts": {
   "unified": 69,
-  "live": 71,
-  "salvageable": 390,
+  "live": 70,
+  "salvageable": 393,
   "history": 23,
   "skipped": 3
  },
- "remaining": 390,
+ "remaining": 393,
  "top10": [
   {
    "id": "archive/repos/a-to-mind.com/drafts/025-carbon-weight-badge",
@@ -306,54 +306,6 @@
    "license": "CC0-1.0",
    "link": "https://www.si.edu/openaccess",
    "used": null,
-   "isolated": false
-  },
-  {
-   "name": "Kokoro-82M (hexgrad/kokoro, via kokoro-onnx)",
-   "author": "hexgrad; thewh1teagle",
-   "license": "Apache-2.0 (model), MIT (kokoro-onnx)",
-   "link": "https://huggingface.co/hexgrad/Kokoro-82M",
-   "used": "/podcast/ and /films/ (the two hosts' voices)",
-   "isolated": false
-  },
-  {
-   "name": "kokoro-js and Transformers.js (ONNX Runtime Web)",
-   "author": "Xenova (Joshua Lochner), Hugging Face; Microsoft",
-   "license": "Apache-2.0 (kokoro-js, Transformers.js), MIT (ONNX Runtime)",
-   "link": "https://github.com/hexgrad/kokoro/tree/main/kokoro.js",
-   "used": "/video/ (the video maker's voice, run in the visitor's browser)",
-   "isolated": false
-  },
-  {
-   "name": "Wikimedia Commons photos",
-   "author": "each photo's author, credited on screen in every video",
-   "license": "each photo's own free licence (CC BY, CC BY-SA, public domain)",
-   "link": "https://commons.wikimedia.org/",
-   "used": "/video/ (the video maker's pictures)",
-   "isolated": false
-  },
-  {
-   "name": "VCSL Steinway B piano samples",
-   "author": "Sam Gossner and contributors",
-   "license": "CC0-1.0",
-   "link": "https://github.com/sgossner/VCSL",
-   "used": "/podcast/ and /films/ (the piano bed)",
-   "isolated": false
-  },
-  {
-   "name": "Wikipedia featured feed and articles",
-   "author": "Wikipedia contributors",
-   "license": "CC BY-SA 4.0",
-   "link": "https://api.wikimedia.org/wiki/Feed_API",
-   "used": "/podcast/ and /films/ (the true story each show tells, named in its notes)",
-   "isolated": false
-  },
-  {
-   "name": "Pollinations image generation",
-   "author": "Pollinations.AI",
-   "license": "free to use, no account",
-   "link": "https://pollinations.ai/",
-   "used": "/films/ (one picture per line)",
    "isolated": false
   }
  ],
@@ -5159,6 +5111,18 @@
    "license": null
   },
   {
+   "id": "archive/workflows",
+   "kind": "archive",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
    "id": "drafts/figures-smooth-bodies.png",
    "kind": "draft",
    "status": "salvageable",
@@ -6143,30 +6107,6 @@
    "license": null
   },
   {
-   "id": "docs/autosalvage.workflow.yml",
-   "kind": "parked workflow",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "Verse's live code reads this path",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
-   "id": "docs/bot-factory.workflow.yml",
-   "kind": "parked workflow",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "Verse's live code reads this path",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
    "id": "shelf:?/A2M.ops.md",
    "kind": "shelf row",
    "status": "salvageable",
@@ -6472,6 +6412,42 @@
    "status": "salvageable",
    "target": "page",
    "value": 3.3,
+   "why": "live code shares its name; check for overlap before migrating",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "shelf:?/clips.yml",
+   "kind": "shelf row",
+   "status": "salvageable",
+   "target": "page",
+   "value": 4.5,
+   "why": "live code shares its name; check for overlap before migrating",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "shelf:?/clef-probe.yml",
+   "kind": "shelf row",
+   "status": "salvageable",
+   "target": "page",
+   "value": 6.9,
+   "why": "live code shares its name; check for overlap before migrating",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "shelf:?/bot-factory.draft.yml",
+   "kind": "shelf row",
+   "status": "salvageable",
+   "target": "bot",
+   "value": 6.9,
    "why": "live code shares its name; check for overlap before migrating",
    "into": null,
    "test": null,
