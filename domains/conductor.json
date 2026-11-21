@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-21T06:56:59.266Z",
+ "updated": "2026-11-21T07:06:17.786Z",
  "last24h": {
   "ticks": 148,
   "started": 96,
@@ -111,7 +111,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 47,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -138,7 +138,7 @@
   "mwme3uk5": 1795240276608,
   "mwmi5727": 1795243654895,
   "mwmpup7b": 1795244219266,
-  "mwnbxf5o": 1795222715219,
+  "mwnbxf5o": 1795244777786,
   "mwnkyhgw": 1795223280158,
   "mveb8rsi": 1795219475998,
   "mveb8svc": 1795220251623,
@@ -153,8 +153,8 @@
  "blueprintsAt": 1795243092242,
  "catchup": {
   "site-test.yml": {
-   "slot": 1795239660000,
-   "startedAt": 1795237453116
+   "slot": 1795243260000,
+   "startedAt": 1795244777786
   },
   "exam.yml": {
    "slot": 1795166220000
@@ -276,12 +276,12 @@
    "slot": 1793683020000
   },
   "verse-watch.yml": {
-   "slot": 1795239420000,
-   "startedAt": 1795240840171
+   "slot": 1795243020000,
+   "startedAt": 1795244777786
   },
   "growth-fold.yml": {
-   "slot": 1795239660000,
-   "startedAt": 1795241408071
+   "slot": 1795243260000,
+   "startedAt": 1795244777786
   },
   "arb-record.yml": {
    "slot": 1795243020000,
@@ -3441,36 +3441,6 @@
   "review:3022"
  ],
  "ticks": [
-  {
-   "at": "2026-11-20T06:59:04.210Z",
-   "open": 500,
-   "started": [
-    {
-     "id": "mwcuue69",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 116
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 22,
-   "warnings": 0
-  },
   {
    "at": "2026-11-20T07:08:42.683Z",
    "open": 500,
@@ -7772,6 +7742,44 @@
     "jobs-snapshot.yml",
     "misses-snapshot.yml",
     "arb-record.yml"
+   ],
+   "cancelled": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 482,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-21T07:06:17.786Z",
+   "open": 500,
+   "started": [
+    {
+     "id": "mwnbxf5o",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 19
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "tower-gate.yml",
+    "grow-self.yml",
+    "verify.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "catchup": [
+    "site-test.yml",
+    "verse-watch.yml",
+    "growth-fold.yml"
    ],
    "cancelled": [],
    "sweep": false,
