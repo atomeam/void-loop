@@ -157,7 +157,7 @@ const download = (blob, name) => { const u = URL.createObjectURL(blob), a = docu
  * kept the ink plate because only a subject photo was looked for), else the subject photo, else '' (the plate). A painting kept as a
  * data URL is drawn as it is; a link goes through photoData. */
 export async function artPicture(el) {
-  const forged = el && el.querySelector('.vc-art img.vc-forge-img'), photo = el && el.querySelector('img.vc-art-photo');
+  const forged = el && el.querySelector('.vc-art img.vc-forge-img'), photo = el && el.dataset.imgSafe !== 'adult' && el.dataset.imgSafe !== 'blocked' ? el.querySelector('img.vc-art-photo') : null; // an adult or blocked card's photo never goes into a saved or shared image (lib/image-safety.js)
   if (forged) { const src = forged.getAttribute('src') || ''; if (/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src)) return src; const got = await photoData(forged.src || src); if (got) return got; }
   return photo ? photoData(photo.getAttribute('src'), (el.dataset || {}).poster ? { w: 293, h: 440 } : undefined) : ''; // a film's poster is drawn at its own portrait shape
 }

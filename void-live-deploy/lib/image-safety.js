@@ -7,9 +7,9 @@ const SENSITIVE = new RegExp('\\b(?:' + [
   'nud(?:e|es|ity|ism|ist|ists|ie|ies)', 'naked(?:ness)?', 'naturis[mt]s?', 'clothing[- ]optional', 'skinny[- ]?dip\\w*', 'topless', 'bottomless', 'undress\\w*', 'unclothed',
   'strip(?:per|pers|tease|ping)', 'strip ?clubs?', 'lingerie', 'bikinis?', 'swimsuits?', 'swimwear', 'underwear', 'panties', 'thongs?', 'bras?', 'nsfw', 'xxx', 'rule ?34',
   'sex(?:es|y|ual|uality|ually|ting|t)?', 'porn\\w*', 'erotic\\w*', 'fetish\\w*', 'kink\\w*', 'bdsm', 'hentai', 'onlyfans', 'camgirls?', 'obscen\\w*', 'lewd', 'smut',
-  'genital\\w*', 'penis(?:es)?', 'phallus', 'phallic', 'vagina\\w*', 'vulva\\w*', 'clitor\\w*', 'testic\\w*', 'scrot\\w*', 'pubic', 'pubes', 'anus', 'anal', 'buttocks?', 'butt',
-  'breasts?', 'nipples?', 'areolae?', 'boobs?', 'boobies', 'tits?', 'titties', 'titty', 'dick(?:s|pic)?', 'cock(?:s)?', 'pussy', 'cunt', 'orgasm\\w*', 'masturbat\\w*', 'ejaculat\\w*',
-  'intercourse', 'coitus', 'prostitut\\w*', 'escorts?', 'brothels?', 'harlot', 'hooker\\w*', 'adult (?:film|films|video|videos|content|entertainment|industry|actor|actress|model|site|sites|star)s?',
+  'genital\\w*', 'penis(?:es)?', 'phallus', 'phallic', 'vagina\\w*', 'vulva\\w*', 'clitor\\w*', 'testic\\w*', 'scrot\\w*', 'pubic', 'pubes', 'anus', 'anal', 'buttocks?',
+  'breasts?', 'nipples?', 'areolae?', 'boobs?', 'boobies', 'tits?', 'titties', 'titty', 'dick(?:s| ?pics?)?', 'cocks?', 'pussy', 'cunt', 'orgasm\\w*', 'masturbat\\w*', 'ejaculat\\w*',
+  'intercourse', 'coitus', 'prostitut\\w*', 'escort (?:service|agency|agencies)s?', 'brothels?', 'harlot', 'hooker\\w*', 'adult (?:film|films|video|videos|content|entertainment|industry|actor|actress|model|site|sites|star)s?',
   'circumcis\\w*', 'puberty', 'breastfeed\\w*', 'body ?paint\\w*', 'baths?', 'bath(?:e|es|ing|house|houses)', 'saunas?', 'onsen', 'banya', 'shower(?:s|ing)?', 'voyeur\\w*', 'exhibitionis\\w*',
   'incest', 'rape', 'molest\\w*', 'grooming', 'trafficking',
 ].join('|') + ')\\b', 'i');
@@ -26,6 +26,34 @@ export function unsafeText(...parts) {
   if (SENSITIVE.test(t)) return 'sensitive';
   return '';
 }
+// settings where children are often photographed unclothed (family naturism, bathing, nude beaches): age can never be told from words, so these
+// get no picture for anyone (owner, 2026-11-20: the minors block is absolute; fail closed when age is uncertain)
+const FAMILY_NUDITY = /\b(?:naturis\w*|nudis\w*|nude beach\w*|naturist beach\w*|clothing[- ]optional|skinny[- ]?dip\w*|baths?|bath(?:e|es|ing|house|houses)|saunas?|onsen|banya|puberty|breastfeed\w*|famil(?:y|ies)|school\w*|camps?|resorts?)\b/i;
+/** 'minor' (no picture, for everyone, no override), 'adult' (a clearly-adult picture may show, blurred until an 18+ tap; the owner is exempt) or ''. */
+// names and works that only share a word with the body (lib/content-safety.js NAMED_WORK keeps the same list for meanings)
+const NAMED_WORK = /\b(?:moby[ -]?dick|dick van dyke|philip k\.?\s*dick|dick grayson|dick cheney|dick tracy|dick clark|spotted dick|cock robin|cocker spaniel)\b/gi;
+export function classify(...parts) {
+  const t = parts.flat(3).filter((x) => x != null).map((x) => String(x)).join(' \u2022 ').replace(/[_+%]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2').replace(NAMED_WORK, ' ');
+  if (!t.trim()) return '';
+  if (ABUSE.test(t)) return 'minor';
+  const sens = SENSITIVE.test(t);
+  if (MINOR.test(t) && (sens || BODY.test(t))) return 'minor';
+  if (sens && FAMILY_NUDITY.test(t)) return 'minor';
+  if (FAMILY_NUDITY.test(t) && /\b(?:bath|baths|bathing|sauna|onsen|banya|naturis\w*|nudis\w*|nude|naked|skinny)/i.test(t)) return 'minor';
+  return sens ? 'adult' : '';
+}
+/** a card's class from its heading, kind line, text and the ask (see classify). */
+export function cardClass(el, ask = '') {
+  if (!el) return '';
+  if (el.dataset && el.dataset.cos20 !== undefined || (el.querySelector && el.querySelector('img[data-adult-gated]'))) { const c = classify(ask, String(el.textContent || '').slice(0, 800)); return c === 'minor' ? 'minor' : 'adult'; } // an adult-intent card (lib/cos-20.js) is adult: blurred, age-checked
+  const d = el.dataset || {}, h2 = el.querySelector && el.querySelector('h2');
+  return classify(ask, d.ask || '', d.cardDesc || '', d.cardExtract || '', h2 ? h2.textContent : '', String(el.textContent || '').slice(0, 800));
+}
+/** the hosts a card photo may come from: Wikimedia's own image hosts only (licensed, credited, with categories to read) */
+export const SAFE_HOST = /^https:\/\/(?:upload|thumb)\.wikimedia\.org\//;
+/** the model's word on one picture: only a plain ADULT passes; MINOR, UNSURE, anything else or nothing fails closed. Pure. */
+export const ageVerdict = (said) => /^\W*adult\b/i.test(String(said || '').trim()) && !/\b(?:minor|child|teen|unsure|young|cannot|can't|unclear)\b/i.test(String(said || ''));
+export const AGE_PROMPT = 'Safety check. Look at every person in this image. Answer with exactly one word: ADULT if every person shown is clearly an adult (obviously over 18), MINOR if anyone could be under 18, UNSURE if you cannot tell or no face or body is clear.';
 /** the file name a picture URL carries, decoded ("Foo_bar.jpg" from an upload.wikimedia.org thumb URL) */
 export function fileNameOf(url) {
   try { const p = new URL(String(url)).pathname.split('/').filter(Boolean); const f = p.find((x) => /\.(?:jpe?g|png|gif|webp|svg|tiff?)$/i.test(x) && !/^\d+px-/.test(x)) || p[p.length - 1] || ''; return decodeURIComponent(f); } catch (_) { return ''; }
@@ -34,6 +62,11 @@ export function fileNameOf(url) {
 export function unsafeImage({ url = '', alt = '', title = '', desc = '', categories = [], context = [] } = {}) {
   if (!/^https:\/\//i.test(String(url)) && !/^data:image\//i.test(String(url))) return url ? 'not-https' : '';
   return unsafeText(fileNameOf(url), alt, title, desc, categories, context);
+}
+/** one picture that may involve a minor (its file name, alt, categories or its card), or not https: never shown, for anyone. */
+export function minorImage({ url = '', alt = '', title = '', desc = '', categories = [], context = [] } = {}) {
+  if (!/^https:\/\//i.test(String(url))) return true;
+  return classify(fileNameOf(url), alt, title, desc, categories, context) === 'minor';
 }
 /** a card: true when nothing on it may carry a photo (its heading, kind line, text, the ask). */
 export function cardUnsafe(el, ask = '') {
