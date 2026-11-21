@@ -203,9 +203,9 @@
     {
      "name": "image-gen",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark, 5 live findings, 2026-11-20",
-     "last_tested": "2026-11-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 real asks in the benchmark, 6 live findings, 2026-11-21",
+     "last_tested": "2026-11-21",
+     "last_tested_by": "a live call",
      "success_rate": 1,
      "promoted": "2026-11-06",
      "streak": 15
