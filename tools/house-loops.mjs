@@ -139,12 +139,15 @@ async function askSentence(h1) {
   } catch { return { text: '', tier }; }
 }
 function growthPick() {
-  try {
-    const j = JSON.parse(read(join(root, 'void-live-deploy/tower.ideas.json')));
-    const p = j && j.picks && j.picks[0];
-    if (p && p.title) return 'The growth loop pick is ' + String(p.title).slice(0, 160) + '.';
-  } catch { /* the board is not written yet */ }
-  return '';
+  const raw = read(join(root, 'void-live-deploy/tower.ideas.json'));
+  if (!raw.trim()) return '';
+  let j;
+  try { j = JSON.parse(raw); } catch (e) {
+    console.log('growth board: ' + String(e && e.message || e).slice(0, 120));
+    return '';
+  }
+  const p = j && j.picks && j.picks[0];
+  return p && p.title ? 'The growth loop pick is ' + String(p.title).slice(0, 160) + '.' : '';
 }
 async function runNext() {
   const fromLoop = growthPick();
